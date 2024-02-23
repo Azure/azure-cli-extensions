@@ -201,6 +201,9 @@ aks update:
     enable_network_observability:
       rule_exclusions:
       - option_length_too_long
+    disable_network_observability:
+      rule_exclusions:
+      - option_length_too_long
 arcdata dc create:
   parameters:
     logs_ui_private_key_file:
@@ -1341,6 +1344,22 @@ iot edge deployment update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot ops asset create:
+  parameters:
+    cluster_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    custom_location_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot ops asset endpoint create:
+  parameters:
+    cluster_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    custom_location_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 k8sconfiguration create:
   parameters:
     helm_operator_version:

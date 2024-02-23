@@ -2,6 +2,15 @@
 
 Release History
 ===============
+5.0.0
+++++++
+* Added Resync functionality for Network taps and Network tap rules
+* Added support External Network to patch NNI
+
+4.2.0
+++++++
+* Added support for upgrading Device and Network Fabric resource.
+* Added support for validate configuration in Network Fabric resources.
 
 4.1.1
 ++++++

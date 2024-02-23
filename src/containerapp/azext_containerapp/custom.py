@@ -15,6 +15,7 @@ from azure.cli.core import telemetry as telemetry_core
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
+    ResourceNotFoundError,
     ValidationError,
     CLIError,
     CLIInternalError,
@@ -36,7 +37,7 @@ from azure.cli.command_modules.containerapp._utils import (_validate_subscriptio
                                                            generate_randomized_cert_name, load_cert_file,
                                                            generate_randomized_managed_cert_name,
                                                            check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                                                           trigger_workflow,
+                                                           trigger_workflow, set_managed_identity, _ensure_identity_resource_id,
                                                            AppType)
 
 from knack.log import get_logger
@@ -45,18 +46,37 @@ from knack.prompting import prompt_y_n
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
+from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
+    ContainerappEnvCertificateUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
-from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator
+from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
+from .containerapp_resiliency_decorator import (
+    ContainerAppResiliencyPreviewCreateDecorator,
+    ContainerAppResiliencyPreviewShowDecorator,
+    ContainerAppResiliencyPreviewDeleteDecorator,
+    ContainerAppResiliencyPreviewListDecorator,
+    ContainerAppResiliencyPreviewUpdateDecorator)
+from .daprcomponent_resiliency_decorator import (
+    DaprComponentResiliencyPreviewCreateDecorator,
+    DaprComponentResiliencyPreviewDeleteDecorator,
+    DaprComponentResiliencyPreviewShowDecorator,
+    DaprComponentResiliencyPreviewListDecorator,
+    DaprComponentResiliencyPreviewUpdateDecorator
+)
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
+from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from ._client_factory import handle_raw_exception
 from ._clients import (
-    GitHubActionClient,
+    GitHubActionPreviewClient,
     ContainerAppPreviewClient,
     AuthPreviewClient,
     SubscriptionPreviewClient,
+    StoragePreviewClient,
     ContainerAppsJobPreviewClient,
+    ContainerAppsResiliencyPreviewClient,
+    DaprComponentResiliencyPreviewClient,
     ManagedEnvironmentPreviewClient,
     ConnectedEnvDaprComponentClient,
     ConnectedEnvironmentClient,
@@ -70,15 +90,19 @@ from ._models import (
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
-    AzureFileProperties as AzureFilePropertiesModel)
+    AzureFileProperties as AzureFilePropertiesModel
+)
 
-from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running
+from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running, parse_build_env_vars
 
 from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
-                         DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
+                         DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
+                         DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
+                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE)
+
 
 logger = get_logger(__name__)
 
@@ -150,6 +174,229 @@ def delete_qdrant_service(cmd, service_name, resource_group_name, no_wait=False)
     return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_QDRANT_SERVICE_TYPE)
 
 
+def create_weaviate_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
+                            disable_warnings=True):
+    return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
+                                          disable_warnings, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_SERVICE_TYPE,
+                                          DEV_WEAVIATE_CONTAINER_NAME)
+
+
+def delete_weaviate_service(cmd, service_name, resource_group_name, no_wait=False):
+    return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_WEAVIATE_SERVICE_TYPE)
+
+
+def create_milvus_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
+                            disable_warnings=True):
+    return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
+                                          disable_warnings, DEV_MILVUS_IMAGE, DEV_MILVUS_SERVICE_TYPE,
+                                          DEV_MILVUS_CONTAINER_NAME)
+
+
+def delete_milvus_service(cmd, service_name, resource_group_name, no_wait=False):
+    return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_MILVUS_SERVICE_TYPE)
+
+
+def create_container_app_resiliency(cmd, name, resource_group_name, container_app_name,
+                                    yaml=None,
+                                    no_wait=False,
+                                    disable_warnings=False,
+                                    tcp_retry_max_connect_attempts=None,
+                                    circuit_breaker_consecutive_errors=None,
+                                    circuit_breaker_interval=None,
+                                    circuit_breaker_max_ejection=None,
+                                    tcp_connection_pool_max_connections=None,
+                                    http_connection_pool_http1_max_pending_req=None,
+                                    http_connection_pool_http2_max_req=None,
+                                    timeout_response_in_seconds=None,
+                                    timeout_connection_in_seconds=None,
+                                    http_retry_max=None,
+                                    http_retry_delay_in_milliseconds=None,
+                                    http_retry_interval_in_milliseconds=None,
+                                    http_retry_status_codes=None,
+                                    http_retry_errors=None,
+                                    default=False):
+    raw_parameters = locals()
+    containerapp_resiliency_create_decorator = ContainerAppResiliencyPreviewCreateDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_resiliency_create_decorator.validate_arguments()
+    containerapp_resiliency_create_decorator.construct_payload()
+    return containerapp_resiliency_create_decorator.create()
+
+
+def update_container_app_resiliency(cmd, name, resource_group_name, container_app_name,
+                                    yaml=None,
+                                    no_wait=False,
+                                    disable_warnings=False,
+                                    tcp_retry_max_connect_attempts=None,
+                                    circuit_breaker_consecutive_errors=None,
+                                    circuit_breaker_interval=None,
+                                    circuit_breaker_max_ejection=None,
+                                    tcp_connection_pool_max_connections=None,
+                                    http_connection_pool_http1_max_pending_req=None,
+                                    http_connection_pool_http2_max_req=None,
+                                    timeout_response_in_seconds=None,
+                                    timeout_connection_in_seconds=None,
+                                    http_retry_max=None,
+                                    http_retry_delay_in_milliseconds=None,
+                                    http_retry_interval_in_milliseconds=None,
+                                    http_retry_status_codes=None,
+                                    http_retry_errors=None):
+
+    raw_parameters = locals()
+    containerapp_resiliency_update_decorator = ContainerAppResiliencyPreviewUpdateDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_resiliency_update_decorator.validate_arguments()
+    containerapp_resiliency_update_decorator.construct_payload()
+    return containerapp_resiliency_update_decorator.update()
+
+
+def delete_container_app_resiliency(cmd, name, resource_group_name, container_app_name, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_delete_decorator = ContainerAppResiliencyPreviewDeleteDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_delete_decorator.delete()
+
+
+def show_container_app_resiliency(cmd, name, resource_group_name, container_app_name):
+
+    raw_parameters = locals()
+    containerapp_resiliency_show_decorator = ContainerAppResiliencyPreviewShowDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_show_decorator.show()
+
+
+def list_container_app_resiliencies(cmd, resource_group_name, container_app_name):
+
+    raw_parameters = locals()
+    containerapp_resiliency_list_decorator = ContainerAppResiliencyPreviewListDecorator(
+        cmd=cmd,
+        client=ContainerAppsResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_list_decorator.list()
+
+
+def create_dapr_component_resiliency(cmd, name, resource_group_name, dapr_component_name, environment,
+                                     yaml=None,
+                                     no_wait=False,
+                                     disable_warnings=False,
+                                     in_timeout_response_in_seconds=None,
+                                     out_timeout_response_in_seconds=None,
+                                     in_http_retry_max=None,
+                                     out_http_retry_max=None,
+                                     in_http_retry_delay_in_milliseconds=None,
+                                     out_http_retry_delay_in_milliseconds=None,
+                                     in_http_retry_interval_in_milliseconds=None,
+                                     out_http_retry_interval_in_milliseconds=None,
+                                     in_circuit_breaker_consecutive_errors=None,
+                                     out_circuit_breaker_consecutive_errors=None,
+                                     in_circuit_breaker_interval=None,
+                                     out_circuit_breaker_interval=None,
+                                     in_circuit_breaker_timeout=None,
+                                     out_circuit_breaker_timeout=None):
+    raw_parameters = locals()
+    component_resiliency_create_decorator = DaprComponentResiliencyPreviewCreateDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    component_resiliency_create_decorator.validate_arguments()
+    component_resiliency_create_decorator.construct_payload()
+    return component_resiliency_create_decorator.create()
+
+
+def update_dapr_component_resiliency(cmd, name, resource_group_name, dapr_component_name, environment,
+                                     yaml=None,
+                                     no_wait=False,
+                                     disable_warnings=False,
+                                     in_timeout_response_in_seconds=None,
+                                     out_timeout_response_in_seconds=None,
+                                     in_http_retry_max=None,
+                                     out_http_retry_max=None,
+                                     in_http_retry_delay_in_milliseconds=None,
+                                     out_http_retry_delay_in_milliseconds=None,
+                                     in_http_retry_interval_in_milliseconds=None,
+                                     out_http_retry_interval_in_milliseconds=None,
+                                     in_circuit_breaker_consecutive_errors=None,
+                                     out_circuit_breaker_consecutive_errors=None,
+                                     in_circuit_breaker_interval=None,
+                                     out_circuit_breaker_interval=None,
+                                     in_circuit_breaker_timeout=None,
+                                     out_circuit_breaker_timeout=None):
+
+    raw_parameters = locals()
+    component_resiliency_update_decorator = DaprComponentResiliencyPreviewUpdateDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    component_resiliency_update_decorator.validate_arguments()
+    component_resiliency_update_decorator.construct_payload()
+    return component_resiliency_update_decorator.update()
+
+
+def delete_dapr_component_resiliency(cmd, name, resource_group_name, environment, dapr_component_name, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_delete_decorator = DaprComponentResiliencyPreviewDeleteDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_delete_decorator.delete()
+
+
+def show_dapr_component_resiliency(cmd, name, resource_group_name, environment, dapr_component_name, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_show_decorator = DaprComponentResiliencyPreviewShowDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_show_decorator.show()
+
+
+def list_dapr_component_resiliencies(cmd, resource_group_name, dapr_component_name, environment, no_wait=False):
+
+    raw_parameters = locals()
+    containerapp_resiliency_list_decorator = DaprComponentResiliencyPreviewListDecorator(
+        cmd=cmd,
+        client=DaprComponentResiliencyPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_resiliency_list_decorator.list()
+
+
 def create_containerapp(cmd,
                         name,
                         resource_group_name,
@@ -187,6 +434,7 @@ def create_containerapp(cmd,
                         dapr_enable_api_logging=False,
                         service_type=None,
                         service_bindings=None,
+                        customized_keys=None,
                         revision_suffix=None,
                         startup_command=None,
                         args=None,
@@ -201,13 +449,16 @@ def create_containerapp(cmd,
                         secret_volume_mount=None,
                         environment_type="managed",
                         source=None,
+                        artifact=None,
+                        build_env_vars=None,
                         repo=None,
                         token=None,
                         branch=None,
                         context_path=None,
                         service_principal_client_id=None,
                         service_principal_client_secret=None,
-                        service_principal_tenant_id=None):
+                        service_principal_tenant_id=None,
+                        max_inactive_revisions=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -240,6 +491,7 @@ def update_containerapp_logic(cmd,
                               scale_rule_metadata=None,
                               scale_rule_auth=None,
                               service_bindings=None,
+                              customized_keys=None,
                               unbind_service_bindings=None,
                               set_env_vars=None,
                               remove_env_vars=None,
@@ -261,7 +513,10 @@ def update_containerapp_logic(cmd,
                               registry_user=None,
                               registry_pass=None,
                               secret_volume_mount=None,
-                              source=None):
+                              source=None,
+                              artifact=None,
+                              build_env_vars=None,
+                              max_inactive_revisions=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -294,6 +549,7 @@ def update_containerapp(cmd,
                         scale_rule_auth=None,
                         unbind_service_bindings=None,
                         service_bindings=None,
+                        customized_keys=None,
                         set_env_vars=None,
                         remove_env_vars=None,
                         replace_env_vars=None,
@@ -308,7 +564,10 @@ def update_containerapp(cmd,
                         termination_grace_period=None,
                         no_wait=False,
                         secret_volume_mount=None,
-                        source=None):
+                        source=None,
+                        artifact=None,
+                        build_env_vars=None,
+                        max_inactive_revisions=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -325,6 +584,7 @@ def update_containerapp(cmd,
                                      scale_rule_metadata=scale_rule_metadata,
                                      scale_rule_auth=scale_rule_auth,
                                      service_bindings=service_bindings,
+                                     customized_keys=customized_keys,
                                      unbind_service_bindings=unbind_service_bindings,
                                      set_env_vars=set_env_vars,
                                      remove_env_vars=remove_env_vars,
@@ -340,7 +600,10 @@ def update_containerapp(cmd,
                                      termination_grace_period=termination_grace_period,
                                      no_wait=no_wait,
                                      secret_volume_mount=secret_volume_mount,
-                                     source=source)
+                                     source=source,
+                                     artifact=artifact,
+                                     build_env_vars=build_env_vars,
+                                     max_inactive_revisions=max_inactive_revisions)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -432,7 +695,11 @@ def create_managed_environment(cmd,
                                certificate_password=None,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
-                               no_wait=False):
+                               enable_dedicated_gpu=False,
+                               no_wait=False,
+                               logs_dynamic_json_columns=False,
+                               system_assigned=False,
+                               user_assigned=None):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -466,9 +733,10 @@ def update_managed_environment(cmd,
                                min_nodes=None,
                                max_nodes=None,
                                mtls_enabled=None,
-                               no_wait=False):
+                               no_wait=False,
+                               logs_dynamic_json_columns=None):
     raw_parameters = locals()
-    containerapp_env_update_decorator = ContainerAppEnvUpdateDecorator(
+    containerapp_env_update_decorator = ContainerappEnvPreviewUpdateDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,
         raw_parameters=raw_parameters,
@@ -519,6 +787,66 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
     containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
     return containerapp_env_decorator.delete()
+
+
+def show_storage(cmd, name, storage_name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    raw_parameters = locals()
+    containerapp_env_storage_decorator = ContainerappEnvStorageDecorator(
+        cmd=cmd,
+        client=StoragePreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_env_storage_decorator.show()
+
+
+def list_storage(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    raw_parameters = locals()
+    containerapp_env_storage_decorator = ContainerappEnvStorageDecorator(
+        cmd=cmd,
+        client=StoragePreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_env_storage_decorator.list()
+
+
+def create_or_update_storage(cmd, storage_name, resource_group_name, name, storage_type=None,
+                             azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None,
+                             server=None, access_mode=None, no_wait=False):  # pylint: disable=redefined-builtin
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    raw_parameters = locals()
+    containerapp_env_storage_decorator = ContainerappEnvStorageDecorator(
+        cmd=cmd,
+        client=StoragePreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_storage_decorator.register_provider(CONTAINER_APPS_RP)
+    containerapp_env_storage_decorator.validate_arguments()
+    containerapp_env_storage_decorator.construct_payload()
+    return containerapp_env_storage_decorator.create_or_update()
+
+
+def remove_storage(cmd, storage_name, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    raw_parameters = locals()
+    containerapp_env_storage_decorator = ContainerappEnvStorageDecorator(
+        cmd=cmd,
+        client=StoragePreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    return containerapp_env_storage_decorator.delete()
 
 
 def create_containerappsjob(cmd,
@@ -627,6 +955,7 @@ def create_or_update_github_action(cmd,
                                    login_with_github=False,
                                    image=None,
                                    context_path=None,
+                                   build_env_vars=None,
                                    service_principal_client_id=None,
                                    service_principal_client_secret=None,
                                    service_principal_tenant_id=None,
@@ -650,7 +979,7 @@ def create_or_update_github_action(cmd,
     source_control_info = None
 
     try:
-        source_control_info = GitHubActionClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        source_control_info = GitHubActionPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
 
     except Exception as ex:
         if not service_principal_client_id or not service_principal_client_secret or not service_principal_tenant_id:
@@ -659,7 +988,7 @@ def create_or_update_github_action(cmd,
 
     # Need to trigger the workflow manually if it already exists (performing an update)
     try:
-        workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+        workflow_name = GitHubActionPreviewClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
         if workflow_name is not None:
             if trigger_existing_workflow:
                 trigger_workflow(token, repo, workflow_name, branch)
@@ -702,6 +1031,7 @@ def create_or_update_github_action(cmd,
     github_action_configuration["registryInfo"] = registry_info
     github_action_configuration["azureCredentials"] = azure_credentials
     github_action_configuration["contextPath"] = context_path
+    github_action_configuration["buildEnvironmentVariables"] = parse_build_env_vars(build_env_vars)
     github_action_configuration["image"] = image
 
     source_control_info["properties"]["githubActionConfiguration"] = github_action_configuration
@@ -710,7 +1040,7 @@ def create_or_update_github_action(cmd,
 
     try:
         logger.warning("Creating Github action...")
-        r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
+        r = GitHubActionPreviewClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
         if not no_wait:
             WORKFLOW_POLL_RETRY = 6
             WORKFLOW_POLL_SLEEP = 10
@@ -718,7 +1048,7 @@ def create_or_update_github_action(cmd,
             # Poll for the workflow file just created (may take up to 30s)
             for _ in range(0, WORKFLOW_POLL_RETRY):
                 time.sleep(WORKFLOW_POLL_SLEEP)
-                workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+                workflow_name = GitHubActionPreviewClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
                 if workflow_name is not None:
                     await_github_action(token, repo, workflow_name)
                     return r
@@ -784,11 +1114,13 @@ def get_replica(cmd, resource_group_name, name, replica, revision=None):
 def containerapp_up(cmd,
                     name,
                     resource_group_name=None,
-                    managed_env=None,
+                    environment=None,
                     location=None,
                     registry_server=None,
                     image=None,
                     source=None,
+                    artifact=None,
+                    build_env_vars=None,
                     ingress=None,
                     target_port=None,
                     registry_user=None,
@@ -804,9 +1136,11 @@ def containerapp_up(cmd,
                     workload_profile_name=None,
                     service_principal_client_id=None,
                     service_principal_client_secret=None,
-                    service_principal_tenant_id=None):
-    from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
-                            ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
+                    service_principal_tenant_id=None,
+                    custom_location_id=None,
+                    connected_cluster_id=None):
+    from ._up_utils import (_validate_up_args, _validate_custom_location_connected_cluster_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
+                            ResourceGroup, Extension, CustomLocation, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output,
                             check_env_name_on_rg, get_token, _has_dockerfile)
     from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
@@ -814,9 +1148,19 @@ def containerapp_up(cmd,
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    _validate_up_args(cmd, source, image, repo, registry_server)
+    _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server)
+    _validate_custom_location_connected_cluster_args(cmd,
+                                                     env=environment,
+                                                     resource_group_name=resource_group_name,
+                                                     location=location,
+                                                     custom_location_id=custom_location_id,
+                                                     connected_cluster_id=connected_cluster_id)
+    if artifact:
+        # Artifact is mostly a convenience argument provided to use --source specifically with a single artifact file.
+        # At this point we know for sure that source isn't set (else _validate_up_args would have failed), so we can build with this value.
+        source = artifact
     validate_container_app_name(name, AppType.ContainerApp.name)
-    check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
+    check_env_name_on_rg(cmd, environment, resource_group_name, location, custom_location_id, connected_cluster_id)
 
     image = _reformat_image(source, repo, image)
     token = get_token(cmd, repo, token)
@@ -837,16 +1181,20 @@ def containerapp_up(cmd,
         ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
 
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
-    env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)
+    custom_location = CustomLocation(cmd, name=custom_location_id, resource_group_name=resource_group_name, connected_cluster_id=connected_cluster_id)
+    extension = Extension(cmd, logs_rg=resource_group_name, logs_location=location, logs_share_key=logs_key, logs_customer_id=logs_customer_id, connected_cluster_id=connected_cluster_id)
+    env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
     app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
 
-    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app)
+    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app, custom_location, extension)
 
     if app.check_exists():
         if app.get()["properties"]["provisioningState"] == "InProgress":
             raise ValidationError("Containerapp has an existing provisioning in progress. Please wait until provisioning has completed and rerun the command.")
 
     resource_group.create_if_needed()
+    extension.create_if_needed()
+    custom_location.create_if_needed()
     env.create_if_needed(name)
 
     if source or repo:
@@ -856,14 +1204,14 @@ def containerapp_up(cmd,
 
     used_default_container_registry = False
     if source:
-        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, can_create_acr_if_needed=True, registry_server=registry_server)
+        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
     else:
         app.create_acr_if_needed()
 
     app.create(no_registry=bool(repo or used_default_container_registry))
     if repo:
         _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
-                              service_principal_tenant_id, branch, token, repo, context_path)
+                              service_principal_tenant_id, branch, token, repo, context_path, build_env_vars)
         cache_github_token(cmd, token, repo)
 
     if browse:
@@ -872,7 +1220,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -882,7 +1230,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     if containerapp_def:
         return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
                                          registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name)
-    return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name)
+    return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type)
 
 
 def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None):
@@ -902,8 +1250,33 @@ def create_managed_certificate(cmd, name, resource_group_name, hostname, validat
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
-    from azure.cli.command_modules.containerapp.custom import list_certificates_logic
-    return list_certificates_logic(cmd, name, resource_group_name, location, certificate, thumbprint, managed_certificates_only=managed_certificates_only, private_key_certificates_only=private_key_certificates_only)
+    raw_parameters = locals()
+
+    containerapp_env_certificate_list_decorator = ContainerappPreviewEnvCertificateListDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_certificate_list_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_certificate_list_decorator.validate_arguments()
+
+    return containerapp_env_certificate_list_decorator.list()
+
+
+def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+    raw_parameters = locals()
+
+    containerapp_env_certificate_upload_decorator = ContainerappEnvCertificateUploadDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_certificate_upload_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_certificate_upload_decorator.construct_payload()
+
+    return containerapp_env_certificate_upload_decorator.create_or_update()
 
 
 def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
@@ -1075,6 +1448,10 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     return containerapps_from_compose
 
 
+def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
+
 def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
     # Ensure that Docker is running locally before attempting to use the pack CLI
     if is_docker_running() is False:
@@ -1167,7 +1544,7 @@ def _get_patchable_check_result(inspect_result, oryx_run_images):
         return result
 
     # Define the MCR repositories that are supported for patching
-    mcr_repos = ["oryx/dotnetcore", "oryx/node", "oryx/python"]
+    mcr_repos = ["oryx/dotnetcore", "oryx/node", "oryx/python", "azure-buildpacks/java"]
 
     # Iterate over each base run image found to see if a patch can be applied
     for run_images_prop in run_images_props:
@@ -1584,3 +1961,239 @@ def connected_env_remove_storage(cmd, storage_name, name, resource_group_name):
         return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name)
     except CLIError as e:
         handle_raw_exception(e)
+
+
+def init_dapr_components(cmd, resource_group_name, environment_name, statestore="redis", pubsub="redis"):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if statestore not in DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST:
+        raise ValidationError(
+            f"Statestore {statestore} is not supported. Supported statestores are {', '.join(DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST)}."
+        )
+    if pubsub not in DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST:
+        raise ValidationError(
+            f"Pubsub {pubsub} is not supported. Supported pubsubs are {', '.join(DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST)}."
+        )
+
+    from ._dapr_utils import DaprUtils
+
+    statestore_metadata = {"actorStateStore": "true"}
+    statestore_service_id, statestore_component_id = DaprUtils.create_dapr_component_with_service(
+        cmd, "state", statestore, resource_group_name, environment_name, component_metadata=statestore_metadata)
+
+    if statestore == pubsub:
+        # For cases where statestore and pubsub are the same, we don't need to create another service.
+        # E.g. Redis can be used for both statestore and pubsub.
+        pubsub_service_id, pubsub_component_id = DaprUtils.create_dapr_component_with_service(
+            cmd, "pubsub", pubsub, resource_group_name, environment_name, service_id=statestore_service_id)
+    else:
+        pubsub_service_id, pubsub_component_id = DaprUtils.create_dapr_component_with_service(
+            cmd, "pubsub", pubsub, resource_group_name, environment_name)
+
+    return {
+        "message": "Operation successful.",
+        "resources": {
+            # Remove duplicates for services like Redis, which can be used for both statestore and pubsub
+            "devServices": list(set([statestore_service_id, pubsub_service_id])),
+            "daprComponents": [statestore_component_id, pubsub_component_id]
+        }
+    }
+
+def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    managed_env_def = None
+
+    try:
+        managed_env_def = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not managed_env_def:
+        raise ResourceNotFoundError("The containerapp env '{}' does not exist".format(name))
+
+    assign_system_identity = system_assigned
+    if not user_assigned:
+        user_assigned = []
+    assign_user_identities = [x.lower() for x in user_assigned]
+    if assign_user_identities:
+        assign_id_size = len(assign_user_identities)
+
+        # Remove duplicate identities that are passed and notify
+        assign_user_identities = list(set(assign_user_identities))
+        if assign_id_size != len(assign_user_identities):
+            logger.warning("At least one identity was passed twice.")
+
+    is_system_identity_changed = assign_system_identity
+    to_add_user_assigned_identity = []
+
+    # If identity not returned
+    try:
+        managed_env_def["identity"]
+        managed_env_def["identity"]["type"]
+    except:
+        managed_env_def["identity"] = {}
+        managed_env_def["identity"]["type"] = "None"
+    payload = {"identity": {"type": managed_env_def["identity"]["type"]}}
+
+    # check system identity is already assigned
+    if assign_system_identity and managed_env_def["identity"]["type"].__contains__("SystemAssigned"):
+        is_system_identity_changed = False
+        logger.warning("System identity is already assigned to containerapp environment")
+
+    # check user identity is already assigned
+    if assign_user_identities:
+        if "userAssignedIdentities" not in managed_env_def["identity"]:
+            managed_env_def["identity"]["userAssignedIdentities"] = {}
+
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        for r in assign_user_identities:
+            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r).replace("resourceGroup", "resourcegroup")
+            isExisting = False
+
+            for old_user_identity in managed_env_def["identity"]["userAssignedIdentities"]:
+                if old_user_identity.lower() == r.lower():
+                    isExisting = True
+                    logger.warning("User identity %s is already assigned to containerapp environment", old_user_identity)
+                    break
+
+            if not isExisting:
+                to_add_user_assigned_identity.append(r)
+
+    # no changes to containerapp environment
+    if (not is_system_identity_changed) and (not to_add_user_assigned_identity):
+        logger.warning("No managed identities changes to containerapp environment", old_user_identity)
+        return managed_env_def
+
+    if to_add_user_assigned_identity:
+        payload["identity"]["userAssignedIdentities"] = {k: {} for k in to_add_user_assigned_identity}
+
+    # Assign correct type
+    try:
+        if managed_env_def["identity"]["type"] != "None":
+            payload["identity"]["type"] = managed_env_def["identity"]["type"]
+            if managed_env_def["identity"]["type"] == "SystemAssigned" and assign_user_identities:
+                payload["identity"]["type"] = "SystemAssigned,UserAssigned"
+            if managed_env_def["identity"]["type"] == "UserAssigned" and assign_system_identity:
+                payload["identity"]["type"] = "SystemAssigned,UserAssigned"
+            
+        else:
+            if assign_system_identity and assign_user_identities:
+                payload["identity"]["type"] = "SystemAssigned,UserAssigned"
+            elif assign_system_identity:
+                payload["identity"]["type"] = "SystemAssigned"
+            elif assign_user_identities:
+                payload["identity"]["type"] = "UserAssigned"
+    except:
+        # Always returns "type": "None" when CA has no previous identities
+        pass
+
+    try:
+        r = ManagedEnvironmentPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=payload, no_wait=no_wait)
+        return r["identity"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    remove_system_identity = system_assigned
+    remove_user_identities = user_assigned
+
+    if user_assigned:
+        remove_id_size = len(remove_user_identities)
+
+        # Remove duplicate identities that are passed and notify
+        remove_user_identities = list(set(remove_user_identities))
+        if remove_id_size != len(remove_user_identities):
+            logger.warning("At least one identity was passed twice.")
+
+    managed_env_def = None
+    # Get containerapp env properties of CA we are updating
+    try:
+        managed_env_def = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not managed_env_def:
+        raise ResourceNotFoundError("The containerapp env '{}' does not exist".format(name))
+
+    
+    # If identity not returned
+    try:
+        managed_env_def["identity"]
+        managed_env_def["identity"]["type"]
+    except:
+        managed_env_def["identity"] = {}
+        managed_env_def["identity"]["type"] = "None"
+    payload = {"identity": {"type": managed_env_def["identity"]["type"]}}
+
+    if managed_env_def["identity"]["type"] == "None":
+        raise InvalidArgumentValueError("The containerapp env {} has no system or user assigned identities.".format(name))
+
+    if remove_system_identity:
+        if managed_env_def["identity"]["type"] == "UserAssigned":
+            raise InvalidArgumentValueError("The containerapp job {} has no system assigned identities.".format(name))
+        payload["identity"]["type"] = ("None" if payload["identity"]["type"] == "SystemAssigned" else "UserAssigned")
+
+    #  Remove all user identities
+    if isinstance(user_assigned, list) and not user_assigned:
+        logger.warning("remvoe all user identities.")
+        payload["identity"]["type"] = ("None" if payload["identity"]["type"] == "UserAssigned" else "SystemAssigned")
+        remove_user_identities = []
+
+    if remove_user_identities:
+        payload["identity"]["userAssignedIdentities"] = {}
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        try:
+            managed_env_def["identity"]["userAssignedIdentities"]
+        except:
+            managed_env_def["identity"]["userAssignedIdentities"] = {}
+        for remove_id in remove_user_identities:
+            given_id = remove_id
+            remove_id = _ensure_identity_resource_id(subscription_id, resource_group_name, remove_id)
+            wasRemoved = False
+
+            for old_user_identity in managed_env_def["identity"]["userAssignedIdentities"]:
+                if old_user_identity.lower() == remove_id.lower():
+                    payload["identity"]["userAssignedIdentities"][old_user_identity] = None
+                    wasRemoved = True
+                    break
+
+            if not wasRemoved:
+                raise InvalidArgumentValueError("The containerapp job does not have specified user identity '{}' assigned, so it cannot be removed.".format(given_id))
+
+        # all user identities are removed
+        if len(managed_env_def["identity"]["userAssignedIdentities"]) == len(payload["identity"]["userAssignedIdentities"]):
+            payload["identity"].pop("userAssignedIdentities", None)
+            payload["identity"]["type"] = ("None" if payload["identity"]["type"] == "UserAssigned" else "SystemAssigned")
+        else:
+            payload["identity"]["type"] = ("UserAssigned" if payload["identity"]["type"] == "UserAssigned" else "SystemAssigned,UserAssigned")
+    try:
+        r = ManagedEnvironmentPreviewClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=payload, no_wait=no_wait)
+    except Exception as e:
+        handle_raw_exception(e)
+    
+    try:
+        return r["identity"]
+    except:
+        r["identity"] = {}
+        r["identity"]["type"] = "None"
+        return r["identity"]
+
+def show_env_managed_identity(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        r = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    try:
+        return r["identity"]
+    except:
+        r["identity"] = {}
+        r["identity"]["type"] = "None"
+        return r["identity"]

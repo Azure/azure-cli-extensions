@@ -1,6 +1,19 @@
 
 Release History
 ===============
+
+1.0.0b1
+++++++
+Fix bug in win-run-driver.ps1 default values for invoking run command through az vm repair run.
+
+0.5.9
+++++++
+Adding default values in win-run-driver.ps1 script for repo_fork and branch_name.
+
+0.5.8
+++++++
+Fix az vm repair run --preview parameter to take in fork and branch name of User's repository.
+
 0.5.7
 ++++++
 Remove VM-repair SUSE image check

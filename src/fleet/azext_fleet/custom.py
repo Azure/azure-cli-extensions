@@ -14,6 +14,10 @@ from azure.cli.core.util import sdk_no_wait
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
+from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
+from azext_fleet.constants import UPGRADE_TYPE_FULL
+from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
+from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 
 
 # pylint: disable=too-many-locals
@@ -33,7 +37,6 @@ def create_fleet(cmd,
                  enable_managed_identity=False,
                  assign_identity=None,
                  no_wait=False):
-
     fleet_model = cmd.get_models(
         "Fleet",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -208,8 +211,28 @@ def get_credentials(cmd,  # pylint: disable=unused-argument
             encoding='UTF-8')
         print_or_merge_credentials(
             path, kubeconfig, overwrite_existing, context_name)
-    except (IndexError, ValueError):
-        raise CLIError("Fail to find kubeconfig file.")
+    except (IndexError, ValueError) as exc:
+        raise CLIError("Fail to find kubeconfig file.") from exc
+
+
+def reconcile_fleet(cmd,  # pylint: disable=unused-argument
+                    client,
+                    resource_group_name,
+                    name,
+                    no_wait=False):
+
+    poll_interval = 5
+    fleet = client.get(resource_group_name, name)
+    if fleet.hub_profile is not None:
+        poll_interval = 30
+
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name,
+                       name,
+                       fleet,
+                       if_match=fleet.e_tag,
+                       polling_interval=poll_interval)
 
 
 def create_fleet_member(cmd,
@@ -269,6 +292,23 @@ def delete_fleet_member(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
 
 
+def reconcile_fleet_member(cmd,  # pylint: disable=unused-argument
+                           client,
+                           resource_group_name,
+                           name,
+                           fleet_name,
+                           no_wait=False):
+
+    member = client.get(resource_group_name, fleet_name, name)
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
+                       resource_group_name,
+                       fleet_name,
+                       name,
+                       member,
+                       if_match=member.e_tag)
+
+
 def create_update_run(cmd,
                       client,
                       resource_group_name,
@@ -280,10 +320,17 @@ def create_update_run(cmd,
                       stages=None,
                       update_strategy_name=None,
                       no_wait=False):
-    if upgrade_type == "Full" and kubernetes_version is None:
-        raise CLIError("Please set kubernetes version when upgrade type is 'Full'.")
-    if upgrade_type == "NodeImageOnly" and kubernetes_version is not None:
-        raise CLIError("Cannot set kubernetes version when upgrade type is 'NodeImageOnly'.")
+
+    if upgrade_type in UPGRADE_TYPE_ERROR_MESSAGES:
+        if (
+            ((upgrade_type in (UPGRADE_TYPE_FULL, UPGRADE_TYPE_CONTROLPLANEONLY)) and kubernetes_version is None) or  # pylint: disable=line-too-long
+            (upgrade_type == UPGRADE_TYPE_NODEIMAGEONLY and kubernetes_version is not None)
+        ):
+            raise CLIError(UPGRADE_TYPE_ERROR_MESSAGES[upgrade_type])
+    else:
+        raise CLIError((f"The upgrade type parameter '{upgrade_type}' is not valid."
+                        f"Valid options are: '{UPGRADE_TYPE_FULL}', '{UPGRADE_TYPE_CONTROLPLANEONLY}', or '{UPGRADE_TYPE_NODEIMAGEONLY}'"))  # pylint: disable=line-too-long
+
     if stages is not None and update_strategy_name is not None:
         raise CLIError("Cannot set stages when update strategy name is set.")
 
@@ -333,14 +380,9 @@ def create_update_run(cmd,
         strategy=update_run_strategy,
         managed_cluster_update=managed_cluster_update)
 
-    result = None
-    try:
-        result = sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
-        print("After successfully creating the run, you need to use the following command to start the run:"
-              f"az fleet updaterun start --resource-group={resource_group_name} --fleet={fleet_name} --name={name}")
-    except Exception as e:
-        return e
-
+    result = sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
+    print("After successfully creating the run, you need to use the following command to start the run:"
+          f"az fleet updaterun start --resource-group={resource_group_name} --fleet={fleet_name} --name={name}")
     return result
 
 
@@ -390,7 +432,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
 
-    with open(stages, 'r') as fp:
+    with open(stages, 'r', encoding='utf-8') as fp:
         data = json.load(fp)
         fp.close()
 

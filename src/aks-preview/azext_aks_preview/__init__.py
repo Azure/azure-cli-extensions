@@ -16,7 +16,7 @@ def register_aks_preview_resource_type():
     register_resource_type(
         "latest",
         CUSTOM_MGMT_AKS_PREVIEW,
-        SDKProfile("2023-09-02-preview", {"container_services": "2017-07-01"}),
+        SDKProfile("2024-01-02-preview", {"container_services": "2017-07-01"}),
     )
 
 
@@ -27,23 +27,20 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
         register_aks_preview_resource_type()
 
         acs_custom = CliCommandType(operations_tmpl='azext_aks_preview.custom#{}')
-        super(ContainerServiceCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                             custom_command_type=acs_custom,
-                                                             resource_type=CUSTOM_MGMT_AKS_PREVIEW)
+        super().__init__(
+            cli_ctx=cli_ctx,
+            custom_command_type=acs_custom,
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        )
 
     def load_command_table(self, args):
-        super(ContainerServiceCommandsLoader, self).load_command_table(args)
+        super().load_command_table(args)
         from azext_aks_preview.commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from sys import version_info
-        if version_info[0] < 3:
-            super(ContainerServiceCommandsLoader, self).load_arguments(command)
-        else:
-            super().load_arguments(command)
-
+        super().load_arguments(command)
         from azext_aks_preview._params import load_arguments
         load_arguments(self, command)
 

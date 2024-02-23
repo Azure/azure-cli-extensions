@@ -60,3 +60,20 @@ Release History
 ++++++
 * Promoted extension to GA.
 * Added `az fleet create` preview parameter `vm-size` for Hubful fleets.
+
+1.0.1
+++++++
+* Updated help examples.
+* Fixed serialization bug.
+
+1.0.2
+++++++
+* Minor style & linting updates to codebase.
+
+1.0.3
+++++++
+* Added `az fleet reconcile` & `az fleet member reconcile` commands.
+
+1.0.4
+++++++
+* Added new --upgrade-type parameter "ControlPlaneOnly" for command `az fleet updaterun create --upgrade-type`.

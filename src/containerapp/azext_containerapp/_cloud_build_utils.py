@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, too-many-locals, missing-timeout, too-many-statements, consider-using-with
+# pylint: disable=line-too-long, too-many-locals, missing-timeout, too-many-statements, consider-using-with, too-many-branches
 
 from threading import Thread
 import os
@@ -21,7 +21,8 @@ from ._clients import BuilderClient, BuildClient
 
 from ._utils import (
     log_in_file,
-    remove_ansi_characters
+    remove_ansi_characters,
+    parse_build_env_vars
 )
 
 
@@ -29,12 +30,9 @@ class CloudBuildError(Exception):
     pass
 
 
-def run_cloud_build(cmd, source, location, resource_group_name, environment_name, run_full_id, logs_file, logs_file_path):
+def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, environment_name, run_full_id, logs_file, logs_file_path):
     generated_build_name = f"build{run_full_id}"[:12]
     log_in_file(f"Starting the Cloud Build for build of id '{generated_build_name}'\n", logs_file, no_print=True)
-
-    if not os.path.exists(source):
-        raise ValidationError(f"Impossible to find the directory or file corresponding to {source}. Please make sure that this path exists.")
 
     try:
         done_spinner = False
@@ -61,7 +59,7 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
                     loop_counter = (loop_counter + 1) % 17
                     loading_bar_left_spaces_count = loop_counter - 9 if loop_counter > 9 else 0
                     loading_bar_right_spaces_count = 6 - loop_counter if loop_counter < 7 else 0
-                    spinner = f"[{' ' * loading_bar_left_spaces_count}{'=' * (7 - loading_bar_left_spaces_count - loading_bar_right_spaces_count)}{' ' * loading_bar_right_spaces_count}]"
+                    spinner = f"|{' ' * loading_bar_left_spaces_count}{'=' * (7 - loading_bar_left_spaces_count - loading_bar_right_spaces_count)}{' ' * loading_bar_right_spaces_count}|"
                     time_elapsed = time.time() - start_time
                     print(f"\r    {spinner} {task_title} ({time_elapsed:.1f}s)", end="", flush=True)
                     time.sleep(0.15)
@@ -113,7 +111,8 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         # Build creation
         done_spinner = False
         thread = display_spinner("Starting the Container Apps Cloud Build agent")
-        build_create_json_content = BuildClient.create(cmd, builder_name, generated_build_name, resource_group_name, location, True)
+        build_env_vars = parse_build_env_vars(build_env_vars)
+        build_create_json_content = BuildClient.create(cmd, builder_name, generated_build_name, resource_group_name, location, build_env_vars, True)
         build_name = build_create_json_content["name"]
         upload_endpoint = build_create_json_content["properties"]["uploadEndpoint"]
         log_streaming_endpoint = build_create_json_content["properties"]["logStreamEndpoint"]
@@ -130,28 +129,34 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         thread.join()
 
         # Source code compression
-        done_spinner = False
-        thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
-        tar_file_path = os.path.join(tempfile.gettempdir(), f"{build_name}.tar.gz")
-        archive_source_code(tar_file_path, source)
-        done_spinner = True
-        thread.join()
+        data_file_path = source
+        source_is_folder = os.path.isdir(source)
+        if source_is_folder:
+            done_spinner = False
+            thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
+            data_file_path = os.path.join(tempfile.gettempdir(), f"{build_name}.tar.gz")
+            archive_source_code(data_file_path, source)
+            done_spinner = True
+            thread.join()
 
         # File upload
         done_spinner = False
-        thread = display_spinner("Uploading compressed data")
+        thread = display_spinner("Uploading data")
         headers = {'Authorization': 'Bearer ' + token}
         try:
-            tar_file = open(tar_file_path, "rb")
-            files = [("file", ("build_data.tar.gz", tar_file, "application/x-tar"))]
+            data_file = open(data_file_path, "rb")
+            file_name = os.path.basename(data_file_path)
+            files = [("file", (file_name, data_file))]
             response_file_upload = requests.post(
                 upload_endpoint,
                 files=files,
                 headers=headers)
         finally:
-            # Close and delete the file now that it was uploaded.
-            tar_file.close()
-            os.unlink(tar_file_path)
+            # Close the file now that it was uploaded.
+            data_file.close()
+            # if customer uploaded source file is a folder, delete the temp compressed file
+            if source_is_folder:
+                os.unlink(data_file_path)
         if not response_file_upload.ok:
             raise ValidationError(f"Error when uploading the file, request exited with {response_file_upload.status_code}")
         done_spinner = True
@@ -177,12 +182,35 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         done_spinner = False
         thread = display_spinner("Streaming Cloud Build logs")
         headers = {'Authorization': 'Bearer ' + token}
-        response_log_streaming = requests.get(
-            log_streaming_endpoint,
-            headers=headers,
-            stream=True)
-        if not response_log_streaming.ok:
-            raise ValidationError(f"Error when streaming the logs, request exited with {response_log_streaming.status_code}")
+        logs_stream_retries = 0
+        maximum_logs_stream_retries = 5
+        while logs_stream_retries < maximum_logs_stream_retries:
+            logs_stream_retries += 1
+            response_log_streaming = requests.get(
+                log_streaming_endpoint,
+                headers=headers,
+                stream=True)
+            if not response_log_streaming.ok:
+                raise ValidationError(f"Error when streaming the logs, request exited with {response_log_streaming.status_code}")
+            # Actually validate that we logs streams successfully
+            response_log_streaming_lines = response_log_streaming.iter_lines()
+            count_lines_check = 2
+            for line in response_log_streaming_lines:
+                log_line = remove_ansi_characters(line.decode("utf-8"))
+                log_in_file(log_line, logs_file, no_print=True)
+                if "Kubernetes error happened" in log_line:
+                    if logs_stream_retries >= maximum_logs_stream_retries:
+                        # We're getting an error when streaming logs and no retries remaining.
+                        raise CloudBuildError(log_line)
+                    # Wait for a bit, and then break to try again. Using "logs_stream_retries" as the number of seconds to wait is a primitive exponential retry.
+                    time.sleep(logs_stream_retries)
+                    break
+                count_lines_check -= 1
+                if count_lines_check <= 0:
+                    break
+            if count_lines_check <= 0:
+                # We checked the set number of lines and logs stream without error. Let's continue.
+                break
         done_spinner = True
         thread.join()
 
@@ -191,10 +219,10 @@ def run_cloud_build(cmd, source, location, resource_group_name, environment_name
         thread = display_spinner("Buildpack: Initializing")
         log_execution_phase_pattern = r"===== (.*) =====$"
         current_phase_logs = ""
-        for line in response_log_streaming.iter_lines():
+        for line in response_log_streaming_lines:
             log_line = remove_ansi_characters(line.decode("utf-8"))
             current_phase_logs += f"{log_line}\n{substatus_indentation}"
-            if "ERROR:" in log_line or "Kubernetes error happened" in log_line:
+            if "----- Cloud Build failed with exit code" in log_line or "Exiting with failure status due to previous errors" in log_line:
                 raise CloudBuildError(current_phase_logs)
 
             log_execution_phase_match = re.search(log_execution_phase_pattern, log_line)

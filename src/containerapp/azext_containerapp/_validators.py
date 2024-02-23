@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 
 
 # called directly from custom method bc otherwise it disrupts the --environment auto RID functionality
-def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait, source=None, repo=None, yaml=None, environment_type=None):
+def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait, source=None, artifact=None, repo=None, yaml=None, environment_type=None):
     if source and repo:
         raise MutuallyExclusiveArgumentError("Usage error: --source and --repo cannot be used together. Can either deploy from a local directory or a GitHub repository")
     if (source or repo) and yaml:
@@ -92,6 +92,49 @@ def validate_env_name_or_id(cmd, namespace):
             )
 
 
+def validate_env_name_or_id_for_up(cmd, namespace):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
+
+    if not namespace.environment:
+        return
+
+    # Set environment type
+    environment_type = None
+
+    if is_valid_resource_id(namespace.environment):
+        env_dict = parse_resource_id(namespace.environment)
+        resource_type = env_dict.get("resource_type")
+        if resource_type:
+            if CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
+                environment_type = CONNECTED_ENVIRONMENT_TYPE
+            if MANAGED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
+                environment_type = MANAGED_ENVIRONMENT_TYPE
+
+    if namespace.__dict__.get("custom_location") or namespace.__dict__.get("connected_cluster_id"):
+        environment_type = CONNECTED_ENVIRONMENT_TYPE
+
+    # Validate resource id / format resource id
+    if environment_type == CONNECTED_ENVIRONMENT_TYPE:
+        if not is_valid_resource_id(namespace.environment):
+            namespace.environment = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace=CONTAINER_APPS_RP,
+                type=CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
+                name=namespace.environment
+            )
+    elif environment_type == MANAGED_ENVIRONMENT_TYPE:
+        if not is_valid_resource_id(namespace.environment):
+            namespace.environment = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace=CONTAINER_APPS_RP,
+                type=MANAGED_ENVIRONMENT_RESOURCE_TYPE,
+                name=namespace.environment
+            )
+
+
 def validate_custom_location_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
     from msrestazure.tools import is_valid_resource_id, resource_id
@@ -107,3 +150,22 @@ def validate_custom_location_name_or_id(cmd, namespace):
             type=CUSTOM_LOCATION_RESOURCE_TYPE,
             name=namespace.custom_location
         )
+
+
+def validate_build_env_vars(cmd, namespace):
+    env_list = namespace.build_env_vars
+
+    if not env_list:
+        return
+
+    env_pairs = {}
+
+    for pair in env_list:
+        key_val = pair.split('=', 1)
+        if len(key_val) <= 1:
+            raise ValidationError("Build environment variables must be in the format \"<key>=<value>\".")
+        if key_val[0] in env_pairs:
+            raise ValidationError(
+                "Duplicate build environment variable {env} found, environment variable names must be unique.".format(
+                    env=key_val[0]))
+        env_pairs[key_val[0]] = key_val[1]

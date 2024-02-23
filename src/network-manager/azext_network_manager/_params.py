@@ -42,8 +42,8 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='A description of the network manager.')
         c.argument('network_manager_scopes', action=AddNetworkManagerScopes, nargs='+', help='Scope of Network '
                    'Manager.')
-        c.argument('network_manager_scope_accesses', options_list=['--scope-accesses'], nargs='+', help='Scope Access. Available value: SecurityAdmin, '
-                   'Connectivity.')
+        c.argument('network_manager_scope_accesses', options_list=['--scope-accesses'], nargs='+',
+                   help='Scope Access. Available value: SecurityAdmin, Connectivity.')
 
     with self.argument_context('network manager update') as c:
         c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
@@ -54,8 +54,8 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='A description of the network manager.')
         c.argument('network_manager_scopes', action=AddNetworkManagerScopes, nargs='+', help='Scope of Network '
                    'Manager.')
-        c.argument('network_manager_scope_accesses', options_list=['--scope-accesses'], nargs='+', help='Scope Access. Available value: SecurityAdmin, '
-                   'Connectivity.')
+        c.argument('network_manager_scope_accesses', options_list=['--scope-accesses'], nargs='+',
+                   help='Scope Access. Available value: SecurityAdmin, Connectivity.')
         c.ignore('parameters')
 
     with self.argument_context('network manager connect-config create') as c:
@@ -117,33 +117,41 @@ def load_arguments(self, _):
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
     with self.argument_context('network manager security-admin-config rule-collection rule create') as c:
-        c.argument('access', type=str, help='Indicates the access allowed for this particular rule.', arg_type=get_enum_type(['Allow', 'Deny', 'AlwaysAllow']))
+        c.argument('access', type=str, help='Indicates the access allowed for this particular rule.',
+                   arg_type=get_enum_type(['Allow', 'Deny', 'AlwaysAllow']))
         c.argument('flag', type=str, help='Default rule flag.')
-        c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
+        c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.',
+                   arg_type=get_enum_type(['Custom', 'Default']))
         c.argument('priority', type=int, help='The priority of the rule.')
-        c.argument('sources', action=AddSource, nargs='+', help='The CIDR or source IP ranges. Address prefix type is an enum with values IPPrefix or ServiceTag')
+        c.argument('sources', action=AddSource, nargs='+', help='The CIDR or source IP ranges. Address prefix type is'
+                                                                ' an enum with values IPPrefix or ServiceTag')
         c.argument('destinations', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
                    'destination IP ranges. Address prefix type is an enum with values IPPrefix or ServiceTag')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
                    'protocol this rule applies to.')
         c.argument('source_port_ranges', nargs='+', help='The source port ranges.')
-        c.argument('destination_port_ranges', options_list=['--dest-port-ranges'], nargs='+', help='The destination port ranges.')
+        c.argument('destination_port_ranges', options_list=['--dest-port-ranges'], nargs='+',
+                   help='The destination port ranges.')
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')
 
     with self.argument_context('network manager security-admin-config rule-collection rule update') as c:
-        c.argument('access', type=str, help='Indicates the access allowed for this particular rule.', arg_type=get_enum_type(['Allow', 'Deny', 'AlwaysAllow']))
+        c.argument('access', type=str, help='Indicates the access allowed for this particular rule.',
+                   arg_type=get_enum_type(['Allow', 'Deny', 'AlwaysAllow']))
         c.argument('flag', type=str, help='Default rule flag.')
-        c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
+        c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.',
+                   arg_type=get_enum_type(['Custom', 'Default']))
         c.argument('priority', type=int, help='The priority of the rule.')
-        c.argument('sources', action=AddSource, nargs='+', help='The CIDR or source IP ranges. Address prefix type is an enum with values IPPrefix or ServiceTag')
+        c.argument('sources', action=AddSource, nargs='+', help='The CIDR or source IP ranges. Address prefix type is '
+                                                                'an enum with values IPPrefix or ServiceTag')
         c.argument('destinations', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
                    'destination IP ranges. Address prefix type is an enum with values IPPrefix or ServiceTag')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
                    'protocol this rule applies to.')
         c.argument('source_port_ranges', nargs='+', help='The source port ranges.')
-        c.argument('destination_port_ranges', options_list=['--dest-port-ranges'], nargs='+', help='The destination port ranges.')
+        c.argument('destination_port_ranges', options_list=['--dest-port-ranges'], nargs='+',
+                   help='The destination port ranges.')
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')

@@ -31,7 +31,8 @@ from ._transformers import (transform_spring_table_output,
                             transform_support_server_versions_output)
 from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
-from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal, validate_customized_accelerator, validate_central_build_instance)
+from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal, validate_customized_accelerator)
+from .managed_components.validators_managed_component import (validate_component_logs, validate_component_list, validate_instance_list)
 from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
                                               validate_app_identity_assign_or_warning)
 
@@ -115,6 +116,11 @@ def load_command_table(self, _):
 
     application_accelerator_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.application_accelerator#{}',
+        client_factory=cf_spring
+    )
+
+    managed_component_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring.managed_components.managed_component_operations#{}',
         client_factory=cf_spring
     )
 
@@ -458,6 +464,17 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'update_build_service', supports_no_wait=True)
         g.custom_show_command('show', 'build_service_show')
+
+    with self.command_group('spring component',
+                            custom_command_type=managed_component_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('logs', 'managed_component_logs', validator=validate_component_logs)
+        g.custom_command('list', 'managed_component_list', validator=validate_component_list)
+
+    with self.command_group('spring component instance',
+                            custom_command_type=managed_component_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('list', 'managed_component_instance_list', validator=validate_instance_list)
 
     with self.command_group('spring', exception_handler=handle_asc_exception):
         pass

@@ -4,9 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from .vendored_sdks.appplatform.v2023_09_01_preview import models
+from .vendored_sdks.appplatform.v2024_01_01_preview import models
 from azure.cli.core.util import sdk_no_wait
 from ._utils import get_portal_uri
+from .custom import try_create_application_insights
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -112,7 +113,7 @@ def _get_connection_string(cmd, resource_group, service_name, location, app_insi
 def _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location):
 
     try:
-        created_app_insights = _try_create_application_insights(cmd, resource_group, service_name, location)
+        created_app_insights = try_create_application_insights(cmd, resource_group, service_name, location)
         if created_app_insights:
             return created_app_insights.connection_string
     except Exception:  # pylint: disable=broad-except
@@ -155,36 +156,3 @@ def _get_app_insights_connection_string(cli_ctx, resource_group, name):
         raise ResourceNotFoundError("App Insights {} under resource group {} was not found.".format(name, resource_group))
 
     return appinsights.connection_string
-
-
-def _try_create_application_insights(cmd, resource_group, name, location):
-    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Apps. ' \
-                           'Please use the Azure Portal to manually create and configure the Application Insights, ' \
-                           'if needed.'
-
-    ai_resource_group_name = resource_group
-    ai_name = name
-    ai_location = location
-    ai_properties = {
-        "name": ai_name,
-        "location": ai_location,
-        "kind": "web",
-        "properties": {
-            "Application_Type": "web"
-        }
-    }
-
-    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient)
-    appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
-
-    if not appinsights or not appinsights.connection_string:
-        logger.warning(creation_failed_warn)
-        return None
-
-    portal_url = get_portal_uri(cmd.cli_ctx)
-    # We make this success message as a warning to no interfere with regular JSON output in stdout
-    logger.warning('Application Insights \"%s\" was created for this Azure Spring Apps. '
-                   'You can visit %s/#resource%s/overview to view your '
-                   'Application Insights component', appinsights.name, portal_url, appinsights.id)
-
-    return appinsights

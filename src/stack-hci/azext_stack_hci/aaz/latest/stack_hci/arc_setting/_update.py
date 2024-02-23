@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/arcsettings/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/arcsettings/{}", "2023-08-01"],
         ]
     }
 
@@ -77,6 +77,27 @@ class Update(AAZCommand):
             options=["enabled"],
             help="True indicates ARC connectivity is enabled",
             nullable=True,
+        )
+        connectivity_properties.service_configurations = AAZListArg(
+            options=["service-configurations"],
+            help="Service configurations associated with the connectivity resource. They are only processed by the server if 'enabled' property is set to 'true'.",
+            nullable=True,
+        )
+
+        service_configurations = cls._args_schema.connectivity_properties.service_configurations
+        service_configurations.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.connectivity_properties.service_configurations.Element
+        _element.port = AAZIntArg(
+            options=["port"],
+            help="The port on which service is enabled.",
+        )
+        _element.service_name = AAZStrArg(
+            options=["service-name"],
+            help="Name of the service.",
+            enum={"WAC": "WAC"},
         )
         return cls._args_schema
 
@@ -162,7 +183,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-08-01",
                     required=True,
                 ),
             }
@@ -249,7 +270,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-08-01",
                     required=True,
                 ),
             }
@@ -316,6 +337,16 @@ class Update(AAZCommand):
             connectivity_properties = _builder.get(".properties.connectivityProperties")
             if connectivity_properties is not None:
                 connectivity_properties.set_prop("enabled", AAZBoolType, ".enabled")
+                connectivity_properties.set_prop("serviceConfigurations", AAZListType, ".service_configurations")
+
+            service_configurations = _builder.get(".properties.connectivityProperties.serviceConfigurations")
+            if service_configurations is not None:
+                service_configurations.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.connectivityProperties.serviceConfigurations[]")
+            if _elements is not None:
+                _elements.set_prop("port", AAZIntType, ".port", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("serviceName", AAZStrType, ".service_name", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
@@ -401,6 +432,21 @@ class _UpdateHelper:
 
         connectivity_properties = _schema_arc_setting_read.properties.connectivity_properties
         connectivity_properties.enabled = AAZBoolType()
+        connectivity_properties.service_configurations = AAZListType(
+            serialized_name="serviceConfigurations",
+        )
+
+        service_configurations = _schema_arc_setting_read.properties.connectivity_properties.service_configurations
+        service_configurations.Element = AAZObjectType()
+
+        _element = _schema_arc_setting_read.properties.connectivity_properties.service_configurations.Element
+        _element.port = AAZIntType(
+            flags={"required": True},
+        )
+        _element.service_name = AAZStrType(
+            serialized_name="serviceName",
+            flags={"required": True},
+        )
 
         default_extensions = _schema_arc_setting_read.properties.default_extensions
         default_extensions.Element = AAZObjectType()

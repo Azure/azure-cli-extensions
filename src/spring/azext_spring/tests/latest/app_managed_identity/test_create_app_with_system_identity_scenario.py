@@ -5,7 +5,7 @@
 
 
 from azure.cli.testsdk import (ScenarioTest, record_only)
-from ....vendored_sdks.appplatform.v2023_09_01_preview.models import ManagedIdentityType
+from ....vendored_sdks.appplatform.v2024_01_01_preview.models import ManagedIdentityType
 
 
 @record_only()
@@ -24,7 +24,6 @@ class CreateAppWithSystemIdentity(ScenarioTest):
             self.exists('identity.tenantId'),
             self.check('identity.userAssignedIdentities', None)
         ])
-
 
     def test_create_app_with_system_assigned(self):
         self.kwargs.update({

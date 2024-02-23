@@ -203,7 +203,6 @@ class List(AAZCommand):
             )
             properties.network_to_network_interconnect_id = AAZStrType(
                 serialized_name="networkToNetworkInterconnectId",
-                flags={"read_only": True},
             )
             properties.option_a_properties = AAZObjectType(
                 serialized_name="optionAProperties",
@@ -260,12 +259,14 @@ class List(AAZCommand):
             )
             option_a_properties.primary_ipv6_prefix = AAZStrType(
                 serialized_name="primaryIpv6Prefix",
+                nullable=True,
             )
             option_a_properties.secondary_ipv4_prefix = AAZStrType(
                 serialized_name="secondaryIpv4Prefix",
             )
             option_a_properties.secondary_ipv6_prefix = AAZStrType(
                 serialized_name="secondaryIpv6Prefix",
+                nullable=True,
             )
             option_a_properties.vlan_id = AAZIntType(
                 serialized_name="vlanId",

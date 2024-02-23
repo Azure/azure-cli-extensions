@@ -26,7 +26,7 @@ logger = get_logger(__name__)
 
 
 def get_load_test_resource_endpoint(
-    cred, load_test_resource, resource_group=None, subscription_id=None
+    cli_ctx, cred, load_test_resource, resource_group=None, subscription_id=None
 ):
     if subscription_id is None:
         return None
@@ -57,7 +57,13 @@ def get_load_test_resource_endpoint(
             )
         name = load_test_resource
 
-    mgmt_client = LoadTestMgmtClient(credential=cred, subscription_id=subscription_id)
+    arm_endpoint, arm_token_scope = get_arm_endpoint_and_scope(cli_ctx)
+    mgmt_client = LoadTestMgmtClient(
+        credential=cred,
+        subscription_id=subscription_id,
+        base_url=arm_endpoint,
+        credential_scopes=arm_token_scope
+    )
     data_plane_uri = mgmt_client.load_tests.get(resource_group, name).data_plane_uri
     logger.info("Azure Load Testing data plane URI: %s", data_plane_uri)
     return data_plane_uri
@@ -78,6 +84,7 @@ def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=Non
 
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
     endpoint = get_load_test_resource_endpoint(
+        cmd.cli_ctx,
         credential,
         load_test_resource,
         resource_group=resource_group_name,
@@ -96,6 +103,7 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
 
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
     endpoint = get_load_test_resource_endpoint(
+        cmd.cli_ctx,
         credential,
         load_test_resource,
         resource_group=resource_group_name,
@@ -107,6 +115,22 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
         endpoint=endpoint,
         credential=credential,
     )
+
+
+def get_data_plane_scope(cli_ctx):
+    cloud_name = cli_ctx.cloud.name
+    if cloud_name.lower() == "azureusgovernment":
+        return ["https://cnt-prod.loadtesting.azure.us/.default"]
+
+    return ["https://cnt-prod.loadtesting.azure.com/.default"]
+
+
+def get_arm_endpoint_and_scope(cli_ctx):
+    cloud_name = cli_ctx.cloud.name
+    if cloud_name.lower() == "azureusgovernment":
+        return "https://management.usgovcloudapi.net", ["https://management.usgovcloudapi.net/.default"]
+
+    return "https://management.azure.com", ["https://management.azure.com/.default"]
 
 
 def get_enum_values(enum):
@@ -206,10 +230,8 @@ def parse_secrets(secrets):
         if not validators._validate_akv_url(value, "secrets"):
             raise InvalidArgumentValueError(f"Invalid AKV Certificate URL: {value}")
         secrets_dict[name] = {
-            name: {
-                "type": "AKV_SECRET_URI",
-                "value": value,
-            }
+            "type": "AKV_SECRET_URI",
+            "value": value,
         }
     logger.debug("Parsed secrets: %s", secrets_dict)
     logger.debug("Secrets parsed successfully")
@@ -422,7 +444,11 @@ def create_or_update_test_with_config(
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
 
+    new_body["passFailCriteria"] = {}
     for key in body.get("passFailCriteria", {}):
+        if "passFailCriteria" not in new_body:
+            new_body["passFailCriteria"] = {}
+        new_body.get("passFailCriteria", {})[key] = None
         new_body["passFailCriteria"][key] = None
     if yaml_test_body.get("passFailCriteria") is not None:
         new_body["passFailCriteria"] = yaml_test_body.get("passFailCriteria", {})

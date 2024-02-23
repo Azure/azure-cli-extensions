@@ -12,13 +12,16 @@ Network Tap Rule tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -30,12 +33,14 @@ def call_scenario1(test):
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_create(test, checks=None):
     ''' Network Tap Rule create operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --match-configurations {matchConfigurations} --dynamic-match-configurations {dynamicMatchConfigurations}', checks=checks)
+        'az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --match-configurations {matchConfigurations}', checks=checks)
+
 
 def step_show(test, checks=None):
     ''' Network Tap Rule show operation'''
@@ -44,12 +49,14 @@ def step_show(test, checks=None):
     test.cmd(
         'az networkfabric taprule show --resource-name {name} --resource-group {rg}')
 
+
 def step_list_resource_group(test, checks=None):
     ''' Network Tap Rule list by resource group operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkfabric taprule list --resource-group {rg}')
+
 
 def step_list_subscription(test, checks=None):
     ''' Network Tap Rule list by subscription operation'''
@@ -58,12 +65,6 @@ def step_list_subscription(test, checks=None):
     test.cmd(
         'az networkfabric taprule list')
 
-def step_resync(test, checks=None):
-    ''' Network Tap Rule resync operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric taprule resync --resource-group {rg} --resource-name {name}')
 
 def step_delete(test, checks=None):
     ''' Network Tap Rule delete operation'''
@@ -71,6 +72,7 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric taprule delete --resource-name {deleteName} --resource-group {rg}')
+
 
 class GA_TapRuleScenarioTest1(ScenarioTest):
     ''' Network Tap Rule Scenario test'''
@@ -85,8 +87,7 @@ class GA_TapRuleScenarioTest1(ScenarioTest):
             'pollingIntervalInSeconds': CONFIG.get('NETWORK_TAP_RULE', 'polling_interval_in_seconds'),
             'configurationType': CONFIG.get('NETWORK_TAP_RULE', 'configuration_type'),
             'tapRulesUrl': CONFIG.get('NETWORK_TAP_RULE', 'tap_rules_url'),
-            'matchConfigurations': CONFIG.get('NETWORK_TAP_RULE', 'match_configurations'),
-            'dynamicMatchConfigurations': CONFIG.get('NETWORK_TAP_RULE', 'dynamic_match_configurations')
+            'matchConfigurations': CONFIG.get('NETWORK_TAP_RULE', 'match_configurations')
         })
 
     def test_GA_taprule_scenario1(self):

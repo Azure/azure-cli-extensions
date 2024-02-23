@@ -2,12 +2,13 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import re
 import unittest
 import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2023_09_01_preview import models
+from ...vendored_sdks.appplatform.v2024_01_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment,
@@ -15,6 +16,7 @@ from ...custom import (app_set_deployment, app_unset_deployment,
                        deployment_disable_remote_debugging,
                        deployment_get_remote_debugging,
                        domain_update, domain_unbind)
+
 try:
     import unittest.mock as mock
 except ImportError:
@@ -28,6 +30,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
 
 def _get_test_cmd():
     cli_ctx = DummyCli()
@@ -147,7 +150,8 @@ class TestAppDeploy_Patch(BasicTest):
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_with_runtime_version(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), artifact_path='my-path', runtime_version='Java_8')
+        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), artifact_path='my-path',
+                      runtime_version='Java_8')
         resource = self.patch_deployment_resource
         self.assertEqual('Jar', resource.properties.source.type)
         self.assertEqual('my-relative-path', resource.properties.source.relative_path)
@@ -157,7 +161,8 @@ class TestAppDeploy_Patch(BasicTest):
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_war(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), artifact_path='my-path/test.war', runtime_version='Java_8', server_version='Tomcat_10')
+        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), artifact_path='my-path/test.war',
+                      runtime_version='Java_8', server_version='Tomcat_10')
         resource = self.patch_deployment_resource
         self.assertEqual('War', resource.properties.source.type)
         self.assertEqual('my-relative-path', resource.properties.source.relative_path)
@@ -168,7 +173,8 @@ class TestAppDeploy_Patch(BasicTest):
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_net(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), artifact_path='my-path', runtime_version='NetCore_31', main_entry='test')
+        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), artifact_path='my-path',
+                      runtime_version='NetCore_31', main_entry='test')
         resource = self.patch_deployment_resource
         self.assertEqual('NetCoreZip', resource.properties.source.type)
         self.assertEqual('my-relative-path', resource.properties.source.relative_path)
@@ -181,7 +187,8 @@ class TestAppDeploy_Patch(BasicTest):
         file_mock.return_value = mock.MagicMock()
         deployment = self._get_deployment()
         deployment.properties.source.jvm_options = 'test-options'
-        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', runtime_version='NetCore_31', main_entry='test')
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', runtime_version='NetCore_31',
+                      main_entry='test')
         resource = self.patch_deployment_resource
         self.assertEqual('NetCoreZip', resource.properties.source.type)
         self.assertEqual('my-relative-path', resource.properties.source.relative_path)
@@ -192,7 +199,7 @@ class TestAppDeploy_Patch(BasicTest):
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_continous_deploy_net(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         deployment.properties.source.type = 'NetCoreZip'
         deployment.properties.source.relative_path = 'my-path'
         deployment.properties.source.runtime_version = 'NetCore_31'
@@ -219,7 +226,7 @@ class TestAppDeploy_Patch(BasicTest):
     @mock.patch('azext_spring._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_continous_deploy_source(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         deployment.properties.source.type = 'Container'
         deployment.properties.source.relative_path = 'my-path'
         deployment.properties.source.version = '123'
@@ -255,17 +262,17 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
 
     def _get_build_resource(self):
         self.result_id = resource_id(
-            subscription = '00000000-0000-0000-0000-000000000000',
-            resource_group = 'rg',
-            name = 'asc',
-            namespace = 'Microsoft.AppPlatform',
+            subscription='00000000-0000-0000-0000-000000000000',
+            resource_group='rg',
+            name='asc',
+            namespace='Microsoft.AppPlatform',
             type='Spring',
-            child_type_1 = 'buildService',
-            child_name_1 = 'default',
-            child_type_2 = 'builds',
-            child_name_2 = 'builder',
-            child_type_3 = 'results',
-            child_name_3 = 'my-result',
+            child_type_1='buildService',
+            child_name_1='default',
+            child_type_2='builds',
+            child_name_2='builder',
+            child_type_3='results',
+            child_name_3='my-result',
         )
         resp = mock.MagicMock()
         resp.properties.triggered_build_result.id = self.result_id
@@ -276,14 +283,14 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         resp.relative_path = 'my-relative-path'
         resp.upload_url = 'https://mystorage.file.core.windows.net/root/my-relative-path?sv=2018-03-28&sr=f&sig=my-fake-pass&se=2021-12-28T06%3A43%3A17Z&sp=w'
         return resp
-    
+
     def verify_build_args(self, client, *args):
         build_args = client.build_service.create_or_update_build.call_args_list
 
         if build_args and build_args[0]:
             self.assertEqual(1, len(build_args))
             self.assertEqual(5, len(build_args[0][0]))
-            self.assertEqual(args[0:2]+('default',)+(args[2]+'-default',), build_args[0][0][0:4])
+            self.assertEqual(args[0:2] + ('default',) + (args[2] + '-default',), build_args[0][0][0:4])
             self.put_build_resource = build_args[0][0][4]
 
     def _execute(self, *args, **kwargs):
@@ -297,7 +304,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertEqual(5, len(call_args[0][0]))
         self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])
         self.patch_deployment_resource = call_args[0][0][4]
- 
+
     def _get_deployment(self):
         deployment = super()._get_deployment()
         deployment.properties.source.type = 'BuildResult'
@@ -314,21 +321,22 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        deployment=self._get_deployment()
-        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', config_file_patterns='my-pattern')
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
+                      config_file_patterns='my-pattern')
         resource = self.patch_deployment_resource
         self.assertEqual('BuildResult', resource.properties.source.type)
         self.assertEqual(self.result_id, resource.properties.source.build_result_id)
         self.assertIsNone(resource.properties.source.version)
-        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
-            resource.properties.deployment_settings.addon_configs)
+        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},
+                         resource.properties.deployment_settings.addon_configs)
 
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_build_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
-                       build_env={'BP_JVM_VERSION': '8.*'}, build_cpu='2', build_memory='4Gi')
+                      build_env={'BP_JVM_VERSION': '8.*'}, build_cpu='2', build_memory='4Gi')
         resource = self.put_build_resource
         self.assertEqual({"BP_JVM_VERSION": "8.*"}, resource.properties.env)
         self.assertEqual('2', resource.properties.resource_requests.cpu)
@@ -337,7 +345,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
     @mock.patch('azext_spring._deployment_uploadable_factory.FolderUpload.upload_and_build')
     def test_app_deploy_folder_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         self._execute('rg', 'asc', 'app', deployment=deployment, source_path='my-path')
         resource = self.patch_deployment_resource
         self.assertEqual('BuildResult', resource.properties.source.type)
@@ -353,13 +361,13 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
             self._get_result_resource(status='Building'),
             self._get_result_resource(status='Succeeded')
         ]
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path')
         resource = self.patch_deployment_resource
         self.assertEqual('BuildResult', resource.properties.source.type)
         self.assertEqual(self.result_id, resource.properties.source.build_result_id)
         self.assertIsNone(resource.properties.source.version)
-    
+
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_failed_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
@@ -369,7 +377,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
             self._get_result_resource(status='Building'),
             self._get_result_resource(status='Failed')
         ]
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         with self.assertRaisesRegexp(CLIError, 'Failed to build container image'):
             self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', client=client)
 
@@ -420,7 +428,8 @@ class TestAppDeploy_Put(BasicTest):
         deployment.properties.source.relative_path = None
         deployment.properties.source.runtime_version = None
         deployment.properties.source.version = '123'
-        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path/test.war', server_version='Tomcat_9')
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path/test.war',
+                      server_version='Tomcat_9')
         resource = self.put_deployment_resource
         self.assertEqual('War', resource.properties.source.type)
         self.assertEqual('my-relative-path', resource.properties.source.relative_path)
@@ -434,7 +443,7 @@ class TestAppDeploy_Put(BasicTest):
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_jar_from_container(self, file_mock):
         file_mock.return_value = mock.MagicMock()
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         deployment.properties.source.type = 'Container'
         deployment.properties.source.custom_container = mock.MagicMock()
         deployment.properties.source.relative_path = None
@@ -475,10 +484,10 @@ class TestAppUpdate(BasicTest):
         self.assertEqual(4, len(call_args[0][0]))
         self.assertEqual(args[0:3], call_args[0][0][0:3])
         self.patch_app_resource = call_args[0][0][3]
-    
+
     def test_app_update_without_deployment(self):
         self._execute('rg', 'asc', 'app', assign_endpoint=True)
-        
+
         self.assertIsNone(self.patch_deployment_resource)
         resource = self.patch_app_resource
         self.assertEqual(True, resource.properties.public)
@@ -486,7 +495,7 @@ class TestAppUpdate(BasicTest):
     def test_invalid_app_update_deployment_settings_without_deployment(self):
         with self.assertRaisesRegexp(CLIError, '--jvm-options cannot be set when there is no active deployment.'):
             self._execute('rg', 'asc', 'app', jvm_options='test-option')
-    
+
     def test_app_update_jvm_options(self):
         self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), jvm_options='test-option')
         resource = self.patch_deployment_resource
@@ -503,7 +512,7 @@ class TestAppUpdate(BasicTest):
 
     def test_app_disable_probes(self):
         self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), enable_liveness_probe=False,
-        enable_readiness_probe=False, enable_startup_probe=False)
+                      enable_readiness_probe=False, enable_startup_probe=False)
         resource = self.patch_deployment_resource
         self.assertEqual(True, resource.properties.deployment_settings.liveness_probe.disable_probe)
         self.assertEqual(True, resource.properties.deployment_settings.readiness_probe.disable_probe)
@@ -511,9 +520,9 @@ class TestAppUpdate(BasicTest):
 
     def test_app_enable_probe(self):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(py_path, 'files/probe.json').replace("\\","/")
+        file_path = os.path.join(py_path, 'files/probe.json').replace("\\", "/")
         self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), enable_liveness_probe=True,
-        liveness_probe_config=file_path)
+                      liveness_probe_config=file_path)
         resource = self.patch_deployment_resource
         self.assertEqual(False, resource.properties.deployment_settings.liveness_probe.disable_probe)
         self.assertEqual(30, resource.properties.deployment_settings.liveness_probe.initial_delay_seconds)
@@ -523,7 +532,7 @@ class TestAppUpdate(BasicTest):
         self.assertEqual(30, resource.properties.deployment_settings.liveness_probe.failure_threshold)
 
     def test_app_update_net_core_main_entry(self):
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         deployment.properties.source.type = 'NetCoreZip'
         deployment.properties.source.runtime_version = 'NetCore_31'
         deployment.properties.source.net_core_main_entry_path = 'main-entry'
@@ -536,24 +545,25 @@ class TestAppUpdate(BasicTest):
         self.assertEqual('test-entry', resource.properties.source.net_core_main_entry_path)
 
     def test_app_update_settings_only(self):
-        deployment=self._get_deployment()
-        self._execute('rg', 'asc', 'app', deployment=deployment, env={'key':'value'})
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, env={'key': 'value'})
         resource = self.patch_deployment_resource
         self.assertIsNone(resource.properties.source)
-        self.assertEqual({'key':'value'}, resource.properties.deployment_settings.environment_variables)
+        self.assertEqual({'key': 'value'}, resource.properties.deployment_settings.environment_variables)
 
     def test_app_update_in_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        deployment=self._get_deployment(sku='Enterprise')
-        deployment.properties.deployment_settings.addon_configs = {'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}}
+        deployment = self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.addon_configs = {
+            'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}}
         self._execute('rg', 'asc', 'app', deployment=deployment, client=client, config_file_patterns='updated-pattern')
         resource = self.patch_deployment_resource
-        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'updated-pattern'}},\
+        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'updated-pattern'}},
                          resource.properties.deployment_settings.addon_configs)
 
     def test_app_update_clear_jvm_option_in_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        deployment=self._get_deployment(sku='Enterprise')
+        deployment = self._get_deployment(sku='Enterprise')
         deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
         self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='')
         resource = self.patch_deployment_resource
@@ -561,7 +571,7 @@ class TestAppUpdate(BasicTest):
 
     def test_app_update_in_enterprise_with_new_set_env(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        deployment=self._get_deployment(sku='Enterprise')
+        deployment = self._get_deployment(sku='Enterprise')
         deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
         self._execute('rg', 'asc', 'app', deployment=deployment, client=client, env={'key': 'value'})
         resource = self.patch_deployment_resource
@@ -569,38 +579,40 @@ class TestAppUpdate(BasicTest):
 
     def test_app_update_env_and_jvm_in_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        deployment=self._get_deployment(sku='Enterprise')
+        deployment = self._get_deployment(sku='Enterprise')
         deployment.properties.deployment_settings.environment_variables = {"JAVA_OPTS": "test_options", "foo": "bar"}
-        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='another-option', env={'key': 'value'})
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, jvm_options='another-option',
+                      env={'key': 'value'})
         resource = self.patch_deployment_resource
-        self.assertEqual({'JAVA_OPTS': 'another-option', 'key': 'value'}, resource.properties.deployment_settings.environment_variables)
+        self.assertEqual({'JAVA_OPTS': 'another-option', 'key': 'value'},
+                         resource.properties.deployment_settings.environment_variables)
 
     def test_app_update_custom_container_deployment(self):
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         deployment.properties.source.type = 'Container'
         deployment.properties.source.custom_container.container_image = 'my-image'
-        self._execute('rg', 'asc', 'app', deployment=deployment, env={'key':'value'})
+        self._execute('rg', 'asc', 'app', deployment=deployment, env={'key': 'value'})
         resource = self.patch_deployment_resource
         self.assertIsNone(resource.properties.source)
-        self.assertEqual({'key':'value'}, resource.properties.deployment_settings.environment_variables)
+        self.assertEqual({'key': 'value'}, resource.properties.deployment_settings.environment_variables)
 
     def test_app_update_custom_container_deployment_with_invalid_source(self):
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         deployment.properties.source.type = 'Container'
         deployment.properties.source.custom_container.container_image = 'my-image'
-        self._execute('rg', 'asc', 'app', deployment=deployment, env={'key':'value'}, runtime_version='Java_11')
+        self._execute('rg', 'asc', 'app', deployment=deployment, env={'key': 'value'}, runtime_version='Java_11')
         resource = self.patch_deployment_resource
         self.assertIsNone(resource.properties.source)
-        self.assertEqual({'key':'value'}, resource.properties.deployment_settings.environment_variables)
+        self.assertEqual({'key': 'value'}, resource.properties.deployment_settings.environment_variables)
 
     def test_steeltoe_app_cannot_set_jvm_options(self):
-        deployment=self._get_deployment()
+        deployment = self._get_deployment()
         deployment.properties.source.type = 'NetCoreZip'
         deployment.properties.source.runtime_version = 'NetCore_31'
         deployment.properties.source.net_core_main_entry_path = 'main-entry'
         with self.assertRaisesRegexp(CLIError, '--jvm-options cannot be set when --runtime-version is NetCore_31.'):
             self._execute('rg', 'asc', 'app', jvm_options='test-option', deployment=deployment)
-    
+
     def test_vnet_public_endpoint(self):
         deployment = self._get_deployment()
 
@@ -611,11 +623,11 @@ class TestAppUpdate(BasicTest):
         self._execute('rg', 'asc', 'app', deployment=deployment)
         resource = self.patch_app_resource
         self.assertIsNone(resource.properties.vnet_addons)
-   
+
         self._execute('rg', 'asc', 'app', assign_public_endpoint=False, deployment=deployment)
         resource = self.patch_app_resource
         self.assertFalse(resource.properties.vnet_addons.public_endpoint)
-        
+
     def test_client_auth(self):
         deployment = self._get_deployment()
         self._execute('rg', 'asc', 'app', client_auth_certs=['my-cert-id'], deployment=deployment)
@@ -632,15 +644,16 @@ class TestAppUpdate(BasicTest):
         self._execute('rg', 'asc', 'app', deployment=deployment)
         resource = self.patch_app_resource
         self.assertIsNone(resource.properties.enable_end_to_end_tls)
-   
+
         self._execute('rg', 'asc', 'app', enable_ingress_to_app_tls=False, deployment=deployment)
         resource = self.patch_app_resource
-        self.assertFalse(resource.properties.enable_end_to_end_tls)    
+        self.assertFalse(resource.properties.enable_end_to_end_tls)
 
     def test_update_workload_profile(self):
         self._execute('rg', 'asc', 'app', workload_profile='w2')
         resource = self.patch_app_resource
         self.assertEqual('w2', resource.properties.workload_profile_name)
+
 
 class TestAppCreate(BasicTest):
     def __init__(self, methodName: str = ...):
@@ -697,22 +710,37 @@ class TestAppCreate(BasicTest):
 
     def test_app_with_large_instance_count_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        with self.assertRaisesRegexp(CLIError, 'Invalid --instance-count, should be in range \[1, 1000\]'):
+        with self.assertRaisesRegexp(CLIError, f'Invalid --instance-count, should be in range {re.escape("[")}1, 1000{re.escape("]")}'):
             self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1001, client=client)
 
     def test_app_with_large_instance_count(self):
-        with self.assertRaisesRegexp(CLIError, 'Invalid --instance-count, should be in range \[1, 500\]'):
+        with self.assertRaisesRegexp(CLIError, f'Invalid --instance-count, should be in range {re.escape("[")}1, 500{re.escape("]")}'):
             self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=501)
 
     def test_app_with_large_instance_count_basic(self):
         client = self._get_basic_mock_client(sku='Basic')
-        with self.assertRaisesRegexp(CLIError, 'Invalid --instance-count, should be in range \[1, 25\]'):
+        with self.assertRaisesRegexp(CLIError, f'Invalid --instance-count, should be in range {re.escape("[")}1, 25{re.escape("]")}'):
             self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=26, client=client)
 
     def test_app_with_persistent_storage_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        with self.assertRaisesRegexp(CLIError, 'Enterprise tier Spring instance does not support --enable-persistent-storage'):
-            self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True, client=client)
+        with self.assertRaisesRegexp(CLIError,
+                                     'Enterprise tier Spring instance does not support --enable-persistent-storage'):
+            self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1,
+                          enable_persistent_storage=True, client=client)
+
+    def test_app_binding_tanzu_components_enterprise(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        default_service_registry_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/serviceRegistries/default'
+        default_application_configuration_service_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/configurationServices/default'
+        self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1,
+                      bind_service_registry=default_service_registry_id,
+                      bind_application_configuration_service=default_application_configuration_service_id,
+                      client=client)
+        addon_configs = self.put_app_resource.properties.addon_configs
+        self.assertEqual(default_service_registry_id, addon_configs['serviceRegistry']['resourceId'])
+        self.assertEqual(default_application_configuration_service_id,
+                         addon_configs['applicationConfigurationService']['resourceId'])
 
     def test_app_with_persistent_storage(self):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True)
@@ -721,7 +749,8 @@ class TestAppCreate(BasicTest):
 
     def test_app_with_persistent_storage_basic(self):
         client = self._get_basic_mock_client(sku='Basic')
-        self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True, client=client)
+        self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True,
+                      client=client)
         resource = self.put_app_resource
         self.assertEqual(1, resource.properties.persistent_disk.size_in_gb)
 
@@ -729,9 +758,10 @@ class TestAppCreate(BasicTest):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, assign_public_endpoint=True)
         resource = self.put_app_resource
         self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
-        
+
     def test_app_with_ingress_settings(self):
-        self._execute('rg', 'asc', 'app', instance_count=1, ingress_read_timeout=600, ingress_send_timeout=1200, session_affinity='Cookie', 
+        self._execute('rg', 'asc', 'app', instance_count=1, ingress_read_timeout=600, ingress_send_timeout=1200,
+                      session_affinity='Cookie',
                       session_max_age=1000, backend_protocol='Default')
         resource = self.put_app_resource
         self.assertEqual(600, resource.properties.ingress_settings.read_timeout_in_seconds)
@@ -776,6 +806,7 @@ class TestAppCreate(BasicTest):
         resource = self.put_app_resource
         self.assertEqual('w1', resource.properties.workload_profile_name)
 
+
 class TestDeploymentCreate(BasicTest):
     def __init__(self, methodName: str = ...):
         super().__init__(methodName=methodName)
@@ -818,13 +849,14 @@ class TestDeploymentCreate(BasicTest):
         self.assertEqual('Java_11', resource.properties.source.runtime_version)
         self.assertEqual('<default>', resource.properties.source.relative_path)
         self.assertEqual('Jar', resource.properties.source.type)
-    
+
     def test_create_deployment_with_active_override(self):
         deployment = self._get_deployment()
         deployment.properties.active = True
         deployment.properties.source.jvm_options = 'test-options'
         client = self._get_basic_mock_client('Standard', deployment)
-        self._execute('rg', 'asc', 'app', 'green', cpu='3', memory=None, instance_count=5, runtime_version='NetCore_31', client=client)
+        self._execute('rg', 'asc', 'app', 'green', cpu='3', memory=None, instance_count=5, runtime_version='NetCore_31',
+                      client=client)
         resource = self.put_deployment_resource
         self.assertEqual(5, resource.sku.capacity)
         self.assertEqual('3', resource.properties.deployment_settings.resource_requests.cpu)
@@ -832,7 +864,7 @@ class TestDeploymentCreate(BasicTest):
         self.assertEqual('NetCoreZip', resource.properties.source.type)
         self.assertEqual('NetCore_31', resource.properties.source.runtime_version)
         self.assertEqual('<default>', resource.properties.source.relative_path)
-    
+
     def test_create_deployment_with_active_is_source(self):
         deployment = self._get_deployment()
         deployment.properties.active = True
@@ -847,7 +879,7 @@ class TestDeploymentCreate(BasicTest):
         self.assertEqual('Jar', resource.properties.source.type)
         self.assertEqual('Java_11', resource.properties.source.runtime_version)
         self.assertEqual('<default>', resource.properties.source.relative_path)
-    
+
     def test_create_deployment_with_active_is_container(self):
         deployment = self._get_deployment()
         deployment.properties.active = True
@@ -864,12 +896,13 @@ class TestDeploymentCreate(BasicTest):
         self.assertEqual('<default>', resource.properties.source.relative_path)
 
     def test_create_deployment_with_ACS_Pattern_in_enterprise(self):
-        deployment=self._get_deployment(sku='Enterprise')
+        deployment = self._get_deployment(sku='Enterprise')
         client = self._get_basic_mock_client('Enterprise', deployment)
-        deployment.properties.deployment_settings.addon_configs = {'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}}
+        deployment.properties.deployment_settings.addon_configs = {
+            'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}}
         self._execute('rg', 'asc', 'app', 'green', client=client)
         resource = self.put_deployment_resource
-        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
+        self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},
                          resource.properties.deployment_settings.addon_configs)
 
 
@@ -951,6 +984,7 @@ class CustomDomainTests(BasicTest):
             )
             resp.properties.thumbprint = 'my-thumbprint'
             return resp
+
         client = self._get_basic_mock_client()
         client.certificates.get = _get_cert
         domain_update(_get_test_cmd(), client,

@@ -2,6 +2,17 @@
 
 Release History
 ===============
+1.0.1
+* Fix broken dataflow update command
+
+1.0.0
++++++
+* Support --enable-self-contained-interactive-authoring in integration-runtime self-hosted create
+
+0.10.0
++++++
+* Support new features in ADF
+
 0.9.0
 +++++
 * Change publicnetworkaccess to public-network-access word

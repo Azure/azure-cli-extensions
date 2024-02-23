@@ -4,6 +4,49 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp service': Remove deprecated command group altogether, only keep 'az containerapp add-on' for add-ons
+* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
+* 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
+* 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
+
+0.3.47
+++++++
+* 'az containerapp add-on' : support for add-on milvus create and delete commands
+* [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.59.0
+* 'az containerapp add-on' : support for add-on weaviate create and delete commands
+* Upgrade api-version to 2023-11-02-preview
+* 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
+* 'az containerapp create/update': support --max-inactive-revisions
+* 'az containerapp env create': support --mi-system-assigned and --mi-user-assigned for environment create commands
+* 'az containerapp env identity': support for container app environment assign/remove/show commands
+* 'az containerapp env storage set': Support create or update managed environment storage with NFS Azure File.
+* 'az containerapp up': Update the Docker error string used to identify unauthorized push.
+
+0.3.46
+++++++
+* 'az containerapp create': Fix BadRequest Error about the clientType with --bind
+* 'az containerapp update': Fix bug for --min-replicas is not set when the value is 0
+
+0.3.45
+++++++
+* 'az containerapp up': Cloud Build Bugfix - 500 Internal Server Error (Wrong env selected to create builder)
+* 'az containerapp up': support to create or update a containerapp on connected environment as well as any associated resources (extension on connected cluster, custom location) with --custom-location or --connected-cluster-id
+
+0.3.44
+++++++
+* 'az containerapp env workload-profile set': deprecate command
+* 'az containerapp add-on': support for az containerapp add-on commands; deprecation of az containerapp service commands
+* 'az containerapp env dapr-component resiliency': Add Dapr Component Resiliency commands
+* 'az containerapp resiliency': Add Container App Resiliency commands
+* 'az containerapp env create': Support --enable-dedicated-gpu
+* 'az containerapp job create': fix problem of parsing parameters minExecutions and maxExecutions from --yaml
+* 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
+* 'az containerapp patch apply': support image patching for java application
+* Upgrade api-version to 2023-08-01-preview
+* 'az containerapp env create/update': Support --logs-dynamic-json-columns/-j to configure whether to parse json string log into dynamic json columns
+* 'az containerapp create/update/up': Remove the region check for the Cloud Build feature
+* 'az containerapp create/update/up': Improve logs on the local buildpack source to cloud flow
+* 'az containerapp create/update': Support --customized-keys and clientType in --bind for dev service
 
 0.3.43
 ++++++

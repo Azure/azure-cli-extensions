@@ -13,6 +13,7 @@ from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group,
     validate_file_or_dict
 )
+from ._validators import process_missing_vm_resource_parameters
 from ._actions import VmNicAddAction, VmDiskAddAction
 
 
@@ -109,6 +110,16 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm create') as c:
         c.argument(
+            'resource_name', resource_name, options_list=['--name', '-n'],
+            help="Name of the HCRP Machine resource.",
+        )
+        c.argument(
+            'machine_id',
+            help="ARM ID of the Microsoft.HybridCompute Machine resource which you want to link to vCenter",
+            options_list=['--machine-id', '-m'],
+            validator=process_missing_vm_resource_parameters
+        )
+        c.argument(
             'vm_template', help="Name or ID of the vm template for deploying the vm.",
         )
         c.argument(
@@ -173,8 +184,8 @@ def load_arguments(self, _):
             action=VmDiskAddAction,
             nargs='+',
             help="Disk overrides for the vm. "
-            "Usage: --disk name=<> disk_size=<> disk_mode=<> controller_key=<> "
-            "device-key=<> unit_number=<>.",
+            "Usage: --disk name=<> disk-size=<> disk-mode=<> controller-key=<> "
+            "device-key=<> unit-number=<>.",
         )
 
     with self.argument_context('connectedvmware vm update') as c:
