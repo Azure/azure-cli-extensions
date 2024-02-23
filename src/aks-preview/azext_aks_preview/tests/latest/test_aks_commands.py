@@ -13267,6 +13267,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # delete
         self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            "aks delete -g {resource_group} -n {aks_name} --yes --no-wait",
             checks=[self.is_empty()],
         )
