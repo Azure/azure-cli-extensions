@@ -266,7 +266,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
             keyvault_update = False
 
             from azure.cli.core.profiles import ResourceType
-            from azure.cli.command_modules.keyvault._client_factory import Clients, get_client
+            from azure.cli.command_modules.keyvault._client_factory import Clients, data_plane_azure_keyvault_secret_client
 
             keyvault_params = parse_resource_id(keyvault_id)
             keyvault_subscription = keyvault_params['subscription']
@@ -282,9 +282,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                 raise UnauthorizedError("Keyvault has public access disabled. Please enable public access, or grant access to your client IP")
 
             # Check if the secret URI provided in backup instance is a valid secret
-            data_entity = get_client(cmd.cli_ctx, ResourceType.DATA_KEYVAULT)
-            data_client = data_entity.client_factory(cmd.cli_ctx, None)
-            secrets_list = data_client.get_secrets(vault_base_url=keyvault.properties.vault_uri)
+            cmd.command_kwargs['vault_base_url'] = keyvault.properties.vault_uri
+            data_secrets_client = data_plane_azure_keyvault_secret_client(cmd.cli_ctx, cmd.command_kwargs)
+            secrets_list = data_secrets_client.list_properties_of_secrets()
             given_secret_uri = backup_instance['properties']['datasource_auth_credentials']['secret_store_resource']['uri']
             given_secret_id = helper.get_secret_params_from_uri(given_secret_uri)['secret_id']
             valid_secret = False

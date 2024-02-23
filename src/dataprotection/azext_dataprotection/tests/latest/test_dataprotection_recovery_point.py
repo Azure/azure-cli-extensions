@@ -17,7 +17,9 @@ class RecoveryPointScenarioTest(ScenarioTest):
             'location': 'centraluseuap',
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-persistent-bi-donotdelete',
-            'backupInstanceName': 'clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e'
+            'backupInstanceName': 'clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e',
+            'crrVaultName': 'clitest-bkp-vault-crr-donotdelete',
+            'crrBackupInstanceName': '',
         })
 
     @AllowLargeResponse()
@@ -58,3 +60,8 @@ class RecoveryPointScenarioTest(ScenarioTest):
                  '--start-time 0000-13-32T01:00:00', expect_failure=True)
         test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
                  '--end-time 2023-12-31T25:60:00', expect_failure=True)
+
+        test.cmd('az dataprotection recovery-point list -g "{rg}" -v "{crrVaultName}" '
+                 '--backup-instance-name "{crrBackupInstanceName}" --use-secondary-region', checks=[
+                     test.greater_than('length([])', 0)
+                ])
