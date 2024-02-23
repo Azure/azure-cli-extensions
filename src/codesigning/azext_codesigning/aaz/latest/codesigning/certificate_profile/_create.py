@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a certificate profile
+    """Create a certificate profile.
     """
 
     _aaz_info = {
@@ -45,7 +45,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
             options=["--account-name"],
-            help="Code Signing account name",
+            help="Trusted Signing account name.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
@@ -53,7 +53,7 @@ class Create(AAZCommand):
         )
         _args_schema.profile_name = AAZStrArg(
             options=["-n", "--name", "--profile-name"],
-            help="Certificate profile name",
+            help="Certificate profile name.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
@@ -66,55 +66,45 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.common_name = AAZStrArg(
-            options=["--cn", "--common-name"],
+        _args_schema.identity_validation_id = AAZStrArg(
+            options=["--id", "--identity-validation-id"],
             arg_group="Properties",
-            help="Used as CN in the subject name of the certificate",
+            help="Identity validation id used for the certificate subject name.",
         )
         _args_schema.include_city = AAZBoolArg(
             options=["--include-city"],
             arg_group="Properties",
-            help="Whether to include in the public trust or private trust certificate subject name",
+            help="Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types",
             default=False,
         )
         _args_schema.include_country = AAZBoolArg(
             options=["--include-country"],
             arg_group="Properties",
-            help="Whether to include in the public trust or private trust certificate subject name",
+            help="Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types",
             default=False,
         )
         _args_schema.include_postal_code = AAZBoolArg(
             options=["--include-postal-code"],
             arg_group="Properties",
-            help="Whether to include in the public trust certificate subject name",
+            help="Whether to include PC in the certificate subject name.",
             default=False,
         )
         _args_schema.include_state = AAZBoolArg(
             options=["--include-state"],
             arg_group="Properties",
-            help="Whether to include in the public trust or private trust certificate subject name",
+            help="Whether to include S in the certificate subject name. Applicable only for private trust, private trust ci profile types",
             default=False,
         )
         _args_schema.include_street_address = AAZBoolArg(
             options=["--include-street-address"],
             arg_group="Properties",
-            help="Whether to include in the public trust certificate subject name",
+            help="Whether to include STREET in the certificate subject name.",
             default=False,
         )
-        _args_schema.organization = AAZStrArg(
-            options=["-o", "--organization"],
-            arg_group="Properties",
-            help="Used as O in the subject name of the certificate",
-        )
-        _args_schema.organization_unit = AAZStrArg(
-            options=["--ou", "--organization-unit"],
-            arg_group="Properties",
-            help="Used as OU in the subject name of the private trust certificate",
-        )
         _args_schema.profile_type = AAZStrArg(
-            options=["--type", "--profile-type"],
+            options=["--profile-type"],
             arg_group="Properties",
-            help="Profile type of the certificate",
+            help="Profile type of the certificate.",
             enum={"PrivateTrust": "PrivateTrust", "PrivateTrustCIPolicy": "PrivateTrustCIPolicy", "PublicTrust": "PublicTrust", "PublicTrustTest": "PublicTrustTest", "VBSEnclave": "VBSEnclave"},
         )
         return cls._args_schema
@@ -233,14 +223,12 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("commonName", AAZStrType, ".common_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("identityValidationId", AAZStrType, ".identity_validation_id")
                 properties.set_prop("includeCity", AAZBoolType, ".include_city")
                 properties.set_prop("includeCountry", AAZBoolType, ".include_country")
                 properties.set_prop("includePostalCode", AAZBoolType, ".include_postal_code")
                 properties.set_prop("includeState", AAZBoolType, ".include_state")
                 properties.set_prop("includeStreetAddress", AAZBoolType, ".include_street_address")
-                properties.set_prop("organization", AAZStrType, ".organization", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("organizationUnit", AAZStrType, ".organization_unit")
                 properties.set_prop("profileType", AAZStrType, ".profile_type", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
@@ -289,7 +277,7 @@ class Create(AAZCommand):
             )
             properties.common_name = AAZStrType(
                 serialized_name="commonName",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.country = AAZStrType(
                 flags={"read_only": True},
@@ -300,7 +288,6 @@ class Create(AAZCommand):
             )
             properties.identity_validation_id = AAZStrType(
                 serialized_name="identityValidationId",
-                flags={"read_only": True},
             )
             properties.include_city = AAZBoolType(
                 serialized_name="includeCity",
@@ -318,10 +305,11 @@ class Create(AAZCommand):
                 serialized_name="includeStreetAddress",
             )
             properties.organization = AAZStrType(
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.organization_unit = AAZStrType(
                 serialized_name="organizationUnit",
+                flags={"read_only": True},
             )
             properties.postal_code = AAZStrType(
                 serialized_name="postalCode",

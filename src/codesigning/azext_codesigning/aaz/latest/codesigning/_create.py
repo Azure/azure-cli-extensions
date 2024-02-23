@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Code Signing Account
+    """Create a trusted Signing Account.
+
+    :example: Create an account
+        az codesigning create -n testaccount -l westus -g testRg -sku Basic
     """
 
     _aaz_info = {
@@ -45,7 +48,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
             options=["-n", "--name", "--account-name"],
-            help="Code Signing account name",
+            help="Trusted Signing account name.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
@@ -61,13 +64,13 @@ class Create(AAZCommand):
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
             arg_group="Properties",
-            help="SKU of the code signing account",
+            help="SKU of the trusted signing account.",
         )
 
         sku = cls._args_schema.sku
         sku.name = AAZStrArg(
             options=["name"],
-            help="Name of this SKU",
+            help="Name of the SKU.",
             required=True,
             enum={"Basic": "Basic", "Premium": "Premium"},
         )

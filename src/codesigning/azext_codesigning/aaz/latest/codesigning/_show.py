@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a Code Signing Account
+    """Get a trusted Signing Account.
+
+    :example: Show the details of an account
+        az codesigning show -n testaccount -g testRg
     """
 
     _aaz_info = {
@@ -44,7 +47,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
             options=["-n", "--name", "--account-name"],
-            help="Code Signing account name",
+            help="Trusted Signing account name.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

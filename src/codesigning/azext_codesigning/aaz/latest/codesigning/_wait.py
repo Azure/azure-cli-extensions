@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
             options=["-n", "--name", "--account-name"],
-            help="Code Signing account name",
+            help="Trusted Signing account name.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

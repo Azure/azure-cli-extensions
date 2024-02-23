@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manages certificate profiles under a code signing account
+    """Manage certificate profiles under a trusted signing account
     """
     pass
 

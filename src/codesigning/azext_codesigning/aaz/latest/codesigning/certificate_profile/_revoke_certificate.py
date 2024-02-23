@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class RevokeCertificate(AAZCommand):
-    """Revoke certificate
+    """Revoke a certificate under a certificate profile.
     """
 
     _aaz_info = {
@@ -44,7 +44,7 @@ class RevokeCertificate(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
             options=["--account-name"],
-            help="Code Signing account name",
+            help="Trusted Signing account name.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -53,7 +53,7 @@ class RevokeCertificate(AAZCommand):
         )
         _args_schema.profile_name = AAZStrArg(
             options=["--profile-name"],
-            help="Certificate profile name",
+            help="Certificate profile name.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -70,30 +70,30 @@ class RevokeCertificate(AAZCommand):
         _args_schema.effective_at = AAZDateTimeArg(
             options=["--effective-at"],
             arg_group="Body",
-            help="The timestamp when the revocation is effective",
+            help="The timestamp when the revocation is effective.",
             required=True,
         )
         _args_schema.reason = AAZStrArg(
             options=["--reason"],
             arg_group="Body",
-            help="Reason for revocation",
+            help="Reason for the revocation.",
             required=True,
         )
         _args_schema.remarks = AAZStrArg(
             options=["--remarks"],
             arg_group="Body",
-            help="Remarks for the revocation",
+            help="Remarks for the revocation.",
         )
         _args_schema.serial_number = AAZStrArg(
             options=["--serial-number"],
             arg_group="Body",
-            help="Serial number of the certificate",
+            help="Serial number of the certificate.",
             required=True,
         )
         _args_schema.thumbprint = AAZStrArg(
             options=["--thumbprint"],
             arg_group="Body",
-            help="Thumbprint of the certificate",
+            help="Thumbprint of the certificate.",
             required=True,
         )
         return cls._args_schema

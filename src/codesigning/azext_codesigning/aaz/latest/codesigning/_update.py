@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a Code Signing Account
+    """Update a trusted Signing Account.
     """
 
     _aaz_info = {
@@ -47,7 +47,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
             options=["-n", "--name", "--account-name"],
-            help="Code Signing account name",
+            help="Trusted Signing account name.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

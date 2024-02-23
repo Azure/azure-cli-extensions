@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Azure Code Signing resources
+    """Manage trusted signing account
     """
     pass
 

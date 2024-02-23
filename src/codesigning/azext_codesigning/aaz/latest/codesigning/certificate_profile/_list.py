@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List certificate profiles within a code signing account
+    """List certificate profiles under a trusted signing account.
     """
 
     _aaz_info = {
@@ -45,7 +45,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
             options=["--account-name"],
-            help="Code Signing account name",
+            help="Trusted Signing account name.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$",
@@ -192,7 +192,7 @@ class List(AAZCommand):
             )
             properties.common_name = AAZStrType(
                 serialized_name="commonName",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.country = AAZStrType(
                 flags={"read_only": True},
@@ -203,7 +203,6 @@ class List(AAZCommand):
             )
             properties.identity_validation_id = AAZStrType(
                 serialized_name="identityValidationId",
-                flags={"read_only": True},
             )
             properties.include_city = AAZBoolType(
                 serialized_name="includeCity",
@@ -221,10 +220,11 @@ class List(AAZCommand):
                 serialized_name="includeStreetAddress",
             )
             properties.organization = AAZStrType(
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.organization_unit = AAZStrType(
                 serialized_name="organizationUnit",
+                flags={"read_only": True},
             )
             properties.postal_code = AAZStrType(
                 serialized_name="postalCode",

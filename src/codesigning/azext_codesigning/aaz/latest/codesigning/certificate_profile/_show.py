@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Get details of a certificate profile
+    """Get details of a certificate profile.
     """
 
     _aaz_info = {
@@ -44,7 +44,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
             options=["--account-name"],
-            help="Code Signing account name",
+            help="Trusted Signing account name.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -53,7 +53,7 @@ class Show(AAZCommand):
         )
         _args_schema.profile_name = AAZStrArg(
             options=["-n", "--name", "--profile-name"],
-            help="Certificate profile name",
+            help="Certificate profile name.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -193,7 +193,7 @@ class Show(AAZCommand):
             )
             properties.common_name = AAZStrType(
                 serialized_name="commonName",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.country = AAZStrType(
                 flags={"read_only": True},
@@ -204,7 +204,6 @@ class Show(AAZCommand):
             )
             properties.identity_validation_id = AAZStrType(
                 serialized_name="identityValidationId",
-                flags={"read_only": True},
             )
             properties.include_city = AAZBoolType(
                 serialized_name="includeCity",
@@ -222,10 +221,11 @@ class Show(AAZCommand):
                 serialized_name="includeStreetAddress",
             )
             properties.organization = AAZStrType(
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.organization_unit = AAZStrType(
                 serialized_name="organizationUnit",
+                flags={"read_only": True},
             )
             properties.postal_code = AAZStrType(
                 serialized_name="postalCode",

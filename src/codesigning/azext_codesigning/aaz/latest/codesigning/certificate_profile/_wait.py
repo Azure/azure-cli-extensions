@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
             options=["--account-name"],
-            help="Code Signing account name",
+            help="Trusted Signing account name.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -51,7 +51,7 @@ class Wait(AAZWaitCommand):
         )
         _args_schema.profile_name = AAZStrArg(
             options=["-n", "--name", "--profile-name"],
-            help="Certificate profile name",
+            help="Certificate profile name.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -191,7 +191,7 @@ class Wait(AAZWaitCommand):
             )
             properties.common_name = AAZStrType(
                 serialized_name="commonName",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.country = AAZStrType(
                 flags={"read_only": True},
@@ -202,7 +202,6 @@ class Wait(AAZWaitCommand):
             )
             properties.identity_validation_id = AAZStrType(
                 serialized_name="identityValidationId",
-                flags={"read_only": True},
             )
             properties.include_city = AAZBoolType(
                 serialized_name="includeCity",
@@ -220,10 +219,11 @@ class Wait(AAZWaitCommand):
                 serialized_name="includeStreetAddress",
             )
             properties.organization = AAZStrType(
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.organization_unit = AAZStrType(
                 serialized_name="organizationUnit",
+                flags={"read_only": True},
             )
             properties.postal_code = AAZStrType(
                 serialized_name="postalCode",

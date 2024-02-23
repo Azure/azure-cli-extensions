@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Certificate Profile
+    """Delete a certificate profile.
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
             options=["--account-name"],
-            help="Code Signing account name",
+            help="Trusted Signing account name.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -55,7 +55,7 @@ class Delete(AAZCommand):
         )
         _args_schema.profile_name = AAZStrArg(
             options=["-n", "--name", "--profile-name"],
-            help="Certificate profile name",
+            help="Certificate profile name.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List Code Signing Accounts within a subscription
+    """List trusted signing accounts within a subscription.
+
+    :example: Lists accounts
+        az codesigning list -g testRg
     """
 
     _aaz_info = {
