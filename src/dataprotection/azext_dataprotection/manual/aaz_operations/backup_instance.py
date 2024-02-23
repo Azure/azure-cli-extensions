@@ -14,6 +14,11 @@ from azext_dataprotection.aaz.latest.dataprotection.backup_instance import (
     ValidateForBackup as _ValidateForBackup,
     ValidateForRestore as _ValidateForRestore,
 )
+from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore import (
+    Validate as _ValidateForCRR,
+    Trigger as _TriggerCRR
+)
+
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance.restore import Trigger as _RestoreTrigger
 from ..helpers import convert_dict_keys_snake_to_camel
 
@@ -144,11 +149,6 @@ class RestoreTrigger(_RestoreTrigger):
             return convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data())
 
 
-from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore import (
-    Validate as _ValidateForCRR,
-    Trigger as _TriggerCRR
-)
-
 class ValidateForCRR(_ValidateForCRR):
 
     @classmethod
@@ -259,7 +259,7 @@ class TriggerCRR(_TriggerCRR):
             restore_request_object = convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data())
             crr_details["sourceBackupInstanceId"] = self.ctx.args.source_backup_instance_id.to_serialized_data()
             crr_details["sourceRegion"] = self.ctx.args.source_region.to_serialized_data()
-            
+
             return self.serialize_content({
                 'objectType': restore_request_object["objectType"],
                 'restoreRequestObject': restore_request_object,

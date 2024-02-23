@@ -777,7 +777,7 @@ def dataprotection_recovery_point_list(cmd, backup_instance_name, resource_group
             "source_backup_instance_id": source_backup_instance_id,
             "source_region": source_location
         })
-    
+
     return RecoveryPointList(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name,

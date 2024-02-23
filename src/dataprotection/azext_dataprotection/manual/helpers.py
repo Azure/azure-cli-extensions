@@ -37,7 +37,7 @@ datasource_map = {
     "AzureKubernetesService": "Microsoft.ContainerService/managedClusters"
 }
 
-# This is ideally temporary, as Backup Vault contains secondary region information. But in some cases 
+# This is ideally temporary, as Backup Vault contains secondary region information. But in some cases
 # (seen mostly in centraluseuap and eastus2euap), this information is missing - this is provided as a
 # fallback option.
 secondary_region_map = {
@@ -190,7 +190,7 @@ def get_backup_instance_name(datasource_type, datasourceset_info, datasource_inf
         backup_instance_name = datasourceset_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
     else:
         backup_instance_name = datasource_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
-    
+
     return backup_instance_name
 
 
@@ -387,7 +387,7 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
 
 def validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern):
     if from_prefix_pattern is None or to_prefix_pattern is None or \
-        len(from_prefix_pattern) != len(to_prefix_pattern) or len(from_prefix_pattern) > 10:
+            len(from_prefix_pattern) != len(to_prefix_pattern) or len(from_prefix_pattern) > 10:
         raise InvalidArgumentValueError(
             "from-prefix-pattern and to-prefix-pattern should not be null, both of them should have "
             "equal length and can have a maximum of 10 patterns."
@@ -428,7 +428,7 @@ def validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern):
 
         for compareindex in range(index + 1, len(from_prefix_pattern)):
             if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] and to_prefix_pattern[index] >= from_prefix_pattern[compareindex]) or \
-                (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
+                    (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
                 raise InvalidArgumentValueError(
                     "overlapping ranges are not allowed."
                 )
@@ -436,14 +436,14 @@ def validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern):
 
 def get_policy_parameters(datasource_id, snapshot_resource_group_name):
     policy_parameters = {
-            "data_store_parameters_list": [
-                {
-                    "object_type": "AzureOperationalStoreParameters",
-                    "data_store_type": "OperationalStore",
-                    "resource_group_id": get_rg_id_from_arm_id(datasource_id)
-                }
-            ]
-        }
+        "data_store_parameters_list": [
+            {
+                "object_type": "AzureOperationalStoreParameters",
+                "data_store_type": "OperationalStore",
+                "resource_group_id": get_rg_id_from_arm_id(datasource_id)
+            }
+        ]
+    }
 
     if snapshot_resource_group_name:
         disk_sub_id = get_sub_id_from_arm_id(datasource_id)
@@ -768,15 +768,15 @@ def get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name,
     subscription_id = cmd.cli_ctx.data['subscription_id']
     arg_client = client(cmd.cli_ctx, None)
     backup_instance_list = dataprotection_backup_instance_list_from_resourcegraph(arg_client, None, resource_group_name,
-                                                                                  vault_name, [subscription_id,], None,
+                                                                                  vault_name, [subscription_id, ], None,
                                                                                   None, None, backup_instance_name)
     if len(backup_instance_list) > 1:
         raise CLIInternalError("More than one backup instance was found in the vault"
                                ", please check the backup instance name parameter")
-    
+
     if len(backup_instance_list) == 0:
         raise CLIInternalError("No backup instances were found")
-    
+
     return backup_instance_list[0]
 
 
@@ -796,4 +796,3 @@ def get_backup_vault_from_resourcegraph(cmd, resource_group_name, vault_name):
         raise CLIInternalError("No backup vault was found")
 
     return backup_vault_list[0]
-    

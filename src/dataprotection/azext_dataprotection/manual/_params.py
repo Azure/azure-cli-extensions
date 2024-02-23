@@ -47,6 +47,7 @@ from azext_dataprotection.manual.enums import (
 
 vault_name_type = CLIArgumentType(help='Name of the backup vault.', options_list=['--vault-name', '-v'], type=str)
 
+
 def load_arguments(self, _):
 
     with self.argument_context('dataprotection recovery-point list') as c:

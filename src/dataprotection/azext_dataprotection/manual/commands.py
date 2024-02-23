@@ -63,7 +63,7 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler) as g:
         g.custom_command('list-protected-operations', 'dataprotection_resource_guard_list_protected_operations')
-    
+
     with self.command_group('dataprotection recovery-point', exception_handler=exception_handler) as g:
         g.custom_command('list', 'dataprotection_recovery_point_list')
 
