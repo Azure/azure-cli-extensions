@@ -577,6 +577,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.network_profile.allowed_host_ports = allowed_host_ports
             agentpool.network_profile.application_security_groups = asg_ids
 
+        pod_ip_allocation_mode = self.context.get_pod_ip_allocation_mode()
+        if pod_ip_allocation_mode:
+            agentpool.network_profile.pod_ip_allocation_mode = pod_ip_allocation_mode
+
         ip_tags = self.context.get_ip_tags()
         if ip_tags:
             agentpool.network_profile.node_public_ip_tags = ip_tags
