@@ -20,7 +20,6 @@ class ContainerAppUpImageTest(ScenarioTest):
         image = "mcr.microsoft.com/k8se/quickstart:latest"
         create_and_verify_containerapp_up(self, resource_group=resource_group, image=image)
 
-
     @live_only()
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_up_source_with_bullseye_buildpack_e2e(self, resource_group):
@@ -28,7 +27,6 @@ class ContainerAppUpImageTest(ScenarioTest):
         ingress = 'external'
         target_port = '8080'
         create_and_verify_containerapp_up(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
-
 
     @live_only()
     @ResourceGroupPreparer(location="eastus2")
@@ -38,7 +36,6 @@ class ContainerAppUpImageTest(ScenarioTest):
         target_port = '8080'
         create_and_verify_containerapp_up(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
 
-
     @live_only()
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_up_source_with_dockerfile_e2e(self, resource_group):
@@ -46,7 +43,6 @@ class ContainerAppUpImageTest(ScenarioTest):
         ingress = 'external'
         target_port = '80'
         create_and_verify_containerapp_up(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
-
 
     @live_only()
     @ResourceGroupPreparer(location="eastus2")
@@ -56,7 +52,6 @@ class ContainerAppUpImageTest(ScenarioTest):
         ingress = 'external'
         target_port = '8080'
         create_and_verify_containerapp_up(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
-
 
     @live_only()
     @ResourceGroupPreparer(location="eastus2")
