@@ -621,6 +621,15 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.gpu_profile.install_gpu_driver = False
         return agentpool
 
+    def set_up_pod_ip_allocation_mode(self, agentpool: AgentPool) -> AgentPool:
+        """Set up pod ip allocation mode for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        pod_ip_allocation_mode = self.context.get_pod_ip_allocation_mode()
+        if pod_ip_allocation_mode is not None:
+            agentpool.pod_ip_allocation_mode = pod_ip_allocation_mode
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -650,6 +659,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_skip_gpu_driver_install(agentpool)
         # set up agentpool ssh access
         agentpool = self.set_up_ssh_access(agentpool)
+        # set up agentpool pod ip allocation mode
+        agentpool = self.set_up_pod_ip_allocation_mode(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
@@ -779,6 +790,15 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.security_profile.ssh_access = ssh_access
         return agentpool
 
+    def set_up_pod_ip_allocation_mode(self, agentpool: AgentPool) -> AgentPool:
+        """Set up pod ip allocation mode for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        pod_ip_allocation_mode = self.context.get_pod_ip_allocation_mode()
+        if pod_ip_allocation_mode is not None:
+            agentpool.pod_ip_allocation_mode = pod_ip_allocation_mode
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -804,6 +824,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update ssh access
         agentpool = self.update_ssh_access(agentpool)
+
+        # set up agentpool pod ip allocation mode
+        agentpool = self.set_up_pod_ip_allocation_mode(agentpool)
 
         return agentpool
 
