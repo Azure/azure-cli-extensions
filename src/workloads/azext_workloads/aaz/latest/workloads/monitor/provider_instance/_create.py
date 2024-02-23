@@ -477,7 +477,7 @@ class Create(AAZCommand):
             disc_db2 = _builder.get(".properties.providerSettings{providerType:Db2}")
             if disc_db2 is not None:
                 disc_db2.set_prop("dbName", AAZStrType, ".db2.db_name")
-                disc_db2.set_prop("dbPassword", AAZStrType, ".db2.db_password")
+                disc_db2.set_prop("dbPassword", AAZStrType, ".db2.db_password", typ_kwargs={"flags": {"secret": True}})
                 disc_db2.set_prop("dbPasswordUri", AAZStrType, ".db2.db_password_uri")
                 disc_db2.set_prop("dbPort", AAZStrType, ".db2.db_port")
                 disc_db2.set_prop("dbUsername", AAZStrType, ".db2.db_username")
@@ -488,7 +488,7 @@ class Create(AAZCommand):
 
             disc_ms_sql_server = _builder.get(".properties.providerSettings{providerType:MsSqlServer}")
             if disc_ms_sql_server is not None:
-                disc_ms_sql_server.set_prop("dbPassword", AAZStrType, ".ms_sql_server.db_password")
+                disc_ms_sql_server.set_prop("dbPassword", AAZStrType, ".ms_sql_server.db_password", typ_kwargs={"flags": {"secret": True}})
                 disc_ms_sql_server.set_prop("dbPasswordUri", AAZStrType, ".ms_sql_server.db_password_uri")
                 disc_ms_sql_server.set_prop("dbPort", AAZStrType, ".ms_sql_server.db_port")
                 disc_ms_sql_server.set_prop("dbUsername", AAZStrType, ".ms_sql_server.db_username")
@@ -516,7 +516,7 @@ class Create(AAZCommand):
             disc_sap_hana = _builder.get(".properties.providerSettings{providerType:SapHana}")
             if disc_sap_hana is not None:
                 disc_sap_hana.set_prop("dbName", AAZStrType, ".sap_hana.db_name")
-                disc_sap_hana.set_prop("dbPassword", AAZStrType, ".sap_hana.db_password")
+                disc_sap_hana.set_prop("dbPassword", AAZStrType, ".sap_hana.db_password", typ_kwargs={"flags": {"secret": True}})
                 disc_sap_hana.set_prop("dbPasswordUri", AAZStrType, ".sap_hana.db_password_uri")
                 disc_sap_hana.set_prop("dbUsername", AAZStrType, ".sap_hana.db_username")
                 disc_sap_hana.set_prop("hostname", AAZStrType, ".sap_hana.hostname")
@@ -533,7 +533,7 @@ class Create(AAZCommand):
                 disc_sap_net_weaver.set_prop("sapHostFileEntries", AAZListType, ".sap_net_weaver.sap_host_file_entries")
                 disc_sap_net_weaver.set_prop("sapHostname", AAZStrType, ".sap_net_weaver.sap_hostname")
                 disc_sap_net_weaver.set_prop("sapInstanceNr", AAZStrType, ".sap_net_weaver.sap_instance_nr")
-                disc_sap_net_weaver.set_prop("sapPassword", AAZStrType, ".sap_net_weaver.sap_password")
+                disc_sap_net_weaver.set_prop("sapPassword", AAZStrType, ".sap_net_weaver.sap_password", typ_kwargs={"flags": {"secret": True}})
                 disc_sap_net_weaver.set_prop("sapPasswordUri", AAZStrType, ".sap_net_weaver.sap_password_uri")
                 disc_sap_net_weaver.set_prop("sapPortNumber", AAZStrType, ".sap_net_weaver.sap_port_number")
                 disc_sap_net_weaver.set_prop("sapSid", AAZStrType, ".sap_net_weaver.sap_sid")
@@ -605,8 +605,9 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.errors = AAZObjectType()
-            _CreateHelper._build_schema_error_read(properties.errors)
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.provider_settings = AAZObjectType(
                 serialized_name="providerSettings",
             )
@@ -614,6 +615,23 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            errors = cls._schema_on_200_201.properties.errors
+            errors.code = AAZStrType()
+            errors.details = AAZListType()
+            errors.inner_error = AAZStrType(
+                serialized_name="innerError",
+            )
+            errors.message = AAZStrType()
+            errors.target = AAZStrType()
+
+            details = cls._schema_on_200_201.properties.errors.details
+            details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.errors.details.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
+            _element.target = AAZStrType()
 
             provider_settings = cls._schema_on_200_201.properties.provider_settings
             provider_settings.provider_type = AAZStrType(
@@ -627,6 +645,7 @@ class Create(AAZCommand):
             )
             disc_db2.db_password = AAZStrType(
                 serialized_name="dbPassword",
+                flags={"secret": True},
             )
             disc_db2.db_password_uri = AAZStrType(
                 serialized_name="dbPasswordUri",
@@ -651,6 +670,7 @@ class Create(AAZCommand):
             disc_ms_sql_server = cls._schema_on_200_201.properties.provider_settings.discriminate_by("provider_type", "MsSqlServer")
             disc_ms_sql_server.db_password = AAZStrType(
                 serialized_name="dbPassword",
+                flags={"secret": True},
             )
             disc_ms_sql_server.db_password_uri = AAZStrType(
                 serialized_name="dbPasswordUri",
@@ -708,6 +728,7 @@ class Create(AAZCommand):
             )
             disc_sap_hana.db_password = AAZStrType(
                 serialized_name="dbPassword",
+                flags={"secret": True},
             )
             disc_sap_hana.db_password_uri = AAZStrType(
                 serialized_name="dbPasswordUri",
@@ -750,6 +771,7 @@ class Create(AAZCommand):
             )
             disc_sap_net_weaver.sap_password = AAZStrType(
                 serialized_name="sapPassword",
+                flags={"secret": True},
             )
             disc_sap_net_weaver.sap_password_uri = AAZStrType(
                 serialized_name="sapPasswordUri",
@@ -798,54 +820,6 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
-
-    _schema_error_read = None
-
-    @classmethod
-    def _build_schema_error_read(cls, _schema):
-        if cls._schema_error_read is not None:
-            _schema.code = cls._schema_error_read.code
-            _schema.details = cls._schema_error_read.details
-            _schema.inner_error = cls._schema_error_read.inner_error
-            _schema.message = cls._schema_error_read.message
-            _schema.target = cls._schema_error_read.target
-            return
-
-        cls._schema_error_read = _schema_error_read = AAZObjectType()
-
-        error_read = _schema_error_read
-        error_read.code = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_read.details = AAZListType(
-            flags={"read_only": True},
-        )
-        error_read.inner_error = AAZObjectType(
-            serialized_name="innerError",
-            flags={"read_only": True},
-        )
-        error_read.message = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_read.target = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        details = _schema_error_read.details
-        details.Element = AAZObjectType()
-        cls._build_schema_error_read(details.Element)
-
-        inner_error = _schema_error_read.inner_error
-        inner_error.inner_error = AAZObjectType(
-            serialized_name="innerError",
-        )
-        cls._build_schema_error_read(inner_error.inner_error)
-
-        _schema.code = cls._schema_error_read.code
-        _schema.details = cls._schema_error_read.details
-        _schema.inner_error = cls._schema_error_read.inner_error
-        _schema.message = cls._schema_error_read.message
-        _schema.target = cls._schema_error_read.target
 
 
 __all__ = ["Create"]
