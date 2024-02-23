@@ -16,7 +16,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
-                          validate_managed_environment, validate_dataplane_public_endpoint, validate_server_version)
+                          validate_managed_environment, validate_dataplane_public_endpoint, validate_server_version,
+                          validate_planned_maintenance)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
                                      validate_build_update, validate_container_registry_create,
@@ -28,10 +29,12 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
                                      validate_build_env, validate_target_module, validate_runtime_version,
-                                     validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
+                                     validate_acs_ssh_or_warn, validate_refresh_interval,
+                                     validate_apm_properties, validate_apm_secrets,
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
-                                     validate_build_cert_reference, validate_acs_create, not_support_enterprise)
+                                     validate_build_cert_reference, validate_acs_create, not_support_enterprise,
+                                     validate_create_app_binding_default_application_configuration_service, validate_create_app_binding_default_service_registry)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -41,7 +44,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType, ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType, ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -251,6 +254,28 @@ def load_arguments(self, _):
                    options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
                    help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
 
+        c.argument('enable_planned_maintenance',
+                   arg_group='Planned Maintenance',
+                   action='store_true',
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
+                   options_list=['--enable-planned-maintenance', '--enable-pm'],
+                   help='If set, enable planned maintenance for the instance.')
+        c.argument('planned_maintenance_day',
+                   arg_group='Planned Maintenance',
+                   arg_type=get_enum_type(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
+                   options_list=['--planned-maintenance-day', '--pm-day'],
+                   help='Day of the week which planned maintenance will be scheduled on.')
+        c.argument('planned_maintenance_start_hour',
+                   arg_group='Planned Maintenance',
+                   type=int,
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
+                   options_list=['--planned-maintenance-start-hour', '--pm-start-hour'],
+                   help='Start time of the planned maintenance window in UTC. Must be between 0 and 23.')
+
     for scope in ['spring create', 'spring update']:
         with self.argument_context(scope) as c:
             c.argument('tags', arg_type=tags_type)
@@ -260,7 +285,7 @@ def load_arguments(self, _):
             TestKeyType), help='Type of test-endpoint key')
 
     with self.argument_context('spring list-support-server-versions') as c:
-            c.argument('service', service_name_type, validator=not_support_enterprise)
+        c.argument('service', service_name_type, validator=not_support_enterprise)
 
     with self.argument_context('spring app') as c:
         c.argument('service', service_name_type)
@@ -310,6 +335,16 @@ def load_arguments(self, _):
                    nargs='+',
                    validator=validate_create_app_with_user_identity_or_warning,
                    help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
+        c.argument('bind_service_registry',
+                   action='store_true',
+                   options_list=['--bind-service-registry', '--bind-sr'],
+                   validator=validate_create_app_binding_default_service_registry,
+                   help='Bind the app to the default Service Registry automatically.')
+        c.argument('bind_application_configuration_service',
+                   action='store_true',
+                   options_list=['--bind-application-configuration-service', '--bind-acs'],
+                   validator=validate_create_app_binding_default_application_configuration_service,
+                   help='Bind the app to the default Application Configuration Service automatically.')
         c.argument('cpu', arg_type=cpu_type)
         c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int,
@@ -830,6 +865,10 @@ def load_arguments(self, _):
     for scope in ['create', 'update']:
         with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
             c.argument('generation', arg_type=get_enum_type(ConfigurationServiceGeneration), help='Generation of Application Configuration Service.')
+            c.argument('refresh_interval', type=int,
+                       validator=validate_refresh_interval,
+                       help='Specify the interval (in seconds) for refreshing the repository. '
+                            'Use 0 to turn off automatic refresh. An interval of at least 60 seconds is recommended.')
 
     for scope in ['add', 'update']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
@@ -866,6 +905,7 @@ def load_arguments(self, _):
             c.argument('client_id', arg_group='Single Sign On (SSO)', help="The public identifier for the application.")
             c.argument('client_secret', arg_group='Single Sign On (SSO)', help="The secret known only to the application and the authorization server.")
             c.argument('issuer_uri', arg_group='Single Sign On (SSO)', help="The URI of Issuer Identifier.")
+            c.argument('enable_api_try_out', arg_type=get_three_state_flag(), arg_group='Try out API', help="Try out the API by sending requests and viewing responses in API portal.")
 
     with self.argument_context('spring gateway update') as c:
         c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
@@ -903,6 +943,23 @@ def load_arguments(self, _):
         c.argument('addon_configs_file', arg_group='Add-on Configurations', help="The file path of JSON string of add-on configurations.")
         c.argument('apms', arg_group='APM', nargs='*',
                    help="Space-separated list of APM reference names in Azure Spring Apps to integrate with Gateway.")
+        c.argument('enable_response_cache',
+                   arg_type=get_three_state_flag(),
+                   arg_group='Response Cache',
+                   help='Enable response cache settings in Spring Cloud Gateway'
+                   )
+        c.argument('response_cache_scope',
+                   arg_group='Response Cache',
+                   help='Scope for response cache, available values are [Route, Instance]'
+                   )
+        c.argument('response_cache_size',
+                   arg_group='Response Cache',
+                   help='Maximum size of the cache that determines whether the cache needs to evict some entries. Examples are [1GB, 10MB, 100KB]. Use "default" to reset, and Gateway will manage this property.'
+                   )
+        c.argument('response_cache_ttl',
+                   arg_group='Response Cache',
+                   help='Time before a cached entry expires. Examples are [1h, 30m, 50s]. Use "default" to reset, and Gateway will manage this property.'
+                   )
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:
@@ -1043,3 +1100,36 @@ def load_arguments(self, _):
             c.argument('private_key', help='Private SSH Key algorithm of git repository.')
             c.argument('host_key', help='Public SSH Key of git repository.')
             c.argument('host_key_algorithm', help='SSH Key algorithm of git repository.')
+
+    for scope in ['spring component']:
+        with self.argument_context(scope) as c:
+            c.argument('service', service_name_type)
+
+    with self.argument_context('spring component logs') as c:
+        c.argument('name', options_list=['--name', '-n'],
+                   help="Name of the component. Find component names from command `az spring component list`")
+        c.argument('all_instances',
+                   help='The flag to indicate get logs for all instances of the component.',
+                   action='store_true')
+        c.argument('instance',
+                   options_list=['--instance', '-i'],
+                   help='Name of an existing instance of the component.')
+        c.argument('follow',
+                   options_list=['--follow ', '-f'],
+                   help='The flag to indicate logs should be streamed.',
+                   action='store_true')
+        c.argument('lines',
+                   type=int,
+                   help='Number of lines to show. Maximum is 10000. Default is 50.')
+        c.argument('since',
+                   help='Only return logs newer than a relative duration like 5s, 2m, or 1h. Maximum is 1h')
+        c.argument('limit',
+                   type=int,
+                   help='Maximum kibibyte of logs to return. Ceiling number is 2048.')
+        c.argument('max_log_requests',
+                   type=int,
+                   help="Specify maximum number of concurrent logs to follow when get logs by all-instances.")
+
+    with self.argument_context('spring component instance') as c:
+        c.argument('component', options_list=['--component', '-c'],
+                   help="Name of the component. Find components from command `az spring component list`")

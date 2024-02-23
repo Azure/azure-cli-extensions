@@ -5,8 +5,7 @@
 
 
 from azure.cli.testsdk import (ScenarioTest, record_only)
-from ....vendored_sdks.appplatform.v2023_09_01_preview.models import ManagedIdentityType
-
+from ....vendored_sdks.appplatform.v2024_01_01_preview.models import ManagedIdentityType
 
 """
 In order to re-run this scenario test,
@@ -18,16 +17,21 @@ In order to re-run this scenario test,
 """
 USER_IDENTITY_SUB_ID = "00000000-0000-0000-0000-000000000000"
 
-
 MASKED_SUB = "00000000-0000-0000-0000-000000000000"
 USER_IDENTITY_RESOURCE_GROUP = "cli"
 USER_IDENTITY_NAME_1 = "managed-identity-1"
 USER_IDENTITY_NAME_2 = "managed-identity-2"
 USER_IDENTITY_RESOURCE_ID_TEMPLATE = "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
-MASKED_USER_IDENTITY_RESOURCE_ID_1 = USER_IDENTITY_RESOURCE_ID_TEMPLATE.format(MASKED_SUB, USER_IDENTITY_RESOURCE_GROUP, USER_IDENTITY_NAME_1)
-MASKED_USER_IDENTITY_RESOURCE_ID_2 = USER_IDENTITY_RESOURCE_ID_TEMPLATE.format(MASKED_SUB, USER_IDENTITY_RESOURCE_GROUP, USER_IDENTITY_NAME_2)
-USER_IDENTITY_RESOURCE_ID_1 = USER_IDENTITY_RESOURCE_ID_TEMPLATE.format(USER_IDENTITY_SUB_ID, USER_IDENTITY_RESOURCE_GROUP, USER_IDENTITY_NAME_1)
-USER_IDENTITY_RESOURCE_ID_2 = USER_IDENTITY_RESOURCE_ID_TEMPLATE.format(USER_IDENTITY_SUB_ID, USER_IDENTITY_RESOURCE_GROUP, USER_IDENTITY_NAME_2)
+MASKED_USER_IDENTITY_RESOURCE_ID_1 = USER_IDENTITY_RESOURCE_ID_TEMPLATE.format(MASKED_SUB, USER_IDENTITY_RESOURCE_GROUP,
+                                                                               USER_IDENTITY_NAME_1)
+MASKED_USER_IDENTITY_RESOURCE_ID_2 = USER_IDENTITY_RESOURCE_ID_TEMPLATE.format(MASKED_SUB, USER_IDENTITY_RESOURCE_GROUP,
+                                                                               USER_IDENTITY_NAME_2)
+USER_IDENTITY_RESOURCE_ID_1 = USER_IDENTITY_RESOURCE_ID_TEMPLATE.format(USER_IDENTITY_SUB_ID,
+                                                                        USER_IDENTITY_RESOURCE_GROUP,
+                                                                        USER_IDENTITY_NAME_1)
+USER_IDENTITY_RESOURCE_ID_2 = USER_IDENTITY_RESOURCE_ID_TEMPLATE.format(USER_IDENTITY_SUB_ID,
+                                                                        USER_IDENTITY_RESOURCE_GROUP,
+                                                                        USER_IDENTITY_NAME_2)
 
 
 @record_only()
@@ -42,26 +46,25 @@ class CreateAppWithBothIdentity(ScenarioTest):
             'ua2': USER_IDENTITY_RESOURCE_ID_2
         })
 
-        app = self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned {ua1} {ua2}', checks=[
-            self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED, case_sensitive=False),
-            self.exists('identity.principalId'),
-            self.exists('identity.tenantId'),
-            self.exists('identity.userAssignedIdentities')
-        ]).json_value
+        app = self.cmd(
+            'spring app create -n {app} -g {rg} -s {serviceName} --system-assigned --user-assigned {ua1} {ua2}',
+            checks=[
+                self.check('identity.type', ManagedIdentityType.SYSTEM_ASSIGNED_USER_ASSIGNED, case_sensitive=False),
+                self.exists('identity.principalId'),
+                self.exists('identity.tenantId'),
+                self.exists('identity.userAssignedIdentities')
+            ]).json_value
         user_identity_dict = self._to_lower(app['identity']['userAssignedIdentities'])
-        self.assertTrue(type(user_identity_dict) == dict)
+        self.assertTrue(isinstance(user_identity_dict, dict))
         self.assertEquals(len(user_identity_dict), 2)
         self.assertTrue(self._contains_user_id_1(user_identity_dict.keys()))
         self.assertTrue(self._contains_user_id_2(user_identity_dict.keys()))
 
-
     def _contains_user_id_1(self, keys):
         return MASKED_USER_IDENTITY_RESOURCE_ID_1.lower() in keys or USER_IDENTITY_RESOURCE_ID_1.lower() in keys
 
-
     def _contains_user_id_2(self, keys):
         return MASKED_USER_IDENTITY_RESOURCE_ID_2.lower() in keys or USER_IDENTITY_RESOURCE_ID_2.lower() in keys
-
 
     def _to_lower(self, str_dict):
         new_dict = {}

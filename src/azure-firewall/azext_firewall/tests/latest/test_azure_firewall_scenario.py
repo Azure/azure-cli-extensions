@@ -55,12 +55,12 @@ class AzureFirewallScenario(ScenarioTest):
             ]
         )
         self.cmd(
-             "network firewall update -n {firewall_name} -g {rg} "
-             "--enable-fat-flow-logging false --enable-udp-log-optimization false",
-             checks=[
-                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"'),
-                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"')
-             ]
+            "network firewall update -n {firewall_name} -g {rg} "
+            "--enable-fat-flow-logging false --enable-udp-log-optimization false",
+            checks=[
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"'),
+                self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"')
+            ]
         )
 
         self.cmd("network firewall delete -n {firewall_name} -g {rg}")
@@ -80,8 +80,9 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall create -g {rg} -n {af}')
         self.cmd('network public-ip create -g {rg} -n {pubip} --sku standard')
         self.cmd('network public-ip create -g {rg} -n {pubip2} --sku standard')
-        vnet_instance = self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
-        subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24')
+        # vnet_instance = self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
+        # subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
         # Disable it due to service limitation.
         # self.cmd('network firewall ip-config create -g {rg} -n {ipconfig} -f {af} --public-ip-address {pubip} --vnet-name {vnet}', checks=[
         #     self.check('name', '{ipconfig}'),
@@ -269,9 +270,9 @@ class AzureFirewallScenario(ScenarioTest):
         })
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        #self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2 --sku Standard')
-        #self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
-        #self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
+        # self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2 --sku Standard')
+        # self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
+        # self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
 
         # with self.assertRaisesRegexp(CLIError, "allow active ftp is not allowed for azure firewall on virtual hub."):
         #     self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub} --allow-active-ftp')
@@ -332,23 +333,24 @@ class AzureFirewallScenario(ScenarioTest):
         # test firewall policy with vhub firewall
         self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        #self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l {location} --sku Standard')
+        # self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l {location} --sku Standard')
 
         self.cmd('network firewall policy create -g {rg} -n {policy} -l {location}', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
             self.check('name', '{policy}')
         ])
-        #self.cmd('network firewall create -g {rg} -n {af} --count 1 --sku AZFW_Hub --vhub clitestvhub --firewall-policy {policy}')
+        # self.cmd('network firewall create -g {rg} -n {af} --count 1 --sku AZFW_Hub --vhub clitestvhub --firewall-policy {policy}')
 
         self.kwargs.update({'location': 'westus2'})
 
         # test firewall policy with vnet firewall
         self.cmd('network firewall create -g {rg} -n {af2} -l {location} --firewall-policy {policy}')
         self.cmd('network public-ip create -g {rg} -n {pubip} -l {location} --sku standard')
-        vnet_instance = self.cmd(
-            'network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" -l {location} --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
-        subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
-        
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" -l {location} --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24')
+        # vnet_instance = self.cmd(
+        #     'network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" -l {location} --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
+        # subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
+
         # Disable it due to service limitation.
         # self.cmd(
         #     'network firewall ip-config create -g {rg} -n {ipconfig} -f {af2} --public-ip-address {pubip} --vnet-name {vnet}',
@@ -377,7 +379,7 @@ class AzureFirewallScenario(ScenarioTest):
         # test firewall policy identity
         identity = self.cmd('identity create -g {rg} -n identitytest',).get_output_in_json()
         self.kwargs.update({'id': identity['id']})
-        #needs a check in the future
+        # needs a check in the future
         # self.cmd('network firewall policy update -g {rg} -n {policy2} --identity {id}',
         #          checks=[self.exists('identity')])
         # self.cmd('network firewall policy update -g {rg} -n {policy2} --remove {id}',
@@ -715,9 +717,10 @@ class AzureFirewallScenario(ScenarioTest):
                  '--location {location} '
                  '--name {policy} '
                  '--dns-servers {dns_servers} '
-                 '--enable-dns-proxy', checks=[
-                    self.check('type', 'Microsoft.Network/FirewallPolicies'),
-                    self.check('name', '{policy}')
+                 '--enable-dns-proxy',
+                 checks=[
+                     self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                     self.check('name', '{policy}')
                  ])
 
         self.cmd(
@@ -769,6 +772,7 @@ class AzureFirewallScenario(ScenarioTest):
                  checks=[
                      self.check('length(ruleCollections[1].rules)', 2)
                  ])
+
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='westus2')
     def test_azure_firewall_policy_rules_with_ip_groups(self, resource_group, resource_group_location):
@@ -902,6 +906,36 @@ class AzureFirewallScenario(ScenarioTest):
         ])
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_explicit_proxy', location='westus2')
+    def test_azure_firewall_policy_explicit_proxy(self, resource_group):
+        self.kwargs.update({
+            'policy_name': 'testFirewallPolicy',
+            'sas_url': "https://clitestatorageaccount.blob.core.windows.net/explicitproxycontainer/pacfile.pac?sp=r&st=2024-01-09T08:48:06Z&se=2024-01-09T16:48:06Z&spr=https&sv=2022-11-02&sr=b&sig=5B0q%2B90BH0fkPZK6G6LHKRIGMY%2FljNOfsSQ8xaQB6mw%3D"
+        })
+        self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium --explicit-proxy enable-explicit-proxy=true http-port=85 https-port=121 enable-pac-file=true pac-file-port=122 pac-file="{sas_url}"',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.httpsPort', 121),
+                     self.check('explicitProxy.pacFile', '{sas_url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                 ])
+
+        self.cmd(
+            'network firewall policy update -g {rg} -n {policy_name} --explicit-proxy enable-explicit-proxy=true http-port=86 https-port=123 enable-pac-file=true pac-file-port=124 pac-file="{sas_url}"',
+            checks=[
+                self.check('name', '{policy_name}'),
+                self.check('explicitProxy.enableExplicitProxy', True),
+                self.check('explicitProxy.enablePacFile', True),
+                self.check('explicitProxy.httpPort', 86),
+                self.check('explicitProxy.httpsPort', 123),
+                self.check('explicitProxy.pacFile', '{sas_url}'),
+                self.check('explicitProxy.pacFilePort', 124),
+            ])
 
     @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy_')
     def test_firewall_with_dns_proxy(self, resource_group):

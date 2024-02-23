@@ -7,9 +7,31 @@ CONNECTED_ENVIRONMENT_TYPE = "connected"
 MANAGED_ENVIRONMENT_RESOURCE_TYPE = "managedEnvironments"
 CONNECTED_ENVIRONMENT_RESOURCE_TYPE = "connectedEnvironments"
 CUSTOM_LOCATION_RESOURCE_TYPE = "customLocations"
+CONNECTED_CLUSTER_TYPE = "connectedClusters"
+AZURE_FILE_STORAGE_TYPE = "azureFile"
+NFS_AZURE_FILE_STORAGE_TYPE = "nfsAzureFile"
 
 MAXIMUM_SECRET_LENGTH = 20
 MAXIMUM_CONTAINER_APP_NAME_LENGTH = 32
+MAXIMUM_APP_RESILIENCY_NAME_LENGTH = 30
+MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH = 30
+
+DEFAULT_HTTP_RETRY_MAX = 3
+DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS = 1000
+DEFAULT_HTTP_RETRY_INTERVAL_IN_MILLISECONDS = 10000
+DEFAULT_HTTP_RETRY_ERRORS = ['5xx']
+
+DEFAULT_RESPONSE_TIMEOUT = 60
+DEFAULT_CONNECTION_TIMEOUT = 5
+DEFAULT_CONSECUTIVE_ERRORS = 5
+DEFAULT_INTERVAL = 10
+DEFAULT_MAX_EJECTION = 100
+DEFAULT_HTTP1_MAX_PENDING_REQ = 1024
+DEFAULT_HTTP2_MAX_REQ = 1024
+
+DEFAULT_COMPONENT_HTTP_RETRY_MAX = 3
+DEFAULT_COMPONENT_HTTP_RETRY_BACKOFF_INITIAL_DELAY = 1000
+DEFAULT_COMPONENT_HTTP_RETRY_BACKOFF_MAX_DELAY = 10000
 
 SHORT_POLLING_INTERVAL_SECS = 3
 LONG_POLLING_INTERVAL_SECS = 10
@@ -22,12 +44,16 @@ LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
 SERVICE_LINKER_RP = "Microsoft.ServiceLinker"
 EXTENDED_LOCATION_RP = "Microsoft.ExtendedLocation"
+KUBERNETES_CONFIGURATION_RP = "Microsoft.KubernetesConfiguration"
 CONTAINER_APP_EXTENSION_TYPE = "microsoft.app.environment"
 
 MANAGED_CERTIFICATE_RT = "managedCertificates"
 PRIVATE_CERTIFICATE_RT = "certificates"
 
-DEV_SERVICE_LIST = ["kafka", "postgres", "redis", "mariadb", "qdrant"]
+DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST = ["postgres", "redis"]
+DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST = ["kafka", "redis"]
+
+DEV_SERVICE_LIST = ["kafka", "postgres", "redis", "mariadb", "qdrant", "weaviate", "milvus"]
 
 DEV_KAFKA_IMAGE = 'kafka'
 DEV_KAFKA_SERVICE_TYPE = 'kafka'
@@ -48,6 +74,14 @@ DEV_MARIADB_CONTAINER_NAME = 'mariadb'
 DEV_QDRANT_IMAGE = 'qdrant'
 DEV_QDRANT_SERVICE_TYPE = 'qdrant'
 DEV_QDRANT_CONTAINER_NAME = 'qdrant'
+
+DEV_WEAVIATE_IMAGE = 'weaviate'
+DEV_WEAVIATE_SERVICE_TYPE = 'weaviate'
+DEV_WEAVIATE_CONTAINER_NAME = 'weaviate'
+
+DEV_MILVUS_IMAGE = 'milvus'
+DEV_MILVUS_SERVICE_TYPE = 'milvus'
+DEV_MILVUS_CONTAINER_NAME = 'milvus'
 
 PENDING_STATUS = "Pending"
 SUCCEEDED_STATUS = "Succeeded"
@@ -83,11 +117,14 @@ steps:
     timeout: 1800
 """
 
-ACA_BUILDER_BULLSEYE_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bullseye-20231025.1"
-ACA_BUILDER_BOOKWORM_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bookworm-20231025.1"
+ACA_BUILDER_BULLSEYE_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bullseye-20240124.1"
+ACA_BUILDER_BOOKWORM_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bookworm-20240124.1"
 
 DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world image
 
 HELLO_WORLD_IMAGE = "mcr.microsoft.com/k8se/quickstart:latest"
 
 LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}},{"category":"ContainerAppSystemLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}}]'  # pylint: disable=line-too-long
+
+DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAME = "containerapp-ext"
+DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE = "containerapp-ns"

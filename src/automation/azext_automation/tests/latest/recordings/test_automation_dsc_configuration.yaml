@@ -1,0 +1,498 @@
+interactions:
+- request:
+    body: '{"name": "account000002", "location": "westus2", "properties": {"sku":
+      {"name": "Basic"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --location
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002?api-version=2021-06-22
+  response:
+    body:
+      string: '{"name":"account000002","systemData":{"createdAt":"2024-01-15T07:20:16.4566667+00:00","lastModifiedAt":"2024-01-15T07:20:16.4566667+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://dc47a3cc-d102-460a-b12d-e9a996f10c85.agentsvc.wus2.azure-automation.net/accounts/dc47a3cc-d102-460a-b12d-e9a996f10c85","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"automationHybridServiceUrl":"https://dc47a3cc-d102-460a-b12d-e9a996f10c85.jrds.wus2.azure-automation.net/automationAccounts/dc47a3cc-d102-460a-b12d-e9a996f10c85","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}},"powershell72":{"builtinModules":{"Az":"8.3.0"}}},"creationTime":"2024-01-15T07:20:16.4566667+00:00","lastModifiedBy":null,"lastModifiedTime":"2024-01-15T07:20:16.4566667+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1218'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jan 2024 07:20:17 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002?api-version=2021-06-22
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"location": "westus2", "name": "SetupServer", "properties": {"source":
+      {"type": "embeddedContent", "value": "Configuration SetupServer {\r\n    Node
+      localhost {\r\n                               WindowsFeature IIS {\r\n                               Name
+      = Web-Server;\r\n            Ensure = Present\r\n        }\r\n    }\r\n}"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation configuration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '332'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --automation-account-name -n --location --source-type --source
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer","name":"SetupServer","type":"Microsoft.Automation/AutomationAccounts/Configurations","location":"westus2","tags":{},"etag":"\"638409000205100000\"","properties":{"provisioningState":"Succeeded","jobCount":0,"parameters":{},"description":null,"source":null,"state":"Published","creationTime":"2024-01-15T07:20:20.5066667+00:00","lastModifiedTime":"2024-01-15T07:20:20.51+00:00","logVerbose":false,"rawTags":null,"nodeConfigurationCount":0}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '650'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jan 2024 07:20:20 GMT
+      etag:
+      - '"638409000205100000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer?api-version=2023-11-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation configuration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations?api-version=2023-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer","location":"westus2","name":"SetupServer","type":"Microsoft.Automation/AutomationAccounts/Configurations","tags":{},"properties":{"state":"Published","creationTime":"2024-01-15T07:20:20.5066667+00:00","lastModifiedTime":"2024-01-15T07:20:20.51+00:00"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '475'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jan 2024 07:20:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation configuration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name -n
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer","name":"SetupServer","type":"Microsoft.Automation/AutomationAccounts/Configurations","location":"westus2","tags":{},"etag":"\"638409000205100000\"","properties":{"provisioningState":"Succeeded","jobCount":0,"parameters":{},"description":null,"source":null,"state":"Published","creationTime":"2024-01-15T07:20:20.5066667+00:00","lastModifiedTime":"2024-01-15T07:20:20.51+00:00","logVerbose":false,"rawTags":null,"nodeConfigurationCount":0}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '650'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jan 2024 07:20:23 GMT
+      etag:
+      - '"638409000205100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation configuration show-content
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name -n
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer/content?api-version=2023-11-01
+  response:
+    body:
+      string: "Configuration SetupServer {\r\n    Node localhost {\r\n           \
+        \                    WindowsFeature IIS {\r\n                            \
+        \   Name = Web-Server;\r\n            Ensure = Present\r\n        }\r\n  \
+        \  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '204'
+      content-type:
+      - text/powershell
+      date:
+      - Mon, 15 Jan 2024 07:20:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation configuration update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name -n --location --source-type --source
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer","name":"SetupServer","type":"Microsoft.Automation/AutomationAccounts/Configurations","location":"westus2","tags":{},"etag":"\"638409000205100000\"","properties":{"provisioningState":"Succeeded","jobCount":0,"parameters":{},"description":null,"source":null,"state":"Published","creationTime":"2024-01-15T07:20:20.5066667+00:00","lastModifiedTime":"2024-01-15T07:20:20.51+00:00","logVerbose":false,"rawTags":null,"nodeConfigurationCount":0}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '650'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jan 2024 07:20:25 GMT
+      etag:
+      - '"638409000205100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"etag": "\"638409000205100000\"", "location": "westus2", "properties":
+      {"creationTime": "2024-01-15T07:20:20.5066667+00:00", "jobCount": 0, "lastModifiedTime":
+      "2024-01-15T07:20:20.51+00:00", "logVerbose": false, "nodeConfigurationCount":
+      0, "parameters": {}, "provisioningState": "Succeeded", "source": {"type": "embeddedContent",
+      "value": "Configuration SetupServer {\r\n    Node localhostServer {\r\n                               WindowsFeature
+      IIS {\r\n                               Name = Web-Server;\r\n            Ensure
+      = Present\r\n        }\r\n    }\r\n}"}, "state": "Published"}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation configuration update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '605'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --automation-account-name -n --location --source-type --source
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer","name":"SetupServer","type":"Microsoft.Automation/AutomationAccounts/Configurations","location":"westus2","tags":{},"etag":"\"638409000270766667\"","properties":{"provisioningState":"Succeeded","jobCount":0,"parameters":{},"description":null,"source":null,"state":"Published","creationTime":"2024-01-15T07:20:20.5066667+00:00","lastModifiedTime":"2024-01-15T07:20:27.0766667+00:00","logVerbose":false,"rawTags":null,"nodeConfigurationCount":0}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jan 2024 07:20:26 GMT
+      etag:
+      - '"638409000270766667"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation configuration show-content
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name -n
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer/content?api-version=2023-11-01
+  response:
+    body:
+      string: "Configuration SetupServer {\r\n    Node localhostServer {\r\n     \
+        \                          WindowsFeature IIS {\r\n                      \
+        \         Name = Web-Server;\r\n            Ensure = Present\r\n        }\r\
+        \n    }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '210'
+      content-type:
+      - text/powershell
+      date:
+      - Mon, 15 Jan 2024 07:20:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation configuration delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --automation-account-name -n -y
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations/SetupServer?api-version=2023-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 15 Jan 2024 07:20:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation configuration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_dsc_configuration_000001/providers/Microsoft.Automation/automationAccounts/account000002/configurations?api-version=2023-11-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jan 2024 07:20:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

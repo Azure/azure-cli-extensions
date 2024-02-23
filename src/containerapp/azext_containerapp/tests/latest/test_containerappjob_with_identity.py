@@ -5,28 +5,34 @@
 
 import os
 
+from azure.cli.command_modules.containerapp._utils import format_location
 from msrestazure.tools import parse_resource_id
-
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists, JMESPathCheckNotExists)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-from azext_containerapp.tests.latest.common import TEST_LOCATION
+from .common import TEST_LOCATION, STAGE_LOCATION
 from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
     def test_containerapp_manualjob_withidentity_crudoperations_e2e(self, resource_group):
-
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         job = self.create_random_name(prefix='job1', length=24)
 
-        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location)
         env_rg = parse_resource_id(env_id).get('resource_group')
         env_name = parse_resource_id(env_id).get('name')
 

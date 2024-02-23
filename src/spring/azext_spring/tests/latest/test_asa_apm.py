@@ -46,7 +46,6 @@ class ApmTest(ScenarioTest):
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
     @TearDown()
     def test_apm(self, resource_group, spring):
-        py_path = os.path.abspath(os.path.dirname(__file__))
 
         self.kwargs.update({
             'serviceName': spring,

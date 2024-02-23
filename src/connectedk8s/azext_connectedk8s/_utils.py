@@ -6,10 +6,10 @@
 import sys
 import os
 import shutil
+from packaging import version
 import subprocess
 from subprocess import Popen, PIPE
 import time
-import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import json
@@ -92,12 +92,8 @@ def validate_custom_token(cmd, resource_group_name, location):
     return False, location
 
 
-def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents'):
-    # Pulling helm chart from registry
-    os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name)
-
-    # Exporting helm chart after cleanup
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents', new_path=True):
+    # Exporting Helm chart
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', chart_folder_name)
     try:
         if os.path.isdir(chart_export_path):
@@ -105,7 +101,7 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     except:
         logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_folder_name, chart_export_path))
 
-    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name)
+    pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, chart_name)
 
     # Returning helm chart path
     helm_chart_path = os.path.join(chart_export_path, chart_name)
@@ -117,8 +113,22 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     return chart_path
 
 
-def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
-    cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
+def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
+    chart_url = registry_path.split(':')[0]
+    chart_version = registry_path.split(':')[1]
+
+    if new_path:
+        # Version check for stable release train (chart_version will be in X.Y.Z format as opposed to X.Y.Z-NONSTABLE)
+        if '-' not in chart_version and (version.parse(chart_version) < version.parse("1.14.0")):
+            error_summary = "This CLI version does not support upgrading to Agents versions older than v1.14"
+            telemetry.set_exception(exception='Operation not supported on older Agents', fault_type=consts.Operation_Not_Supported_Fault_Type, summary=error_summary)
+            raise ClientRequestError(error_summary, recommendation="Please select an agent-version >= v1.14 to upgrade to using 'az connectedk8s upgrade -g <rg_name> -n <cluster_name> --agent-version <at-least-1.14>'.")
+
+        base_path = os.path.dirname(chart_url)
+        image_name = os.path.basename(chart_url)
+        chart_url = base_path + '/v2/' + image_name
+
+    cmd_helm_chart_pull = [helm_client_location, "pull", "oci://" + chart_url, "--untar", "--untardir", chart_export_path, "--version", chart_version]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -134,20 +144,6 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
             time.sleep(retry_delay)
         else:
             break
-
-
-def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents'):
-    cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
-    if kube_config:
-        cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_chart_export.extend(["--kube-context", kube_context])
-    response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
-    _, error_helm_chart_export = response_helm_chart_export.communicate()
-    if response_helm_chart_export.returncode != 0:
-        telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
-                                summary='Unable to export {} helm chart from the registry'.format(chart_name))
-        raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
 
 
 def save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available):
@@ -591,24 +587,27 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
 
     # Special configurations from 2022-09-01 ARM metadata.
     if "dataplaneEndpoints" in arm_metadata:
-        notification_endpoint = arm_metadata["dataplaneEndpoints"]["arcGlobalNotificationServiceEndpoint"]
-        config_endpoint = arm_metadata["dataplaneEndpoints"]["arcConfigEndpoint"]
-        his_endpoint = arm_metadata["dataplaneEndpoints"]["arcHybridIdentityServiceEndpoint"]
-        if his_endpoint[-1] != "/":
-            his_endpoint = his_endpoint + "/"
-        his_endpoint = his_endpoint + f"discovery?location={location}&api-version=1.0-preview"
-        relay_endpoint = arm_metadata["suffixes"]["relayEndpointSuffix"]
-        active_directory = arm_metadata["authentication"]["loginEndpoint"]
-        cmd_helm_install.extend(
-            [
-                "--set", "systemDefaultValues.azureResourceManagerEndpoint={}".format(resource_manager),
-                "--set", "systemDefaultValues.azureArcAgents.config_dp_endpoint_override={}".format(config_endpoint),
-                "--set", "systemDefaultValues.clusterconnect-agent.notification_dp_endpoint_override={}".format(notification_endpoint),
-                "--set", "systemDefaultValues.clusterconnect-agent.relay_endpoint_suffix_override={}".format(relay_endpoint),
-                "--set", "systemDefaultValues.clusteridentityoperator.his_endpoint_override={}".format(his_endpoint),
-                "--set", "systemDefaultValues.activeDirectoryEndpoint={}".format(active_directory)
-            ]
-        )
+        if "arcConfigEndpoint" in arm_metadata["dataplaneEndpoints"]:
+            notification_endpoint = arm_metadata["dataplaneEndpoints"]["arcGlobalNotificationServiceEndpoint"]
+            config_endpoint = arm_metadata["dataplaneEndpoints"]["arcConfigEndpoint"]
+            his_endpoint = arm_metadata["dataplaneEndpoints"]["arcHybridIdentityServiceEndpoint"]
+            if his_endpoint[-1] != "/":
+                his_endpoint = his_endpoint + "/"
+            his_endpoint = his_endpoint + f"discovery?location={location}&api-version=1.0-preview"
+            relay_endpoint = arm_metadata["suffixes"]["relayEndpointSuffix"]
+            active_directory = arm_metadata["authentication"]["loginEndpoint"]
+            cmd_helm_install.extend(
+                [
+                    "--set", "systemDefaultValues.azureResourceManagerEndpoint={}".format(resource_manager),
+                    "--set", "systemDefaultValues.azureArcAgents.config_dp_endpoint_override={}".format(config_endpoint),
+                    "--set", "systemDefaultValues.clusterconnect-agent.notification_dp_endpoint_override={}".format(notification_endpoint),
+                    "--set", "systemDefaultValues.clusterconnect-agent.relay_endpoint_suffix_override={}".format(relay_endpoint),
+                    "--set", "systemDefaultValues.clusteridentityoperator.his_endpoint_override={}".format(his_endpoint),
+                    "--set", "systemDefaultValues.activeDirectoryEndpoint={}".format(active_directory)
+                ]
+            )
+        else:
+            logger.debug("'arcConfigEndpoint' doesn't exist under 'dataplaneEndpoints' in the ARM metadata.")
 
     # Add custom-locations related params
     if enable_custom_locations and not enable_private_link:

@@ -51,7 +51,7 @@ class ImageCopyTests(ScenarioTest):
             'loc2': 'australiaeast',
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --admin-username theuser --image centos --admin-password testPassword0 '
+        self.cmd('vm create -g {rg} -n {vm} --admin-username theuser --image OpenLogic:CentOS:7.5:latest --admin-password testPassword0 '
                  '--authentication-type password --nsg-rule NONE')
         time.sleep(70)
         self.cmd('vm deallocate -g {rg} -n {vm}')

@@ -8,11 +8,12 @@ import tempfile
 import time
 
 import yaml
+from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 from azure.cli.testsdk.decorators import serial_test
 
-from .common import TEST_LOCATION
+from .common import TEST_LOCATION, STAGE_LOCATION
 from .custom_preparers import ConnectedClusterPreparer
 from .utils import create_extension_and_custom_location
 
@@ -21,7 +22,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerappPreviewScenarioTest(ScenarioTest):
     @serial_test()
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_e2e(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -74,7 +75,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         ])
 
     @serial_test()
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_storage(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -94,8 +95,11 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
             ])
         storage_name = self.create_random_name(prefix='storage', length=24)
         shares_name = self.create_random_name(prefix='share', length=24)
+        storage_account_location = TEST_LOCATION
+        if format_location(storage_account_location) == format_location(STAGE_LOCATION):
+            storage_account_location = "eastus"
 
-        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share'.format(resource_group, storage_name))
+        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --location {}'.format(resource_group, storage_name, storage_account_location))
         self.cmd('storage share-rm create -g {} -n {} --storage-account {} --access-tier "TransactionOptimized" --quota 1024'.format(resource_group, shares_name, storage_name))
 
         storage_keys = self.cmd('az storage account keys list -g {} -n {}'.format(resource_group, storage_name)).get_output_in_json()[0]
@@ -126,7 +130,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         ])
 
     @serial_test()
-    @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_dapr_components(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -201,7 +205,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
 
     @serial_test()
     @live_only()  # generate_randomized_cert_name cause No match for the request (<Request (PUT) /my-connected-env/certificates/my-connected-e-clitest.rg0000-8d2d-6528?
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_certificate(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -278,8 +282,8 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         self.cmd('containerapp connected-env delete -g {} -n {} --yes'.format(resource_group, env_name), expect_failure=False)
 
     @serial_test()
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
-    @ConnectedClusterPreparer(location=TEST_LOCATION, skip_delete=True)
+    @ResourceGroupPreparer(location="southcentralus", random_name_length=15)
+    @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_certificate_upload_with_certificate_name(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"

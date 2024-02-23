@@ -143,7 +143,14 @@ def custom_location_client_factory(cli_ctx, api_version=None, subscription_id=No
 
 
 def k8s_extension_client_factory(cli_ctx, subscription_id=None):
-    from azext_containerapp.vendored_sdks.kubernetesconfiguration import SourceControlConfigurationClient
+    from .vendored_sdks.kubernetesconfiguration import SourceControlConfigurationClient
 
     r = get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient, subscription_id=subscription_id)
     return r.extensions
+
+
+def connected_k8s_client_factory(cli_ctx, subscription_id=None):
+    from .vendored_sdks.hybridkubernetes import ConnectedKubernetesClient
+
+    r = get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=subscription_id)
+    return r.connected_cluster

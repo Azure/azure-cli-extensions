@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 import os
-from ...vendored_sdks.appplatform.v2023_09_01_preview import models
+from ...vendored_sdks.appplatform.v2024_01_01_preview import models
 from ..._utils import _get_sku_name
 from ...custom import (certificate_add, certificate_update)
 try:
@@ -20,6 +20,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
 
 def _get_test_cmd():
     cli_ctx = DummyCli()

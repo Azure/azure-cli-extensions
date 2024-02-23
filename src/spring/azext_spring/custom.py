@@ -10,6 +10,8 @@ import re
 import os
 import time
 from azure.cli.core._profile import Profile
+from azure.core.exceptions import HttpResponseError
+from azure.mgmt.loganalytics import LogAnalyticsManagementClient
 
 from ._websocket import WebSocketConnection, recv_remote, send_stdin, EXEC_PROTOCOL_CTRL_C_MSG
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
@@ -21,7 +23,7 @@ from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
 from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2023_09_01_preview import models, AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2024_01_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
@@ -37,6 +39,7 @@ import base64
 from collections import defaultdict
 from ._log_stream import LogStream
 from ._build_service import _update_default_build_agent_pool
+from .log_stream.log_stream_operations import log_stream_from_url
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -48,6 +51,8 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring app deployment create\" to create a deployment and \"az spring app set-deployment\" to set production deployment."
 DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deployment, the app will be inaccessible after this operation."
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
+APP_INSIGHTS_CREATION_FAILURE_WARNING = 'Unable to create the Application Insights for the Azure Spring Apps. ' \
+                                        'Please use the Azure Portal to manually create and configure the Application Insights, if needed.'
 
 
 def _warn_enable_java_agent(enable_java_agent, **_):
@@ -82,7 +87,8 @@ def _update_application_insights_asc_create(cmd,
 def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                   disable_app_insights=None, sku=None, tags=None, build_pool_size=None,
                   enable_log_stream_public_endpoint=None, enable_dataplane_public_endpoint=None,
-                  ingress_read_timeout=None, no_wait=False):
+                  ingress_read_timeout=None, enable_planned_maintenance=False, planned_maintenance_day=None,
+                  planned_maintenance_start_hour=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
@@ -122,13 +128,21 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
 
     _update_ingress_config(updated_resource_properties, ingress_read_timeout)
 
+    # update planned maintenance
+    update_planned_maintenance, updated_resource_properties.maintenance_schedule_configuration = _update_planned_maintenance(
+        legacy_configuration=resource.properties.maintenance_schedule_configuration,
+        enable_planned_maintenance=enable_planned_maintenance,
+        planned_maintenance_day=planned_maintenance_day,
+        planned_maintenance_start_hour=planned_maintenance_start_hour
+    )
+
     # update service tags
     if tags is not None:
         updated_resource.tags = tags
         update_service_tags = True
 
-    if update_service_tags is False and update_service_sku is False and update_dataplane_public_endpoint is False and (
-            ingress_read_timeout is None):
+    if update_service_tags is False and update_service_sku is False and update_dataplane_public_endpoint is False \
+            and update_planned_maintenance is False and ingress_read_timeout is None:
         return resource
 
     updated_resource.properties = updated_resource_properties
@@ -180,6 +194,18 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
             sdk_no_wait(no_wait, client_preview.monitoring_settings.begin_update_put,
                         resource_group_name=resource_group, service_name=name,
                         monitoring_setting_resource=monitoring_setting_resource)
+
+
+def _update_planned_maintenance(legacy_configuration, enable_planned_maintenance=False, planned_maintenance_day=None,
+                                planned_maintenance_start_hour=None):
+    if enable_planned_maintenance is True:
+        if planned_maintenance_day is None or planned_maintenance_start_hour is None:
+            return False, legacy_configuration
+        return True, models.WeeklyMaintenanceScheduleConfiguration(
+            day=planned_maintenance_day,
+            hour=planned_maintenance_start_hour
+        )
+    return False, legacy_configuration
 
 
 def spring_delete(cmd, client, resource_group, name, no_wait=False):
@@ -491,7 +517,7 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
 def app_tail_log(cmd, client, resource_group, service, name,
                  deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
     app_tail_log_internal(cmd, client, resource_group, service, name, deployment, instance, follow, lines, since, limit,
-                          format_json, get_app_log=_get_app_log)
+                          format_json, get_app_log=log_stream_from_url)
 
 
 def app_tail_log_internal(cmd, client, resource_group, service, name,
@@ -1146,136 +1172,6 @@ def _get_redis_primary_key(cli_ctx, resource_id):
     return keys.primary_key
 
 
-# pylint: disable=bare-except, too-many-statements
-def _get_app_log(url, auth, format_json, exceptions, chunk_size=None, stderr=False):
-    logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
-
-    def build_log_shortener(length):
-        if length <= 0:
-            raise InvalidArgumentValueError('Logger length in `logger{length}` should be positive')
-
-        def shortener(record):
-            '''
-            Try shorten the logger property to the specified length before feeding it to the formatter.
-            '''
-            logger_name = record.get('logger', None)
-            if logger_name is None:
-                return record
-
-            # first, try to shorten the package name to one letter, e.g.,
-            #     org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration
-            # to: o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration
-            while len(logger_name) > length:
-                logger_name, count = logger_seg_regex.subn(r'\1.', logger_name, 1)
-                if count < 1:
-                    break
-
-            # then, cut off the leading packages if necessary
-            logger_name = logger_name[-length:]
-            record['logger'] = logger_name
-            return record
-
-        return shortener
-
-    def build_formatter():
-        '''
-        Build the log line formatter based on the format_json argument.
-        '''
-        nonlocal format_json
-
-        def identity(o):
-            return o
-
-        if format_json is None or len(format_json) == 0:
-            return identity
-
-        logger_regex = re.compile(r'\blogger\{(\d+)\}')
-        match = logger_regex.search(format_json)
-        pre_processor = identity
-        if match:
-            length = int(match[1])
-            pre_processor = build_log_shortener(length)
-            format_json = logger_regex.sub('logger', format_json, 1)
-
-        first_exception = True
-
-        def format_line(line):
-            nonlocal first_exception
-            try:
-                log_record = json.loads(line)
-                # Add n=\n so that in Windows CMD it's easy to specify customized format with line ending
-                # e.g., "{timestamp} {message}{n}"
-                # (Windows CMD does not escape \n in string literal.)
-                return format_json.format_map(pre_processor(defaultdict(str, n="\n", **log_record)))
-            except:
-                if first_exception:
-                    # enable this format error logging only with --verbose
-                    logger.info("Failed to format log line '{}'".format(line), exc_info=sys.exc_info())
-                    first_exception = False
-                return line
-
-        return format_line
-
-    def iter_lines(response, limit=2 ** 20, chunk_size=None):
-        '''
-        Returns a line iterator from the response content. If no line ending was found and the buffered content size is
-        larger than the limit, the buffer will be yielded directly.
-        '''
-        buffer = []
-        total = 0
-        for content in response.iter_content(chunk_size=chunk_size):
-            if not content:
-                if len(buffer) > 0:
-                    yield b''.join(buffer)
-                break
-
-            start = 0
-            while start < len(content):
-                line_end = content.find(b'\n', start)
-                should_print = False
-                if line_end < 0:
-                    next = (content if start == 0 else content[start:])
-                    buffer.append(next)
-                    total += len(next)
-                    start = len(content)
-                    should_print = total >= limit
-                else:
-                    buffer.append(content[start:line_end + 1])
-                    start = line_end + 1
-                    should_print = True
-
-                if should_print:
-                    yield b''.join(buffer)
-                    buffer.clear()
-                    total = 0
-
-    with requests.get(url, stream=True, auth=auth) as response:
-        try:
-            if response.status_code != 200:
-                failure_reason = response.reason
-                if response.content:
-                    if isinstance(response.content, bytes):
-                        failure_reason = "{}:{}".format(failure_reason, response.content.decode('utf-8'))
-                    else:
-                        failure_reason = "{}:{}".format(failure_reason, response.content)
-                raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
-                    response.status_code, failure_reason))
-            std_encoding = sys.stdout.encoding
-
-            formatter = build_formatter()
-
-            for line in iter_lines(response, chunk_size=chunk_size):
-                decoded = (line.decode(encoding='utf-8', errors='replace')
-                           .encode(std_encoding, errors='replace')
-                           .decode(std_encoding, errors='replace'))
-                if stderr:
-                    print(formatter(decoded), end='', file=sys.stderr)
-                else:
-                    print(formatter(decoded), end='')
-        except CLIError as e:
-            exceptions.append(e)
-
-
 def storage_callback(pipeline_response, deserialized, headers):
     return models.StorageResource.deserialize(json.loads(pipeline_response.http_response.text()))
 
@@ -1568,26 +1464,26 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
 
 
 def try_create_application_insights(cmd, resource_group, name, location):
-    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Apps. ' \
-                           'Please use the Azure Portal to manually create and configure the Application Insights, ' \
-                           'if needed.'
+    workspace = try_create_log_analytics_workspace(cmd, resource_group, name, location)
+    if workspace is None:
+        logger.warning(APP_INSIGHTS_CREATION_FAILURE_WARNING)
+        return None
 
-    ai_resource_group_name = resource_group
-    ai_name = name
-    ai_location = location
-
-    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient)
+    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient,
+                                                  api_version='2020-02-02-preview')
     ai_properties = {
-        "name": ai_name,
-        "location": ai_location,
+        "location": location,
         "kind": "web",
         "properties": {
-            "Application_Type": "web"
+            "Application_Type": "web",
+            "Flow_Type": "Bluefield",
+            "Request_Source": "rest",
+            "WorkspaceResourceId": workspace.id
         }
     }
-    appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
+    appinsights = app_insights_client.components.create_or_update(resource_group, name, ai_properties)
     if appinsights is None or appinsights.connection_string is None:
-        logger.warning(creation_failed_warn)
+        logger.warning(APP_INSIGHTS_CREATION_FAILURE_WARNING)
         return None
 
     portal_url = get_portal_uri(cmd.cli_ctx)
@@ -1648,6 +1544,40 @@ def app_insights_show(cmd, client, resource_group, name, no_wait=False):
     if not monitoring_setting_properties:
         raise CLIError("Application Insights not set.")
     return monitoring_setting_properties
+
+
+def try_create_log_analytics_workspace(cmd, resource_group, name, location):
+    client = get_mgmt_service_client(cmd.cli_ctx, LogAnalyticsManagementClient)
+    workspace = None
+
+    try:
+        workspace = client.workspaces.get(resource_group, name)
+    except HttpResponseError as err:
+        if err.status_code != 404:
+            raise
+
+    if workspace is not None:
+        return workspace
+
+    logger.debug("Log Analytics workspace not found. Creating it now...")
+    properties = {
+        "location": location,
+        "properties": {
+            "sku": {
+                "name": "PerGB2018"
+            },
+            "retentionInDays": 30
+        }
+    }
+    workspace = client.workspaces.begin_create_or_update(resource_group, name, properties).result()
+
+    portal_url = get_portal_uri(cmd.cli_ctx)
+    # We make this success message as a warning to no interfere with regular JSON output in stdout
+    logger.warning('Log Analytics workspace \"%s\" was created for this Azure Spring Apps. '
+                   'You can visit %s/#resource%s/overview to view your Log Analytics workspace',
+                   workspace.name, portal_url, workspace.id)
+
+    return workspace
 
 
 def app_connect(cmd, client, resource_group, service, name,

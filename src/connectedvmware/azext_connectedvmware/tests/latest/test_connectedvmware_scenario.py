@@ -28,7 +28,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 'cluster_name': 'azcli-contoso-cluster',
                 'datastore_inventory_item': 'datastore-563660',
                 'datastore_name': 'azcli-contoso-datastore',
-                'host_inventory_item': 'host-1147546',
+                'host_inventory_item': 'host-1147412',
                 'host_name': 'azcli-contoso-host',
                 'vnet_inventory_item': 'network-563661',
                 'vnet_name': 'azcli-contoso-virtual-network',
@@ -203,7 +203,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             ],
         ).get_output_in_json()
         vm_moRefId = vm['infrastructureProfile']['moRefId']
-        self.kwargs.update({ 'vm_moRefId': vm_moRefId })
+        self.kwargs.update({'vm_moRefId': vm_moRefId})
         self.assertIsNotNone(vm_moRefId)
         self.assertNotEqual(len(vm_moRefId), 0, 'moRefId of the VM should not be empty')
 

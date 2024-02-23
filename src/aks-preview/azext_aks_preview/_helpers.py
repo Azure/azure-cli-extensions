@@ -8,20 +8,24 @@ import platform
 import re
 import stat
 import tempfile
+from typing import TypeVar
+
 import yaml
-from typing import Any, List, TypeVar
+from azext_aks_preview._client_factory import (
+    get_mc_snapshots_client,
+    get_nodepool_snapshots_client,
+)
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
-from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError, FileOperationError
+from azure.cli.command_modules.acs._validators import extract_comma_separated_string
+from azure.cli.core.azclierror import (
+    FileOperationError,
+    InvalidArgumentValueError,
+    ResourceNotFoundError,
+)
 from azure.core.exceptions import AzureError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from knack.util import CLIError
-
-from azext_aks_preview._client_factory import get_nodepool_snapshots_client, get_mc_snapshots_client
-
-from azure.cli.command_modules.acs._validators import (
-    extract_comma_separated_string,
-)
 
 logger = get_logger(__name__)
 
@@ -103,8 +107,7 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
             continue
 
     if addition is None:
-        raise CLIError(
-            'failed to load additional configuration from {}'.format(addition_file))
+        raise CLIError(f'failed to load additional configuration from {addition_file}')
 
     if existing is None:
         existing = addition
@@ -116,6 +119,7 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
 
     # check that ~/.kube/config is only read- and writable by its owner
     if platform.system() != "Windows" and not os.path.islink(existing_file):
+        # pylint: disable=consider-using-f-string
         existing_file_perms = "{:o}".format(stat.S_IMODE(os.lstat(existing_file).st_mode))
         if not existing_file_perms.endswith("600"):
             logger.warning(
@@ -124,25 +128,24 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
                 existing_file_perms,
             )
 
-    with open(existing_file, 'w+') as stream:
+    with open(existing_file, 'w+', encoding="utf-8") as stream:
         yaml.safe_dump(existing, stream, default_flow_style=False)
 
     current_context = addition.get('current-context', 'UNKNOWN')
-    msg = 'Merged "{}" as current context in {}'.format(
-        current_context, existing_file)
+    msg = f'Merged "{current_context}" as current context in {existing_file}'
     logger.warning(msg)
 
 
 def _load_kubernetes_configuration(filename):
     try:
-        with open(filename) as stream:
+        with open(filename, encoding="utf-8") as stream:
             return yaml.safe_load(stream)
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
-            raise CLIError('{} does not exist'.format(filename))
+            raise CLIError(f'{filename} does not exist') from ex
         raise
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
-        raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
+        raise CLIError(f'Error parsing {filename} ({str(ex)})') from ex
 
 
 def _handle_merge(existing, addition, key, replace):
@@ -150,10 +153,8 @@ def _handle_merge(existing, addition, key, replace):
         return
     if key not in existing:
         raise FileOperationError(
-            "No such key '{}' in existing config, please confirm whether it is a valid config file. "
-            "May back up this config file, delete it and retry the command.".format(
-                key
-            )
+            f"No such key '{key}' in existing config, please confirm whether it is a valid config file. "
+            "May back up this config file, delete it and retry the command."
         )
     if not existing.get(key):
         existing[key] = addition[key]
@@ -195,7 +196,7 @@ def _fuzzy_match(query, arr):
         a_len = len(a)
         b_len = len(b)
         if a_len > b_len:  # @a should always be the shorter string
-            return similar_word(b, a)
+            return similar_word(b, a)  # pylint: disable=arguments-out-of-order
         if a in b:
             return True
         if b_len - a_len > 1:
@@ -237,7 +238,7 @@ def get_nodepool_snapshot_by_snapshot_id(cli_ctx, snapshot_id):
         resource_group_name = match.group(2)
         snapshot_name = match.group(3)
         return get_nodepool_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name)
-    raise InvalidArgumentValueError("Cannot parse snapshot name from provided resource id '{}'.".format(snapshot_id))
+    raise InvalidArgumentValueError(f"Cannot parse snapshot name from provided resource id '{snapshot_id}'.")
 
 
 def get_nodepool_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name):
@@ -247,8 +248,9 @@ def get_nodepool_snapshot(cli_ctx, subscription_id, resource_group_name, snapsho
     # track 2 sdk raise exception from azure.core.exceptions
     except AzureError as ex:
         if "not found" in ex.message:
-            raise ResourceNotFoundError("Snapshot '{}' not found.".format(snapshot_name))
-        raise map_azure_error_to_cli_error(ex)
+            # pylint: disable=raise-missing-from
+            raise ResourceNotFoundError(f"Snapshot '{snapshot_name}' not found.")
+        raise map_azure_error_to_cli_error(ex) from ex
     return snapshot
 
 
@@ -265,7 +267,8 @@ def get_cluster_snapshot_by_snapshot_id(cli_ctx, snapshot_id):
         snapshot_name = match.group(3)
         return get_cluster_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name)
     raise InvalidArgumentValueError(
-        "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
+        f"Cannot parse snapshot name from provided resource id {snapshot_id}."
+    )
 
 
 def get_cluster_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot_name):
@@ -275,9 +278,17 @@ def get_cluster_snapshot(cli_ctx, subscription_id, resource_group_name, snapshot
     # track 2 sdk raise exception from azure.core.exceptions
     except AzureError as ex:
         if "not found" in ex.message:
-            raise ResourceNotFoundError("Managed cluster snapshot '{}' not found.".format(snapshot_name))
-        raise map_azure_error_to_cli_error(ex)
+            # pylint: disable=raise-missing-from
+            raise ResourceNotFoundError(f"Managed cluster snapshot '{snapshot_name}' not found.")
+        raise map_azure_error_to_cli_error(ex) from ex
     return snapshot
+
+
+def check_is_private_link_cluster(mc: ManagedCluster) -> bool:
+    """Check `mc` object to determine whether private link cluster is enabled.
+    :return: bool
+    """
+    return check_is_private_cluster(mc) and not check_is_apiserver_vnet_integration_cluster(mc)
 
 
 def check_is_private_cluster(mc: ManagedCluster) -> bool:
@@ -299,14 +310,14 @@ def check_is_apiserver_vnet_integration_cluster(mc: ManagedCluster) -> bool:
 
 
 def setup_common_guardrails_profile(level, version, excludedNamespaces, mc: ManagedCluster, models) -> ManagedCluster:
-    if (level is not None or version is not None or excludedNamespaces is not None) and mc.guardrails_profile is None:
-        mc.guardrails_profile = models.GuardrailsProfile(
+    if (level is not None or version is not None or excludedNamespaces is not None) and mc.safeguards_profile is None:
+        mc.safeguards_profile = models.SafeguardsProfile(
             level=level,
             version=version
         )
     # replace values with provided values
     if excludedNamespaces is not None:
-        mc.guardrails_profile.excluded_namespaces = extract_comma_separated_string(
+        mc.safeguards_profile.excluded_namespaces = extract_comma_separated_string(
             excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
 
     return mc

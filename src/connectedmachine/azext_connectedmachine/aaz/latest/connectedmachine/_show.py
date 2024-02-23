@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2023-10-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2023-10-03-preview"],
         ]
     }
 
@@ -133,7 +133,7 @@ class Show(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2023-10-03-preview",
                     required=True,
                 ),
             }
@@ -170,6 +170,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.kind = AAZStrType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -250,6 +251,9 @@ class Show(AAZCommand):
                 serialized_name="lastStatusChange",
                 flags={"read_only": True},
             )
+            properties.license_profile = AAZObjectType(
+                serialized_name="licenseProfile",
+            )
             properties.location_data = AAZObjectType(
                 serialized_name="locationData",
             )
@@ -259,6 +263,14 @@ class Show(AAZCommand):
             )
             properties.mssql_discovered = AAZStrType(
                 serialized_name="mssqlDiscovered",
+            )
+            properties.network_profile = AAZObjectType(
+                serialized_name="networkProfile",
+                flags={"read_only": True},
+            )
+            properties.os_edition = AAZStrType(
+                serialized_name="osEdition",
+                flags={"read_only": True},
             )
             properties.os_name = AAZStrType(
                 serialized_name="osName",
@@ -360,6 +372,10 @@ class Show(AAZCommand):
             agent_upgrade.enable_automatic_upgrade = AAZBoolType(
                 serialized_name="enableAutomaticUpgrade",
             )
+            agent_upgrade.last_attempt_desired_version = AAZStrType(
+                serialized_name="lastAttemptDesiredVersion",
+                flags={"read_only": True},
+            )
             agent_upgrade.last_attempt_message = AAZStrType(
                 serialized_name="lastAttemptMessage",
                 flags={"read_only": True},
@@ -389,6 +405,166 @@ class Show(AAZCommand):
             extensions.Element = AAZObjectType()
             _ShowHelper._build_schema_machine_extension_instance_view_read(extensions.Element)
 
+            license_profile = cls._schema_on_200.properties.license_profile
+            license_profile.esu_profile = AAZObjectType(
+                serialized_name="esuProfile",
+            )
+            license_profile.license_channel = AAZStrType(
+                serialized_name="licenseChannel",
+                flags={"read_only": True},
+            )
+            license_profile.license_status = AAZStrType(
+                serialized_name="licenseStatus",
+                flags={"read_only": True},
+            )
+            license_profile.product_profile = AAZObjectType(
+                serialized_name="productProfile",
+                flags={"client_flatten": True},
+            )
+            license_profile.software_assurance = AAZObjectType(
+                serialized_name="softwareAssurance",
+                flags={"client_flatten": True, "read_only": True},
+            )
+
+            esu_profile = cls._schema_on_200.properties.license_profile.esu_profile
+            esu_profile.assigned_license = AAZObjectType(
+                serialized_name="assignedLicense",
+            )
+            esu_profile.assigned_license_immutable_id = AAZStrType(
+                serialized_name="assignedLicenseImmutableId",
+                flags={"read_only": True},
+            )
+            esu_profile.esu_eligibility = AAZStrType(
+                serialized_name="esuEligibility",
+            )
+            esu_profile.esu_key_state = AAZStrType(
+                serialized_name="esuKeyState",
+            )
+            esu_profile.esu_keys = AAZListType(
+                serialized_name="esuKeys",
+                flags={"read_only": True},
+            )
+            esu_profile.license_assignment_state = AAZStrType(
+                serialized_name="licenseAssignmentState",
+            )
+            esu_profile.server_type = AAZStrType(
+                serialized_name="serverType",
+            )
+
+            assigned_license = cls._schema_on_200.properties.license_profile.esu_profile.assigned_license
+            assigned_license.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            assigned_license.location = AAZStrType(
+                flags={"required": True},
+            )
+            assigned_license.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            assigned_license.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            assigned_license.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _ShowHelper._build_schema_system_data_read(assigned_license.system_data)
+            assigned_license.tags = AAZDictType()
+            assigned_license.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties.license_profile.esu_profile.assigned_license.properties
+            properties.license_details = AAZObjectType(
+                serialized_name="licenseDetails",
+            )
+            properties.license_type = AAZStrType(
+                serialized_name="licenseType",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+            )
+
+            license_details = cls._schema_on_200.properties.license_profile.esu_profile.assigned_license.properties.license_details
+            license_details.assigned_licenses = AAZIntType(
+                serialized_name="assignedLicenses",
+                flags={"read_only": True},
+            )
+            license_details.edition = AAZStrType()
+            license_details.immutable_id = AAZStrType(
+                serialized_name="immutableId",
+                flags={"read_only": True},
+            )
+            license_details.processors = AAZIntType()
+            license_details.state = AAZStrType()
+            license_details.target = AAZStrType()
+            license_details.type = AAZStrType()
+
+            tags = cls._schema_on_200.properties.license_profile.esu_profile.assigned_license.tags
+            tags.Element = AAZStrType()
+
+            esu_keys = cls._schema_on_200.properties.license_profile.esu_profile.esu_keys
+            esu_keys.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.license_profile.esu_profile.esu_keys.Element
+            _element.license_status = AAZStrType(
+                serialized_name="licenseStatus",
+            )
+            _element.sku = AAZStrType()
+
+            product_profile = cls._schema_on_200.properties.license_profile.product_profile
+            product_profile.billing_start_date = AAZStrType(
+                serialized_name="billingStartDate",
+                flags={"read_only": True},
+            )
+            product_profile.disenrollment_date = AAZStrType(
+                serialized_name="disenrollmentDate",
+                flags={"read_only": True},
+            )
+            product_profile.enrollment_date = AAZStrType(
+                serialized_name="enrollmentDate",
+                flags={"read_only": True},
+            )
+            product_profile.product_features = AAZListType(
+                serialized_name="productFeatures",
+            )
+            product_profile.product_type = AAZStrType(
+                serialized_name="productType",
+            )
+            product_profile.subscription_status = AAZStrType(
+                serialized_name="subscriptionStatus",
+            )
+
+            product_features = cls._schema_on_200.properties.license_profile.product_profile.product_features
+            product_features.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.license_profile.product_profile.product_features.Element
+            _element.billing_start_date = AAZStrType(
+                serialized_name="billingStartDate",
+                flags={"read_only": True},
+            )
+            _element.disenrollment_date = AAZStrType(
+                serialized_name="disenrollmentDate",
+                flags={"read_only": True},
+            )
+            _element.enrollment_date = AAZStrType(
+                serialized_name="enrollmentDate",
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType()
+            _element.subscription_status = AAZStrType(
+                serialized_name="subscriptionStatus",
+            )
+
+            software_assurance = cls._schema_on_200.properties.license_profile.software_assurance
+            software_assurance.software_assurance_customer = AAZBoolType(
+                serialized_name="softwareAssuranceCustomer",
+            )
+
             location_data = cls._schema_on_200.properties.location_data
             location_data.city = AAZStrType()
             location_data.country_or_region = AAZStrType(
@@ -397,6 +573,40 @@ class Show(AAZCommand):
             location_data.district = AAZStrType()
             location_data.name = AAZStrType(
                 flags={"required": True},
+            )
+
+            network_profile = cls._schema_on_200.properties.network_profile
+            network_profile.network_interfaces = AAZListType(
+                serialized_name="networkInterfaces",
+            )
+
+            network_interfaces = cls._schema_on_200.properties.network_profile.network_interfaces
+            network_interfaces.Element = AAZObjectType(
+                flags={"read_only": True},
+            )
+
+            _element = cls._schema_on_200.properties.network_profile.network_interfaces.Element
+            _element.ip_addresses = AAZListType(
+                serialized_name="ipAddresses",
+            )
+
+            ip_addresses = cls._schema_on_200.properties.network_profile.network_interfaces.Element.ip_addresses
+            ip_addresses.Element = AAZObjectType(
+                flags={"read_only": True},
+            )
+
+            _element = cls._schema_on_200.properties.network_profile.network_interfaces.Element.ip_addresses.Element
+            _element.address = AAZStrType()
+            _element.ip_address_version = AAZStrType(
+                serialized_name="ipAddressVersion",
+            )
+            _element.subnet = AAZObjectType(
+                flags={"read_only": True},
+            )
+
+            subnet = cls._schema_on_200.properties.network_profile.network_interfaces.Element.ip_addresses.Element.subnet
+            subnet.address_prefix = AAZStrType(
+                serialized_name="addressPrefix",
             )
 
             os_profile = cls._schema_on_200.properties.os_profile

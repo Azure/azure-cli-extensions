@@ -5,7 +5,7 @@
 
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
-from .vendored_sdks.appplatform.v2023_09_01_preview import models
+from .vendored_sdks.appplatform.v2024_01_01_preview import models
 from azure.cli.core.util import get_file_json
 
 
@@ -24,6 +24,7 @@ class DefaultApp:
         kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
         kwargs['ingress_settings'] = self._load_ingress_settings(**kwargs)
         kwargs['secrets'] = self._load_secrets_config(**kwargs)
+        kwargs['addon_configs'] = self._load_addon_configs(**kwargs)
         return models.AppResourceProperties(**kwargs)
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
@@ -174,6 +175,18 @@ class DefaultApp:
             )
 
         return secret_var_def
+
+    def _load_addon_configs(self, bind_service_registry=None, bind_application_configuration_service=None, **_):
+        if not bind_service_registry and not bind_application_configuration_service:
+            return None
+
+        addon_configs = {}
+
+        if bind_service_registry:
+            addon_configs['serviceRegistry'] = {'resourceId': bind_service_registry}
+        if bind_application_configuration_service:
+            addon_configs['applicationConfigurationService'] = {'resourceId': bind_application_configuration_service}
+        return addon_configs
 
 
 class BasicTierApp(DefaultApp):

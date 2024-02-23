@@ -57,9 +57,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.10'
+    displayName: 'Use Python 3.11'
     inputs:
-      versionSpec: 3.10
+      versionSpec: 3.11
   - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
       #!/usr/bin/env bash
@@ -67,29 +67,15 @@ jobs:
       source ./env/bin/activate
       azdev verify license
 
-- job: StaticAnalysis
-  displayName: "Static Analysis"
-  pool:
-    name: 'pool-ubuntu-2004'
-  steps:
-    - task: UsePythonVersion@0
-      displayName: 'Use Python 3.6'
-      inputs:
-        versionSpec: 3.6
-    - bash: pip install wheel==0.30.0 pylint==1.9.5 flake8==3.5.0 requests
-      displayName: 'Install wheel, pylint, flake8, requests'
-    - bash: python scripts/ci/source_code_static_analysis.py
-      displayName: "Static Analysis"
-
 - job: IndexVerify
   displayName: "Verify Extensions Index"
   pool:
     name: 'pool-ubuntu-2004'
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.10'
+    displayName: 'Use Python 3.11'
     inputs:
-      versionSpec: 3.10
+      versionSpec: 3.11
   - bash: |
       #!/usr/bin/env bash
       set -ev
@@ -110,6 +96,8 @@ jobs:
         python.version: '3.9'
       Python310:
         python.version: '3.10'
+      Python311:
+        python.version: '3.11'
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python $(python.version)'
@@ -129,16 +117,17 @@ jobs:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-- job: LintModifiedExtensions
-  displayName: "CLI Linter on Modified Extensions"
+- job: AzdevStyleModifiedExtensions
+  displayName: "azdev style on Modified Extensions"
   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+  continueOnError: true
   pool:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.10'
+      displayName: 'Use Python 3.11'
       inputs:
-        versionSpec: 3.10
+        versionSpec: 3.11
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -147,29 +136,54 @@ jobs:
         # overwrite the default AZURE_EXTENSION_DIR set by ADO
         AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
 
-        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/verify_linter.py
-      displayName: "CLI Linter on Modified Extension"
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/azdev_linter_style.py --type style
+      displayName: "azdev style on Modified Extensions"
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-- job: IndexRefDocVerify
-  displayName: "Verify Ref Docs"
-  continueOnError: true
+- job: AzdevLinterModifiedExtensions
+  displayName: "azdev linter on Modified Extensions"
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
   pool:
     name: 'pool-ubuntu-2004'
   steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 3.10'
-    inputs:
-      versionSpec: 3.10
-  - bash: pip install wheel==0.30.0
-    displayName: 'Install wheel==0.30.0'
-  - task: Bash@3
-    displayName: "Verify Extension Ref Docs"
-    inputs:
-      targetType: 'filePath'
-      filePath: scripts/ci/test_index_ref_doc.sh
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.11'
+      inputs:
+        versionSpec: 3.11
+    - template: .azure-pipelines/templates/azdev_setup.yml
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+        source ./env/bin/activate
+        # overwrite the default AZURE_EXTENSION_DIR set by ADO
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
+        
+        # TODO: remove --type linter once all extensions are fixed
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/azdev_linter_style.py --type linter
+      displayName: "azdev linter on Modified Extensions"
+      env:
+        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
+        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
+
+#- job: IndexRefDocVerify
+#  displayName: "Verify Ref Docs"
+#  continueOnError: true
+#  pool:
+#    name: 'pool-ubuntu-2004'
+#  steps:
+#  - task: UsePythonVersion@0
+#    displayName: 'Use Python 3.11'
+#    inputs:
+#      versionSpec: 3.11
+#  - bash: pip install wheel==0.30.0
+#    displayName: 'Install wheel==0.30.0'
+#  - task: Bash@3
+#    displayName: "Verify Extension Ref Docs"
+#    inputs:
+#      targetType: 'filePath'
+#      filePath: scripts/ci/test_index_ref_doc.sh
 
 - job: CheckInit
   displayName: "Check Init Files"
