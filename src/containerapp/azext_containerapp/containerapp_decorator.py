@@ -231,6 +231,8 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                 while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
                     self.new_containerapp["properties"]["template"]["containers"].pop()
             for c in self.new_containerapp["properties"]["template"]["containers"]:
+                # Update existing container if container name matches the argument container name or if force_single_container_updates is set
+                # force_single_container_updates argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
                 if c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_force_single_container_updates():
                     updating_existing_container = True
 
