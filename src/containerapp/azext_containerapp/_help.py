@@ -1282,9 +1282,9 @@ helps['containerapp env telemetry'] = """
 
 helps['containerapp env telemetry set'] = """
     type: command
-    short-summary: Update Container Apps environment telemetry settings.
+    short-summary: Create or update container apps environment telemetry settings.
     examples:
-    - name: Update Container Apps environment telemetry settings.
+    - name: Create or update container apps environment telemetry settings.
       text: |
           az containerapp env telemetry set -n MyContainerappEnvironment -g MyResourceGroup \\
               --app-insights-connection-string connectionString --open-telemetry-data-dog-site dataDogSite \\
