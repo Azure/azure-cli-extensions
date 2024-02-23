@@ -65,8 +65,10 @@ def load_arguments(self, _):
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
         
     # Telemetry 
-    with self.argument_context('containerapp env telemetry set', arg_group='Telemetry') as c:
+    with self.argument_context('containerapp env telemetry set', arg_group='App Insights') as c:
         c.argument('app_insights_connection_string', options_list=['--app-insights-connection-string', '--ai-connection-string'], help='Application Insights connection string used by container apps environment')
+
+    with self.argument_context('containerapp env telemetry set', arg_group='Open Telemetry') as c:
         c.argument('open_telemetry_traces_destinations', options_list=['--open-telemetry-traces-destinations', '--traces-destinations'], nargs='+', help='A list of the destinations of open telemetry trace signal for the container app. Space-separated destinations.')
         c.argument('open_telemetry_logs_destinations', options_list=['--open-telemetry-logs-destinations', '--logs-destinations'], nargs='+', help='A list of the destinations of open telemetry log signal for the container app. Space-separated destinations.')
         c.argument('open_telemetry_metrics_destinations', options_list=['--open-telemetry-metrics-destinations', '--metrics-destinations'], nargs='+', help='A list of the destinations of open telemetry metric signal for the container app. Space-separated destinations.')
