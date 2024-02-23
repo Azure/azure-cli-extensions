@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san volume snapshot list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List Snapshots in a VolumeGroup or List Snapshots by Volume (name) in a VolumeGroup using filter

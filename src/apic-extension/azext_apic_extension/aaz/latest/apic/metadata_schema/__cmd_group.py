@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic metadata-schema",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Metadata schema
+    """Commands to manage Metadata Schemas in API Center
     """
     pass
 

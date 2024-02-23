@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.6.5
+++++++
+* Fix tenant ID retrieval for proxy command.
+
+1.6.4
+++++++
+* Replace AAD Graph with Microsoft Graph for getting Custom Locations RP service principal application object ID.
+
 1.6.3
 ++++++
 * Skip checking operation version support for non-stable release trains.
@@ -18,7 +26,6 @@ Release History
 
 1.6.0
 ++++++
-
 * Updated Helm from 3.6.3 to 3.12.2
 
 1.5.6

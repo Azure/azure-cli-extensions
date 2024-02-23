@@ -109,6 +109,8 @@ from azext_aks_preview._consts import (
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
+    CONST_SSH_ACCESS_LOCALUSER,
+    CONST_SSH_ACCESS_DISABLED,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -326,6 +328,11 @@ storage_pool_options = [
 node_provisioning_modes = [
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
+]
+
+ssh_accesses = [
+    CONST_SSH_ACCESS_LOCALUSER,
+    CONST_SSH_ACCESS_DISABLED,
 ]
 
 
@@ -780,6 +787,7 @@ def load_arguments(self, _):
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
+        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -812,6 +820,13 @@ def load_arguments(self, _):
                 'Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". '
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
+        )
+        # in creation scenario, use "localuser" as default
+        c.argument(
+            'ssh_access',
+            arg_type=get_enum_type(ssh_accesses),
+            default=CONST_SSH_ACCESS_LOCALUSER,
+            is_preview=True,
         )
 
     with self.argument_context("aks update") as c:
@@ -1146,6 +1161,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")
+        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
+        c.argument('disable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -1188,6 +1205,8 @@ def load_arguments(self, _):
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
         )
+        # In update scenario, use emtpy str as default.
+        c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1338,6 +1357,13 @@ def load_arguments(self, _):
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
         c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
+        # in creation scenario, use "localuser" as default
+        c.argument(
+            'ssh_access',
+            arg_type=get_enum_type(ssh_accesses),
+            default=CONST_SSH_ACCESS_LOCALUSER,
+            is_preview=True,
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1393,6 +1419,9 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_os_skus_update),
             validator=validate_os_sku,
         )
+        # In update scenario, use emtpy str as default.
+        c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)
@@ -1414,6 +1443,14 @@ def load_arguments(self, _):
             action=get_three_state_flag(),
             is_preview=True,
             help="delete an AKS nodepool by ignoring PodDisruptionBudget setting",
+        )
+
+    with self.argument_context("aks nodepool delete-machines") as c:
+        c.argument(
+            "machine_names",
+            nargs="+",
+            required=True,
+            help="Space-separated machine names to delete.",
         )
 
     with self.argument_context("aks machine") as c:
