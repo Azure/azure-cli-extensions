@@ -116,7 +116,7 @@ def validate_binding_name(binding_name):
 
 def is_valid_java_component_resource_id(resource_id):
     java_component_dict = parse_resource_id(resource_id)
-    return java_component_dict.get("resource_type") == JAVA_COMPONENT_RESOURCE_TYPE
+    return java_component_dict.get("type") == MANAGED_ENVIRONMENT_RESOURCE_TYPE and java_component_dict.get("resource_type") == JAVA_COMPONENT_RESOURCE_TYPE
 
 
 def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list, resource_group_name, name):
