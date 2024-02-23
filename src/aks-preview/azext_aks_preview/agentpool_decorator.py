@@ -392,11 +392,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # Initialize the value of pod_ip_allocation_mode from the
         # agentpool.network_profile.pod_ip_allocation_mode if it exists
         pod_ip_allocation_mode = None
-        if (
-                self.agentpool and self.agentpool.network_profile and
-                self.agentpool.network_profile.pod_ip_allocation_mode is not None
-        ):
-            pod_ip_allocation_mode = self.agentpool.network_profile.pod_ip_allocation_mode
+        if (self.agentpool and self.agentpool.pod_ip_allocation_mode is not None):
+            pod_ip_allocation_mode = self.agentpool.pod_ip_allocation_mode
 
         # overwrite if provided by user in the command
         pod_ip_allocation_mode = self.raw_param.get("pod_ip_allocation_mode")
@@ -576,10 +573,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         if allowed_host_ports is not None:
             agentpool.network_profile.allowed_host_ports = allowed_host_ports
             agentpool.network_profile.application_security_groups = asg_ids
-
-        pod_ip_allocation_mode = self.context.get_pod_ip_allocation_mode()
-        if pod_ip_allocation_mode:
-            agentpool.network_profile.pod_ip_allocation_mode = pod_ip_allocation_mode
 
         ip_tags = self.context.get_ip_tags()
         if ip_tags:
