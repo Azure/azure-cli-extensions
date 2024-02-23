@@ -8,8 +8,13 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._sap_availability_zone_detail import *
-from ._sap_disk_configuration import *
-from ._sap_sizing_recommendation import *
-from ._sap_supported_sku import *
+from azure.cli.core.aaz import *
+
+
+class __CMDGroup(AAZCommandGroup):
+    """Update the SAP Central Services Instance resource. This will be used by service only. PUT operation on this resource by end user will return a Bad Request error.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
