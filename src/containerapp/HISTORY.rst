@@ -8,10 +8,10 @@ upcoming
 * 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
 * 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
 * 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
-* 'az containerapp env java-component': support list Java components
-* 'az containerapp env java-component spring-cloud-config': support create/update/show/delete Spring Cloud Config
-* 'az containerapp env java-component spring-cloud-eureka': support create/update/show/delete Spring Cloud Eureka
-* 'az containerapp create/update': support bind Java component with --bind
+* 'az containerapp env java-component': Support list Java components
+* 'az containerapp env java-component spring-cloud-config': Support create/update/show/delete Spring Cloud Config
+* 'az containerapp env java-component spring-cloud-eureka': Support create/update/show/delete Spring Cloud Eureka
+* 'az containerapp create/update': Support bind Java component with --bind
 
 0.3.47
 ++++++
