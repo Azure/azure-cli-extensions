@@ -135,6 +135,7 @@ def aks_upgrades_table_format(result):
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
 
+
 def version_to_tuple(version):
     """Removes preview suffix"""
     if version.endswith('(preview)'):
