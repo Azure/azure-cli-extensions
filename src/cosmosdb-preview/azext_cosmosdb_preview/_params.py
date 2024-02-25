@@ -465,13 +465,15 @@ def load_arguments(self, _):
         c.argument('dest_nosql', nargs='+', arg_group='Azure Cosmos DB API for NoSQL container copy', action=AddSqlContainerAction, help='Destination NoSql container details')
         c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help=argparse.SUPPRESS)
         c.argument('worker_count', type=int, help=argparse.SUPPRESS)
+        c.argument('mode', help='Copy Mode (Online / Offline)')
 
     for scope in [
             'cosmosdb copy list',
             'cosmosdb copy show',
             'cosmosdb copy pause',
             'cosmosdb copy resume',
-            'cosmosdb copy cancel']:
+            'cosmosdb copy cancel',
+            'cosmosdb copy complete']:
         with self.argument_context(scope) as c:
             c.argument('account_name', options_list=["--account-name", "-a"], id_part=None, required=True, help='Azure Cosmos DB account name where the job is created. Use --dest-account value from create job command.')
 
@@ -479,7 +481,8 @@ def load_arguments(self, _):
             'cosmosdb copy show',
             'cosmosdb copy pause',
             'cosmosdb copy resume',
-            'cosmosdb copy cancel']:
+            'cosmosdb copy cancel',
+            'cosmosdb copy complete']:
         with self.argument_context(scope) as c:
             c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the container copy job.', required=True)
 
