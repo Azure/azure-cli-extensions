@@ -10,6 +10,7 @@ from .vendored_sdks.connectedvmware import AzureArcVMwareManagementServiceAPI
 from .vendored_sdks.hybridcompute import HybridComputeManagementClient
 from .vendored_sdks.resourcegraph import ResourceGraphClient
 
+
 def cf_connectedvmware(cli_ctx: AzCli, *_) -> AzureArcVMwareManagementServiceAPI:
     return get_mgmt_service_client(cli_ctx, AzureArcVMwareManagementServiceAPI)
 
@@ -102,13 +103,17 @@ def cf_machine_extension(cli_ctx: AzCli, *_):
     return cf_hybridcompute(cli_ctx).machine_extensions
 
 
-def cf_resource_graph(cli_ctx: AzCli, *_, subscription_bound=False) -> ResourceGraphClient:
+def cf_resource_graph(cli_ctx: AzCli, *_) -> ResourceGraphClient:
     """
     Client factory for resource graph.
     """
+    # NOTE 1: Adding base_url_bound=False to avoid the following error
+    # TypeError: __init__() got multiple values for argument 'base_url'
+    # NOTE 2: Hardcoding subscription_bound=False to avoid the following error
+    # Bearer token authentication is not permitted for non-TLS protected (non-https) URLs.
     return get_mgmt_service_client(
         cli_ctx,
         ResourceGraphClient,
-        subscription_bound=subscription_bound,
+        subscription_bound=False,
         base_url_bound=False,
     )

@@ -15,8 +15,9 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
     InvalidArgumentValueError,
 )
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
-from azure.mgmt.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse
+from .vendored_sdks.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse
 from msrestazure.tools import is_valid_resource_id
 
 from .pwinput import pwinput
@@ -818,7 +819,7 @@ def create_from_machines(
 
     logger = get_logger(__name__)
     arg_client = cf_resource_graph(cmd.cli_ctx)
-
+    machine_client = cf_machine(cmd.cli_ctx)
     vcenter_sub = vcenter_id.split("/")[2]
     resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
     vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
@@ -826,8 +827,8 @@ def create_from_machines(
 
     query = f"""
 Resources
-{rg_name and "| where resourceGroup == '{}'".format(rg_name) or ""}
-{machine_id and "| where id == '{}'".format(machine_id) or ""}
+{rg_name and "| where resourceGroup =~ '{}'".format(rg_name) or ""}
+{machine_id and "| where id =~ '{}'".format(machine_id) or ""}
 | where type =~ 'Microsoft.HybridCompute/machines'
 | where isempty(kind) or kind =~ '{vcenter.kind}'
 | extend p=parse_json(properties)
@@ -839,7 +840,7 @@ Resources
     substring(u, 11, 2), substring(u, 9, 2), '-',
     substring(u, 16, 2), substring(u, 14, 2), '-',
     substring(u, 19))
-| project machineId=id, name, vmUuidRev
+| project machineId=id, name, resourceGroup, vmUuidRev, kind
 | join kind=inner (
 ConnectedVMwareVsphereResources
 | where type =~ 'Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems'
@@ -860,13 +861,11 @@ ConnectedVMwareVsphereResources
     while True:
         query_options = QueryRequestOptions(skip_token=skip_token)
         query_request = QueryRequest(
-            subscriptions=[vcenter_sub],
+            subscriptions=[get_subscription_id(cmd.cli_ctx)],
             query=query,
             options=query_options,
         )
-        query_response: QueryResponse = arg_client.resources(query_request, subscription_id=vcenter_sub) #type: ignore
-        if not isinstance(query_response.data, list):
-            query_response.data = [query_response.data]
+        query_response: QueryResponse = arg_client.resources(query_request)
         vm_list.extend(query_response.data)
         skip_token = query_response.skip_token
         if skip_token is None:
@@ -881,6 +880,8 @@ ConnectedVMwareVsphereResources
         prefix = f"[{i+1}/{len(vm_list)}]"
         machineId = vm["machineId"]
         machineName = vm["name"]
+        machineRG = vm["resourceGroup"]
+        machineKind = vm["kind"]
         inventoryId = vm["inventoryId"]
         managedResourceId = vm["managedResourceId"]
         biosId = vm["biosId"]
@@ -915,11 +916,15 @@ ConnectedVMwareVsphereResources
             ),
         )
         try:
-            # _ = client.begin_create_or_update(
-            #     machineId, vm
-            # ).result()
+            if not machineKind:
+                m = MachineUpdate(
+                    kind=vcenter.kind,
+                )
+                _ = machine_client.update(machineRG, machineName, m)
+            _ = client.begin_create_or_update(
+                machineId, vm
+            ).result()
             linked += 1
-            from time import sleep; sleep(1)
         except Exception as e:  # pylint: disable=broad-except
             logger.warning(
                 "%s Failed to link machine %s to vCenter %s. Error: %s",
