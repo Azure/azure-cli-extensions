@@ -449,13 +449,10 @@ def create_or_update_test_with_config(
     new_body["passFailCriteria"] = {}
     # make every metric in passFailMetrics as None to remove it from the test and append metrics from yaml
     for key in body.get("passFailCriteria", {}):
-        new_body["passFailCriteria"][key] = None
         new_body["passFailCriteria"]["passFailMetrics"] = {}
         for key2 in body.get("passFailCriteria", {}).get("passFailMetrics", {}):
             new_body["passFailCriteria"]["passFailMetrics"][key2] = None
-            logger.debug("------------%s----------", key2)
     if yaml_test_body.get("passFailCriteria") is not None:
-        new_body["passFailCriteria"] = yaml_test_body.get("passFailCriteria", {})
         new_body["passFailCriteria"]["passFailMetrics"] = yaml_test_body[
             "passFailCriteria"
         ].get("passFailMetrics", {}) | new_body["passFailCriteria"].get(
