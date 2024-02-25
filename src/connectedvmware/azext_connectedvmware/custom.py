@@ -906,7 +906,7 @@ ConnectedVMwareVsphereResources
         logger.info(
             "%s Linking machine %s to vCenter %s with inventoryId: %s ...",
             prefix, machineName, vcenter.name, inventoryId)
-        vm = VirtualMachineInstance(
+        vmi = VirtualMachineInstance(
             extended_location=ExtendedLocation(
                 type=EXTENDED_LOCATION_TYPE,
                 name=vcenter.extended_location.name,
@@ -922,7 +922,7 @@ ConnectedVMwareVsphereResources
                 )
                 _ = machine_client.update(machineRG, machineName, m)
             _ = client.begin_create_or_update(
-                machineId, vm
+                machineId, vmi
             ).result()
             linked += 1
         except Exception as e:  # pylint: disable=broad-except
