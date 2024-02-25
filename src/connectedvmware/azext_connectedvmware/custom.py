@@ -17,7 +17,6 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
-from .vendored_sdks.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse
 from msrestazure.tools import is_valid_resource_id
 
 from .pwinput import pwinput
@@ -100,6 +99,8 @@ from .vendored_sdks.hybridcompute.models import (
     MachineExtensionUpdate,
     MachineUpdate,
 )
+
+from .vendored_sdks.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse
 
 from .vendored_sdks.connectedvmware.operations import (
     VCentersOperations,
