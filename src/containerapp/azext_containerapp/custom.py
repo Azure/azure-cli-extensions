@@ -2240,10 +2240,11 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
         models=CONTAINER_APPS_SDK_MODELS
     )
 
+    result = None
     try:
         result = java_component_decorator.show()
     except CLIInternalError as e:
-        return
+        pass
 
     current_type = safe_get(result, "properties", "componentType")
     if current_type and target_java_component_type.lower() != current_type.lower():
