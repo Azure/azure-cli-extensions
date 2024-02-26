@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from __future__ import annotations
-
 from dataclasses import dataclass, field
 from typing import List
 
@@ -13,6 +12,7 @@ from azext_aosm.configuration_models.common_input import ArmTemplatePropertiesCo
 from azext_aosm.configuration_models.onboarding_nfd_base_input_config import (
     OnboardingNFDBaseInputConfig,
 )
+from azext_aosm.common.utils import split_image_path, is_valid_nexus_image_version
 
 
 @dataclass
@@ -231,6 +231,11 @@ class OnboardingNexusVNFInputConfig(OnboardingNFDBaseInputConfig):
             raise ValidationError("arm_template must be set")
         if not self.images:
             raise ValidationError("You must include at least one image")
+        for image in self.images:
+            (_, _, version) = split_image_path(image)
+            if not is_valid_nexus_image_version(version):
+                raise ValidationError(f"{image} has invalid version '{version}'.\n"
+                                      "Allowed format is major.minor.patch")
         if not self.arm_templates:
             raise ValidationError("You must include at least one arm template")
         for arm_template in self.arm_templates:

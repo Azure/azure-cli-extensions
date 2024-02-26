@@ -79,6 +79,8 @@ CNF_BASE_TEMPLATE_FILENAME = "cnfbase.bicep"
 CNF_VALUES_SCHEMA_FILENAME = "values.schema.json"
 CNF_TEMPLATE_FOLDER_NAME = "cnf"
 
+NEXUS_IMAGE_REGEX = r"^[\~]?(\d+)\.(\d+)\.(\d+)$"
+# SEMVER_REGEX = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
 #################
 # OLD CONSTANTS #
 #################

@@ -36,7 +36,7 @@ from azext_aosm.definition_folder.builder.json_builder import (
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 from azext_aosm.inputs.nexus_image_input import NexusImageFileInput
 from .onboarding_vnf_handler import OnboardingVNFCLIHandler
-from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
+from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path, split_image_path
 
 logger = get_logger(__name__)
 
@@ -79,8 +79,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             )
         # For each image, instantiate image processor
         for image in self.config.images:
-            (source_acr_registry, name, version) = self._split_image_path(image)
-
+            (source_acr_registry, name, version) = split_image_path(image)
             image_input = NexusImageFileInput(
                 artifact_name=name,
                 artifact_version=version,
@@ -121,12 +120,6 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             Path(VNF_OUTPUT_FOLDER_FILENAME), json.dumps(params_content, indent=4)
         )
         return base_file
-
-    def _split_image_path(self, image) -> "tuple[str, str, str]":
-        """Split the image path into source acr registry, name and version."""
-        (source_acr_registry, name_and_version) = image.split("/", 2)
-        (name, version) = name_and_version.split(":", 2)
-        return (source_acr_registry, name, version)
 
     def _generate_type_specific_nf_application(self, processor) -> "tuple[list, list]":
         """Generate the type specific nf application."""
