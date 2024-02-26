@@ -453,10 +453,8 @@ def create_or_update_test_with_config(
         for key2 in body.get("passFailCriteria", {}).get("passFailMetrics", {}):
             new_body["passFailCriteria"]["passFailMetrics"][key2] = None
     if yaml_test_body.get("passFailCriteria") is not None:
-        new_body["passFailCriteria"]["passFailMetrics"] = yaml_test_body[
-            "passFailCriteria"
-        ].get("passFailMetrics", {}) | new_body["passFailCriteria"].get(
-            "passFailMetrics", {}
+        new_body["passFailCriteria"]["passFailMetrics"].update(
+            yaml_test_body["passFailCriteria"].get("passFailMetrics", {})
         )
     if split_csv is not None:
         new_body["loadTestConfiguration"]["splitAllCSVs"] = split_csv
