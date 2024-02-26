@@ -1098,7 +1098,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=False, registry_server=registry_server)
 
         # Validate an image associated with the container app exists
-        containers = safe_get(self.new_containerapp, "properties", "template", "containers", default=[])
+        containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
         if containers is None or len(containers) == 0:
             raise ValidationError(
                 "The container app '{}' does not have any containers. Please use --image to set the image for the container app".format(
