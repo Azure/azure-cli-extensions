@@ -389,14 +389,18 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """Get the value of pod_ip_allocation_mode.
         :return: str or None
         """
-        # Initialize the value of pod_ip_allocation_mode from the
-        # agentpool.network_profile.pod_ip_allocation_mode if it exists
-        pod_ip_allocation_mode = None
-        if (self.agentpool and self.agentpool.pod_ip_allocation_mode is not None):
-            pod_ip_allocation_mode = self.agentpool.pod_ip_allocation_mode
 
-        # overwrite if provided by user in the command
+        # Get the value of pod_ip_allocation_mode from the raw parameters provided by the user
         pod_ip_allocation_mode = self.raw_param.get("pod_ip_allocation_mode")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        # if it exists and user has not provided any value in raw parameters
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                pod_ip_allocation_mode and 
+                self.agentpool and 
+                self.agentpool.pod_ip_allocation_mode is not None
+            ):
+                pod_ip_allocation_mode = self.agentpool.pod_ip_allocation_mode
 
         return pod_ip_allocation_mode
 
@@ -790,15 +794,6 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.security_profile.ssh_access = ssh_access
         return agentpool
 
-    def set_up_pod_ip_allocation_mode(self, agentpool: AgentPool) -> AgentPool:
-        """Set up pod ip allocation mode for the AgentPool object."""
-        self._ensure_agentpool(agentpool)
-
-        pod_ip_allocation_mode = self.context.get_pod_ip_allocation_mode()
-        if pod_ip_allocation_mode is not None:
-            agentpool.pod_ip_allocation_mode = pod_ip_allocation_mode
-        return agentpool
-
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -824,9 +819,6 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update ssh access
         agentpool = self.update_ssh_access(agentpool)
-
-        # set up agentpool pod ip allocation mode
-        agentpool = self.set_up_pod_ip_allocation_mode(agentpool)
 
         return agentpool
 
