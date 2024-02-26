@@ -111,53 +111,58 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             test.exists('properties.extendedInfo.recoveryDestination')
         ])
 
-    # @AllowLargeResponse
-    # def test_dataprotection_cross_region_restore(test):
-    #     test.kwargs.update({
-    #         'datasourceType': 'AzureDatabaseForPostgreSQL',
-    #         'sourceDataStore': 'VaultStore',
-    #         'restoreLocation': 'centraluseuap',
-    #         'originalLocation': 'eastus2euap',
-    #         'secretStoreType': 'AzureKeyVault',
-    #         'secretStoreUri': 'https://oss-clitest-keyvault.vault.azure.net/secrets/oss-clitest-secret',
-    #         'crrVaultName': 'clitest-bkp-vault-crr-donotdelete',
-    #         'sourceBackupInstanceName': '',
-    #         'sourceBackupInstanceId': '',
-    #         'sourceDSName': '',
-    #         'targetDSName': '',
-    #         'targetResourceId': '',
-    #     })
+    @AllowLargeResponse()
+    def test_dataprotection_cross_region_restore(test):
+        test.kwargs.update({
+            'datasourceType': 'AzureDatabaseForPostgreSQL',
+            'sourceDataStore': 'VaultStore',
+            'restoreLocation': 'centraluseuap',
+            'originalLocation': 'eastus2euap',
+            'secretStoreType': 'AzureKeyVault',
+            'secretStoreUri': 'https://cli-dpp-server1-kv.vault.azure.net/secrets/dpp-bugbash-server1-conn/b7c857c1d35643c08724bd4047394be1',
+            'crrVaultName': 'clitest-bkp-vault-crr-donotdelete',
+            'sourceBackupInstanceName': 'clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052',
+            'sourceResourceName': 'postgres',
+            'targetResourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cli-dpp-bugbash-oss-rg/providers/Microsoft.DBforPostgreSQL/servers/cli-dpp-bugbash-server1/databases/postgres-restore',
+            'targetDSName': 'postgres-restore',
+            'targetRg': 'cli-dpp-bugbash-oss-rg',
+            'targetServerName': 'cli-dpp-bugbash-server1',
+        })
 
-    #     recovery_point = test.cmd('az dataprotection recovery-point list -g {rg} -v {vaultName} '
-    #                                '--backup-instance-name {sourceBackupInstanceName} --use-secondary-region',
-    #                                checks=[
-    #                                    test.greater_than('length([])', 0)
-    #                                 ]).get_output_in_json()
-    #     test.kwargs.update({
-    #         'recoveryPointId': recovery_point[0]['name']
-    #     })
+        recovery_point = test.cmd('az dataprotection recovery-point list -g {rg} -v {crrVaultName} '
+                                   '--backup-instance-name {sourceBackupInstanceName} --use-secondary-region',
+                                   checks=[
+                                       test.greater_than('length([])', 0)
+                                    ]).get_output_in_json()
+        test.kwargs.update({
+            'recoveryPointId': recovery_point[0]['name']
+        })
 
-    #     # Add ds deletion to cleanup tasks
-    #     # test.addCleanup(test.cmd, 'az disk delete --name "{targetDSName}" --resource-group "{rg}" --yes --no-wait')
-    #     # As a failsafe, ensure restored disk from previous run is deleted
-    #     # test.cmd('az disk delete --name "{targetDSName}" --resource-group "{rg}" --yes')
+        # Add ds deletion to cleanup tasks
+        test.addCleanup(test.cmd, 'az postgres db delete -n "{targetDSName}" -g "{targetRg}" -s "{targetServerName}" --yes')
+        # As a failsafe, ensure restored disk from previous run is deleted. If the command fails, that's perfect and we can ignore the exception
+        try:
+            test.cmd('az postgres db delete -n "{targetDSName}" -g "{targetRg}" -s "{targetServerName}" --yes')
+        except Exception:
+            pass
 
-    #     restore_request = test.cmd('az dataprotection backup-instance restore  initialize-for-data-recovery '
-    #                                '--datasource-type "{dataSourceType}" --restore-location "{restoreLocation}" --source-datastore "{sourceDataStore}" '
-    #                                '--recovery-point-id "{recoveryPointId}" --target-resource-id "{targetResourceId}"').get_output_in_json()
-    #     test.kwargs.update({"restoreRequest": restore_request})
+        restore_request = test.cmd('az dataprotection backup-instance restore  initialize-for-data-recovery '
+                                   '--datasource-type "{datasourceType}" --restore-location "{restoreLocation}" --source-datastore "{sourceDataStore}" '
+                                   '--recovery-point-id "{recoveryPointId}" --target-resource-id "{targetResourceId}" '
+                                   '--secret-store-type "{secretStoreType}" --secret-store-uri "{secretStoreUri}"').get_output_in_json()
+        test.kwargs.update({"restoreRequest": restore_request})
 
-    #     # Ensure no other jobs running on datasource. Required to avoid operation clashes.
-    #     wait_for_job_exclusivity_on_datasource(test)
+        # Ensure no other jobs running on datasource. Required to avoid operation clashes.
+        wait_for_job_exclusivity_on_datasource(test)
 
-    #     test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" -v "{vaultName}" -n "{backupInstanceName}" '
-    #              '--restore-request-object "{restoreRequest}" --use-secondary-region')
-    #     restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" -v "{vaultName}" '
-    #                                     '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}" '
-    #                                     '--use-secondary-region').get_output_in_json()
-    #     test.kwargs.update({"jobId": restore_trigger_json["jobId"]})
+        test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" -v "{crrVaultName}" -n "{sourceBackupInstanceName}" '
+                 '--restore-request-object "{restoreRequest}" --use-secondary-region')
+        restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" -v "{crrVaultName}" '
+                                        '-n "{sourceBackupInstanceName}" --restore-request-object "{restoreRequest}" '
+                                        '--use-secondary-region').get_output_in_json()
+        test.kwargs.update({"jobId": restore_trigger_json["jobId"]})
 
-    #     test.cmd('az dataprotection job show --ids "{jobId}"', checks=[
-    #         test.check('properties.dataSourceName', "{dataSourceName}"),
-    #         test.exists('properties.extendedInfo.recoveryDestination')
-    #     ])
+        test.cmd('az dataprotection job show --job-id "{jobId}" -g "{rg}" -v "{crrVaultName}" --use-secondary-region', checks=[
+            test.check('properties.dataSourceName', "{sourceResourceName}"),
+            test.exists('properties.extendedInfo.recoveryDestination')
+        ])
