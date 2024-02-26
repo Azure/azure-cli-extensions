@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._fetch_job import *
 from ._fetch_jobs import *
 from ._fetch_secondary_recovery_points import *
 from ._trigger import *

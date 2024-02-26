@@ -15,6 +15,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     MutuallyExclusiveArgumentError,
 )
+from azext_dataprotection.manual import backupcenter_helper
 from azext_dataprotection.manual.custom import (
     dataprotection_backup_instance_list_from_resourcegraph,
     dataprotection_backup_vault_list_from_resourcegraph
@@ -765,7 +766,7 @@ def validate_recovery_point_datetime_format(aaz_str):
 
 def get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name, backup_instance_name):
     from azext_dataprotection.manual._client_factory import cf_resource_graph_client as client
-    subscription_id = cmd.cli_ctx.data['subscription_id']
+    subscription_id = backupcenter_helper.get_selected_subscription()
     arg_client = client(cmd.cli_ctx, None)
     backup_instance_list = dataprotection_backup_instance_list_from_resourcegraph(arg_client, None, resource_group_name,
                                                                                   vault_name, [subscription_id, ], None,
@@ -782,7 +783,7 @@ def get_backup_instance_from_resourcegraph(cmd, resource_group_name, vault_name,
 
 def get_backup_vault_from_resourcegraph(cmd, resource_group_name, vault_name):
     from azext_dataprotection.manual._client_factory import cf_resource_graph_client as client
-    subscription_id = cmd.cli_ctx.data['subscription_id']
+    subscription_id = backupcenter_helper.get_selected_subscription()
     arg_client = client(cmd.cli_ctx, None)
 
     backup_vault_list = dataprotection_backup_vault_list_from_resourcegraph(arg_client, resource_group_name,
@@ -796,3 +797,16 @@ def get_backup_vault_from_resourcegraph(cmd, resource_group_name, vault_name):
         raise CLIInternalError("No backup vault was found")
 
     return backup_vault_list[0]
+
+
+def get_source_and_replicated_region_from_backup_vault(source_backup_vault):
+    source_location = source_backup_vault['location']
+
+    replicated_regions = source_backup_vault['properties']['replicatedRegions']
+    if len(replicated_regions) != 1 or replicated_regions[0] == "" or replicated_regions[0] is None:
+        logger.warning("Unable to fetch replicated region from vault properties. Using fallback replicated region information.")
+        target_location = secondary_region_map[source_location]
+    else:
+        target_location = replicated_regions[0]
+
+    return source_location, target_location

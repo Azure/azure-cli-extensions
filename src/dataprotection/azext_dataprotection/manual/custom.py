@@ -525,14 +525,7 @@ def dataprotection_job_list(cmd, resource_group_name, vault_name, use_secondary_
     if use_secondary_region:
         source_backup_vault = helper.get_backup_vault_from_resourcegraph(cmd, resource_group_name, vault_name)
         source_backup_vault_id = source_backup_vault['id']
-        source_location = source_backup_vault['location']
-
-        replicated_regions = source_backup_vault['properties']['replicatedRegions']
-        if len(replicated_regions) != 1 or replicated_regions[0] == "" or replicated_regions[0] is None:
-            logger.warning("Unable to fetch replicated region from vault properties. Using fallback replicated region information.")
-            target_location = helper.secondary_region_map[source_location]
-        else:
-            target_location = replicated_regions[0]
+        source_location, target_location = helper.get_source_and_replicated_region_from_backup_vault(source_backup_vault)
 
         return ListJobsCRR(cli_ctx=cmd.cli_ctx)(command_args={
             "resource_group": resource_group_name,
@@ -544,6 +537,30 @@ def dataprotection_job_list(cmd, resource_group_name, vault_name, use_secondary_
     return ListJobs(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name,
+    })
+
+
+def dataprotection_job_show(cmd, resource_group_name, vault_name, job_id, use_secondary_region=None):
+    from azext_dataprotection.aaz.latest.dataprotection.job import Show as ShowJob
+    from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore._fetch_job import FetchJob as ShowJobCRR
+
+    if use_secondary_region:
+        source_backup_vault = helper.get_backup_vault_from_resourcegraph(cmd, resource_group_name, vault_name)
+        source_backup_vault_id = source_backup_vault['id']
+        source_location, target_location = helper.get_source_and_replicated_region_from_backup_vault(source_backup_vault)
+
+        return ShowJobCRR(cli_ctx=cmd.cli_ctx)(command_args={
+            "resource_group": resource_group_name,
+            "source_backup_vault_id": source_backup_vault_id,
+            "job_id": job_id,
+            "source_region": source_location,
+            "location": target_location
+        })
+
+    return ShowJob(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "job_id": job_id
     })
 
 

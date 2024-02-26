@@ -53,7 +53,7 @@ def load_arguments(self, _):
     with self.argument_context('dataprotection recovery-point list') as c:
         c.argument('backup_instance_name', type=str, help="Backup instance name.")
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', vault_name_type, id_part='name')
+        c.argument('vault_name', vault_name_type)
         c.argument('start_time', type=str, help="Specify the start date time in UTC (yyyy-mm-ddTHH:MM:SS)")
         c.argument('end_time', type=str, help="Specify the end date time in UTC (yyyy-mm-ddTHH:MM:SS)")
         c.argument('use_secondary_region', arg_type=get_three_state_flag(),
@@ -134,6 +134,13 @@ def load_arguments(self, _):
                    'json-string/@json-file. Required when --operation is Backup')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Request body for operation "Restore" Expected value: '
                    'json-string/@json-file. Required when --operation is Restore')
+
+    with self.argument_context('dataprotection job show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', vault_name_type, id_part='name')
+        c.argument('job_id', type=str, help='The Job ID. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000).', id_part='child_name_1')
+        c.argument('use_secondary_region', arg_type=get_three_state_flag(),
+                   help='Use this flag fetch list of jobs from secondary region')
 
     with self.argument_context('dataprotection job list') as c:
         c.argument('resource_group_name', resource_group_name_type)
