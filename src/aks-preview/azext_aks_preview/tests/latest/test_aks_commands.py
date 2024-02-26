@@ -11861,22 +11861,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
-        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
-        k8s_version, _ = self._get_versions(resource_group_location)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "location": resource_group_location,
-                "k8s_version": k8s_version,
             }
         )
 
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --tier premium --k8s-support-plan AKSLongTermSupport -k {k8s_version}"
+            "--ssh-key-value={ssh_key_value} --tier premium --k8s-support-plan AKSLongTermSupport -k 1.27" # future refactor to list versions and select latest LTS version
         )
         self.cmd(
             create_cmd,
@@ -11902,8 +11899,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_update_with_premium_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
-        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
-        k8s_version, _ = self._get_versions(resource_group_location)
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
             {
@@ -11911,14 +11906,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "location": resource_group_location,
-                "k8s_version": k8s_version,
             }
         )
 
         # create a free tier
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --tier free -k {k8s_version}"
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier free -k 1.27"  # future refactor to list versions and select latest LTS version
         )
         self.cmd(
             create_cmd,
