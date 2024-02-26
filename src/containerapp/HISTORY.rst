@@ -4,6 +4,13 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp service': Remove deprecated command group altogether, only keep 'az containerapp add-on' for add-ons
+* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
+* 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
+* 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
+
+0.3.47
+++++++
 * 'az containerapp add-on' : support for add-on milvus create and delete commands
 * [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.59.0
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
@@ -13,6 +20,7 @@ upcoming
 * 'az containerapp env create': support --mi-system-assigned and --mi-user-assigned for environment create commands
 * 'az containerapp env identity': support for container app environment assign/remove/show commands
 * 'az containerapp env storage set': Support create or update managed environment storage with NFS Azure File.
+* 'az containerapp up': Update the Docker error string used to identify unauthorized push.
 
 0.3.46
 ++++++
