@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "cloud-service",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage cloudservice
+    """Manage cloud service
     """
     pass
 
