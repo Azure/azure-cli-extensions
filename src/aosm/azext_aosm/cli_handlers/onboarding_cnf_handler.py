@@ -298,7 +298,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
             "publisherName": self.config.publisher_name,
             "publisherResourceGroupName": self.config.publisher_resource_group_name,
             "acrArtifactStoreName": self.config.acr_artifact_store_name,
-            "acrManifestName": self.config.acr_artifact_store_name + "-manifest",
+            "acrManifestName": self.config.acr_manifest_name,
             "nfDefinitionGroup": self.config.nf_name,
             "nfDefinitionVersion": self.config.version,
         }

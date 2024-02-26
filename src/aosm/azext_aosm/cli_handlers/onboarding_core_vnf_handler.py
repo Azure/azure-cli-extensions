@@ -114,7 +114,7 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
             "publisherResourceGroupName": self.config.publisher_resource_group_name,
             "acrArtifactStoreName": self.config.acr_artifact_store_name,
             "saArtifactStoreName": self.config.blob_artifact_store_name,
-            "acrManifestName": self.config.acr_artifact_store_name + "-manifest",
+            "acrManifestName": self.config.acr_manifest_name,
             "saManifestName": self.config.sa_manifest_name,
             "nfDefinitionGroup": self.config.nf_name,
             "nfDefinitionVersion": self.config.version

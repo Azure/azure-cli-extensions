@@ -193,6 +193,12 @@ class OnboardingNSDInputConfig(OnboardingBaseInputConfig):
         )
     )
 
+    @property
+    def acr_manifest_name(self) -> str:
+        """Return the ACR manifest name from the NSD name and version."""
+        sanitized_nsd_name = self.nsd_name.lower().replace("_", "-")
+        return f"{sanitized_nsd_name}-nsd-manifest-{self.nsd_version.replace('.', '-')}"
+
     def validate(self):
         """Validate the configuration."""
         super().validate()

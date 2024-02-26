@@ -270,7 +270,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
             "publisherName": self.config.publisher_name,
             "publisherResourceGroupName": self.config.publisher_resource_group_name,
             "acrArtifactStoreName": self.config.acr_artifact_store_name,
-            "acrManifestName": self.config.acr_artifact_store_name + "-manifest",
+            "acrManifestName": self.config.acr_manifest_name,
             "nsDesignGroup": self.config.nsd_name,
             "nsDesignVersion": self.config.nsd_version,
             "nfviSiteName": self.nfvi_site_name,

@@ -153,8 +153,9 @@ class OnboardingCoreVNFInputConfig(OnboardingNFDBaseInputConfig):
 
     @property
     def sa_manifest_name(self) -> str:
-        """Return the Storage account manifest name from the NFD name."""
-        return f"{self.blob_artifact_store_name}-manifest-{self.version.replace('.', '-')}"
+        """Return the Storage account manifest name from the NFD name and version."""
+        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
+        return f"{sanitized_nf_name}-sa-manifest-{self.version.replace('.', '-')}"
 
     def validate(self):
         """Validate the configuration."""
@@ -218,7 +219,7 @@ class OnboardingNexusVNFInputConfig(OnboardingNFDBaseInputConfig):
 
     @property
     def sa_manifest_name(self) -> str:
-        """Return the Storage account manifest name from the NFD name."""
+        """Return the Storage account manifest name from the NFD name and version."""
         sanitized_nf_name = self.nf_name.lower().replace("_", "-")
         return f"{sanitized_nf_name}-sa-manifest-{self.version.replace('.', '-')}"
 
