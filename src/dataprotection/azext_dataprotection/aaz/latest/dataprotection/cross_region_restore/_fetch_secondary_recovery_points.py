@@ -11,28 +11,22 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dataprotection recovery-point show",
-    is_experimental=True,
-)
-class Show(AAZCommand):
-    """Get a Recovery Point using recoveryPointId for a Datasource.
-
-    :example: Get Recovery Point
-        az dataprotection recovery-point show --backup-instance-name "testInstance1" --recovery- point-id "7fb2cddd-c5b3-44f6-a0d9-db3c4f9d5f25" --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
+class FetchSecondaryRecoveryPoints(AAZCommand):
+    """Returns a list of Secondary Recovery Points for a DataSource in a vault, that can be used for Cross Region Restore.
     """
 
     _aaz_info = {
         "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/recoverypoints/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/locations/{}/fetchsecondaryrecoverypoints", "2023-11-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,38 +39,34 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.vault_name = AAZStrArg(
-            options=["-v", "--vault-name"],
-            help="The name of the backup vault.",
-            required=True,
-            id_part="name",
-        )
 
-        # define Arg Group "Resource Id Arguments"
+        # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.backup_instance_name = AAZStrArg(
-            options=["--backup-instance-name"],
-            arg_group="Resource Id Arguments",
-            help="The name of the backup instance.",
-            required=True,
-            id_part="child_name_1",
+        _args_schema.source_backup_instance_id = AAZStrArg(
+            options=["--source-backup-instance-id"],
+            arg_group="Parameters",
+            help="ARM Path of BackupInstance",
         )
-        _args_schema.recovery_point_id = AAZStrArg(
-            options=["--recovery-point-id"],
-            arg_group="Resource Id Arguments",
-            help="Id of the recovery point.",
-            required=True,
-            id_part="child_name_2",
+        _args_schema.source_region = AAZStrArg(
+            options=["--source-region"],
+            arg_group="Parameters",
+            help="Source region in which BackupInstance is located",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.RecoveryPointsGet(ctx=self.ctx)()
+        self.FetchSecondaryRecoveryPointsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -88,10 +78,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class RecoveryPointsGet(AAZHttpOperation):
+    class FetchSecondaryRecoveryPointsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -105,13 +96,13 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/recoveryPoints/{recoveryPointId}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/locations/{location}/fetchSecondaryRecoveryPoints",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -121,11 +112,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "backupInstanceName", self.ctx.args.backup_instance_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "recoveryPointId", self.ctx.args.recovery_point_id,
+                    "location", self.ctx.args.location,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -134,10 +121,6 @@ class Show(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "vaultName", self.ctx.args.vault_name,
                     required=True,
                 ),
             }
@@ -157,10 +140,25 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("sourceBackupInstanceId", AAZStrType, ".source_backup_instance_id")
+            _builder.set_prop("sourceRegion", AAZStrType, ".source_region")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -180,28 +178,37 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.object_type = AAZStrType(
                 serialized_name="objectType",
                 flags={"required": True},
             )
 
-            disc_azure_backup_discrete_recovery_point = cls._schema_on_200.properties.discriminate_by("object_type", "AzureBackupDiscreteRecoveryPoint")
+            disc_azure_backup_discrete_recovery_point = cls._schema_on_200.value.Element.properties.discriminate_by("object_type", "AzureBackupDiscreteRecoveryPoint")
             disc_azure_backup_discrete_recovery_point.expiry_time = AAZStrType(
                 serialized_name="expiryTime",
                 flags={"read_only": True},
@@ -238,10 +245,10 @@ class Show(AAZCommand):
                 serialized_name="retentionTagVersion",
             )
 
-            recovery_point_data_stores_details = cls._schema_on_200.properties.discriminate_by("object_type", "AzureBackupDiscreteRecoveryPoint").recovery_point_data_stores_details
+            recovery_point_data_stores_details = cls._schema_on_200.value.Element.properties.discriminate_by("object_type", "AzureBackupDiscreteRecoveryPoint").recovery_point_data_stores_details
             recovery_point_data_stores_details.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.discriminate_by("object_type", "AzureBackupDiscreteRecoveryPoint").recovery_point_data_stores_details.Element
+            _element = cls._schema_on_200.value.Element.properties.discriminate_by("object_type", "AzureBackupDiscreteRecoveryPoint").recovery_point_data_stores_details.Element
             _element.creation_time = AAZStrType(
                 serialized_name="creationTime",
             )
@@ -264,7 +271,7 @@ class Show(AAZCommand):
             _element.type = AAZStrType()
             _element.visible = AAZBoolType()
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -287,8 +294,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _FetchSecondaryRecoveryPointsHelper:
+    """Helper class for FetchSecondaryRecoveryPoints"""
 
 
-__all__ = ["Show"]
+__all__ = ["FetchSecondaryRecoveryPoints"]

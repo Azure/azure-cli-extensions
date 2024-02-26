@@ -11,21 +11,14 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dataprotection job show",
-    is_experimental=True,
-)
-class Show(AAZCommand):
-    """Get a job with id in a backup vault.
-
-    :example: Get Job
-        az dataprotection job show --job-id "3c60cb49-63e8-4b21-b9bd-26277b3fdfae" --resource-group "BugBash1" --vault-name "BugBashVaultForCCYv11"
+class FetchJob(AAZCommand):
+    """Fetches a single Cross Region Restore Job
     """
 
     _aaz_info = {
         "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupjobs/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/locations/{}/fetchcrossregionrestorejob", "2023-11-01"],
         ]
     }
 
@@ -45,31 +38,40 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            required=True,
+            id_part="name",
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.vault_name = AAZStrArg(
-            options=["-v", "--vault-name"],
-            help="The name of the backup vault.",
-            required=True,
-            id_part="name",
-        )
 
-        # define Arg Group "Resource Id Arguments"
+        # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
         _args_schema.job_id = AAZStrArg(
             options=["--job-id"],
-            arg_group="Resource Id Arguments",
-            help="The Job ID. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000).",
+            arg_group="Parameters",
             required=True,
-            id_part="child_name_1",
+        )
+        _args_schema.source_backup_vault_id = AAZStrArg(
+            options=["--source-backup-vault-id"],
+            arg_group="Parameters",
+            required=True,
+        )
+        _args_schema.source_region = AAZStrArg(
+            options=["--source-region"],
+            arg_group="Parameters",
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.JobsGet(ctx=self.ctx)()
+        self.FetchCrossRegionRestoreJobGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -84,7 +86,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class JobsGet(AAZHttpOperation):
+    class FetchCrossRegionRestoreJobGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -98,13 +100,13 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupJobs/{jobId}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/locations/{location}/fetchCrossRegionRestoreJob",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -114,7 +116,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "jobId", self.ctx.args.job_id,
+                    "location", self.ctx.args.location,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -123,10 +125,6 @@ class Show(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "vaultName", self.ctx.args.vault_name,
                     required=True,
                 ),
             }
@@ -146,10 +144,26 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("jobId", AAZStrType, ".job_id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("sourceBackupVaultId", AAZStrType, ".source_backup_vault_id", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("sourceRegion", AAZStrType, ".source_region", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -300,7 +314,7 @@ class Show(AAZCommand):
 
             error_details = cls._schema_on_200.properties.error_details
             error_details.Element = AAZObjectType()
-            _ShowHelper._build_schema_user_facing_error_read(error_details.Element)
+            _FetchJobHelper._build_schema_user_facing_error_read(error_details.Element)
 
             extended_info = cls._schema_on_200.properties.extended_info
             extended_info.additional_details = AAZDictType(
@@ -321,7 +335,7 @@ class Show(AAZCommand):
             extended_info.source_recover_point = AAZObjectType(
                 serialized_name="sourceRecoverPoint",
             )
-            _ShowHelper._build_schema_restore_job_recovery_point_details_read(extended_info.source_recover_point)
+            _FetchJobHelper._build_schema_restore_job_recovery_point_details_read(extended_info.source_recover_point)
             extended_info.sub_tasks = AAZListType(
                 serialized_name="subTasks",
                 flags={"read_only": True},
@@ -329,7 +343,7 @@ class Show(AAZCommand):
             extended_info.target_recover_point = AAZObjectType(
                 serialized_name="targetRecoverPoint",
             )
-            _ShowHelper._build_schema_restore_job_recovery_point_details_read(extended_info.target_recover_point)
+            _FetchJobHelper._build_schema_restore_job_recovery_point_details_read(extended_info.target_recover_point)
             extended_info.warning_details = AAZListType(
                 serialized_name="warningDetails",
                 flags={"read_only": True},
@@ -379,7 +393,7 @@ class Show(AAZCommand):
             _element.warning = AAZObjectType(
                 flags={"required": True},
             )
-            _ShowHelper._build_schema_user_facing_error_read(_element.warning)
+            _FetchJobHelper._build_schema_user_facing_error_read(_element.warning)
 
             supported_actions = cls._schema_on_200.properties.supported_actions
             supported_actions.Element = AAZStrType()
@@ -407,8 +421,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _FetchJobHelper:
+    """Helper class for FetchJob"""
 
     _schema_inner_error_read = None
 
@@ -520,4 +534,4 @@ class _ShowHelper:
         _schema.target = cls._schema_user_facing_error_read.target
 
 
-__all__ = ["Show"]
+__all__ = ["FetchJob"]

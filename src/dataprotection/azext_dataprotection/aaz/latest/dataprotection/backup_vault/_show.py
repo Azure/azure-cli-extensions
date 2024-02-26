@@ -26,9 +26,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-11-01"],
         ]
     }
 
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -224,6 +224,9 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.replicated_regions = AAZListType(
+                serialized_name="replicatedRegions",
+            )
             properties.resource_move_details = AAZObjectType(
                 serialized_name="resourceMoveDetails",
             )
@@ -266,6 +269,9 @@ class Show(AAZCommand):
             azure_monitor_alert_settings.alerts_for_all_job_failures = AAZStrType(
                 serialized_name="alertsForAllJobFailures",
             )
+
+            replicated_regions = cls._schema_on_200.properties.replicated_regions
+            replicated_regions.Element = AAZStrType()
 
             resource_move_details = cls._schema_on_200.properties.resource_move_details
             resource_move_details.completion_time_utc = AAZStrType(

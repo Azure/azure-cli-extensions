@@ -7,13 +7,18 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core.aaz import (
-    AAZFreeFormDictArg, AAZStrArg, AAZResourceGroupNameArg,
+    AAZFreeFormDictArg, AAZStrArg, AAZResourceGroupNameArg, AAZResourceLocationArg, AAZResourceLocationArgFormat
 )
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance import (
     Create as _Create,
     ValidateForBackup as _ValidateForBackup,
     ValidateForRestore as _ValidateForRestore,
 )
+from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore import (
+    Validate as _ValidateForCRR,
+    Trigger as _TriggerCRR
+)
+
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance.restore import Trigger as _RestoreTrigger
 from ..helpers import convert_dict_keys_snake_to_camel
 
@@ -142,3 +147,121 @@ class RestoreTrigger(_RestoreTrigger):
         @property
         def content(self):
             return convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data())
+
+
+class ValidateForCRR(_ValidateForCRR):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        cls._args_schema = super(_ValidateForCRR, cls)._build_arguments_schema(cls, *args, **kwargs)     # pylint: disable=bad-super-call
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            required=True,
+            id_part="name",
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+
+        # define Arg Group "CrossRegionRestoreDetails"
+
+        _args_schema = cls._args_schema
+        _args_schema.source_backup_instance_id = AAZStrArg(
+            options=["--source-backup-instance-id"],
+            arg_group="CrossRegionRestoreDetails",
+            help="The full ARM ID of the source backup instance",
+            required=True,
+        )
+        _args_schema.source_region = AAZStrArg(
+            options=["--source-region"],
+            arg_group="CrossRegionRestoreDetails",
+            help="The region that the source backup instance is present in",
+            required=True,
+        )
+
+        _args_schema.restore_request_object = AAZFreeFormDictArg(
+            options=["--restore-request-object"],
+            help="Gets or sets the restore request object. Expected value: json-string/@json-file.",
+            required=True,
+        )
+
+        return cls._args_schema
+
+    class BackupInstancesValidateCrossRegionRestore(_ValidateForCRR.BackupInstancesValidateCrossRegionRestore):
+
+        @property
+        def content(self):
+            crr_details = {}
+            crr_details["sourceBackupInstanceId"] = self.ctx.args.source_backup_instance_id.to_serialized_data()
+            crr_details["sourceRegion"] = self.ctx.args.source_region.to_serialized_data()
+            return self.serialize_content({
+                'objectType': 'ValidateRestoreRequestObject',
+                'restoreRequestObject': convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data()),
+                'crossRegionRestoreDetails': crr_details
+            })
+
+
+class TriggerCRR(_TriggerCRR):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        cls._args_schema = super(_TriggerCRR, cls)._build_arguments_schema(cls, *args, **kwargs)     # pylint: disable=bad-super-call
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            required=True,
+            id_part="name",
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+
+        # define Arg Group "CrossRegionRestoreDetails"
+
+        _args_schema = cls._args_schema
+        _args_schema.source_backup_instance_id = AAZStrArg(
+            options=["--source-backup-instance-id"],
+            arg_group="CrossRegionRestoreDetails",
+            help="The full ARM ID of the source backup instance",
+            required=True,
+        )
+        _args_schema.source_region = AAZStrArg(
+            options=["--source-region"],
+            arg_group="CrossRegionRestoreDetails",
+            help="The region that the source backup instance is present in",
+            required=True,
+        )
+
+        _args_schema.restore_request_object = AAZFreeFormDictArg(
+            options=["--restore-request-object"],
+            help="Gets or sets the restore request object. Expected value: json-string/@json-file.",
+            required=True,
+        )
+
+        return cls._args_schema
+
+    class BackupInstancesTriggerCrossRegionRestore(_TriggerCRR.BackupInstancesTriggerCrossRegionRestore):
+
+        @property
+        def content(self):
+            crr_details = {}
+            restore_request_object = convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data())
+            crr_details["sourceBackupInstanceId"] = self.ctx.args.source_backup_instance_id.to_serialized_data()
+            crr_details["sourceRegion"] = self.ctx.args.source_region.to_serialized_data()
+
+            return self.serialize_content({
+                'objectType': restore_request_object["objectType"],
+                'restoreRequestObject': restore_request_object,
+                'crossRegionRestoreDetails': crr_details
+            })

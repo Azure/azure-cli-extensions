@@ -13,6 +13,10 @@ from ._exception_handler import exception_handler
 
 def load_command_table(self, _):
 
+    # Manual backup vault commands
+    with self.command_group('dataprotection backup-vault', exception_handler=exception_handler) as g:
+        g.custom_command('list-from-resourcegraph', 'dataprotection_backup_vault_list_from_resourcegraph', client_factory=cf_resource_graph_client)
+
     # Manual backup-instance commmands
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
@@ -21,6 +25,7 @@ def load_command_table(self, _):
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
         g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions')
         g.custom_command('update-policy', "dataprotection_backup_instance_update_policy", supports_no_wait=True)
+        g.custom_command('validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True)
 
     # Migrated to AAZ, using a function based override approach. Function-based override uses AAZ arg schema to validate input
     # but is less manageable. Needs manual management of params and help. Find a way to use class-based override without compromising
@@ -32,6 +37,7 @@ def load_command_table(self, _):
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
         g.custom_command('initialize-for-data-recovery-as-files', 'restore_initialize_for_data_recovery_as_files')
         g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery')
+        g.custom_command('trigger', 'dataprotection_backup_instance_restore_trigger')
 
     with self.command_group('dataprotection backup-policy', exception_handler=exception_handler) as g:
         g.custom_command('get-default-policy-template', "dataprotection_backup_policy_get_default_policy_template")
@@ -53,24 +59,34 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection job') as g:
         g.custom_command('list-from-resourcegraph', "dataprotection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
+        g.custom_command('list', "dataprotection_job_list", exception_handler=exception_handler)
+        g.custom_command('show', 'dataprotection_job_show', exception_handler=exception_handler)
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler) as g:
         g.custom_command('list-protected-operations', 'dataprotection_resource_guard_list_protected_operations')
 
+    with self.command_group('dataprotection recovery-point', exception_handler=exception_handler) as g:
+        g.custom_command('list', 'dataprotection_recovery_point_list')
+
     from .aaz_operations.backup_instance import (
         ValidateAndCreate as BackupInstanceCreate,
-        ValidateForRestore as BackupInstanceValidateRestore,
-        RestoreTrigger as BackupInstanceRestoreTrigger,
+        # ValidateForRestore as BackupInstanceValidateRestore,
+        # RestoreTrigger as BackupInstanceRestoreTrigger,
+        # ValidateForCRR as CRRValidateRestore,
+        # TriggerCRR as CRRTriggerRestore,
     )
     self.command_table['dataprotection backup-instance create'] = BackupInstanceCreate(loader=self)
-    self.command_table['dataprotection backup-instance validate-for-restore'] = BackupInstanceValidateRestore(loader=self)
-    self.command_table['dataprotection backup-instance restore trigger'] = BackupInstanceRestoreTrigger(loader=self)
+    # self.command_table['dataprotection backup-instance validate-for-restore'] = BackupInstanceValidateRestore(loader=self)
+    # self.command_table['dataprotection backup-instance restore trigger'] = BackupInstanceRestoreTrigger(loader=self)
+
+    # self.command_table['dataprotection cross-region-restore validate'] = CRRValidateRestore(loader=self)
+    # self.command_table['dataprotection cross-region-restore trigger'] = CRRTriggerRestore(loader=self)
 
     from .aaz_operations.backup_policy import Create as BackupPolicyCreate
     self.command_table['dataprotection backup-policy create'] = BackupPolicyCreate(loader=self)
 
-    from .aaz_operations.recovery_point import List as RecoveryPointList
-    self.command_table['dataprotection recovery-point list'] = RecoveryPointList(loader=self)
+    # from .aaz_operations.recovery_point import List as RecoveryPointList
+    # self.command_table['dataprotection recovery-point list'] = RecoveryPointList(loader=self)
 
     from .aaz_operations.resource_guard import Update as ResourceGuardUpdate
     self.command_table['dataprotection resource-guard update'] = ResourceGuardUpdate(loader=self)

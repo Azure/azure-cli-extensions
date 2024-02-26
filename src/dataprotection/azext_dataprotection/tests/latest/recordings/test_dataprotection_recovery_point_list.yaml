@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -g --vault-name --backup-instance-name
       User-Agent:
-      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=&api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=&api-version=2023-11-01
   response:
     body:
-      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointTime":"2023-08-01T12:02:33.2800497Z","recoveryPointType":"Incremental","friendlyName":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2023-08-01T12:01:22.8731473Z","expiryTime":"2023-08-08T12:01:22.8731473Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2023-08-08T12:01:22.8731473Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/f4967c2e5139424ba8beeefdbff9f9f7","name":"f4967c2e5139424ba8beeefdbff9f9f7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
+      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointTime":"2024-02-25T12:02:34.0184856Z","recoveryPointType":"Incremental","friendlyName":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-25T12:01:23.8287622Z","expiryTime":"2024-03-03T12:01:23.8287622Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-03T12:01:23.8287622Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5acdfb1a71e442b6b407317de1b1474c","name":"5acdfb1a71e442b6b407317de1b1474c","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointTime":"2024-02-24T12:02:32.4443507Z","recoveryPointType":"Incremental","friendlyName":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-24T12:01:22.4939901Z","expiryTime":"2024-03-02T12:01:22.4939901Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-02T12:01:22.4939901Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/7b54bc43cb2b4763b9ed5284de4a4fd7","name":"7b54bc43cb2b4763b9ed5284de4a4fd7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5be33b469b1147d188cd4c80d23f8842","recoveryPointTime":"2024-02-23T12:02:32.7526012Z","recoveryPointType":"Incremental","friendlyName":"5be33b469b1147d188cd4c80d23f8842","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-23T12:01:20.8138209Z","expiryTime":"2024-03-01T12:01:20.8138209Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-01T12:01:20.8138209Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5be33b469b1147d188cd4c80d23f8842","name":"5be33b469b1147d188cd4c80d23f8842","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"d6f31f575279417383717452e556e270","recoveryPointTime":"2024-02-22T12:02:18.4330881Z","recoveryPointType":"Incremental","friendlyName":"d6f31f575279417383717452e556e270","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-22T12:01:08.4699297Z","expiryTime":"2024-02-29T12:01:08.4699297Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-29T12:01:08.4699297Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/d6f31f575279417383717452e556e270","name":"d6f31f575279417383717452e556e270","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointTime":"2024-02-21T12:02:17.5678122Z","recoveryPointType":"Incremental","friendlyName":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-21T12:01:07.3102549Z","expiryTime":"2024-02-28T12:01:07.3102549Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-28T12:01:07.3102549Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/b4f9dad4626a45e9a9a887768f24679e","name":"b4f9dad4626a45e9a9a887768f24679e","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointTime":"2024-02-20T12:02:16.9272000Z","recoveryPointType":"Incremental","friendlyName":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-20T12:01:07.1947220Z","expiryTime":"2024-02-27T12:01:07.1947220Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-27T12:01:07.1947220Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/3d1f2775a884486ea3161b3db67cc92f","name":"3d1f2775a884486ea3161b3db67cc92f","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointTime":"2024-02-19T12:43:35.6018800Z","recoveryPointType":"Incremental","friendlyName":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-19T12:42:25.9215168Z","expiryTime":"2024-02-26T12:42:25.9215168Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-26T12:42:25.9215168Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/4bc91daec7c349f0a192838a3f681b9b","name":"4bc91daec7c349f0a192838a3f681b9b","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1209'
+      - '8579'
       content-type:
       - application/json
       date:
-      - Wed, 02 Aug 2023 10:33:45 GMT
+      - Mon, 26 Feb 2024 06:52:46 GMT
       expires:
       - '-1'
       pragma:
@@ -36,62 +36,10 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '96'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection recovery-point list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vault-name --backup-instance-name --start-time --end-time
-      User-Agent:
-      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272023-06-16T01%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272033-06-16T01%3A00%3A00.0000000Z%27&api-version=2023-05-01
-  response:
-    body:
-      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointTime":"2023-08-01T12:02:33.2800497Z","recoveryPointType":"Incremental","friendlyName":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2023-08-01T12:01:22.8731473Z","expiryTime":"2023-08-08T12:01:22.8731473Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2023-08-08T12:01:22.8731473Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/f4967c2e5139424ba8beeefdbff9f9f7","name":"f4967c2e5139424ba8beeefdbff9f9f7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1209'
-      content-type:
-      - application/json
-      date:
-      - Wed, 02 Aug 2023 10:33:47 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/199d943b-ed09-4268-a4c3-82572e20cb2a
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-powered-by:
@@ -113,21 +61,21 @@ interactions:
       ParameterSetName:
       - -g --vault-name --backup-instance-name --start-time --end-time
       User-Agent:
-      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272023-06-16T00%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272033-06-16T00%3A00%3A00.0000000Z%27&api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272023-06-16T01%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272033-06-16T01%3A00%3A00.0000000Z%27&api-version=2023-11-01
   response:
     body:
-      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointTime":"2023-08-01T12:02:33.2800497Z","recoveryPointType":"Incremental","friendlyName":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2023-08-01T12:01:22.8731473Z","expiryTime":"2023-08-08T12:01:22.8731473Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2023-08-08T12:01:22.8731473Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/f4967c2e5139424ba8beeefdbff9f9f7","name":"f4967c2e5139424ba8beeefdbff9f9f7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
+      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointTime":"2024-02-25T12:02:34.0184856Z","recoveryPointType":"Incremental","friendlyName":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-25T12:01:23.8287622Z","expiryTime":"2024-03-03T12:01:23.8287622Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-03T12:01:23.8287622Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5acdfb1a71e442b6b407317de1b1474c","name":"5acdfb1a71e442b6b407317de1b1474c","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointTime":"2024-02-24T12:02:32.4443507Z","recoveryPointType":"Incremental","friendlyName":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-24T12:01:22.4939901Z","expiryTime":"2024-03-02T12:01:22.4939901Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-02T12:01:22.4939901Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/7b54bc43cb2b4763b9ed5284de4a4fd7","name":"7b54bc43cb2b4763b9ed5284de4a4fd7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5be33b469b1147d188cd4c80d23f8842","recoveryPointTime":"2024-02-23T12:02:32.7526012Z","recoveryPointType":"Incremental","friendlyName":"5be33b469b1147d188cd4c80d23f8842","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-23T12:01:20.8138209Z","expiryTime":"2024-03-01T12:01:20.8138209Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-01T12:01:20.8138209Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5be33b469b1147d188cd4c80d23f8842","name":"5be33b469b1147d188cd4c80d23f8842","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"d6f31f575279417383717452e556e270","recoveryPointTime":"2024-02-22T12:02:18.4330881Z","recoveryPointType":"Incremental","friendlyName":"d6f31f575279417383717452e556e270","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-22T12:01:08.4699297Z","expiryTime":"2024-02-29T12:01:08.4699297Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-29T12:01:08.4699297Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/d6f31f575279417383717452e556e270","name":"d6f31f575279417383717452e556e270","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointTime":"2024-02-21T12:02:17.5678122Z","recoveryPointType":"Incremental","friendlyName":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-21T12:01:07.3102549Z","expiryTime":"2024-02-28T12:01:07.3102549Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-28T12:01:07.3102549Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/b4f9dad4626a45e9a9a887768f24679e","name":"b4f9dad4626a45e9a9a887768f24679e","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointTime":"2024-02-20T12:02:16.9272000Z","recoveryPointType":"Incremental","friendlyName":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-20T12:01:07.1947220Z","expiryTime":"2024-02-27T12:01:07.1947220Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-27T12:01:07.1947220Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/3d1f2775a884486ea3161b3db67cc92f","name":"3d1f2775a884486ea3161b3db67cc92f","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointTime":"2024-02-19T12:43:35.6018800Z","recoveryPointType":"Incremental","friendlyName":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-19T12:42:25.9215168Z","expiryTime":"2024-02-26T12:42:25.9215168Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-26T12:42:25.9215168Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/4bc91daec7c349f0a192838a3f681b9b","name":"4bc91daec7c349f0a192838a3f681b9b","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1209'
+      - '8579'
       content-type:
       - application/json
       date:
-      - Wed, 02 Aug 2023 10:33:47 GMT
+      - Mon, 26 Feb 2024 06:52:47 GMT
       expires:
       - '-1'
       pragma:
@@ -136,62 +84,10 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '95'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection recovery-point list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vault-name --backup-instance-name --start-time --end-time
-      User-Agent:
-      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272023-06-16T01%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272033-06-16T01%3A00%3A00.0000000Z%27&api-version=2023-05-01
-  response:
-    body:
-      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointTime":"2023-08-01T12:02:33.2800497Z","recoveryPointType":"Incremental","friendlyName":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2023-08-01T12:01:22.8731473Z","expiryTime":"2023-08-08T12:01:22.8731473Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2023-08-08T12:01:22.8731473Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/f4967c2e5139424ba8beeefdbff9f9f7","name":"f4967c2e5139424ba8beeefdbff9f9f7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1209'
-      content-type:
-      - application/json
-      date:
-      - Wed, 02 Aug 2023 10:33:49 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/ea8f2125-c53e-42b3-91b3-de4f13a71dd3
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '98'
       x-powered-by:
@@ -213,21 +109,21 @@ interactions:
       ParameterSetName:
       - -g --vault-name --backup-instance-name --start-time --end-time
       User-Agent:
-      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272023-06-16T01%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272033-06-16T01%3A00%3A00.0000000Z%27&api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272023-06-16T00%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272033-06-16T00%3A00%3A00.0000000Z%27&api-version=2023-11-01
   response:
     body:
-      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointTime":"2023-08-01T12:02:33.2800497Z","recoveryPointType":"Incremental","friendlyName":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2023-08-01T12:01:22.8731473Z","expiryTime":"2023-08-08T12:01:22.8731473Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2023-08-08T12:01:22.8731473Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/f4967c2e5139424ba8beeefdbff9f9f7","name":"f4967c2e5139424ba8beeefdbff9f9f7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
+      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointTime":"2024-02-25T12:02:34.0184856Z","recoveryPointType":"Incremental","friendlyName":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-25T12:01:23.8287622Z","expiryTime":"2024-03-03T12:01:23.8287622Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-03T12:01:23.8287622Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5acdfb1a71e442b6b407317de1b1474c","name":"5acdfb1a71e442b6b407317de1b1474c","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointTime":"2024-02-24T12:02:32.4443507Z","recoveryPointType":"Incremental","friendlyName":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-24T12:01:22.4939901Z","expiryTime":"2024-03-02T12:01:22.4939901Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-02T12:01:22.4939901Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/7b54bc43cb2b4763b9ed5284de4a4fd7","name":"7b54bc43cb2b4763b9ed5284de4a4fd7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5be33b469b1147d188cd4c80d23f8842","recoveryPointTime":"2024-02-23T12:02:32.7526012Z","recoveryPointType":"Incremental","friendlyName":"5be33b469b1147d188cd4c80d23f8842","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-23T12:01:20.8138209Z","expiryTime":"2024-03-01T12:01:20.8138209Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-01T12:01:20.8138209Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5be33b469b1147d188cd4c80d23f8842","name":"5be33b469b1147d188cd4c80d23f8842","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"d6f31f575279417383717452e556e270","recoveryPointTime":"2024-02-22T12:02:18.4330881Z","recoveryPointType":"Incremental","friendlyName":"d6f31f575279417383717452e556e270","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-22T12:01:08.4699297Z","expiryTime":"2024-02-29T12:01:08.4699297Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-29T12:01:08.4699297Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/d6f31f575279417383717452e556e270","name":"d6f31f575279417383717452e556e270","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointTime":"2024-02-21T12:02:17.5678122Z","recoveryPointType":"Incremental","friendlyName":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-21T12:01:07.3102549Z","expiryTime":"2024-02-28T12:01:07.3102549Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-28T12:01:07.3102549Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/b4f9dad4626a45e9a9a887768f24679e","name":"b4f9dad4626a45e9a9a887768f24679e","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointTime":"2024-02-20T12:02:16.9272000Z","recoveryPointType":"Incremental","friendlyName":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-20T12:01:07.1947220Z","expiryTime":"2024-02-27T12:01:07.1947220Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-27T12:01:07.1947220Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/3d1f2775a884486ea3161b3db67cc92f","name":"3d1f2775a884486ea3161b3db67cc92f","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointTime":"2024-02-19T12:43:35.6018800Z","recoveryPointType":"Incremental","friendlyName":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-19T12:42:25.9215168Z","expiryTime":"2024-02-26T12:42:25.9215168Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-26T12:42:25.9215168Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/4bc91daec7c349f0a192838a3f681b9b","name":"4bc91daec7c349f0a192838a3f681b9b","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1209'
+      - '8579'
       content-type:
       - application/json
       date:
-      - Wed, 02 Aug 2023 10:33:51 GMT
+      - Mon, 26 Feb 2024 06:52:48 GMT
       expires:
       - '-1'
       pragma:
@@ -236,14 +132,12 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/8055efff-605b-4448-8371-d903efd17393
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '97'
+      - '98'
       x-powered-by:
       - ASP.NET
     status:
@@ -263,21 +157,21 @@ interactions:
       ParameterSetName:
       - -g --vault-name --backup-instance-name --start-time --end-time
       User-Agent:
-      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272023-06-16T01%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272033-06-16T01%3A00%3A00.0000000Z%27&api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272023-06-16T01%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272033-06-16T01%3A00%3A00.0000000Z%27&api-version=2023-11-01
   response:
     body:
-      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointTime":"2023-08-01T12:02:33.2800497Z","recoveryPointType":"Incremental","friendlyName":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2023-08-01T12:01:22.8731473Z","expiryTime":"2023-08-08T12:01:22.8731473Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2023-08-08T12:01:22.8731473Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/f4967c2e5139424ba8beeefdbff9f9f7","name":"f4967c2e5139424ba8beeefdbff9f9f7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
+      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointTime":"2024-02-25T12:02:34.0184856Z","recoveryPointType":"Incremental","friendlyName":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-25T12:01:23.8287622Z","expiryTime":"2024-03-03T12:01:23.8287622Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-03T12:01:23.8287622Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5acdfb1a71e442b6b407317de1b1474c","name":"5acdfb1a71e442b6b407317de1b1474c","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointTime":"2024-02-24T12:02:32.4443507Z","recoveryPointType":"Incremental","friendlyName":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-24T12:01:22.4939901Z","expiryTime":"2024-03-02T12:01:22.4939901Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-02T12:01:22.4939901Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/7b54bc43cb2b4763b9ed5284de4a4fd7","name":"7b54bc43cb2b4763b9ed5284de4a4fd7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5be33b469b1147d188cd4c80d23f8842","recoveryPointTime":"2024-02-23T12:02:32.7526012Z","recoveryPointType":"Incremental","friendlyName":"5be33b469b1147d188cd4c80d23f8842","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-23T12:01:20.8138209Z","expiryTime":"2024-03-01T12:01:20.8138209Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-01T12:01:20.8138209Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5be33b469b1147d188cd4c80d23f8842","name":"5be33b469b1147d188cd4c80d23f8842","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"d6f31f575279417383717452e556e270","recoveryPointTime":"2024-02-22T12:02:18.4330881Z","recoveryPointType":"Incremental","friendlyName":"d6f31f575279417383717452e556e270","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-22T12:01:08.4699297Z","expiryTime":"2024-02-29T12:01:08.4699297Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-29T12:01:08.4699297Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/d6f31f575279417383717452e556e270","name":"d6f31f575279417383717452e556e270","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointTime":"2024-02-21T12:02:17.5678122Z","recoveryPointType":"Incremental","friendlyName":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-21T12:01:07.3102549Z","expiryTime":"2024-02-28T12:01:07.3102549Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-28T12:01:07.3102549Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/b4f9dad4626a45e9a9a887768f24679e","name":"b4f9dad4626a45e9a9a887768f24679e","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointTime":"2024-02-20T12:02:16.9272000Z","recoveryPointType":"Incremental","friendlyName":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-20T12:01:07.1947220Z","expiryTime":"2024-02-27T12:01:07.1947220Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-27T12:01:07.1947220Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/3d1f2775a884486ea3161b3db67cc92f","name":"3d1f2775a884486ea3161b3db67cc92f","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointTime":"2024-02-19T12:43:35.6018800Z","recoveryPointType":"Incremental","friendlyName":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-19T12:42:25.9215168Z","expiryTime":"2024-02-26T12:42:25.9215168Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-26T12:42:25.9215168Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/4bc91daec7c349f0a192838a3f681b9b","name":"4bc91daec7c349f0a192838a3f681b9b","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1209'
+      - '8579'
       content-type:
       - application/json
       date:
-      - Wed, 02 Aug 2023 10:33:52 GMT
+      - Mon, 26 Feb 2024 06:52:49 GMT
       expires:
       - '-1'
       pragma:
@@ -286,12 +180,10 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/d2383059-7380-4c79-bc67-e23d4cefe68d
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '96'
       x-powered-by:
@@ -311,11 +203,107 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
+      - -g --vault-name --backup-instance-name --start-time --end-time
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272023-06-16T01%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272033-06-16T01%3A00%3A00.0000000Z%27&api-version=2023-11-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointTime":"2024-02-25T12:02:34.0184856Z","recoveryPointType":"Incremental","friendlyName":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-25T12:01:23.8287622Z","expiryTime":"2024-03-03T12:01:23.8287622Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-03T12:01:23.8287622Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5acdfb1a71e442b6b407317de1b1474c","name":"5acdfb1a71e442b6b407317de1b1474c","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointTime":"2024-02-24T12:02:32.4443507Z","recoveryPointType":"Incremental","friendlyName":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-24T12:01:22.4939901Z","expiryTime":"2024-03-02T12:01:22.4939901Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-02T12:01:22.4939901Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/7b54bc43cb2b4763b9ed5284de4a4fd7","name":"7b54bc43cb2b4763b9ed5284de4a4fd7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5be33b469b1147d188cd4c80d23f8842","recoveryPointTime":"2024-02-23T12:02:32.7526012Z","recoveryPointType":"Incremental","friendlyName":"5be33b469b1147d188cd4c80d23f8842","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-23T12:01:20.8138209Z","expiryTime":"2024-03-01T12:01:20.8138209Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-01T12:01:20.8138209Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5be33b469b1147d188cd4c80d23f8842","name":"5be33b469b1147d188cd4c80d23f8842","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"d6f31f575279417383717452e556e270","recoveryPointTime":"2024-02-22T12:02:18.4330881Z","recoveryPointType":"Incremental","friendlyName":"d6f31f575279417383717452e556e270","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-22T12:01:08.4699297Z","expiryTime":"2024-02-29T12:01:08.4699297Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-29T12:01:08.4699297Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/d6f31f575279417383717452e556e270","name":"d6f31f575279417383717452e556e270","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointTime":"2024-02-21T12:02:17.5678122Z","recoveryPointType":"Incremental","friendlyName":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-21T12:01:07.3102549Z","expiryTime":"2024-02-28T12:01:07.3102549Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-28T12:01:07.3102549Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/b4f9dad4626a45e9a9a887768f24679e","name":"b4f9dad4626a45e9a9a887768f24679e","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointTime":"2024-02-20T12:02:16.9272000Z","recoveryPointType":"Incremental","friendlyName":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-20T12:01:07.1947220Z","expiryTime":"2024-02-27T12:01:07.1947220Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-27T12:01:07.1947220Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/3d1f2775a884486ea3161b3db67cc92f","name":"3d1f2775a884486ea3161b3db67cc92f","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointTime":"2024-02-19T12:43:35.6018800Z","recoveryPointType":"Incremental","friendlyName":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-19T12:42:25.9215168Z","expiryTime":"2024-02-26T12:42:25.9215168Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-26T12:42:25.9215168Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/4bc91daec7c349f0a192838a3f681b9b","name":"4bc91daec7c349f0a192838a3f681b9b","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '8579'
+      content-type:
+      - application/json
+      date:
+      - Mon, 26 Feb 2024 06:52:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/235adb23-1a55-4902-b2bd-09e71c4764bd
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection recovery-point list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --backup-instance-name --start-time --end-time
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272023-06-16T01%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272033-06-16T01%3A00%3A00.0000000Z%27&api-version=2023-11-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointTime":"2024-02-25T12:02:34.0184856Z","recoveryPointType":"Incremental","friendlyName":"5acdfb1a71e442b6b407317de1b1474c","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-25T12:01:23.8287622Z","expiryTime":"2024-03-03T12:01:23.8287622Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-03T12:01:23.8287622Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5acdfb1a71e442b6b407317de1b1474c","name":"5acdfb1a71e442b6b407317de1b1474c","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointTime":"2024-02-24T12:02:32.4443507Z","recoveryPointType":"Incremental","friendlyName":"7b54bc43cb2b4763b9ed5284de4a4fd7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-24T12:01:22.4939901Z","expiryTime":"2024-03-02T12:01:22.4939901Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-02T12:01:22.4939901Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/7b54bc43cb2b4763b9ed5284de4a4fd7","name":"7b54bc43cb2b4763b9ed5284de4a4fd7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5be33b469b1147d188cd4c80d23f8842","recoveryPointTime":"2024-02-23T12:02:32.7526012Z","recoveryPointType":"Incremental","friendlyName":"5be33b469b1147d188cd4c80d23f8842","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-23T12:01:20.8138209Z","expiryTime":"2024-03-01T12:01:20.8138209Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-03-01T12:01:20.8138209Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/5be33b469b1147d188cd4c80d23f8842","name":"5be33b469b1147d188cd4c80d23f8842","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"d6f31f575279417383717452e556e270","recoveryPointTime":"2024-02-22T12:02:18.4330881Z","recoveryPointType":"Incremental","friendlyName":"d6f31f575279417383717452e556e270","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-22T12:01:08.4699297Z","expiryTime":"2024-02-29T12:01:08.4699297Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-29T12:01:08.4699297Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/d6f31f575279417383717452e556e270","name":"d6f31f575279417383717452e556e270","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointTime":"2024-02-21T12:02:17.5678122Z","recoveryPointType":"Incremental","friendlyName":"b4f9dad4626a45e9a9a887768f24679e","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-21T12:01:07.3102549Z","expiryTime":"2024-02-28T12:01:07.3102549Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-28T12:01:07.3102549Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/b4f9dad4626a45e9a9a887768f24679e","name":"b4f9dad4626a45e9a9a887768f24679e","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointTime":"2024-02-20T12:02:16.9272000Z","recoveryPointType":"Incremental","friendlyName":"3d1f2775a884486ea3161b3db67cc92f","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-20T12:01:07.1947220Z","expiryTime":"2024-02-27T12:01:07.1947220Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-27T12:01:07.1947220Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/3d1f2775a884486ea3161b3db67cc92f","name":"3d1f2775a884486ea3161b3db67cc92f","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointTime":"2024-02-19T12:43:35.6018800Z","recoveryPointType":"Incremental","friendlyName":"4bc91daec7c349f0a192838a3f681b9b","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2024-02-19T12:42:25.9215168Z","expiryTime":"2024-02-26T12:42:25.9215168Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2024-02-26T12:42:25.9215168Z","recoveryPointState":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/4bc91daec7c349f0a192838a3f681b9b","name":"4bc91daec7c349f0a192838a3f681b9b","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '8579'
+      content-type:
+      - application/json
+      date:
+      - Mon, 26 Feb 2024 06:52:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/7cf1ed9d-ac44-4230-b8aa-c48245c687b5
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '97'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection recovery-point list
+      Connection:
+      - keep-alive
+      ParameterSetName:
       - -g --vault-name --backup-instance-name --end-time --start-time
       User-Agent:
-      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272033-06-16T01%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272023-06-16T01%3A00%3A00.0000000Z%27&api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=startDate%20eq%20%272033-06-16T01%3A00%3A00.0000000Z%27%20and%20endDate%20eq%20%272023-06-16T01%3A00%3A00.0000000Z%27&api-version=2023-11-01
   response:
     body:
       string: '{"value":[]}'
@@ -327,7 +315,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 02 Aug 2023 10:33:53 GMT
+      - Mon, 26 Feb 2024 06:52:54 GMT
       expires:
       - '-1'
       pragma:
@@ -336,14 +324,130 @@ interactions:
       - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/0fbd6a52-98cb-4c5b-91a8-f0ffa470e3ba
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '99'
+      - '95'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"subscriptions": ["38304e13-357e-405e-9e9a-220351dcce8c"], "query": "RecoveryServicesResources
+      | where type =~ ''microsoft.dataprotection/backupvaults/backupinstances''| extend
+      vaultName = split(split(id, ''/Microsoft.DataProtection/backupVaults/'')[1],''/'')[0]|
+      extend protectionState = properties.currentProtectionState| extend datasourceId
+      = properties.dataSourceInfo.resourceID | where resourceGroup in~ (''clitest-dpp-rg'')
+      | where vaultName in~ (''clitest-bkp-vault-crr-donotdelete'') | where name in~
+      (''clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052'')", "options":
+      {"$top": 1000, "$skip": 0, "resultFormat": "objectArray", "allowPartialScopes":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection recovery-point list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '665'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -v --backup-instance-name --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) azsdk-python-mgmt-resourcegraph/8.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052","name":"clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052","type":"microsoft.dataprotection/backupvaults/backupinstances","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","kind":"","location":"eastus2euap","resourceGroup":"clitest-dpp-rg","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","managedBy":"","sku":null,"plan":null,"properties":{"resourceGuardOperationRequests":null,"protectionStatus":{"errorDetails":null,"status":"ProtectionConfigured"},"friendlyName":"clitestcrr-ecy\\postgres","currentProtectionState":"ProtectionConfigured","objectType":"BackupInstance","dataSourceSetInfo":{"resourceLocation":"eastus2euap","datasourceType":"Microsoft.DBforPostgreSQL/servers/databases","objectType":"DatasourceSet","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy","resourceProperties":null,"resourceType":"Microsoft.DBforPostgreSQL/servers","resourceName":"clitestcrr-ecy","resourceUri":"","baseUri":null},"dataSourceInfo":{"resourceLocation":"eastus2euap","datasourceType":"Microsoft.DBforPostgreSQL/servers/databases","objectType":"Datasource","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy/databases/postgres","resourceProperties":null,"resourceType":"Microsoft.DBforPostgreSQL/servers/databases","resourceName":"postgres","resourceUri":"","baseUri":null},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupPolicies/crrclitestbackuppolicy","policyParameters":null,"policyVersion":""},"backupInstanceExtendedProperties":{"allowedOperations":["BackupNow","Restore","ChangePolicy","StopBackup","Delete","ViewSecondaryRecoveryPoint","RestoreToSecondaryRegion"],"protectionStateInSecondaryRegion":"ProtectionConfigured","protectedPrimaryRegion":"eastus2euap","vaultId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete","protectedSecondaryRegion":"centraluseuap","dataSourceExtendedInfo":{"dataSourceId":"clitestcrr-ecy\\postgres"},"policyExtendedInfo":{"configuredRPGenerationFrequencyInSecondaryRegion":"7.06:00:00","configuredMaximumRetentionInSecondaryRegion":"93.00:00:00","rpoWarningThresholdInSecondaryRegion":"10.21:00:00","rpoWarningThresholdInPrimaryRegion":"10.12:00:00","configuredRPGenerationFrequency":"7.00:00:00","configuredMaximumRetention":"93.00:00:00"},"recoveryPointInfo":{"latestRecoveryPointInSecondaryRegion":"2024-02-23T09:01:16.2520000Z","oldestRecoveryPointInSecondaryRegion":"2024-02-23T09:01:16.2520000Z","oldestRecoveryPointInPrimaryRegion":"2024-02-23T09:01:16.2520000Z","latestRecoveryPointInPrimaryRegion":"2024-02-25T22:00:49.5720000Z"}},"datasourceAuthCredentials":{"objectType":"SecretStoreBasedAuthCredentials","secretStoreResource":{"secretStoreType":"AzureKeyVault","value":null,"uri":"https://clitestcrrkeyvault.vault.azure.net/secrets/clitestcrr-final"}},"protectionErrorDetails":null,"dataSourceProperties":null,"provisioningState":"Succeeded","identityDetails":null,"validationType":null},"tags":null,"identity":null,"zones":null,"extendedLocation":null,"vaultName":"clitest-bkp-vault-crr-donotdelete","protectionState":"ProtectionConfigured","datasourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy/databases/postgres"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3982'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Feb 2024 06:52:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.4007940'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sourceBackupInstanceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052",
+      "sourceRegion": "eastus2euap"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection recovery-point list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '301'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -v --backup-instance-name --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/locations/centraluseuap/fetchSecondaryRecoveryPoints?api-version=2023-11-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"9f74e3726904425cb10f17c2c695d169","recoveryPointTime":"2024-02-25T22:00:49.5729763Z","recoveryPointType":"Full","friendlyName":"2f9ee557597c465dbf3f7505c3f7db4a","recoveryPointDataStoresDetails":[{"id":"170b3a06-9295-4f5b-b31b-2ae0b57cace3","type":"VaultStore","creationTime":"2024-02-25T22:00:49.5729763Z","expiryTime":"2024-05-25T22:00:49.5729763Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638442750778349393","policyName":"crrclitestbackuppolicy","policyVersion":null,"expiryTime":"2024-05-25T22:00:49.5729763Z","recoveryPointState":"Completed"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052/recoveryPoints/9f74e3726904425cb10f17c2c695d169","name":"9f74e3726904425cb10f17c2c695d169","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"8f05f2d43fc34f2c9e79b7d5ea2a7bd9","recoveryPointTime":"2024-02-23T09:01:16.2526932Z","recoveryPointType":"Full","friendlyName":"74bb2ac6def842a08d23fed0bd63d15d","recoveryPointDataStoresDetails":[{"id":"170b3a06-9295-4f5b-b31b-2ae0b57cace3","type":"VaultStore","creationTime":"2024-02-23T09:01:16.2526932Z","expiryTime":"2024-05-23T09:01:16.2526932Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638442750778349393","policyName":"crrclitestbackuppolicy","policyVersion":null,"expiryTime":"2024-05-23T09:01:16.2526932Z","recoveryPointState":"Completed"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052/recoveryPoints/8f05f2d43fc34f2c9e79b7d5ea2a7bd9","name":"8f05f2d43fc34f2c9e79b7d5ea2a7bd9","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2343'
+      content-type:
+      - application/json
+      date:
+      - Mon, 26 Feb 2024 06:52:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/401d94b0-a53b-4e33-9818-c86989c5cfa0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1194'
       x-powered-by:
       - ASP.NET
     status:

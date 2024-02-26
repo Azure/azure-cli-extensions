@@ -18,6 +18,7 @@ def reset_softdelete_base_state(test):
     ])
 
     # Ensure that backup instance is protected in the primary soft delete vault
+    test.cmd('az dataprotection backup-instance deleted-backup-instance undelete -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"')
     test.cmd('az dataprotection backup-instance resume-protection -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"')
     test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"', checks=[
         test.check('properties.protectionStatus.status', "ProtectionConfigured")
@@ -96,6 +97,18 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-instance list-from-resourcegraph --datasource-type "{dataSourceType}" --datasource-id "{dataSourceId}"', checks=[
             test.greater_than('length([])', 0),
             test.exists("[?name == '{backupInstanceName}']")
+        ])
+
+
+    @AllowLargeResponse()
+    def test_dataprotection_backup_vault_list_from_resource_graph(test):
+        test.kwargs.update({
+            'vaultId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete',
+            'vaultName': 'clitest-bkp-vault-persistent-bi-donotdelete'
+        })
+        test.cmd('az dataprotection backup-vault list-from-resourcegraph --vault-id "{vaultId}"', checks=[
+            test.greater_than('length([])', 0),
+            test.exists("[?name == '{vaultName}']")
         ])
 
 

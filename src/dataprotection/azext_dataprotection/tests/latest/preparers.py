@@ -39,7 +39,6 @@ class VaultPreparer(AbstractPreparer, SingleValueReplacer):
                                                                             self.datastore_type, self.storage_type,
                                                                             self.msi_type, self.soft_delete_state,
                                                                             self.immutability_state)
-        print("Executing ", cmd)
         execute(self.cli_ctx, cmd)
 
         return {self.parameter_name: name}

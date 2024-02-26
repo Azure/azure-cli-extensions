@@ -24,23 +24,22 @@ interactions:
       ParameterSetName:
       - --datasource-type --datasource-id
       User-Agent:
-      - AZURECLI/2.49.0 (PIP) azsdk-python-mgmt-resourcegraph/8.0.0 Python/3.10.7
+      - AZURECLI/2.57.0 (PIP) azsdk-python-mgmt-resourcegraph/8.0.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: POST
     uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
   response:
     body:
-      string: '{"totalRecords":1,"count":1,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e","name":"clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e","type":"microsoft.dataprotection/backupvaults/backupinstances","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","kind":"","location":"global","resourceGroup":"clitest-dpp-rg","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","managedBy":"","sku":null,"plan":null,"properties":{"currentProtectionState":"ProtectionConfigured","dataSourceInfo":{"resourceLocation":"centraluseuap","datasourceType":"Microsoft.Compute/disks","objectType":"Datasource","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-persistent-bi-donotdelete","resourceType":"Microsoft.Compute/disks","resourceProperties":null,"resourceName":"clitest-disk-persistent-bi-donotdelete","resourceUri":"","baseUri":null},"objectType":"BackupInstance","friendlyName":"clitest-disk-persistent-bi-donotdelete","dataSourceSetInfo":null,"protectionStatus":{"errorDetails":null,"status":"ProtectionConfigured"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupPolicies/diskpolicy","policyParameters":{"tags":null,"backupDatasourceParametersList":null,"dataStoreParametersList":[{"objectType":"AzureOperationalStoreParameters","dataStoreType":"OperationalStore","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]},"policyVersion":null},"backupInstanceExtendedProperties":{"protectionStateInSecondaryRegion":"NotProtected","protectedPrimaryRegion":"Central
-        US EUAP","vaultId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete","protectedSecondaryRegion":"","dataSourceExtendedInfo":{"dataSourceId":"clitest-disk-persistent-bi-donotdelete"},"policyExtendedInfo":{"configuredRPGenerationFrequencyInSecondaryRegion":"-10675199.02:48:05.4775808","configuredMaximumRetentionInSecondaryRegion":"-10675199.02:48:05.4775808","rpoWarningThresholdInSecondaryRegion":"-10675199.02:48:05.4775808","rpoWarningThresholdInPrimaryRegion":"1.12:00:00","configuredRPGenerationFrequency":"1.00:00:00","configuredMaximumRetention":"7.00:00:00"},"recoveryPointInfo":{"latestRecoveryPointInSecondaryRegion":"0001-01-01T00:00:00.0000000Z","oldestRecoveryPointInSecondaryRegion":"0001-01-01T00:00:00.0000000Z","latestRecoveryPointInPrimaryRegion":"0001-01-01T00:00:00.0000000Z","oldestRecoveryPointInPrimaryRegion":"0001-01-01T00:00:00.0000000Z"}},"datasourceAuthCredentials":null,"protectionErrorDetails":null,"dataSourceProperties":null,"provisioningState":"Succeeded","identityDetails":null,"validationType":null},"tags":null,"identity":null,"zones":null,"extendedLocation":null,"vaultName":"clitest-bkp-vault-persistent-bi-donotdelete","protectionState":"ProtectionConfigured","datasourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-persistent-bi-donotdelete"}],"facets":[],"resultTruncated":"false"}'
+      string: '{"totalRecords":1,"count":1,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e","name":"clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e","type":"microsoft.dataprotection/backupvaults/backupinstances","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","kind":"","location":"centraluseuap","resourceGroup":"clitest-dpp-rg","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","managedBy":"","sku":null,"plan":null,"properties":{"protectionStatus":{"errorDetails":null,"status":"ProtectionStopped"},"friendlyName":"clitest-disk-persistent-bi-donotdelete","resourceGuardOperationRequests":null,"currentProtectionState":"ProtectionStopped","objectType":"BackupInstance","dataSourceInfo":{"resourceLocation":"centraluseuap","datasourceType":"Microsoft.Compute/disks","objectType":"Datasource","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-persistent-bi-donotdelete","resourceType":"Microsoft.Compute/disks","resourceProperties":null,"resourceName":"clitest-disk-persistent-bi-donotdelete","resourceUri":"","baseUri":null},"dataSourceSetInfo":{"resourceLocation":"centraluseuap","datasourceType":"Microsoft.Compute/disks","objectType":"DatasourceSet","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-persistent-bi-donotdelete","resourceType":"Microsoft.Compute/disks","resourceProperties":null,"resourceName":"clitest-disk-persistent-bi-donotdelete","resourceUri":"","baseUri":null},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupPolicies/diskpolicy","policyParameters":{"tags":null,"backupDatasourceParametersList":null,"dataStoreParametersList":[{"objectType":"AzureOperationalStoreParameters","dataStoreType":"OperationalStore","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]},"policyVersion":null},"backupInstanceExtendedProperties":{"allowedOperations":["Restore","ResumeBackup","Delete"],"protectionStateInSecondaryRegion":"NotProtected","protectedPrimaryRegion":"centraluseuap","vaultId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete","protectedSecondaryRegion":"","dataSourceExtendedInfo":{"dataSourceId":"clitest-disk-persistent-bi-donotdelete"},"policyExtendedInfo":{"configuredRPGenerationFrequencyInSecondaryRegion":"-10675199.02:48:05.4775808","configuredMaximumRetentionInSecondaryRegion":"-10675199.02:48:05.4775808","rpoWarningThresholdInSecondaryRegion":"-10675199.02:48:05.4775808","rpoWarningThresholdInPrimaryRegion":"-10675199.02:48:05.4775808","configuredRPGenerationFrequency":"-10675199.02:48:05.4775808","configuredMaximumRetention":"36600.00:00:00"},"recoveryPointInfo":{"latestRecoveryPointInSecondaryRegion":"0001-01-01T00:00:00.0000000Z","oldestRecoveryPointInSecondaryRegion":"0001-01-01T00:00:00.0000000Z","latestRecoveryPointInPrimaryRegion":"0001-01-01T00:00:00.0000000Z","oldestRecoveryPointInPrimaryRegion":"0001-01-01T00:00:00.0000000Z"}},"datasourceAuthCredentials":null,"protectionErrorDetails":null,"dataSourceProperties":null,"provisioningState":"Succeeded","identityDetails":null,"validationType":null},"tags":null,"identity":null,"zones":null,"extendedLocation":null,"vaultName":"clitest-bkp-vault-persistent-bi-donotdelete","protectionState":"ProtectionStopped","datasourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-persistent-bi-donotdelete"}],"facets":[],"resultTruncated":"false"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3628'
+      - '4183'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 02 Aug 2023 10:32:18 GMT
+      - Mon, 12 Feb 2024 06:12:30 GMT
       expires:
       - '-1'
       pragma:
@@ -49,16 +48,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
       x-ms-ratelimit-remaining-tenant-resource-requests:
       - '14'
       x-ms-resource-graph-request-duration:
-      - '0:00:00:00.0971728'
+      - '0:00:00:00.1312774'
       x-ms-user-quota-remaining:
       - '14'
       x-ms-user-quota-resets-after:
