@@ -237,9 +237,15 @@ def load_arguments(self, _):
             help='Delete the VM from the VMware host.',
         )
         c.argument(
+            'retain_machine',
+            action='store_true',
+            help='Retain the parent Microsoft.HybridCompute Machine resource',
+        )
+        c.argument(
             'delete_machine',
             action='store_true',
             help='Delete the parent Microsoft.HybridCompute Machine resource',
+            deprecate_info=c.deprecate(hide=True),
         )
         c.argument(
             'retain',

@@ -1318,10 +1318,19 @@ def delete_vm(
     resource_name,
     force=None,
     delete_from_host=None,
+    retain_machine=None,
     delete_machine=None,
     retain=None,
     no_wait=False,
 ):
+    if delete_machine and retain_machine:
+        raise MutuallyExclusiveArgumentError(
+            "Arguments --delete-machine and --retain-machine cannot be used together."
+        )
+    if retain_machine:
+        delete_machine = False
+    else:
+        delete_machine = True
 
     if retain and delete_from_host:
         raise MutuallyExclusiveArgumentError(
@@ -1340,7 +1349,8 @@ def delete_vm(
     if no_wait and delete_machine:
         if delete_from_host:
             raise MutuallyExclusiveArgumentError(
-                "Cannot delete VMWare VM from host when --no-wait and --delete-machine is provided."
+                "Cannot delete VMWare VM from host when --no-wait is provided "
+                "but --retain-machine is not provided."
             )
         machine_client.delete(resource_group_name, resource_name)
         return
