@@ -459,7 +459,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             force_single_container_updates=self.force_single_container_updates
         )
 
-    def _set_force_single_container_updates(self, force_single_container_updates):
+    def set_force_single_container_updates(self, force_single_container_updates):
         self.force_single_container_updates = force_single_container_updates
 
     def create_acr_if_needed(self):
