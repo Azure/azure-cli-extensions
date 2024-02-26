@@ -291,7 +291,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         self.cmd('az connectedvmware vm start -g {rg} --name {vm_name}')
 
         # Disable the VM from azure; delete the ARM resource, retain the VM in vCenter.
-        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} -y')
+        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} --retain-machine -y')
 
         # Enable the VM to azure again.
         self.cmd(
