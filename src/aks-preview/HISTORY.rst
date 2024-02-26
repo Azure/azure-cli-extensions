@@ -11,7 +11,25 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
+* Add `az aks nodepool delete-machines` command.
+* Update `az aks approuting zone` command to support private dns zones.
+* Vendor new SDK and bump API version to 2024-01-02-preview.
+
+1.0.0b6
++++++++
+* Vendor new SDK and bump API version to 2023-11-02-preview.
+* Add `--ssh-access` to the `az aks create` command.
+* Add `--ssh-access` to the `az aks update` command.
+* Add `--ssh-access` to the `az aks nodepool add` command.
+* Add `--ssh-access` to the `az aks nodepool update` command.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
+* Add `az aks nodepool delete-machines` command.
+
+1.0.0b5
++++++++
+* Add `--enable-ai-toolchain-operator` to `az aks create` and `az aks update`.
+* Add `--disable-ai-toolchain-operator` to the `az aks update` command.
 * Refactor azure service mesh related code to meet cli style requirements.
 
 1.0.0b4
@@ -21,6 +39,7 @@ Pending
 1.0.0b3
 +++++++
 * Change the format for az aks machine commands to separate the ipv4, ipv6 columns
+* Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
 
 1.0.0b2
 +++++++

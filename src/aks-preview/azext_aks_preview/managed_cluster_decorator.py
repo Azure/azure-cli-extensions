@@ -30,6 +30,8 @@ from azext_aks_preview._consts import (
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SECRET_ROTATION_ENABLED,
+    CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE,
+    CONST_DNS_ZONE_CONTRIBUTOR_ROLE,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -96,6 +98,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id
+from msrestazure.tools import parse_resource_id
 
 
 logger = get_logger(__name__)
@@ -2205,6 +2208,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # if a gateway is enabled, enable the mesh
             if enable_egress_gateway:
                 new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                if new_profile.istio is None:
+                    new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
                 updated = True
 
             # ensure necessary fields
@@ -2259,6 +2264,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # if an ingress gateway is enabled, enable the mesh
             if enable_ingress_gateway:
                 new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                if new_profile.istio is None:
+                    new_profile.istio = self.models.IstioServiceMesh()  # pylint: disable=no-member
                 updated = True
 
             if not ingress_gateway_type:
@@ -2563,15 +2570,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: list of str or None
         """
-        dns_zone_resource_ids = self.raw_param.get("dns_zone_resource_ids")
-        dns_zone_resource_ids = [
-            x.strip()
-            for x in (
-                dns_zone_resource_ids.split(",")
-                if dns_zone_resource_ids
-                else []
-            )
-        ]
+        dns_zone_resource_ids_input = self.raw_param.get("dns_zone_resource_ids")
+        dns_zone_resource_ids = []
+
+        if dns_zone_resource_ids_input:
+            for dns_zone in dns_zone_resource_ids_input.split(","):
+                dns_zone = dns_zone.strip()
+                if dns_zone and is_valid_resource_id(dns_zone):
+                    dns_zone_resource_ids.append(dns_zone)
+                else:
+                    raise CLIError(dns_zone, " is not a valid Azure DNS Zone resource ID.")
 
         return dns_zone_resource_ids
 
@@ -2600,6 +2608,40 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """Obtain the value of node_provisioning_mode.
         """
         return self.raw_param.get("node_provisioning_mode")
+
+    def get_ai_toolchain_operator(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_ai_toolchain_operator.
+
+        When enabled, if both enable_ai_toolchain_operator and
+        disable_ai_toolchain_operator are specified, raise
+        a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        enable_ai_toolchain_operator = self.raw_param.get("enable_ai_toolchain_operator")
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_ai_toolchain_operator and self.get_disable_ai_toolchain_operator():
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-ai-toolchain-operator and "
+                    "--disable-ai-toolchain-operator at the same time. "
+                )
+
+        return enable_ai_toolchain_operator
+
+    def get_disable_ai_toolchain_operator(self) -> bool:
+        """Obtain the value of disable_ai_toolchain_operator.
+
+        :return: bool
+        """
+        # Note: No need to check for mutually exclusive parameter with enable-ai-toolchain-operator here
+        # because it's already checked in get_ai_toolchain_operator
+        return self.raw_param.get("disable_ai_toolchain_operator")
+
+    def get_ssh_access(self) -> Union[str, None]:
+        """Obtain the value of ssh_access.
+        """
+        return self.raw_param.get("ssh_access")
 
 
 # pylint: disable=too-many-public-methods
@@ -3184,6 +3226,29 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_ai_toolchain_operator(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if self.context.get_ai_toolchain_operator(enable_validation=True):
+            if mc.ai_toolchain_operator_profile is None:
+                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()  # pylint: disable=no-member
+            # set enabled
+            mc.ai_toolchain_operator_profile.enabled = True
+
+        # Default is disabled so no need to worry about that here
+        return mc
+
+    def set_up_agentpool_profile_ssh_access(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        ssh_access = self.context.get_ssh_access()
+        if ssh_access is not None:
+            for agent_pool_profile in mc.agent_pool_profiles:
+                if agent_pool_profile.security_profile is None:
+                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+                agent_pool_profile.security_profile.ssh_access = ssh_access
+        return mc
+
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -3236,10 +3301,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_monitor_profile(mc)
         # set up metrics profile
         mc = self.set_up_metrics_profile(mc)
+        # set up AI toolchain operator
+        mc = self.set_up_ai_toolchain_operator(mc)
         # set up for azure container storage
         mc = self.set_up_azure_container_storage(mc)
         # set up node provisioning profile
         mc = self.set_up_node_provisioning_profile(mc)
+        # set up agentpool profile ssh access
+        mc = self.set_up_agentpool_profile_ssh_access(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -4209,9 +4278,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
 
         if level is not None:
-            mc.guardrails_profile.level = level
+            mc.safeguards_profile.level = level
         if version is not None:
-            mc.guardrails_profile.version = version
+            mc.safeguards_profile.version = version
 
         return mc
 
@@ -4438,24 +4507,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
             if add_dns_zone:
-                if mc.ingress_profile.web_app_routing.dns_zone_resource_ids is None:
-                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids = []
-                mc.ingress_profile.web_app_routing.dns_zone_resource_ids.extend(dns_zone_resource_ids)
-                if attach_zones:
-                    try:
-                        for dns_zone in dns_zone_resource_ids:
-                            if not add_role_assignment(
-                                self.cmd,
-                                "DNS Zone Contributor",
-                                mc.ingress_profile.web_app_routing.identity.object_id,
-                                False,
-                                scope=dns_zone
-                            ):
-                                logger.warning(
-                                    'Could not create a role assignment for App Routing. '
-                                    'Are you an Owner on this subscription?')
-                    except Exception as ex:
-                        raise CLIError('Error in granting dns zone permisions to managed identity.\n') from ex
+                mc.ingress_profile.web_app_routing.dns_zone_resource_ids = (
+                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids or []
+                )
+                for dns_zone_id in dns_zone_resource_ids:
+                    if dns_zone_id not in mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
+                        mc.ingress_profile.web_app_routing.dns_zone_resource_ids.append(dns_zone_id)
+                        if attach_zones:
+                            try:
+                                is_private_dns_zone = (
+                                    parse_resource_id(dns_zone_id).get("type").lower() == "privatednszones"
+                                )
+                                role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else \
+                                    CONST_DNS_ZONE_CONTRIBUTOR_ROLE
+                                if not add_role_assignment(
+                                    self.cmd,
+                                    role,
+                                    mc.ingress_profile.web_app_routing.identity.object_id,
+                                    False,
+                                    scope=dns_zone_id
+                                ):
+                                    logger.warning(
+                                        'Could not create a role assignment for App Routing. '
+                                        'Are you an Owner on this subscription?')
+                            except Exception as ex:
+                                raise CLIError('Error in granting dns zone permissions to managed identity.\n') from ex
             elif delete_dns_zone:
                 if mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
                     dns_zone_resource_ids = [
@@ -4471,9 +4547,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if attach_zones:
                     try:
                         for dns_zone in dns_zone_resource_ids:
+                            is_private_dns_zone = parse_resource_id(dns_zone).get("type").lower() == "privatednszones"
+                            role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else \
+                                CONST_DNS_ZONE_CONTRIBUTOR_ROLE
                             if not add_role_assignment(
                                 self.cmd,
-                                "DNS Zone Contributor",
+                                role,
                                 mc.ingress_profile.web_app_routing.identity.object_id,
                                 False,
                                 scope=dns_zone,
@@ -4495,6 +4574,40 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         mc = self.update_node_provisioning_mode(mc)
 
+        return mc
+
+    def update_ai_toolchain_operator(self, mc: ManagedCluster) -> ManagedCluster:
+        """Updates the aiToolchainOperatorProfile field of the managed cluster
+
+        :return: the ManagedCluster object
+        """
+
+        if self.context.get_ai_toolchain_operator(enable_validation=True):
+            if mc.ai_toolchain_operator_profile is None:
+                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()  # pylint: disable=no-member
+            mc.ai_toolchain_operator_profile.enabled = True
+
+        if self.context.get_disable_ai_toolchain_operator():
+            if mc.ai_toolchain_operator_profile is None:
+                mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()  # pylint: disable=no-member
+            mc.ai_toolchain_operator_profile.enabled = False
+        return mc
+
+    def update_agentpool_profile_ssh_access(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        ssh_access = self.context.get_ssh_access()
+        if ssh_access is not None:
+            msg = (
+                f"You're going to update ALL agentpool ssh access to '{ssh_access}' "
+                "This change will take effect after you upgrade the nodepool. Proceed?"
+            )
+            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
+                raise DecoratorEarlyExitException()
+            for agent_pool_profile in mc.agent_pool_profiles:
+                if agent_pool_profile.security_profile is None:
+                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+                agent_pool_profile.security_profile.ssh_access = ssh_access
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
@@ -4558,10 +4671,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_k8s_support_plan(mc)
         # update metrics profile
         mc = self.update_metrics_profile(mc)
+        # update AI toolchain operator
+        mc = self.update_ai_toolchain_operator(mc)
         # update azure container storage
         mc = self.update_azure_container_storage(mc)
         # update node provisioning profile
         mc = self.update_node_provisioning_profile(mc)
+        # update agentpool profile ssh access
+        mc = self.update_agentpool_profile_ssh_access(mc)
 
         return mc
 
@@ -4651,7 +4768,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
 
         # attach keyvault to app routing addon
-        from msrestazure.tools import parse_resource_id
         from azure.cli.command_modules.keyvault.custom import set_policy
         from azext_aks_preview._client_factory import get_keyvault_client
         keyvault_id = self.context.get_keyvault_id()
@@ -4676,12 +4792,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     keyvault_client = get_keyvault_client(self.cmd.cli_ctx, subscription_id=keyvault_subscription)
                     keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
                     managed_identity_object_id = cluster.ingress_profile.web_app_routing.identity.object_id
-                    print("managed_identity_object_id", managed_identity_object_id)
                     is_service_principal = False
 
                     try:
                         if keyvault.properties.enable_rbac_authorization:
-                            print("within if block")
                             if not self.context.external_functions.add_role_assignment(
                                 self.cmd,
                                 "Key Vault Secrets User",
@@ -4694,7 +4808,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                                     "Are you an Owner on this subscription?"
                                 )
                         else:
-                            print("within else block")
                             keyvault = set_policy(
                                 self.cmd,
                                 keyvault_client,

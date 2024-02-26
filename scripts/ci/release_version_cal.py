@@ -20,6 +20,7 @@ diff_branch = os.environ.get('diff_branch', None)
 base_meta_path = os.environ.get('base_meta_path', None)
 diff_meta_path = os.environ.get('diff_meta_path', None)
 output_file = os.environ.get('output_file', None)
+
 changed_module_list = os.environ.get('changed_module_list', "").split()
 pr_label_list = os.environ.get('pr_label_list', "").split()
 pr_label_list = [name.lower() for name in pr_label_list]
@@ -104,6 +105,7 @@ def main():
     print("pr_label_list: ", pr_label_list)
     comment_message = []
     if len(changed_module_list) == 0:
+        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
         save_comment_message(cli_ext_path, output_file, comment_message)
         return
     next_version_pre_tag = get_next_version_pre_tag()

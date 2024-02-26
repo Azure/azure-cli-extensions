@@ -304,6 +304,11 @@ DaprComponentResiliency = {
                     "maxIntervalInMilliseconds": None,
                 }
             },
+            "circuitBreakerPolicy": {
+                "consecutiveErrors": None,
+                "timeoutInSeconds": None,
+                "intervalInSeconds": None
+            }
         },
         "outboundPolicy": {
             "timeoutPolicy": {
@@ -316,6 +321,11 @@ DaprComponentResiliency = {
                     "maxIntervalInMilliseconds": None,
                 }
             },
+            "circuitBreakerPolicy": {
+                "consecutiveErrors": None,
+                "timeoutInSeconds": None,
+                "intervalInSeconds": None
+            }
         }
     }
 }
@@ -524,4 +534,9 @@ ConnectedEnvironment = {
 ExtendedLocation = {
     "name": None,
     "type": None
+}
+
+ManagedServiceIdentity = {
+    "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
+    "userAssignedIdentities": None  # {string: UserAssignedIdentity}
 }
