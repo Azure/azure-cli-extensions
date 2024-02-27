@@ -648,9 +648,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def should_update_existing_container(self, c):
         # Update existing container if container name matches the argument container name or if force_single_container_updates is set
-            # force_single_container_updates argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
+        # force_single_container_updates argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
         return c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_force_single_container_updates()
-
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
