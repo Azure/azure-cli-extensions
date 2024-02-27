@@ -330,3 +330,4 @@ def process_message_for_run_command(message):
 
     for line in result[2:len(result) - 2]:
         print(line)
+    return

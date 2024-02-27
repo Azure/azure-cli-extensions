@@ -13172,3 +13172,55 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest',
+                                    location='westus2', preserve_default_location=True)
+    def test_aks_check_network(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'location': resource_group_location,
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--ssh-key-value={ssh_key_value} --node-count=2 --os-sku Ubuntu'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # check network to a random node
+        check_cmd = 'aks check-network outbound --resource-group={resource_group} --name={name}'
+        self.cmd(check_cmd, checks=[self.is_empty()])
+
+        # get node name
+        managed_resource_group = 'MC_{resource_group}_{aks_name}_{resource_group_location}'
+        self.kwargs.update({"managed_resource_group": managed_resource_group})
+
+        list_vmss_cmd = 'vmss list --resource-group={managed_resource_group}'
+        vmss_result = self.cmd(
+            list_vmss_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ]
+        ).get_output_in_json()
+        vmss_name = vmss_result[0]['name']
+        self.kwargs.update({"vmss_name": vmss_name})
+        node_name = '{vmss_name}000001'
+        self.kwargs.update({"node_name": node_name})
+
+        # check network to a specific node
+        check_cmd = 'aks check-network outbound --resource-group={resource_group} --name={name} ' \
+            '--node-name={node_name}'
+        self.cmd(check_cmd, checks=[self.is_empty()])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
