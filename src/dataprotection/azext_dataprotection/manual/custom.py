@@ -9,15 +9,16 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-branches
 # pylint: disable=protected-access
-import uuid
-import re
+# pylint: disable=unused-argument
+# pylint: disable=too-many-nested-blocks
+# pylint: disable=no-else-continue
+# pylint: disable=no-else-raise
 import time
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
     CLIInternalError,
     ForbiddenError,
-    MutuallyExclusiveArgumentError,
     UnauthorizedError
 )
 from knack.log import get_logger

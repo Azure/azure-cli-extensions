@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=line-too-long
+# pylint: disable=unnecessary-list-index-lookup
+
 import uuid
 import re
 import json
@@ -301,6 +304,8 @@ def validate_and_set_rehydration_priority_in_restore_request(rehydration_priorit
     restore_request["object_type"] = "AzureBackupRestoreWithRehydrationRequest"
     restore_request["rehydration_priority"] = rehydration_priority
     restore_request["rehydration_retention_duration"] = "P" + str(rehydration_duration) + "D"
+
+    return restore_request
 
 
 def validate_and_set_datasource_id_in_restore_request(cmd, target_resource_id, backup_instance_id):

@@ -8,6 +8,7 @@ from azure.cli.testsdk.preparers import AbstractPreparer, SingleValueReplacer
 from azure.cli.testsdk.base import execute
 from azure.cli.core.mock import DummyCli
 
+
 class VaultPreparer(AbstractPreparer, SingleValueReplacer):
     def __init__(self, name_prefix='clitest-dpp-vault', parameter_name='vault_name',
                  resource_group_location_parameter_name='resource_group_location',
@@ -42,7 +43,6 @@ class VaultPreparer(AbstractPreparer, SingleValueReplacer):
         execute(self.cli_ctx, cmd)
 
         return {self.parameter_name: name}
-
 
     def remove_resource(self, name, **kwargs):
         # Should get cleaned up with Resource Group cleanup

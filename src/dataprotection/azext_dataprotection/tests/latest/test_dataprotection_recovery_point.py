@@ -9,6 +9,7 @@
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+
 class RecoveryPointScenarioTest(ScenarioTest):
 
     def setUp(test):
@@ -53,8 +54,8 @@ class RecoveryPointScenarioTest(ScenarioTest):
 
         test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
                  '--end-time 2023-06-16T01:00:00.0000000Z --start-time 2033-06-16T01:00:00', checks=[
-                    test.is_empty()
-                ])
+                     test.is_empty()
+                 ])
 
         test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
                  '--start-time 0000-13-32T01:00:00', expect_failure=True)
@@ -64,4 +65,4 @@ class RecoveryPointScenarioTest(ScenarioTest):
         test.cmd('az dataprotection recovery-point list -g "{rg}" -v "{crrVaultName}" '
                  '--backup-instance-name "{crrBackupInstanceName}" --use-secondary-region', checks=[
                      test.greater_than('length([])', 0)
-                ])
+                 ])

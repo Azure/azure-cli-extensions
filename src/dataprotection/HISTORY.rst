@@ -12,7 +12,8 @@ Release History
 * `az dataprotection recovery-point list`: New parameter `--use-secondary-region` to be used when listing from the secondary region.
 * `az dataprotection backup-instance validate-for-restore`: New parameter `--use-secondary-region` to be used when restoring to the secondary region.
 * `az dataprotection backup-instance restore trigger`: New parameter `--use-secondary-region` to be used when restoring to the secondary region.
-* `az dataprotection backup-job list`: New parameter `--use-secondary-region` to be used when restoring to the secondary region.
+* `az dataprotection backup-job list`: New parameter `--use-secondary-region` which can be used in disaster scenario when primary region is down.
+* `az dataprotection backup-job show`: New parameter `--use-secondary-region` which can be used in disaster scenario when primary region is down.
 
 0.11.2
 ++++++
