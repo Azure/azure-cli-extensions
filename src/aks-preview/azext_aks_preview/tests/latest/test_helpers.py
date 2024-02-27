@@ -153,7 +153,7 @@ class CheckProcessRunCommandMessage(unittest.TestCase):
         self.assertEqual(processed_message, None)
 
         failed_message = "Enable succeeded: \n[stdout]\n\n[stderr]\nbash: /opt/azure/containers/aks-check.sh: No such file or directory\n"
-        err = "bash: /opt/azure/containers/aks-check.sh: No such file or directory"
+        err = "Error: bash: /opt/azure/containers/aks-check.sh: No such file or directory"
         with self.assertRaises(CLIError) as cm:
             process_message_for_run_command(failed_message)
         self.assertEqual(str(cm.exception), err)
