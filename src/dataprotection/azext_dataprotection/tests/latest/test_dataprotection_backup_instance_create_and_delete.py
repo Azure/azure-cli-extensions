@@ -10,6 +10,7 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from ..utils import track_job_to_completion
 
+
 def backup_instance_validate_create(test):
     # Adding backup-instance delete as the cleanup command, will always run even if test fails.
     test.addCleanup(test.cmd, 'az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --yes --no-wait')
@@ -36,7 +37,7 @@ def backup_instance_validate_create(test):
 
     # Waiting for backup-instance configuration to complete. Adjust timeout if this fails for no other reason.
     test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 120 '
-            '--custom "properties.protectionStatus.status==\'ProtectionConfigured\'"')
+             '--custom "properties.protectionStatus.status==\'ProtectionConfigured\'"')
 
 
 # Uses persistent disk and vault for both tests
@@ -79,7 +80,7 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
 
         # Trigger ad-hoc backup and track to completion
         adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
-                                 '-n {backupInstanceName} -g {rg} --vault-name {vaultName} --rule-name "{policyRuleName}"').get_output_in_json()
+                                         '-n {backupInstanceName} -g {rg} --vault-name {vaultName} --rule-name "{policyRuleName}"').get_output_in_json()
         test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
         track_job_to_completion(test)
 

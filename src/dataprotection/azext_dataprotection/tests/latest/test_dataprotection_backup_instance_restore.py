@@ -16,6 +16,7 @@ logger = get_logger(__name__)
 # Using persistent datasources - the assumption here is that the backup already exists, we just need to fetch the latest recoverypoint,
 # create a restore request object, validate it, and then trigger it (we don't need to track it to completion)
 
+
 class BackupInstanceRestoreScenarioTest(ScenarioTest):
 
     def setUp(test):
@@ -84,8 +85,8 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         })
         restorable_time_range = test.cmd('az dataprotection restorable-time-range find -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
                                          '--source-data-store-type "{sourceDataStore}"', checks=[
-            test.greater_than('length(properties.restorableTimeRanges)', 0)
-        ]).get_output_in_json()
+                                    test.greater_than('length(properties.restorableTimeRanges)', 0)
+                                ]).get_output_in_json()
 
         restore_point_in_time = get_midpoint_of_time_range(
             restorable_time_range['properties']['restorableTimeRanges'][0]['startTime'],
@@ -132,10 +133,10 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         })
 
         recovery_point = test.cmd('az dataprotection recovery-point list -g {rg} -v {crrVaultName} '
-                                   '--backup-instance-name {sourceBackupInstanceName} --use-secondary-region',
-                                   checks=[
-                                       test.greater_than('length([])', 0)
-                                    ]).get_output_in_json()
+                                  '--backup-instance-name {sourceBackupInstanceName} --use-secondary-region',
+                                  checks=[
+                                      test.greater_than('length([])', 0)
+                                  ]).get_output_in_json()
         test.kwargs.update({
             'recoveryPointId': recovery_point[0]['name']
         })
