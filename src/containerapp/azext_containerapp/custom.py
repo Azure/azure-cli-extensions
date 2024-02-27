@@ -2243,7 +2243,7 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
     result = None
     try:
         result = java_component_decorator.show()
-    except CLIInternalError as e:
+    except ResourceNotFoundError:
         pass
 
     current_type = safe_get(result, "properties", "componentType")
