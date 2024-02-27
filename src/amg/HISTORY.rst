@@ -41,6 +41,6 @@ Release History
 ++++++
 * `az grafana create`: support deterministic outbound IP argument
 
-1.2.10
+1.3.0
 ++++++
 * `az grafana update`: support Grafana major version argument
