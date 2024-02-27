@@ -4,4 +4,4 @@
 # --------------------------------------------------------------------------------------------
 
 supported_datasource_types = ["AzureDisk", "AzureBlob", "AzureDatabaseForPostgreSQL", "AzureKubernetesService",
-                              "AzureDatabaseForPostgreSQLFlexibleServer"]
+                              "AzureDatabaseForPostgreSQLFlexibleServer", "AzureDatabaseForMySQL"]

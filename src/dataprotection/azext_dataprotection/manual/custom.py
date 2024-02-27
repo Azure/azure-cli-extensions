@@ -31,8 +31,6 @@ from azext_dataprotection.vendored_sdks.resourcegraph.models import \
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as BackupVaultGet
 
-
-
 logger = get_logger(__name__)
 
 
@@ -339,36 +337,17 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                 role_assignments_arr.append(helper.get_permission_object_from_keyvault(keyvault))
 
         for role_object in manifest['backupVaultPermissions']:
-            resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
-            resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-
-            assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-
-            role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                     scope=resource_id, include_inherited=True)
-            if not role_assignments:
-                assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                    scope=assignment_scope)
-                role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+            role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
+                                                                 backup_instance=backup_instance, principal_id=principal_id,
+                                                                 role_assignments_arr=role_assignments_arr)
 
         if 'dataSourcePermissions' in manifest:
+            datasource_principal_id = helper.get_datasource_principal_id_from_object(cmd, datasource_type,
+                                                                                     backup_instance=backup_instance)
             for role_object in manifest['dataSourcePermissions']:
-
-                datasource_principal_id = helper.get_datasource_principal_id_from_object(cmd, datasource_type,
-                                                                                         backup_instance=backup_instance)
-
-                resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
-                resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-
-                assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-
-                role_assignments = list_role_assignments(cmd, assignee=datasource_principal_id,
-                                                         role=role_object['roleDefinitionName'], scope=resource_id,
-                                                         include_inherited=True)
-                if not role_assignments:
-                    assignment = create_role_assignment(cmd, assignee=datasource_principal_id,
-                                                        role=role_object['roleDefinitionName'], scope=assignment_scope)
-                    role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+                role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
+                                                                     backup_instance=backup_instance, principal_id=datasource_principal_id,
+                                                                     role_assignments_arr=role_assignments_arr)
 
         # Network line of sight access on server, if that is the datasource type
         if datasource_type == 'AzureDatabaseForPostgreSQL':
@@ -395,54 +374,22 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                 rule = postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters)
                 role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
     elif operation == "Restore":
-        if datasource_type != "AzureKubernetesService":
+        if datasource_type not in ("AzureKubernetesService", "AzureDatabaseForMySQL",
+                                   "AzureDatabaseForPostgresFlexibleServer"):
             raise InvalidArgumentValueError("Set permissions for restore is currently not supported for given DataSourceType")
 
-        for role_object in manifest['backupVaultPermissions']:
-            resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
-
-            if role_object['type'] == 'SnapshotRG':
-                if snapshot_resource_group_id is None:
-                    logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
-                    continue
-                else:
-                    resource_id = snapshot_resource_group_id
-
-            resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-
-            assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-
-            role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                     scope=resource_id, include_inherited=True)
-            if not role_assignments:
-                assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                    scope=assignment_scope)
-                role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+        for role_object in manifest['backupVaultRestorePermissions']:
+            role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
+                                                                 restore_request_object=restore_request_object, principal_id=principal_id,
+                                                                 role_assignments_arr=role_assignments_arr)
 
         if 'dataSourcePermissions' in manifest:
-            for role_object in manifest['dataSourcePermissions']:
-                resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
-
-                if role_object['type'] == 'SnapshotRG':
-                    if snapshot_resource_group_id is None:
-                        logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
-                        continue
-                    else:
-                        resource_id = snapshot_resource_group_id
-
-                resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-                assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-
-                datasource_principal_id = helper.get_datasource_principal_id_from_object(cmd, datasource_type,
-                                                                                         restore_request_object=restore_request_object)
-
-                role_assignments = list_role_assignments(cmd, assignee=datasource_principal_id,
-                                                         role=role_object['roleDefinitionName'], scope=resource_id,
-                                                         include_inherited=True)
-                if not role_assignments:
-                    assignment = create_role_assignment(cmd, assignee=datasource_principal_id,
-                                                        role=role_object['roleDefinitionName'], scope=assignment_scope)
-                    role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+            datasource_principal_id = helper.get_datasource_principal_id_from_object(cmd, datasource_type,
+                                                                                     restore_request_object=restore_request_object)
+            for role_object in manifest['dataSourceRestorePermissions']:
+                role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
+                                                                     restore_request_object=restore_request_object, principal_id=principal_id,
+                                                                     role_assignments_arr=role_assignments_arr)
 
     if not role_assignments_arr:
         logger.warning("The required permissions are already assigned!")

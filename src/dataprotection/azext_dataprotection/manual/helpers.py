@@ -19,6 +19,7 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
 )
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 from azext_dataprotection.manual import backupcenter_helper
 from azext_dataprotection.manual.custom import (
     dataprotection_backup_instance_list_from_resourcegraph,
@@ -540,11 +541,21 @@ def get_rg_id_from_arm_id(arm_id):
     return truncate_id_using_scope(arm_id, "ResourceGroup")
 
 
+def get_storage_account_from_container_id(container_id):
+    return truncate_id_using_scope(container_id, 'StorageAccount')
+
+
 def get_resource_id_from_restore_request_object(restore_request_object, role_type):
     resource_id = None
 
     if role_type == 'DataSource':
         resource_id = restore_request_object['restore_target_info']['datasource_info']['resource_id']
+    elif role_type == "TargetStorageAccount":
+        # This is only usable for Recovery As Files
+        if restore_request_object['restore_target_info']['object_type'] != 'RestoreFilesTargetInfo':
+            raise ValueError("The restore mode has to be data recovery as files, incorrect restore object passed")
+        container_id = restore_request_object['restore_target_info']['target_details']['target_resource_arm_id']
+        resource_id = get_storage_account_from_container_id(container_id)
 
     return resource_id
 
@@ -825,9 +836,9 @@ def get_source_and_replicated_region_from_backup_vault(source_backup_vault):
 def get_datasource_principal_id_from_object(cmd, datasource_type, backup_instance=None,
                                             restore_request_object=None):
     if backup_instance is None and restore_request_object is None:
-        raise CLIInternalError("Please enter one")
+        raise CLIInternalError("Please enter either one of backup_instance or restore_request_object")
     if backup_instance is not None and restore_request_object is not None:
-        raise CLIInternalError("Please enter just one")
+        raise CLIInternalError("Please enter just one of backup_instance or restore_request_object")
 
     if backup_instance is not None:
         datasource_arm_id = get_resource_id_from_backup_instance(backup_instance, 'DataSource')
@@ -857,3 +868,37 @@ def get_datasource_principal_id_from_object(cmd, datasource_type, backup_instanc
         raise InvalidArgumentValueError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
 
     return datasource_principal_id
+
+
+def check_and_assign_roles(cmd, role_object, principal_id, role_assignments_arr, permissions_scope,
+                           backup_instance=None, restore_request_object=None,
+                           snapshot_resource_group_id=None):
+    if backup_instance is None and restore_request_object is None:
+        raise CLIInternalError("Please enter either one of backup_instance or restore_request_object")
+    if backup_instance is not None and restore_request_object is not None:
+        raise CLIInternalError("Please enter just one of backup_instance or restore_request_object")
+
+    if backup_instance is not None:
+        resource_id = get_resource_id_from_backup_instance(backup_instance, role_object['type'])
+    if restore_request_object is not None:
+        resource_id = get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
+        if role_object['type'] == 'SnapshotRG':
+            if snapshot_resource_group_id is None:
+                logger.warning('snapshot-resource-group-id parameter is required to assign permissions '
+                               'over snapshot resource group, skipping')
+                return role_assignments_arr
+            else:
+                resource_id = snapshot_resource_group_id
+
+    resource_id = truncate_id_using_scope(resource_id, "Resource")
+
+    assignment_scope = truncate_id_using_scope(resource_id, permissions_scope)
+
+    role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                                scope=resource_id, include_inherited=True)
+    if not role_assignments:
+        assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                            scope=assignment_scope)
+        role_assignments_arr.append(get_permission_object_from_role_object(assignment))
+
+    return role_assignments_arr
