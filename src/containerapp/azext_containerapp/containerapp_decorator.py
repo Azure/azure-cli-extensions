@@ -615,10 +615,6 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_argument_service_connectors_def_list(self, service_connectors_def_list):
         self.set_param("service_connectors_def_list", service_connectors_def_list)
 
-    # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
-    def get_argument_force_single_container_updates(self):
-        return self.get_param("force_single_container_updates")
-
     def construct_payload(self):
         super().construct_payload()
         self.set_up_service_type()
@@ -634,22 +630,6 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind is single.")
-
-    def _need_update_container(self):
-        return self.get_argument_image() or self.get_argument_force_single_container_updates() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
-
-    def set_up_existing_container_update(self):
-        if self.get_argument_force_single_container_updates():
-            # Remove n-1 containers where n is the number of containers in the containerapp and replace remaining container with the new container
-            # Fails if all containers are removed
-            while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
-                self.new_containerapp["properties"]["template"]["containers"].pop()
-        super().set_up_existing_container_update()
-
-    def should_update_existing_container(self, c):
-        # Update existing container if container name matches the argument container name or if force_single_container_updates is set
-        # force_single_container_updates argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
-        return c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_force_single_container_updates()
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -1032,6 +1012,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_force_single_container_updates(self):
         return self.get_param("force_single_container_updates")
 
+    # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
+    def get_argument_force_single_container_updates(self):
+        return self.get_param("force_single_container_updates")
+
     def validate_arguments(self):
         super().validate_arguments()
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
@@ -1211,6 +1195,22 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def get_argument_max_inactive_revisions(self):
         return self.get_param("max_inactive_revisions")
+
+    def _need_update_container(self):
+        return self.get_argument_image() or self.get_argument_force_single_container_updates() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
+
+    def set_up_existing_container_update(self):
+        if self.get_argument_force_single_container_updates():
+            # Remove n-1 containers where n is the number of containers in the containerapp and replace remaining container with the new container
+            # Fails if all containers are removed
+            while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
+                self.new_containerapp["properties"]["template"]["containers"].pop()
+        super().set_up_existing_container_update()
+
+    def should_update_existing_container(self, c):
+        # Update existing container if container name matches the argument container name or if force_single_container_updates is set
+        # force_single_container_updates argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
+        return c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_force_single_container_updates()
 
 
 # decorator for preview list
