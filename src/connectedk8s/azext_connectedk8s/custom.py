@@ -196,7 +196,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             # Generate the diagnostic folder in a given location
             filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
 
-            if(diagnostic_folder_status is not True):
+            if diagnostic_folder_status is not True:
                 storage_space_available = False
 
             # Performing cluster-diagnostic-checks
@@ -223,7 +223,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if diagnostic_checks != consts.Diagnostic_Check_Passed and lowbandwidth is False:
         if storage_space_available:
                 logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
-        if(diagnostic_checks == consts.Diagnostic_Check_Incomplete):
+        if diagnostic_checks == consts.Diagnostic_Check_Incomplete:
             telemetry.set_exception(exception='Cluster Diagnostic Prechecks Incomplete', fault_type=consts.Cluster_Diagnostic_Prechecks_Incomplete, summary="Cluster Diagnostic Prechecks didnt complete in the cluster")
             raise ValidationError("Execution of pre-onboarding checks failed and hence not proceeding with cluster onboarding. Please meet the prerequisites - 'https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli%2Cazure-cloud#prerequisites' and try onboarding again.")
         else:
@@ -525,11 +525,11 @@ def install_helm_client():
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.MachineType': machine_type})
 
     # Set helm binary download & install locations
-    if(operating_system == 'windows'):
+    if operating_system == 'windows':
         download_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
         install_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe'
         requestUri = f'{consts.HELM_STORAGE_URL}/helmsigned/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
-    elif(operating_system == 'linux' or operating_system == 'darwin'):
+    elif operating_system == 'linux' or operating_system == 'darwin':
         download_location_string = f'.azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
         install_location_string = f'.azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm'
         requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
