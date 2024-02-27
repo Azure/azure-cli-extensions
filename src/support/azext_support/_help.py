@@ -7,23 +7,17 @@
 from knack.help_files import helps
 
 
-helps[
-    "support"
-] = """
+helps['support'] = """
 type: group
 short-summary: Manage Azure support resource.
 """
 
-helps[
-    "support services"
-] = """
+helps['support services'] = """
 type: group
 short-summary: Azure services and related problem categories.
 """
 
-helps[
-    "support services list"
-] = """
+helps['support services list'] = """
 type: command
 short-summary: Lists all the Azure services available for support ticket creation. Always use the service and it's corresponding problem classification(s) obtained programmatically for support ticket creation. This practice ensures that you always have the most recent set of service and problem classification Ids.
 examples:
@@ -32,9 +26,7 @@ examples:
           az support services list
 """
 
-helps[
-    "support services show"
-] = """
+helps['support services show'] = """
 type: command
 short-summary: Gets a specific Azure service for support ticket creation.
 examples:
@@ -43,16 +35,12 @@ examples:
           az support services show --service-name "ServiceNameGuid"
 """
 
-helps[
-    "support services problem-classifications"
-] = """
+helps['support services problem-classifications'] = """
 type: group
 short-summary: Problem classifications for an Azure service.
 """
 
-helps[
-    "support services problem-classifications list"
-] = """
+helps['support services problem-classifications list'] = """
 type: command
 short-summary: Lists all the problem classifications (categories) available for an Azure service. Always use the service and it's corresponding problem classification(s) obtained programmatically for support ticket creation. This practice ensures that you always have the most recent set of service and problem classification Ids.
 examples:
@@ -61,9 +49,7 @@ examples:
           az support services problem-classifications list --service-name "ServiceNameGuid"
 """
 
-helps[
-    "support services problem-classifications show"
-] = """
+helps['support services problem-classifications show'] = """
 type: command
 short-summary: Gets the problem classification details for an Azure service.
 examples:
@@ -74,16 +60,12 @@ examples:
             --problem-classification-name "ProblemClassificationNameGuid"
 """
 
-helps[
-    "support tickets"
-] = """
+helps['support tickets'] = """
 type: group
 short-summary: Create and manage Azure support ticket.
 """
 
-helps[
-    "support tickets list"
-] = """
+helps['support tickets list'] = """
 type: command
 short-summary: Lists all the support tickets for an Azure subscription.
 examples:
@@ -100,9 +82,7 @@ examples:
           az support tickets list --filters "CreatedDate ge 2020-01-01 and Status eq 'Open'"
 """
 
-helps[
-    "support tickets show"
-] = """
+helps['support tickets show'] = """
 type: command
 short-summary: Gets support ticket details for an Azure subscription.
 examples:
@@ -111,9 +91,7 @@ examples:
           az support tickets show --ticket-name "TestTicketName"
 """
 
-helps[
-    "support tickets update"
-] = """
+helps['support tickets update'] = """
 type: command
 short-summary: Updates severity level, status and customer contact information for a support ticket.
 examples:
@@ -154,9 +132,7 @@ examples:
             --severity "moderate"
 """
 
-helps[
-    "support tickets create"
-] = """
+helps['support tickets create'] = """
 type: command
 short-summary: Creates a new support ticket for Quota increase, Technical, Billing, and Subscription Management issues for the specified subscription.
 examples:
@@ -483,16 +459,12 @@ examples:
             --quota-change-subtype "BatchAml"
 """
 
-helps[
-    "support tickets communications"
-] = """
+helps['support tickets communications'] = """
 type: group
 short-summary: Manage support ticket communications.
 """
 
-helps[
-    "support tickets communications list"
-] = """
+helps['support tickets communications list'] = """
 type: command
 short-summary: Lists all communications (attachments not included) for a support ticket.
 examples:
@@ -513,9 +485,7 @@ examples:
             --filters "CreatedDate ge 2020-01-01 and communicationType eq 'Web'"
 """
 
-helps[
-    "support tickets communications show"
-] = """
+helps['support tickets communications show'] = """
 type: command
 short-summary: Gets communication details for a support ticket.
 examples:
@@ -526,9 +496,7 @@ examples:
             --communication-name "TestTicketCommunicationName"
 """
 
-helps[
-    "support tickets communications create"
-] = """
+helps['support tickets communications create'] = """
 type: command
 short-summary: Adds a new customer communication to an Azure support ticket.
 examples:
@@ -539,53 +507,4 @@ examples:
             --communication-name "TestTicketCommunicationName" \\
             --communication-body "TicketCommunicationBody" \\
             --communication-subject "TicketCommunicationSubject"
-"""
-
-helps[
-    "support in-Subscription file-workspaces files upload"
-] = """
-type: command
-short-summary: Uploads a file to a workspace for the specified subscription.
-long-summary: Given a file-path, file-workspace-name (this can be either a Support Request ID or
-frindly workspace name), and subscription-id, this command will upload all the contents of the file.
-  - name: Upload a file to a file workspace (different from the account subscription).
-    text: |
-          az support in-subscription file upload \\
-            --file-workspace-name "TestFileWorkspaceName" \\
-            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-            --subscription "TestSubscription"
-  - name: Upload a file to a to an Azure support ticket (different from the account subscription).
-    text: |
-          az support in-subscription file upload \\
-            --file-workspace-name "2300000000000358" \\
-            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-            --subscription "TestSubscription"
-  - name: Upload a file to a file workspace (same as the account subscription).
-    text: |
-          az support in-subscription file upload \\
-            --file-workspace-name "TestFileWorkspaceName" \\
-            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-  - name: Upload a file to a to an Azure support ticket (same as the account subscription).
-    text: |
-          az support in-subscription file upload \\
-            --file-workspace-name "2300000000000358" \\
-            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-"""
-helps[
-    "support no-Subscription file-workspaces files upload"
-] = """
-type: command
-short-summary: Uploads a file to a workspace.
-long-summary: Given a file-path and file-workspace-name (this can be either a Support Request ID or
-frindly workspace name) this command will upload all the contents of the file.
-  - name: Upload a file to a file workspace.
-    text: |
-          az support no-subscription file upload \\
-            --file-workspace-name "TestFileWorkspaceName" \\
-            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-  - name: Upload a file to a to an Azure support ticket..
-    text: |
-          az support no-subscription file upload \\
-            --file-workspace-name "2300000000000358" \\
-            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
 """
