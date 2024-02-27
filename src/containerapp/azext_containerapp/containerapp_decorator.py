@@ -1009,10 +1009,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_build_env_vars(self):
         return self.get_param("build_env_vars")
 
-    def get_argument_force_single_container_updates(self):
-        return self.get_param("force_single_container_updates")
-
-    # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
+    # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is
     def get_argument_force_single_container_updates(self):
         return self.get_param("force_single_container_updates")
 
