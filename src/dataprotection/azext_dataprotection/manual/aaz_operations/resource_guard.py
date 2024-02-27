@@ -5,6 +5,7 @@
 
 # pylint: disable=protected-access
 # pylint: disable=line-too-long
+# pylint: disable=consider-using-f-string
 
 from azure.cli.core.aaz import AAZStrArg, AAZUndefined, has_value
 from azure.cli.core.aaz.utils import assign_aaz_list_arg
