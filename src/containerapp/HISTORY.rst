@@ -7,12 +7,12 @@ upcoming
 * 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
 * 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
 * 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
-* 'az containerapp up' : Fix registry not found error in subscription when registry server parameters are provided for ACR from another subscription
+* 'az containerapp up': Fix registry not found error in subscription when registry server parameters are provided for ACR from another subscription
 
 0.3.47
 ++++++
 * 'az containerapp add-on' : support for add-on milvus create and delete commands
-* [Breaking Change]  'az containerapp service': deprecate command from Azure CLI version 2.59.0
+* [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.59.0
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
 * Upgrade api-version to 2023-11-02-preview
 * 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
