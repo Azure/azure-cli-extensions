@@ -9,6 +9,7 @@ import subprocess
 from abc import ABC, abstractmethod
 from functools import lru_cache
 from pathlib import Path
+import tempfile
 from time import sleep
 from typing import Any, MutableMapping, Optional
 
@@ -223,67 +224,62 @@ class LocalFileACRArtifact(BaseACRArtifact):
             username = manifest_credentials["username"]
             password = manifest_credentials["acr_token"]
 
-            # TODO: Maybe port over the "if not use_manifest_permissions" feature which means you don't need to
-            #       install docker. Although not having to install docker feels like a marginal enhancement, as most
-            #       people playing with containers will have docker, or won't mind installing it. Note that
-            #       use_manifest_permissions is now in command_context.cli_options['no_subscription_permissions']
-
             self._check_tool_installed("docker")
             self._check_tool_installed("helm")
 
-            # TODO: don't just dump this in /tmp
-            if self.file_path.is_dir():
-                helm_package_cmd = [
-                    str(shutil.which("helm")),
-                    "package",
-                    self.file_path,
-                    "--destination",
-                    "/tmp",
-                ]
-                self._call_subprocess_raise_output(helm_package_cmd)
+            with tempfile.TemporaryDirectory() as tmpdir:
+                if self.file_path.is_dir():
+                    helm_package_cmd = [
+                        str(shutil.which("helm")),
+                        "package",
+                        self.file_path,
+                        "--destination",
+                        tmpdir,
+                    ]
+                    self._call_subprocess_raise_output(helm_package_cmd)
 
-            # This seems to prevent occasional helm login failures
-            acr_login_cmd = [
-                str(shutil.which("az")),
-                "acr",
-                "login",
-                "--name",
-                target_acr_name,
-                "--username",
-                username,
-                "--password",
-                password,
-            ]
-            self._call_subprocess_raise_output(acr_login_cmd)
-
-            try:
-                helm_login_cmd = [
-                    str(shutil.which("helm")),
-                    "registry",
+                # This seems to prevent occasional helm login failures
+                acr_login_cmd = [
+                    str(shutil.which("az")),
+                    "acr",
                     "login",
-                    target_acr,
+                    "--name",
+                    target_acr_name,
                     "--username",
                     username,
                     "--password",
                     password,
                 ]
-                self._call_subprocess_raise_output(helm_login_cmd)
+                self._call_subprocess_raise_output(acr_login_cmd)
 
-                push_command = [
-                    str(shutil.which("helm")),
-                    "push",
-                    f"/tmp/{self.artifact_name}-{self.artifact_version}.tgz",  # TODO: fix up helm package to use non-tmp path
-                    target_acr_with_protocol,
-                ]
-                self._call_subprocess_raise_output(push_command)
-            finally:
-                helm_logout_cmd = [
-                    str(shutil.which("helm")),
-                    "registry",
-                    "logout",
-                    target_acr,
-                ]
-                self._call_subprocess_raise_output(helm_logout_cmd)
+                try:
+                    helm_login_cmd = [
+                        str(shutil.which("helm")),
+                        "registry",
+                        "login",
+                        target_acr,
+                        "--username",
+                        username,
+                        "--password",
+                        password,
+                    ]
+                    self._call_subprocess_raise_output(helm_login_cmd)
+
+                    push_command = [
+                        str(shutil.which("helm")),
+                        "push",
+                        f"{tmpdir}/{self.artifact_name}-{self.artifact_version}.tgz",
+                        target_acr_with_protocol,
+                    ]
+                    self._call_subprocess_raise_output(push_command)
+                finally:
+                    helm_logout_cmd = [
+                        str(shutil.which("helm")),
+                        "registry",
+                        "logout",
+                        target_acr,
+                    ]
+                    self._call_subprocess_raise_output(helm_logout_cmd)
 
             logger.info("LocalFileACRArtifact uploaded %s to %s using helm push", self.file_path, target)
 
