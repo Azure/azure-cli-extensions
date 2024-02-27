@@ -1,6 +1,9 @@
 
 Release History
 ===============
+1.0.1
+++++++
+Fix bug in win-run-driver.ps1 for 1.0.0b1.
 
 1.0.0b1
 ++++++
