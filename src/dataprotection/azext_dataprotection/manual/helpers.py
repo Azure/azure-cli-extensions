@@ -15,6 +15,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     MutuallyExclusiveArgumentError,
 )
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azext_dataprotection.manual import backupcenter_helper
 from azext_dataprotection.manual.custom import (
     dataprotection_backup_instance_list_from_resourcegraph,
@@ -35,7 +36,8 @@ datasource_map = {
     "AzureDisk": "Microsoft.Compute/disks",
     "AzureBlob": "Microsoft.Storage/storageAccounts/blobServices",
     "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
-    "AzureKubernetesService": "Microsoft.ContainerService/managedClusters"
+    "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
+    "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers"
 }
 
 # This is ideally temporary, as Backup Vault contains secondary region information. But in some cases
@@ -810,3 +812,39 @@ def get_source_and_replicated_region_from_backup_vault(source_backup_vault):
         target_location = replicated_regions[0]
 
     return source_location, target_location
+
+def get_datasource_principal_id_from_object(cmd, datasource_type, backup_instance=None,
+                                            restore_request_object=None):
+    if backup_instance is None and restore_request_object is None:
+        raise CLIInternalError("Please enter one")
+    if backup_instance is not None and restore_request_object is not None:
+        raise CLIInternalError("Please enter just one")
+
+    if backup_instance is not None:
+        datasource_arm_id = get_resource_id_from_backup_instance(backup_instance, 'DataSource')
+    if restore_request_object is not None:
+        datasource_arm_id = get_resource_id_from_restore_request_object(restore_request_object, 'DataSource')
+
+    datasource_principal_id = None
+
+    if datasource_type == "AzureKubernetesService":
+        subscription_id = get_sub_id_from_arm_id(datasource_arm_id).split('/')[-1]
+
+        from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
+        aks_client = getattr(get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id),
+                             'managed_clusters')
+        aks_name = get_resource_name_from_backup_instance(backup_instance, 'DataSource')
+        aks_rg = get_rg_id_from_arm_id(datasource_arm_id).split('/')[-1]
+        aks_cluster = aks_client.get(aks_rg, aks_name)
+
+        if "UserAssigned" in aks_cluster.identity.type:
+            uami_key = list(aks_cluster.identity.user_assigned_identities.keys())[0]
+            if uami_key == "" or uami_key is None:
+                raise CLIInternalError("User assigned identity not found for AKS Cluster")
+            datasource_principal_id = aks_cluster.identity.user_assigned_identities[uami_key].principal_id
+        else:
+            datasource_principal_id = aks_cluster.identity.principal_id
+    else:
+        raise InvalidArgumentValueError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
+
+    return datasource_principal_id
