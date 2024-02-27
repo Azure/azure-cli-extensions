@@ -62,7 +62,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             if version > min_version and version < max_version:
                 return version
         return ""
-    
+
     def _get_asm_supported_revision(self):
         revisions_cmd = "aks mesh get-revisions -l westus2"
         revisions = self.cmd(revisions_cmd).get_output_in_json()
