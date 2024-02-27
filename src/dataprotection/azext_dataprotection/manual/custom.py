@@ -540,7 +540,7 @@ def dataprotection_job_list(cmd, resource_group_name, vault_name, use_secondary_
     })
 
 
-def show_job(cmd, resource_group_name, vault_name, job_id, use_secondary_region=None):
+def dataprotection_job_show(cmd, resource_group_name, vault_name, job_id, use_secondary_region=None):
     from azext_dataprotection.aaz.latest.dataprotection.job import Show as ShowJob
     from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore._fetch_job import FetchJob as ShowJobCRR
 
