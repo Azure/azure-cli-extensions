@@ -587,7 +587,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                                             "Usage error: --secret-volume-mount can only be used to update volume mounts with volumes of type secret. To update other types of volumes please use --yaml")
                                     break
                             c["volumeMounts"][0]["mountPath"] = self.get_argument_secret_volume_mount()
-            return updating_existing_container
+        return updating_existing_container
 
     def should_update_existing_container(self, c):
         return c["name"].lower() == self.get_argument_container_name().lower()
@@ -1202,7 +1202,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             # Fails if all containers are removed
             while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
                 self.new_containerapp["properties"]["template"]["containers"].pop()
-        super().set_up_existing_container_update()
+        return super().set_up_existing_container_update()
 
     def should_update_existing_container(self, c):
         # Update existing container if container name matches the argument container name or if force_single_container_updates is set
