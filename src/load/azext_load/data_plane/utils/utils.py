@@ -446,15 +446,18 @@ def create_or_update_test_with_config(
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
 
-    new_body["passFailCriteria"] = {}
-    # make every metric in passFailMetrics as None to remove it from the test and append metrics from yaml
-    for key in body.get("passFailCriteria", {}):
-        new_body["passFailCriteria"]["passFailMetrics"] = {}
-        for key2 in body.get("passFailCriteria", {}).get("passFailMetrics", {}):
-            new_body["passFailCriteria"]["passFailMetrics"][key2] = None
-    if yaml_test_body.get("passFailCriteria") is not None:
+    # make all metrics in existing passFailCriteria None to remove it from the test and add passFailCriteria from yaml
+    existing_pass_fail_Criteria = body.get("passFailCriteria", {})
+    yaml_pass_fail_criteria = yaml_test_body.get("passFailCriteria", {})
+    if existing_pass_fail_Criteria or yaml_pass_fail_criteria:
+        new_body["passFailCriteria"] = {
+            "passFailMetrics": {
+                key: None
+                for key in existing_pass_fail_Criteria.get("passFailMetrics", {})
+            }
+        }
         new_body["passFailCriteria"]["passFailMetrics"].update(
-            yaml_test_body["passFailCriteria"].get("passFailMetrics", {})
+            yaml_pass_fail_criteria.get("passFailMetrics", {})
         )
     if split_csv is not None:
         new_body["loadTestConfiguration"]["splitAllCSVs"] = split_csv
