@@ -221,7 +221,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                         "Usage error: --container-name is required when adding or updating a container")
 
             # Check if updating existing container
-            updating_existing_container = self.set_up_existing_container_update(self)
+            updating_existing_container = self.set_up_existing_container_update()
             # If not updating existing container, add as new container
             if not updating_existing_container:
                 if self.get_argument_image() is None:
@@ -509,7 +509,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         updating_existing_container = False
         for c in self.new_containerapp["properties"]["template"]["containers"]:
             # Update existing container if container name matches the argument container name
-            if self.should_update_existing_container(self, c):
+            if self.should_update_existing_container(c):
                 updating_existing_container = True
 
                 if self.get_argument_image() is not None:
@@ -644,7 +644,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             # Fails if all containers are removed
             while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
                 self.new_containerapp["properties"]["template"]["containers"].pop()
-        super().set_up_existing_container_update(self)
+        super().set_up_existing_container_update()
 
     def should_update_existing_container(self, c):
         # Update existing container if container name matches the argument container name or if force_single_container_updates is set
