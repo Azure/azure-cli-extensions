@@ -69,7 +69,7 @@ from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from .java_component_decorator import JavaComponentDecorator
-from ._client_factory import handle_raw_exception
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
     GitHubActionPreviewClient,
     ContainerAppPreviewClient,
@@ -2242,9 +2242,9 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
 
     result = None
     try:
-        result = java_component_decorator.show()
-    except ResourceNotFoundError:
-        pass
+        result = java_component_decorator.client.show(cmd, resource_group_name, environment_name, java_component_name)
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
 
     current_type = safe_get(result, "properties", "componentType")
     if current_type and target_java_component_type.lower() != current_type.lower():

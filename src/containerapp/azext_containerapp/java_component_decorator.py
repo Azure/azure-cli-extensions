@@ -7,7 +7,7 @@
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
-from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
+from azure.cli.core.azclierror import ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from knack.log import get_logger
 
@@ -74,24 +74,7 @@ class JavaComponentDecorator(BaseResource):
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name())
         except Exception as e:
-            if hasattr(e, 'response') and hasattr(e.response, 'status_code') and e.response.status_code == 404:
-                import json
-                stringErr = str(e)
-                message = "ResourceNotFound"
-                if "{" in stringErr and "}" in stringErr:
-                    jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
-                    jsonError = json.loads(jsonError)
-                    if 'error' in jsonError:
-                        jsonError = jsonError['error']
-                        if 'code' in jsonError and 'message' in jsonError:
-                            message = '({}) {}'.format(jsonError['code'], jsonError['message'])
-                    elif "Message" in jsonError:
-                        message = jsonError["Message"]
-                    elif "message" in jsonError:
-                        message = jsonError["message"]
-                raise ResourceNotFoundError(message)
-            else:
-                handle_raw_exception(e)
+            handle_raw_exception(e)
 
     def list(self):
         try:
