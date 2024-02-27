@@ -147,58 +147,16 @@ class CheckManagedClusterTestCase(unittest.TestCase):
 
 
 class CheckProcessRunCommandMessage(unittest.TestCase):
-    def setUp(self):
-        self.expected_success = """
-        'Mon Feb 26 20:55:28 UTC 2024 - SUCCESS: Successfully tested DNS resolution to management.azure.com'
-        'Mon Feb 26 20:55:29 UTC 2024 - SUCCESS: Successfully retrieved access token'
-        'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested management.azure.com with returned status code 200'
-        'Mon Feb 26 20:55:30 UTC 2024 - WARNING: No apiserver FQDN provided. Skipping apiserver check.'
-        'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to acs-mirror.azureedge.net'
-        'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested acs-mirror.azureedge.net with returned status code 400. This is expected since acs-mirror.azureedge.net is a repository endpoint which requires a full package path to get 200 status code.'
-        'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to packages.microsoft.com'
-        'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested packages.microsoft.com with returned status code 200'
-        'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to eastus.data.mcr.microsoft.com'
-        'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested eastus.data.mcr.microsoft.com with returned status code 400. This is expected since eastus.data.mcr.microsoft.com is a repository endpoint which requires a full package path to get 200 status code.'
-        'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to login.microsoftonline.com'
-        'Mon Feb 26 20:55:31 UTC 2024 - SUCCESS: Successfully tested login.microsoftonline.com with returned status code 200'
-        'Mon Feb 26 20:55:31 UTC 2024 - SUCCESS: Successfully tested DNS resolution to mcr.microsoft.com'
-        'Mon Feb 26 20:55:31 UTC 2024 - SUCCESS: Successfully tested mcr.microsoft.com with returned status code 200'
-        """
-        self.expected_failure = "bash: /opt/azure/containers/aks-check.sh: No such file or directory"
-
     def test_process_message_for_run_command(self):
-        successful_message = """
-        {
-            "value": [
-                {
-                "code": "ProvisioningState/succeeded",
-                "displayStatus": "Provisioning succeeded",
-                "level": "Info",
-                "message": "Enable succeeded: \n[stdout]\n'Mon Feb 26 20:55:28 UTC 2024 - SUCCESS: Successfully tested DNS resolution to management.azure.com'\n'Mon Feb 26 20:55:29 UTC 2024 - SUCCESS: Successfully retrieved access token'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested management.azure.com with returned status code 200'\n'Mon Feb 26 20:55:30 UTC 2024 - WARNING: No apiserver FQDN provided. Skipping apiserver check.'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to acs-mirror.azureedge.net'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested acs-mirror.azureedge.net with returned status code 400. This is expected since acs-mirror.azureedge.net is a repository endpoint which requires a full package path to get 200 status code.'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to packages.microsoft.com'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested packages.microsoft.com with returned status code 200'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to eastus.data.mcr.microsoft.com'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested eastus.data.mcr.microsoft.com with returned status code 400. This is expected since eastus.data.mcr.microsoft.com is a repository endpoint which requires a full package path to get 200 status code.'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to login.microsoftonline.com'\n'Mon Feb 26 20:55:31 UTC 2024 - SUCCESS: Successfully tested login.microsoftonline.com with returned status code 200'\n'Mon Feb 26 20:55:31 UTC 2024 - SUCCESS: Successfully tested DNS resolution to mcr.microsoft.com'\n'Mon Feb 26 20:55:31 UTC 2024 - SUCCESS: Successfully tested mcr.microsoft.com with returned status code 200'\n\n[stderr]\n",
-                "time": null
-                }
-            ]
-        }
-        """
+        successful_message = "Enable succeeded: \n[stdout]\n'Mon Feb 26 20:55:28 UTC 2024 - SUCCESS: Successfully tested DNS resolution to management.azure.com'\n'Mon Feb 26 20:55:29 UTC 2024 - SUCCESS: Successfully retrieved access token'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested management.azure.com with returned status code 200'\n'Mon Feb 26 20:55:30 UTC 2024 - WARNING: No apiserver FQDN provided. Skipping apiserver check.'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to acs-mirror.azureedge.net'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested acs-mirror.azureedge.net with returned status code 400. This is expected since acs-mirror.azureedge.net is a repository endpoint which requires a full package path to get 200 status code.'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to packages.microsoft.com'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested packages.microsoft.com with returned status code 200'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to eastus.data.mcr.microsoft.com'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested eastus.data.mcr.microsoft.com with returned status code 400. This is expected since eastus.data.mcr.microsoft.com is a repository endpoint which requires a full package path to get 200 status code.'\n'Mon Feb 26 20:55:30 UTC 2024 - SUCCESS: Successfully tested DNS resolution to login.microsoftonline.com'\n'Mon Feb 26 20:55:31 UTC 2024 - SUCCESS: Successfully tested login.microsoftonline.com with returned status code 200'\n'Mon Feb 26 20:55:31 UTC 2024 - SUCCESS: Successfully tested DNS resolution to mcr.microsoft.com'\n'Mon Feb 26 20:55:31 UTC 2024 - SUCCESS: Successfully tested mcr.microsoft.com with returned status code 200'\n\n[stderr]\n"
         processed_message = process_message_for_run_command(successful_message)
-        self.assertEqual(processed_message, self.expected_success)
+        self.assertEqual(processed_message, None)
 
-        failed_message = """
-        {
-        "value": [
-            {
-            "code": "ProvisioningState/succeeded",
-            "displayStatus": "Provisioning succeeded",
-            "level": "Info",
-            "message": "Enable succeeded: \n[stdout]\n\n[stderr]\nbash: /opt/azure/containers/aks-check.sh: No such file or directory\n",
-            "time": null
-            }
-        ]
-        }
-        """
+        failed_message = "Enable succeeded: \n[stdout]\n\n[stderr]\nbash: /opt/azure/containers/aks-check.sh: No such file or directory\n"
+        err = "Error: bash: /opt/azure/containers/aks-check.sh: No such file or directory"
         with self.assertRaises(CLIError) as cm:
             process_message_for_run_command(failed_message)
-        self.assertEqual(str(cm.exception), self.expected_failure)
+        self.assertEqual(str(cm.exception), err)
 
 
 if __name__ == "__main__":

@@ -1105,5 +1105,38 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         )
 
 
+class TestValidateCustomEndpoints(unittest.TestCase):
+    def test_empty_custom_endpoints(self):
+        namespace = SimpleNamespace(
+            **{
+                "custom_endpoints": "",
+            }
+        )
+        validators.validate_custom_endpoints(namespace)
+
+    def test_invalid_custom_endpoints(self):
+        namespace = SimpleNamespace(
+            **{
+                "custom_endpoints": "https://example.com",
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_custom_endpoints(namespace)
+
+    def test_valid_custom_endpoints(self):
+        endpoints = ",".join(
+            [
+                "example.com",
+                "microsoft.com",
+            ]
+        )
+        namespace = SimpleNamespace(
+            **{
+                "custom_endpoints": endpoints,
+            }
+        )
+        validators.validate_custom_endpoints(namespace)
+
+
 if __name__ == "__main__":
     unittest.main()
