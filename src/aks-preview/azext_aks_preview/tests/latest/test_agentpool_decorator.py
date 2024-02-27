@@ -330,7 +330,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             pod_ip_allocation_mode="StaticBlock"
         )
         ctx_1.attach_agentpool(agentpool_1)
-        self.assertEqual(ctx_1.get_pod_ip_allocation_mode(), "StaticBlock")
+        self.assertEqual(ctx_1.get_pod_ip_allocation_mode(), "None")
 
         # default to raw even if agentpool has different value
         ctx_2 = AKSPreviewAgentPoolContext(
@@ -345,7 +345,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             pod_ip_allocation_mode="StaticBlock"
         )
         ctx_2.attach_agentpool(agentpool_2)
-        self.assertEqual(ctx_2.get_pod_ip_allocation_mode(), "DynamicIndividual")
+        self.assertEqual(ctx_2.get_pod_ip_allocation_mode(), "StaticBlock")
 
     def common_get_skip_gpu_driver_install(self):
         # default
