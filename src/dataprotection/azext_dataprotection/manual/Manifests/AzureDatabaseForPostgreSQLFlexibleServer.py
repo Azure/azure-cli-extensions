@@ -23,7 +23,7 @@ manifest = '''
       "type": "DataSourceRG"
     },
     {
-      "roleDefinitionName": "PostgreSQL Flexible Server Long Term Retention Backup",
+      "roleDefinitionName": "PostgreSQL Flexible Server Long Term Retention Backup Role",
       "type": "DataSource"
     }
   ],

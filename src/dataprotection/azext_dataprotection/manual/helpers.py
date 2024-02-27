@@ -563,6 +563,9 @@ def get_resource_id_from_backup_instance(backup_instance, role_type):
 
     if role_type == 'DataSource':
         resource_id = backup_instance['properties']['data_source_info']['resource_id']
+    elif role_type == 'DataSourceRG':
+        datasource_id = backup_instance['properties']['data_source_info']['resource_id']
+        resource_id = truncate_id_using_scope(datasource_id, "ResourceGroup")
     elif role_type == 'SnapshotRG':
         data_stores = backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list']
         resource_id = data_stores[0]['resource_group_id']
@@ -818,6 +821,7 @@ def get_source_and_replicated_region_from_backup_vault(source_backup_vault):
 
     return source_location, target_location
 
+
 def get_datasource_principal_id_from_object(cmd, datasource_type, backup_instance=None,
                                             restore_request_object=None):
     if backup_instance is None and restore_request_object is None:
@@ -830,11 +834,11 @@ def get_datasource_principal_id_from_object(cmd, datasource_type, backup_instanc
     if restore_request_object is not None:
         datasource_arm_id = get_resource_id_from_restore_request_object(restore_request_object, 'DataSource')
 
+    subscription_id = get_sub_id_from_arm_id(datasource_arm_id).split('/')[-1]
+
     datasource_principal_id = None
 
     if datasource_type == "AzureKubernetesService":
-        subscription_id = get_sub_id_from_arm_id(datasource_arm_id).split('/')[-1]
-
         from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
         aks_client = getattr(get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id),
                              'managed_clusters')
