@@ -210,7 +210,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             filepath_with_timestamp, diagnostic_folder_status = \
                 utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
 
-            if (diagnostic_folder_status is not True):
+            if diagnostic_folder_status is not True:
                 storage_space_available = False
 
             # Performing cluster-diagnostic-checks
@@ -605,11 +605,11 @@ def install_helm_client():
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.MachineType': machine_type})
 
     # Set helm binary download & install locations
-    if(operating_system == 'windows'):
+    if operating_system == 'windows':
         download_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
         install_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe'
         requestUri = f'{consts.HELM_STORAGE_URL}/helmsigned/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
-    elif(operating_system == 'linux' or operating_system == 'darwin'):
+    elif operating_system == 'linux' or operating_system == 'darwin':
         download_location_string = f'.azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
         install_location_string = f'.azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm'
         requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
