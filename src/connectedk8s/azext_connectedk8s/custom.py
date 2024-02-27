@@ -1173,7 +1173,8 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:
-        if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):
+        helm_upgrade_error_message = error_helm_upgrade.decode("ascii")
+        if any(message in helm_upgrade_error_message for message in consts.Helm_Install_Release_Userfault_Messages):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
@@ -1362,7 +1363,8 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     _, error_helm_upgrade = response_helm_upgrade.communicate()
 
     if response_helm_upgrade.returncode != 0:
-        if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):
+        helm_upgrade_error_message = error_helm_upgrade.decode("ascii")
+        if any(message in helm_upgrade_error_message for message in consts.Helm_Install_Release_Userfault_Messages):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
@@ -1558,7 +1560,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:
-        if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):
+        helm_upgrade_error_message = error_helm_upgrade.decode("ascii")
+        if any(message in helm_upgrade_error_message for message in consts.Helm_Install_Release_Userfault_Messages):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
@@ -1688,7 +1691,8 @@ def get_chart_and_disable_features(cmd, connected_cluster, kube_config, kube_con
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:
-        if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):
+        helm_upgrade_error_message = error_helm_upgrade.decode("ascii")
+        if any(message in helm_upgrade_error_message for message in consts.Helm_Install_Release_Userfault_Messages):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
@@ -2267,14 +2271,14 @@ def get_custom_locations_oid(cmd, cl_oid):
 
         if cl_oid is None:
             logger.warning("Failed to enable Custom Locations feature on the cluster. Unable to fetch Object ID of Azure AD application used by Azure Arc service. Try enabling the feature by passing the --custom-locations-oid parameter directly. Learn more at https://aka.ms/CustomLocationsObjectID")
-            telemetry.set_exception(exception='Unable to fetch oid of custom locations app.', fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
+            telemetry.set_exception(exception='Unable to fetch oid of custom locations app.', fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type_CLOid_None,
                                     summary='Unable to fetch oid for custom locations app.')
             return ""
         else:
             return cl_oid
     except Exception as e:
         log_string = "Unable to fetch the Object ID of the Azure AD application used by Azure Arc service. "
-        telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
+        telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type_Exception,
                                 summary='Unable to fetch oid for custom locations app.')
         if cl_oid:
             log_string += "Proceeding with the Object ID provided to enable the 'custom-locations' feature."
