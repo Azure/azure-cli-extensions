@@ -7,6 +7,7 @@
 # pylint: disable=too-many-locals
 # pylint: disable=line-too-long
 
+from azure.cli.core.commands import CliCommandType
 from azext_dataprotection.manual._client_factory import cf_resource_graph_client
 from ._exception_handler import exception_handler
 
@@ -60,7 +61,7 @@ def load_command_table(self, _):
     with self.command_group('dataprotection job') as g:
         g.custom_command('list-from-resourcegraph', "dataprotection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
         g.custom_command('list', "dataprotection_job_list", exception_handler=exception_handler)
-        g.show_command('show', 'dataprotection_job_show', exception_handler=exception_handler)
+        g.custom_show_command('show', 'dataprotection_job_show', exception_handler=exception_handler)
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler) as g:
         g.custom_command('list-protected-operations', 'dataprotection_resource_guard_list_protected_operations')
