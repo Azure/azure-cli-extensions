@@ -130,5 +130,5 @@ class BackupPolicyScenarioTest(ScenarioTest):
         ])
         test.cmd('az dataprotection backup-policy tag create-generic-criteria --months-of-year '
                  'JANUARY February MarCh april May June July August September October November December', checks=[
-            test.check('length(months_of_year)', 12)
-        ])
+                     test.check('length(months_of_year)', 12)
+                 ])

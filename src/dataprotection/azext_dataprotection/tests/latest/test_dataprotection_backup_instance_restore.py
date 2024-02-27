@@ -85,8 +85,8 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         })
         restorable_time_range = test.cmd('az dataprotection restorable-time-range find -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
                                          '--source-data-store-type "{sourceDataStore}"', checks=[
-                                    test.greater_than('length(properties.restorableTimeRanges)', 0)
-                                ]).get_output_in_json()
+                                             test.greater_than('length(properties.restorableTimeRanges)', 0)
+                                         ]).get_output_in_json()
 
         restore_point_in_time = get_midpoint_of_time_range(
             restorable_time_range['properties']['restorableTimeRanges'][0]['startTime'],

@@ -110,7 +110,6 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
             test.exists("[?name == '{vaultName}']")
         ])
 
-
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_softdelete(test):
         test.kwargs.update({

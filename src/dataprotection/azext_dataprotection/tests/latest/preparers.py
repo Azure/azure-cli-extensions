@@ -44,7 +44,6 @@ class VaultPreparer(AbstractPreparer, SingleValueReplacer):
 
         return {self.parameter_name: name}
 
-
     def remove_resource(self, name, **kwargs):
         # Should get cleaned up with Resource Group cleanup
         pass
