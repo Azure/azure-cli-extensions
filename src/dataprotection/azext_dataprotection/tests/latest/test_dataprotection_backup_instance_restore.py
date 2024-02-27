@@ -6,10 +6,12 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 
+from knack.log import get_logger
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from ..utils import track_job_to_completion, wait_for_job_exclusivity_on_datasource, get_midpoint_of_time_range
 
+logger = get_logger(__name__)
 
 # Using persistent datasources - the assumption here is that the backup already exists, we just need to fetch the latest recoverypoint,
 # create a restore request object, validate it, and then trigger it (we don't need to track it to completion)
@@ -123,8 +125,8 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             'crrVaultName': 'clitest-bkp-vault-crr-donotdelete',
             'sourceBackupInstanceName': 'clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052',
             'sourceResourceName': 'postgres',
-            'targetResourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cli-dpp-bugbash-oss-rg/providers/Microsoft.DBforPostgreSQL/servers/cli-dpp-bugbash-server1/databases/postgres-restore',
-            'targetDSName': 'postgres-restore',
+            'targetResourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/cli-dpp-bugbash-oss-rg/providers/Microsoft.DBforPostgreSQL/servers/cli-dpp-bugbash-server1/databases/postgres-restored',
+            'targetDSName': 'postgres-restored',
             'targetRg': 'cli-dpp-bugbash-oss-rg',
             'targetServerName': 'cli-dpp-bugbash-server1',
         })
@@ -139,12 +141,13 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         })
 
         # Add ds deletion to cleanup tasks
-        test.addCleanup(test.cmd, 'az postgres db delete -n "{targetDSName}" -g "{targetRg}" -s "{targetServerName}" --yes')
-        # As a failsafe, ensure restored disk from previous run is deleted. If the command fails, that's perfect and we can ignore the exception
+        # test.addCleanup seems to cause issues - can't delete the DS right after restore trigger? Just deleting it
+        # at the start of every test run instead
         try:
             test.cmd('az postgres db delete -n "{targetDSName}" -g "{targetRg}" -s "{targetServerName}" --yes')
         except Exception:
-            pass
+            logger.warning("Unable to delete the datasource. If the target DS does exist, the run will fail, please "
+                           "manually delete it. If the test passes, ignore this warning.")
 
         restore_request = test.cmd('az dataprotection backup-instance restore  initialize-for-data-recovery '
                                    '--datasource-type "{datasourceType}" --restore-location "{restoreLocation}" --source-datastore "{sourceDataStore}" '

@@ -1,0 +1,890 @@
+interactions:
+- request:
+    body: '{"subscriptions": ["38304e13-357e-405e-9e9a-220351dcce8c"], "query": "RecoveryServicesResources
+      | where type =~ ''microsoft.dataprotection/backupvaults/backupinstances''| extend
+      vaultName = split(split(id, ''/Microsoft.DataProtection/backupVaults/'')[1],''/'')[0]|
+      extend protectionState = properties.currentProtectionState| extend datasourceId
+      = properties.dataSourceInfo.resourceID | where resourceGroup in~ (''clitest-dpp-rg'')
+      | where vaultName in~ (''clitest-bkp-vault-crr-donotdelete'') | where name in~
+      (''clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052'')", "options":
+      {"$top": 1000, "$skip": 0, "resultFormat": "objectArray", "allowPartialScopes":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection recovery-point list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '665'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -v --backup-instance-name --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) azsdk-python-mgmt-resourcegraph/8.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052","name":"clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052","type":"microsoft.dataprotection/backupvaults/backupinstances","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","kind":"","location":"eastus2euap","resourceGroup":"clitest-dpp-rg","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","managedBy":"","sku":null,"plan":null,"properties":{"resourceGuardOperationRequests":null,"protectionStatus":{"errorDetails":null,"status":"ProtectionConfigured"},"friendlyName":"clitestcrr-ecy\\postgres","currentProtectionState":"ProtectionConfigured","objectType":"BackupInstance","dataSourceSetInfo":{"resourceLocation":"eastus2euap","datasourceType":"Microsoft.DBforPostgreSQL/servers/databases","objectType":"DatasourceSet","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy","resourceProperties":null,"resourceType":"Microsoft.DBforPostgreSQL/servers","resourceName":"clitestcrr-ecy","resourceUri":"","baseUri":null},"dataSourceInfo":{"resourceLocation":"eastus2euap","datasourceType":"Microsoft.DBforPostgreSQL/servers/databases","objectType":"Datasource","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy/databases/postgres","resourceProperties":null,"resourceType":"Microsoft.DBforPostgreSQL/servers/databases","resourceName":"postgres","resourceUri":"","baseUri":null},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupPolicies/crrclitestbackuppolicy","policyParameters":null,"policyVersion":""},"backupInstanceExtendedProperties":{"allowedOperations":["BackupNow","Restore","ChangePolicy","StopBackup","Delete","ViewSecondaryRecoveryPoint","RestoreToSecondaryRegion"],"protectionStateInSecondaryRegion":"ProtectionConfigured","protectedPrimaryRegion":"eastus2euap","vaultId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete","protectedSecondaryRegion":"centraluseuap","dataSourceExtendedInfo":{"dataSourceId":"clitestcrr-ecy\\postgres"},"policyExtendedInfo":{"configuredRPGenerationFrequencyInSecondaryRegion":"7.06:00:00","configuredMaximumRetentionInSecondaryRegion":"93.00:00:00","rpoWarningThresholdInSecondaryRegion":"10.21:00:00","rpoWarningThresholdInPrimaryRegion":"10.12:00:00","configuredRPGenerationFrequency":"7.00:00:00","configuredMaximumRetention":"93.00:00:00"},"recoveryPointInfo":{"latestRecoveryPointInSecondaryRegion":"2024-02-25T22:00:49.5720000Z","oldestRecoveryPointInSecondaryRegion":"2024-02-23T09:01:16.2520000Z","oldestRecoveryPointInPrimaryRegion":"2024-02-23T09:01:16.2520000Z","latestRecoveryPointInPrimaryRegion":"2024-02-25T22:00:49.5720000Z"}},"datasourceAuthCredentials":{"objectType":"SecretStoreBasedAuthCredentials","secretStoreResource":{"secretStoreType":"AzureKeyVault","value":null,"uri":"https://clitestcrrkeyvault.vault.azure.net/secrets/clitestcrr-final"}},"protectionErrorDetails":null,"dataSourceProperties":null,"provisioningState":"Succeeded","identityDetails":null,"validationType":null},"tags":null,"identity":null,"zones":null,"extendedLocation":null,"vaultName":"clitest-bkp-vault-crr-donotdelete","protectionState":"ProtectionConfigured","datasourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy/databases/postgres"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3982'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Feb 2024 05:28:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.4386059'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sourceBackupInstanceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052",
+      "sourceRegion": "eastus2euap"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection recovery-point list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '301'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -v --backup-instance-name --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/locations/centraluseuap/fetchSecondaryRecoveryPoints?api-version=2023-11-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"9f74e3726904425cb10f17c2c695d169","recoveryPointTime":"2024-02-25T22:00:49.5729763Z","recoveryPointType":"Full","friendlyName":"2f9ee557597c465dbf3f7505c3f7db4a","recoveryPointDataStoresDetails":[{"id":"170b3a06-9295-4f5b-b31b-2ae0b57cace3","type":"VaultStore","creationTime":"2024-02-25T22:00:49.5729763Z","expiryTime":"2024-05-25T22:00:49.5729763Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638442750778349393","policyName":"crrclitestbackuppolicy","policyVersion":null,"expiryTime":"2024-05-25T22:00:49.5729763Z","recoveryPointState":"Completed"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052/recoveryPoints/9f74e3726904425cb10f17c2c695d169","name":"9f74e3726904425cb10f17c2c695d169","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"8f05f2d43fc34f2c9e79b7d5ea2a7bd9","recoveryPointTime":"2024-02-23T09:01:16.2526932Z","recoveryPointType":"Full","friendlyName":"74bb2ac6def842a08d23fed0bd63d15d","recoveryPointDataStoresDetails":[{"id":"170b3a06-9295-4f5b-b31b-2ae0b57cace3","type":"VaultStore","creationTime":"2024-02-23T09:01:16.2526932Z","expiryTime":"2024-05-23T09:01:16.2526932Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638442750778349393","policyName":"crrclitestbackuppolicy","policyVersion":null,"expiryTime":"2024-05-23T09:01:16.2526932Z","recoveryPointState":"Completed"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052/recoveryPoints/8f05f2d43fc34f2c9e79b7d5ea2a7bd9","name":"8f05f2d43fc34f2c9e79b7d5ea2a7bd9","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2343'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Feb 2024 05:28:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/4665a15f-0a40-4fa5-9939-370890c5f0a8
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres db delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g -s --yes
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) azsdk-python-mgmt-rdbms/10.2.0b12 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-dpp-bugbash-oss-rg/providers/Microsoft.DBforPostgreSQL/servers/cli-dpp-bugbash-server1/databases/postgres-restored?api-version=2017-12-01
+  response:
+    body:
+      string: '{"operation":"DropElasticServerDatabase","startTime":"2024-02-27T05:28:06.473Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/centraluseuap/azureAsyncOperation/d231e266-536b-49d5-b058-224c3a218f70?api-version=2017-12-01&t=638446084865175931&c=MIIHADCCBeigAwIBAgITHgPpaXuYMAm244ktPwAAA-lpezANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMTMwMTk1MDU5WhcNMjUwMTI0MTk1MDU5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN2hrMmpndTZoi43TUpdMafOLMZqWdNXLR-hHAgv4xfs-QqbNtV_GG9HbfjK6lij6uAwbMdI3MO_q0JXAR1J0suXs0hXY5qXXiy_-ezvugWKqXHeHnStx8kw2b3EhxjYjPeRiot9BP2CjcKpQqXLhb-qr0OFkCcd-PGn_r3maQvz6Zgf64PkWVwU51WVEZc_9KvQSnqBTsKjFnTC0E5xcS7H1fdHgk3XOVA9OejBTtZzD8ogmZqche0M-l-XEVXDgXBB6VGLtRQsr9wOI8X_6F660LpSwnTNYt9yf6pC0_PWtY6yzL8oWkPhpqX3bzy-aN5um44oZwxMsX7OxxrdnVECAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRkv3LwkT2pw5VRfh2XQjJlKVECpzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD86WMx0spH4FDBMqx4ibCx5kjl7GE3ytMp4A0vkTb_gVQxqC3sw3kREcSco9_-LRdUJ0rd4RoNOL2c0QImzmVT12nhyxo1ODBXFRP6Y7KKWNUYNYGuD5n5CmcjEQDLyt_e1Wl57qGG7QJR3v8IpIHzapOtQU7xjnh9LvtGJaeG6Z8WodcSc8qcYUyK2xvmYpKR4BpkKYjF6NXh-ZIidN9ZmYXYVgC2C3qZ3SRS4H4fXUEDGSLG2eT3jGAuVdH0pS_3CUo-L3gOSJ71_a6S2BuEFAB8RzQGoI6Db7jRKb6idm0MNAA31zHboMMMIPv5kF0jDNNvwmCx7u-5w_jzae-M&s=TLPpYTx6-eTsVu9y6HeLGWHhhgE20o3dIOaDl3nW-iqyU6d1lWznfyeOt-pqXOCLQ4bqKa59OPyz02EeKjp1A7gUxw9_vFFCUYS6OtjnftCksezq4AuqZ97egY0Av0GjTuLZrTECTHpX9Y6pVH742IzIDUfgL2-IxNe7iHk9oY7drc8MsaQ1XpVM1AoQpNAJ5r_Ty38UYZp0CqDXA-kgbeuM3huat4BjwdbBYItW6BWp_1d2Op4LzyUGVkRd9JPY-fw92I7IchXqbMi57s-K7kdzjw3fdqYgkJoVR0ny3IEL0aMa6lZ-3GICKqUT-m7KxaAOFCAAKXYDGqqQ7kD-hg&h=qLJrlGr6Mtw4l0zJtk0HupbbIqpCuIu3UEEKg3AfEQU
+      cache-control:
+      - no-cache
+      content-length:
+      - '80'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Feb 2024 05:28:05 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/centraluseuap/operationResults/d231e266-536b-49d5-b058-224c3a218f70?api-version=2017-12-01&t=638446084865332532&c=MIIHADCCBeigAwIBAgITHgPpaXuYMAm244ktPwAAA-lpezANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMTMwMTk1MDU5WhcNMjUwMTI0MTk1MDU5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN2hrMmpndTZoi43TUpdMafOLMZqWdNXLR-hHAgv4xfs-QqbNtV_GG9HbfjK6lij6uAwbMdI3MO_q0JXAR1J0suXs0hXY5qXXiy_-ezvugWKqXHeHnStx8kw2b3EhxjYjPeRiot9BP2CjcKpQqXLhb-qr0OFkCcd-PGn_r3maQvz6Zgf64PkWVwU51WVEZc_9KvQSnqBTsKjFnTC0E5xcS7H1fdHgk3XOVA9OejBTtZzD8ogmZqche0M-l-XEVXDgXBB6VGLtRQsr9wOI8X_6F660LpSwnTNYt9yf6pC0_PWtY6yzL8oWkPhpqX3bzy-aN5um44oZwxMsX7OxxrdnVECAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRkv3LwkT2pw5VRfh2XQjJlKVECpzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD86WMx0spH4FDBMqx4ibCx5kjl7GE3ytMp4A0vkTb_gVQxqC3sw3kREcSco9_-LRdUJ0rd4RoNOL2c0QImzmVT12nhyxo1ODBXFRP6Y7KKWNUYNYGuD5n5CmcjEQDLyt_e1Wl57qGG7QJR3v8IpIHzapOtQU7xjnh9LvtGJaeG6Z8WodcSc8qcYUyK2xvmYpKR4BpkKYjF6NXh-ZIidN9ZmYXYVgC2C3qZ3SRS4H4fXUEDGSLG2eT3jGAuVdH0pS_3CUo-L3gOSJ71_a6S2BuEFAB8RzQGoI6Db7jRKb6idm0MNAA31zHboMMMIPv5kF0jDNNvwmCx7u-5w_jzae-M&s=oM5qvNSzYH9wzR04PBMiTIRzRx-x5RneFCoZZrIyV0xEnRwK6xLeeq04Ylst2GlVN_AZ3r-bJsYA1duvg1BMtNFRMwwuTf_gqdhW865tNhiSCCeL91Kep8HKNgSsyLdxf8taR90rmsC760zdybeN0NTcZKVD4KPFZ6u-2oyPALSQmtE2Zcqa0LPYJDTfPXqEKhzbAiwrWAmgDUO240Qc9ha5J4n21-up0M68aG2SmB-sOvVKSW7vTo0WtG0wqGGXaWuMNRNtTyvHk8PIpn5IIB-enM1-3W2kwfmMrfoj__2xYNAEL7BtC9xZagbFuo79YUCP0shVz6ZPbkbhp_WvxA&h=JfhpVzMUv88AGokg4Z5C_bU54XCWaB3lLvMbcAlZ8dI
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/f77a6dca-ca86-4635-b929-95485d567637
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - postgres db delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -s --yes
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) azsdk-python-mgmt-rdbms/10.2.0b12 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DBforPostgreSQL/locations/centraluseuap/azureAsyncOperation/d231e266-536b-49d5-b058-224c3a218f70?api-version=2017-12-01&t=638446084865175931&c=MIIHADCCBeigAwIBAgITHgPpaXuYMAm244ktPwAAA-lpezANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMTMwMTk1MDU5WhcNMjUwMTI0MTk1MDU5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN2hrMmpndTZoi43TUpdMafOLMZqWdNXLR-hHAgv4xfs-QqbNtV_GG9HbfjK6lij6uAwbMdI3MO_q0JXAR1J0suXs0hXY5qXXiy_-ezvugWKqXHeHnStx8kw2b3EhxjYjPeRiot9BP2CjcKpQqXLhb-qr0OFkCcd-PGn_r3maQvz6Zgf64PkWVwU51WVEZc_9KvQSnqBTsKjFnTC0E5xcS7H1fdHgk3XOVA9OejBTtZzD8ogmZqche0M-l-XEVXDgXBB6VGLtRQsr9wOI8X_6F660LpSwnTNYt9yf6pC0_PWtY6yzL8oWkPhpqX3bzy-aN5um44oZwxMsX7OxxrdnVECAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRkv3LwkT2pw5VRfh2XQjJlKVECpzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD86WMx0spH4FDBMqx4ibCx5kjl7GE3ytMp4A0vkTb_gVQxqC3sw3kREcSco9_-LRdUJ0rd4RoNOL2c0QImzmVT12nhyxo1ODBXFRP6Y7KKWNUYNYGuD5n5CmcjEQDLyt_e1Wl57qGG7QJR3v8IpIHzapOtQU7xjnh9LvtGJaeG6Z8WodcSc8qcYUyK2xvmYpKR4BpkKYjF6NXh-ZIidN9ZmYXYVgC2C3qZ3SRS4H4fXUEDGSLG2eT3jGAuVdH0pS_3CUo-L3gOSJ71_a6S2BuEFAB8RzQGoI6Db7jRKb6idm0MNAA31zHboMMMIPv5kF0jDNNvwmCx7u-5w_jzae-M&s=TLPpYTx6-eTsVu9y6HeLGWHhhgE20o3dIOaDl3nW-iqyU6d1lWznfyeOt-pqXOCLQ4bqKa59OPyz02EeKjp1A7gUxw9_vFFCUYS6OtjnftCksezq4AuqZ97egY0Av0GjTuLZrTECTHpX9Y6pVH742IzIDUfgL2-IxNe7iHk9oY7drc8MsaQ1XpVM1AoQpNAJ5r_Ty38UYZp0CqDXA-kgbeuM3huat4BjwdbBYItW6BWp_1d2Op4LzyUGVkRd9JPY-fw92I7IchXqbMi57s-K7kdzjw3fdqYgkJoVR0ny3IEL0aMa6lZ-3GICKqUT-m7KxaAOFCAAKXYDGqqQ7kD-hg&h=qLJrlGr6Mtw4l0zJtk0HupbbIqpCuIu3UEEKg3AfEQU
+  response:
+    body:
+      string: '{"name":"d231e266-536b-49d5-b058-224c3a218f70","status":"Failed","startTime":"2024-02-27T05:28:06.473Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Feb 2024 05:28:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/cc14bbfd-c009-48eb-a82a-eee6fee2088c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"subscriptions": ["38304e13-357e-405e-9e9a-220351dcce8c"], "query": "RecoveryServicesResources
+      | where type =~ ''microsoft.dataprotection/backupvaults/backupinstances''| extend
+      vaultName = split(split(id, ''/Microsoft.DataProtection/backupVaults/'')[1],''/'')[0]|
+      extend protectionState = properties.currentProtectionState| extend datasourceId
+      = properties.dataSourceInfo.resourceID | where resourceGroup in~ (''clitest-dpp-rg'')
+      | where vaultName in~ (''clitest-bkp-vault-crr-donotdelete'') | where name in~
+      (''clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052'')", "options":
+      {"$top": 1000, "$skip": 0, "resultFormat": "objectArray", "allowPartialScopes":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance validate-for-restore
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '665'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -v -n --restore-request-object --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) azsdk-python-mgmt-resourcegraph/8.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052","name":"clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052","type":"microsoft.dataprotection/backupvaults/backupinstances","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","kind":"","location":"eastus2euap","resourceGroup":"clitest-dpp-rg","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","managedBy":"","sku":null,"plan":null,"properties":{"resourceGuardOperationRequests":null,"protectionStatus":{"errorDetails":null,"status":"ProtectionConfigured"},"friendlyName":"clitestcrr-ecy\\postgres","currentProtectionState":"ProtectionConfigured","objectType":"BackupInstance","dataSourceSetInfo":{"resourceLocation":"eastus2euap","datasourceType":"Microsoft.DBforPostgreSQL/servers/databases","objectType":"DatasourceSet","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy","resourceProperties":null,"resourceType":"Microsoft.DBforPostgreSQL/servers","resourceName":"clitestcrr-ecy","resourceUri":"","baseUri":null},"dataSourceInfo":{"resourceLocation":"eastus2euap","datasourceType":"Microsoft.DBforPostgreSQL/servers/databases","objectType":"Datasource","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy/databases/postgres","resourceProperties":null,"resourceType":"Microsoft.DBforPostgreSQL/servers/databases","resourceName":"postgres","resourceUri":"","baseUri":null},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupPolicies/crrclitestbackuppolicy","policyParameters":null,"policyVersion":""},"backupInstanceExtendedProperties":{"allowedOperations":["BackupNow","Restore","ChangePolicy","StopBackup","Delete","ViewSecondaryRecoveryPoint","RestoreToSecondaryRegion"],"protectionStateInSecondaryRegion":"ProtectionConfigured","protectedPrimaryRegion":"eastus2euap","vaultId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete","protectedSecondaryRegion":"centraluseuap","dataSourceExtendedInfo":{"dataSourceId":"clitestcrr-ecy\\postgres"},"policyExtendedInfo":{"configuredRPGenerationFrequencyInSecondaryRegion":"7.06:00:00","configuredMaximumRetentionInSecondaryRegion":"93.00:00:00","rpoWarningThresholdInSecondaryRegion":"10.21:00:00","rpoWarningThresholdInPrimaryRegion":"10.12:00:00","configuredRPGenerationFrequency":"7.00:00:00","configuredMaximumRetention":"93.00:00:00"},"recoveryPointInfo":{"latestRecoveryPointInSecondaryRegion":"2024-02-25T22:00:49.5720000Z","oldestRecoveryPointInSecondaryRegion":"2024-02-23T09:01:16.2520000Z","oldestRecoveryPointInPrimaryRegion":"2024-02-23T09:01:16.2520000Z","latestRecoveryPointInPrimaryRegion":"2024-02-25T22:00:49.5720000Z"}},"datasourceAuthCredentials":{"objectType":"SecretStoreBasedAuthCredentials","secretStoreResource":{"secretStoreType":"AzureKeyVault","value":null,"uri":"https://clitestcrrkeyvault.vault.azure.net/secrets/clitestcrr-final"}},"protectionErrorDetails":null,"dataSourceProperties":null,"provisioningState":"Succeeded","identityDetails":null,"validationType":null},"tags":null,"identity":null,"zones":null,"extendedLocation":null,"vaultName":"clitest-bkp-vault-crr-donotdelete","protectionState":"ProtectionConfigured","datasourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy/databases/postgres"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3982'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Feb 2024 05:28:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.4459358'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectType": "ValidateRestoreRequestObject", "restoreRequestObject":
+      {"objectType": "AzureBackupRecoveryPointBasedRestoreRequest", "recoveryPointId":
+      "9f74e3726904425cb10f17c2c695d169", "restoreTargetInfo": {"datasourceAuthCredentials":
+      {"objectType": "SecretStoreBasedAuthCredentials", "secretStoreResource": {"secretStoreType":
+      "AzureKeyVault", "uri": "https://cli-dpp-server1-kv.vault.azure.net/secrets/dpp-bugbash-server1-conn/b7c857c1d35643c08724bd4047394be1",
+      "value": null}}, "datasourceInfo": {"datasourceType": "Microsoft.DBforPostgreSQL/servers/databases",
+      "objectType": "Datasource", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-dpp-bugbash-oss-rg/providers/Microsoft.DBforPostgreSQL/servers/cli-dpp-bugbash-server1/databases/postgres-restored",
+      "resourceLocation": "centraluseuap", "resourceName": "postgres-restored", "resourceType":
+      "Microsoft.DBforPostgreSQL/servers/databases", "resourceUri": ""}, "datasourceSetInfo":
+      {"datasourceType": "Microsoft.DBforPostgreSQL/servers/databases", "objectType":
+      "DatasourceSet", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-dpp-bugbash-oss-rg/providers/Microsoft.DBforPostgreSQL/servers/cli-dpp-bugbash-server1",
+      "resourceLocation": "centraluseuap", "resourceName": "cli-dpp-bugbash-server1",
+      "resourceType": "Microsoft.DBforPostgreSQL/servers", "resourceUri": ""}, "objectType":
+      "RestoreTargetInfo", "recoveryOption": "FailIfExists", "restoreLocation": "centraluseuap"},
+      "sourceDataStoreType": "VaultStore"}, "crossRegionRestoreDetails": {"sourceBackupInstanceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052",
+      "sourceRegion": "eastus2euap"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance validate-for-restore
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1878'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -v -n --restore-request-object --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/locations/centraluseuap/validateCrossRegionRestore?api-version=2023-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyO2I1NjBkM2MzLWUxMWYtNDY5Ny05YzZhLWZhNTU4NzY3YTY4Ng==?api-version=2023-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 27 Feb 2024 05:28:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyO2I1NjBkM2MzLWUxMWYtNDY5Ny05YzZhLWZhNTU4NzY3YTY4Ng==?api-version=2023-11-01&t=638446084901310538&c=MIIHADCCBeigAwIBAgITHgPpaXuYMAm244ktPwAAA-lpezANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMTMwMTk1MDU5WhcNMjUwMTI0MTk1MDU5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN2hrMmpndTZoi43TUpdMafOLMZqWdNXLR-hHAgv4xfs-QqbNtV_GG9HbfjK6lij6uAwbMdI3MO_q0JXAR1J0suXs0hXY5qXXiy_-ezvugWKqXHeHnStx8kw2b3EhxjYjPeRiot9BP2CjcKpQqXLhb-qr0OFkCcd-PGn_r3maQvz6Zgf64PkWVwU51WVEZc_9KvQSnqBTsKjFnTC0E5xcS7H1fdHgk3XOVA9OejBTtZzD8ogmZqche0M-l-XEVXDgXBB6VGLtRQsr9wOI8X_6F660LpSwnTNYt9yf6pC0_PWtY6yzL8oWkPhpqX3bzy-aN5um44oZwxMsX7OxxrdnVECAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRkv3LwkT2pw5VRfh2XQjJlKVECpzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD86WMx0spH4FDBMqx4ibCx5kjl7GE3ytMp4A0vkTb_gVQxqC3sw3kREcSco9_-LRdUJ0rd4RoNOL2c0QImzmVT12nhyxo1ODBXFRP6Y7KKWNUYNYGuD5n5CmcjEQDLyt_e1Wl57qGG7QJR3v8IpIHzapOtQU7xjnh9LvtGJaeG6Z8WodcSc8qcYUyK2xvmYpKR4BpkKYjF6NXh-ZIidN9ZmYXYVgC2C3qZ3SRS4H4fXUEDGSLG2eT3jGAuVdH0pS_3CUo-L3gOSJ71_a6S2BuEFAB8RzQGoI6Db7jRKb6idm0MNAA31zHboMMMIPv5kF0jDNNvwmCx7u-5w_jzae-M&s=oJcUGcHoQufWbPtKINI3h7OP-xQ0jqz-wQETgUl7YMLElXh2zA-pkkCLn9KGuXL36TrsDlazAZlsdFruWP2U5y2WkXXFtet-L1-RKSK92TD_1TCMgpRQ7cLUeZKVaNK2Q41vn2AcrWgqqSqSXyoM05GSpxQUyQ64YNRioKvu_1KRh0KcwnkrrlPVWnUxPYrmfqQqqdbntYVES_Wxij-nQ6aIQ0P3U8Is1skWTo-HXHb8eNBKx4AWwISyGHu20L2hPP_PfR-SZZmPOcsUAQo0UOotRZ2arzeHxJzNjpfPSxSwv5RWEqFKKwTQ6t9JlVNGqJyAWV2x3J1Y0CulWyfkKA&h=LVqtEjLUyGnnL_hMoQK0evQSJWl836MqULZJaG7NC4U
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/d60dd7a6-db2e-42b7-b7c3-c9f783c94610
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance validate-for-restore
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -v -n --restore-request-object --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyO2I1NjBkM2MzLWUxMWYtNDY5Ny05YzZhLWZhNTU4NzY3YTY4Ng==?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyO2I1NjBkM2MzLWUxMWYtNDY5Ny05YzZhLWZhNTU4NzY3YTY4Ng==","name":"NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyO2I1NjBkM2MzLWUxMWYtNDY5Ny05YzZhLWZhNTU4NzY3YTY4Ng==","status":"Inprogress","startTime":"2024-02-27T05:28:10.0726606Z","endTime":"0001-01-01T00:00:00Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '444'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Feb 2024 05:28:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/67a9105d-71be-4ab5-a745-276d5d3fc691
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '14997'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance validate-for-restore
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -v -n --restore-request-object --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyO2I1NjBkM2MzLWUxMWYtNDY5Ny05YzZhLWZhNTU4NzY3YTY4Ng==?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyO2I1NjBkM2MzLWUxMWYtNDY5Ny05YzZhLWZhNTU4NzY3YTY4Ng==","name":"NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyO2I1NjBkM2MzLWUxMWYtNDY5Ny05YzZhLWZhNTU4NzY3YTY4Ng==","status":"Succeeded","startTime":"2024-02-27T05:28:10.0726606Z","endTime":"2024-02-27T05:28:31Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Feb 2024 05:28:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/a71b8abd-3289-47bd-9274-a70673d6a722
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '14996'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance validate-for-restore
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -v -n --restore-request-object --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyO2I1NjBkM2MzLWUxMWYtNDY5Ny05YzZhLWZhNTU4NzY3YTY4Ng==?api-version=2023-11-01&t=638446084901310538&c=MIIHADCCBeigAwIBAgITHgPpaXuYMAm244ktPwAAA-lpezANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMTMwMTk1MDU5WhcNMjUwMTI0MTk1MDU5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN2hrMmpndTZoi43TUpdMafOLMZqWdNXLR-hHAgv4xfs-QqbNtV_GG9HbfjK6lij6uAwbMdI3MO_q0JXAR1J0suXs0hXY5qXXiy_-ezvugWKqXHeHnStx8kw2b3EhxjYjPeRiot9BP2CjcKpQqXLhb-qr0OFkCcd-PGn_r3maQvz6Zgf64PkWVwU51WVEZc_9KvQSnqBTsKjFnTC0E5xcS7H1fdHgk3XOVA9OejBTtZzD8ogmZqche0M-l-XEVXDgXBB6VGLtRQsr9wOI8X_6F660LpSwnTNYt9yf6pC0_PWtY6yzL8oWkPhpqX3bzy-aN5um44oZwxMsX7OxxrdnVECAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRkv3LwkT2pw5VRfh2XQjJlKVECpzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD86WMx0spH4FDBMqx4ibCx5kjl7GE3ytMp4A0vkTb_gVQxqC3sw3kREcSco9_-LRdUJ0rd4RoNOL2c0QImzmVT12nhyxo1ODBXFRP6Y7KKWNUYNYGuD5n5CmcjEQDLyt_e1Wl57qGG7QJR3v8IpIHzapOtQU7xjnh9LvtGJaeG6Z8WodcSc8qcYUyK2xvmYpKR4BpkKYjF6NXh-ZIidN9ZmYXYVgC2C3qZ3SRS4H4fXUEDGSLG2eT3jGAuVdH0pS_3CUo-L3gOSJ71_a6S2BuEFAB8RzQGoI6Db7jRKb6idm0MNAA31zHboMMMIPv5kF0jDNNvwmCx7u-5w_jzae-M&s=oJcUGcHoQufWbPtKINI3h7OP-xQ0jqz-wQETgUl7YMLElXh2zA-pkkCLn9KGuXL36TrsDlazAZlsdFruWP2U5y2WkXXFtet-L1-RKSK92TD_1TCMgpRQ7cLUeZKVaNK2Q41vn2AcrWgqqSqSXyoM05GSpxQUyQ64YNRioKvu_1KRh0KcwnkrrlPVWnUxPYrmfqQqqdbntYVES_Wxij-nQ6aIQ0P3U8Is1skWTo-HXHb8eNBKx4AWwISyGHu20L2hPP_PfR-SZZmPOcsUAQo0UOotRZ2arzeHxJzNjpfPSxSwv5RWEqFKKwTQ6t9JlVNGqJyAWV2x3J1Y0CulWyfkKA&h=LVqtEjLUyGnnL_hMoQK0evQSJWl836MqULZJaG7NC4U
+  response:
+    body:
+      string: '{"objectType":"OperationJobExtendedInfo"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyO2I1NjBkM2MzLWUxMWYtNDY5Ny05YzZhLWZhNTU4NzY3YTY4Ng==?api-version=2023-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '41'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Feb 2024 05:28:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/297adc8e-fae3-4001-991f-e6685ff070a9
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"subscriptions": ["38304e13-357e-405e-9e9a-220351dcce8c"], "query": "RecoveryServicesResources
+      | where type =~ ''microsoft.dataprotection/backupvaults/backupinstances''| extend
+      vaultName = split(split(id, ''/Microsoft.DataProtection/backupVaults/'')[1],''/'')[0]|
+      extend protectionState = properties.currentProtectionState| extend datasourceId
+      = properties.dataSourceInfo.resourceID | where resourceGroup in~ (''clitest-dpp-rg'')
+      | where vaultName in~ (''clitest-bkp-vault-crr-donotdelete'') | where name in~
+      (''clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052'')", "options":
+      {"$top": 1000, "$skip": 0, "resultFormat": "objectArray", "allowPartialScopes":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance restore trigger
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '665'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -v -n --restore-request-object --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) azsdk-python-mgmt-resourcegraph/8.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052","name":"clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052","type":"microsoft.dataprotection/backupvaults/backupinstances","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","kind":"","location":"eastus2euap","resourceGroup":"clitest-dpp-rg","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","managedBy":"","sku":null,"plan":null,"properties":{"protectionStatus":{"errorDetails":null,"status":"ProtectionConfigured"},"resourceGuardOperationRequests":null,"friendlyName":"clitestcrr-ecy\\postgres","currentProtectionState":"ProtectionConfigured","objectType":"BackupInstance","dataSourceInfo":{"resourceLocation":"eastus2euap","datasourceType":"Microsoft.DBforPostgreSQL/servers/databases","objectType":"Datasource","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy/databases/postgres","resourceType":"Microsoft.DBforPostgreSQL/servers/databases","resourceProperties":null,"resourceName":"postgres","resourceUri":"","baseUri":null},"dataSourceSetInfo":{"resourceLocation":"eastus2euap","datasourceType":"Microsoft.DBforPostgreSQL/servers/databases","objectType":"DatasourceSet","resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy","resourceType":"Microsoft.DBforPostgreSQL/servers","resourceProperties":null,"resourceName":"clitestcrr-ecy","resourceUri":"","baseUri":null},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupPolicies/crrclitestbackuppolicy","policyParameters":null,"policyVersion":""},"backupInstanceExtendedProperties":{"allowedOperations":["BackupNow","Restore","ChangePolicy","StopBackup","Delete","ViewSecondaryRecoveryPoint","RestoreToSecondaryRegion"],"protectionStateInSecondaryRegion":"ProtectionConfigured","protectedPrimaryRegion":"eastus2euap","vaultId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete","protectedSecondaryRegion":"centraluseuap","dataSourceExtendedInfo":{"dataSourceId":"clitestcrr-ecy\\postgres"},"policyExtendedInfo":{"configuredRPGenerationFrequencyInSecondaryRegion":"7.06:00:00","configuredMaximumRetentionInSecondaryRegion":"93.00:00:00","rpoWarningThresholdInSecondaryRegion":"10.21:00:00","rpoWarningThresholdInPrimaryRegion":"10.12:00:00","configuredRPGenerationFrequency":"7.00:00:00","configuredMaximumRetention":"93.00:00:00"},"recoveryPointInfo":{"latestRecoveryPointInSecondaryRegion":"2024-02-25T22:00:49.5720000Z","oldestRecoveryPointInSecondaryRegion":"2024-02-23T09:01:16.2520000Z","latestRecoveryPointInPrimaryRegion":"2024-02-25T22:00:49.5720000Z","oldestRecoveryPointInPrimaryRegion":"2024-02-23T09:01:16.2520000Z"}},"datasourceAuthCredentials":{"objectType":"SecretStoreBasedAuthCredentials","secretStoreResource":{"secretStoreType":"AzureKeyVault","value":null,"uri":"https://clitestcrrkeyvault.vault.azure.net/secrets/clitestcrr-final"}},"protectionErrorDetails":null,"dataSourceProperties":null,"provisioningState":"Succeeded","identityDetails":null,"validationType":null},"tags":null,"identity":null,"zones":null,"extendedLocation":null,"vaultName":"clitest-bkp-vault-crr-donotdelete","protectionState":"ProtectionConfigured","datasourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy/databases/postgres"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3982'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Feb 2024 05:28:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.3532032'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectType": "AzureBackupRecoveryPointBasedRestoreRequest", "restoreRequestObject":
+      {"objectType": "AzureBackupRecoveryPointBasedRestoreRequest", "recoveryPointId":
+      "9f74e3726904425cb10f17c2c695d169", "restoreTargetInfo": {"datasourceAuthCredentials":
+      {"objectType": "SecretStoreBasedAuthCredentials", "secretStoreResource": {"secretStoreType":
+      "AzureKeyVault", "uri": "https://cli-dpp-server1-kv.vault.azure.net/secrets/dpp-bugbash-server1-conn/b7c857c1d35643c08724bd4047394be1",
+      "value": null}}, "datasourceInfo": {"datasourceType": "Microsoft.DBforPostgreSQL/servers/databases",
+      "objectType": "Datasource", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-dpp-bugbash-oss-rg/providers/Microsoft.DBforPostgreSQL/servers/cli-dpp-bugbash-server1/databases/postgres-restored",
+      "resourceLocation": "centraluseuap", "resourceName": "postgres-restored", "resourceType":
+      "Microsoft.DBforPostgreSQL/servers/databases", "resourceUri": ""}, "datasourceSetInfo":
+      {"datasourceType": "Microsoft.DBforPostgreSQL/servers/databases", "objectType":
+      "DatasourceSet", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-dpp-bugbash-oss-rg/providers/Microsoft.DBforPostgreSQL/servers/cli-dpp-bugbash-server1",
+      "resourceLocation": "centraluseuap", "resourceName": "cli-dpp-bugbash-server1",
+      "resourceType": "Microsoft.DBforPostgreSQL/servers", "resourceUri": ""}, "objectType":
+      "RestoreTargetInfo", "recoveryOption": "FailIfExists", "restoreLocation": "centraluseuap"},
+      "sourceDataStoreType": "VaultStore"}, "crossRegionRestoreDetails": {"sourceBackupInstanceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052",
+      "sourceRegion": "eastus2euap"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance restore trigger
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1893'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -v -n --restore-request-object --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/locations/centraluseuap/crossRegionRestore?api-version=2023-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyOzVlNGU3NTY5LTNkNDYtNGZjNi1iZDVmLTgyMzI2YTgzODFhOA==?api-version=2023-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 27 Feb 2024 05:28:43 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyOzVlNGU3NTY5LTNkNDYtNGZjNi1iZDVmLTgyMzI2YTgzODFhOA==?api-version=2023-11-01&t=638446085240577015&c=MIIHADCCBeigAwIBAgITHgPpaXuYMAm244ktPwAAA-lpezANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMTMwMTk1MDU5WhcNMjUwMTI0MTk1MDU5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN2hrMmpndTZoi43TUpdMafOLMZqWdNXLR-hHAgv4xfs-QqbNtV_GG9HbfjK6lij6uAwbMdI3MO_q0JXAR1J0suXs0hXY5qXXiy_-ezvugWKqXHeHnStx8kw2b3EhxjYjPeRiot9BP2CjcKpQqXLhb-qr0OFkCcd-PGn_r3maQvz6Zgf64PkWVwU51WVEZc_9KvQSnqBTsKjFnTC0E5xcS7H1fdHgk3XOVA9OejBTtZzD8ogmZqche0M-l-XEVXDgXBB6VGLtRQsr9wOI8X_6F660LpSwnTNYt9yf6pC0_PWtY6yzL8oWkPhpqX3bzy-aN5um44oZwxMsX7OxxrdnVECAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRkv3LwkT2pw5VRfh2XQjJlKVECpzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD86WMx0spH4FDBMqx4ibCx5kjl7GE3ytMp4A0vkTb_gVQxqC3sw3kREcSco9_-LRdUJ0rd4RoNOL2c0QImzmVT12nhyxo1ODBXFRP6Y7KKWNUYNYGuD5n5CmcjEQDLyt_e1Wl57qGG7QJR3v8IpIHzapOtQU7xjnh9LvtGJaeG6Z8WodcSc8qcYUyK2xvmYpKR4BpkKYjF6NXh-ZIidN9ZmYXYVgC2C3qZ3SRS4H4fXUEDGSLG2eT3jGAuVdH0pS_3CUo-L3gOSJ71_a6S2BuEFAB8RzQGoI6Db7jRKb6idm0MNAA31zHboMMMIPv5kF0jDNNvwmCx7u-5w_jzae-M&s=q9TDZJowtdX4BQVD-eU_JTnxQDzAl_E0UBOEx1wqr3fVLeg4Y8KSpBf6mYdnF2aCFCJ1HvngXCJMK29yzOyX5qbWDpBCsjXpDHJfvkpRWcZBZ5GYF2qi44_vlzfA2qS65-2t92YjBgA-d_2K-mhbhVSuqutn2QK-ZYkZI26mvXEKaMyX4cCGdn2BVderX0mNFFiJI8LPpuyW94hG45878e9GYYxw2fU0aolE_cNONI3CDWV0hWvtlhi24FaPlhiubfYQlyK5EcR1PUS5bu7TxdjnWh5eJnLUb47mv7t3JR3QaaaInuqgVtpTv_Ysn_ytohyrI3pLfDCV2rPDOHtY8w&h=onMFkHXqo_ga5FYEJb_H2EO_GnTOdQfiyzC_xmDYTzg
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/c80d95fe-b9be-44bc-a243-4768aff13378
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance restore trigger
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -v -n --restore-request-object --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyOzVlNGU3NTY5LTNkNDYtNGZjNi1iZDVmLTgyMzI2YTgzODFhOA==?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyOzVlNGU3NTY5LTNkNDYtNGZjNi1iZDVmLTgyMzI2YTgzODFhOA==","name":"NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyOzVlNGU3NTY5LTNkNDYtNGZjNi1iZDVmLTgyMzI2YTgzODFhOA==","status":"Inprogress","startTime":"2024-02-27T05:28:44.0165113Z","endTime":"0001-01-01T00:00:00Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '444'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Feb 2024 05:28:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/d720d529-12a9-4d53-b368-fc9dfda3a513
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '14995'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance restore trigger
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -v -n --restore-request-object --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyOzVlNGU3NTY5LTNkNDYtNGZjNi1iZDVmLTgyMzI2YTgzODFhOA==?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyOzVlNGU3NTY5LTNkNDYtNGZjNi1iZDVmLTgyMzI2YTgzODFhOA==","name":"NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyOzVlNGU3NTY5LTNkNDYtNGZjNi1iZDVmLTgyMzI2YTgzODFhOA==","status":"Succeeded","startTime":"2024-02-27T05:28:44.0165113Z","endTime":"2024-02-27T05:28:45Z","properties":{"jobId":"2c026b3e-f635-442a-8f16-1ceddd410c9f","objectType":"OperationJobExtendedInfo"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '545'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Feb 2024 05:29:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/89154ee6-96b6-42c4-b35d-2e78ad45776d
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '14994'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance restore trigger
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -v -n --restore-request-object --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyOzVlNGU3NTY5LTNkNDYtNGZjNi1iZDVmLTgyMzI2YTgzODFhOA==?api-version=2023-11-01&t=638446085240577015&c=MIIHADCCBeigAwIBAgITHgPpaXuYMAm244ktPwAAA-lpezANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMTMwMTk1MDU5WhcNMjUwMTI0MTk1MDU5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN2hrMmpndTZoi43TUpdMafOLMZqWdNXLR-hHAgv4xfs-QqbNtV_GG9HbfjK6lij6uAwbMdI3MO_q0JXAR1J0suXs0hXY5qXXiy_-ezvugWKqXHeHnStx8kw2b3EhxjYjPeRiot9BP2CjcKpQqXLhb-qr0OFkCcd-PGn_r3maQvz6Zgf64PkWVwU51WVEZc_9KvQSnqBTsKjFnTC0E5xcS7H1fdHgk3XOVA9OejBTtZzD8ogmZqche0M-l-XEVXDgXBB6VGLtRQsr9wOI8X_6F660LpSwnTNYt9yf6pC0_PWtY6yzL8oWkPhpqX3bzy-aN5um44oZwxMsX7OxxrdnVECAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRkv3LwkT2pw5VRfh2XQjJlKVECpzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD86WMx0spH4FDBMqx4ibCx5kjl7GE3ytMp4A0vkTb_gVQxqC3sw3kREcSco9_-LRdUJ0rd4RoNOL2c0QImzmVT12nhyxo1ODBXFRP6Y7KKWNUYNYGuD5n5CmcjEQDLyt_e1Wl57qGG7QJR3v8IpIHzapOtQU7xjnh9LvtGJaeG6Z8WodcSc8qcYUyK2xvmYpKR4BpkKYjF6NXh-ZIidN9ZmYXYVgC2C3qZ3SRS4H4fXUEDGSLG2eT3jGAuVdH0pS_3CUo-L3gOSJ71_a6S2BuEFAB8RzQGoI6Db7jRKb6idm0MNAA31zHboMMMIPv5kF0jDNNvwmCx7u-5w_jzae-M&s=q9TDZJowtdX4BQVD-eU_JTnxQDzAl_E0UBOEx1wqr3fVLeg4Y8KSpBf6mYdnF2aCFCJ1HvngXCJMK29yzOyX5qbWDpBCsjXpDHJfvkpRWcZBZ5GYF2qi44_vlzfA2qS65-2t92YjBgA-d_2K-mhbhVSuqutn2QK-ZYkZI26mvXEKaMyX4cCGdn2BVderX0mNFFiJI8LPpuyW94hG45878e9GYYxw2fU0aolE_cNONI3CDWV0hWvtlhi24FaPlhiubfYQlyK5EcR1PUS5bu7TxdjnWh5eJnLUb47mv7t3JR3QaaaInuqgVtpTv_Ysn_ytohyrI3pLfDCV2rPDOHtY8w&h=onMFkHXqo_ga5FYEJb_H2EO_GnTOdQfiyzC_xmDYTzg
+  response:
+    body:
+      string: '{"jobId":"2c026b3e-f635-442a-8f16-1ceddd410c9f","objectType":"OperationJobExtendedInfo"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/NTlhMmEzZGItMGE5NC00OWMzLTlkNGUtNzBhZGIyZmJiOTIyOzVlNGU3NTY5LTNkNDYtNGZjNi1iZDVmLTgyMzI2YTgzODFhOA==?api-version=2023-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '88'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Feb 2024 05:29:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/3de98df8-0fbd-4c74-9d06-d164fcc37fda
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"subscriptions": ["38304e13-357e-405e-9e9a-220351dcce8c"], "query": "resources
+      | where type =~ ''microsoft.dataprotection/backupvaults'' | where resourceGroup
+      in~ (''clitest-dpp-rg'') | where name in~ (''clitest-bkp-vault-crr-donotdelete'')",
+      "options": {"$top": 1000, "$skip": 0, "resultFormat": "objectArray", "allowPartialScopes":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '336'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --job-id -g -v --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) azsdk-python-mgmt-resourcegraph/8.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-crr-donotdelete","name":"clitest-bkp-vault-crr-donotdelete","type":"microsoft.dataprotection/backupvaults","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","kind":"","location":"eastus2euap","resourceGroup":"clitest-dpp-rg","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","managedBy":"","sku":null,"plan":null,"properties":{"provisioningState":"Succeeded","securitySettings":{"softDeleteSettings":{"state":"On","retentionDurationInDays":14.0}},"secureScore":"None","isVaultProtectedByResourceGuard":false,"replicatedRegions":["centraluseuap"],"storageSettings":[{"type":"GeoRedundant","datastoreType":"VaultStore"}],"featureSettings":{"crossRegionRestoreSettings":{"state":"Enabled"}}},"tags":null,"identity":{"principalId":"39ad4895-eb8c-46f2-bf6f-3e0fc9767ac3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"zones":null,"extendedLocation":null}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1115'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Feb 2024 05:29:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.1351491'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:04
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"jobId": "2c026b3e-f635-442a-8f16-1ceddd410c9f", "sourceBackupVaultId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-crr-donotdelete",
+      "sourceRegion": "eastus2euap"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '270'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --job-id -g -v --use-secondary-region
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/locations/centraluseuap/fetchCrossRegionRestoreJob?api-version=2023-11-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"1106a036-d531-11ee-8475-60a5e243551b","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupInstances/clitestcrr-ecy-postgres-8f1f81c9-8869-48c5-8b07-ef587f1b5052","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-crr-donotdelete/backupPolicies/crrclitestbackuppolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DBforPostgreSQL/servers/clitestcrr-ecy/databases/postgres","vaultName":"clitest-bkp-vault-crr-donotdelete","backupInstanceFriendlyName":"clitestcrr-ecy\\postgres","policyName":"crrclitestbackuppolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":"clitestcrr-ecy","dataSourceName":"postgres","progressEnabled":true,"etag":"W/\"datetime''2024-02-27T05%3A28%3A44.5053761Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"eastus2euap","startTime":"2024-02-27T05:28:44.4210712Z","dataSourceType":"Microsoft.DBforPostgreSQL/servers/databases","operationCategory":"CrossRegionRestore","operation":"Restore","status":"InProgress","isUserTriggered":true,"supportedActions":[""],"duration":"PT0S","extendedInfo":{"sourceRecoverPoint":{"recoveryPointID":"9f74e3726904425cb10f17c2c695d169","recoveryPointTime":"2024-02-25T22:00:49.5729763Z"},"recoveryDestination":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-dpp-bugbash-oss-rg/providers/Microsoft.DBforPostgreSQL/servers/cli-dpp-bugbash-server1/databases/postgres-restored","subTasks":[{"taskId":1,"taskName":"Trigger
+        Restore","taskStatus":"InProgress"}]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-crr-donotdelete/backupJobs/2c026b3e-f635-442a-8f16-1ceddd410c9f","name":"2c026b3e-f635-442a-8f16-1ceddd410c9f","type":"Microsoft.DataProtection/BackupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2216'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Feb 2024 05:29:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/dbfd6678-87a7-49e0-9224-160cb791f267
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
