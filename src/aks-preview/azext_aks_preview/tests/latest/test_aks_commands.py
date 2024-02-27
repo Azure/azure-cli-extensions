@@ -13201,7 +13201,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(check_cmd, checks=[self.is_empty()])
 
         # get node name
-        managed_resource_group = 'MC_{resource_group}_{aks_name}_{resource_group_location}'
+        managed_resource_group = 'MC_{resource_group}_{name}_{location}'
         self.kwargs.update({"managed_resource_group": managed_resource_group})
 
         list_vmss_cmd = 'vmss list --resource-group={managed_resource_group}'

@@ -15,6 +15,7 @@ Pending
 * Add `az aks nodepool delete-machines` command.
 * Update `az aks approuting zone` command to support private dns zones.
 * Vendor new SDK and bump API version to 2024-01-02-preview.
+* Add `az aks check-network` command.
 
 1.0.0b6
 +++++++
