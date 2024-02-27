@@ -44,7 +44,7 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp env certificate') as g:
         g.custom_command('create', 'create_managed_certificate', is_preview=True)
-        g.custom_command('upload', 'upload_certificate')
+        g.custom_command('upload', 'upload_certificate', is_preview=True)
         g.custom_command('list', 'list_certificates', is_preview=True)
         g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory(), is_preview=True)
 

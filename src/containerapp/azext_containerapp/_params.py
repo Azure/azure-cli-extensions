@@ -130,6 +130,12 @@ def load_arguments(self, _):
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 
+    with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
+        c.argument('certificate_identity', options_list=['--custom-domain-certificate-identity', '--certificate-identity'], 
+                   help='Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.', is_preview=True)
+        c.argument('certificate_key_vault_url', options_list=['--custom-domain-certificate-key-vault-url', '--certificate-key-vault-url'], 
+                   help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
+     
     with self.argument_context('containerapp env create') as c:
         c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
         c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"],
@@ -138,6 +144,12 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env create', arg_group='Identity', is_preview=True) as c:
         c.argument('system_assigned', options_list=['--mi-system-assigned'], help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
         c.argument('user_assigned', options_list=['--mi-user-assigned'], nargs='+', help='Space-separated user identities to be assigned.')
+
+    with self.argument_context('containerapp env certificate upload') as c:
+        c.argument('certificate_identity', options_list=['--certificate-identity', '--identity'], 
+                   help='Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.', is_preview=True)
+        c.argument('certificate_key_vault_url', options_list=['--certificate-key-vault-url', '--key-vault-url'], 
+                   help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
 
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')

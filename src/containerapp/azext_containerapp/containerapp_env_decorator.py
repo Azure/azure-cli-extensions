@@ -2,14 +2,14 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set, _ensure_identity_resource_id
+from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set, _ensure_identity_resource_id, load_cert_file
 from knack.log import get_logger
 
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator, \
     ContainerAppEnvUpdateDecorator
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from ._models import ManagedServiceIdentity
+from ._models import ManagedServiceIdentity, CustomDomainConfiguration
 from ._utils import safe_get
 from ._client_factory import handle_non_404_status_code_exception
 
@@ -21,7 +21,27 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         return self.get_param("infrastructure_resource_group")
 
     def construct_payload(self):
-        super().construct_payload()
+        ### copy from the parent construct_payload
+        self.set_up_app_log_configuration()
+
+        self.managed_env_def["location"] = self.get_argument_location()
+        self.managed_env_def["tags"] = self.get_argument_tags()
+        self.managed_env_def["properties"]["zoneRedundant"] = self.get_argument_zone_redundant()
+
+        self.set_up_workload_profiles()
+
+        if self.get_argument_instrumentation_key() is not None:
+            self.managed_env_def["properties"]["daprAIInstrumentationKey"] = self.get_argument_instrumentation_key()
+
+        # Vnet
+        self.set_up_vnet_configuration()
+
+        if self.get_argument_mtls_enabled() is not None:
+            safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=self.get_argument_mtls_enabled())
+        ### copy end
+            
+        ### overwrite custom_domain_configuration
+        self.set_up_custom_domain_configuration()
 
         self.set_up_infrastructure_resource_group()
         self.set_up_dynamic_json_columns()
@@ -38,6 +58,13 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             if not self.get_argument_enable_workload_profiles():
                 raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
                                                    "--enable-workload-profiles/-w")
+        
+        # validate custom domain configuration
+        if self.get_argument_hostname():
+            if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
+                raise ValidationError("Cannot use certificate file/password with certificate identity/keyvaulturl at the same time")
+            if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
+                raise ValidationError("Either certificate file/password or certificate identity/keyvaulturl should be set when hostName is set")
 
     def set_up_dynamic_json_columns(self):
         if self.get_argument_logs_destination() == "log-analytics" and self.get_argument_logs_dynamic_json_columns() is not None:
@@ -99,6 +126,29 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 workload_profiles.append(gpu_profile)
             self.managed_env_def["properties"]["workloadProfiles"] = workload_profiles
 
+    def set_up_custom_domain_configuration(self):
+        if self.get_argument_hostname():
+            custom_domain = CustomDomainConfiguration
+            custom_domain["dnsSuffix"] = self.get_argument_hostname()
+            if self.get_argument_certificate_file():
+                blob, _ = load_cert_file(self.get_argument_certificate_file(), self.get_argument_certificate_password())
+                custom_domain["certificatePassword"] = self.get_argument_certificate_password()
+                custom_domain["certificateValue"] = blob
+            if self.get_argument_certificate_key_vault_url():
+                # default use system identity
+                identity = self.get_argument_certificate_identity()
+                if not identity:
+                    identity = "system"
+                if identity.lower() != "system":
+                    subscription_id = get_subscription_id(self.cmd.cli_ctx)
+                    identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
+
+                custom_domain["certificateKeyVaultProperties"] = {
+                    "keyVaultUrl": self.get_argument_certificate_key_vault_url(),
+                    "identity": identity
+                }
+            self.managed_env_def["properties"]["customDomainConfiguration"] = custom_domain
+
     def get_argument_enable_workload_profiles(self):
         return self.get_param("enable_workload_profiles")
 
@@ -113,9 +163,25 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def get_argument_user_assigned(self):
         return self.get_param("user_assigned")
+    
+    def get_argument_certificate_identity(self):
+        return self.get_param("certificate_identity")
+    
+    def get_argument_certificate_key_vault_url(self):
+        return self.get_param("certificate_key_vault_url")
 
 
 class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
+    def validate_arguments(self):
+        super().validate_arguments()
+
+        # validate custom domain configuration
+        if self.get_argument_hostname():
+            if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
+                raise ValidationError("Cannot use certificate file/password with certificate identity/keyvaulturl at the same time")
+            if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
+                raise ValidationError("Either certificate file/password or certificate identity/keyvaulturl should be set when hostName is set")
+
     def set_up_app_log_configuration(self):
         logs_destination = self.get_argument_logs_destination()
 
@@ -135,5 +201,33 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         if self.get_argument_logs_dynamic_json_columns() is not None:
             safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "dynamicJsonColumns", value=self.get_argument_logs_dynamic_json_columns())
 
+    def set_up_custom_domain_configuration(self):
+        if self.get_argument_hostname():
+            safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "dnsSuffix", value=self.get_argument_hostname())
+            if self.get_argument_certificate_file():
+                blob, _ = load_cert_file(self.get_argument_certificate_file(), self.get_argument_certificate_password())
+                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateValue", value=blob)
+                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificatePassword", value=self.get_argument_certificate_password())
+                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateKeyVaultProperties", value=None)
+            if self.get_argument_certificate_key_vault_url():
+                # default use system identity
+                identity = self.get_argument_certificate_identity()
+                if not identity:
+                    identity = "system"
+                if identity.lower() != "system":
+                    subscription_id = get_subscription_id(self.cmd.cli_ctx)
+                    identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
+                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateKeyVaultProperties", "identity", value=identity)
+                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateKeyVaultProperties", "keyVaultUrl", value=self.get_argument_certificate_key_vault_url())
+                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateValue", value="")
+                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificatePassword", value="")
+
     def get_argument_logs_dynamic_json_columns(self):
         return self.get_param("logs_dynamic_json_columns")
+    
+    def get_argument_certificate_identity(self):
+        return self.get_param("certificate_identity")
+    
+    def get_argument_certificate_key_vault_url(self):
+        return self.get_param("certificate_key_vault_url")
+    
