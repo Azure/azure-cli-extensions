@@ -21,18 +21,11 @@ jobs:
   - task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@3
     displayName: 'Run Credential Scanner'
     inputs:
-      toolMajorVersion: V2
+      toolVersion: 2.1.17
       suppressionsFile: './scripts/ci/credscan/CredScanSuppressions.json'
-      toolVersionV2: '2.1.17'
-  - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-postanalysis.PostAnalysis@1
-    displayName: 'Post Analysis'
-    inputs:
-      AllTools: false
-      BinSkim: false
-      CredScan: true
-      RoslynAnalyzers: false
-      TSLint: false
-      ToolLogsNotFoundAction: 'Standard'
+      verboseOutput: true
+      debugMode: true
+      folderSuppression: true
 
 - job: PolicyCheck
   displayName: "Policy Check"
