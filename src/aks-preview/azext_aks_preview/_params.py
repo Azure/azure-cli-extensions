@@ -173,7 +173,7 @@ from azext_aks_preview._validators import (
     validate_artifact_streaming,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
-    CONST_STORAGE_POOL_TYPE_ALL,
+    CONST_ACSTOR_ALL,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
@@ -308,11 +308,11 @@ storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
 ]
 
-disable_storage_pool_options = [
+disable_storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
-    CONST_STORAGE_POOL_TYPE_ALL,
+    CONST_ACSTOR_ALL,
 ]
 
 storage_pool_skus = [
@@ -328,6 +328,12 @@ storage_pool_skus = [
 storage_pool_options = [
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_SSD,
+]
+
+disable_storage_pool_options = [
+    CONST_STORAGE_POOL_OPTION_NVME,
+    CONST_STORAGE_POOL_OPTION_SSD,
+    CONST_ACSTOR_ALL,
 ]
 
 # consts for guardrails level
@@ -1143,7 +1149,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_azure_container_storage",
-            arg_type=get_enum_type(disable_storage_pool_options),
+            arg_type=get_enum_type(disable_storage_pool_types),
             help="disable azure container storage or any one of the storagepool types",
         )
         c.argument(
@@ -1161,7 +1167,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "storage_pool_option",
-            arg_type=get_enum_type(storage_pool_options),
+            arg_type=get_enum_type(disable_storage_pool_options),
             help="set ephemeral disk storage pool option for azure container storage",
         )
         c.argument(

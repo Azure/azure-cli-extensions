@@ -5,6 +5,7 @@
 
 import time
 from datetime import datetime
+import re
 
 from azext_aks_preview._client_factory import get_providers_client_factory
 from azext_aks_preview.azurecontainerstorage._consts import (
@@ -14,6 +15,8 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
     CONST_K8S_EXTENSION_NAME,
     CONST_STORAGE_POOL_OPTION_NVME,
+    CONST_STORAGE_POOL_OPTION_SSD,
+    CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     RP_REGISTRATION_POLLING_INTERVAL_IN_SEC,
@@ -25,6 +28,7 @@ from azure.cli.command_modules.acs._roleassignments import (
 )
 from azure.cli.core.azclierror import UnknownError
 from knack.log import get_logger
+from typing import Tuple, Union
 
 logger = get_logger(__name__)
 
@@ -198,31 +202,40 @@ def get_extension_installed_and_cluster_configs(cmd, resource_group, cluster_nam
             CONST_EXT_INSTALLATION_NAME,
             "managedClusters",
         )
+
         extension_type = extension.extension_type.lower()
-        if extension_type != CONST_ACSTOR_K8S_EXTENSION_NAME:
-            is_extension_installed = False
+        if extension_type == CONST_ACSTOR_K8S_EXTENSION_NAME:
+            is_extension_installed = True
 
         if is_extension_installed:
             config_settings = extension.configuration_settings
             if config_settings is not None:
-                is_azureDisk_enabled = bool(config_settings.get("global.cli.storagePool.azureDisk.enabled", "False"))
-                is_elasticSan_enabled = bool(config_settings.get("global.cli.storagePool.elasticSan.enabled", "False"))
-                is_ephemeralDisk_enabled = bool(config_settings.get("global.cli.storagePool.ephemeralDisk.enabled", "False"))
-                storagepool_type_val = config_settings.get("global.cli.storagePool.type", None)
-                cpu_value = config_settings.get("global.cli.resources.ioEngine.cpu", None)
-                if storagepool_type_val is not None:
+                is_azureDisk_enabled = True if config_settings.get("global.cli.storagePool.azureDisk.enabled", "False") == "True" \
+                                       else False
+                is_elasticSan_enabled = True if config_settings.get("global.cli.storagePool.elasticSan.enabled", "False") == "True" \
+                                        else False
+                is_ephemeralDisk_nvme_enabled = True if config_settings.get("global.cli.storagePool.ephemeralDisk.nvme.enabled", "False") == "True" \
+                                           else False
+                is_ephemeralDisk_localssd_enabled = True if config_settings.get("global.cli.storagePool.ephemeralDisk.temp.enabled", "False") == "True" \
+                                           else False
+                # Handling values set in older clusters through cli
+                # This case will be useful to capture details from earlier
+                # ARC versions.
+                storagepool_type_val = config_settings.get("cli.storagePool.type", '')
+                if storagepool_type_val:
                     if storagepool_type_val == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
                         is_azureDisk_enabled = True
-                    elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
+                    elif storagepool_type_val == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
                         is_elasticSan_enabled = True
                     elif storagepool_type_val == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-                        ephemeral_disk_type = config_settings.get("global.cli.storagePool.ephemeralDisk.diskType", CONST_STORAGE_POOL_OPTION_NVME)
+                        ephemeral_disk_type = config_settings.get("cli.storagePool.ephemeralDisk.diskType", CONST_STORAGE_POOL_OPTION_NVME)
                         if ephemeral_disk_type == CONST_STORAGE_POOL_OPTION_NVME:
                             is_ephemeralDisk_nvme_enabled = True
                         elif ephemeral_disk_type == CONST_STORAGE_POOL_OPTION_SSD:
-                            is_ephemeral_localssd_enabled = True
+                            is_ephemeralDisk_localssd_enabled = True
+                cpu_value = config_settings.get("global.cli.resources.ioEngine.cpu", None)
                 if cpu_value is not None:
-                    resource_cpu_value = int(cpu_value)
+                    resource_cpu_value = float(cpu_value)
 
     except:  # pylint: disable=bare-except
         is_extension_installed = False
@@ -280,7 +293,7 @@ def get_current_resource_value_args(
     ) = _get_current_resource_values(
         is_azureDisk_enabled,
         is_elasticSan_enabled,
-        is_ephemeral_localssd_enabled,
+        is_ephemeralDisk_localssd_enabled,
         is_ephemeralDisk_nvme_enabled,
         current_core_value,
         agentpool_details,
@@ -313,17 +326,10 @@ def get_desired_resource_value_args(
     ) = _get_current_resource_values(
         is_azureDisk_enabled,
         is_elasticSan_enabled,
-        is_ephemeral_localssd_enabled,
+        is_ephemeralDisk_localssd_enabled,
         is_ephemeralDisk_nvme_enabled,
         current_core_value,
         agentpool_details,
-    )
-
-    return _generate_k8s_extension_resource_args(
-        current_core_value,
-        current_memory_value,
-        current_hugepages_value,
-        current_hugepages_number,
     )
 
     updated_core_value = updated_memory_value = \
@@ -350,20 +356,30 @@ def get_desired_resource_value_args(
         updated_core_value = current_core_value if current_core_value > updated_core_value else updated_core_value
         updated_memory_value = current_memory_value if current_memory_value > updated_memory_value else updated_memory_value
         updated_hugepages_value = current_hugepages_value if current_hugepages_value > updated_hugepages_value else updated_hugepages_value
-        updated_hugepages_number = current_hugepages_number if current_hugepages_number > proposed_hugepages_number else proposed_hugepages_number
+        updated_hugepages_number = current_hugepages_number if current_hugepages_number > updated_hugepages_number else updated_hugepages_number
     else:
         # If we are disabling Ephemeral NVMe storagepool but azureDisk is
         # still enabled, we will set the azureDisk storagepool type values.
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
-          is_ephemeralDisk_nvme_enabled and is_azureDisk_enabled:
+          storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and \
+          (is_ephemeralDisk_localssd_enabled or is_azureDisk_enabled):
             updated_core_value = 1
             updated_memory_value = 1
             updated_hugepages_value = 1
             updated_hugepages_number = 512
-        # If we are disabling AzureDisk storagepool but EphemeralDisk is
-        # still enabled, then we will preserve the current resource values.
-        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and \
-          (is_ephemeralDisk_nvme_enabled or is_ephemeral_localssd_enabled):
+        # If we are disabling AzureDisk storagepool but EphemeralDisk(any) is
+        # still enabled, or if we are disabling Ephemeral LocalSSD but
+        # AzureDisk or Ephemeral NVMe storagepool is still enabled, or
+        # if we are disabling ElasticSan storagepool but AzureDisk or any
+        # EphemeralDisk storagepool type is still enabled,
+        # then we will preserve the current resource values.
+        elif (storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and \
+          (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or \
+          (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and \
+          (is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or \
+          (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
+          storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and \
+          (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled)):
             updated_core_value = current_core_value
             updated_memory_value = current_memory_value
             updated_hugepages_value = current_hugepages_value
@@ -392,10 +408,10 @@ def _is_rp_registered(cmd, required_rp, subscription_id):
 def _get_cpu_value_based_on_vm_size(agentpool_details):
     cpu_value = -1
     for vm_size in agentpool_details:
-        pattern = r'standard_l(\d+)s_v\d+'
+        pattern = r'standard_[a-z]+(\d+)[a-z]+_v\d+'
         match = re.search(pattern, vm_size.lower())
         if match:
-            number_of_cores = match.group(1)
+            number_of_cores = int(match.group(1))
             if cpu_value == -1:
                 cpu_value = number_of_cores * 0.25
             else:
@@ -407,6 +423,9 @@ def _get_cpu_value_based_on_vm_size(agentpool_details):
             logger.warning(
                 f"Unable to get the number of cores in nodepool of vm size: {vm_size}"
             )
+
+    if cpu_value == -1:
+        cpu_value = 1
     return cpu_value
 
 

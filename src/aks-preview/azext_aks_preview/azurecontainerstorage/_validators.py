@@ -6,10 +6,13 @@
 import re
 
 from azext_aks_preview.azurecontainerstorage._consts import (
+    CONST_ACSTOR_ALL,
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
     CONST_STORAGE_POOL_OPTION_NVME,
+    CONST_STORAGE_POOL_OPTION_SSD,
     CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
     CONST_STORAGE_POOL_SKU_PREMIUM_ZRS,
+    CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
 )
@@ -17,6 +20,7 @@ from azure.cli.core.azclierror import (
     ArgumentUsageError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
+    RequiredArgumentMissingError,
 )
 from knack.log import get_logger
 
@@ -31,21 +35,21 @@ logger = get_logger(__name__)
 
 def validate_disable_azure_container_storage_params(
     storage_pool_type,
-    is_extension_installed,
     storage_pool_name,
     storage_pool_sku,
     storage_pool_option,
     storage_pool_size,
     nodepool_list,
+    is_extension_installed,
     is_azureDisk_enabled,
     is_elasticSan_enabled,
-    is_ephemeralDisk_enabled,
-    ephemeral_disk_type_installed,
+    is_ephemeralDisk_localssd_enabled,
+    is_ephemeralDisk_nvme_enabled,
 ):
     if not is_extension_installed:
         raise InvalidArgumentValueError(
             'Invalid usage of --disable-azure-container-storage. '
-            'Azure Container Storage is not enabled on the cluster. '
+            'Azure Container Storage is not enabled in the cluster.'
         )
 
     if storage_pool_name is not None:
@@ -67,16 +71,37 @@ def validate_disable_azure_container_storage_params(
         )
 
     if storage_pool_option is not None:
-        raise MutuallyExclusiveArgumentError(
-            'Conflicting flags. Cannot define --storage-pool-option value '
-            'when --disable-azure-container-storage is set.'
-        )
+        if storage_pool_type != CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
+            raise ArgumentUsageError(
+                'Cannot define --storage-pool-option value when '
+                '--disable-azure-container-storage is not set '
+                f'to {CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK}.'
+            )
+        else:
+            if ((storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and \
+               not is_ephemeralDisk_nvme_enabled) or \
+               (storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and \
+               not is_ephemeralDisk_localssd_enabled)):
+                raise InvalidArgumentValueError(
+                    'Invalid --storage-pool-option value since ephemeralDisk '
+                    f'of type {storage_pool_option} is not enabled in the cluster.'
+                )
+    else:
+        if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
+           is_ephemeralDisk_localssd_enabled and is_ephemeralDisk_nvme_enabled:
+            raise RequiredArgumentMissingError(
+                'Value of --storage-pool-option must be defined since ephemeralDisk of both '
+                f'the types: {CONST_STORAGE_POOL_OPTION_NVME} and {CONST_STORAGE_POOL_OPTION_SSD} '
+                'are enabled in the cluster.'
+            )
 
     if nodepool_list is not None:
         raise MutuallyExclusiveArgumentError(
             'Conflicting flags. Cannot define --azure-container-storage-nodepools value '
             'when --disable-azure-container-storage is set.'
         )
+
+    is_ephemeralDisk_enabled = is_ephemeralDisk_localssd_enabled or is_ephemeralDisk_nvme_enabled
 
     if (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and \
        not is_azureDisk_enabled) or \
@@ -90,16 +115,34 @@ def validate_disable_azure_container_storage_params(
             f'type {storage_pool_type} in the cluster.'
         )
 
+    number_of_storagepool_types_active = 0
+    if is_azureDisk_enabled:
+        number_of_storagepool_types_active += 1
+    if is_elasticSan_enabled:
+        number_of_storagepool_types_active += 1
+    if is_ephemeralDisk_nvme_enabled:
+        number_of_storagepool_types_active += 1
+    if is_ephemeralDisk_localssd_enabled:
+        number_of_storagepool_types_active += 1
+
+    if number_of_storagepool_types_active == 1 and \
+      storage_pool_type != CONST_ACSTOR_ALL:
+        raise ArgumentUsageError(
+            f'Since {storage_pool_type} is the only storagepool type enabled for Azure Container Storage, '
+            'disabling the storagepool type will lead to disabling Azure Container Storage from the cluster. '
+            f'To disable Azure Container Storage, set --disable-azure-container-storage to {CONST_ACSTOR_ALL}.'
+        )
+
 
 def validate_enable_azure_container_storage_params(
     storage_pool_type,
-    is_extension_installed,
     storage_pool_name,
     storage_pool_sku,
     storage_pool_option,
     storage_pool_size,
     nodepool_list,
     agentpool_details,
+    is_extension_installed,
     is_azureDisk_enabled,
     is_elasticSan_enabled,
     is_ephemeralDisk_localssd_enabled,
@@ -132,16 +175,20 @@ def validate_enable_azure_container_storage_params(
 
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
         if storage_pool_option is None:
-            raise ArgumentUsageError(
-                'Cannot set --storage-pool-option when --enable-azure-container-storage is not ephemeralDisk.'
+            raise RequiredArgumentMissingError(
+                'Value of --storage-pool-option must be defined when --enable-azure-container-storage is set to ephemeralDisk.'
+            )
+        if storage_pool_option == CONST_ACSTOR_ALL:
+            raise InvalidArgumentValueError(
+                f'Cannot set --storage-pool-option value as {CONST_ACSTOR_ALL} when --enable-azure-container-storage is set.'
             )
         if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
             _validate_nodepools_for_ephemeral_nvme_storagepool(agentpool_details)
 
     else:
         if storage_pool_option is not None:
-            raise RequiredArgumentMissingError(
-                'Value of --storage-pool-option must be defined when --enable-azure-container-storage is set to ephemeralDisk.'
+            raise ArgumentUsageError(
+                'Cannot set --storage-pool-option when --enable-azure-container-storage is not ephemeralDisk.'
             )
 
     _validate_storage_pool_size(storage_pool_size,  storage_pool_type)
@@ -162,11 +209,14 @@ def validate_enable_azure_container_storage_params(
             raise ArgumentUsageError(
                 'Invalid --enable-azure-container-storage value. '
                 'Azure Container Storage is already enabled for storagepool type '
-                f'{storage_pool_type} in the cluster. '
+                f'{storage_pool_type} in the cluster.'
             )
 
-        if (is_ephemeralDisk_localssd_enabled or is_ephemeralDisk_nvme_enabled) and \
-           storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
+        if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
+           ((is_ephemeralDisk_nvme_enabled and \
+           storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME) or \
+           (is_ephemeralDisk_localssd_enabled and \
+           storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD)):
             ephemeral_disk_type_installed = CONST_STORAGE_POOL_OPTION_SSD if \
                                             is_ephemeralDisk_localssd_enabled else \
                                             CONST_STORAGE_POOL_OPTION_NVME 

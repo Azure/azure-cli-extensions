@@ -15,6 +15,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_SSD,
     CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
+    CONST_ACSTOR_ALL,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
@@ -59,10 +60,6 @@ def perform_enable_azure_container_storage(
     # if not register_dependent_rps(cmd, subscription_id):
     #     return
 
-    if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
-       storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
-        storage_pool_option = "temp"
-
     # Step 2: Validate if storagepool could be created.
     # Depends on the following:
     #   2a: Grant AKS cluster's node identity the following
@@ -80,13 +77,14 @@ def perform_enable_azure_container_storage(
         node_resource_group,
         kubelet_identity_object_id,
         storage_pool_type,
-        storage_pool_option,
     )
 
     # Step 3: Configure the storagepool parameters
     config_settings = []
     if storage_pool_name is None:
         storage_pool_name = storage_pool_type.lower()
+        if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
+            storage_pool_name = storage_pool_type.lower() + "-" + storage_pool_option.lower()
     if storage_pool_size is None:
         storage_pool_size = CONST_STORAGE_POOL_DEFAULT_SIZE_ESAN if \
             storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN else \
@@ -94,12 +92,18 @@ def perform_enable_azure_container_storage(
 
     azure_disk_enabled = is_azureDisk_enabled if is_extension_installed else False
     elastic_san_enabled = is_elasticSan_enabled if is_extension_installed else False
-    ephemeral_disk_enabled = (is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled) if is_extension_installed or \
-                             False
+    ephemeral_disk_enabled = (is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled) if \
+                             is_extension_installed else False
+    ephemeral_disk_nvme_enabled = is_ephemeralDisk_nvme_enabled if is_extension_installed else False
+    ephemeral_disk_localssd_enabled = is_ephemeralDisk_localssd_enabled if is_extension_installed else False
 
+    epheremaldisk_type = ""
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-        config_settings.append({"global.cli.storagePool.ephemeralDisk.diskType": storage_pool_option.lower()})
-        ephemeral_disk_enabled = True
+        if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
+            ephemeral_disk_nvme_enabled = True
+        elif storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
+            ephemeral_disk_localssd_enabled = True
+        epheremaldisk_type = storage_pool_option.lower()
     else:
         if storage_pool_sku is None:
             storage_pool_sku = CONST_STORAGE_POOL_SKU_PREMIUM_LRS
@@ -112,13 +116,15 @@ def perform_enable_azure_container_storage(
 
     config_settings.extend(
         [
-            {"global.cli.storagePool.create": True},
-            {"global.cli.storagePool.name": storage_pool_name},
-            {"global.cli.storagePool.size": storage_pool_size},
-            {"global.cli.storagePool.type": storage_pool_type},
+            {"global.cli.storagePool.install.create": True},
+            {"global.cli.storagePool.install.name": storage_pool_name},
+            {"global.cli.storagePool.install.size": storage_pool_size},
+            {"global.cli.storagePool.install.type": storage_pool_type},
+            {"global.cli.storagePool.install.diskType": epheremaldisk_type},
             {"global.cli.storagePool.azureDisk.enabled": azure_disk_enabled},
             {"global.cli.storagePool.elasticSan.enabled": elastic_san_enabled},
-            {"global.cli.storagePool.ephemeralDisk.enabled": ephemeral_disk_enabled},
+            {"global.cli.storagePool.ephemeralDisk.nvme.enabled": ephemeral_disk_nvme_enabled},
+            {"global.cli.storagePool.ephemeralDisk.temp.enabled": ephemeral_disk_localssd_enabled},
             # Always set cli.storagePool.disable.type to empty
             # and cli.storagePool.disable.validation to False
             # during enable operation so that any older disable
@@ -126,6 +132,9 @@ def perform_enable_azure_container_storage(
             {"global.cli.storagePool.disable.validation": False},
             {"global.cli.storagePool.disable.type": ""},
             {"global.cli.storagePool.disable.active": False},
+            # Resetting older cluster values from previous ARC version.
+            {"cli.storagePool.type": ""},
+            {"cli.storagePool.ephemeralDisk.diskType": ""},
         ]
     )
 
@@ -156,6 +165,13 @@ def perform_enable_azure_container_storage(
     client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
 
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    update_settings = [
+        {"global.cli.storagePool.install.create": False},
+        {"global.cli.storagePool.install.name": ""},
+        {"global.cli.storagePool.install.size": ""},
+        {"global.cli.storagePool.install.type": ""},
+        {"global.cli.storagePool.install.diskType": ""},
+    ]
     try:
         if is_extension_installed:
             result = k8s_extension_custom_mod.update_k8s_extension(
@@ -187,9 +203,10 @@ def perform_enable_azure_container_storage(
             )
             op_text = "Azure Container Storage successfully installed"
 
-            long_op_result = LongRunningOperation(cmd.cli_ctx)(result)
-            if long_op_result.provisioning_state == "Succeeded":
-                logger.warning(op_text)
+        long_op_result = LongRunningOperation(cmd.cli_ctx)(result)
+        print ("RESULT: ", long_op_result)
+        if long_op_result.provisioning_state == "Succeeded":
+            logger.warning(op_text)
     except Exception as ex:  # pylint: disable=broad-except
         if is_cluster_create:
             logger.error("Azure Container Storage failed to install.\nError: %s", ex)
@@ -202,10 +219,46 @@ def perform_enable_azure_container_storage(
             if is_extension_installed:
                 logger.error(
                     "AKS update to enable Azure Container Storage pool type %s failed. \n"
-                    " Error: %s", storage_pool_type, ex
+                    " Error: %s. Resetting cluster state.", storage_pool_type, ex
                 )
+
+
+                # If enabling of storagepool type in Azure Container Storage failed,
+                # define the existing resource values for ioEngine and hugepages for
+                # resetting the cluster state.
+                resource_args = get_current_resource_value_args(
+                    is_azureDisk_enabled,
+                    is_elasticSan_enabled,
+                    is_ephemeralDisk_localssd_enabled,
+                    is_ephemeralDisk_nvme_enabled,
+                    current_core_value,
+                )
+
+                update_settings.extend(resource_args)
+                # Also, unset the type of storagepool which was supposed to enabled.
+                if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
+                    update_settings.append({"global.cli.storagePool.azureDisk.enabled": False})
+                elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
+                    update_settings.append({"global.cli.storagePool.elasticSan.enabled": False})
+                elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
+                    if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
+                        update_settings.append({"global.cli.storagePool.ephemeralDisk.nvme.enabled": False})
+                    elif storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
+                        update_settings.append({"global.cli.storagePool.ephemeralDisk.temp.enabled": False})
             else:
                 logger.error("AKS update to enable Azure Container Storage failed.\nError: %s", ex)
+
+    k8s_extension_custom_mod.update_k8s_extension(
+        cmd,
+        client,
+        resource_group,
+        cluster_name,
+        CONST_EXT_INSTALLATION_NAME,
+        "managedClusters",
+        configuration_settings=update_settings,
+        yes=True,
+        no_wait=True,
+    )
 
 
 def perform_disable_azure_container_storage(
@@ -217,6 +270,7 @@ def perform_disable_azure_container_storage(
     kubelet_identity_object_id,
     perform_validation,
     storage_pool_type,
+    storage_pool_option,
     is_elasticSan_enabled,
     is_azureDisk_enabled,
     is_ephemeralDisk_localssd_enabled,
@@ -227,12 +281,35 @@ def perform_disable_azure_container_storage(
     client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     no_wait_delete_op = False
+
+    # Ensure that all the install storagepool fields are turned off
+    reset_install_settings = [
+        {"global.cli.storagePool.install.create": False},
+        {"global.cli.storagePool.install.name": ""},
+        {"global.cli.storagePool.install.size": ""},
+        {"global.cli.storagePool.install.type": ""},
+        {"global.cli.storagePool.install.diskType": ""},
+    ]
+
+    pool_option = ""
+    if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
+        if storage_pool_option is not None:
+            pool_option = storage_pool_option.lower()
+        else:
+            if is_ephemeralDisk_nvme_enabled:
+                pool_option = CONST_STORAGE_POOL_OPTION_NVME.lower()
+            elif is_ephemeralDisk_localssd_enabled:
+                pool_option = CONST_STORAGE_POOL_OPTION_SSD.lower()
+
     # Step 1: Perform validation if accepted by user
     if perform_validation:
         config_settings = [
             {"global.cli.storagePool.disable.validation": True},
             {"global.cli.storagePool.disable.type": storage_pool_type},
         ]
+
+        config_settings.extend(reset_install_settings)
+        config_settings.append({"global.cli.storagePool.disable.diskType": pool_option.lower()})
 
         try:
             update_result = k8s_extension_custom_mod.update_k8s_extension(
@@ -255,24 +332,27 @@ def perform_disable_azure_container_storage(
             # we don't need to long wait while performing the delete operation.
             # Setting no_wait_delete_op = True.
             # Only relevant when we are uninstalling Azure Container Storage completely.
-            if storage_pool_type == CONST_STORAGE_POOL_TYPE_ALL:
+            if storage_pool_type == CONST_ACSTOR_ALL:
                 no_wait_delete_op = True
         except Exception as ex:  # pylint: disable=broad-except
             config_settings = [
                 {"global.cli.storagePool.disable.validation": False},
                 {"global.cli.storagePool.disable.type": ""},
+                {"global.cli.storagePool.disable.diskType": ""},
             ]
+
+            config_settings.extend(reset_install_settings)
 
             err_msg = "Validation failed. " \
                     "Please ensure that storagepools are not being used. " \
                     "Unable to perform disable Azure Container Storage operation. " \
-                    "Reseting cluster state."
+                    "Resetting cluster state."
 
-            if storage_pool_type != CONST_STORAGE_POOL_TYPE_ALL:
+            if storage_pool_type != CONST_ACSTOR_ALL:
                 err_msg = "Validation failed. " \
                         f"Please ensure that storagepools of type {storage_pool_type} are not being used. " \
                         f"Unable to perform disable Azure Container Storage operation. " \
-                        "Reseting cluster state."
+                        "Resetting cluster state."
 
             k8s_extension_custom_mod.update_k8s_extension(
                 cmd,
@@ -289,12 +369,12 @@ def perform_disable_azure_container_storage(
             if "pre-upgrade hooks failed" in str(ex):
                 raise UnknownError(err_msg) from ex
             raise UnknownError(
-                "Validation failed. Unable to perform Azure Container Storage operation. Reseting cluster state."
+                "Validation failed. Unable to perform Azure Container Storage operation. Resetting cluster state."
             ) from ex
 
     # Step 2: If the extension is installed and validation succeeded or skipped, call delete_k8s_extension
     # This step is only relevant when uninstallation of Azure Container Storage is active.
-    if storage_pool_type == CONST_STORAGE_POOL_TYPE_ALL:
+    if storage_pool_type == CONST_ACSTOR_ALL:
         try:
             delete_op_result = k8s_extension_custom_mod.delete_k8s_extension(
                 cmd,
@@ -306,7 +386,7 @@ def perform_disable_azure_container_storage(
                 yes=True,
                 no_wait=no_wait_delete_op,
             )
-            else:
+
             if not no_wait_delete_op:
                 LongRunningOperation(cmd.cli_ctx)(delete_op_result)
         except Exception as delete_ex:
@@ -329,13 +409,20 @@ def perform_disable_azure_container_storage(
             {"global.cli.storagePool.disable.validation": False},
             {"global.cli.storagePool.disable.type": storage_pool_type},
             {"global.cli.storagePool.disable.active": True},
+            {"global.cli.storagePool.disable.diskType": pool_option.lower()},
         ]
+
+        config_settings.extend(reset_install_settings)
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
             config_settings.append({"global.cli.storagePool.azureDisk.enabled": False})
         elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
             config_settings.append({"global.cli.storagePool.elasticSan.enabled": False})
         elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-            config_settings.append({"global.cli.storagePool.ephemeralDisk.enabled": False})
+            if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
+                config_settings.append({"global.cli.storagePool.ephemeralDisk.nvme.enabled": False})
+            elif storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
+                config_settings.append({"global.cli.storagePool.ephemeralDisk.temp.enabled": False})
+
         # Define the new resource values for ioEngine and hugepages.
         resource_args = get_desired_resource_value_args(
             storage_pool_type,
@@ -345,7 +432,7 @@ def perform_disable_azure_container_storage(
             is_elasticSan_enabled,
             is_ephemeralDisk_localssd_enabled,
             is_ephemeralDisk_nvme_enabled,
-            agentpool_details,
+            None,
             False,
         )
         config_settings.extend(resource_args)
@@ -357,7 +444,11 @@ def perform_disable_azure_container_storage(
             {"global.cli.storagePool.disable.validation": False},
             {"global.cli.storagePool.disable.type": ""},
             {"global.cli.storagePool.disable.active": False},
+            {"global.cli.storagePool.disable.diskType": ""},
         ]
+
+        update_settings.extend(reset_install_settings)
+        disable_op_failure = False
         try:
             disable_op_result = k8s_extension_custom_mod.update_k8s_extension(
                 cmd,
@@ -374,12 +465,12 @@ def perform_disable_azure_container_storage(
         except Exception as disable_ex:
             logger.error(
                 "Failure observed while disabling Azure Container Storage storagepool type: %s.\nError: %s"
-                "Reseting cluster state.", storage_pool_type, disable_ex
-            ) from disable_ex
+                "Resetting cluster state.", storage_pool_type, disable_ex
+            )
 
             # If disabling type of storagepool in Azure Container Storage failed,
             # define the existing resource values for ioEngine and hugepages for
-            # reseting the cluster state.
+            # resetting the cluster state.
             resource_args = get_current_resource_value_args(
                 is_azureDisk_enabled,
                 is_elasticSan_enabled,
@@ -395,10 +486,13 @@ def perform_disable_azure_container_storage(
             elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
                 update_settings.append({"global.cli.storagePool.elasticSan.enabled": True})
             elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-                update_settings.append({"global.cli.storagePool.ephemeralDisk.enabled": True})
+                if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
+                    update_settings.append({"global.cli.storagePool.ephemeralDisk.nvme.enabled": True})
+                elif storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
+                    update_settings.append({"global.cli.storagePool.ephemeralDisk.temp.enabled": True})
             disable_op_failure = True
 
-        # Since we are just reseting the cluster state,
+        # Since we are just resetting the cluster state,
         # we are going to perform a non waiting operation.
         k8s_extension_custom_mod.update_k8s_extension(
             cmd,
