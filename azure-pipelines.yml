@@ -21,7 +21,7 @@ jobs:
   - task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@3
     displayName: 'Run Credential Scanner'
     inputs:
-      toolVersion: 2.1.17
+      toolVersion: latest
       suppressionsFile: './scripts/ci/credscan/CredScanSuppressions.json'
   - task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@2
     displayName: 'Post Analysis'
