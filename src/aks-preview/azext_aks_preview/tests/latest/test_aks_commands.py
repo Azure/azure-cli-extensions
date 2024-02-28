@@ -64,7 +64,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         return ""
 
     def _get_asm_supported_revision(self, location):
-        revisions_cmd = "aks mesh get-revisions -l {location}"
+        revisions_cmd = f"aks mesh get-revisions -l {location}"
         revisions = self.cmd(revisions_cmd).get_output_in_json()
         assert len(revisions["meshRevisions"]) > 0
         return revisions['meshRevisions'][0]['revision']
