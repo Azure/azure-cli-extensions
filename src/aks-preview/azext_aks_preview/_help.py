@@ -185,7 +185,7 @@ helps['aks create'] = f"""
             - http_application_routing        : configure ingress with automatic public DNS name creation.
             - monitoring                      :  turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
             - virtual-node                    : enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use. aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
-            - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling Guardrails. Learn more at aka.ms/aks/policy.
+            - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling deployment safeguards. Learn more at aka.ms/aks/policy.
             - ingress-appgw                   : enable Application Gateway Ingress Controller addon (PREVIEW).
             - confcom                         : enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
             - open-service-mesh               : enable Open Service Mesh addon (PREVIEW).
@@ -538,15 +538,15 @@ helps['aks create'] = f"""
         - name: --node-public-ip-tags
           type: string
           short-summary: The ipTags of the node public IPs.
-        - name: --guardrails-level
+        - name: --safeguards-level
           type: string
-          short-summary: The Guardrails Level. Accepted Values are [Off, Warning]. Requires azure policy addon to be enabled
-        - name: --guardrails-version
+          short-summary: The deployment safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
+        - name: --safeguards-version
           type: string
-          short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
-        - name: --guardrails-excluded-ns
+          short-summary: The version of deployment safeguards to use. Default "v1.0.0" Use the ListSafeguardsVersions API to discover available versions
+        - name: --safeguards-excluded-ns
           type: string
-          short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from deployment safeguards
         - name: --enable-asm --enable-azure-service-mesh
           type: bool
           short-summary: Enable Azure Service Mesh.
@@ -589,6 +589,9 @@ helps['aks create'] = f"""
         - name: --enable-ai-toolchain-operator
           type: bool
           short-summary: Enable AI toolchain operator to the cluster.
+        - name: --ssh-access
+          type: string
+          short-summary: Configure SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -654,10 +657,10 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --network-plugin none
         - name: Create a kubernetes cluster with Custom CA Trust enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-custom-ca-trust
-        - name: Create a kubernetes cluster with guardrails set to "Warning"
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --enable-addons azure-policy
-        - name: Create a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-ns ns1,ns2 --enable-addons azure-policy
+        - name: Create a kubernetes cluster with safeguards set to "Warning"
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --enable-addons azure-policy
+        - name: Create a kubernetes cluster with safeguards set to "Warning" and some namespaces excluded
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2 --enable-addons azure-policy
         - name: Create a kubernetes cluster with Azure Service Mesh enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh
         - name: Create a kubernetes cluster with Azure Monitor Metrics enabled.
@@ -1106,15 +1109,15 @@ helps['aks update'] = """
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
           long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
-        - name: --guardrails-level
+        - name: --safeguards-level
           type: string
-          short-summary: The Guardrails Level. Accepted Values are [Off, Warning]. Requires azure policy addon to be enabled
-        - name: --guardrails-version
+          short-summary: The deployment safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
+        - name: --safeguards-version
           type: string
-          short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
-        - name: --guardrails-excluded-ns
+          short-summary: The version of deployment safeguards to use. Default "v1.0.0" Use the ListSafeguardsVersions API to discover available versions
+        - name: --safeguards-excluded-ns
           type: string
-          short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "" to clear a previously non-empty list
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from deployment safeguards. Use "" to clear a previously non-empty list
         - name: --nodepool-taints
           type: string
           short-summary: The node taints for all node pool.
@@ -1142,6 +1145,9 @@ helps['aks update'] = """
         - name: --disable-ai-toolchain-operator
           type: bool
           short-summary: Disable AI toolchain operator.
+        - name: --ssh-access
+          type: string
+          short-summary: Update SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1201,12 +1207,12 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
       - name: Update a existing managed cluster to a managed cluster snapshot.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
-      - name: Update a kubernetes cluster with guardrails set to "Warning". Assumes azure policy addon is already enabled
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning
-      - name: Update a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded. Assumes azure policy addon is already enabled
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-ns ns1,ns2
-      - name: Update a kubernetes cluster to clear any namespaces excluded from guardrails. Assumes azure policy addon is already enabled
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-excluded-ns ""
+      - name: Update a kubernetes cluster with safeguards set to "Warning". Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning
+      - name: Update a kubernetes cluster with safeguards set to "Warning" and some namespaces excluded. Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2
+      - name: Update a kubernetes cluster to clear any namespaces excluded from safeguards. Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-excluded-ns ""
 """
 
 helps['aks kollect'] = """
@@ -1716,6 +1722,9 @@ helps['aks nodepool add'] = """
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
+        - name: --ssh-access
+          type: string
+          short-summary: Configure SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1834,6 +1843,9 @@ helps['aks nodepool update'] = """
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.
+        - name: --ssh-access
+          type: string
+          short-summary: Update SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
