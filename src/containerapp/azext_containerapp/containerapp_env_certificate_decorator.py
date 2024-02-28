@@ -14,6 +14,7 @@ from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
+from copy import deepcopy
 
 from ._constants import PRIVATE_CERTIFICATE_RT, MANAGED_CERTIFICATE_RT, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, \
     NAME_ALREADY_EXISTS, NAME_INVALID
@@ -87,7 +88,7 @@ class ContainerappEnvCertificateListDecorator(ContainerappEnvCertificateDecorato
 class ContainerappEnvCertificateUploadDecorator(ContainerappEnvCertificateDecorator):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
-        self.certificate = ContainerAppCertificateEnvelopeModel
+        self.certificate = deepcopy(ContainerAppCertificateEnvelopeModel)
         self.cert_name = None
 
     def get_argument_certificate_name(self):
@@ -213,10 +214,12 @@ class ContainerappEnvCertificatePreviweUploadDecorator(ContainerappEnvCertificat
                 "keyVaultUrl": self.get_argument_certificate_key_vault_url(),
                 "identity": identity
             }
+            # used for autogenrate cert name
+            super().set_argument_thumbprint("cert-kv")
 
     def construct_payload(self):
-        super().construct_payload()
         self.set_up_certificate_from_key_vault()
+        super().construct_payload()
 
     def get_argument_certificate_identity(self):
         return self.get_param("certificate_identity")

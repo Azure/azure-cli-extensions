@@ -221,7 +221,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         principal_id1 = identity_json["principalId"]
 
         # assign secret permissions to the user assigned identity
-        self.cmd(f"az keyvault set-policy -n {key_vault_name} -g {resource_group} --object-id {principal_id1} --secret-permissions get list")
+        self.cmd(f"keyvault set-policy -n {key_vault_name} -g {resource_group} --object-id {principal_id1} --secret-permissions get list")
 
         # create an environment with custom domain and user assigned identity
         self.cmd('containerapp env create -g {} -n {} --mi-user-assigned {} --logs-destination none --dns-suffix {} --certificate-identity {} --certificate-key-vault-url {}'.format(
@@ -241,9 +241,9 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         ])
 
         # update env with custom domain using file and password
-        tmpFile = "{}.pem".format(temp.name)
-        self.cmd(f'az keyvault secret download --vault-name {key_vault_name} -n {cert_name} -f {tmpFile}')
-        self.cmd('containerapp env update -g {} -n {} --dns-suffix {} --certificate-file {}'.format(
+        tmpFile = os.path.join(tempfile.gettempdir(), "{}.pem".format(env_name))
+        self.cmd(f'keyvault secret download --vault-name {key_vault_name} -n {cert_name} -f "{tmpFile}"')
+        self.cmd('containerapp env update -g {} -n {} --dns-suffix {} --certificate-file "{}"'.format(
             resource_group, env_name, hostname_1, tmpFile))
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
@@ -264,19 +264,15 @@ class ContainerappEnvIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_env_msi_certificate(self, resource_group):
-        resource_group = "azurecli"
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
             location = "eastus2euap"
         self.cmd('configure --defaults location={}'.format(location))
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
-
         key_vault_name = self.create_random_name(prefix='capp-kv-', length=24)
         cert_name = self.create_random_name(prefix='akv-cert-', length=24)
-
         # create azure keyvault
         self.cmd(f"keyvault create -g {resource_group} -n {key_vault_name}")
-
         defaultPolicy = self.cmd("keyvault certificate get-default-policy").get_output_in_json()
         defaultPolicy["x509CertificateProperties"]["subject"] = f"CN=*.contoso.com"
         defaultPolicy["secretProperties"]["contentType"] = "application/x-pem-file"
@@ -284,63 +280,51 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         temp = tempfile.NamedTemporaryFile(prefix='capp_', suffix='_tmp', mode="w+", delete=False)
         temp.write(json.dumps(defaultPolicy, default=lambda o: dict((key, value) for key, value in o.__dict__.items() if value), allow_nan=False))
         temp.close()
-
         time.sleep(5)
-
         # create a self assigned certificate in the keyvault
         cert = self.cmd('keyvault certificate create --vault-name {} -n {} -p @"{}"'.format(key_vault_name, cert_name, temp.name)).get_output_in_json()
         akv_secret_url = cert["target"].replace("certificates", "secrets")
-
-        user_identity_name1 = self.create_random_name(prefix='env-msi1', length=24)
-        identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name1)).get_output_in_json()
-        user_identity_id1 = identity_json["id"]
-        principal_id1 = identity_json["principalId"]
-
-        # assign secret permissions to the user assigned identity
-        self.cmd(f"az keyvault set-policy -n {key_vault_name} -g {resource_group} --object-id {principal_id1} --secret-permissions get list")
-
         # create an environment with custom domain and user assigned identity
-        self.cmd('containerapp env create -g {} -n {} --mi-user-assigned {} --logs-destination none'.format(
-            resource_group, env_name, user_identity_id1))
+        self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --logs-destination none'.format(
+            resource_group, env_name))
         
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
-
-        cert = self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} --key-vault-url {akv_secret_url} --identity {user_identity_id1}", checks=[
+        # assign secret permissions to the system assigned identity
+        principal_id = containerapp_env["identity"]["principalId"]
+        self.cmd(f"keyvault set-policy -n {key_vault_name} -g {resource_group} --object-id {principal_id} --secret-permissions get list")
+        
+        cert = self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} --key-vault-url {akv_secret_url}", checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
         ]).get_output_in_json()
-
-        cert_name = cert["name"]
-        cert_id = cert["id"]
-        cert_thumbprint = cert["properties"]["thumbprint"]
-        cert_location = cert["location"]
-
+        containerapp_cert_name = cert["name"]
+        containerapp_cert_id = cert["id"]
+        containerapp_cert_thumbprint = cert["properties"]["thumbprint"]
+        containerapp_cert_location = cert["location"]
         self.cmd(
-            'containerapp env certificate list -n {} -g {} -l "{}"'.format(env_name, resource_group, cert_location),
+            'containerapp env certificate list -n {} -g {} -l "{}"'.format(env_name, resource_group, containerapp_cert_location),
             checks=[
                 JMESPathCheck('length(@)', 1),
                 JMESPathCheck('[0].properties.certificateKeyVaultProperties.keyVaultUrl', akv_secret_url),
-                JMESPathCheck('[0].properties.certificateKeyVaultProperties.identity', user_identity_id1),
-                JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
-                JMESPathCheck('[0].name', cert_name),
-                JMESPathCheck('[0].id', cert_id),
+                JMESPathCheck('[0].properties.certificateKeyVaultProperties.identity', "system"),
+                JMESPathCheck('[0].properties.thumbprint', containerapp_cert_thumbprint),
+                JMESPathCheck('[0].name', containerapp_cert_name),
+                JMESPathCheck('[0].id', containerapp_cert_id),
             ])
-
-        tmpFile = "{}.pem".format(temp.name)
-        self.cmd(f'az keyvault secret download --vault-name {key_vault_name} -n {cert_name} -f {tmpFile}')
+        tmpFile = os.path.join(tempfile.gettempdir(), "{}.pem".format(env_name))
+        self.cmd(f'keyvault secret download --vault-name {key_vault_name} -n {cert_name} -f "{tmpFile}"')
         self.cmd('containerapp env certificate upload -g {} -n {} --certificate-file "{}"'.format(
             resource_group, env_name, tmpFile), checks=[
                 JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
                 JMESPathCheck('properties.certificateKeyVaultProperties', None),
             ])
-
         # update env certificate using msi
-        self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} --key-vault-url {akv_secret_url} --identity {user_identity_id1}", checks=[
+        self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} --key-vault-url {akv_secret_url}", checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
-            JMESPathCheck('[0].properties.certificateKeyVaultProperties.keyVaultUrl', akv_secret_url),
-            JMESPathCheck('[0].properties.certificateKeyVaultProperties.identity', user_identity_id1),
+            JMESPathCheck('properties.certificateKeyVaultProperties.keyVaultUrl', akv_secret_url),
+            JMESPathCheck('properties.certificateKeyVaultProperties.identity', "system"),
         ])
 
 class ContainerappEnvScenarioTest(ScenarioTest):
