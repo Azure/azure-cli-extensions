@@ -191,7 +191,7 @@ def validate_enable_azure_container_storage_params(
                 'Cannot set --storage-pool-option when --enable-azure-container-storage is not ephemeralDisk.'
             )
 
-    _validate_storage_pool_size(storage_pool_size,  storage_pool_type)
+    _validate_storage_pool_size(storage_pool_size, storage_pool_type)
 
     if is_extension_installed:
         if nodepool_list is not None:
