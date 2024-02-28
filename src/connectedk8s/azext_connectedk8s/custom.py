@@ -69,7 +69,7 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
-                        distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
+                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None):
     logger.warning("This operation might take a while...\n")
 
     # changing cli config to push telemetry in 1 hr interval
@@ -142,7 +142,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     config_dp_endpoint, release_train = get_config_dp_endpoint(cmd, location, values_file, arm_metadata)
 
     # Loading the kubeconfig file in kubernetes client configuration
-    load_kube_config(kube_config, kube_context)
+    load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
@@ -184,10 +184,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             current_time = time.ctime(time.time())
             time_stamp = ""
             for elements in current_time:
-                if(elements == ' '):
+                if (elements == ' '):
                     time_stamp += '-'
                     continue
-                elif(elements == ':'):
+                elif (elements == ':'):
                     time_stamp += '.'
                     continue
                 time_stamp += elements
@@ -196,7 +196,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             # Generate the diagnostic folder in a given location
             filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(time_stamp, consts.Pre_Onboarding_Check_Logs)
 
-            if(diagnostic_folder_status is not True):
+            if diagnostic_folder_status is not True:
                 storage_space_available = False
 
             # Performing cluster-diagnostic-checks
@@ -223,7 +223,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if diagnostic_checks != consts.Diagnostic_Check_Passed and lowbandwidth is False:
         if storage_space_available:
                 logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
-        if(diagnostic_checks == consts.Diagnostic_Check_Incomplete):
+        if diagnostic_checks == consts.Diagnostic_Check_Incomplete:
             telemetry.set_exception(exception='Cluster Diagnostic Prechecks Incomplete', fault_type=consts.Cluster_Diagnostic_Prechecks_Incomplete, summary="Cluster Diagnostic Prechecks didnt complete in the cluster")
             raise ValidationError("Execution of pre-onboarding checks failed and hence not proceeding with cluster onboarding. Please meet the prerequisites - 'https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli%2Cazure-cloud#prerequisites' and try onboarding again.")
         else:
@@ -434,7 +434,6 @@ def validate_existing_provisioned_cluster_for_reput(cluster_resource, kubernetes
         validation_values = [
             kubernetes_distro,
             kubernetes_infra,
-            converted_priv_link_value,
             private_link_scope_resource_id,
             distribution_version,
             azure_hybrid_benefit,
@@ -526,17 +525,14 @@ def install_helm_client():
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.MachineType': machine_type})
 
     # Set helm binary download & install locations
-    # TODO: [Kit] Move helm binaries to internal endpoints
-    if(operating_system == 'windows'):
+    if operating_system == 'windows':
         download_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
         install_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe'
-        # requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
-        requestUri = f'https://get.helm.sh/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
-    elif(operating_system == 'linux' or operating_system == 'darwin'):
+        requestUri = f'{consts.HELM_STORAGE_URL}/helmsigned/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
+    elif operating_system == 'linux' or operating_system == 'darwin':
         download_location_string = f'.azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
         install_location_string = f'.azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm'
-        # requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
-        requestUri = f'https://get.helm.sh/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
+        requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
     else:
         telemetry.set_exception(exception='Unsupported OS for installing helm client', fault_type=consts.Helm_Unsupported_OS_Fault_Type,
                                 summary=f'{operating_system} is not supported for installing helm client')
@@ -650,9 +646,14 @@ def get_public_key(key_pair):
     return b64encode(enc).decode('utf-8')
 
 
-def load_kube_config(kube_config, kube_context):
+def load_kube_config(kube_config, kube_context, skip_ssl_verification):
     try:
         config.load_kube_config(config_file=kube_config, context=kube_context)
+        if skip_ssl_verification:
+            from kubernetes.client import Configuration
+            default_config = Configuration.get_default_copy()
+            default_config.verify_ssl = False
+            Configuration.set_default(default_config)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Problem loading the kubeconfig file')
@@ -879,7 +880,7 @@ def list_connectedk8s(cmd, client, resource_group_name=None):
 
 
 def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
-                        kube_config=None, kube_context=None, no_wait=False, force_delete=False, yes=False):
+                        kube_config=None, kube_context=None, no_wait=False, force_delete=False, skip_ssl_verification=False, yes=False):
 
     # The force delete prompt is added because it can be used in the case where the config map is missing
     # so we cannot check if the user context is pointing to the cluster that he intends to delete
@@ -904,7 +905,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     kube_config = set_kube_config(kube_config)
 
     # Loading the kubeconfig file in kubernetes client configuration
-    load_kube_config(kube_config, kube_context)
+    load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled
@@ -1014,7 +1015,7 @@ def update_connected_cluster_internal(client, resource_group_name, cluster_name,
 
 def update_connected_cluster(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
                              disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, tags=None,
-                             distribution=None, distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None):
+                             distribution=None, distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None):
 
     # Prompt for confirmation for few parameters
     if azure_hybrid_benefit == "True":
@@ -1075,7 +1076,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     values_file = utils.get_values_file()
 
     # Loading the kubeconfig file in kubernetes client configuration
-    load_kube_config(kube_config, kube_context)
+    load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
@@ -1192,7 +1193,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         return patch_cc_response
 
 
-def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None, upgrade_timeout="600"):
+def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, skip_ssl_verification=False, arc_agent_version=None, upgrade_timeout="600"):
     # Check if cluster supports upgrading
     connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
 
@@ -1211,7 +1212,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     values_file = utils.get_values_file()
 
     # Loading the kubeconfig file in kubernetes client configuration
-    load_kube_config(kube_config, kube_context)
+    load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
@@ -1435,7 +1436,7 @@ def get_all_helm_values(release_namespace, kube_config, kube_context, helm_clien
 
 
 def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
-                    azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None):
+                    azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, skip_ssl_verification=False, cl_oid=None):
     logger.warning("This operation might take a while...\n")
 
     # Validate custom token operation
@@ -1481,7 +1482,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     values_file = utils.get_values_file()
 
     # Loading the kubeconfig file in kubernetes client configuration
-    load_kube_config(kube_config, kube_context)
+    load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
@@ -1568,7 +1569,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
 
 
 def disable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
-                     yes=False):
+                     yes=False, skip_ssl_verification=False):
 
     features = [x.lower() for x in features]
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
@@ -1594,7 +1595,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     values_file = utils.get_values_file()
 
     # Loading the kubeconfig file in kubernetes client configuration
-    load_kube_config(kube_config, kube_context)
+    load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
@@ -2285,7 +2286,7 @@ def get_custom_locations_oid(cmd, cl_oid):
         return ""
 
 
-def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, no_wait=False, tags=None):
+def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, skip_ssl_verification=False, no_wait=False, tags=None):
 
     try:
 
@@ -2304,7 +2305,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         kube_client.rest.logger.setLevel(logging.WARNING)
 
         # Loading the kubeconfig file in kubernetes client configuration
-        load_kube_config(kube_config, kube_context)
+        load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
         # Install helm client
         helm_client_location = install_helm_client()

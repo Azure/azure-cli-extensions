@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.6.6
+++++++
+* Update helm binary download source.
+* Introduce "--skip-ssl-verification" flag.
+
 1.6.5
 ++++++
 * Fix tenant ID retrieval for proxy command.
