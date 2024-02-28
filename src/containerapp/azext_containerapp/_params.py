@@ -65,6 +65,8 @@ def load_arguments(self, _):
                    help='Boolean indicating whether to parse json   string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
         
     # Telemetry 
+    self.command_group('containerapp env telemetry', is_preview=True)
+
     with self.argument_context('containerapp env telemetry data-dog set') as c:
         c.argument('site', options_list=['--site'], help='Specify the data dog site')
         c.argument('key', options_list=['--key'], help='Specify the data dog api key')

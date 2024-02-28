@@ -20,6 +20,8 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
         self.managed_env_def = {}
+        self.existing_managed_env_def = {}
+
     
     def get_argument_open_telemetry_data_dog_site(self):
         return self.get_param("site")
@@ -34,25 +36,19 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
         return self.get_param("enable_open_telemetry_metrics")
 
     def construct_payload(self):
-        try:
-            r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
-        except CLIError as e:
-            handle_raw_exception(e)
-
         # General setup
         safe_set(self.managed_env_def, "location", value=r["location"])  # required for API
 
-        existing_managed_env_def = None
         # Get containerapp env properties of CA we are updating
         try:
-            existing_managed_env_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
-        except:
-            pass
+            self.existing_managed_env_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+        except Exception as e:
+            handle_raw_exception(e)
 
         self.set_up_open_telemetry_data_dog_site()
         self.set_up_open_telemetry_data_dog_key()
-        self.set_up_open_telemetry_traces_destinations(existing_managed_env_def)
-        self.set_up_open_telemetry_metrics_destinations(existing_managed_env_def)
+        self.set_up_open_telemetry_traces_destinations()
+        self.set_up_open_telemetry_metrics_destinations()
 
     def set_up_open_telemetry_data_dog_site(self):
         if self.get_argument_open_telemetry_data_dog_site() and self.get_argument_open_telemetry_data_dog_site() is not None:
@@ -62,8 +58,8 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
         if self.get_argument_open_telemetry_data_dog_key() and self.get_argument_open_telemetry_data_dog_key() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "key", value=self.get_argument_open_telemetry_data_dog_key())
 
-    def set_up_open_telemetry_traces_destinations(self, existing_managed_env_def):
-        existing_traces = safe_get(existing_managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
+    def set_up_open_telemetry_traces_destinations(self):
+        existing_traces = safe_get(self.existing_managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
         if existing_traces is None:
             if self.get_argument_enable_open_telemetry_traces():
                 existing_traces = [DATA_DOG_DEST]
@@ -76,8 +72,8 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
                 existing_traces.remove(DATA_DOG_DEST)
                 safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=existing_traces)
 
-    def set_up_open_telemetry_metrics_destinations(self, existing_managed_env_def):
-        existing_metrics = safe_get(existing_managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
+    def set_up_open_telemetry_metrics_destinations(self):
+        existing_metrics = safe_get(self.existing_managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
         if existing_metrics is None:
             if self.get_argument_enable_open_telemetry_metrics():
                 existing_metrics = [DATA_DOG_DEST]
@@ -102,6 +98,7 @@ class ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
         self.managed_env_def = {}
+        self.existing_managed_env_def = {}
     
     def get_argument_open_telemetry_app_insights_connection_string(self):
         return self.get_param("connection_string")
@@ -113,31 +110,25 @@ class ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(BaseResource):
         return self.get_param("enable_open_telemetry_logs")
 
     def construct_payload(self):
-        try:
-            r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
-        except CLIError as e:
-            handle_raw_exception(e)
-
         # General setup
-        safe_set(self.managed_env_def, "location", value=r["location"])  # required for API
+        safe_set(self.managed_env_def, "location", value=["location"])  # required for API
 
-        existing_managed_env_def = None
         # Get containerapp env properties of CA we are updating
         try:
-            existing_managed_env_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
-        except:
-            pass
+           self.existing_managed_env_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+        except Exception as e:
+            handle_raw_exception(e)
 
         self.set_up_open_telemetry_open_telemetry_app_insights_connection_string()
-        self.set_up_open_telemetry_traces_destinations(existing_managed_env_def)
-        self.set_up_open_telemetry_logs_destinations(existing_managed_env_def)
+        self.set_up_open_telemetry_traces_destinations()
+        self.set_up_open_telemetry_logs_destinations()
 
     def set_up_open_telemetry_open_telemetry_app_insights_connection_string(self):
         if self.get_argument_open_telemetry_app_insights_connection_string() and self.get_argument_open_telemetry_app_insights_connection_string() is not None:
             safe_set(self.managed_env_def, "properties", "appInsightsConfiguration", "connectionString", value=self.get_argument_open_telemetry_app_insights_connection_string())
 
-    def set_up_open_telemetry_traces_destinations(self, existing_managed_env_def):
-        existing_traces = safe_get(existing_managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
+    def set_up_open_telemetry_traces_destinations(self):
+        existing_traces = safe_get(self.existing_managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
         if existing_traces is None:
             if self.get_argument_enable_open_telemetry_traces():
                 existing_traces = [APP_INSIGHTS_DEST]
@@ -150,8 +141,8 @@ class ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(BaseResource):
                 existing_traces.remove(APP_INSIGHTS_DEST)
                 safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=existing_traces)
 
-    def set_up_open_telemetry_logs_destinations(self, existing_managed_env_def):
-        existing_logs = safe_get(existing_managed_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
+    def set_up_open_telemetry_logs_destinations(self):
+        existing_logs = safe_get(self.existing_managed_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
         if existing_logs is None:
             if self.get_argument_enable_open_telemetry_logs():
                 existing_logs = [APP_INSIGHTS_DEST]
