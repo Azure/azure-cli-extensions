@@ -81,7 +81,7 @@ def fetch_pop_publickey_kid(api_server_port, clientproxy_process):
     return kid
 
 
-def fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process):
+def fetch_and_post_at_to_csp(cmd, api_server_port, tenant_id, kid, clientproxy_process):
     req_cnfJSON = {"kid": kid, "xms_ksl": "sw"}
     req_cnf = base64.urlsafe_b64encode(json.dumps(req_cnfJSON).encode('utf-8')).decode('utf-8')
 
@@ -100,7 +100,7 @@ def fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_pr
                                 summary='Failed to fetch access token using the PoP public key sent by client proxy')
         close_subprocess_and_raise_cli_error(clientproxy_process, 'Failed to post access token to client proxy' + str(e))
 
-    jwtTokenData = {"accessToken": jwtToken, "serverId": consts.KAP_1P_Server_AppId, "tenantID": tenantId, "kid": kid}
+    jwtTokenData = {"accessToken": jwtToken, "serverId": consts.KAP_1P_Server_AppId, "tenantID": tenant_id, "kid": kid}
     post_at_uri = f'https://localhost:{api_server_port}/identity/at'
     # Needed to prevent skip tls warning from printing to the console
     original_stderr = sys.stderr

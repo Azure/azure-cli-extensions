@@ -103,6 +103,55 @@ class Create(AAZCommand):
 
         # define Arg Group "DnsSettings"
 
+        # define Arg Group "Explicit Proxy"
+
+        _args_schema = cls._args_schema
+        _args_schema.explicit_proxy = AAZObjectArg(
+            options=["--explicit-proxy"],
+            arg_group="Explicit Proxy",
+            help="Explicit Proxy Settings definition.",
+        )
+
+        explicit_proxy = cls._args_schema.explicit_proxy
+        explicit_proxy.enable_explicit_proxy = AAZBoolArg(
+            options=["enable-explicit-proxy"],
+            help="When set to true, explicit proxy mode is enabled.",
+            nullable=True,
+        )
+        explicit_proxy.enable_pac_file = AAZBoolArg(
+            options=["enable-pac-file"],
+            help="When set to true, pac file port and url needs to be provided.",
+            nullable=True,
+        )
+        explicit_proxy.http_port = AAZIntArg(
+            options=["http-port"],
+            help="Port number for explicit proxy http protocol, cannot be greater than 64000.",
+            fmt=AAZIntArgFormat(
+                maximum=64000,
+                minimum=0,
+            ),
+        )
+        explicit_proxy.https_port = AAZIntArg(
+            options=["https-port"],
+            help="Port number for explicit proxy https protocol, cannot be greater than 64000.",
+            fmt=AAZIntArgFormat(
+                maximum=64000,
+                minimum=0,
+            ),
+        )
+        explicit_proxy.pac_file = AAZStrArg(
+            options=["pac-file"],
+            help="SAS URL for PAC file.",
+        )
+        explicit_proxy.pac_file_port = AAZIntArg(
+            options=["pac-file-port"],
+            help="Port number for firewall to serve PAC file.",
+            fmt=AAZIntArgFormat(
+                maximum=64000,
+                minimum=0,
+            ),
+        )
+
         # define Arg Group "Identity Instance"
 
         _args_schema = cls._args_schema
@@ -337,6 +386,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("basePolicy", AAZObjectType)
                 properties.set_prop("dnsSettings", AAZObjectType)
+                properties.set_prop("explicitProxy", AAZObjectType, ".explicit_proxy")
                 properties.set_prop("intrusionDetection", AAZObjectType)
                 properties.set_prop("sku", AAZObjectType)
                 properties.set_prop("snat", AAZObjectType)
@@ -357,6 +407,15 @@ class Create(AAZCommand):
             servers = _builder.get(".properties.dnsSettings.servers")
             if servers is not None:
                 servers.set_elements(AAZStrType, ".")
+
+            explicit_proxy = _builder.get(".properties.explicitProxy")
+            if explicit_proxy is not None:
+                explicit_proxy.set_prop("enableExplicitProxy", AAZBoolType, ".enable_explicit_proxy", typ_kwargs={"nullable": True})
+                explicit_proxy.set_prop("enablePacFile", AAZBoolType, ".enable_pac_file", typ_kwargs={"nullable": True})
+                explicit_proxy.set_prop("httpPort", AAZIntType, ".http_port")
+                explicit_proxy.set_prop("httpsPort", AAZIntType, ".https_port")
+                explicit_proxy.set_prop("pacFile", AAZStrType, ".pac_file")
+                explicit_proxy.set_prop("pacFilePort", AAZIntType, ".pac_file_port")
 
             intrusion_detection = _builder.get(".properties.intrusionDetection")
             if intrusion_detection is not None:

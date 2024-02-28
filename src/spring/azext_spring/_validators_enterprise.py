@@ -15,8 +15,8 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2023_11_01_preview.models import (ApmReference, CertificateReference)
-from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2024_01_01_preview.models import (ApmReference, CertificateReference)
+from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
 
 from ._gateway_constant import (GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE,
                                 GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE, GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
@@ -350,6 +350,15 @@ def validate_acs_create(namespace):
     if namespace.application_configuration_service_generation is not None:
         if namespace.enable_application_configuration_service is False:
             raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
+
+
+def validate_refresh_interval(namespace):
+    if namespace.refresh_interval:
+        if not isinstance(namespace.refresh_interval, int):
+            raise InvalidArgumentValueError("--refresh-interval should be a number.")
+
+        if namespace.refresh_interval < 0:
+            raise ArgumentUsageError("--refresh-interval must be greater than or equal to 0.")
 
 
 def validate_gateway_update(cmd, namespace):

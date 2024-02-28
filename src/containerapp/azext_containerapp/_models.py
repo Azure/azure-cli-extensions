@@ -88,7 +88,7 @@ SecretVolumeItem = {
 
 Volume = {
     "name": None,
-    "storageType": "EmptyDir",  # AzureFile, EmptyDir or Secret
+    "storageType": "EmptyDir",  # AzureFile, EmptyDir, Secret or NfsAzureFile
     "storageName": None,   # None for EmptyDir or Secret, otherwise name of storage resource
     "secrets": None,  # [SecretVolumeItem]
     "mountOptions": None,
@@ -304,6 +304,11 @@ DaprComponentResiliency = {
                     "maxIntervalInMilliseconds": None,
                 }
             },
+            "circuitBreakerPolicy": {
+                "consecutiveErrors": None,
+                "timeoutInSeconds": None,
+                "intervalInSeconds": None
+            }
         },
         "outboundPolicy": {
             "timeoutPolicy": {
@@ -316,6 +321,11 @@ DaprComponentResiliency = {
                     "maxIntervalInMilliseconds": None,
                 }
             },
+            "circuitBreakerPolicy": {
+                "consecutiveErrors": None,
+                "timeoutInSeconds": None,
+                "intervalInSeconds": None
+            }
         }
     }
 }
@@ -419,7 +429,8 @@ GitHubActionConfiguration = {
     "publishType": None,  # str
     "os": None,  # str
     "runtimeStack": None,  # str
-    "runtimeVersion": None  # str
+    "runtimeVersion": None,  # str
+    "buildEnvironmentVariables": None  # [EnvironmentVar]
 }
 
 RegistryInfo = {
@@ -451,9 +462,23 @@ ContainerAppCustomDomain = {
     "certificateId": None
 }
 
+ManagedEnvironmentStorageProperties = {
+    "location": None,
+    "properties": {
+        "azureFile": None,
+        "nfsAzureFile": None,
+    }
+}
+
 AzureFileProperties = {
     "accountName": None,
     "accountKey": None,
+    "accessMode": None,
+    "shareName": None
+}
+
+NfsAzureFileProperties = {
+    "server": None,
     "accessMode": None,
     "shareName": None
 }
@@ -509,4 +534,9 @@ ConnectedEnvironment = {
 ExtendedLocation = {
     "name": None,
     "type": None
+}
+
+ManagedServiceIdentity = {
+    "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
+    "userAssignedIdentities": None  # {string: UserAssignedIdentity}
 }

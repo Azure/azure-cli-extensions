@@ -44,57 +44,54 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp env certificate') as g:
         g.custom_command('create', 'create_managed_certificate', is_preview=True)
+        g.custom_command('upload', 'upload_certificate')
         g.custom_command('list', 'list_certificates', is_preview=True)
         g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory(), is_preview=True)
 
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('init', 'init_dapr_components', is_preview=True)
 
-    with self.command_group('containerapp service', deprecate_info=self.deprecate(redirect='containerapp add-on', hide=True), is_preview=True) as g:
-        g.custom_command('list', 'list_all_services')
+    with self.command_group('containerapp env identity', is_preview=True) as g:
+        g.custom_command('assign', 'assign_env_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'remove_env_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_env_managed_identity')
+
+    with self.command_group('containerapp env storage') as g:
+        g.custom_show_command('show', 'show_storage')
+        g.custom_command('list', 'list_storage')
+        g.custom_command('set', 'create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'remove_storage', confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp add-on', is_preview=True) as g:
         g.custom_command('list', 'list_all_services')
-
-    with self.command_group('containerapp service redis', deprecate_info=self.deprecate(redirect='containerapp add-on redis', hide=True)) as g:
-        g.custom_command('create', 'create_redis_service', supports_no_wait=True)
-        g.custom_command('delete', 'delete_redis_service', confirmation=True, supports_no_wait=True)
 
     with self.command_group('containerapp add-on redis') as g:
         g.custom_command('create', 'create_redis_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_redis_service', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp service postgres', deprecate_info=self.deprecate(redirect='containerapp add-on postgres', hide=True)) as g:
-        g.custom_command('create', 'create_postgres_service', supports_no_wait=True)
-        g.custom_command('delete', 'delete_postgres_service', confirmation=True, supports_no_wait=True)
-
     with self.command_group('containerapp add-on postgres') as g:
         g.custom_command('create', 'create_postgres_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_postgres_service', confirmation=True, supports_no_wait=True)
-
-    with self.command_group('containerapp service kafka', deprecate_info=self.deprecate(redirect='containerapp add-on kafka', hide=True)) as g:
-        g.custom_command('create', 'create_kafka_service', supports_no_wait=True)
-        g.custom_command('delete', 'delete_kafka_service', confirmation=True, supports_no_wait=True)
 
     with self.command_group('containerapp add-on kafka') as g:
         g.custom_command('create', 'create_kafka_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_kafka_service', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp service mariadb', deprecate_info=self.deprecate(redirect='containerapp add-on mariadb', hide=True)) as g:
-        g.custom_command('create', 'create_mariadb_service', supports_no_wait=True)
-        g.custom_command('delete', 'delete_mariadb_service', confirmation=True, supports_no_wait=True)
-
     with self.command_group('containerapp add-on mariadb') as g:
         g.custom_command('create', 'create_mariadb_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_mariadb_service', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp service qdrant', deprecate_info=self.deprecate(redirect='containerapp add-on qdrant', hide=True)) as g:
-        g.custom_command('create', 'create_qdrant_service', supports_no_wait=True)
-        g.custom_command('delete', 'delete_qdrant_service', confirmation=True, supports_no_wait=True)
-
     with self.command_group('containerapp add-on qdrant') as g:
         g.custom_command('create', 'create_qdrant_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_qdrant_service', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp add-on weaviate') as g:
+        g.custom_command('create', 'create_weaviate_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_weaviate_service', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp add-on milvus') as g:
+        g.custom_command('create', 'create_milvus_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_milvus_service', confirmation=True, supports_no_wait=True)
 
     with self.command_group('containerapp resiliency', is_preview=True) as g:
         g.custom_command('create', 'create_container_app_resiliency', supports_no_wait=True, exception_handler=ex_handler_factory())

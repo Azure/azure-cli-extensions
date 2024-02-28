@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
 import os
 import time
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
@@ -62,3 +63,19 @@ class PowerBIDedicatedScenarioTest(ScenarioTest):
         self.cmd('az powerbi embedded-capacity list -g {rg}',
                  checks=[
                      self.check('length(@)', 0)])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_powerbidedicated_list')
+    def test_powerbidedicated_list(self, resource_group):
+        self.kwargs.update({
+            'capacity_name': self.create_random_name(prefix='clipowerbi', length=24),
+            "resource_group": resource_group
+        })
+
+        self.cmd('az powerbi list-auto-scale-v-core',
+                 checks=[
+                     self.check('length(@)', 0),
+                 ])
+        from azure.core.exceptions import HttpResponseError
+        resource_not_found = "The Resource 'Microsoft.PowerBIDedicated/capacities/{0}' under resource group '{1}' was not found".format(self.kwargs['capacity_name'], self.kwargs['resource_group'])
+        with self.assertRaisesRegex(HttpResponseError, resource_not_found):
+            self.cmd('az powerbi embedded-capacity list-sku --dedicated-capacity-name {capacity_name} -g {resource_group}')

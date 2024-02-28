@@ -1,0 +1,468 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sku --name -g
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_integration_partner_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001","name":"cli_test_integration_partner_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_integration_account_partner","date":"2024-01-12T01:52:02Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 01:52:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"state": "Enabled"}, "sku": {"name":
+      "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '87'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sku --name -g
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"state":"Enabled"},"sku":{"name":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002","name":"inte000002","type":"Microsoft.Logic/integrationAccounts","location":"eastus"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '312'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 01:52:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=746146f9b8a568138e0f8e8d19178ca6868557dc4149a92ed430f901c8a2c233;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=746146f9b8a568138e0f8e8d19178ca6868557dc4149a92ed430f901c8a2c233;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account partner create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account-name --content --partner-type --metadata
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_integration_partner_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001","name":"cli_test_integration_partner_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_integration_account_partner","date":"2024-01-12T01:52:02Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 01:52:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"content": {"b2b": {"businessIdentities":
+      [{"qualifier": "AA", "value": "BB"}]}}, "metadata": {}, "partnerType": "B2B"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account partner create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '158'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --integration-account-name --content --partner-type --metadata
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners/partner000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"partnerType":"B2B","content":{"b2b":{"businessIdentities":[{"qualifier":"AA","value":"BB"}],"partnerClassification":"NotSpecified"}},"createdTime":"2024-01-12T01:52:08.840145Z","changedTime":"2024-01-12T01:52:08.8433994Z","metadata":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners/partner000003","name":"partner000003","type":"Microsoft.Logic/integrationAccounts/partners"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '520'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 01:52:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=bd8696554b8b9641052025659e1a9ef9f5c582b5bb5a1e21f02a3b362099a7e7;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=bd8696554b8b9641052025659e1a9ef9f5c582b5bb5a1e21f02a3b362099a7e7;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account partner update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account-name --content
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_integration_partner_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001","name":"cli_test_integration_partner_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_integration_account_partner","date":"2024-01-12T01:52:02Z","module":"logic"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 01:52:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account partner update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account-name --content
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners/partner000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"partnerType":"B2B","content":{"b2b":{"businessIdentities":[{"qualifier":"AA","value":"BB"}],"partnerClassification":"NotSpecified"}},"createdTime":"2024-01-12T01:52:08.840145Z","changedTime":"2024-01-12T01:52:08.8433994Z","metadata":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners/partner000003","name":"partner000003","type":"Microsoft.Logic/integrationAccounts/partners"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '520'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 01:52:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=bd8696554b8b9641052025659e1a9ef9f5c582b5bb5a1e21f02a3b362099a7e7;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=bd8696554b8b9641052025659e1a9ef9f5c582b5bb5a1e21f02a3b362099a7e7;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"content": {"b2b": {"businessIdentities":
+      [{"qualifier": "CC", "value": "DD"}]}}, "metadata": {}, "partnerType": "B2B"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account partner update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '158'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --integration-account-name --content
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners/partner000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"partnerType":"B2B","content":{"b2b":{"businessIdentities":[{"qualifier":"CC","value":"DD"}],"partnerClassification":"NotSpecified"}},"createdTime":"2024-01-12T01:52:08.840145Z","changedTime":"2024-01-12T01:52:11.5085661Z","metadata":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners/partner000003","name":"partner000003","type":"Microsoft.Logic/integrationAccounts/partners"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '520'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 01:52:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=746146f9b8a568138e0f8e8d19178ca6868557dc4149a92ed430f901c8a2c233;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=746146f9b8a568138e0f8e8d19178ca6868557dc4149a92ed430f901c8a2c233;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account partner show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --integration-account-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners/partner000003?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"partnerType":"B2B","content":{"b2b":{"businessIdentities":[{"qualifier":"CC","value":"DD"}],"partnerClassification":"NotSpecified"}},"createdTime":"2024-01-12T01:52:08.840145Z","changedTime":"2024-01-12T01:52:11.5085661Z","metadata":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners/partner000003","name":"partner000003","type":"Microsoft.Logic/integrationAccounts/partners"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '520'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 01:52:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=6e079698df7882eaf22e06fefcd5651a3566a6f76cfbe4c50e9be46eda9ede95;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=6e079698df7882eaf22e06fefcd5651a3566a6f76cfbe4c50e9be46eda9ede95;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account partner list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --integration-account-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners?api-version=2019-05-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"partnerType":"B2B","content":{"b2b":{"businessIdentities":[{"qualifier":"CC","value":"DD"}],"partnerClassification":"NotSpecified"}},"createdTime":"2024-01-12T01:52:08.840145Z","changedTime":"2024-01-12T01:52:11.5085661Z","metadata":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners/partner000003","name":"partner000003","type":"Microsoft.Logic/integrationAccounts/partners"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jan 2024 01:52:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0aa69915266871205a67096b40953eafb333722c9d662666b4ee1cbd3af96c28;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=0aa69915266871205a67096b40953eafb333722c9d662666b4ee1cbd3af96c28;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic integration-account partner delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --integration-account-name -y
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_integration_partner_000001/providers/Microsoft.Logic/integrationAccounts/inte000002/partners/partner000003?api-version=2019-05-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 12 Jan 2024 01:52:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=c7e558761f58304444ef69618be1b9c131674d1fae66a08eb93775ce72c520da;Path=/;HttpOnly;Secure;Domain=management.eastus.logic.azure.com
+      - ARRAffinitySameSite=c7e558761f58304444ef69618be1b9c131674d1fae66a08eb93775ce72c520da;Path=/;HttpOnly;SameSite=None;Secure;Domain=management.eastus.logic.azure.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

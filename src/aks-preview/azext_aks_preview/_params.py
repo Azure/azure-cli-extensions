@@ -95,9 +95,9 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_FIRST,
     CONST_WEEKINDEX_FOURTH,
     CONST_WEEKINDEX_LAST,
-    CONST_GUARDRAILSLEVEL_OFF,
-    CONST_GUARDRAILSLEVEL_WARNING,
-    CONST_GUARDRAILSLEVEL_ENFORCEMENT,
+    CONST_SAFEGUARDSLEVEL_OFF,
+    CONST_SAFEGUARDSLEVEL_WARNING,
+    CONST_SAFEGUARDSLEVEL_ENFORCEMENT,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
     CONST_WEEKINDEX_SECOND,
@@ -109,6 +109,8 @@ from azext_aks_preview._consts import (
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
+    CONST_SSH_ACCESS_LOCALUSER,
+    CONST_SSH_ACCESS_DISABLED,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -288,11 +290,11 @@ keyvault_network_access_types = [
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
 ]
 
-# consts for guardrails level
-guardrails_levels = [
-    CONST_GUARDRAILSLEVEL_OFF,
-    CONST_GUARDRAILSLEVEL_WARNING,
-    CONST_GUARDRAILSLEVEL_ENFORCEMENT,
+# consts for Safeguards level
+safeguards_levels = [
+    CONST_SAFEGUARDSLEVEL_OFF,
+    CONST_SAFEGUARDSLEVEL_WARNING,
+    CONST_SAFEGUARDSLEVEL_ENFORCEMENT,
 ]
 
 # azure service mesh
@@ -340,6 +342,11 @@ disable_storage_pool_options = [
 node_provisioning_modes = [
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
+]
+
+ssh_accesses = [
+    CONST_SSH_ACCESS_LOCALUSER,
+    CONST_SSH_ACCESS_DISABLED,
 ]
 
 
@@ -700,6 +707,12 @@ def load_arguments(self, _):
             help="enable vertical pod autoscaler for cluster",
         )
         c.argument(
+            "enable_addon_autoscaling",
+            action="store_true",
+            is_preview=True,
+            help="enable addon autoscaling for cluster",
+        )
+        c.argument(
             "enable_node_restriction",
             action="store_true",
             is_preview=True,
@@ -757,17 +770,17 @@ def load_arguments(self, _):
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
         c.argument(
-            "guardrails_level",
-            arg_type=get_enum_type(guardrails_levels),
+            "safeguards_level",
+            arg_type=get_enum_type(safeguards_levels),
             is_preview=True,
         )
         c.argument(
-            "guardrails_version",
+            "safeguards_version",
             type=str,
-            help="The guardrails version",
+            help="The deployment safeguards version",
             is_preview=True,
         )
-        c.argument("guardrails_excluded_ns", type=str, is_preview=True)
+        c.argument("safeguards_excluded_ns", type=str, is_preview=True)
         # azure monitor profile
         c.argument(
             "enable_azuremonitormetrics",
@@ -788,6 +801,7 @@ def load_arguments(self, _):
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
+        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -820,6 +834,13 @@ def load_arguments(self, _):
                 'Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". '
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
+        )
+        # in creation scenario, use "localuser" as default
+        c.argument(
+            'ssh_access',
+            arg_type=get_enum_type(ssh_accesses),
+            default=CONST_SSH_ACCESS_LOCALUSER,
+            is_preview=True,
         )
 
     with self.argument_context("aks update") as c:
@@ -865,6 +886,7 @@ def load_arguments(self, _):
         c.argument("network_dataplane", arg_type=get_enum_type(network_dataplanes))
         c.argument("network_policy")
         c.argument("network_plugin", arg_type=get_enum_type(network_plugins))
+        c.argument("ip_families")
         c.argument("kube_proxy_config")
         c.argument(
             "auto_upgrade_channel", arg_type=get_enum_type(auto_upgrade_channels)
@@ -1109,6 +1131,18 @@ def load_arguments(self, _):
             help="disable vertical pod autoscaler for cluster",
         )
         c.argument(
+            "enable_addon_autoscaling",
+            action="store_true",
+            is_preview=True,
+            help="enable addon autoscaling for cluster",
+        )
+        c.argument(
+            "disable_addon_autoscaling",
+            action="store_true",
+            is_preview=True,
+            help="disable addon autoscaling for cluster",
+        )
+        c.argument(
             "cluster_snapshot_id",
             validator=validate_cluster_snapshot_id,
             is_preview=True,
@@ -1121,12 +1155,12 @@ def load_arguments(self, _):
             help="path to file containing list of new line separated CAs",
         )
         c.argument(
-            "guardrails_level",
-            arg_type=get_enum_type(guardrails_levels),
+            "safeguards_level",
+            arg_type=get_enum_type(safeguards_levels),
             is_preview=True,
         )
-        c.argument("guardrails_version", help="The guardrails version", is_preview=True)
-        c.argument("guardrails_excluded_ns", is_preview=True)
+        c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
+        c.argument("safeguards_excluded_ns", is_preview=True)
         c.argument(
             "enable_network_observability",
             action="store_true",
@@ -1141,6 +1175,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")
+        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
+        c.argument('disable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -1183,6 +1219,8 @@ def load_arguments(self, _):
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
         )
+        # In update scenario, use emtpy str as default.
+        c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1332,6 +1370,14 @@ def load_arguments(self, _):
             validator=validate_node_public_ip_tags,
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
+        c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
+        # in creation scenario, use "localuser" as default
+        c.argument(
+            'ssh_access',
+            arg_type=get_enum_type(ssh_accesses),
+            default=CONST_SSH_ACCESS_LOCALUSER,
+            is_preview=True,
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1387,6 +1433,9 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_os_skus_update),
             validator=validate_os_sku,
         )
+        # In update scenario, use emtpy str as default.
+        c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)
@@ -1408,6 +1457,14 @@ def load_arguments(self, _):
             action=get_three_state_flag(),
             is_preview=True,
             help="delete an AKS nodepool by ignoring PodDisruptionBudget setting",
+        )
+
+    with self.argument_context("aks nodepool delete-machines") as c:
+        c.argument(
+            "machine_names",
+            nargs="+",
+            required=True,
+            help="Space-separated machine names to delete.",
         )
 
     with self.argument_context("aks machine") as c:
@@ -1905,8 +1962,8 @@ def load_arguments(self, _):
             "source_resource_id",
             options_list=[
                 "--source-resource-id",
-                "-r",
                 c.deprecate(target="-s", redirect="--source-resource-id", hide=True),
+                c.deprecate(target="-r", redirect="--source-resource-id", hide=True),
             ],
             help="The source resource id of the binding",
         )
