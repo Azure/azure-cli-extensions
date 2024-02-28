@@ -560,7 +560,7 @@ class SerialConsole:
                     ws.close()
 
             wsapp = websocket.WebSocketApp(
-                self.websocket_url + "?authorization=" + self.access_token, on_message=on_message)
+                self.websocket_url + "?authorization=" + self.access_token + "?new=0", on_message=on_message)
             wsapp.run_forever()
             GV.loading = False
             if GV.trycount == 0:
