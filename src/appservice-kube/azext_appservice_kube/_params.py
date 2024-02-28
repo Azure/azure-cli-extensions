@@ -10,8 +10,7 @@ from azure.cli.command_modules.appservice._validators import (validate_site_crea
 from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
                                                 get_resource_name_completion_list,
                                                 get_three_state_flag, get_enum_type, tags_type)
-
-from azure.cli.command_modules.appservice._constants import FUNCTIONS_VERSIONS,LINUX_OS_NAME, WINDOWS_OS_NAME
+from azure.cli.command_modules.appservice._constants import FUNCTIONS_VERSIONS, LINUX_OS_NAME, WINDOWS_OS_NAME
 from ._constants import MULTI_CONTAINER_TYPES, OS_TYPES
 from ._validators import validate_asp_create, validate_timeout_value
 
@@ -72,7 +71,7 @@ def load_arguments(self, _):
         c.argument('os_type', options_list=["--os", "--os-type"],
                    help="limit the output to just windows or linux runtimes",
                    arg_type=get_enum_type([LINUX_OS_NAME, WINDOWS_OS_NAME]))
-        c.argument('is_kube', action='store_true',  help="limit the output for app service on azure arc", is_preview=True)
+        c.argument('is_kube', action='store_true', help="limit the output for app service on azure arc", is_preview=True)
 
     with self.argument_context('functionapp') as c:
         c.ignore('app_instance')

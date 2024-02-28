@@ -699,6 +699,7 @@ def list_runtimes_kube(cmd, os_type=None, linux=True, is_kube=False):
     else:
         return list_runtimes(cmd, os_type, linux)
 
+
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
@@ -1388,7 +1389,7 @@ def update_site_configs(cmd, resource_group_name, name, slot=None, number_of_wor
     return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_configuration', slot, configs)
 
 
-def config_source_control(cmd, resource_group_name, name, repo_url, repository_type='git', branch=None, # pylint: disable=too-many-locals
+def config_source_control(cmd, resource_group_name, name, repo_url, repository_type='git', branch=None,  # pylint: disable=too-many-locals
                           manual_integration=None, git_token=None, slot=None):
     client = web_client_factory(cmd.cli_ctx)
     location = _get_location_from_webapp(client, resource_group_name, name)

@@ -11,6 +11,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 # not lima-specific
 class WebappBasicE2EKubeTest(ScenarioTest):
     @ResourceGroupPreparer(location='canadacentral')
