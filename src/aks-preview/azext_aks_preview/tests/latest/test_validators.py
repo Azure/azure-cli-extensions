@@ -802,9 +802,11 @@ class TestValidateDisableAzureContainerStorage(unittest.TestCase):
     def test_disable_type_when_not_enabled(self):
         pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         is_azureDisk_enabled = True
-        err = "Invalid --disable-azure-container-storage value. "
-              "Azure Container Storage is not enabled for storagepool "
-              "type {0} in the cluster.".format(storage_pool_type)
+        err = (
+            "Invalid --disable-azure-container-storage value. "
+            "Azure Container Storage is not enabled for storagepool "
+            "type {0} in the cluster.".format(storage_pool_type)
+        )
         with self.assertRaises(ArgumentUsageError) as cm:
             acstor_validator.validate_disable_azure_container_storage_params(
                 pool_type, None, None, None, None, None, True, is_azureDisk_enabled, False, False, False

@@ -204,7 +204,6 @@ def perform_enable_azure_container_storage(
             op_text = "Azure Container Storage successfully installed"
 
         long_op_result = LongRunningOperation(cmd.cli_ctx)(result)
-        print ("RESULT: ", long_op_result)
         if long_op_result.provisioning_state == "Succeeded":
             logger.warning(op_text)
     except Exception as ex:  # pylint: disable=broad-except
