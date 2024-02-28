@@ -63,8 +63,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 return version
         return ""
 
-    def _get_asm_supported_revision(self):
-        revisions_cmd = "aks mesh get-revisions -l westus2"
+    def _get_asm_supported_revision(self, location):
+        revisions_cmd = "aks mesh get-revisions -l {location}"
         revisions = self.cmd(revisions_cmd).get_output_in_json()
         assert len(revisions["meshRevisions"]) > 0
         return revisions['meshRevisions'][0]['revision']
@@ -11400,7 +11400,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(),
+                "revision": self._get_asm_supported_revision(resource_group_location),
             }
         )
 
@@ -11471,7 +11471,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(),
+                "revision": self._get_asm_supported_revision(resource_group_location),
             }
         )
 
@@ -11564,7 +11564,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision()
+                "revision": self._get_asm_supported_revision(resource_group_location)
             }
         )
 
@@ -11675,7 +11675,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "akv_resource_id": akv_resource_id,
-                "revision": self._get_asm_supported_revision(),
+                "revision": self._get_asm_supported_revision(resource_group_location),
             }
         )
 
@@ -11783,7 +11783,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(),
+                "revision": self._get_asm_supported_revision(resource_group_location),
             }
         )
 
