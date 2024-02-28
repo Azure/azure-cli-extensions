@@ -756,7 +756,7 @@ def cli_cosmosdb_create(cmd,
                         enable_multiple_write_locations=None,
                         disable_key_based_metadata_write_access=None,
                         key_uri=None,
-                        enable_public_network=None,
+                        public_network_access=None,
                         enable_analytical_storage=None,
                         enable_free_tier=None,
                         server_version=None,
@@ -812,7 +812,7 @@ def cli_cosmosdb_create(cmd,
                                     enable_multiple_write_locations=enable_multiple_write_locations,
                                     disable_key_based_metadata_write_access=disable_key_based_metadata_write_access,
                                     key_uri=key_uri,
-                                    enable_public_network=enable_public_network,
+                                    public_network_access=public_network_access,
                                     enable_analytical_storage=enable_analytical_storage,
                                     enable_free_tier=enable_free_tier,
                                     server_version=server_version,
@@ -856,7 +856,7 @@ def cli_cosmosdb_update(client,
                         virtual_network_rules=None,
                         enable_multiple_write_locations=None,
                         disable_key_based_metadata_write_access=None,
-                        enable_public_network=None,
+                        public_network_access=None,
                         enable_analytical_storage=None,
                         network_acl_bypass=None,
                         network_acl_bypass_resource_ids=None,
@@ -896,10 +896,6 @@ def cli_cosmosdb_update(client,
         consistency_policy = ConsistencyPolicy(default_consistency_level=default_consistency_level,
                                                max_staleness_prefix=max_staleness_prefix,
                                                max_interval_in_seconds=max_interval)
-
-    public_network_access = None
-    if enable_public_network is not None:
-        public_network_access = 'Enabled' if enable_public_network else 'Disabled'
 
     api_properties = {'ServerVersion': server_version}
 
@@ -1124,7 +1120,7 @@ def cli_cosmosdb_restore(cmd,
                                     gremlin_databases_to_restore=gremlin_databases_to_restore,
                                     tables_to_restore=tables_to_restore,
                                     arm_location=target_restorable_account.location,
-                                    enable_public_network=enable_public_network,
+                                    public_network_access=enable_public_network,
                                     source_backup_location=source_backup_location,
                                     disable_ttl=disable_ttl)
 
@@ -1148,7 +1144,7 @@ def _create_database_account(client,
                              enable_multiple_write_locations=None,
                              disable_key_based_metadata_write_access=None,
                              key_uri=None,
-                             enable_public_network=None,
+                             public_network_access=None,
                              enable_analytical_storage=None,
                              enable_free_tier=None,
                              server_version=None,
@@ -1185,10 +1181,6 @@ def _create_database_account(client,
     if not locations:
         locations = []
         locations.append(Location(location_name=arm_location, failover_priority=0, is_zone_redundant=False))
-
-    public_network_access = None
-    if enable_public_network is not None:
-        public_network_access = 'Enabled' if enable_public_network else 'Disabled'
 
     managed_service_identity = None
     SYSTEM_ID = '[system]'
