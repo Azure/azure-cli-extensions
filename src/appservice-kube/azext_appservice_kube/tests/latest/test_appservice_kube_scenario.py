@@ -11,11 +11,6 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-# TODO
-class AppserviceKubernetesScenarioTest(ScenarioTest):
-    pass
-
-
 # not lima-specific
 class WebappBasicE2EKubeTest(ScenarioTest):
     @ResourceGroupPreparer(location='canadacentral')
@@ -52,7 +47,7 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.assertTrue(r['ftpPublishingUrl'].startswith('ftps://'))
         self.cmd('webapp config appsettings list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('[0].name', 'WEBSITE_NODE_DEFAULT_VERSION'),
-            JMESPathCheck('[0].value', '~14'),
+            JMESPathCheck('[0].value', '~16'),
         ])
 
         self.cmd('webapp update -g {} -n {} --https-only true'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", True)])
@@ -64,12 +59,12 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         webapp_name_2 = self.create_random_name(prefix='webapp-quick', length=24)
         plan = self.create_random_name(prefix='plan-quick', length=24)
         self.cmd('appservice plan create -g {} -n {}'.format(resource_group, plan))
-        r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "node|14LTS"'.format(
+        r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "node|20LTS"'.format(
             resource_group, webapp_name, plan)).get_output_in_json()
         self.assertTrue(r['ftpPublishingUrl'].startswith('ftps://'))
         self.cmd('webapp config appsettings list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('[0].name', 'WEBSITE_NODE_DEFAULT_VERSION'),
-            JMESPathCheck('[0].value', '~14'),
+            JMESPathCheck('[0].value', '~20'),
         ])
         r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "dotnet:7"'.format(
             resource_group, webapp_name_2, plan)).get_output_in_json()

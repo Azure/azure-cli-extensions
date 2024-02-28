@@ -4,7 +4,7 @@ Release History
 ===============
 0.1.10
 ++++++
-* Add command `az webapp list-runtimes` for arc enabled app service
+* Add command `az webapp list-runtimes --is-kube` for arc enabled app service
 * Fix language version unsupported issue on `az webapp create`
 
 0.1.9

@@ -15,6 +15,7 @@ from knack.log import get_logger
 from azure.cli.core.util import send_raw_request, sdk_no_wait, get_json_object, get_file_json
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.custom import (
+    list_runtimes,
     update_container_settings,
     _rename_server_farm_props,
     get_site_configs,
@@ -691,10 +692,12 @@ def _get_custom_location_id(cmd, custom_location, resource_group_name):
         name=custom_location)
 
 
-def list_runtimes(cmd, os_type=None, linux=True):
-    runtime_helper = _AppOnArcStackRuntimeHelper(cmd=cmd, linux=True, windows=False)
-    return runtime_helper.get_stack_names_only(delimiter=":")
-
+def list_runtimes_kube(cmd, os_type=None, linux=True, is_kube=False):
+    if is_kube:
+        runtime_helper = _AppOnArcStackRuntimeHelper(cmd=cmd, linux=True, windows=False)
+        return runtime_helper.get_stack_names_only(delimiter=":")
+    else:
+        return list_runtimes(cmd, os_type, linux)
 
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
@@ -815,7 +818,10 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD',
                                                               value=docker_registry_server_password))
-    helper = _AppOnArcStackRuntimeHelper(cmd, linux=bool(is_linux or is_kube), windows=not bool(is_linux or is_kube))
+    helper = _StackRuntimeHelper(cmd, linux=bool(is_linux or is_kube), windows=not bool(is_linux or is_kube))
+    if is_kube:
+        helper = _AppOnArcStackRuntimeHelper(cmd, linux=bool(is_linux or is_kube), windows=not bool(is_linux or is_kube))
+
     if runtime:
         runtime = helper.remove_delimiters(runtime)
 
@@ -833,7 +839,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
             match = helper.resolve(runtime, linux=True)
             if not match:
                 raise CLIError("Linux Runtime '{}' is not supported."
-                               "Please invoke 'list-runtimes' to cross check".format(runtime))
+                               "Please invoke 'list-runtimes --kube' to cross check".format(runtime))
             helper.get_site_config_setter(match, linux=True)(cmd=cmd, stack=match, site_config=site_config)
         elif deployment_container_image_name:
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
@@ -1858,6 +1864,7 @@ def unbind_ssl_cert(cmd, resource_group_name, name, certificate_thumbprint, slot
 
 # WebApps stack class
 class _AppOnArcStackRuntimeHelper(_StackRuntimeHelper):
+
     def __init__(self, cmd, linux=False, windows=False):
         super().__init__(cmd, linux=linux, windows=windows)
 
