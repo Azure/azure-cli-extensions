@@ -1012,7 +1012,7 @@ def cli_cosmosdb_restore(cmd,
                          databases_to_restore=None,
                          gremlin_databases_to_restore=None,
                          tables_to_restore=None,
-                         enable_public_network=None,
+                         public_network_access=None,
                          source_backup_location=None,
                          disable_ttl=None):
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
@@ -1120,7 +1120,7 @@ def cli_cosmosdb_restore(cmd,
                                     gremlin_databases_to_restore=gremlin_databases_to_restore,
                                     tables_to_restore=tables_to_restore,
                                     arm_location=target_restorable_account.location,
-                                    public_network_access=enable_public_network,
+                                    public_network_access=public_network_access,
                                     source_backup_location=source_backup_location,
                                     disable_ttl=disable_ttl)
 
