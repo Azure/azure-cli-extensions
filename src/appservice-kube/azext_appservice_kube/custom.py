@@ -12,7 +12,7 @@ import json
 from knack.util import CLIError
 from knack.log import get_logger
 
-from azure.cli.core.util import send_raw_request, sdk_no_wait, get_json_object
+from azure.cli.core.util import send_raw_request, sdk_no_wait, get_json_object, get_file_json
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.custom import (
     update_container_settings,
@@ -67,8 +67,8 @@ from ._create_util import (get_app_details, get_site_availability, get_current_s
                            generate_default_app_service_plan_name)
 from ._client_factory import web_client_factory, ex_handler_factory, customlocation_client_factory
 
-
 logger = get_logger(__name__)
+
 
 # pylint: disable=too-many-locals,too-many-lines,consider-using-f-string
 
@@ -691,6 +691,11 @@ def _get_custom_location_id(cmd, custom_location, resource_group_name):
         name=custom_location)
 
 
+def list_runtimes(cmd, os_type=None, linux=True):
+    runtime_helper = _AppOnArcStackRuntimeHelper(cmd=cmd, linux=True, windows=False)
+    return runtime_helper.get_stack_names_only(delimiter=":")
+
+
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
@@ -721,7 +726,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         if resource_group_name is not None and (resource_group_name.lower() != current_rg.lower()):
             raise CLIError("The webapp '{}' exists in resource group '{}' and does not "
                            "match the value entered '{}'. Please re-run command with the "
-                           "correct parameters.". format(name, current_rg, resource_group_name))
+                           "correct parameters.".format(name, current_rg, resource_group_name))
         existing_app_settings = _generic_site_operation(cmd.cli_ctx, resource_group_name,
                                                         name, 'list_application_settings')
         settings = []
@@ -810,7 +815,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD',
                                                               value=docker_registry_server_password))
-    helper = _StackRuntimeHelper(cmd, linux=bool(is_linux or is_kube), windows=not bool(is_linux or is_kube))
+    helper = _AppOnArcStackRuntimeHelper(cmd, linux=bool(is_linux or is_kube), windows=not bool(is_linux or is_kube))
     if runtime:
         runtime = helper.remove_delimiters(runtime)
 
@@ -1150,12 +1155,12 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
             site_config.app_settings.append(NameValuePair(name='FUNCTION_APP_EDIT_MODE', value='readOnly'))
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
             site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL',
-                                            value=docker_registry_server_url))
+                                                          value=docker_registry_server_url))
             if docker_registry_server_user is not None and docker_registry_server_password is not None:
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME',
-                                                value=docker_registry_server_user))
+                                                              value=docker_registry_server_user))
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD',
-                                                value=docker_registry_server_password))
+                                                              value=docker_registry_server_password))
         else:
             site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE', value='true'))
             site_config.linux_fx_version = _get_linux_fx_kube_functionapp(runtime, runtime_version)
@@ -1377,7 +1382,7 @@ def update_site_configs(cmd, resource_group_name, name, slot=None, number_of_wor
     return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_configuration', slot, configs)
 
 
-def config_source_control(cmd, resource_group_name, name, repo_url, repository_type='git', branch=None,  # pylint: disable=too-many-locals
+def config_source_control(cmd, resource_group_name, name, repo_url, repository_type='git', branch=None, # pylint: disable=too-many-locals
                           manual_integration=None, git_token=None, slot=None):
     client = web_client_factory(cmd.cli_ctx)
     location = _get_location_from_webapp(client, resource_group_name, name)
@@ -1849,3 +1854,30 @@ def unbind_ssl_cert(cmd, resource_group_name, name, certificate_thumbprint, slot
     SslState = cmd.get_models('SslState')
     return _update_ssl_binding(cmd, resource_group_name, name,
                                certificate_thumbprint, SslState.disabled, slot)
+
+
+# WebApps stack class
+class _AppOnArcStackRuntimeHelper(_StackRuntimeHelper):
+    def __init__(self, cmd, linux=False, windows=False):
+        super().__init__(cmd, linux=linux, windows=windows)
+
+    def _load_stacks(self):
+        if self._stacks:
+            return
+        self._load_stacks_hardcoded()
+
+    # override _load_stacks() to call this method to use hardcoded stacks
+    def _load_stacks_hardcoded(self):
+        import os
+        stacks_file = os.path.abspath(os.path.join(os.path.abspath(__file__), '../resources/WebappRuntimeStacks.json'))
+        if self._stacks:
+            return
+        stacks = []
+        if self._linux:
+            stacks_json = get_file_json(stacks_file)['linux']
+            for r in stacks_json:
+                stacks.append(self.Runtime(display_name=r.get("displayName"),
+                                           configs=r.get("configs"),
+                                           github_actions_properties=r.get("github_actions_properties"),
+                                           linux=True))
+        self._stacks = stacks
