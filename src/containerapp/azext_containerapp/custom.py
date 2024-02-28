@@ -65,7 +65,8 @@ from .daprcomponent_resiliency_decorator import (
     DaprComponentResiliencyPreviewUpdateDecorator
 )
 from .containerapp_env_telemetry_decorator import (
-    ContainerappEnvTelemetryPreviewSetDecorator
+    ContainerappEnvTelemetryDataDogPreviewSetDecorator,
+    ContainerappEnvTelemetryAppInsightsPreviewSetDecorator
 )
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
@@ -2201,26 +2202,44 @@ def show_env_managed_identity(cmd, name, resource_group_name):
         r["identity"]["type"] = "None"
         return r["identity"]
 
-
-def set_environment_telemetry(cmd,
-                              name,
-                              resource_group_name,
-                              app_insights_connection_string=None,
-                              open_telemetry_traces_destinations=None,
-                              open_telemetry_logs_destinations=None,
-                              open_telemetry_metrics_destinations=None,
-                              open_telemetry_data_dog_site=None,
-                              open_telemetry_data_dog_key=None):
+def set_environment_telemetry_data_dog(cmd,
+                                       name,
+                                       resource_group_name,
+                                       site=None,
+                                       key=None,
+                                       enable_open_telemetry_traces=False,
+                                       enable_open_telemetry_metrics=False):
     raw_parameters = locals()
-    containerapp_env_telemetry_decorator = ContainerappEnvTelemetryPreviewSetDecorator(
+    containerapp_env_telemetry_data_dog_decorator = ContainerappEnvTelemetryDataDogPreviewSetDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_env_telemetry_decorator.register_provider(CONTAINER_APPS_RP)
+    containerapp_env_telemetry_data_dog_decorator.register_provider(CONTAINER_APPS_RP)
 
-    containerapp_env_telemetry_decorator.construct_payload()
-    r = containerapp_env_telemetry_decorator.update()
+    containerapp_env_telemetry_data_dog_decorator.construct_payload()
+    r = containerapp_env_telemetry_data_dog_decorator.update()
     
     return r
+
+def set_environment_telemetry_app_insights(cmd,
+                                           name,
+                                           resource_group_name,
+                                           connection_string=None,
+                                           enable_open_telemetry_traces=False,
+                                           enable_open_telemetry_logs=False):
+    raw_parameters = locals()
+    containerapp_env_telemetry_app_insights_decorator = ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_app_insights_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_app_insights_decorator.construct_payload()
+    r = containerapp_env_telemetry_app_insights_decorator.update()
+    
+    return r
+

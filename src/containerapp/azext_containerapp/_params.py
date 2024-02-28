@@ -62,19 +62,21 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env', arg_group='Monitoring') as c:
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
-                   help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
+                   help='Boolean indicating whether to parse json   string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
         
     # Telemetry 
-    with self.argument_context('containerapp env telemetry set', arg_group='App Insights') as c:
-        c.argument('app_insights_connection_string', options_list=['--app-insights-connection-string', '--ai-connection-string'], help='Application Insights connection string used by container apps environment')
+    with self.argument_context('containerapp env telemetry data-dog set') as c:
+        c.argument('site', options_list=['--site'], help='Specify the data dog site')
+        c.argument('key', options_list=['--key'], help='Specify the data dog api key')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry traces')
+        c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry metrics')
 
-    with self.argument_context('containerapp env telemetry set', arg_group='Open Telemetry') as c:
-        c.argument('open_telemetry_traces_destinations', options_list=['--open-telemetry-traces-destinations', '--traces-destinations'], nargs='+', help='A list of the destinations of open telemetry trace signal for the container app. Space-separated destinations.')
-        c.argument('open_telemetry_logs_destinations', options_list=['--open-telemetry-logs-destinations', '--logs-destinations'], nargs='+', help='A list of the destinations of open telemetry log signal for the container app. Space-separated destinations.')
-        c.argument('open_telemetry_metrics_destinations', options_list=['--open-telemetry-metrics-destinations', '--metrics-destinations'], nargs='+', help='A list of the destinations of open telemetry metric signal for the container app. Space-separated destinations.')
-        c.argument('open_telemetry_data_dog_site', options_list=['--open-telemetry-data-dog-site', '--data-dog-site'], help='Specify the data dog site')
-        c.argument('open_telemetry_data_dog_key', options_list=['--open-telemetry-data-dog-key', '--data-dog-key'], help='Specify the data dog api key')
+    with self.argument_context('containerapp env telemetry app-insights set') as c:
+        c.argument('connection_string', options_list=['--connection-string'], help='Application Insights connection string used by container apps environment')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry traces')
+        c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry logs')
 
+    # Storage
     with self.argument_context('containerapp env storage') as c:
         c.argument('storage_type', arg_type = get_enum_type(['AzureFile', 'NfsAzureFile']), help="Type of the storage. Assumed to be AzureFile if not specified.", is_preview=True)
         c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]),
