@@ -396,8 +396,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # if it exists and user has not provided any value in raw parameters
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
-                pod_ip_allocation_mode and 
-                self.agentpool and 
+                pod_ip_allocation_mode and
+                self.agentpool and
                 self.agentpool.pod_ip_allocation_mode is not None
             ):
                 pod_ip_allocation_mode = self.agentpool.pod_ip_allocation_mode
