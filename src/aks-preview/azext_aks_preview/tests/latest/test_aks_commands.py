@@ -13205,15 +13205,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.kwargs.update({"managed_resource_group": managed_resource_group})
 
         list_vmss_cmd = 'vmss list --resource-group={managed_resource_group}'
-        vmss_result = self.cmd(
-            list_vmss_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-            ]
-        ).get_output_in_json()
-        vmss_name = vmss_result[0]['name']
-        self.kwargs.update({"vmss_name": vmss_name})
-        node_name = '{vmss_name}000001'
+        vmss_list = self.cmd(list_vmss_cmd).get_output_in_json()
+
+        assert len(vmss_list) == 1
+        assert vmss_list[0]['provisioningState'] == 'Succeeded'
+
+        vmss_name = vmss_list[0]['name']
+        node_name = vmss_name + '000001'
         self.kwargs.update({"node_name": node_name})
 
         # check network to a specific node
