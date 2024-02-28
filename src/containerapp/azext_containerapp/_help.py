@@ -239,100 +239,14 @@ helps['containerapp env create'] = """
               --location eastus2 --mi-system-assigned --mi-user-assigned MyUserIdentityResourceId
 """
 
-helps['containerapp service'] = """
-    type: group
-    short-summary: Commands to manage services available within the environment.
-    deprecate_info: This command group is deprecated. Use 'az containerapp add-on' instead.
-"""
-
 helps['containerapp add-on'] = """
     type: group
     short-summary: Commands to manage add-ons available within the environment.
 """
 
-helps['containerapp service list'] = """
-    type: command
-    short-summary: List all services within the environment.
-"""
-
 helps['containerapp add-on list'] = """
     type: command
     short-summary: List all add-ons within the environment.
-"""
-
-helps['containerapp service redis'] = """
-    type: group
-    short-summary: Commands to manage the redis service for the Container Apps environment.
-"""
-
-helps['containerapp service postgres'] = """
-    type: group
-    short-summary: Commands to manage the postgres service for the Container Apps environment.
-"""
-
-helps['containerapp service kafka'] = """
-    type: group
-    short-summary: Commands to manage the kafka service for the Container Apps environment.
-"""
-
-helps['containerapp service mariadb'] = """
-    type: group
-    short-summary: Commands to manage the mariadb service for the Container Apps environment.
-"""
-
-helps['containerapp service qdrant'] = """
-    type: group
-    short-summary: Commands to manage the qdrant service for the Container Apps environment.
-"""
-
-helps['containerapp service redis create'] = """
-    type: command
-    short-summary: Command to create the redis service.
-"""
-
-helps['containerapp service postgres create'] = """
-    type: command
-    short-summary: Command to create the postgres service.
-"""
-
-helps['containerapp service kafka create'] = """
-    type: command
-    short-summary: Command to create the kafka service.
-"""
-
-helps['containerapp service mariadb create'] = """
-    type: command
-    short-summary: Command to create the mariadb service.
-"""
-
-helps['containerapp service qdrant create'] = """
-    type: command
-    short-summary: Command to create the qdrant service.
-"""
-
-helps['containerapp service redis delete'] = """
-    type: command
-    short-summary: Command to delete the redis service.
-"""
-
-helps['containerapp service postgres delete'] = """
-    type: command
-    short-summary: Command to delete the postgres service.
-"""
-
-helps['containerapp service kafka delete'] = """
-    type: command
-    short-summary: Command to delete the kafka service.
-"""
-
-helps['containerapp service mariadb delete'] = """
-    type: command
-    short-summary: Command to delete the mariadb service.
-"""
-
-helps['containerapp service qdrant delete'] = """
-    type: command
-    short-summary: Command to delete the qdrant service.
 """
 
 helps['containerapp resiliency'] = """
