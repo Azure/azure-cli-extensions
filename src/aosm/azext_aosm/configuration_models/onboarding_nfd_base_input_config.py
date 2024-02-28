@@ -26,6 +26,12 @@ class OnboardingNFDBaseInputConfig(OnboardingBaseInputConfig):
         },
     )
 
+    @property
+    def acr_manifest_name(self) -> str:
+        """Return the ACR manifest name from the NFD name and version."""
+        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
+        return f"{sanitized_nf_name}-acr-manifest-{self.version.replace('.', '-')}"
+
     def validate(self):
         """Validate the configuration."""
         super().validate()

@@ -11,7 +11,11 @@ from knack.log import get_logger
 
 from azext_aosm.common.constants import BASE_SCHEMA
 from azext_aosm.inputs.base_input import BaseInput
-from azext_aosm.vendored_sdks.models import NetworkFunctionDefinitionVersion
+from azext_aosm.vendored_sdks.models import (
+    NetworkFunctionDefinitionVersion,
+    ContainerizedNetworkFunctionDefinitionVersion,
+    VirtualNetworkFunctionDefinitionVersion,
+)
 
 logger = get_logger(__name__)
 
@@ -72,9 +76,22 @@ class NFDInput(BaseInput):
             }
         }
 
-        if self.network_function_definition.properties and (
-            self.network_function_definition.properties.network_function_type
-            == "VirtualNetworkFunction"
+        # This horrendous if statement is required because:
+        # - the 'properties' and 'network_function_template' attributes are optional
+        # - the isinstance check is because the base NetworkFunctionDefinitionVersionPropertiesFormat class
+        #   doesn't define the network_function_template attribute, even though both subclasses do.
+        # Not switching to EAFP style because mypy doesn't account for `except AttributeError` (for good reason).
+        # Similar test required in the NFD processor, but we can't deduplicate the code because mypy doesn't
+        # propagate type narrowing from isinstance().
+        if (
+            self.network_function_definition.properties
+            and isinstance(
+                self.network_function_definition.properties,
+                (ContainerizedNetworkFunctionDefinitionVersion, VirtualNetworkFunctionDefinitionVersion),
+            )
+            and self.network_function_definition.properties.network_function_template
+            and self.network_function_definition.properties.network_function_template.nfvi_type
+            not in ("AzureArcKubernetes", "AzureOperatorNexus")
         ):
             base_defaults["configObject"]["customLocationId"] = ""
 

@@ -6,8 +6,10 @@ param location string
 param publisherName string
 @description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
 param acrArtifactStoreName string
+{%- if sa_nf_applications %}
 @description('Name of an existing Storage Account-backed Artifact Store, deployed under the publisher.')
 param saArtifactStoreName string
+{%- endif %}
 @description('Name of an existing Network Function Definition Group')
 param nfDefinitionGroup string
 @description('The version of the NFDV you want to deploy, in format A.B.C')
@@ -27,12 +29,14 @@ resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@202
   name: acrArtifactStoreName
 }
 
+{%- if sa_nf_applications %}
 // The storage account is the resource in which the VHD images are stored.
 // If using publish command, this is created from deploying the vnfbase.bicep
 resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
   parent: publisher
   name: saArtifactStoreName
 }
+{%- endif %}
 
 // The NFD Group is the parent resource under which all NFD versions will be created.
 // If using publish command, this is created from deploying the vnfbase.bicep
@@ -53,16 +57,17 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
     deployParameters: string(loadJsonContent('{{deployment_parameters_file}}'))
     networkFunctionType: 'VirtualNetworkFunction'
     networkFunctionTemplate: {
-      nfviType: 'AzureCore'
+      nfviType: '{{ nfvi_type }}'
       networkFunctionApplications: [
+        {%- for configuration in sa_nf_applications %}
         {
           artifactType: 'VhdImageFile'
-          name: '{{ sa_nf_application.artifact_profile.vhd_artifact_profile.vhd_name }}'
+          name: '{{ configuration.artifact_profile.vhd_artifact_profile.vhd_name }}'
           dependsOnProfile: null
           artifactProfile: {
             vhdArtifactProfile: {
-              vhdName: '{{ sa_nf_application.artifact_profile.vhd_artifact_profile.vhd_name }}'
-              vhdVersion: '{{ sa_nf_application.artifact_profile.vhd_artifact_profile.vhd_version }}'
+              vhdName: '{{ configuration.artifact_profile.vhd_artifact_profile.vhd_name }}'
+              vhdVersion: '{{ configuration.artifact_profile.vhd_artifact_profile.vhd_version }}'
             }
             artifactStore: {
               id: saArtifactStore.id
@@ -73,10 +78,10 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
             vhdImageMappingRuleProfile: {
               userConfiguration: string(loadJsonContent('{{vhd_parameters_file}}'))
             }
-            // ??
-            applicationEnablement: 'Unknown'
+            applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
           }
         }
+      {%- endfor %}
       {%- for configuration in acr_nf_applications %}
         {
           artifactType: 'ArmTemplate'
@@ -93,9 +98,31 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
           }
           deployParametersMappingRuleProfile: {
             templateMappingRuleProfile: {
-              templateParameters: string(loadJsonContent('{{template_parameters_file}}'))
+              templateParameters: string(loadJsonContent('{{ configuration.name }}-{{template_parameters_file}}'))
             }
-            applicationEnablement: 'Unknown'
+            applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
+          }
+        }
+      {%- endfor %}
+      {%- for configuration in nexus_image_nf_applications %}
+        {
+          artifactType: 'ImageFile'
+          name: '{{ configuration.name }}'
+          dependsOnProfile: null
+          artifactProfile: {
+            imageArtifactProfile: {
+              imageName: '{{ configuration.artifact_profile.image_artifact_profile.image_name }}'
+              imageVersion: '{{ configuration.artifact_profile.image_artifact_profile.image_version }}'
+            }
+            artifactStore: {
+              id: acrArtifactStore.id
+            }
+          }
+          deployParametersMappingRuleProfile: {
+            imageMappingRuleProfile: {
+              userConfiguration: string(loadJsonContent('{{ configuration.name }}-{{image_parameters_file}}'))
+            }
+            applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
           }
         }
       {%- endfor %}

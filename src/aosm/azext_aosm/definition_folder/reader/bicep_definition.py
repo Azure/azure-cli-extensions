@@ -13,15 +13,13 @@ from azure.core import exceptions as azure_exceptions
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.resources.models import DeploymentExtended
 from knack.log import get_logger
-
 from azext_aosm.common.command_context import CommandContext
-from azext_aosm.common.constants import ManifestsExist
 from azext_aosm.common.utils import convert_bicep_to_arm
-from azext_aosm.configuration_models.common_parameters_config import (
-    BaseCommonParametersConfig,
-    VNFCommonParametersConfig,
-)
-from azext_aosm.definition_folder.reader.base_definition import BaseDefinitionElement
+from azext_aosm.configuration_models.common_parameters_config import \
+    BaseCommonParametersConfig, CoreVNFCommonParametersConfig
+from azext_aosm.definition_folder.reader.base_definition import \
+    BaseDefinitionElement
+from azext_aosm.common.constants import ManifestsExist
 
 logger = get_logger(__name__)
 
@@ -117,6 +115,7 @@ class BicepDefinitionElement(BaseDefinitionElement):
         config: BaseCommonParametersConfig, command_context: CommandContext
     ) -> ManifestsExist:
         """
+
         Returns True if all required manifests exist, False if none do, and raises an
         AzCLIError if some but not all exist.
 
@@ -133,8 +132,8 @@ class BicepDefinitionElement(BaseDefinitionElement):
             acr_manifest_exists = True
         except azure_exceptions.ResourceNotFoundError:
             acr_manifest_exists = False
-
-        if isinstance(config, VNFCommonParametersConfig):
+        # TODO: test config type change works
+        if isinstance(config, CoreVNFCommonParametersConfig):
             try:
                 command_context.aosm_client.artifact_manifests.get(
                     resource_group_name=config.publisherResourceGroupName,

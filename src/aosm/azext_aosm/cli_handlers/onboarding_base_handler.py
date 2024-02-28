@@ -8,9 +8,9 @@ import json
 from abc import ABC, abstractmethod
 from dataclasses import fields, is_dataclass
 from pathlib import Path
-from typing import Optional, Union
-
-from azure.cli.core.azclierror import UnclassifiedUserFault
+from typing import Optional
+from json.decoder import JSONDecodeError
+from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault
 from jinja2 import StrictUndefined, Template
 from knack.log import get_logger
 
@@ -35,34 +35,40 @@ logger = get_logger(__name__)
 class OnboardingBaseCLIHandler(ABC):
     """Abstract base class for CLI handlers."""
 
+    config: OnboardingBaseInputConfig | BaseCommonParametersConfig
+
     def __init__(
         self,
-        provided_input_path: Optional[Path] = None,
+        config_file_path: Optional[Path] = None,
+        all_deploy_params_file_path: Optional[Path] = None,
         aosm_client: Optional[HybridNetworkManagementClient] = None,
         skip: Optional[str] = None,
     ):
         """Initialize the CLI handler."""
         self.aosm_client = aosm_client
         self.skip = skip
-        # If config file provided (for build, publish and delete)
-        if provided_input_path:
-            # Explicitly define types
-            self.config: Union[OnboardingBaseInputConfig, BaseCommonParametersConfig]
-            provided_input_path = Path(provided_input_path)
-            # If config file is the input.jsonc for build command
-            if provided_input_path.suffix == ".jsonc":
-                config_dict = self._read_input_config_from_file(provided_input_path)
+        # If input.jsonc file provided (therefore if build command run)
+        if config_file_path:
+            config_dict = self._read_input_config_from_file(config_file_path)
+            try:
                 self.config = self._get_input_config(config_dict)
-                # Validate config before getting processor list,
-                # in case error with input artifacts i.e helm package
-                self.config.validate()
-                self.processors = self._get_processor_list()
-            # If config file is the all parameters json file for publish/delete
-            elif provided_input_path.suffix == ".json":
-                self.config = self._get_params_config(provided_input_path)
-            else:
-                raise UnclassifiedUserFault("Invalid input")
-                # TODO: Change this to work with publish?
+            except TypeError as e:
+                raise InvalidArgumentValueError(
+                    "The input file provided contains an incorrect input.\n"
+                    f"Please fix the problem parameter:\n{e}") from e
+            # Validate config before getting processor list,
+            # in case error with input artifacts i.e helm package
+            self.config.validate()
+            self.processors = self._get_processor_list()
+        # If all_deploy.parameters.json file provided (therefore if publish/delete command run)
+        elif all_deploy_params_file_path:
+            try:
+                self.config = self._get_params_config(all_deploy_params_file_path)
+            except TypeError as e:
+                raise InvalidArgumentValueError(
+                    "The all_deploy.parameters.json in the folder "
+                    "provided contains an incorrect input.\nPlease check if you have provided "
+                    f"the correct folder for the definition/design type:\n{e}") from e
         # If no config file provided (for generate-config)
         else:
             self.config = self._get_input_config()
@@ -175,11 +181,16 @@ class OnboardingBaseCLIHandler(ABC):
 
         Returns config as dictionary.
         """
-        lines = input_json_path.read_text().splitlines()
-        lines = [line for line in lines if not line.strip().startswith("//")]
-        config_dict = json.loads("".join(lines))
-
-        return config_dict
+        try:
+            lines = input_json_path.read_text().splitlines()
+            lines = [line for line in lines if not line.strip().startswith("//")]
+            config_dict = json.loads("".join(lines))
+            return config_dict
+        except FileNotFoundError as e:
+            raise UnclassifiedUserFault(f"Invalid config file provided.\nError: {e} ") from e
+        except JSONDecodeError as e:
+            raise UnclassifiedUserFault("Invalid JSON found in the config file provided.\n"
+                                        f"Error: {e} ") from e
 
     @staticmethod
     def _render_base_bicep_contents(template_path):
@@ -192,50 +203,6 @@ class OnboardingBaseCLIHandler(ABC):
 
         bicep_contents: str = template.render()
         return bicep_contents
-
-    @staticmethod
-    def _render_definition_bicep_contents(template_path: Path, params):
-        """Write the definition bicep file from given template."""
-        with open(template_path, "r", encoding="UTF-8") as f:
-            template: Template = Template(
-                f.read(),
-                undefined=StrictUndefined,
-            )
-
-        bicep_contents: str = template.render(params)
-        return bicep_contents
-
-    @staticmethod
-    def _render_manifest_bicep_contents(
-        template_path: Path,
-        acr_artifact_list: list,
-        sa_artifact_list: Optional[list] = None,
-    ):
-        """Write the manifest bicep file from given template.
-
-        Returns bicep content as string
-        """
-        with open(template_path, "r", encoding="UTF-8") as f:
-            template: Template = Template(
-                f.read(),
-                undefined=StrictUndefined,
-            )
-
-        bicep_contents: str = template.render(
-            acr_artifacts=acr_artifact_list, sa_artifacts=sa_artifact_list
-        )
-        return bicep_contents
-
-    @staticmethod
-    def _get_template_path(definition_type: str, template_name: str) -> Path:
-        """Get the path to a template."""
-        return (
-            Path(__file__).parent.parent
-            / "common"
-            / "templates"
-            / definition_type
-            / template_name
-        )
 
     def _serialize(self, dataclass, indent_count=1):
         """

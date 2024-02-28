@@ -7,12 +7,13 @@ from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
 
 from .common.constants import (
-    ARTIFACT_UPLOAD,
-    BICEP_PUBLISH,
     CNF,
+    VNF,
+    VNF_NEXUS,
+    BICEP_PUBLISH,
+    ARTIFACT_UPLOAD,
     HELM_TEMPLATE,
     IMAGE_UPLOAD,
-    VNF,
 )
 
 
@@ -23,7 +24,7 @@ def load_arguments(self: AzCommandsLoader, _):
         get_three_state_flag,
     )
 
-    definition_type = get_enum_type([VNF, CNF])
+    definition_type = get_enum_type([VNF, CNF, VNF_NEXUS])
     nf_skip_steps = get_enum_type(
         [BICEP_PUBLISH, ARTIFACT_UPLOAD, IMAGE_UPLOAD, HELM_TEMPLATE]
     )
@@ -36,7 +37,7 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument(
             "definition_type",
             arg_type=definition_type,
-            help="Type of AOSM definition.",
+            help="Type of AOSM definition to be published.",
             required=True,
         )
         c.argument(

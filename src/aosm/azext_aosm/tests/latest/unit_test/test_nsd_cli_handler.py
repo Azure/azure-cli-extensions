@@ -5,7 +5,7 @@
 # from azure.cli.core.azclierror import (
 #     UnclassifiedUserFault,
 # )
-# TODO: Fix tests with correct mocking for input()
+# # TODO: Fix tests with correct mocking for input()
 
 # @patch("pathlib.Path.exists")
 # class TestNsdCliHandler(TestCase):

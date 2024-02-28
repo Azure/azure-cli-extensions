@@ -11,6 +11,7 @@ from typing import Any, Dict
 VNF = "vnf"
 CNF = "cnf"
 NSD = "nsd"
+VNF_NEXUS = "vnf-nexus"
 
 
 class DeployableResourceTypes(str, Enum):
@@ -51,6 +52,7 @@ CGS_NAME = "ConfigGroupSchema"
 DEPLOYMENT_PARAMETERS_FILENAME = "deploymentParameters.json"
 TEMPLATE_PARAMETERS_FILENAME = "templateParameters.json"
 VHD_PARAMETERS_FILENAME = "vhdParameters.json"
+NEXUS_IMAGE_PARAMETERS_FILENAME = "imageParameters.json"
 
 NSD_OUTPUT_FOLDER_FILENAME = "nsd-cli-output"
 NSD_INPUT_FILENAME = "nsd-input.jsonc"
@@ -59,12 +61,14 @@ NSD_MANIFEST_TEMPLATE_FILENAME = "nsdartifactmanifest.bicep.j2"
 NSD_BASE_TEMPLATE_FILENAME = "nsdbase.bicep"
 NSD_TEMPLATE_FOLDER_NAME = "nsd"
 NSD_DEFINITION_FOLDER_NAME = "nsdDefinition"
+NSD_NF_TEMPLATE_FILENAME = "nf_template.bicep.j2"
 
 VNF_OUTPUT_FOLDER_FILENAME = "vnf-cli-output"
 VNF_INPUT_FILENAME = "vnf-input.jsonc"
 VNF_DEFINITION_TEMPLATE_FILENAME = "vnfdefinition.bicep.j2"
 VNF_MANIFEST_TEMPLATE_FILENAME = "vnfartifactmanifest.bicep.j2"
-VNF_BASE_TEMPLATE_FILENAME = "vnfbase.bicep"
+VNF_CORE_BASE_TEMPLATE_FILENAME = "vnfbase.bicep"
+VNF_NEXUS_BASE_TEMPLATE_FILENAME = "vnfnexusbase.bicep"
 VNF_TEMPLATE_FOLDER_NAME = "vnf"
 
 CNF_OUTPUT_FOLDER_FILENAME = "cnf-cli-output"
@@ -75,6 +79,8 @@ CNF_HELM_VALIDATION_ERRORS_TEMPLATE_FILENAME = "cnfhelmtemplateerrors.txt.j2"
 CNF_BASE_TEMPLATE_FILENAME = "cnfbase.bicep"
 CNF_VALUES_SCHEMA_FILENAME = "values.schema.json"
 CNF_TEMPLATE_FOLDER_NAME = "cnf"
+
+NEXUS_IMAGE_REGEX = r"^[\~]?(\d+)\.(\d+)\.(\d+)$"
 
 #################
 # OLD CONSTANTS #

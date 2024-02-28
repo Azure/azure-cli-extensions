@@ -8,37 +8,21 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 from knack.log import get_logger
-
+from azure.cli.core.azclierror import ResourceNotFoundError
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
-from azext_aosm.common.artifact import BaseArtifact, LocalFileACRArtifact
-from azext_aosm.common.constants import NSD_OUTPUT_FOLDER_FILENAME
+from azext_aosm.common.artifact import (BaseArtifact, LocalFileACRArtifact)
 from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.nfd_input import NFDInput
 from azext_aosm.vendored_sdks.models import (
-    ArmResourceDefinitionResourceElementTemplate,
-    ArtifactType,
-    DependsOnProfile,
-    ManifestArtifactFormat,
-    NetworkFunctionApplication,
-)
-from azext_aosm.vendored_sdks.models import (
-    NetworkFunctionDefinitionResourceElementTemplateDetails as NFDResourceElementTemplate,
-)
-from azext_aosm.vendored_sdks.models import (
-    NSDArtifactProfile,
-    ReferencedResource,
-    TemplateType,
-)
-
+    ArmResourceDefinitionResourceElementTemplate, ArtifactType,
+    DependsOnProfile, ManifestArtifactFormat, NetworkFunctionApplication,
+    NetworkFunctionDefinitionResourceElementTemplateDetails as
+    NFDResourceElementTemplate, NSDArtifactProfile,
+    ReferencedResource, TemplateType, ContainerizedNetworkFunctionDefinitionVersion,
+    VirtualNetworkFunctionDefinitionVersion)
+from azext_aosm.common.constants import NSD_OUTPUT_FOLDER_FILENAME, NSD_NF_TEMPLATE_FILENAME, NSD_TEMPLATE_FOLDER_NAME
+from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 logger = get_logger(__name__)
-
-NF_BICEP_TEMPLATE_PATH = (
-    Path(__file__).parent.parent / "common" / "templates" / "nf_template.bicep"
-)
-
-NF_BICEP_TEMPLATE_PATH = (
-    Path(__file__).parent.parent / "common" / "templates" / "nf_template.bicep"
-)
 
 
 class NFDProcessor(BaseInputProcessor):
@@ -85,17 +69,44 @@ class NFDProcessor(BaseInputProcessor):
         # Path is relative to NSD_OUTPUT_FOLDER_FILENAME as this artifact is stored in the NSD output folder
         artifact_details = LocalFileACRArtifact(
             artifact_name=self.input_artifact.artifact_name,
-            artifact_type=ArtifactType.OCI_ARTIFACT.value,
+            artifact_type=ArtifactType.ARM_TEMPLATE.value,
             artifact_version=self.input_artifact.artifact_version,
             file_path=self.input_artifact.arm_template_output_path.relative_to(
                 Path(NSD_OUTPUT_FOLDER_FILENAME)
             ),
         )
 
+        template_path = get_template_path(NSD_TEMPLATE_FOLDER_NAME, NSD_NF_TEMPLATE_FILENAME)
+
+        # This horrendous if statement is required because:
+        # - the 'properties' and 'network_function_template' attributes are optional
+        # - the isinstance check is because the base NetworkFunctionDefinitionVersionPropertiesFormat class
+        #   doesn't define the network_function_template attribute, even though both subclasses do.
+        # Not switching to EAFP style because mypy doesn't account for `except AttributeError` (for good reason).
+        # Similar test required in the NFD input, but we can't deduplicate the code because mypy doesn't
+        # propagate type narrowing from isinstance().
+        if (
+            self.input_artifact.network_function_definition.properties
+            and isinstance(
+                self.input_artifact.network_function_definition.properties,
+                (
+                    ContainerizedNetworkFunctionDefinitionVersion,
+                    VirtualNetworkFunctionDefinitionVersion,
+                ),
+            )
+            and self.input_artifact.network_function_definition.properties.network_function_template
+        ):
+            params = {
+                "nfvi_type":
+                self.input_artifact.network_function_definition.properties.network_function_template.nfvi_type
+            }
+        else:
+            raise ResourceNotFoundError("The NFDV provided has no nfvi type.")
+        bicep_contents = render_bicep_contents_from_j2(template_path, params)
         # Create a local file builder for the ARM template
         file_builder = LocalFileBuilder(
             self.input_artifact.arm_template_output_path,
-            NF_BICEP_TEMPLATE_PATH.read_text(),
+            bicep_contents,
         )
 
         return [artifact_details], [file_builder]

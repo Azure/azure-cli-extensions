@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Tuple
 
 from knack.log import get_logger
-
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azext_aosm.common.artifact import BaseArtifact
 from azext_aosm.common.constants import CGS_NAME
 from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
@@ -98,8 +98,7 @@ class BaseInputProcessor(ABC):
         )
 
         params_schema = json.loads(base_params_schema)
-        # print(json.dumps(self.input_artifact.get_schema(), indent=4))
-        # print(json.dumps(self.input_artifact.get_defaults(), indent=4))
+
         self._generate_schema(
             params_schema[self.name],
             self.input_artifact.get_schema(),
@@ -185,6 +184,20 @@ class BaseInputProcessor(ABC):
 
         # Loop through each property in the schema.
         for subschema_name, subschema in schema["properties"].items():
+
+            if "type" not in subschema:
+                if ["oneOf", "anyOf"] in subschema:
+                    raise InvalidArgumentValueError(
+                        f"The subschema '{subschema_name}' does not contain a type.\n"
+                        "It contains 'anyOf' or 'oneOf' logic, which is not valid for AOSM.\n"
+                        "Please remove this from your values.schema.json and provide a concrete type "
+                        "or remove the schema and the CLI will generate a generic schema."
+                    )
+                raise InvalidArgumentValueError(
+                    f"The subschema {subschema_name} does not contain a type. This is a required field.\n"
+                    "Please fix your values.schema.json or remove the schema and the CLI will generate a "
+                    "generic schema."
+                )
             # If the property is not in the values, and is required, add it to the values.
             if (
                 "required" in schema

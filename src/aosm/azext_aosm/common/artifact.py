@@ -9,24 +9,26 @@ import subprocess
 from abc import ABC, abstractmethod
 from functools import lru_cache
 from pathlib import Path
+import tempfile
 from time import sleep
 from typing import Any, MutableMapping, Optional
 
-from knack.log import get_logger
-from knack.util import CLIError
-from oras.client import OrasClient
-
-from azext_aosm.common.command_context import CommandContext
-from azext_aosm.common.utils import convert_bicep_to_arm
 from azext_aosm.configuration_models.common_parameters_config import (
     BaseCommonParametersConfig,
-    VNFCommonParametersConfig,
+    NFDCommonParametersConfig,
+    CoreVNFCommonParametersConfig
 )
-from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm.vendored_sdks.azure_storagev2.blob.v2022_11_02 import (
     BlobClient,
     BlobType,
 )
+from azext_aosm.vendored_sdks.models import ArtifactType
+from azext_aosm.vendored_sdks import HybridNetworkManagementClient
+from azext_aosm.common.command_context import CommandContext
+from azext_aosm.common.utils import convert_bicep_to_arm
+from knack.util import CLIError
+from knack.log import get_logger
+from oras.client import OrasClient
 
 logger = get_logger(__name__)
 
@@ -187,32 +189,107 @@ class LocalFileACRArtifact(BaseACRArtifact):
         target_acr = self._get_acr(oras_client)
         target = f"{target_acr}/{self.artifact_name}:{self.artifact_version}"
         logger.debug("Uploading %s to %s", self.file_path, target)
-        retries = 0
-        while True:
-            try:
-                oras_client.push(files=[self.file_path], target=target)
-                break
-            except ValueError as error:
-                if retries < 20:
-                    logger.info(
-                        "Retrying pushing local artifact to ACR. Retries so far: %s",
-                        retries,
+
+        if self.artifact_type == ArtifactType.ARM_TEMPLATE.value:
+            retries = 0
+            while True:
+                try:
+                    oras_client.push(files=[self.file_path], target=target)
+                    break
+                except ValueError as error:
+                    if retries < 20:
+                        logger.info(
+                            "Retrying pushing local artifact to ACR. Retries so far: %s",
+                            retries,
+                        )
+                        retries += 1
+                        sleep(3)
+                        continue
+
+                    logger.error(
+                        "Failed to upload %s to %s. Check if this image exists in the"
+                        " source registry %s.",
+                        self.file_path,
+                        target,
+                        target_acr,
                     )
-                    retries += 1
-                    sleep(3)
-                    continue
+                    logger.debug(error, exc_info=True)
+                    raise error
 
-                logger.error(
-                    "Failed to upload %s to %s. Check if this image exists in the"
-                    " source registry %s.",
-                    self.file_path,
-                    target,
-                    target_acr,
-                )
-                logger.debug(error, exc_info=True)
-                raise error
+            logger.info("LocalFileACRArtifact uploaded %s to %s using oras push", self.file_path, target)
 
-        logger.info("LocalFileACRArtifact uploaded %s to %s", self.file_path, target)
+        elif self.artifact_type == ArtifactType.OCI_ARTIFACT.value:
+
+            target_acr_name = target_acr.replace(".azurecr.io", "")
+            target_acr_with_protocol = f"oci://{target_acr}"
+            username = manifest_credentials["username"]
+            password = manifest_credentials["acr_token"]
+
+            self._check_tool_installed("docker")
+            self._check_tool_installed("helm")
+
+            # tmpdir is only used if file_path is dir, but `with` context manager is cleaner to use, so we always
+            # set up the tmpdir, even if it doesn't end up being used.
+            with tempfile.TemporaryDirectory() as tmpdir:
+                if self.file_path.is_dir():
+                    helm_package_cmd = [
+                        str(shutil.which("helm")),
+                        "package",
+                        self.file_path,
+                        "--destination",
+                        tmpdir,
+                    ]
+                    self._call_subprocess_raise_output(helm_package_cmd)
+                    self.file_path = Path(tmpdir, f"{self.artifact_name}-{self.artifact_version}.tgz")
+
+                # This seems to prevent occasional helm login failures
+                acr_login_cmd = [
+                    str(shutil.which("az")),
+                    "acr",
+                    "login",
+                    "--name",
+                    target_acr_name,
+                    "--username",
+                    username,
+                    "--password",
+                    password,
+                ]
+                self._call_subprocess_raise_output(acr_login_cmd)
+
+                try:
+                    helm_login_cmd = [
+                        str(shutil.which("helm")),
+                        "registry",
+                        "login",
+                        target_acr,
+                        "--username",
+                        username,
+                        "--password",
+                        password,
+                    ]
+                    self._call_subprocess_raise_output(helm_login_cmd)
+
+                    push_command = [
+                        str(shutil.which("helm")),
+                        "push",
+                        self.file_path,
+                        target_acr_with_protocol,
+                    ]
+                    self._call_subprocess_raise_output(push_command)
+                finally:
+                    helm_logout_cmd = [
+                        str(shutil.which("helm")),
+                        "registry",
+                        "logout",
+                        target_acr,
+                    ]
+                    self._call_subprocess_raise_output(helm_logout_cmd)
+
+            logger.info("LocalFileACRArtifact uploaded %s to %s using helm push", self.file_path, target)
+
+        else:  # TODO: Make this one of the allowed Azure CLI exceptions
+            raise ValueError(f"Unexpected artifact type. Got {self.artifact_type}. "
+                             "Expected {ArtifactType.ARM_TEMPLATE.value} or {ArtifactType.OCI_ARTIFACT.value}")
 
 
 class RemoteACRArtifact(BaseACRArtifact):
@@ -553,7 +630,7 @@ class BaseStorageAccountArtifact(BaseArtifact):
         """Upload the artifact."""
 
     def _get_blob_client(
-        self, config: VNFCommonParametersConfig, command_context: CommandContext
+        self, config: BaseCommonParametersConfig, command_context: CommandContext
     ) -> BlobClient:
         container_basename = self.artifact_name.replace("-", "")
         container_name = f"{container_basename}-{self.artifact_version}"
@@ -564,7 +641,9 @@ class BaseStorageAccountArtifact(BaseArtifact):
             blob_name = container_name
 
         logger.debug("container name: %s, blob name: %s", container_name, blob_name)
-
+        # Liskov substitution dictates we must accept BaseCommonParametersConfig, but we should
+        # never be calling upload on this class unless we've got CoreVNFCommonParametersConfig
+        assert isinstance(config, CoreVNFCommonParametersConfig)
         manifest_credentials = (
             command_context.aosm_client.artifact_manifests.list_credential(
                 resource_group_name=config.publisherResourceGroupName,
@@ -597,8 +676,8 @@ class LocalFileStorageAccountArtifact(BaseStorageAccountArtifact):
     ):
         """Upload the artifact."""
         # Liskov substitution dictates we must accept BaseCommonParametersConfig, but we should
-        # never be calling upload on this class unless we've got VNFCommonParametersConfig
-        assert isinstance(config, VNFCommonParametersConfig)
+        # never be calling upload on this class unless we've got NFDCommonParametersConfig
+        assert isinstance(config, NFDCommonParametersConfig)
         logger.debug("LocalFileStorageAccountArtifact config: %s", config)
         blob_client = self._get_blob_client(
             config=config, command_context=command_context
@@ -653,8 +732,8 @@ class BlobStorageAccountArtifact(BaseStorageAccountArtifact):
     ):
         """Upload the artifact."""
         # Liskov substitution dictates we must accept BaseCommonParametersConfig, but we should
-        # never be calling upload on this class unless we've got VNFCommonParametersConfig
-        assert isinstance(config, VNFCommonParametersConfig)
+        # never be calling upload on this class unless we've got NFDCommonParametersConfig
+        assert isinstance(config, NFDCommonParametersConfig)
         logger.info("Copy from SAS URL to blob store")
         source_blob = BlobClient.from_blob_url(self.blob_sas_uri)
 

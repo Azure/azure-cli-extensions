@@ -4,33 +4,40 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+from pathlib import Path
 from abc import abstractmethod
 from typing import List, Tuple, final
 
 from knack.log import get_logger
 
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
-from azext_aosm.common.artifact import BaseArtifact, LocalFileACRArtifact
+from azext_aosm.common.artifact import (BaseArtifact, LocalFileACRArtifact)
 from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 from azext_aosm.vendored_sdks.models import (
-    ApplicationEnablement,
-    ArmResourceDefinitionResourceElementTemplate,
+    ArtifactType,
+    AzureOperatorNexusNetworkFunctionArmTemplateApplication,
+    ApplicationEnablement, ArmResourceDefinitionResourceElementTemplate,
     ArmResourceDefinitionResourceElementTemplateDetails,
     ArmTemplateArtifactProfile,
     ArmTemplateMappingRuleProfile,
     AzureCoreArmTemplateArtifactProfile,
+    NetworkFunctionApplication, NSDArtifactProfile,
+    ResourceElementTemplate, TemplateType, AzureOperatorNexusArtifactType,
+    AzureOperatorNexusArmTemplateDeployMappingRuleProfile, AzureOperatorNexusArmTemplateArtifactProfile,
     AzureCoreArmTemplateDeployMappingRuleProfile,
     AzureCoreArtifactType,
     AzureCoreNetworkFunctionArmTemplateApplication,
     DependsOnProfile,
     ManifestArtifactFormat,
-    NetworkFunctionApplication,
-    NSDArtifactProfile,
     ReferencedResource,
-    ResourceElementTemplate,
-    TemplateType,
 )
+
+from azext_aosm.common.constants import (
+    VNF_OUTPUT_FOLDER_FILENAME,
+    NF_DEFINITION_FOLDER_NAME,
+    TEMPLATE_PARAMETERS_FILENAME)
+
 
 logger = get_logger(__name__)
 
@@ -71,7 +78,7 @@ class BaseArmBuildProcessor(BaseInputProcessor):
         return [
             ManifestArtifactFormat(
                 artifact_name=self.input_artifact.artifact_name,
-                artifact_type=AzureCoreArtifactType.ARM_TEMPLATE.value,
+                artifact_type=ArtifactType.ARM_TEMPLATE.value,
                 artifact_version=self.input_artifact.artifact_version,
             )
         ]
@@ -93,7 +100,7 @@ class BaseArmBuildProcessor(BaseInputProcessor):
             [
                 LocalFileACRArtifact(
                     artifact_name=self.input_artifact.artifact_name,
-                    artifact_type=AzureCoreArtifactType.ARM_TEMPLATE.value,
+                    artifact_type=ArtifactType.ARM_TEMPLATE.value,
                     artifact_version=self.input_artifact.artifact_version,
                     file_path=self.input_artifact.template_path,
                 )
@@ -105,22 +112,15 @@ class BaseArmBuildProcessor(BaseInputProcessor):
     def generate_nf_application(self) -> NetworkFunctionApplication:
         return self.generate_nfvi_specific_nf_application()
 
-    def generate_artifact_profile(self) -> AzureCoreArmTemplateArtifactProfile:
-        artifact_profile = ArmTemplateArtifactProfile(
-            template_name=self.input_artifact.artifact_name,
-            template_version=self.input_artifact.artifact_version,
-        )
-        return AzureCoreArmTemplateArtifactProfile(
-            artifact_store=ReferencedResource(id=""),
-            template_artifact_profile=artifact_profile,
-        )
-
     @abstractmethod
     def generate_nfvi_specific_nf_application(self):
         pass
 
     def generate_resource_element_template(self) -> ResourceElementTemplate:
-        """Generate the resource element template."""
+        """Generate the resource element template.
+
+        Note: There is no Nexus specific RET
+        """
         parameter_values = self.generate_values_mappings(
             self.input_artifact.get_schema(), self.input_artifact.get_defaults(), True
         )
@@ -143,11 +143,31 @@ class BaseArmBuildProcessor(BaseInputProcessor):
             ),
         )
 
+    def generate_parameters_file(self) -> LocalFileBuilder:
+        """Generate parameters file."""
+        mapping_rule_profile = self._generate_mapping_rule_profile()
+        params = (
+            mapping_rule_profile.template_mapping_rule_profile.template_parameters
+        )
+        logger.info(
+            "Created parameters file for arm template."
+        )
+        return LocalFileBuilder(
+            Path(
+                VNF_OUTPUT_FOLDER_FILENAME,
+                NF_DEFINITION_FOLDER_NAME,
+                self.input_artifact.artifact_name + '-' + TEMPLATE_PARAMETERS_FILENAME,
+            ),
+            json.dumps(json.loads(params), indent=4),
+        )
+
+    @abstractmethod
+    def _generate_mapping_rule_profile(self):
+        pass
+
 
 class AzureCoreArmBuildProcessor(BaseArmBuildProcessor):
-    """
-    This class represents an ARM template processor for Azure Core.
-    """
+    """This class represents an ARM template processor for Azure Core."""
 
     def generate_nfvi_specific_nf_application(
         self,
@@ -158,7 +178,7 @@ class AzureCoreArmBuildProcessor(BaseArmBuildProcessor):
                 install_depends_on=[], uninstall_depends_on=[], update_depends_on=[]
             ),
             artifact_type=AzureCoreArtifactType.ARM_TEMPLATE,
-            artifact_profile=self.generate_artifact_profile(),
+            artifact_profile=self._generate_artifact_profile(),
             deploy_parameters_mapping_rule_profile=self._generate_mapping_rule_profile(),
         )
 
@@ -178,11 +198,55 @@ class AzureCoreArmBuildProcessor(BaseArmBuildProcessor):
             template_mapping_rule_profile=mapping_profile,
         )
 
+    def _generate_artifact_profile(self) -> AzureCoreArmTemplateArtifactProfile:
+        artifact_profile = ArmTemplateArtifactProfile(
+            template_name=self.input_artifact.artifact_name,
+            template_version=self.input_artifact.artifact_version,
+        )
+        return AzureCoreArmTemplateArtifactProfile(
+            artifact_store=ReferencedResource(id=""),
+            template_artifact_profile=artifact_profile,
+        )
+
 
 class NexusArmBuildProcessor(BaseArmBuildProcessor):
     """
-    Not implemented yet. This class represents a processor for generating ARM templates specific to Nexus.
+    This class represents a processor for generating ARM templates specific to Nexus.
     """
+    def generate_nfvi_specific_nf_application(
+        self,
+    ) -> AzureOperatorNexusNetworkFunctionArmTemplateApplication:
+        return AzureOperatorNexusNetworkFunctionArmTemplateApplication(
+            name=self.name,
+            depends_on_profile=DependsOnProfile(install_depends_on=[],
+                                                uninstall_depends_on=[], update_depends_on=[]),
+            artifact_type=AzureOperatorNexusArtifactType.ARM_TEMPLATE,
+            artifact_profile=self._generate_artifact_profile(),
+            deploy_parameters_mapping_rule_profile=self._generate_mapping_rule_profile(),
+        )
 
-    def generate_nfvi_specific_nf_application(self):
-        return NotImplementedError
+    def _generate_mapping_rule_profile(
+        self,
+    ) -> AzureOperatorNexusArmTemplateDeployMappingRuleProfile:
+        template_parameters = self.generate_values_mappings(
+            self.input_artifact.get_schema(), self.input_artifact.get_defaults()
+        )
+
+        mapping_profile = ArmTemplateMappingRuleProfile(
+            template_parameters=json.dumps(template_parameters)
+        )
+
+        return AzureOperatorNexusArmTemplateDeployMappingRuleProfile(
+            application_enablement=ApplicationEnablement.ENABLED,
+            template_mapping_rule_profile=mapping_profile,
+        )
+
+    def _generate_artifact_profile(self) -> AzureOperatorNexusArmTemplateArtifactProfile:
+        artifact_profile = ArmTemplateArtifactProfile(
+            template_name=self.input_artifact.artifact_name,
+            template_version=self.input_artifact.artifact_version,
+        )
+        return AzureOperatorNexusArmTemplateArtifactProfile(
+            artifact_store=ReferencedResource(id=""),
+            template_artifact_profile=artifact_profile,
+        )

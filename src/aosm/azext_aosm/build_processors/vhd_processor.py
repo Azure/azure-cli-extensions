@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+from pathlib import Path
 import json
 from typing import List, Tuple
 
@@ -12,7 +12,7 @@ from azext_aosm.build_processors.base_processor import BaseInputProcessor
 from azext_aosm.common.artifact import (
     BaseArtifact,
     BlobStorageAccountArtifact,
-    LocalFileStorageAccountArtifact,
+    LocalFileStorageAccountArtifact
 )
 from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.vhd_file_input import VHDFileInput
@@ -29,6 +29,10 @@ from azext_aosm.vendored_sdks.models import (
     VhdImageArtifactProfile,
     VhdImageMappingRuleProfile,
 )
+from azext_aosm.common.constants import (
+    VNF_OUTPUT_FOLDER_FILENAME,
+    NF_DEFINITION_FOLDER_NAME,
+    VHD_PARAMETERS_FILENAME)
 
 logger = get_logger(__name__)
 
@@ -132,7 +136,8 @@ class VHDProcessor(BaseInputProcessor):
 
         :raises NotImplementedError: NSDs do not support deployment of VHDs.
         """
-        raise NotImplementedError("NSDs do not support deployment of VHDs.")
+        raise NotImplementedError("NSDs do not support deployment of VHDs directly, "
+                                  "they must be provided in the NF.")
 
     def _generate_artifact_profile(self) -> AzureCoreVhdImageArtifactProfile:
         """
@@ -173,4 +178,28 @@ class VHDProcessor(BaseInputProcessor):
         return AzureCoreVhdImageDeployMappingRuleProfile(
             application_enablement=ApplicationEnablement.ENABLED,
             vhd_image_mapping_rule_profile=mapping,
+        )
+
+    def generate_parameters_file(self) -> LocalFileBuilder:
+        """ Generate parameters file. """
+        mapping_rule_profile = self._generate_mapping_rule_profile()
+        if (mapping_rule_profile.vhd_image_mapping_rule_profile
+           and mapping_rule_profile.vhd_image_mapping_rule_profile.user_configuration):
+            params = (
+                mapping_rule_profile.vhd_image_mapping_rule_profile.user_configuration
+            )
+        # We still want to create an empty params file,
+        # otherwise the nf definition bicep will refer to files that don't exist
+        else:
+            params = '{}'
+        logger.info(
+            "Created parameters file for Nexus image."
+        )
+        return LocalFileBuilder(
+            Path(
+                VNF_OUTPUT_FOLDER_FILENAME,
+                NF_DEFINITION_FOLDER_NAME,
+                VHD_PARAMETERS_FILENAME,
+            ),
+            json.dumps(json.loads(params), indent=4),
         )
