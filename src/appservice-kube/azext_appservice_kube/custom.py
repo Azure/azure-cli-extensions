@@ -361,11 +361,14 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
                            cmd=cmd, resource_group_name=resource_group_name,
                            name=name, kube_environment_envelope=kube_environment)
     except Exception as e:
+        msg = ""
         try:
             msg = json.loads(e.response._content)['Message']
-            raise ValidationError(msg)
         except Exception as e2:
             raise e from e2
+        if msg != "":
+            raise ValidationError(msg) from e
+        raise e
 
 
 def list_kube_environments(cmd, resource_group_name=None):
