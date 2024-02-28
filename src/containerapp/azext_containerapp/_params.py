@@ -68,13 +68,13 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env telemetry data-dog set') as c:
         c.argument('site', options_list=['--site'], help='Specify the data dog site')
         c.argument('key', options_list=['--key'], help='Specify the data dog api key')
-        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry traces')
-        c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry metrics')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '--enable-otel-traces'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry traces')
+        c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '--enable-otel-metrics'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry metrics')
 
     with self.argument_context('containerapp env telemetry app-insights set') as c:
         c.argument('connection_string', options_list=['--connection-string'], help='Application Insights connection string used by container apps environment')
-        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry traces')
-        c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry logs')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '--enable-otel-traces'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry traces')
+        c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '--enable-otel-logs'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry logs')
 
     # Storage
     with self.argument_context('containerapp env storage') as c:
