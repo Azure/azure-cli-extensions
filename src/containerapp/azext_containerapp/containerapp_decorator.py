@@ -53,7 +53,7 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file)
-from ._utils import parse_service_bindings, check_unique_bindings
+from ._utils import parse_service_bindings, check_unique_bindings, is_valid_java_component_resource_id
 from ._validators import validate_create
 
 from ._constants import (HELLO_WORLD_IMAGE,
@@ -792,6 +792,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                                                                                             self.get_argument_service_bindings(),
                                                                                             self.get_argument_resource_group_name(),
                                                                                             self.get_argument_name(),
+                                                                                            safe_get(self.containerapp_def, "properties", "environmentId"),
                                                                                             self.get_argument_customized_keys())
             self.set_argument_service_connectors_def_list(service_connectors_def_list)
             unique_bindings = check_unique_bindings(self.cmd, service_connectors_def_list, service_bindings_def_list,
@@ -1121,7 +1122,12 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         if self.get_argument_service_bindings() is not None:
             linker_client = get_linker_client(self.cmd)
 
-            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd, self.get_argument_service_bindings(), self.get_argument_resource_group_name(), self.get_argument_name(), self.get_argument_customized_keys())
+            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd,
+                                                                                            self.get_argument_service_bindings(),
+                                                                                            self.get_argument_resource_group_name(),
+                                                                                            self.get_argument_name(),
+                                                                                            safe_get(self.containerapp_def, "properties", "environmentId"),
+                                                                                            self.get_argument_customized_keys())
             self.set_argument_service_connectors_def_list(service_connectors_def_list)
             service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
 
@@ -1169,11 +1175,20 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 new_template["serviceBinds"] = existing_template.get("serviceBinds", [])
 
             service_bindings_dict = {}
+            java_component_name_set = {}
             if new_template["serviceBinds"]:
                 service_bindings_dict = {service_binding["name"]: index for index, service_binding in
                                          enumerate(new_template.get("serviceBinds", []))}
+                java_component_name_set = {binding["name"].replace('_', '-') for binding in new_template["serviceBinds"]
+                                           if is_valid_java_component_resource_id(binding["serviceId"])}
 
             for item in self.get_argument_unbind_service_bindings():
+
+                # If resource is Java component, will automatically change the '-' in binding name to '_'
+                if item in java_component_name_set and '-' in item:
+                    logger.info("automatically change the '-' in binding name of Java component to '_'.")
+                    item = item.replace('-', '_')
+
                 if item in service_bindings_dict:
                     new_template["serviceBinds"] = [binding for binding in new_template["serviceBinds"] if
                                                     binding["name"] != item]

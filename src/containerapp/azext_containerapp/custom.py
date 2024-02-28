@@ -19,7 +19,8 @@ from azure.cli.core.azclierror import (
     ValidationError,
     CLIError,
     CLIInternalError,
-    InvalidArgumentValueError)
+    InvalidArgumentValueError,
+    ResourceNotFoundError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
@@ -46,6 +47,8 @@ from knack.prompting import prompt_y_n
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
+from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
+    ContainerappEnvCertificateUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
@@ -65,7 +68,8 @@ from .daprcomponent_resiliency_decorator import (
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
-from ._client_factory import handle_raw_exception
+from .java_component_decorator import JavaComponentDecorator
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
     GitHubActionPreviewClient,
     ContainerAppPreviewClient,
@@ -79,7 +83,8 @@ from ._clients import (
     ConnectedEnvDaprComponentClient,
     ConnectedEnvironmentClient,
     ConnectedEnvStorageClient,
-    ConnectedEnvCertificateClient
+    ConnectedEnvCertificateClient,
+    JavaComponentPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -99,7 +104,8 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
-                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE)
+                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE,
+                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA)
 
 
 logger = get_logger(__name__)
@@ -1250,8 +1256,33 @@ def create_managed_certificate(cmd, name, resource_group_name, hostname, validat
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
-    from azure.cli.command_modules.containerapp.custom import list_certificates_logic
-    return list_certificates_logic(cmd, name, resource_group_name, location, certificate, thumbprint, managed_certificates_only=managed_certificates_only, private_key_certificates_only=private_key_certificates_only)
+    raw_parameters = locals()
+
+    containerapp_env_certificate_list_decorator = ContainerappPreviewEnvCertificateListDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_certificate_list_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_certificate_list_decorator.validate_arguments()
+
+    return containerapp_env_certificate_list_decorator.list()
+
+
+def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+    raw_parameters = locals()
+
+    containerapp_env_certificate_upload_decorator = ContainerappEnvCertificateUploadDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_certificate_upload_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_certificate_upload_decorator.construct_payload()
+
+    return containerapp_env_certificate_upload_decorator.create_or_update()
 
 
 def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
@@ -2173,3 +2204,109 @@ def show_env_managed_identity(cmd, name, resource_group_name):
         r["identity"] = {}
         r["identity"]["type"] = "None"
         return r["identity"]
+
+
+def list_java_components(cmd, environment_name, resource_group_name):
+    raw_parameters = locals()
+    java_component_decorator = JavaComponentDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return java_component_decorator.list()
+
+
+def show_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type):
+    raw_parameters = locals()
+    java_component_decorator = JavaComponentDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    result = java_component_decorator.show()
+
+    current_type = safe_get(result, "properties", "componentType")
+    if current_type and target_java_component_type.lower() != current_type.lower():
+        raise ResourceNotFoundError(f"(JavaComponentNotFound) JavaComponent '{java_component_name}' was not found.")
+
+    return result
+
+
+def delete_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, no_wait):
+    raw_parameters = locals()
+    java_component_decorator = JavaComponentDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    result = None
+    try:
+        result = java_component_decorator.client.show(cmd, resource_group_name, environment_name, java_component_name)
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
+
+    current_type = safe_get(result, "properties", "componentType")
+    if current_type and target_java_component_type.lower() != current_type.lower():
+        raise ResourceNotFoundError(f"(JavaComponentNotFound) JavaComponent '{java_component_name}' was not found.")
+
+    return java_component_decorator.delete()
+
+
+def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait):
+    raw_parameters = locals()
+    java_component_decorator = JavaComponentDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    java_component_decorator.construct_payload()
+    return java_component_decorator.create()
+
+
+def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait):
+    raw_parameters = locals()
+    java_component_decorator = JavaComponentDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    java_component_decorator.construct_payload()
+    return java_component_decorator.update()
+
+
+def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
+
+
+def update_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
+
+
+def show_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name):
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG)
+
+
+def delete_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
+
+
+def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
+
+
+def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
+
+
+def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name):
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA)
+
+
+def delete_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)
