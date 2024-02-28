@@ -330,7 +330,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             pod_ip_allocation_mode="StaticBlock"
         )
         ctx_1.attach_agentpool(agentpool_1)
-        self.assertEqual(ctx_1.get_pod_ip_allocation_mode(), "None")
+        self.assertEqual(ctx_1.get_pod_ip_allocation_mode(), None)
 
         # default to raw even if agentpool has different value
         ctx_2 = AKSPreviewAgentPoolContext(
