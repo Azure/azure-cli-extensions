@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long
 import time
 
 from binascii import hexlify
@@ -363,9 +363,9 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
     except Exception as e:
         try:
             msg = json.loads(e.response._content)['Message']
+            raise ValidationError(msg)
         except Exception as e2:
             raise e from e2
-    raise ValidationError(msg)
 
 
 def list_kube_environments(cmd, resource_group_name=None):
@@ -492,7 +492,7 @@ def _check_custom_location_exists(cmd, name, resource_group):
         custom_location_client.custom_locations.get(resource_name=name, resource_group_name=resource_group)
     except E as e:
         custom_locations = [cl.id for cl in custom_location_client.custom_locations.list_by_subscription()]
-        logger.warning(f"\nPlease choose a custom location from your subscription: \n{custom_locations}\n")
+        logger.warning("\nPlease choose a custom location from your subscription: \n%s\n", custom_locations)
         raise e
 
 
@@ -696,8 +696,8 @@ def list_runtimes_kube(cmd, os_type=None, linux=True, is_kube=False):
     if is_kube:
         runtime_helper = _AppOnArcStackRuntimeHelper(cmd=cmd, linux=True, windows=False)
         return runtime_helper.get_stack_names_only(delimiter=":")
-    else:
-        return list_runtimes(cmd, os_type, linux)
+
+    return list_runtimes(cmd, os_type, linux)
 
 
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
@@ -985,7 +985,7 @@ def set_webapp(cmd, resource_group_name, name, slot=None, **kwargs):  # pylint: 
     instance = kwargs['parameters']
     client = web_client_factory(cmd.cli_ctx)
     updater = client.web_apps.begin_create_or_update_slot if slot else client.web_apps.begin_create_or_update
-    kwargs = dict(resource_group_name=resource_group_name, name=name, site_envelope=instance)
+    kwargs = {"resource_group_name": resource_group_name, "name": name, "site_envelope": instance}
     if slot:
         kwargs['slot'] = slot
 
@@ -1050,7 +1050,7 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
     from azure.mgmt.web.models import Site
     SiteConfig, NameValuePair, SkuDescription = cmd.get_models('SiteConfig', 'NameValuePair', 'SkuDescription')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
-    disable_app_insights = (disable_app_insights == "true")
+    disable_app_insights = disable_app_insights == "true"
 
     custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
 
@@ -1120,7 +1120,7 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
     if not storage_account and not is_kube:
         raise ValidationError("--storage-account required for non-kubernetes function apps")
 
-    runtime_helper = _FunctionAppStackRuntimeHelper(cmd, linux=is_linux, windows=(not is_linux))
+    runtime_helper = _FunctionAppStackRuntimeHelper(cmd, linux=is_linux, windows=not is_linux)
     matched_runtime = runtime_helper.resolve("dotnet" if not runtime else runtime,
                                              runtime_version, functions_version, is_linux)
 
@@ -1401,7 +1401,7 @@ def config_source_control(cmd, resource_group_name, name, repo_url, repository_t
 
     source_control = SiteSourceControl(location=location, repo_url=repo_url, branch=branch,
                                        is_manual_integration=manual_integration,
-                                       is_mercurial=(repository_type != 'git'))
+                                       is_mercurial=repository_type != 'git')
 
     # SCC config can fail if previous commands caused SCMSite shutdown, so retry here.
     for i in range(5):
