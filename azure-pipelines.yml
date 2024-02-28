@@ -23,7 +23,12 @@ jobs:
     inputs:
       toolVersion: 2.1.17
       suppressionsFile: './scripts/ci/credscan/CredScanSuppressions.json'
-      verboseOutput: true
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@2
+    displayName: 'Post Analysis'
+    inputs:
+      GdnBreakAllTools: false
+      GdnBreakGdnToolCredScan: true
+      GdnBreakGdnToolCredScanSeverity: Error
 
 - job: PolicyCheck
   displayName: "Policy Check"
