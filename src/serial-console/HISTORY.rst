@@ -1,6 +1,10 @@
 Release History
 ===============
 
+0.1.7
+++++++
+New websocket authentication mechanism
+
 0.1.6
 ++++++
 * Fix pair region mapping for eastus to westus
