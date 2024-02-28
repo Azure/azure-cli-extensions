@@ -51,6 +51,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
+    CONST_SSH_ACCESS_LOCALUSER,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
@@ -95,6 +96,7 @@ from azure.cli.core.azclierror import (
     ClientRequestError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
+    RequiredArgumentMissingError,
 )
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -590,10 +592,10 @@ def aks_create(
     nodepool_allowed_host_ports=None,
     nodepool_asg_ids=None,
     node_public_ip_tags=None,
-    # guardrails parameters
-    guardrails_level=None,
-    guardrails_version=None,
-    guardrails_excluded_ns=None,
+    # safeguards parameters
+    safeguards_level=None,
+    safeguards_version=None,
+    safeguards_excluded_ns=None,
     # azure service mesh
     enable_azure_service_mesh=None,
     # azure monitor profile
@@ -615,6 +617,7 @@ def aks_create(
     storage_pool_sku=None,
     storage_pool_option=None,
     node_provisioning_mode=None,
+    ssh_access=CONST_SSH_ACCESS_LOCALUSER,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -783,10 +786,10 @@ def aks_update(
     disable_addon_autoscaling=False,
     cluster_snapshot_id=None,
     custom_ca_trust_certificates=None,
-    # guardrails parameters
-    guardrails_level=None,
-    guardrails_version=None,
-    guardrails_excluded_ns=None,
+    # safeguards parameters
+    safeguards_level=None,
+    safeguards_version=None,
+    safeguards_excluded_ns=None,
     enable_network_observability=None,
     disable_network_observability=None,
     # metrics profile
@@ -804,6 +807,7 @@ def aks_update(
     storage_pool_option=None,
     azure_container_storage_nodepools=None,
     node_provisioning_mode=None,
+    ssh_access=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1182,6 +1186,7 @@ def aks_agentpool_add(
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
+    ssh_access=CONST_SSH_ACCESS_LOCALUSER,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1235,6 +1240,8 @@ def aks_agentpool_update(
     asg_ids=None,
     enable_artifact_streaming=False,
     os_sku=None,
+    ssh_access=None,
+    yes=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1547,6 +1554,49 @@ def aks_agentpool_operation_abort(cmd,   # pylint: disable=unused-argument
         cluster_name,
         nodepool_name,
         headers=headers,
+    )
+
+
+def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
+                                  client,
+                                  resource_group_name,
+                                  cluster_name,
+                                  nodepool_name,
+                                  machine_names,
+                                  no_wait=False):
+    agentpool_exists = False
+    instances = client.list(resource_group_name, cluster_name)
+    for agentpool_profile in instances:
+        if agentpool_profile.name.lower() == nodepool_name.lower():
+            agentpool_exists = True
+            break
+
+    if not agentpool_exists:
+        raise ResourceNotFoundError(
+            f"Node pool {nodepool_name} doesn't exist, "
+            "use 'az aks nodepool list' to get current node pool list"
+        )
+
+    if len(machine_names) == 0:
+        raise RequiredArgumentMissingError(
+            "--machine-names doesn't provide, "
+            "use 'az aks machine list' to get current machine list"
+        )
+
+    AgentPoolDeleteMachinesParameter = cmd.get_models(
+        "AgentPoolDeleteMachinesParameter",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+
+    machines = AgentPoolDeleteMachinesParameter(machine_names=machine_names)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete_machines,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        machines,
     )
 
 

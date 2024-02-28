@@ -49,6 +49,11 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+    CONST_CUSTOM_CA_TEST_CERT,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
+    CONST_SSH_ACCESS_LOCALUSER,
 )
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolContext
 from azext_aks_preview.managed_cluster_decorator import (
@@ -243,79 +248,79 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_http_proxy_config()
 
-    def test_get_guardrails_level(self):
+    def test_get_safeguards_level(self):
         ctx1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"guardrails_level": None}),
+            AKSManagedClusterParamDict({"safeguards_level": None}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx1.get_guardrails_level(), None)
+        self.assertEqual(ctx1.get_safeguards_level(), None)
 
         ctx2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"guardrails_level": "Warning"}),
+            AKSManagedClusterParamDict({"safeguards_level": "Warning"}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.SafeguardsProfile(
+            safeguards_profile=self.models.SafeguardsProfile(
                 level="Warning", excluded_namespaces=None, version=""
             ),
         )
         ctx2.attach_mc(mc2)
-        self.assertEqual(ctx2.get_guardrails_level(), "Warning")
+        self.assertEqual(ctx2.get_safeguards_level(), "Warning")
 
-    def test_get_guardrails_version(self):
+    def test_get_safeguards_version(self):
         ctx1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"guardrails_version": None}),
+            AKSManagedClusterParamDict({"safeguards_version": None}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx1.get_guardrails_version(), None)
+        self.assertEqual(ctx1.get_safeguards_version(), None)
 
         ctx2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"guardrails_version": "v1.0.0"}),
+            AKSManagedClusterParamDict({"safeguards_version": "v1.0.0"}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
 
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.SafeguardsProfile(
+            safeguards_profile=self.models.SafeguardsProfile(
                 version="v1.0.0", level=None, excluded_namespaces=None
             ),
         )
         ctx2.attach_mc(mc2)
-        self.assertEqual(ctx2.get_guardrails_version(), "v1.0.0")
+        self.assertEqual(ctx2.get_safeguards_version(), "v1.0.0")
 
-    def test_get_guardrails_excluded_namespaces(self):
+    def test_get_safeguards_excluded_namespaces(self):
         ctx1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"guardrails_excluded_ns": None}),
+            AKSManagedClusterParamDict({"safeguards_excluded_ns": None}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx1.get_guardrails_excluded_namespaces(), None)
+        self.assertEqual(ctx1.get_safeguards_excluded_namespaces(), None)
 
         ctx2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"guardrails_excluded_ns": "ns1,ns2"}),
+            AKSManagedClusterParamDict({"safeguards_excluded_ns": "ns1,ns2"}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
 
         mc2 = self.models.ManagedCluster(
             location="test_location",
-            guardrails_profile=self.models.SafeguardsProfile(
+            safeguards_profile=self.models.SafeguardsProfile(
                 excluded_namespaces=["ns1", "ns2"], level=None, version=None
             ),
         )
         ctx2.attach_mc(mc2)
-        self.assertEqual(ctx2.get_guardrails_excluded_namespaces(), "ns1,ns2")
+        self.assertEqual(ctx2.get_safeguards_excluded_namespaces(), "ns1,ns2")
 
     def test_get_kube_proxy_config(self):
         # default
@@ -3884,7 +3889,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
         self.client = MockClient()
 
-    def test_set_up_guardrails_profile(self):
+    def test_set_up_safeguards_profile(self):
         # Base case - no options specified, SafeguardsProfile should be None
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd, self.client, {}, CUSTOM_MGMT_AKS_PREVIEW
@@ -3892,7 +3897,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         mc_1 = self.models.ManagedCluster(location="test_location")
         dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.set_up_guardrails_profile(mc_1)
+        dec_mc_1 = dec_1.set_up_safeguards_profile(mc_1)
         gt_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, gt_mc_1)
 
@@ -3901,16 +3906,16 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "guardrails_level": "Warning",
-                "guardrails_version": "v1.0.0",
-                "guardrails_excluded_ns": "ns1,ns2",
+                "safeguards_level": "Warning",
+                "safeguards_version": "v1.0.0",
+                "safeguards_excluded_ns": "ns1,ns2",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
 
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_guardrails_profile(mc_2)
+        dec_mc_2 = dec_2.set_up_safeguards_profile(mc_2)
         gt_mc_2 = self.models.ManagedCluster(location="test_location")
         gt_mc_2.safeguards_profile = self.models.SafeguardsProfile(
             level="Warning", version="v1.0.0", excluded_namespaces=["ns1", "ns2"]
@@ -4943,6 +4948,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             dec_mc_1 = dec_1.construct_mc_profile_preview()
 
         upgrade_settings_1 = self.models.AgentPoolUpgradeSettings()
+        # CLI will create sshAccess=localuser by default
+        ground_truth_security_profile = self.models.AgentPoolSecurityProfile()
+        ground_truth_security_profile.ssh_access = CONST_SSH_ACCESS_LOCALUSER
         agent_pool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
             name="nodepool1",
             orchestrator_version="",
@@ -4962,6 +4970,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
             network_profile=self.models.AgentPoolNetworkProfile(),
+            security_profile=ground_truth_security_profile,
         )
         ssh_config_1 = self.models.ContainerServiceSshConfiguration(
             public_keys=[self.models.ContainerServiceSshPublicKey(key_data=public_key)]
@@ -7693,7 +7702,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "dns_zone_resource_ids": "test_dns_zone_resource_id_1,test_dns_zone_resource_id_2",
+                "dns_zone_resource_ids": "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com, /subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                 "add_dns_zone": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
@@ -7714,8 +7723,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_1",
-                        "test_dns_zone_resource_id_2",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                     ],
                 )
             ),
@@ -7728,7 +7737,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "dns_zone_resource_ids": "test_dns_zone_resource_id_1",
+                "dns_zone_resource_ids": "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
                 "delete_dns_zone": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
@@ -7739,8 +7748,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_1",
-                        "test_dns_zone_resource_id_2",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                     ],
                 )
             ),
@@ -7751,7 +7760,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             ingress_profile=self.models.ManagedClusterIngressProfile(
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
-                    enabled=True, dns_zone_resource_ids=["test_dns_zone_resource_id_2"]
+                    enabled=True, dns_zone_resource_ids=["/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com"]
                 )
             ),
         )
@@ -7762,7 +7771,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "dns_zone_resource_ids": "test_dns_zone_resource_id_3,test_dns_zone_resource_id_4",
+                "dns_zone_resource_ids": "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/privateDnsZones/testdnszone_3.com,/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/privateDnsZones/testdnszone_4.com",
                 "update_dns_zone": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
@@ -7773,8 +7782,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_1",
-                        "test_dns_zone_resource_id_2",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                     ],
                 )
             ),
@@ -7788,8 +7797,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_3",
-                        "test_dns_zone_resource_id_4",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/privateDnsZones/testdnszone_3.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/privateDnsZones/testdnszone_4.com",
                     ],
                 )
             ),
@@ -7809,8 +7818,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_1",
-                        "test_dns_zone_resource_id_2",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                     ],
                 )
             ),
@@ -7823,47 +7832,15 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
                     dns_zone_resource_ids=[
-                        "test_dns_zone_resource_id_1",
-                        "test_dns_zone_resource_id_2",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_1.com",
+                        "/subscriptions/testsub/resourceGroups/testrg/providers/Microsoft.Network/dnsZones/testdnszone_2.com",
                     ],
                 )
             ),
         )
         self.assertEqual(dec_mc_7, ground_truth_mc_7)
 
-    def test_enable_disable_ai_toolchain_operator(self):
-        # Should not update mc if unset
-        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_0 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        dec_0.context.attach_mc(mc_0)
-        dec_mc_0 = dec_0.update_ai_toolchain_operator(mc_0)
-        ground_truth_mc_0 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        self.assertEqual(dec_mc_0, ground_truth_mc_0)
-
-        # Should error if both set
-        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"disable_ai_toolchain_operator": True, "enable_ai_toolchain_operator": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_6 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        dec_6.context.attach_mc(mc_6)
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            dec_6.update_ai_toolchain_operator(mc_6)
-
-            # update app routing with key vault
+        # update app routing with key vault
         from azure.cli.core.mock import DummyCli
         from azure.cli.core.commands import AzCliCommand
         from azure.cli.core import AzCommandsLoader
@@ -7921,6 +7898,38 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_8, ground_truth_mc_8)
+
+    def test_enable_disable_ai_toolchain_operator(self):
+        # Should not update mc if unset
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_ai_toolchain_operator(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Should error if both set
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_ai_toolchain_operator": True, "enable_ai_toolchain_operator": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_ai_toolchain_operator(mc_6)
 
     def test_update_mc_profile_preview(self):
         import inspect
