@@ -840,7 +840,7 @@ def cli_cosmosdb_create(cmd,
                                     enable_priority_based_execution=enable_priority_based_execution,
                                     default_priority_level=default_priority_level,
                                     enable_per_region_per_partition_autoscale=enable_per_region_per_partition_autoscale,
-                                    enable_partition_merge=enable_partition_merge
+                                    enable_partition_merge=enable_partition_merge,
                                     minimal_tls_version=minimal_tls_version)
 
 
