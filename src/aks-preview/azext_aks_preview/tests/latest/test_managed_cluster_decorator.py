@@ -4864,6 +4864,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_azure_service_mesh": True,
+                "revision": "asm-1-88"
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -4874,11 +4875,34 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             service_mesh_profile=self.models.ServiceMeshProfile(
-                mode="Istio", istio=self.models.IstioServiceMesh()
+                mode="Istio", istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-88"]
+                )
             ),
         )
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_service_mesh": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_azure_service_mesh_profile(mc_3)
+
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio", istio=self.models.IstioServiceMesh()
+            ),
+        )
+
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_set_up_app_routing_profile(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(

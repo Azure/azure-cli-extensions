@@ -673,6 +673,7 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
         )
+        c.argument("revision", validator=validate_azure_service_mesh_revision)
         c.argument("image_cleaner_interval_hours", type=int)
         c.argument(
             "cluster_snapshot_id",

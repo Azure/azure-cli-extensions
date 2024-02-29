@@ -599,6 +599,7 @@ def aks_create(
     safeguards_excluded_ns=None,
     # azure service mesh
     enable_azure_service_mesh=None,
+    revision=None,
     # azure monitor profile
     enable_azuremonitormetrics=False,
     enable_azure_monitor_metrics=False,

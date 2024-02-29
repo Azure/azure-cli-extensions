@@ -550,6 +550,9 @@ helps['aks create'] = f"""
         - name: --enable-asm --enable-azure-service-mesh
           type: bool
           short-summary: Enable Azure Service Mesh.
+        - name: --revision
+          type: string
+          short-summary: Azure Service Mesh revision to install.
         - name: --enable-azuremonitormetrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
