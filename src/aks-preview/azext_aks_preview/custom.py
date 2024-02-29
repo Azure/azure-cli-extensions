@@ -546,6 +546,7 @@ def aks_create(
     snapshot_id=None,
     vnet_subnet_id=None,
     pod_subnet_id=None,
+    pod_ip_allocation_mode=None,
     enable_node_public_ip=False,
     node_public_ip_prefix_id=None,
     enable_cluster_autoscaler=False,
@@ -605,12 +606,13 @@ def aks_create(
     nodepool_allowed_host_ports=None,
     nodepool_asg_ids=None,
     node_public_ip_tags=None,
-    # guardrails parameters
-    guardrails_level=None,
-    guardrails_version=None,
-    guardrails_excluded_ns=None,
+    # safeguards parameters
+    safeguards_level=None,
+    safeguards_version=None,
+    safeguards_excluded_ns=None,
     # azure service mesh
     enable_azure_service_mesh=None,
+    revision=None,
     # azure monitor profile
     enable_azuremonitormetrics=False,
     enable_azure_monitor_metrics=False,
@@ -799,10 +801,10 @@ def aks_update(
     disable_addon_autoscaling=False,
     cluster_snapshot_id=None,
     custom_ca_trust_certificates=None,
-    # guardrails parameters
-    guardrails_level=None,
-    guardrails_version=None,
-    guardrails_excluded_ns=None,
+    # safeguards parameters
+    safeguards_level=None,
+    safeguards_version=None,
+    safeguards_excluded_ns=None,
     enable_network_observability=None,
     disable_network_observability=None,
     # metrics profile
@@ -1155,6 +1157,7 @@ def aks_agentpool_add(
     snapshot_id=None,
     vnet_subnet_id=None,
     pod_subnet_id=None,
+    pod_ip_allocation_mode=None,
     enable_node_public_ip=False,
     node_public_ip_prefix_id=None,
     enable_cluster_autoscaler=False,
