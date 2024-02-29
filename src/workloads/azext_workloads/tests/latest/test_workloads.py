@@ -49,9 +49,9 @@ class WorkloadsScenario(ScenarioTest):
     def test_workloads_svi_show(self):
         self.kwargs.update({
             'name': 'C36',
-            'appservername': 'c36appvm0-0',
-            'csservername': 'c36ascsvm-0',
-            'dbservername': 'C36'
+            'appservername': 'app0',
+            'csservername': 'cs0',
+            'dbservername': 'db0'
         })
         self.cmd('workloads sap-virtual-instance show -g CLI-TESTING -n {name}', checks=[
             self.check('name', '{name}'),
@@ -148,38 +148,38 @@ class WorkloadsScenario(ScenarioTest):
 
     def test_workloads_svi_update_tags(self):
         self.kwargs.update({
-            'name': 'U77',
-            'appservername': 'u77appzavm0-0',
-            'csservername': 'u77scs00cl1-0',
-            'dbservername': 'U77'
+            'name': 'C36',
+            'appservername': 'app0',
+            'csservername': 'cs0',
+            'dbservername': 'db0'
         })
-        self.cmd('workloads sap-virtual-instance update -g U77-rg -n {name} --tags tag=test tag2=test2', checks=[
+        self.cmd('workloads sap-virtual-instance update -g CLI-TESTING -n {name} --tags tag=test tag2=test2', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', 'U77-rg'),
+            self.check('resourceGroup', 'CLI-TESTING'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test'),
             self.check('tags.tag2', 'test2')
         ])
 
-        self.cmd('workloads sap-central-instance update --sap-virtual-instance-name {name} -g U77-rg -n {csservername} --tags tag=test3 tag2=test4', checks=[
+        self.cmd('workloads sap-central-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {csservername} --tags tag=test3 tag2=test4', checks=[
             self.check('name', '{csservername}'),
-            self.check('resourceGroup', 'U77-rg'),
+            self.check('resourceGroup', 'CLI-TESTING'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test3'),
             self.check('tags.tag2', 'test4')
         ])
 
-        self.cmd('workloads sap-application-server-instance update --sap-virtual-instance-name {name} -g U77-rg -n {appservername} --tags tag=test5 tag2=test6', checks=[
+        self.cmd('workloads sap-application-server-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {appservername} --tags tag=test5 tag2=test6', checks=[
             self.check('name', '{appservername}'),
-            self.check('resourceGroup', 'U77-rg'),
+            self.check('resourceGroup', 'CLI-TESTING'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test5'),
             self.check('tags.tag2', 'test6')
         ])
 
-        self.cmd('workloads sap-database-instance update --sap-virtual-instance-name {name} -g U77-rg -n {dbservername} --tags tag=test7 tag2=test8', checks=[
+        self.cmd('workloads sap-database-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {dbservername} --tags tag=test7 tag2=test8', checks=[
             self.check('name', '{dbservername}'),
-            self.check('resourceGroup', 'U77-rg'),
+            self.check('resourceGroup', 'CLI-TESTING'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test7'),
             self.check('tags.tag2', 'test8')
