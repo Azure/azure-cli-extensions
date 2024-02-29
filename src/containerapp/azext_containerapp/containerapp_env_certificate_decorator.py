@@ -194,13 +194,14 @@ class ContainerappPreviewEnvCertificateListDecorator(ContainerappEnvCertificateL
         private_certs = self.get_private_certificates(certificate_name)
         return managed_certs + private_certs
 
+
 class ContainerappEnvCertificatePreviweUploadDecorator(ContainerappEnvCertificateUploadDecorator):
     def validate_arguments(self):
         # validate arguments
         if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
-            raise ValidationError("Cannot use certificate file/password with certificate identity/keyvaulturl at the same time")
+            raise ValidationError("Cannot use --certificate-file/--certificate-password with --certificate-key-vault-url/--certificate-identity at the same time")
         if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
-            raise ValidationError("Either certificate file/password or certificate identity/keyvaulturl should be set when hostName is set")
+            raise ValidationError("Either --certificate-file/--certificate-password or --certificate-key-vault-url/--certificate-identity should be set when hostName is set")
 
     def set_up_certificate_from_key_vault(self):
         if self.get_argument_certificate_key_vault_url():

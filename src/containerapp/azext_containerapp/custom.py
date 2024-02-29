@@ -1295,6 +1295,7 @@ def upload_certificate(cmd, name, resource_group_name, certificate_file=None, ce
 
     return containerapp_env_certificate_upload_decorator.create_or_update()
 
+
 def delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
     from azure.cli.command_modules.containerapp.custom import delete_certificate_logic
 
