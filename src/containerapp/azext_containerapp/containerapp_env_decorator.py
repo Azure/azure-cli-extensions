@@ -178,8 +178,6 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         # validate custom domain configuration
         if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
             raise ValidationError("Cannot use certificate file/password with certificate identity/keyvaulturl at the same time")
-        if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
-            raise ValidationError("Either certificate file/password or certificate identity/keyvaulturl should be set when hostName is set")
 
     def set_up_app_log_configuration(self):
         logs_destination = self.get_argument_logs_destination()
