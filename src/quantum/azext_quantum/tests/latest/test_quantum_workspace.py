@@ -216,7 +216,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         # disable api keys
         self.cmd('az quantum workspace update --enable-api-key False -o json')
-        
+
         self.cmd('az quantum workspace keys list -o json', checks=[
             self.check("apiKeyEnabled", False)
         ])

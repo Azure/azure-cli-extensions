@@ -409,7 +409,7 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
 
-    if (not key_type):
+    if not key_type:
         raise RequiredArgumentMissingError("Please select the api key to regenerate.")
 
     keys = []
