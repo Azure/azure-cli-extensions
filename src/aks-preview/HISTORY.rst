@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Add parameter to set revision `--revision` for the Azure Service Mesh addon while creating AKS cluster.
+* Add `az aks check-network outbound` command.
 
 2.0.0b2
 +++++++
@@ -24,7 +25,6 @@ Pending
 * Add `az aks nodepool delete-machines` command.
 * Update `az aks approuting zone` command to support private dns zones.
 * Vendor new SDK and bump API version to 2024-01-02-preview.
-* Add `az aks check-network` command.
 
 1.0.0b6
 +++++++

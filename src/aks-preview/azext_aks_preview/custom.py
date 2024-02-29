@@ -3315,7 +3315,7 @@ def _aks_get_node_name_vmss(
     compute_client = get_compute_client(cmd.cli_ctx)
 
     if not node_name:
-        print("No node name specified, will randomly select a node from the cluster")
+        logger.debug("No node name specified, will randomly select a node from the cluster")
         agentpool_client = cf_agent_pools(cmd.cli_ctx)
 
         nodepool_list = list(aks_agentpool_list(cmd, agentpool_client, resource_group, cluster_name))
@@ -3378,7 +3378,7 @@ def _aks_get_node_name_as(
     compute_client = get_compute_client(cmd.cli_ctx)
 
     if not node_name:
-        print("No node name specified, will randomly select a node from the cluster")
+        logger.debug("No node name specified, will randomly select a node from the cluster")
 
         vm_list = compute_client.virtual_machines.list(managed_resource_group)
         if not vm_list:
@@ -3417,11 +3417,11 @@ def aks_check_network_outbound(
     fqdn = ""
     cluster = aks_show(cmd, client, resource_group_name, cluster_name, None)
     if not cluster:
-        logger.warning("Can not get cluster information!")
+        raise ValidationError("Can not get cluster information!")
     else:
         fqdn = cluster.fqdn
         if not fqdn:
-            logger.warning("Can not get cluster api server!")
+            raise ValidationError("Can not get cluster api server!")
         else:
             print("Get cluster api server:", fqdn)
 
