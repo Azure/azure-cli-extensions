@@ -64,6 +64,8 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_KUBENET,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NETWORK_PLUGIN_NONE,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NODE_OS_CHANNEL_NODE_IMAGE,
     CONST_NODE_OS_CHANNEL_NONE,
@@ -157,6 +159,7 @@ from azext_aks_preview._validators import (
     validate_pod_identity_resource_name,
     validate_pod_identity_resource_namespace,
     validate_pod_subnet_id,
+    validate_pod_ip_allocation_mode,
     validate_priority,
     validate_sku_tier,
     validate_snapshot_id,
@@ -223,6 +226,10 @@ gpu_instance_profiles = [
     CONST_GPU_INSTANCE_PROFILE_MIG3_G,
     CONST_GPU_INSTANCE_PROFILE_MIG4_G,
     CONST_GPU_INSTANCE_PROFILE_MIG7_G,
+]
+pod_ip_allocation_modes = [
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
 ]
 
 # consts for ManagedCluster
@@ -583,6 +590,11 @@ def load_arguments(self, _):
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument("vnet_subnet_id", validator=validate_vnet_subnet_id)
         c.argument("pod_subnet_id", validator=validate_pod_subnet_id)
+        c.argument(
+            "pod_ip_allocation_mode",
+            arg_type=get_enum_type(pod_ip_allocation_modes),
+            validator=validate_pod_ip_allocation_mode,
+        )
         c.argument("enable_node_public_ip", action="store_true")
         c.argument("node_public_ip_prefix_id")
         c.argument("enable_cluster_autoscaler", action="store_true")
@@ -1269,6 +1281,11 @@ def load_arguments(self, _):
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument("vnet_subnet_id", validator=validate_vnet_subnet_id)
         c.argument("pod_subnet_id", validator=validate_pod_subnet_id)
+        c.argument(
+            "pod_ip_allocation_mode",
+            arg_type=get_enum_type(pod_ip_allocation_modes),
+            validator=validate_pod_ip_allocation_mode,
+        )
         c.argument("enable_node_public_ip", action="store_true")
         c.argument("node_public_ip_prefix_id")
         c.argument(
