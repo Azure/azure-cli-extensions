@@ -3418,17 +3418,16 @@ def aks_check_network_outbound(
     cluster = aks_show(cmd, client, resource_group_name, cluster_name, None)
     if not cluster:
         raise ValidationError("Can not get cluster information!")
-    else:
-        fqdn = cluster.fqdn
-        if not fqdn:
-            raise ValidationError("Can not get cluster api server!")
-        else:
-            print("Get cluster api server:", fqdn)
 
-        vm_set_type = cluster.agent_pool_profiles[0].type
-        if not vm_set_type:
-            raise ValidationError("Can not get VM set type of the cluster!")
-        print("Get node pool VM set type:", vm_set_type)
+    fqdn = cluster.fqdn
+    if not fqdn:
+        raise ValidationError("Can not get cluster api server!")
+    print("Get cluster api server:", fqdn)
+
+    vm_set_type = cluster.agent_pool_profiles[0].type
+    if not vm_set_type:
+        raise ValidationError("Can not get VM set type of the cluster!")
+    print("Get node pool VM set type:", vm_set_type)
 
     location = get_rg_location(cmd.cli_ctx, resource_group_name)
     managed_resource_group = f"MC_{resource_group_name}_{cluster_name}_{location}"
