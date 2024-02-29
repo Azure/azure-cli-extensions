@@ -173,6 +173,7 @@ def perform_enable_azure_container_storage(
         {"global.cli.storagePool.install.diskType": ""},
     ]
     try:
+        raise Exception("Test exception")
         if is_extension_installed:
             result = k8s_extension_custom_mod.update_k8s_extension(
                 cmd,
