@@ -2265,8 +2265,8 @@ def set_environment_telemetry_app_insights(cmd,
     return r
 
 def delete_environment_telemetry_app_insights(cmd,
-                                           name,
-                                           resource_group_name):
+                                              name,
+                                              resource_group_name):
     raw_parameters = locals()
     raw_parameters["connection_string"] = ""
     raw_parameters["enable_open_telemetry_traces"] = False
