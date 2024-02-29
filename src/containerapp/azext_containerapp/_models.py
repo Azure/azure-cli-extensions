@@ -21,7 +21,7 @@ ManagedEnvironment = {
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
         "workloadProfiles": None,
-        "InfrastructureResourceGroup": None,
+        "infrastructureResourceGroup": None,
         "openTelemetryConfiguration": None
     }
 }

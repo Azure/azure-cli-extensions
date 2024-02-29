@@ -45,7 +45,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def set_up_infrastructure_resource_group(self):
         if self.get_argument_enable_workload_profiles() and self.get_argument_infrastructure_subnet_resource_id() is not None:
-            self.managed_env_def["properties"]["InfrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
+            self.managed_env_def["properties"]["infrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
     
     def set_up_managed_identity(self):
         identity_def = ManagedServiceIdentity
