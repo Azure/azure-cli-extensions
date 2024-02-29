@@ -2208,7 +2208,8 @@ def set_environment_telemetry_data_dog(cmd,
                                        site=None,
                                        key=None,
                                        enable_open_telemetry_traces=False,
-                                       enable_open_telemetry_metrics=False):
+                                       enable_open_telemetry_metrics=False,
+                                       no_wait=False):
     raw_parameters = locals()
     containerapp_env_telemetry_data_dog_decorator = ContainerappEnvTelemetryDataDogPreviewSetDecorator(
         cmd=cmd,
@@ -2225,7 +2226,8 @@ def set_environment_telemetry_data_dog(cmd,
 
 def delete_environment_telemetry_data_dog(cmd,
                                           name,
-                                          resource_group_name):
+                                          resource_group_name,
+                                          no_wait=False):
     raw_parameters = locals()
     raw_parameters["site"] = False
     raw_parameters["key"] = False
@@ -2249,7 +2251,8 @@ def set_environment_telemetry_app_insights(cmd,
                                            resource_group_name,
                                            connection_string=None,
                                            enable_open_telemetry_traces=False,
-                                           enable_open_telemetry_logs=False):
+                                           enable_open_telemetry_logs=False,
+                                           no_wait=False):
     raw_parameters = locals()
     containerapp_env_telemetry_app_insights_decorator = ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(
         cmd=cmd,
@@ -2266,7 +2269,8 @@ def set_environment_telemetry_app_insights(cmd,
 
 def delete_environment_telemetry_app_insights(cmd,
                                               name,
-                                              resource_group_name):
+                                              resource_group_name,
+                                              no_wait=False):
     raw_parameters = locals()
     raw_parameters["connection_string"] = ""
     raw_parameters["enable_open_telemetry_traces"] = False
