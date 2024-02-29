@@ -8,7 +8,7 @@ import os
 from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
-from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorMode
+from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorMode, DecoratorEarlyExitException
 
 from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolAddDecorator,
@@ -25,6 +25,7 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import read_file_content
 from knack.log import get_logger
+from knack.prompting import prompt_y_n
 
 from azext_aks_preview._client_factory import cf_agent_pools
 from azext_aks_preview._consts import (
@@ -384,6 +385,25 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 enable_artifact_streaming = self.agentpool.artifact_streaming_profile.enabled
         return enable_artifact_streaming
 
+    def get_ssh_access(self) -> Union[str, None]:
+        """Obtain the value of ssh_access.
+        """
+        return self.raw_param.get("ssh_access")
+
+    def get_yes(self) -> bool:
+        """Obtain the value of yes.
+
+        Note: yes will not be decorated into the `agentpool` object.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        yes = self.raw_param.get("yes")
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return yes
+
     def _get_os_sku(self, read_only: bool = False) -> Union[str, None]:
         """Internal function to dynamically obtain the value of os_sku according to the context.
         Note: Overwritten in aks-preview to support being updated.
@@ -566,6 +586,16 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.artifact_streaming_profile.enabled = True
         return agentpool
 
+    def set_up_ssh_access(self, agentpool: AgentPool) -> AgentPool:
+        self._ensure_agentpool(agentpool)
+
+        ssh_access = self.context.get_ssh_access()
+        if ssh_access is not None:
+            if agentpool.security_profile is None:
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+            agentpool.security_profile.ssh_access = ssh_access
+        return agentpool
+
     def set_up_skip_gpu_driver_install(self, agentpool: AgentPool) -> AgentPool:
         """Set up install gpu driver property for the AgentPool object."""
         self._ensure_agentpool(agentpool)
@@ -603,6 +633,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_artifact_streaming(agentpool)
         # set up skip_gpu_driver_install
         agentpool = self.set_up_skip_gpu_driver_install(agentpool)
+        # set up agentpool ssh access
+        agentpool = self.set_up_ssh_access(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
@@ -711,6 +743,27 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.os_sku = os_sku
         return agentpool
 
+    def update_ssh_access(self, agentpool: AgentPool) -> AgentPool:
+        self._ensure_agentpool(agentpool)
+
+        ssh_access = self.context.get_ssh_access()
+        if ssh_access is not None:
+            if agentpool.security_profile is None:
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+            current_ssh_access = agentpool.security_profile.ssh_access
+            # already set to the same value, directly return
+            if current_ssh_access.lower() == ssh_access.lower():
+                return agentpool
+
+            msg = (
+                f"You're going to update agentpool {agentpool.name} ssh access to '{ssh_access}' "
+                "This change will take effect after you upgrade the nodepool. Proceed?"
+            )
+            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
+                raise DecoratorEarlyExitException()
+            agentpool.security_profile.ssh_access = ssh_access
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -733,6 +786,10 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update os sku
         agentpool = self.update_os_sku(agentpool)
+
+        # update ssh access
+        agentpool = self.update_ssh_access(agentpool)
+
         return agentpool
 
     def update_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
