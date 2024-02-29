@@ -1217,6 +1217,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             # Fails if all containers are removed
             while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
                 self.new_containerapp["properties"]["template"]["containers"].pop()
+            if not self.get_argument_name():
+                raise RequiredArgumentMissingError("The ContainerApp name is required when --force-single-container-updates is set.")
+            safe_set(self.new_containerapp["properties"]["template"]["containers"][0], "name", value=self.get_argument_name())
         return super().set_up_existing_container_update()
 
     def should_update_existing_container(self, c):

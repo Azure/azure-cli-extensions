@@ -234,6 +234,7 @@ def create_and_verify_containerapp_up_for_default_registry_image(
 
         # Assert that the Containre App only has one container and the source to cloud image is used
         app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
+        test_cls.assertEqual(app["properties"]["template"]["containers"][0]["name"], app_name)
         test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"].split("/")[0], "default")
         test_cls.assertEqual(len(app["properties"]["template"]["containers"]), 1)
 
