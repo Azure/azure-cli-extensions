@@ -12,6 +12,8 @@ upcoming
 * 'az containerapp env java-component spring-cloud-config': Support create/update/show/delete Spring Cloud Config
 * 'az containerapp env java-component spring-cloud-eureka': Support create/update/show/delete Spring Cloud Eureka
 * 'az containerapp create/update': Support bind Java component with --bind
+* 'az containerapp create/update/up': Fix issue with logs when the Cloud Build project to use generates UTF-8 logs.
+* 'az containerapp update/up': Fix bug for multiple containers provisioned for source to cloud build
 
 0.3.47
 ++++++

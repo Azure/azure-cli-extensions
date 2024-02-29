@@ -410,6 +410,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         env_vars=None,
         workload_profile_name=None,
         ingress=None,
+        force_single_container_updates=None
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -422,6 +423,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.env_vars = env_vars
         self.ingress = ingress
         self.workload_profile_name = workload_profile_name
+        self.force_single_container_updates = force_single_container_updates
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -453,8 +455,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             env_vars=self.env_vars,
             workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
-            environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE
+            environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE,
+            force_single_container_updates=self.force_single_container_updates
         )
+
+    def set_force_single_container_updates(self, force_single_container_updates):
+        self.force_single_container_updates = force_single_container_updates
 
     def create_acr_if_needed(self):
         if self.should_create_acr:
@@ -521,7 +527,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         run_full_id = uuid.uuid4().hex
         logs_file_path = os.path.join(tempfile.gettempdir(), f"{'build{}'.format(run_full_id)[:12]}.txt")
-        logs_file = open(logs_file_path, "w")
+        logs_file = open(logs_file_path, "w", encoding="utf-8")
 
         try:
             resource_group_name = self.resource_group.name
