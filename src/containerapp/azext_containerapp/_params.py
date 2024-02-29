@@ -62,7 +62,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env', arg_group='Monitoring') as c:
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
-                   help='Boolean indicating whether to parse json   string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
+                   help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
         
     # Telemetry 
     self.command_group('containerapp env telemetry', is_preview=True)
@@ -70,13 +70,13 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env telemetry data-dog set') as c:
         c.argument('site', options_list=['--site'], help='Specify the data dog site')
         c.argument('key', options_list=['--key'], help='Specify the data dog api key')
-        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '--enable-otel-traces'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry traces')
-        c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '--enable-otel-metrics'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry metrics')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry traces')
+        c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry metrics')
 
     with self.argument_context('containerapp env telemetry app-insights set') as c:
         c.argument('connection_string', options_list=['--connection-string'], help='Application Insights connection string used by container apps environment')
-        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '--enable-otel-traces'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry traces')
-        c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '--enable-otel-logs'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry logs')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry traces')
+        c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry logs')
 
     # Storage
     with self.argument_context('containerapp env storage') as c:
@@ -190,9 +190,6 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env identity', is_preview=True) as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
         c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
-
-    with self.argument_context('containerapp env identity remove', is_preview=True) as c:
-        c.argument('user_assigned', nargs='*', help="Space-separated user identities. If no user identities are specified, all user identities will be removed.")
 
     with self.argument_context('containerapp up') as c:
         c.argument('environment', validator=validate_env_name_or_id_for_up, options_list=['--environment'], help="Name or resource ID of the container app's managed environment or connected environment.")

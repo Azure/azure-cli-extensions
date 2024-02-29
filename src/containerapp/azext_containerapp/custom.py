@@ -2223,6 +2223,27 @@ def set_environment_telemetry_data_dog(cmd,
     
     return r
 
+def delete_environment_telemetry_data_dog(cmd,
+                                          name,
+                                          resource_group_name):
+    raw_parameters = locals()
+    raw_parameters["site"] = False
+    raw_parameters["key"] = False
+    raw_parameters["enable_open_telemetry_traces"] = False
+    raw_parameters["enable_open_telemetry_metrics"] = False
+    containerapp_env_telemetry_data_dog_decorator = ContainerappEnvTelemetryDataDogPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_data_dog_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_data_dog_decorator.construct_payload()
+    r = containerapp_env_telemetry_data_dog_decorator.update()
+    
+    return r
+
 def set_environment_telemetry_app_insights(cmd,
                                            name,
                                            resource_group_name,
@@ -2230,6 +2251,26 @@ def set_environment_telemetry_app_insights(cmd,
                                            enable_open_telemetry_traces=False,
                                            enable_open_telemetry_logs=False):
     raw_parameters = locals()
+    containerapp_env_telemetry_app_insights_decorator = ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_app_insights_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_app_insights_decorator.construct_payload()
+    r = containerapp_env_telemetry_app_insights_decorator.update()
+    
+    return r
+
+def delete_environment_telemetry_app_insights(cmd,
+                                           name,
+                                           resource_group_name):
+    raw_parameters = locals()
+    raw_parameters["connection_string"] = ""
+    raw_parameters["enable_open_telemetry_traces"] = False
+    raw_parameters["enable_open_telemetry_logs"] = False
     containerapp_env_telemetry_app_insights_decorator = ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,

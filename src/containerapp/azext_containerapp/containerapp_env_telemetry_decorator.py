@@ -36,9 +36,6 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
         return self.get_param("enable_open_telemetry_metrics")
 
     def construct_payload(self):
-        # General setup
-        safe_set(self.managed_env_def, "location", value=r["location"])  # required for API
-
         # Get containerapp env properties of CA we are updating
         try:
             self.existing_managed_env_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
@@ -110,9 +107,6 @@ class ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(BaseResource):
         return self.get_param("enable_open_telemetry_logs")
 
     def construct_payload(self):
-        # General setup
-        safe_set(self.managed_env_def, "location", value=["location"])  # required for API
-
         # Get containerapp env properties of CA we are updating
         try:
            self.existing_managed_env_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
