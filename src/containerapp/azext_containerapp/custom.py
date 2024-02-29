@@ -190,7 +190,7 @@ def delete_weaviate_service(cmd, service_name, resource_group_name, no_wait=Fals
 
 
 def create_milvus_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
-                            disable_warnings=True):
+                          disable_warnings=True):
     return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
                                           disable_warnings, DEV_MILVUS_IMAGE, DEV_MILVUS_SERVICE_TYPE,
                                           DEV_MILVUS_CONTAINER_NAME)
@@ -1191,7 +1191,9 @@ def containerapp_up(cmd,
     env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
     app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
 
-    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app, custom_location, extension)
+    # Check and see if registry username and passwords are specified. If so, set is_registry_server_params_set to True to use those creds.
+    is_registry_server_params_set = bool(registry_server and registry_user and registry_pass)
+    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app, custom_location, extension, is_registry_server_params_set)
 
     if app.check_exists():
         if app.get()["properties"]["provisioningState"] == "InProgress":
