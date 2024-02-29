@@ -7,8 +7,10 @@ upcoming
 * 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
 * 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
 * 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
-* 'az containerapp env telemetry data-dog set': support update a environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
-* 'az containerapp env telemetry app-insights set': support update a environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
+* 'az containerapp env telemetry data-dog set': support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry data-dog delete': support delete environment data dog configuration
+* 'az containerapp env telemetry app-insights set': support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
+* 'az containerapp env telemetry app-insights delete': support delete environment app insights configuration
 
 0.3.47
 ++++++

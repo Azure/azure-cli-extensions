@@ -130,6 +130,8 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'show_dapr_component_resiliency')
         g.custom_show_command('list', 'list_dapr_component_resiliencies')
 
+    self.command_group('containerapp env telemetry', is_preview=True)
+
     with self.command_group('containerapp env telemetry data-dog', is_preview=True) as g:
         g.custom_command('set', 'set_environment_telemetry_data_dog', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_environment_telemetry_data_dog', supports_no_wait=True, exception_handler=ex_handler_factory())

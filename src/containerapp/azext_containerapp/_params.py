@@ -63,10 +63,8 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env', arg_group='Monitoring') as c:
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
-        
-    # Telemetry 
-    self.command_group('containerapp env telemetry', is_preview=True)
 
+    # Telemetry 
     with self.argument_context('containerapp env telemetry data-dog set') as c:
         c.argument('site', options_list=['--site'], help='Specify the data dog site')
         c.argument('key', options_list=['--key'], help='Specify the data dog api key')
