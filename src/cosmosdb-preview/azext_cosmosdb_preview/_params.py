@@ -29,7 +29,7 @@ from azext_cosmosdb_preview.actions import (
     CreatePhysicalPartitionIdListAction)
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
-    ContinuousTier, DefaultPriorityLevel, MinimalTlsVersion
+    ContinuousTier, DefaultPriorityLevel
 )
 
 from azure.cli.core.util import shell_safe_json_parse
@@ -343,7 +343,6 @@ def load_arguments(self, _):
             c.argument('default_priority_level', arg_type=get_enum_type(DefaultPriorityLevel), help="Default Priority Level of Request if not specified.", is_preview=True)
             c.argument('enable_per_region_per_partition_autoscale', arg_type=get_three_state_flag(), help="Enable or disable PerRegionPerPartitionAutoscale.", is_preview=True)
             c.argument('enable_partition_merge', arg_type=get_three_state_flag(), help="Flag to enable partition merge on the account.")
-            c.argument('minimal_tls_version', arg_type=get_enum_type(MinimalTlsVersion), help="Indicates the minimum allowed TLS version")
 
     with self.argument_context('cosmosdb update') as c:
         c.argument('key_uri', help="The URI of the key vault", is_preview=True)
