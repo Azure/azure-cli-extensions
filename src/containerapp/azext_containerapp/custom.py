@@ -2003,6 +2003,7 @@ def init_dapr_components(cmd, resource_group_name, environment_name, statestore=
         }
     }
 
+
 def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     managed_env_def = None
@@ -2099,6 +2100,7 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
     except Exception as e:
         handle_raw_exception(e)
 
+
 def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -2187,6 +2189,7 @@ def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=
         r["identity"]["type"] = "None"
         return r["identity"]
 
+
 def show_env_managed_identity(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -2201,6 +2204,7 @@ def show_env_managed_identity(cmd, name, resource_group_name):
         r["identity"] = {}
         r["identity"]["type"] = "None"
         return r["identity"]
+
 
 def set_environment_telemetry_data_dog(cmd,
                                        name,
@@ -2224,6 +2228,7 @@ def set_environment_telemetry_data_dog(cmd,
     
     return r
 
+
 def delete_environment_telemetry_data_dog(cmd,
                                           name,
                                           resource_group_name,
@@ -2246,6 +2251,7 @@ def delete_environment_telemetry_data_dog(cmd,
     
     return r
 
+
 def set_environment_telemetry_app_insights(cmd,
                                            name,
                                            resource_group_name,
@@ -2266,6 +2272,7 @@ def set_environment_telemetry_app_insights(cmd,
     r = containerapp_env_telemetry_app_insights_decorator.update()
     
     return r
+
 
 def delete_environment_telemetry_app_insights(cmd,
                                               name,
