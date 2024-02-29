@@ -5,8 +5,17 @@ Release History
 
 Unreleased
 
+1.0.0b9
+++++++++
+* Fixed: helm charts not uploading correctly
+* Added creation of resource groups if does not exist
+* Fixed: Manifest name built from ACR name, so clashes
+* Fixed: Nexus image version must be semver
+* Fixed: Sensible error when no type given in helm chart schema
+
 1.0.0b8
 ++++++++
+* No changes, building wheel from correct branch
 
 1.0.0b7
 ++++++++
