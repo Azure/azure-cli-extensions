@@ -31,14 +31,14 @@ from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLFlexibleUtils, ManagedMySQLFlexibleUtils
-from ._clients import ConnectedEnvCertificateClient, ContainerAppPreviewClient
+from ._clients import ConnectedEnvCertificateClient, ContainerAppPreviewClient, JavaComponentPreviewClient
 from ._client_factory import custom_location_client_factory, k8s_extension_client_factory, providers_client_factory, \
     connected_k8s_client_factory, handle_non_404_status_code_exception
 from ._models import OryxRunImageTagProperty
 from ._constants import (CONTAINER_APP_EXTENSION_TYPE,
                          CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, DEV_SERVICE_LIST,
                          MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APPS_RP, CONNECTED_CLUSTER_TYPE,
-                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE)
+                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE, JAVA_COMPONENT_RESOURCE_TYPE)
 
 logger = get_logger(__name__)
 
@@ -87,7 +87,12 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                 if customized_keys:
                     service_bind["customizedKeys"] = customized_keys
                 service_bindings_def_list.append(service_bind)
-
+            elif service["type"] == "Microsoft.App/managedEnvironments/javaComponents":
+                service_bind = {
+                    "serviceId": service["id"],
+                    "name": binding_name
+                }
+                service_bindings_def_list.append(service_bind)
             else:
                 raise ValidationError("Service not supported")
             break
@@ -107,6 +112,11 @@ def get_linker_client(cmd):
 def validate_binding_name(binding_name):
     pattern = r'^(?=.{1,60}$)[a-zA-Z0-9._]+$'
     return bool(re.match(pattern, binding_name))
+
+
+def is_valid_java_component_resource_id(resource_id):
+    java_component_dict = parse_resource_id(resource_id)
+    return java_component_dict.get("type") == MANAGED_ENVIRONMENT_RESOURCE_TYPE and java_component_dict.get("resource_type") == JAVA_COMPONENT_RESOURCE_TYPE
 
 
 def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list, resource_group_name, name):
@@ -148,10 +158,16 @@ def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def
         return True
 
 
-def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name, customized_keys=None):
+def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name, environment_id, customized_keys=None):
     # Make it return both managed and dev bindings
     service_bindings_def_list = []
     service_connector_def_list = []
+
+    parsed_managed_env = parse_resource_id(environment_id)
+    managed_env_name = parsed_managed_env['name']
+    managed_env_rg = parsed_managed_env['resource_group']
+    java_component_list = JavaComponentPreviewClient.list(cmd, managed_env_rg, managed_env_name)
+    java_component_name_set = {java_component["name"] for java_component in java_component_list}
 
     for service_binding_str in service_bindings_list:
         parts = service_binding_str.split(",")
@@ -173,6 +189,11 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
             binding_name = service_name
         else:
             binding_name = service_binding[1]
+
+        # If resource is Java component, will automatically change the '-' in binding name to '_'
+        if service_name in java_component_name_set and '-' in binding_name:
+            logger.info("automatically change the '-' in binding name of Java component to '_'.")
+            binding_name = binding_name.replace('-', '_')
 
         if not validate_binding_name(binding_name):
             raise InvalidArgumentValueError("The Binding Name can only contain letters, numbers (0-9), periods ('.'), "
@@ -199,6 +220,10 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
             resource_list.append({"name": item.name, "type": item.type, "id": item.id})
 
         subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        # Add Java component into the resource_list
+        for java_component in java_component_list:
+            resource_list.append({"name": java_component["name"], "type": java_component["type"], "id": java_component["id"]})
 
         # Will work for both create and update
         process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name,

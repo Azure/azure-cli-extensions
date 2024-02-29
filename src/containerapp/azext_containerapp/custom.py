@@ -19,7 +19,8 @@ from azure.cli.core.azclierror import (
     ValidationError,
     CLIError,
     CLIInternalError,
-    InvalidArgumentValueError)
+    InvalidArgumentValueError,
+    ResourceNotFoundError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
@@ -67,7 +68,8 @@ from .daprcomponent_resiliency_decorator import (
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
-from ._client_factory import handle_raw_exception
+from .java_component_decorator import JavaComponentDecorator
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
     GitHubActionPreviewClient,
     ContainerAppPreviewClient,
@@ -81,7 +83,8 @@ from ._clients import (
     ConnectedEnvDaprComponentClient,
     ConnectedEnvironmentClient,
     ConnectedEnvStorageClient,
-    ConnectedEnvCertificateClient
+    ConnectedEnvCertificateClient,
+    JavaComponentPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -101,7 +104,8 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
-                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE)
+                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE,
+                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA)
 
 
 logger = get_logger(__name__)
@@ -186,7 +190,7 @@ def delete_weaviate_service(cmd, service_name, resource_group_name, no_wait=Fals
 
 
 def create_milvus_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
-                            disable_warnings=True):
+                          disable_warnings=True):
     return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
                                           disable_warnings, DEV_MILVUS_IMAGE, DEV_MILVUS_SERVICE_TYPE,
                                           DEV_MILVUS_CONTAINER_NAME)
@@ -516,7 +520,8 @@ def update_containerapp_logic(cmd,
                               source=None,
                               artifact=None,
                               build_env_vars=None,
-                              max_inactive_revisions=None):
+                              max_inactive_revisions=None,
+                              force_single_container_updates=False):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -1186,7 +1191,9 @@ def containerapp_up(cmd,
     env = ContainerAppEnvironment(cmd, environment, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id, custom_location_id=custom_location_id, connected_cluster_id=connected_cluster_id)
     app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
 
-    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app, custom_location, extension)
+    # Check and see if registry username and passwords are specified. If so, set is_registry_server_params_set to True to use those creds.
+    is_registry_server_params_set = bool(registry_server and registry_user and registry_pass)
+    _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app, custom_location, extension, is_registry_server_params_set)
 
     if app.check_exists():
         if app.get()["properties"]["provisioningState"] == "InProgress":
@@ -1202,13 +1209,14 @@ def containerapp_up(cmd,
             _get_registry_from_app(app, source)  # if the app exists, get the registry
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
-    used_default_container_registry = False
+    force_single_container_updates = False
     if source:
-        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
+        force_single_container_updates = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
+        app.set_force_single_container_updates(force_single_container_updates)
     else:
         app.create_acr_if_needed()
 
-    app.create(no_registry=bool(repo or used_default_container_registry))
+    app.create(no_registry=bool(repo or force_single_container_updates))
     if repo:
         _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
                               service_principal_tenant_id, branch, token, repo, context_path, build_env_vars)
@@ -1220,7 +1228,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1229,7 +1237,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
     if containerapp_def:
         return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
-                                         registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name)
+                                         registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, force_single_container_updates=force_single_container_updates)
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type)
 
 
@@ -1999,6 +2007,7 @@ def init_dapr_components(cmd, resource_group_name, environment_name, statestore=
         }
     }
 
+
 def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     managed_env_def = None
@@ -2076,7 +2085,7 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
                 payload["identity"]["type"] = "SystemAssigned,UserAssigned"
             if managed_env_def["identity"]["type"] == "UserAssigned" and assign_system_identity:
                 payload["identity"]["type"] = "SystemAssigned,UserAssigned"
-            
+
         else:
             if assign_system_identity and assign_user_identities:
                 payload["identity"]["type"] = "SystemAssigned,UserAssigned"
@@ -2094,6 +2103,7 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
         return r["identity"]
     except Exception as e:
         handle_raw_exception(e)
+
 
 def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
@@ -2119,7 +2129,6 @@ def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=
     if not managed_env_def:
         raise ResourceNotFoundError("The containerapp env '{}' does not exist".format(name))
 
-    
     # If identity not returned
     try:
         managed_env_def["identity"]
@@ -2175,13 +2184,14 @@ def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=payload, no_wait=no_wait)
     except Exception as e:
         handle_raw_exception(e)
-    
+
     try:
         return r["identity"]
     except:
         r["identity"] = {}
         r["identity"]["type"] = "None"
         return r["identity"]
+
 
 def show_env_managed_identity(cmd, name, resource_group_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
@@ -2197,3 +2207,109 @@ def show_env_managed_identity(cmd, name, resource_group_name):
         r["identity"] = {}
         r["identity"]["type"] = "None"
         return r["identity"]
+
+
+def list_java_components(cmd, environment_name, resource_group_name):
+    raw_parameters = locals()
+    java_component_decorator = JavaComponentDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return java_component_decorator.list()
+
+
+def show_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type):
+    raw_parameters = locals()
+    java_component_decorator = JavaComponentDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    result = java_component_decorator.show()
+
+    current_type = safe_get(result, "properties", "componentType")
+    if current_type and target_java_component_type.lower() != current_type.lower():
+        raise ResourceNotFoundError(f"(JavaComponentNotFound) JavaComponent '{java_component_name}' was not found.")
+
+    return result
+
+
+def delete_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, no_wait):
+    raw_parameters = locals()
+    java_component_decorator = JavaComponentDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    result = None
+    try:
+        result = java_component_decorator.client.show(cmd, resource_group_name, environment_name, java_component_name)
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
+
+    current_type = safe_get(result, "properties", "componentType")
+    if current_type and target_java_component_type.lower() != current_type.lower():
+        raise ResourceNotFoundError(f"(JavaComponentNotFound) JavaComponent '{java_component_name}' was not found.")
+
+    return java_component_decorator.delete()
+
+
+def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait):
+    raw_parameters = locals()
+    java_component_decorator = JavaComponentDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    java_component_decorator.construct_payload()
+    return java_component_decorator.create()
+
+
+def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait):
+    raw_parameters = locals()
+    java_component_decorator = JavaComponentDecorator(
+        cmd=cmd,
+        client=JavaComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    java_component_decorator.construct_payload()
+    return java_component_decorator.update()
+
+
+def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
+
+
+def update_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
+
+
+def show_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name):
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG)
+
+
+def delete_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
+
+
+def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
+
+
+def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
+
+
+def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name):
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA)
+
+
+def delete_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)
