@@ -221,87 +221,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                         "Usage error: --container-name is required when adding or updating a container")
 
             # Check if updating existing container
-            updating_existing_container = False
-            for c in self.new_containerapp["properties"]["template"]["containers"]:
-                if c["name"].lower() == self.get_argument_container_name().lower():
-                    updating_existing_container = True
-
-                    if self.get_argument_image() is not None:
-                        c["image"] = self.get_argument_image()
-
-                    if self.get_argument_set_env_vars() is not None:
-                        if "env" not in c or not c["env"]:
-                            c["env"] = []
-                        # env vars
-                        _add_or_update_env_vars(c["env"], parse_env_var_flags(self.get_argument_set_env_vars()))
-
-                    if self.get_argument_replace_env_vars() is not None:
-                        # Remove other existing env_vars, then add them
-                        c["env"] = []
-                        _add_or_update_env_vars(c["env"], parse_env_var_flags(self.get_argument_replace_env_vars()))
-
-                    if self.get_argument_remove_env_vars() is not None:
-                        if "env" not in c or not c["env"]:
-                            c["env"] = []
-                        # env vars
-                        _remove_env_vars(c["env"], self.get_argument_remove_env_vars())
-
-                    if self.get_argument_remove_all_env_vars():
-                        c["env"] = []
-
-                    if self.get_argument_startup_command() is not None:
-                        if isinstance(self.get_argument_startup_command(), list) and not self.get_argument_startup_command():
-                            c["command"] = None
-                        else:
-                            c["command"] = self.get_argument_startup_command()
-                    if self.get_argument_args() is not None:
-                        if isinstance(self.get_argument_args(), list) and not self.get_argument_args():
-                            c["args"] = None
-                        else:
-                            c["args"] = self.get_argument_args()
-                    if self.get_argument_cpu() is not None or self.get_argument_memory() is not None:
-                        if "resources" in c and c["resources"]:
-                            if self.get_argument_cpu() is not None:
-                                c["resources"]["cpu"] = self.get_argument_cpu()
-                            if self.get_argument_memory() is not None:
-                                c["resources"]["memory"] = self.get_argument_memory()
-                        else:
-                            c["resources"] = {
-                                "cpu": self.get_argument_cpu(),
-                                "memory": self.get_argument_memory()
-                            }
-                    if self.get_argument_secret_volume_mount() is not None:
-                        self.new_containerapp["properties"]["template"]["volumes"] = self.containerapp_def["properties"]["template"]["volumes"]
-                        if "volumeMounts" not in c or not c["volumeMounts"]:
-                            # if no volume mount exists, create a new volume and then mount
-                            volume_def = VolumeModel
-                            volume_mount_def = VolumeMountModel
-                            volume_def["name"] = _generate_secret_volume_name()
-                            volume_def["storageType"] = "Secret"
-
-                            volume_mount_def["volumeName"] = volume_def["name"]
-                            volume_mount_def["mountPath"] = self.get_argument_secret_volume_mount()
-
-                            if "volumes" not in self.new_containerapp["properties"]["template"] or self.new_containerapp["properties"]["template"]["volumes"] is None:
-                                self.new_containerapp["properties"]["template"]["volumes"] = [volume_def]
-                            else:
-                                self.new_containerapp["properties"]["template"]["volumes"].append(volume_def)
-                            c["volumeMounts"] = [volume_mount_def]
-                        else:
-                            if len(c["volumeMounts"]) > 1:
-                                raise ValidationError(
-                                    "Usage error: --secret-volume-mount can only be used with a container that has a single volume mount, to define multiple volumes and mounts please use --yaml")
-                            else:
-                                # check that the only volume is of type secret
-                                volume_name = c["volumeMounts"][0]["volumeName"]
-                                for v in self.new_containerapp["properties"]["template"]["volumes"]:
-                                    if v["name"].lower() == volume_name.lower():
-                                        if v["storageType"] != "Secret":
-                                            raise ValidationError(
-                                                "Usage error: --secret-volume-mount can only be used to update volume mounts with volumes of type secret. To update other types of volumes please use --yaml")
-                                        break
-                                c["volumeMounts"][0]["mountPath"] = self.get_argument_secret_volume_mount()
-
+            updating_existing_container = self.set_up_existing_container_update()
             # If not updating existing container, add as new container
             if not updating_existing_container:
                 if self.get_argument_image() is None:
@@ -584,6 +504,93 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         # Remove the environmentId in the PATCH payload if it has not been changed
         if safe_get(self.new_containerapp, "properties", "environmentId") and safe_get(self.new_containerapp, "properties", "environmentId").lower() == existed_environment_id.lower():
             del self.new_containerapp["properties"]['environmentId']
+
+    def set_up_existing_container_update(self):
+        updating_existing_container = False
+        for c in self.new_containerapp["properties"]["template"]["containers"]:
+            # Update existing container if container name matches the argument container name
+            if self.should_update_existing_container(c):
+                updating_existing_container = True
+
+                if self.get_argument_image() is not None:
+                    c["image"] = self.get_argument_image()
+
+                if self.get_argument_set_env_vars() is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    # env vars
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(self.get_argument_set_env_vars()))
+
+                if self.get_argument_replace_env_vars() is not None:
+                    # Remove other existing env_vars, then add them
+                    c["env"] = []
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(self.get_argument_replace_env_vars()))
+
+                if self.get_argument_remove_env_vars() is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    # env vars
+                    _remove_env_vars(c["env"], self.get_argument_remove_env_vars())
+
+                if self.get_argument_remove_all_env_vars():
+                    c["env"] = []
+
+                if self.get_argument_startup_command() is not None:
+                    if isinstance(self.get_argument_startup_command(), list) and not self.get_argument_startup_command():
+                        c["command"] = None
+                    else:
+                        c["command"] = self.get_argument_startup_command()
+                if self.get_argument_args() is not None:
+                    if isinstance(self.get_argument_args(), list) and not self.get_argument_args():
+                        c["args"] = None
+                    else:
+                        c["args"] = self.get_argument_args()
+                if self.get_argument_cpu() is not None or self.get_argument_memory() is not None:
+                    if "resources" in c and c["resources"]:
+                        if self.get_argument_cpu() is not None:
+                            c["resources"]["cpu"] = self.get_argument_cpu()
+                        if self.get_argument_memory() is not None:
+                            c["resources"]["memory"] = self.get_argument_memory()
+                    else:
+                        c["resources"] = {
+                            "cpu": self.get_argument_cpu(),
+                            "memory": self.get_argument_memory()
+                        }
+                if self.get_argument_secret_volume_mount() is not None:
+                    self.new_containerapp["properties"]["template"]["volumes"] = self.containerapp_def["properties"]["template"]["volumes"]
+                    if "volumeMounts" not in c or not c["volumeMounts"]:
+                        # if no volume mount exists, create a new volume and then mount
+                        volume_def = VolumeModel
+                        volume_mount_def = VolumeMountModel
+                        volume_def["name"] = _generate_secret_volume_name()
+                        volume_def["storageType"] = "Secret"
+
+                        volume_mount_def["volumeName"] = volume_def["name"]
+                        volume_mount_def["mountPath"] = self.get_argument_secret_volume_mount()
+
+                        if "volumes" not in self.new_containerapp["properties"]["template"] or self.new_containerapp["properties"]["template"]["volumes"] is None:
+                            self.new_containerapp["properties"]["template"]["volumes"] = [volume_def]
+                        else:
+                            self.new_containerapp["properties"]["template"]["volumes"].append(volume_def)
+                        c["volumeMounts"] = [volume_mount_def]
+                    else:
+                        if len(c["volumeMounts"]) > 1:
+                            raise ValidationError(
+                                "Usage error: --secret-volume-mount can only be used with a container that has a single volume mount, to define multiple volumes and mounts please use --yaml")
+                        else:
+                            # check that the only volume is of type secret
+                            volume_name = c["volumeMounts"][0]["volumeName"]
+                            for v in self.new_containerapp["properties"]["template"]["volumes"]:
+                                if v["name"].lower() == volume_name.lower():
+                                    if v["storageType"] != "Secret":
+                                        raise ValidationError(
+                                            "Usage error: --secret-volume-mount can only be used to update volume mounts with volumes of type secret. To update other types of volumes please use --yaml")
+                                    break
+                            c["volumeMounts"][0]["mountPath"] = self.get_argument_secret_volume_mount()
+        return updating_existing_container
+
+    def should_update_existing_container(self, c):
+        return c["name"].lower() == self.get_argument_container_name().lower()
 
 
 # decorator for preview create
@@ -973,6 +980,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_max_inactive_revisions(self):
         return self.get_param("max_inactive_revisions")
 
+
 # decorator for preview update
 class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_service_bindings(self):
@@ -1001,6 +1009,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def get_argument_build_env_vars(self):
         return self.get_param("build_env_vars")
+
+    # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is
+    def get_argument_force_single_container_updates(self):
+        return self.get_param("force_single_container_updates")
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -1195,6 +1207,23 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def get_argument_max_inactive_revisions(self):
         return self.get_param("max_inactive_revisions")
+
+    def _need_update_container(self):
+        return self.get_argument_image() or self.get_argument_force_single_container_updates() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
+
+    def set_up_existing_container_update(self):
+        if self.get_argument_force_single_container_updates():
+            # Remove n-1 containers where n is the number of containers in the containerapp and replace remaining container with the new container
+            # Fails if all containers are removed
+            while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
+                self.new_containerapp["properties"]["template"]["containers"].pop()
+        return super().set_up_existing_container_update()
+
+    def should_update_existing_container(self, c):
+        # Update existing container if container name matches the argument container name or if force_single_container_updates is set
+        # force_single_container_updates argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
+        return c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_force_single_container_updates()
+
 
 # decorator for preview list
 class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):

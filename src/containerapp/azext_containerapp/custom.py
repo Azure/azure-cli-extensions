@@ -520,7 +520,8 @@ def update_containerapp_logic(cmd,
                               source=None,
                               artifact=None,
                               build_env_vars=None,
-                              max_inactive_revisions=None):
+                              max_inactive_revisions=None,
+                              force_single_container_updates=False):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -1208,13 +1209,14 @@ def containerapp_up(cmd,
             _get_registry_from_app(app, source)  # if the app exists, get the registry
         _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
 
-    used_default_container_registry = False
+    force_single_container_updates = False
     if source:
-        used_default_container_registry = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
+        force_single_container_updates = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
+        app.set_force_single_container_updates(force_single_container_updates)
     else:
         app.create_acr_if_needed()
 
-    app.create(no_registry=bool(repo or used_default_container_registry))
+    app.create(no_registry=bool(repo or force_single_container_updates))
     if repo:
         _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
                               service_principal_tenant_id, branch, token, repo, context_path, build_env_vars)
@@ -1226,7 +1228,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1235,7 +1237,7 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
 
     if containerapp_def:
         return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
-                                         registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name)
+                                         registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, force_single_container_updates=force_single_container_updates)
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type)
 
 
@@ -2126,6 +2128,7 @@ def remove_env_managed_identity(cmd, name, resource_group_name, system_assigned=
 
     if not managed_env_def:
         raise ResourceNotFoundError("The containerapp env '{}' does not exist".format(name))
+
     # If identity not returned
     try:
         managed_env_def["identity"]
