@@ -243,8 +243,8 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         # update env with custom domain using file and password
         tmpFile = os.path.join(tempfile.gettempdir(), "{}.pem".format(env_name))
         self.cmd(f'keyvault secret download --vault-name {key_vault_name} -n {cert_name} -f "{tmpFile}"')
-        self.cmd('containerapp env update -g {} -n {} --dns-suffix {} --certificate-file "{}"'.format(
-            resource_group, env_name, hostname_1, tmpFile))
+        self.cmd('containerapp env update -g {} -n {} --certificate-file "{}"'.format(
+            resource_group, env_name, tmpFile))
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
@@ -252,8 +252,8 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         ])
 
         # update env with custom domain using msi
-        self.cmd('containerapp env update -g {} -n {} --dns-suffix {} --certificate-identity {} --certificate-key-vault-url {}'.format(
-            resource_group, env_name, hostname_1, user_identity_id1, akv_secret_url))
+        self.cmd('containerapp env update -g {} -n {} --certificate-identity {} --certificate-key-vault-url {}'.format(
+            resource_group, env_name, user_identity_id1, akv_secret_url))
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),

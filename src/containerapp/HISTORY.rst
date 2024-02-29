@@ -23,7 +23,7 @@ upcoming
 * 'az containerapp create/update': Support bind Java component with --bind
 * 'az containerapp create/update/up': Fix issue with logs when the Cloud Build project to use generates UTF-8 logs.
 * 'az containerapp update/up': Fix bug for multiple containers provisioned for source to cloud build
-* 'az containerapp env': Add support for environment custom domain from azure key vault using managed identity
+* 'az containerapp env create/update': Add support for environment custom domain from azure key vault using managed identity
 * 'az containerapp env certificate upload': Add support for environment certificate from azure key vault using managed identity
 
 0.3.47

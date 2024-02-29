@@ -176,11 +176,10 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         super().validate_arguments()
 
         # validate custom domain configuration
-        if self.get_argument_hostname():
-            if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
-                raise ValidationError("Cannot use certificate file/password with certificate identity/keyvaulturl at the same time")
-            if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
-                raise ValidationError("Either certificate file/password or certificate identity/keyvaulturl should be set when hostName is set")
+        if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
+            raise ValidationError("Cannot use certificate file/password with certificate identity/keyvaulturl at the same time")
+        if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
+            raise ValidationError("Either certificate file/password or certificate identity/keyvaulturl should be set when hostName is set")
 
     def set_up_app_log_configuration(self):
         logs_destination = self.get_argument_logs_destination()
@@ -202,25 +201,23 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
             safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "dynamicJsonColumns", value=self.get_argument_logs_dynamic_json_columns())
 
     def set_up_custom_domain_configuration(self):
-        if self.get_argument_hostname():
-            safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "dnsSuffix", value=self.get_argument_hostname())
-            if self.get_argument_certificate_file():
-                blob, _ = load_cert_file(self.get_argument_certificate_file(), self.get_argument_certificate_password())
-                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateValue", value=blob)
-                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificatePassword", value=self.get_argument_certificate_password())
-                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateKeyVaultProperties", value=None)
-            if self.get_argument_certificate_key_vault_url():
-                # default use system identity
-                identity = self.get_argument_certificate_identity()
-                if not identity:
-                    identity = "system"
-                if identity.lower() != "system":
-                    subscription_id = get_subscription_id(self.cmd.cli_ctx)
-                    identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
-                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateKeyVaultProperties", "identity", value=identity)
-                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateKeyVaultProperties", "keyVaultUrl", value=self.get_argument_certificate_key_vault_url())
-                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateValue", value="")
-                safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificatePassword", value="")
+        if self.get_argument_certificate_file():
+            blob, _ = load_cert_file(self.get_argument_certificate_file(), self.get_argument_certificate_password())
+            safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateValue", value=blob)
+            safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificatePassword", value=self.get_argument_certificate_password())
+            safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateKeyVaultProperties", value=None)
+        if self.get_argument_certificate_key_vault_url():
+            # default use system identity
+            identity = self.get_argument_certificate_identity()
+            if not identity:
+                identity = "system"
+            if identity.lower() != "system":
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
+                identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
+            safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateKeyVaultProperties", "identity", value=identity)
+            safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateKeyVaultProperties", "keyVaultUrl", value=self.get_argument_certificate_key_vault_url())
+            safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateValue", value="")
+            safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificatePassword", value="")
 
     def get_argument_logs_dynamic_json_columns(self):
         return self.get_param("logs_dynamic_json_columns")
