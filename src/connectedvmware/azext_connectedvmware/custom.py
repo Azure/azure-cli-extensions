@@ -893,7 +893,7 @@ ConnectedVMwareVsphereResources
                 prefix, machineName, biosId, biosId2VM[biosId])
             continue
         if managedResourceId:
-            if VMWARE_NAMESPACE in managedResourceId:
+            if VMWARE_NAMESPACE.lower() in managedResourceId.lower():
                 logger.info(
                     "%s Machine %s is already linked to managed resource %s .",
                     prefix, machineName, managedResourceId)
