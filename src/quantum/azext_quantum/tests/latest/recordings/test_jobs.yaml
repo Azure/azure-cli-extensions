@@ -14,23 +14,23 @@ interactions:
       - -g -w -l
       User-Agent:
       - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-        az-cli-ext/0.22.0
+        az-cli-ext/1.0.0b2
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/guyi-test/providers/Microsoft.Quantum/workspaces/canaryCentralEPAP?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-qsharp-tests?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/guyi-test/providers/Microsoft.Quantum/Workspaces/canaryCentralEPAP","name":"canaryCentralEPAP","type":"microsoft.quantum/workspaces","location":"centraluseuap","tags":{},"systemData":{"createdBy":"guyi@microsoft.com","createdByType":"User","createdAt":"2024-02-07T21:12:54.2237345Z","lastModifiedBy":"guyi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-07T21:23:33.8365868Z"},"identity":{"principalId":"6ca937eb-d9e0-48a8-9215-1ecac8779b6e","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"microsoft-elements","providerSku":"elements-internal-testing","applicationName":"canaryCentralEPAP-microsoft-elements","provisioningState":"Succeeded"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"canaryCentralEPAP-ionq","provisioningState":"Succeeded","resourceUsageId":"2692ebb4-c13c-4f02-8500-4300f5f22ca5"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"canaryCentralEPAP-microsoft-qc","provisioningState":"Succeeded"},{"providerId":"pasqal","providerSku":"pasqal-aq-credits","applicationName":"canaryCentralEPAP-pasqal","provisioningState":"Succeeded","resourceUsageId":"87d55d86-cfd5-4b4b-bdb3-b9099471984d"},{"providerId":"quantinuum","providerSku":"credits1","applicationName":"canaryCentralEPAP-quantinuum","provisioningState":"Succeeded","resourceUsageId":"3988a6e6-6ad9-4cd7-8dcc-cdc5e4922f0d"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"canaryCentralEPAP-rigetti","provisioningState":"Succeeded","resourceUsageId":"1a00f354-cde3-417f-97b3-5580bf5a8793"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/guyi-test/providers/Microsoft.Storage/storageAccounts/guyitest","endpointUri":"https://canaryCentralEPAP.centraluseuap.quantum.azure.com","apiKeyEnabled":true}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-qsharp-tests","name":"e2e-qsharp-tests","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"guyi@microsoft.com","createdByType":"User","createdAt":"2024-02-28T23:57:34.8620887Z","lastModifiedBy":"guyi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-28T23:57:34.8620887Z"},"identity":{"principalId":"7adef34c-123b-4949-afde-67c176d634f3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-qsharp-tests-microsoft-qc","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","apiKeyEnabled":true,"endpointUri":"https://e2e-qsharp-tests.westus2.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2016'
+      - '1071'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Feb 2024 22:43:57 GMT
+      - Thu, 29 Feb 2024 00:00:39 GMT
       etag:
-      - '"0000da20-0000-3400-0000-65c3f4d70000"'
+      - '"0902dc2c-0000-0800-0000-65dfc87a0000"'
       expires:
       - '-1'
       pragma:
@@ -44,7 +44,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-msedge-ref:
-      - 'Ref A: BD3ACCBB9DAB48E29A783307C0039ED5 Ref B: CO6AA3150220019 Ref C: 2024-02-13T22:43:56Z'
+      - 'Ref A: 845860232C3846889F0BFD227C6B9BAC Ref B: CO6AA3150219029 Ref C: 2024-02-29T00:00:40Z'
     status:
       code: 200
       message: OK
@@ -58,23 +58,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - az-cli-ext/0.22.0 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://centraluseuap.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/guyi-test/providers/Microsoft.Quantum/workspaces/canaryCentralEPAP/providerStatus
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-qsharp-tests/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"microsoft-elements","currentAvailability":"Available","targets":[{"id":"microsoft.dft","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Available","averageQueueTime":5822767,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Available","averageQueueTime":4838276,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":7852745,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":22,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"pasqal","currentAvailability":"Degraded","targets":[{"id":"pasqal.sim.emu-tn","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://pasqal.com"},{"id":"pasqal.qpu.fresnel","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://pasqal.com"}]},{"id":"quantinuum","currentAvailability":"Degraded","targets":[{"id":"quantinuum.qpu.h1-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2sc","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2e","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"}]},{"id":"rigetti","currentAvailability":"Degraded","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-9q-1","currentAvailability":"Degraded","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-2","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
+      string: '{"value":[{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]}],"nextLink":null}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '2565'
+      - '197'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Feb 2024 22:43:59 GMT
+      - Thu, 29 Feb 2024 00:00:41 GMT
       mise-correlation-id:
-      - ec6fc64f-f19f-4461-a2a6-6129b94cd01c
+      - 045ce8df-4d7e-4e7c-9451-47e2055a5fd2
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -83,8 +83,8 @@ interactions:
       - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/; SameSite=None;
         Secure
       - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/
-      - ARRAffinity=06c56b8471ef26f13c61783eeb00d8e15bf74407238d9c8d8936521d5d5d2dd0;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-canarycentraluseuap-003.ase-jobscheduler-centraluseuap-003.appserviceenvironment.net
-      - ARRAffinitySameSite=06c56b8471ef26f13c61783eeb00d8e15bf74407238d9c8d8936521d5d5d2dd0;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-canarycentraluseuap-003.ase-jobscheduler-centraluseuap-003.appserviceenvironment.net
+      - ARRAffinity=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
+      - ARRAffinitySameSite=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
       strict-transport-security:
       - max-age=2592000; includeSubDomains
       transfer-encoding:
