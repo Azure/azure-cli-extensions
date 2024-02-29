@@ -8,6 +8,7 @@ import requests
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk.checkers import StringContainCheckIgnoreCase, JMESPathCheckExists, JMESPathCheckNotExists
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -73,3 +74,13 @@ class WebappBasicE2EKubeTest(ScenarioTest):
 
         self.cmd('webapp update -g {} -n {} --https-only true'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", True)])
         self.cmd('webapp update -g {} -n {} --https-only false'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", False)])
+
+    @ResourceGroupPreparer(name_prefix="clitest", random_name_length=24, location="eastus")
+    def test_list_runtimes(self, resource_group):
+        r = self.cmd('webapp list-runtimes', checks=[JMESPathCheckExists("linux"), JMESPathCheckExists("windows"),
+                                                     StringContainCheckIgnoreCase('NODE:20-lts')]).get_output_in_json()
+        self.assertFalse('NODE:14-lts' in r['linux'])
+        r = self.cmd('webapp list-runtimes --is-kube',
+                     checks=[JMESPathCheckNotExists("linux"), StringContainCheckIgnoreCase('NODE:14-lts')])\
+            .get_output_in_json()
+        self.assertFalse('NODE:20-lts' in r)

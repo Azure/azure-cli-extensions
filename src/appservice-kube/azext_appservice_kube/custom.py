@@ -695,7 +695,7 @@ def _get_custom_location_id(cmd, custom_location, resource_group_name):
         name=custom_location)
 
 
-def list_runtimes_kube(cmd, os_type=None, linux=True, is_kube=False):
+def list_runtimes_kube(cmd, os_type=None, linux=False, is_kube=False):
     if is_kube:
         runtime_helper = _AppOnArcStackRuntimeHelper(cmd=cmd, linux=True, windows=False)
         return runtime_helper.get_stack_names_only(delimiter=":")
