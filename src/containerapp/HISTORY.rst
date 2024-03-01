@@ -15,6 +15,7 @@ upcoming
 * 'az containerapp create/update': Support bind Java component with --bind
 * 'az containerapp create/update/up': Fix issue with logs when the Cloud Build project to use generates UTF-8 logs.
 * 'az containerapp update/up': Fix bug for multiple containers provisioned for source to cloud build
+* 'az containerapp update/up': Bufgix - Explicitly set container name to container app name for source to cloud builds.
 
 0.3.47
 ++++++
