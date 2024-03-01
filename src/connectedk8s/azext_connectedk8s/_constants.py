@@ -241,3 +241,5 @@ Provisioned_Cluster_Kind = 'provisionedcluster'
 Helm_Values_Fetch_isProxyEnabled_Failed_Fault_Type = "Helm Values Fetch isProxyEnabled Failed"
 Helm_Values_Fetch_isCustomCert_Failed_Fault_Type = "Helm Values Fetch isCustomCert Failed"
 Helm_Values_Fetch_proxyCert_Failed_Fault_Type = "Helm Values Fetch proxyCert Failed"
+Onboarding_PreRequisites_Url = "'https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-"\
+    "connect-cluster?tabs=azure-cli%2Cazure-cloud#prerequisites'"
