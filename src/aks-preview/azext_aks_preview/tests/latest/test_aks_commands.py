@@ -11632,7 +11632,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # fails because egress gateway has been disabled
             self.assertTrue(e.status_code == 400)
 
-
         # disable egress gateway
         try:
             update_cmd = "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} --yes"
