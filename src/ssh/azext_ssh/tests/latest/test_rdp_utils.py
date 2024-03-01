@@ -87,7 +87,7 @@ class RDPUtilsTest(unittest.TestCase):
         mock_wait.return_value = True, [], False
 
         rdp_utils.start_rdp_connection(op_info, True, True)
-        
+
         mock_terminate.assert_called_once_with(ssh_pro, [], False)
         # mock_rdp.assert_called_once_with(1020)
         mock_tunnel.assert_called_once_with(op_info)
