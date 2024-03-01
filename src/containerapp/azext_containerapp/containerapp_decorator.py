@@ -1213,6 +1213,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def set_up_existing_container_update(self):
         if self.get_argument_force_single_container_updates():
+            if len(self.new_containerapp["properties"]["template"]["containers"]) == 0:
+                raise ValidationError(
+                    "The container app must have at least one container. Please use --image to set the image for the container app.")
             # Remove n-1 containers where n is the number of containers in the containerapp and replace remaining container with the new container
             # Fails if all containers are removed
             while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
