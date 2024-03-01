@@ -22,13 +22,12 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
         self.managed_env_def = {}
         self.existing_managed_env_def = {}
 
-    
     def get_argument_open_telemetry_data_dog_site(self):
         return self.get_param("site")
     
     def get_argument_open_telemetry_data_dog_key(self):
         return self.get_param("key")
-    
+
     def get_argument_enable_open_telemetry_traces(self):
         return self.get_param("enable_open_telemetry_traces")
     
@@ -61,14 +60,12 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
             if existing_traces is None:
                 if self.get_argument_enable_open_telemetry_traces():
                     existing_traces = [DATA_DOG_DEST]
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=existing_traces)
             else:
                 if self.get_argument_enable_open_telemetry_traces() and DATA_DOG_DEST not in existing_traces:
                     existing_traces.append(DATA_DOG_DEST) 
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=existing_traces)
                 elif not self.get_argument_enable_open_telemetry_traces() and DATA_DOG_DEST in existing_traces:
                     existing_traces.remove(DATA_DOG_DEST)
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=existing_traces)
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=existing_traces)
 
     def set_up_open_telemetry_metrics_destinations(self):
         if self.get_argument_enable_open_telemetry_metrics() is not None:
@@ -76,14 +73,12 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
             if existing_metrics is None:
                 if self.get_argument_enable_open_telemetry_metrics():
                     existing_metrics = [DATA_DOG_DEST]
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=existing_metrics)
             else:
                 if self.get_argument_enable_open_telemetry_metrics() and DATA_DOG_DEST not in existing_metrics:
                     existing_metrics.append(DATA_DOG_DEST)
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=existing_metrics)
                 elif not self.get_argument_enable_open_telemetry_metrics() and DATA_DOG_DEST in existing_metrics:
                     existing_metrics.remove(DATA_DOG_DEST)
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=existing_metrics)
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=existing_metrics)
 
     def update(self):
         try:
@@ -91,6 +86,7 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
                                       name=self.get_argument_name(), managed_environment_envelope=self.managed_env_def, no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
+
 
 class ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(BaseResource):
 
@@ -129,14 +125,12 @@ class ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(BaseResource):
             if existing_traces is None:
                 if self.get_argument_enable_open_telemetry_traces():
                     existing_traces = [APP_INSIGHTS_DEST]
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=existing_traces)
             else:
                 if self.get_argument_enable_open_telemetry_traces() and APP_INSIGHTS_DEST not in existing_traces:
                     existing_traces.append(APP_INSIGHTS_DEST) 
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=existing_traces)
                 elif not self.get_argument_enable_open_telemetry_traces() and APP_INSIGHTS_DEST in existing_traces:
                     existing_traces.remove(APP_INSIGHTS_DEST)
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=existing_traces)
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=existing_traces)
 
     def set_up_open_telemetry_logs_destinations(self):
         if self.get_argument_enable_open_telemetry_logs() is not None:
@@ -144,14 +138,12 @@ class ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(BaseResource):
             if existing_logs is None:
                 if self.get_argument_enable_open_telemetry_logs():
                     existing_logs = [APP_INSIGHTS_DEST]
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=existing_logs)
             else:
                 if self.get_argument_enable_open_telemetry_logs() and APP_INSIGHTS_DEST not in existing_logs:
                     existing_logs.append(APP_INSIGHTS_DEST) 
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=existing_logs)
                 elif not self.get_argument_enable_open_telemetry_logs() and APP_INSIGHTS_DEST in existing_logs:
                     existing_logs.remove(APP_INSIGHTS_DEST)
-                    safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=existing_logs)
+            safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=existing_logs)
 
     def update(self):
         try:
