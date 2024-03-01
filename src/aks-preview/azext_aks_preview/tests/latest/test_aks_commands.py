@@ -17,6 +17,7 @@ from azext_aks_preview.tests.latest.custom_preparers import (
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
 from azure.cli.core.azclierror import ClientRequestError
+from azure.core.exceptions import (HttpResponseError)
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
@@ -11588,57 +11589,69 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
             "--egress-gateway-nodeselector istio=egress"
         )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("serviceMeshProfile.mode", "Istio"),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
-                    "egress",
-                ),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                    True,
-                ),
-            ],
-        )
+        try:
+            self.cmd(
+                update_cmd,
+                checks=[
+                    self.check("serviceMeshProfile.mode", "Istio"),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
+                        "egress",
+                    ),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                        True,
+                    ),
+                ],
+            )
+        except HttpResponseError as e:
+            # fails because egress gateway has been disabled
+            self.assertTrue(e.status_code == 400)
 
-        # remove egress gateway nodeselector
-        update_cmd = (
-            "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
-            "--egress-gateway-nodeselector "
-        )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("serviceMeshProfile.mode", "Istio"),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
-                    None,
-                ),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                    True,
-                ),
-            ],
-        )
+        try:
+            # remove egress gateway nodeselector
+            update_cmd = (
+                "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
+                "--egress-gateway-nodeselector "
+            )
+            self.cmd(
+                update_cmd,
+                checks=[
+                    self.check("serviceMeshProfile.mode", "Istio"),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
+                        None,
+                    ),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                        True,
+                    ),
+                ],
+            )
+        except HttpResponseError as e:
+            # fails because egress gateway has been disabled
+            self.assertTrue(e.status_code == 400)
 
         # disable egress gateway
-        update_cmd = "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} --yes"
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("serviceMeshProfile.mode", "Istio"),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                    None,
-                ),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector",
-                    None,
-                ),
-            ],
-        )
+        try:
+            update_cmd = "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} --yes"
+            self.cmd(
+                update_cmd,
+                checks=[
+                    self.check("serviceMeshProfile.mode", "Istio"),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                        None,
+                    ),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector",
+                        None,
+                    ),
+                ],
+            )
+        except HttpResponseError as e:
+            # fails because egress gateway has been disabled
+            self.assertTrue(e.status_code == 400)
 
         # delete the cluster
         delete_cmd = (
