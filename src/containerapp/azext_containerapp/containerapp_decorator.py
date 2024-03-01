@@ -1218,9 +1218,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
                 self.new_containerapp["properties"]["template"]["containers"].pop()
             if not self.get_argument_name():
-                raise RequiredArgumentMissingError("The ContainerApp name is required when --force-single-container-updates is set.")
+                raise RequiredArgumentMissingError("The ContainerApp name is required to update it.")
             # Set the container name to the container app name if force_single_container_updates is set
             self.set_argument_container_name(self.get_argument_name())
+            safe_set(self.new_containerapp, "properties", "template", "containers", 0, "name", value=self.get_argument_container_name())
         return super().set_up_existing_container_update()
 
     def should_update_existing_container(self, c):
