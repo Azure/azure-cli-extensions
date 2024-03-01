@@ -432,7 +432,7 @@ helps[
     type: command
     short-summary: "Create VMInstance resource(s) from existing Microsoft.HybridCompute machines."
     examples:
-      - name: Creates VMware resources from the specified Arc for Servers machine in the vCenter
+      - name: Create VMware resources from the specified Arc for Servers machine in the vCenter
         text: |-
                 az connectedvmware vm create-from-machines \
 --resource-group contoso-rg --name contoso-vm \
