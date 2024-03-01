@@ -248,7 +248,7 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
     else:
         raise azclierror.BadRequestError(f"Unsuported architecture: {machine} is not currently supported")
 
-    # define the request url and install location based on the os and architecture
+    # define the request url and install location based on the os and architecture.
     proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}"
     request_uri = (f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}"
                    f"/{proxy_name}_{consts.CLIENT_PROXY_VERSION}")
