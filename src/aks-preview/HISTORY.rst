@@ -13,6 +13,13 @@ Pending
 +++++++
 * Add parameter to set revision `--revision` for the Azure Service Mesh addon while creating AKS cluster.
 
+2.0.0b3
++++++++
+* Add `--enable-vtpm` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-vtpm` to the `az aks nodepool update` command.
+* Add `--enable-secure-boot` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-secure-boot` to the `az aks nodepool update` command.
+
 2.0.0b2
 +++++++
 * Add `--pod-ip-allocation-mode` to `az aks create` and `az aks nodepool` commands.
