@@ -49,7 +49,37 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.dataDogConfiguration.site', data_dog_site),
+            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations','[\'dataDog\']'),
+            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations','[\'dataDog\']'),
         ])
+
+        self.cmd(f'containerapp env telemetry data-dog set -g {resource_group} -n {env_name} --enable-open-telemetry-metrics false')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.dataDogConfiguration.site', data_dog_site),
+            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations','[\'dataDog\']'),
+            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration',None),
+        ])
+
+        self.cmd(f'containerapp env telemetry data-dog delete -g {resource_group} -n {env_name} --yes')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration',None),
+            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration',None),
+        ])
+        
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
@@ -85,3 +115,28 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
             JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations','[\'appInsights\']'),
         ])
         
+        self.cmd(f'containerapp env telemetry app-insights set -g {resource_group} -n {env_name} --enable-open-telemetry-traces false')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration',None),
+            JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations','[\'appInsights\']'),
+        ])
+
+        self.cmd(f'containerapp env telemetry app-insights delete -g {resource_group} -n {env_name} --yes')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration',None),
+            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration',None),
+        ])

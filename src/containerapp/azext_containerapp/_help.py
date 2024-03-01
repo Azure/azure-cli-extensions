@@ -1277,6 +1277,11 @@ helps['containerapp job create'] = """
 
 # Container Apps Telemetry Commands
 
+helps['containerapp env telemetry'] = """
+    type: group
+    short-summary: Commands to manage telemetry settings for the container apps environment.
+"""
+
 helps['containerapp env telemetry data-dog set'] = """
     type: command
     short-summary: Create or update container apps environment telemetry data dog settings.

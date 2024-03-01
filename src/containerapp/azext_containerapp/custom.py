@@ -2211,8 +2211,8 @@ def set_environment_telemetry_data_dog(cmd,
                                        resource_group_name,
                                        site=None,
                                        key=None,
-                                       enable_open_telemetry_traces=False,
-                                       enable_open_telemetry_metrics=False,
+                                       enable_open_telemetry_traces=None,
+                                       enable_open_telemetry_metrics=None,
                                        no_wait=False):
     raw_parameters = locals()
     containerapp_env_telemetry_data_dog_decorator = ContainerappEnvTelemetryDataDogPreviewSetDecorator(
@@ -2234,8 +2234,8 @@ def delete_environment_telemetry_data_dog(cmd,
                                           resource_group_name,
                                           no_wait=False):
     raw_parameters = locals()
-    raw_parameters["site"] = False
-    raw_parameters["key"] = False
+    raw_parameters["site"] = ""
+    raw_parameters["key"] = ""
     raw_parameters["enable_open_telemetry_traces"] = False
     raw_parameters["enable_open_telemetry_metrics"] = False
     containerapp_env_telemetry_data_dog_decorator = ContainerappEnvTelemetryDataDogPreviewSetDecorator(
@@ -2256,8 +2256,8 @@ def set_environment_telemetry_app_insights(cmd,
                                            name,
                                            resource_group_name,
                                            connection_string=None,
-                                           enable_open_telemetry_traces=False,
-                                           enable_open_telemetry_logs=False,
+                                           enable_open_telemetry_traces=None,
+                                           enable_open_telemetry_logs=None,
                                            no_wait=False):
     raw_parameters = locals()
     containerapp_env_telemetry_app_insights_decorator = ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(
