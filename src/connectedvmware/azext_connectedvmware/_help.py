@@ -444,7 +444,7 @@ helps[
 --resource-group contoso-rg \
 --vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
 
-      - name: Creates VMware resources from all Arc for Servers machines in the specified subscription belonging to that vCenter
+      - name: Create VMware resources from all Arc for Servers machines in the specified subscription belonging to that vCenter
         text: |-
                 az connectedvmware vm create-from-machines \
 --subscription contoso-sub \
