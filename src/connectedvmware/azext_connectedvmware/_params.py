@@ -108,6 +108,26 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vm-template delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
+    with self.argument_context('connectedvmware vm create-from-machines') as c:
+        c.argument(
+            'rg_name', options_list=['--resource-group', '-g'],
+            help=(
+                "Name of the resource group which will be scanned for HCRP machines. "
+                "NOTE: The default group configured using 'az configure --defaults group=<name>' "
+                "is not used, and it must be specified explicitly."
+            )
+        )
+        c.argument(
+            'resource_name', resource_name, options_list=['--name', '-n'],
+            help="Name of the Microsoft.HybridCompute Machine resource. "
+            "Provide this parameter if you want to "
+            "convert a single machine to VMware VM."
+        )
+        c.argument(
+            'vcenter', vcenter, options_list=['--vcenter-id', '-v'],
+            help="ARM ID of the vCenter to which the machines will be linked."
+        )
+
     with self.argument_context('connectedvmware vm create') as c:
         c.argument(
             'resource_name', resource_name, options_list=['--name', '-n'],
@@ -217,9 +237,15 @@ def load_arguments(self, _):
             help='Delete the VM from the VMware host.',
         )
         c.argument(
+            'retain_machine',
+            action='store_true',
+            help='Retain the parent Microsoft.HybridCompute Machine resource',
+        )
+        c.argument(
             'delete_machine',
             action='store_true',
             help='Delete the parent Microsoft.HybridCompute Machine resource',
+            deprecate_info=c.deprecate(hide=True),
         )
         c.argument(
             'retain',
