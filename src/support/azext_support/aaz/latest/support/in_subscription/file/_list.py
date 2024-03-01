@@ -18,10 +18,10 @@ class List(AAZCommand):
     """List all the Files information under a workspace for an Azure subscription.
 
     :example: List all the files within a file-workspace for a specified subscription (different from the account subscription)
-        az support in-subscription file-workspace file list --file-workspace-name "TestFileWorkspaceName" --subscription "TestSubscription"
+        az support in-subscription file list --file-workspace-name "TestFileWorkspaceName" --subscription "TestSubscription"
 
     :example: List all the files within a file-workspace for a specified subscription (same as the account subscription)
-        az support in-subscription file-workspace file list --file-workspace-name "TestFileWorkspaceName"
+        az support in-subscription file list --file-workspace-name "TestFileWorkspaceName"
     """
 
     _aaz_info = {
