@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get details of a specific file in a work space.
 
     :example: Show a file within a file-workspace
-        az support no-subscription file-workspace file show --file-workspace-name "TestWorkspaceName" --file-name "FileName"
+        az support no-subscription file show --file-workspace-name "TestWorkspaceName" --file-name "FileName"
     """
 
     _aaz_info = {
