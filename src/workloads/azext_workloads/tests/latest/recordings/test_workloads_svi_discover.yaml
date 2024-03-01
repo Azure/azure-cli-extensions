@@ -13,38 +13,41 @@ interactions:
       ParameterSetName:
       - -g -n --environment --sap-product --central-server-vm --identity
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLI-TESTING?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING","name":"CLI-TESTING","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"Created":"20230330"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING","name":"CLI-TESTING","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"
+        CleanupAfter":"20240331"," Justification":"For CLI Testgin","Created":"20240229"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '249'
+      - '311'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 11:15:02 GMT
+      - Fri, 01 Mar 2024 04:14:55 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 37DA7DA11688496F9E61A512E64467A2 Ref B: MAA201060513031 Ref C: 2024-03-01T04:14:55Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/SAP-E2ETest-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/E2E-RBAC-MSI":
       {}}}, "location": "eastus", "properties": {"environment": "NonProd", "sapProduct":
-      "S4HANA", "configuration": {"centralServerVmId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TestRG/providers/Microsoft.Compute/virtualMachines/c36ascsvm",
+      "S4HANA", "configuration": {"centralServerVmId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Compute/virtualMachines/c36ascsvm",
       "configurationType": "Discovery"}}}'
     headers:
       Accept:
@@ -56,49 +59,53 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '524'
+      - '525'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --environment --sap-product --central-server-vm --identity
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.57.0 (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36?api-version=2023-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","name":"C36","type":"microsoft.workloads/sapvirtualinstances","location":"eastus","systemData":{"createdBy":"mohitaneja@microsoft.com","createdByType":"User","createdAt":"2023-04-10T11:15:06.5611451Z","lastModifiedBy":"mohitaneja@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-10T11:15:06.5611451Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/SAP-E2ETest-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/E2E-RBAC-MSI":{"principalId":"b7202d53-6b98-4194-8748-4f13a9000072","clientId":"914aa6fe-5e5f-4b55-9b68-39da0ad86ee7"}}},"properties":{"environment":"NonProd","sapProduct":"S4HANA","configuration":{"configurationType":"Discovery","centralServerVmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TestRG/providers/Microsoft.Compute/virtualMachines/c36ascsvm"},"state":"DiscoveryInProgress","provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","name":"C36","type":"microsoft.workloads/sapvirtualinstances","location":"eastus","systemData":{"createdBy":"jasksingh@microsoft.com","createdByType":"User","createdAt":"2024-03-01T04:14:57.5873635Z","lastModifiedBy":"jasksingh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-01T04:14:57.5873635Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/SAP-E2ETest-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/E2E-RBAC-MSI":{"principalId":"3f6dc964-e354-492a-8816-7bf7bfa40d79","clientId":"bfd02efd-39f7-43f4-92a1-be2a4ec89012"}}},"properties":{"environment":"NonProd","sapProduct":"S4HANA","managedResourcesNetworkAccessType":"Public","configuration":{"configurationType":"Discovery","centralServerVmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Compute/virtualMachines/c36ascsvm"},"state":"DiscoveryInProgress","provisioningState":"Accepted"}}'
     headers:
       api-supported-versions:
-      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01
+      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01, 2023-10-01-preview
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-10-01-preview&t=638448633007123573&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=lUduU61dDzb6gopNLFUEB9oE666bk7laZnMN394mwB2zOjvzL9YwhsuPbFUsP3vVp0MgR0W9xJcA9gM4nbGx5F-hPJ7HlgGG7htkbqaFNlNS4KDJkwTfNpCaS6NepNZu-RYmwIwa9-WpUwD7QSs14sPWbBPhyO3yunz352VbR-7yEPGNcHWN3R1X8BVxABA7dr8VV32gMz55xUALHuhsaWQJ-5cF31uyw7VOX8phWmpfdzFMRd-wN0VXhV5sXAFLBpDaS4zjiEm_jtkjyiBpHQWmUeJ7QOp8AT1M7SvGfR3uqtCzFmH0ATDBEi7Y2CD13VZqkKFyHA5OrLzkh8YVug&h=w3VSOhY2gU9u2DsxQN7McBHKkDjiPVrIMbhSLjA9F1E
       cache-control:
       - no-cache
       content-length:
-      - '1112'
+      - '1156'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 11:15:09 GMT
+      - Fri, 01 Mar 2024 04:15:00 GMT
       etag:
-      - '"6a0054be-0000-0100-0000-6433efbd0000"'
+      - '"6400dcce-0000-0100-0000-65e156440000"'
       expires:
       - '-1'
       location:
       - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36
       mise-correlation-id:
-      - 5a478446-4850-457f-b3a9-43f1cc5e6525
+      - 35dd70f6-2ae1-42f1-afcf-f425d7df0be1
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 4F99D1965A264205BDAF0D7134725FD2 Ref B: MAA201060516045 Ref C: 2024-03-01T04:14:56Z'
     status:
       code: 201
       message: Created
@@ -116,12 +123,12 @@ interactions:
       ParameterSetName:
       - -g -n --environment --sap-product --central-server-vm --identity
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.57.0 (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-10-01-preview&t=638448633007123573&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=lUduU61dDzb6gopNLFUEB9oE666bk7laZnMN394mwB2zOjvzL9YwhsuPbFUsP3vVp0MgR0W9xJcA9gM4nbGx5F-hPJ7HlgGG7htkbqaFNlNS4KDJkwTfNpCaS6NepNZu-RYmwIwa9-WpUwD7QSs14sPWbBPhyO3yunz352VbR-7yEPGNcHWN3R1X8BVxABA7dr8VV32gMz55xUALHuhsaWQJ-5cF31uyw7VOX8phWmpfdzFMRd-wN0VXhV5sXAFLBpDaS4zjiEm_jtkjyiBpHQWmUeJ7QOp8AT1M7SvGfR3uqtCzFmH0ATDBEi7Y2CD13VZqkKFyHA5OrLzkh8YVug&h=w3VSOhY2gU9u2DsxQN7McBHKkDjiPVrIMbhSLjA9F1E
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2024-03-01T04:14:59.1960837Z"}'
     headers:
       cache-control:
       - no-cache
@@ -130,21 +137,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 11:15:40 GMT
+      - Fri, 01 Mar 2024 04:15:01 GMT
       etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      - '"be007293-0000-0100-0000-65e156430000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: F469E150FB3444EAB4CBF88D7251688D Ref B: MAA201060516045 Ref C: 2024-03-01T04:15:00Z'
     status:
       code: 200
       message: OK
@@ -162,12 +169,12 @@ interactions:
       ParameterSetName:
       - -g -n --environment --sap-product --central-server-vm --identity
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.57.0 (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-10-01-preview&t=638448633007123573&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=lUduU61dDzb6gopNLFUEB9oE666bk7laZnMN394mwB2zOjvzL9YwhsuPbFUsP3vVp0MgR0W9xJcA9gM4nbGx5F-hPJ7HlgGG7htkbqaFNlNS4KDJkwTfNpCaS6NepNZu-RYmwIwa9-WpUwD7QSs14sPWbBPhyO3yunz352VbR-7yEPGNcHWN3R1X8BVxABA7dr8VV32gMz55xUALHuhsaWQJ-5cF31uyw7VOX8phWmpfdzFMRd-wN0VXhV5sXAFLBpDaS4zjiEm_jtkjyiBpHQWmUeJ7QOp8AT1M7SvGfR3uqtCzFmH0ATDBEi7Y2CD13VZqkKFyHA5OrLzkh8YVug&h=w3VSOhY2gU9u2DsxQN7McBHKkDjiPVrIMbhSLjA9F1E
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2024-03-01T04:14:59.1960837Z"}'
     headers:
       cache-control:
       - no-cache
@@ -176,21 +183,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 11:16:12 GMT
+      - Fri, 01 Mar 2024 04:15:32 GMT
       etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      - '"be007293-0000-0100-0000-65e156430000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: BA4AA2507A2E4FAEAF8601F83CB25AC0 Ref B: MAA201060516045 Ref C: 2024-03-01T04:15:31Z'
     status:
       code: 200
       message: OK
@@ -208,12 +215,12 @@ interactions:
       ParameterSetName:
       - -g -n --environment --sap-product --central-server-vm --identity
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.57.0 (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-10-01-preview&t=638448633007123573&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=lUduU61dDzb6gopNLFUEB9oE666bk7laZnMN394mwB2zOjvzL9YwhsuPbFUsP3vVp0MgR0W9xJcA9gM4nbGx5F-hPJ7HlgGG7htkbqaFNlNS4KDJkwTfNpCaS6NepNZu-RYmwIwa9-WpUwD7QSs14sPWbBPhyO3yunz352VbR-7yEPGNcHWN3R1X8BVxABA7dr8VV32gMz55xUALHuhsaWQJ-5cF31uyw7VOX8phWmpfdzFMRd-wN0VXhV5sXAFLBpDaS4zjiEm_jtkjyiBpHQWmUeJ7QOp8AT1M7SvGfR3uqtCzFmH0ATDBEi7Y2CD13VZqkKFyHA5OrLzkh8YVug&h=w3VSOhY2gU9u2DsxQN7McBHKkDjiPVrIMbhSLjA9F1E
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2024-03-01T04:14:59.1960837Z"}'
     headers:
       cache-control:
       - no-cache
@@ -222,21 +229,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 11:16:43 GMT
+      - Fri, 01 Mar 2024 04:16:02 GMT
       etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      - '"be007293-0000-0100-0000-65e156430000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 544E4638FE284681B14737798C9D52EC Ref B: MAA201060516045 Ref C: 2024-03-01T04:16:02Z'
     status:
       code: 200
       message: OK
@@ -254,12 +261,12 @@ interactions:
       ParameterSetName:
       - -g -n --environment --sap-product --central-server-vm --identity
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.57.0 (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-10-01-preview&t=638448633007123573&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=lUduU61dDzb6gopNLFUEB9oE666bk7laZnMN394mwB2zOjvzL9YwhsuPbFUsP3vVp0MgR0W9xJcA9gM4nbGx5F-hPJ7HlgGG7htkbqaFNlNS4KDJkwTfNpCaS6NepNZu-RYmwIwa9-WpUwD7QSs14sPWbBPhyO3yunz352VbR-7yEPGNcHWN3R1X8BVxABA7dr8VV32gMz55xUALHuhsaWQJ-5cF31uyw7VOX8phWmpfdzFMRd-wN0VXhV5sXAFLBpDaS4zjiEm_jtkjyiBpHQWmUeJ7QOp8AT1M7SvGfR3uqtCzFmH0ATDBEi7Y2CD13VZqkKFyHA5OrLzkh8YVug&h=w3VSOhY2gU9u2DsxQN7McBHKkDjiPVrIMbhSLjA9F1E
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2024-03-01T04:14:59.1960837Z"}'
     headers:
       cache-control:
       - no-cache
@@ -268,21 +275,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 11:17:15 GMT
+      - Fri, 01 Mar 2024 04:16:33 GMT
       etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      - '"be007293-0000-0100-0000-65e156430000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 13E88E102AF34C1F829D2C59454E6024 Ref B: MAA201060516045 Ref C: 2024-03-01T04:16:32Z'
     status:
       code: 200
       message: OK
@@ -300,12 +307,12 @@ interactions:
       ParameterSetName:
       - -g -n --environment --sap-product --central-server-vm --identity
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.57.0 (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-10-01-preview&t=638448633007123573&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=lUduU61dDzb6gopNLFUEB9oE666bk7laZnMN394mwB2zOjvzL9YwhsuPbFUsP3vVp0MgR0W9xJcA9gM4nbGx5F-hPJ7HlgGG7htkbqaFNlNS4KDJkwTfNpCaS6NepNZu-RYmwIwa9-WpUwD7QSs14sPWbBPhyO3yunz352VbR-7yEPGNcHWN3R1X8BVxABA7dr8VV32gMz55xUALHuhsaWQJ-5cF31uyw7VOX8phWmpfdzFMRd-wN0VXhV5sXAFLBpDaS4zjiEm_jtkjyiBpHQWmUeJ7QOp8AT1M7SvGfR3uqtCzFmH0ATDBEi7Y2CD13VZqkKFyHA5OrLzkh8YVug&h=w3VSOhY2gU9u2DsxQN7McBHKkDjiPVrIMbhSLjA9F1E
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2024-03-01T04:14:59.1960837Z"}'
     headers:
       cache-control:
       - no-cache
@@ -314,21 +321,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 11:17:45 GMT
+      - Fri, 01 Mar 2024 04:17:04 GMT
       etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      - '"be007293-0000-0100-0000-65e156430000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 571E62A7DD84441383C606FC74EAC2B0 Ref B: MAA201060516045 Ref C: 2024-03-01T04:17:03Z'
     status:
       code: 200
       message: OK
@@ -346,12 +353,12 @@ interactions:
       ParameterSetName:
       - -g -n --environment --sap-product --central-server-vm --identity
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.57.0 (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-10-01-preview&t=638448633007123573&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=lUduU61dDzb6gopNLFUEB9oE666bk7laZnMN394mwB2zOjvzL9YwhsuPbFUsP3vVp0MgR0W9xJcA9gM4nbGx5F-hPJ7HlgGG7htkbqaFNlNS4KDJkwTfNpCaS6NepNZu-RYmwIwa9-WpUwD7QSs14sPWbBPhyO3yunz352VbR-7yEPGNcHWN3R1X8BVxABA7dr8VV32gMz55xUALHuhsaWQJ-5cF31uyw7VOX8phWmpfdzFMRd-wN0VXhV5sXAFLBpDaS4zjiEm_jtkjyiBpHQWmUeJ7QOp8AT1M7SvGfR3uqtCzFmH0ATDBEi7Y2CD13VZqkKFyHA5OrLzkh8YVug&h=w3VSOhY2gU9u2DsxQN7McBHKkDjiPVrIMbhSLjA9F1E
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2024-03-01T04:14:59.1960837Z"}'
     headers:
       cache-control:
       - no-cache
@@ -360,21 +367,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 11:18:16 GMT
+      - Fri, 01 Mar 2024 04:17:34 GMT
       etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
+      - '"be007293-0000-0100-0000-65e156430000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1003EF622B6944ADBDE7065755DA02A8 Ref B: MAA201060516045 Ref C: 2024-03-01T04:17:34Z'
     status:
       code: 200
       message: OK
@@ -392,288 +399,12 @@ interactions:
       ParameterSetName:
       - -g -n --environment --sap-product --central-server-vm --identity
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.57.0 (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-10-01-preview&t=638448633007123573&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=lUduU61dDzb6gopNLFUEB9oE666bk7laZnMN394mwB2zOjvzL9YwhsuPbFUsP3vVp0MgR0W9xJcA9gM4nbGx5F-hPJ7HlgGG7htkbqaFNlNS4KDJkwTfNpCaS6NepNZu-RYmwIwa9-WpUwD7QSs14sPWbBPhyO3yunz352VbR-7yEPGNcHWN3R1X8BVxABA7dr8VV32gMz55xUALHuhsaWQJ-5cF31uyw7VOX8phWmpfdzFMRd-wN0VXhV5sXAFLBpDaS4zjiEm_jtkjyiBpHQWmUeJ7QOp8AT1M7SvGfR3uqtCzFmH0ATDBEi7Y2CD13VZqkKFyHA5OrLzkh8YVug&h=w3VSOhY2gU9u2DsxQN7McBHKkDjiPVrIMbhSLjA9F1E
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '549'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Apr 2023 11:18:47 GMT
-      etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - workloads sap-virtual-instance create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --environment --sap-product --central-server-vm --identity
-      User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '549'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Apr 2023 11:19:18 GMT
-      etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - workloads sap-virtual-instance create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --environment --sap-product --central-server-vm --identity
-      User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '549'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Apr 2023 11:19:49 GMT
-      etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - workloads sap-virtual-instance create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --environment --sap-product --central-server-vm --identity
-      User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '549'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Apr 2023 11:20:20 GMT
-      etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - workloads sap-virtual-instance create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --environment --sap-product --central-server-vm --identity
-      User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '549'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Apr 2023 11:20:51 GMT
-      etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - workloads sap-virtual-instance create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --environment --sap-product --central-server-vm --identity
-      User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Accepted","startTime":"2023-04-10T11:15:08.3323332Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '549'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Apr 2023 11:21:21 GMT
-      etag:
-      - '"6200d49f-0000-0100-0000-6433efbc0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - workloads sap-virtual-instance create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --environment --sap-product --central-server-vm --identity
-      User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630?api-version=2023-04-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"8ec1535f-f633-460e-abef-8639565df4a1*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Succeeded","startTime":"2023-04-10T11:15:08.3323332Z","endTime":"2023-04-10T11:21:27.1650154Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS/operationStatuses/4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","name":"4296de6e-6fb5-4649-9666-90e605f92a8b*6F14B96698AE42F247D93F38E78B89C85F55FD5C3DACCE2FB375E09237D3E630","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","status":"Succeeded","startTime":"2024-03-01T04:14:59.1960837Z","endTime":"2024-03-01T04:17:51.6265004Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -682,21 +413,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 11:21:52 GMT
+      - Fri, 01 Mar 2024 04:18:05 GMT
       etag:
-      - '"6200c8b9-0000-0100-0000-6433f1370000"'
+      - '"be001d95-0000-0100-0000-65e156ef0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 84F3EC78046E4A12B052D164C7C4BB33 Ref B: MAA201060516045 Ref C: 2024-03-01T04:18:04Z'
     status:
       code: 200
       message: OK
@@ -714,37 +445,37 @@ interactions:
       ParameterSetName:
       - -g -n --environment --sap-product --central-server-vm --identity
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.57.0 (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36?api-version=2023-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36?api-version=2023-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","name":"C36","type":"microsoft.workloads/sapvirtualinstances","location":"eastus","systemData":{"createdBy":"mohitaneja@microsoft.com","createdByType":"User","createdAt":"2023-04-10T11:15:06.5611451Z","lastModifiedBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","lastModifiedByType":"Application","lastModifiedAt":"2023-04-10T11:21:28.255699Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/SAP-E2ETest-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/E2E-RBAC-MSI":{"principalId":"b7202d53-6b98-4194-8748-4f13a9000072","clientId":"914aa6fe-5e5f-4b55-9b68-39da0ad86ee7"}}},"properties":{"environment":"NonProd","sapProduct":"S4HANA","configuration":{"configurationType":"Discovery","centralServerVmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TestRG/providers/Microsoft.Compute/virtualMachines/c36ascsvm","appLocation":"eastus"},"state":"RegistrationComplete","provisioningState":"Succeeded","managedResourceGroupConfiguration":{"name":"mrg-C36-437867"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36","name":"C36","type":"microsoft.workloads/sapvirtualinstances","location":"eastus","systemData":{"createdBy":"jasksingh@microsoft.com","createdByType":"User","createdAt":"2024-03-01T04:14:57.5873635Z","lastModifiedBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","lastModifiedByType":"Application","lastModifiedAt":"2024-03-01T04:17:53.3167251Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/SAP-E2ETest-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/E2E-RBAC-MSI":{"principalId":"3f6dc964-e354-492a-8816-7bf7bfa40d79","clientId":"bfd02efd-39f7-43f4-92a1-be2a4ec89012"}}},"properties":{"environment":"NonProd","sapProduct":"S4HANA","managedResourcesNetworkAccessType":"Public","configuration":{"configurationType":"Discovery","centralServerVmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Compute/virtualMachines/c36ascsvm","appLocation":"eastus"},"state":"RegistrationComplete","provisioningState":"Succeeded","managedResourceGroupConfiguration":{"name":"mrg-C36-6c9a9f"}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1217'
+      - '1263'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 11:21:52 GMT
+      - Fri, 01 Mar 2024 04:18:05 GMT
       etag:
-      - '"6a0015c3-0000-0100-0000-6433f1380000"'
+      - '"640095d0-0000-0100-0000-65e156f10000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-msedge-ref:
+      - 'Ref A: 02516EA1861A4061B8153ADD569E8C6D Ref B: MAA201060516045 Ref C: 2024-03-01T04:18:05Z'
     status:
       code: 200
       message: OK

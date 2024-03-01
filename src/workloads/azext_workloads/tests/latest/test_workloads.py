@@ -103,11 +103,12 @@ class WorkloadsScenario(ScenarioTest):
             'csservername': 'c36ascsvm-0',
             'dbservername': 'C36'
         })
-        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername}', checks=[
+
+        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername}', checks=[
             self.check('status', 'Succeeded')
         ])
 
-        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername}', checks=[
+        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername}', checks=[
             self.check('status', 'Succeeded')
         ])
 
@@ -122,15 +123,16 @@ class WorkloadsScenario(ScenarioTest):
             'csservername': 'c36ascsvm-0',
             'dbservername': 'C36'
         })
+
+        self.cmd('workloads sap-database-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername}', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
         self.cmd('workloads sap-central-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername}', checks=[
             self.check('status', 'Succeeded')
         ])
 
         self.cmd('workloads sap-application-server-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername}', checks=[
-            self.check('status', 'Succeeded')
-        ])
-
-        self.cmd('workloads sap-database-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername}', checks=[
             self.check('status', 'Succeeded')
         ])
 
@@ -185,12 +187,12 @@ class WorkloadsScenario(ScenarioTest):
             self.check('tags.tag2', 'test8')
         ])
 
-    @unittest.skip('recording file not getting generted properly throwing Subscription not found')
+#    @unittest.skip('recording file not getting generted properly throwing Subscription not found')
     def test_workloads_svi_discover(self):
         self.kwargs.update({
             'name': 'C36',
             'msi': os.path.join(TEST_DIR, 'MSI.json'),
-            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/CLI-TestRG/providers/Microsoft.Compute/virtualMachines/c36ascsvm'
+            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/CLI-TESTING/providers/Microsoft.Compute/virtualMachines/c36ascsvm'
         })
 
         self.cmd('workloads sap-virtual-instance create -g CLI-TESTING -n {name} --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}"', checks=[
