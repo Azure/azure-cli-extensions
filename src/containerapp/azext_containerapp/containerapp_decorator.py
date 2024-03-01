@@ -1213,15 +1213,14 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def set_up_existing_container_update(self):
         if self.get_argument_force_single_container_updates():
-            if len(self.new_containerapp["properties"]["template"]["containers"]) == 0:
+            containers = safe_get(self.new_containerapp, "properties", "template", "containers", default=[])
+            if not containers or len(containers) == 0:
                 raise ValidationError(
-                    "The container app must have at least one container. Please use --image to set the image for the container app.")
+                    "Cloud build image update failed. The container app '{}' does not have any containers. Please use --image to set the image for the container app".format(self.get_argument_name()))
             # Remove n-1 containers where n is the number of containers in the containerapp and replace remaining container with the new container
             # Fails if all containers are removed
             while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
                 self.new_containerapp["properties"]["template"]["containers"].pop()
-            if not self.get_argument_name():
-                raise RequiredArgumentMissingError("The ContainerApp name is required to update it.")
             # Set the container name to the container app name if force_single_container_updates is set
             self.set_argument_container_name(self.get_argument_name())
             safe_set(self.new_containerapp, "properties", "template", "containers", 0, "name", value=self.get_argument_container_name())
