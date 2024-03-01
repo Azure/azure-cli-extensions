@@ -29,9 +29,7 @@ class TargetOSUtilsTest(unittest.TestCase):
 
         self.assertEqual(os, "os_type")
         self.assertEqual(agent, "arc_agent_version")
-    
 
-    
     @mock.patch('azext_ssh.aaz.latest.hybrid_compute.machine.Show', autospec=True)
     def test_get_arc_os_exception(self, mock_get_arc):
         cmd = mock.Mock()
@@ -44,7 +42,6 @@ class TargetOSUtilsTest(unittest.TestCase):
         self.assertEqual(os, None)
         self.assertEqual(agent, None)
 
-    
     @mock.patch('azext_ssh.aaz.latest.connected_v_mwarev_sphere.virtual_machine.Show')
     def test_get_vmware_os(self, mock_get_vmware):
         cmd = mock.Mock()
@@ -68,9 +65,7 @@ class TargetOSUtilsTest(unittest.TestCase):
 
         self.assertEqual(os, "os_type")
         self.assertEqual(agent, "agent_version")
-    
 
-    
     @mock.patch('azext_ssh.aaz.latest.connected_v_mwarev_sphere.virtual_machine.Show', autospec=True)
     def test_get_vmware_os_exception(self, mock_get_vmware):
         cmd = mock.Mock()
@@ -84,8 +79,5 @@ class TargetOSUtilsTest(unittest.TestCase):
         self.assertEqual(agent, None)
 
 
-        
-
-    
 if __name__ == '__main__':
     unittest.main()
