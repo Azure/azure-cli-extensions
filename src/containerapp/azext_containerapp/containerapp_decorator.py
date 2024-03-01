@@ -1216,7 +1216,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             containers = safe_get(self.new_containerapp, "properties", "template", "containers", default=[])
             if not containers or len(containers) == 0:
                 raise ValidationError(
-                    "Cloud build image update failed. The container app '{}' does not have any containers. Please use --image to set the image for the container app".format(self.get_argument_name()))
+                    "Cloud build image update failed. The container app '{}' does not have any containers.".format(self.get_argument_name()))
             # Remove n-1 containers where n is the number of containers in the containerapp and replace remaining container with the new container
             # Fails if all containers are removed
             while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
