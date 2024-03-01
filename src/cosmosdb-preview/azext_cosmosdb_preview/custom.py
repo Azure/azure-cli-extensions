@@ -1936,7 +1936,7 @@ def cli_cosmosdb_mongodb_database_restore(cmd,
 
     if disable_ttl is not None:
         restore_parameters.restore_with_ttl_disabled = disable_ttl
-            
+
     mongodb_database_resource = MongoDBDatabaseCreateUpdateParameters(
         resource=MongoDBDatabaseResource(id=database_name,
                                          create_mode=create_mode,
