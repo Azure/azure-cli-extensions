@@ -34,9 +34,9 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 def step_offer_detail_show(test, rg, checks=None):
     if checks is None:
         checks = []
-    result = test.cmd('az confluent offer-detail show '
-             '--publisher-id confluentinc '
-             '--offer-id confluent-cloud-azure-stag',
+    result = test.cmd('az confluent offer-detail show '\
+             '--publisher-id confluentinc '\
+             '--offer-id confluent-cloud-azure-stag',\
              checks=checks).get_output_in_json()
 
     # check
