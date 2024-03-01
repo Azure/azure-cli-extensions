@@ -540,3 +540,9 @@ ManagedServiceIdentity = {
     "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
     "userAssignedIdentities": None  # {string: UserAssignedIdentity}
 }
+
+JavaComponent = {
+    "properties": {
+        "componentType": None
+    }
+}

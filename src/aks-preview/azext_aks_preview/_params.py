@@ -64,6 +64,8 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_KUBENET,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NETWORK_PLUGIN_NONE,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NODE_OS_CHANNEL_NODE_IMAGE,
     CONST_NODE_OS_CHANNEL_NONE,
@@ -95,9 +97,9 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_FIRST,
     CONST_WEEKINDEX_FOURTH,
     CONST_WEEKINDEX_LAST,
-    CONST_GUARDRAILSLEVEL_OFF,
-    CONST_GUARDRAILSLEVEL_WARNING,
-    CONST_GUARDRAILSLEVEL_ENFORCEMENT,
+    CONST_SAFEGUARDSLEVEL_OFF,
+    CONST_SAFEGUARDSLEVEL_WARNING,
+    CONST_SAFEGUARDSLEVEL_ENFORCEMENT,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
     CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
     CONST_WEEKINDEX_SECOND,
@@ -157,6 +159,7 @@ from azext_aks_preview._validators import (
     validate_pod_identity_resource_name,
     validate_pod_identity_resource_namespace,
     validate_pod_subnet_id,
+    validate_pod_ip_allocation_mode,
     validate_priority,
     validate_sku_tier,
     validate_snapshot_id,
@@ -224,6 +227,10 @@ gpu_instance_profiles = [
     CONST_GPU_INSTANCE_PROFILE_MIG4_G,
     CONST_GPU_INSTANCE_PROFILE_MIG7_G,
 ]
+pod_ip_allocation_modes = [
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
+]
 
 # consts for ManagedCluster
 load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
@@ -289,11 +296,11 @@ keyvault_network_access_types = [
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
 ]
 
-# consts for guardrails level
-guardrails_levels = [
-    CONST_GUARDRAILSLEVEL_OFF,
-    CONST_GUARDRAILSLEVEL_WARNING,
-    CONST_GUARDRAILSLEVEL_ENFORCEMENT,
+# consts for Safeguards level
+safeguards_levels = [
+    CONST_SAFEGUARDSLEVEL_OFF,
+    CONST_SAFEGUARDSLEVEL_WARNING,
+    CONST_SAFEGUARDSLEVEL_ENFORCEMENT,
 ]
 
 # azure service mesh
@@ -324,7 +331,6 @@ storage_pool_options = [
     CONST_STORAGE_POOL_OPTION_SSD,
 ]
 
-# consts for guardrails level
 node_provisioning_modes = [
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
@@ -584,6 +590,11 @@ def load_arguments(self, _):
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument("vnet_subnet_id", validator=validate_vnet_subnet_id)
         c.argument("pod_subnet_id", validator=validate_pod_subnet_id)
+        c.argument(
+            "pod_ip_allocation_mode",
+            arg_type=get_enum_type(pod_ip_allocation_modes),
+            validator=validate_pod_ip_allocation_mode,
+        )
         c.argument("enable_node_public_ip", action="store_true")
         c.argument("node_public_ip_prefix_id")
         c.argument("enable_cluster_autoscaler", action="store_true")
@@ -662,6 +673,7 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
         )
+        c.argument("revision", validator=validate_azure_service_mesh_revision)
         c.argument("image_cleaner_interval_hours", type=int)
         c.argument(
             "cluster_snapshot_id",
@@ -756,17 +768,17 @@ def load_arguments(self, _):
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
         c.argument(
-            "guardrails_level",
-            arg_type=get_enum_type(guardrails_levels),
+            "safeguards_level",
+            arg_type=get_enum_type(safeguards_levels),
             is_preview=True,
         )
         c.argument(
-            "guardrails_version",
+            "safeguards_version",
             type=str,
-            help="The guardrails version",
+            help="The deployment safeguards version",
             is_preview=True,
         )
-        c.argument("guardrails_excluded_ns", type=str, is_preview=True)
+        c.argument("safeguards_excluded_ns", type=str, is_preview=True)
         # azure monitor profile
         c.argument(
             "enable_azuremonitormetrics",
@@ -1141,12 +1153,12 @@ def load_arguments(self, _):
             help="path to file containing list of new line separated CAs",
         )
         c.argument(
-            "guardrails_level",
-            arg_type=get_enum_type(guardrails_levels),
+            "safeguards_level",
+            arg_type=get_enum_type(safeguards_levels),
             is_preview=True,
         )
-        c.argument("guardrails_version", help="The guardrails version", is_preview=True)
-        c.argument("guardrails_excluded_ns", is_preview=True)
+        c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
+        c.argument("safeguards_excluded_ns", is_preview=True)
         c.argument(
             "enable_network_observability",
             action="store_true",
@@ -1270,6 +1282,11 @@ def load_arguments(self, _):
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument("vnet_subnet_id", validator=validate_vnet_subnet_id)
         c.argument("pod_subnet_id", validator=validate_pod_subnet_id)
+        c.argument(
+            "pod_ip_allocation_mode",
+            arg_type=get_enum_type(pod_ip_allocation_modes),
+            validator=validate_pod_ip_allocation_mode,
+        )
         c.argument("enable_node_public_ip", action="store_true")
         c.argument("node_public_ip_prefix_id")
         c.argument(
