@@ -4,6 +4,8 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp update/up': Bugfix - For Cloud Build scenarios, n-1 existing containers are removed and the remaining last container is replaced with cloud build image.
+                               However, the name of the replaced container is not set as of today, so even though the image name changes, the container name is the same. Explicitly set container name to container app name for source to cloud builds.
 
 0.3.48
 ++++++
@@ -18,8 +20,6 @@ upcoming
 * 'az containerapp create/update': Support bind Java component with --bind
 * 'az containerapp create/update/up': Fix issue with logs when the Cloud Build project to use generates UTF-8 logs.
 * 'az containerapp update/up': Fix bug for multiple containers provisioned for source to cloud build
-* 'az containerapp update/up': Bufgix - For Cloud Build scenarios, n-1 existing containers are removed and the remaining last container is replaced with cloud build image.
-                               However, the name of the replaced container is not set as of today, so even though the image name changes, the container name is the same. Explicitly set container name to container app name for source to cloud builds.
 
 0.3.47
 ++++++
