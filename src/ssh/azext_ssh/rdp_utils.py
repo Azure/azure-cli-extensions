@@ -30,7 +30,6 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
         ssh_success = False
         retry_attempt = 0
         retry_attempts_allowed = 0
-        ssh_connection_t0 = time.time()
 
         resource_port = 3389
         local_port = _get_open_port()
@@ -65,6 +64,7 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
             call_rdp(local_port)
 
     finally:
+        # pylint: disable=used-before-assignment
         if ssh_success:
             ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes':
                                    (time.time() - ssh_connection_t0) / 60}

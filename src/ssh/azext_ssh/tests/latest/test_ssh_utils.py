@@ -10,7 +10,7 @@ from azext_ssh import ssh_utils
 from azext_ssh import ssh_info
 
 
-class SSHUtilsTests(unittest.TestCase): 
+class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, 'do_cleanup')
     @mock.patch.object(ssh_utils, '_check_ssh_logs_for_common_errors')
     @mock.patch.object(ssh_utils, 'get_ssh_client_path')
@@ -42,7 +42,7 @@ class SSHUtilsTests(unittest.TestCase):
         mock_call.assert_called_once_with(expected_command, stderr=mock.ANY, env=expected_env, encoding='utf-8')
         mock_read.assert_called_once_with(ssh_process, op_info, True, True)
         mock_cleanup.assert_called_once_with(True, True, False, 'cert', 'priv', 'pub')
- 
+
     @mock.patch.object(ssh_utils, 'do_cleanup')
     @mock.patch.object(ssh_utils, '_wait_to_delete_credentials')
     @mock.patch.object(ssh_utils, 'get_ssh_client_path')
@@ -83,7 +83,7 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch('azext_ssh.custom.connectivity_utils.format_relay_info_string')
     @mock.patch('platform.system')
     def test_start_ssh_connection_arc_aad_windows(self, mock_platform, mock_relay_str, mock_call, mock_copy_env, mock_path, mock_read, mock_cleanup):
-        
+
         op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1'], False, "Microsoft.HybridCompute/machines", None, None, False, False)
         op_info.public_key_file = "pub"
         op_info.private_key_file = "priv"
@@ -94,7 +94,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         ssh_process = mock.Mock()
         ssh_process.poll.return_value = 0
-        
+
         mock_platform.return_value = 'Windows'
         mock_call.return_value = ssh_process
         mock_relay_str.return_value = 'relay_string'
@@ -129,7 +129,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         ssh_process = mock.Mock()
         ssh_process.poll.return_value = 0
-        
+
         mock_platform.return_value = 'Linux'
         mock_call.return_value = ssh_process
         mock_relay_str.return_value = 'relay_string'
@@ -282,7 +282,7 @@ class SSHUtilsTests(unittest.TestCase):
             mock.call("rootpath", expected_sysfolder),
             mock.call("system32path", "openSSH", "ssh.exe")
         ]
-        
+
         actual_path = ssh_utils.get_ssh_client_path()
 
         self.assertEqual("sshfilepath", actual_path)
@@ -291,7 +291,6 @@ class SSHUtilsTests(unittest.TestCase):
         mock_environ.__getitem__.assert_called_once_with("SystemRoot")
         mock_join.assert_has_calls(expected_join_calls)
         mock_isfile.assert_called_once_with("sshfilepath")
-
 
     @mock.patch('platform.system')
     @mock.patch('platform.architecture')

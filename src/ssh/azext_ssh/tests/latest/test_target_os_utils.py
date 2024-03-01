@@ -8,8 +8,9 @@ from unittest import mock
 
 from azext_ssh import target_os_utils
 
+
 class TargetOSUtilsTest(unittest.TestCase):
-    
+
     @mock.patch('azext_ssh.aaz.latest.hybrid_compute.machine.Show')
     def test_get_arc_os(self, mock_get_arc):
         cmd = mock.Mock()
@@ -22,7 +23,7 @@ class TargetOSUtilsTest(unittest.TestCase):
                 "agentVersion": "arc_agent_version"
             }
         }
-        
+
         mock_get_arc.return_value = showclass
 
         os, agent = target_os_utils._get_arc_server_os(cmd, "rg", "vm")
@@ -36,7 +37,7 @@ class TargetOSUtilsTest(unittest.TestCase):
         cmd.cli_ctx = mock.Mock()
 
         mock_get_arc.return_value.side_effect = mock.Mock(side_effect=Exception('Test'))
-        
+
         os, agent = target_os_utils._get_arc_server_os(cmd, "rg", "vm")
 
         self.assertEqual(os, None)
@@ -49,16 +50,16 @@ class TargetOSUtilsTest(unittest.TestCase):
 
         showclass = mock.Mock()
         showclass.return_value = {
-            "osProfile":{
+            "osProfile": {
                 "osType": "os_type"
             },
-            "properties":{
+            "properties": {
                 "guestAgentProfile": {
                     "agentVersion": "agent_version"
                 }
             }
         }
-        
+
         mock_get_vmware.return_value = showclass
 
         os, agent = target_os_utils._get_connected_vmware_os(cmd, "rg", "vm")
@@ -72,7 +73,7 @@ class TargetOSUtilsTest(unittest.TestCase):
         cmd.cli_ctx = mock.Mock()
 
         mock_get_vmware.return_value.side_effect = mock.Mock(side_effect=Exception('Test'))
-        
+
         os, agent = target_os_utils._get_connected_vmware_os(cmd, "rg", "vm")
 
         self.assertEqual(os, None)
