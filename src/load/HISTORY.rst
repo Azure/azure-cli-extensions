@@ -2,9 +2,14 @@
 
 Release History
 ===============
-0.3.4
+1.0.1
+++++++
+* Fix for sending correct failureCriteria request payload when using `az load test create` and `az load test update` commands with `--load-test-config-file` option and config file having failureCriteria.
+
+1.0.0
 ++++++
 * Adding support for "az load test" in AzureUSGovernment cloud.
+* Fix '(InvalidRequestBody) Secret "xxxxx" value can't be null' error that occurs when using 'az load test create/update' with a config file that contains secrets.
 
 0.3.3
 ++++++

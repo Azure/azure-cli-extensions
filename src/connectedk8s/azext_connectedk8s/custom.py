@@ -434,7 +434,7 @@ def validate_existing_provisioned_cluster_for_reput(cluster_resource, kubernetes
         validation_values = [
             kubernetes_distro,
             kubernetes_infra,
-            converted_priv_link_value,
+            enable_private_link,
             private_link_scope_resource_id,
             distribution_version,
             azure_hybrid_benefit,
@@ -1861,8 +1861,9 @@ def client_side_proxy_wrapper(cmd,
                               api_server_port=consts.API_SERVER_PORT):
 
     cloud = send_cloud_telemetry(cmd)
+    profile = Profile()
+    tenant_id = profile.get_subscription()['tenantId']
 
-    tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
     client_proxy_port = consts.CLIENT_PROXY_PORT
     if int(client_proxy_port) == int(api_server_port):
         raise ClientRequestError('Proxy uses port 47010 internally.', recommendation='Please pass some other unused port through --port option.')
@@ -1983,9 +1984,9 @@ def client_side_proxy_wrapper(cmd,
         user_type = account['user']['type']
 
         if user_type == 'user':
-            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': consts.CLIENTPROXY_CLIENT_ID}}
+            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenant_id, 'clientID': consts.CLIENTPROXY_CLIENT_ID}}
         else:
-            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': account['user']['name']}}
+            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenant_id, 'clientID': account['user']['name']}}
 
         if cloud == 'DOGFOOD':
             dict_file['cloud'] = 'AzureDogFood'
@@ -2054,7 +2055,7 @@ def client_side_proxy_wrapper(cmd,
         args.append("-d")
         debug_mode = True
 
-    client_side_proxy_main(cmd, tenantId, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
+    client_side_proxy_main(cmd, tenant_id, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
 
 
 # Prepare data as needed by client proxy executable
@@ -2074,7 +2075,7 @@ def prepare_clientproxy_data(response):
 
 
 def client_side_proxy_main(cmd,
-                           tenantId,
+                           tenant_id,
                            client,
                            resource_group_name,
                            cluster_name,
@@ -2090,14 +2091,14 @@ def client_side_proxy_main(cmd,
                            path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                            context_name=None,
                            clientproxy_process=None):
-    expiry, clientproxy_process = client_side_proxy(cmd, tenantId, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
+    expiry, clientproxy_process = client_side_proxy(cmd, tenant_id, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
     next_refresh_time = expiry - consts.CSP_REFRESH_TIME
 
     while(True):
         time.sleep(60)
         if(clientproxyutils.check_if_csp_is_running(clientproxy_process)):
             if time.time() >= next_refresh_time:
-                expiry, clientproxy_process = client_side_proxy(cmd, tenantId, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=clientproxy_process)
+                expiry, clientproxy_process = client_side_proxy(cmd, tenant_id, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=clientproxy_process)
                 next_refresh_time = expiry - consts.CSP_REFRESH_TIME
         else:
             telemetry.set_exception(exception='Process closed externally.', fault_type=consts.Proxy_Closed_Externally_Fault_Type,
@@ -2106,7 +2107,7 @@ def client_side_proxy_main(cmd,
 
 
 def client_side_proxy(cmd,
-                      tenantId,
+                      tenant_id,
                       client,
                       resource_group_name,
                       cluster_name,
@@ -2175,14 +2176,14 @@ def client_side_proxy(cmd,
     if token is None:
         if utils.is_cli_using_msal_auth():  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
             kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)
-            post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)
+            post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenant_id, kid, clientproxy_process)
 
             if post_at_response.status_code != 200:
                 if post_at_response.status_code == 500 and "public key expired" in post_at_response.text:  # pop public key must have been rotated
                     telemetry.set_exception(exception=post_at_response.text, fault_type=consts.PoP_Public_Key_Expried_Fault_Type,
                                             summary='PoP public key has expired')
                     kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)  # fetch the rotated PoP public key
-                    clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)  # fetch and post the at corresponding to the new public key
+                    clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenant_id, kid, clientproxy_process)  # fetch and post the at corresponding to the new public key
                 else:
                     telemetry.set_exception(exception=post_at_response.text, fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
                                             summary='Failed to post access token to client proxy')
@@ -2258,6 +2259,8 @@ def get_custom_locations_oid(cmd, cl_oid):
     try:
         graph_client = graph_client_factory(cmd.cli_ctx)
         app_id = "bc313c14-388c-4e7d-a58e-70017303ee3b"
+        # Requires Application.Read.All for Microsoft Graph since AAD Graph is deprecated. See below for work-around.
+        # https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/custom-locations#enable-custom-locations-on-your-cluster
         app_object = graph_client.service_principal_list(filter="appId eq '{}'".format(app_id))
         if len(app_object) != 0:
             if cl_oid is not None and cl_oid != app_object[0]['id']:
@@ -2461,7 +2464,7 @@ def install_kubectl_client():
         kubectl_filepath = os.path.join(home_dir, '.azure', 'kubectl-client')
 
         try:
-            os.mkdir(kubectl_filepath)
+            os.makedirs(kubectl_filepath)
         except FileExistsError:
             pass
 
