@@ -61,7 +61,7 @@ class SSHInfoTest(unittest.TestCase):
         session = ssh_info.SSHSession("rg", "vm", "ip", "pub", "priv", False, "user", "cert", "port", "client/folder", [], None, "Microsoft.HybridCompute/machines", None, None, True, False)
         session.proxy_path = "proxy_path"
         self.assertEqual(["-o", "ProxyCommand=\"proxy_path\" -p port", "-i", "priv_path", "-o", "CertificateFile=\"cert_path\""], session.build_args())
- 
+
     @mock.patch('os.path.abspath')
     def test_config_session(self, mock_abspath):
         mock_abspath.side_effect = ["config_path", "pub_path", "priv_path", "cert_path", "client_path", "proxy_path", "cred_path"]

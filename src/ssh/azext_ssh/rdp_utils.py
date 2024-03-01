@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=used-before-assignment
+
 import os
 import platform
 import subprocess
@@ -64,7 +66,6 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
             call_rdp(local_port)
 
     finally:
-        # pylint: disable=used-before-assignment
         if ssh_success:
             ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes':
                                    (time.time() - ssh_connection_t0) / 60}
