@@ -1313,7 +1313,7 @@ helps['containerapp env telemetry data-dog delete'] = """
 
 helps['containerapp env telemetry app-insights delete'] = """
     type: command
-    short-summary: Delete container apps environment telemetry data dog settings.
+    short-summary: Delete container apps environment telemetry app insights settings.
     examples:
     - name: Delete container apps environment telemetry app insights settings.
       text: |
