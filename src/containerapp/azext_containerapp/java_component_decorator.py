@@ -7,7 +7,7 @@
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from knack.log import get_logger
 
@@ -57,6 +57,10 @@ class JavaComponentDecorator(BaseResource):
                 environment_name=self.get_argument_environment_name(), name=self.get_argument_java_component_name(),
                 java_component_envelope=self.java_component_def, no_wait=self.get_argument_no_wait())
         except Exception as e:
+            stringErr = str(e)
+            if "JavaComponentsNotAllowedForSubscription" in stringErr:
+                raise CLIInternalError("Java Components operations are not allowed for the subscription, please use 'az feature register --namespace  Microsoft.App --name JavaComponentsPreview' to register this feature.")
+
             handle_raw_exception(e)
 
     def update(self):
