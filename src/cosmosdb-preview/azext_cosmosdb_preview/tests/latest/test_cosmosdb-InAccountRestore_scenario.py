@@ -642,3 +642,134 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb mongodb database delete -g {rg} -a {acc} -n {db_name} --yes')
         database_list = self.cmd('az cosmosdb mongodb database list -g {rg} -a {acc}').get_output_in_json()
         assert len(database_list) == 0
+
+    # test
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_coding')
+    def test_coding(self, resource_group):
+
+        #container_restore = self.cmd('az cosmosdb sql container restore --resource-group "agarwalvivekfun" --account-name "pitr-mm-r1" --database-name "sharedrudb" --name "sharedDBProviosnedColl1"')
+        self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore --resource-group "agarwalvivekfun" --account-name "pitr-mm-r1" --database-name "sharedrudb" --name "sharedDBProviosnedColl1"'))
+        #assert len(container_restore) == 0
+
+    
+    # InAccount No timestamp restore validation
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore_nt')
+    def test_cosmosdb_sql_normal_database_prov_container_restore_nt(self, resource_group):
+        db_name = self.create_random_name(prefix='cli', length=15)
+        ctn_name = self.create_random_name(prefix='cli', length=15)
+        partition_key = "/thePartitionKey"
+        unique_key_policy = '"{\\"uniqueKeys\\": [{\\"paths\\": [\\"/path/to/key1\\"]}, {\\"paths\\": [\\"/path/to/key2\\"]}]}"'
+        conflict_resolution_policy = '"{\\"mode\\": \\"lastWriterWins\\", \\"conflictResolutionPath\\": \\"/path\\"}"'
+        indexing = '"{\\"indexingMode\\": \\"consistent\\", \\"automatic\\": true, \\"includedPaths\\": [{\\"path\\": \\"/*\\"}], \\"excludedPaths\\": [{\\"path\\": \\"/headquarters/employees/?\\"}]}"'
+        location = "WestUS"
+
+        self.kwargs.update({
+            'acc': self.create_random_name(prefix='ntbrcli', length=15),
+            'db_name': db_name,
+            'ctn_name': ctn_name,
+            'part': partition_key,
+            'unique_key': unique_key_policy,
+            "conflict_resolution": conflict_resolution_policy,
+            "indexing": indexing,
+            'loc': location
+        })
+
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
+        self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
+
+        container_create = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {ctn_name} -p {part} --unique-key-policy {unique_key} --conflict-resolution-policy {conflict_resolution} --idx {indexing}').get_output_in_json()
+        
+        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
+        assert len(container_list) == 1
+
+        restore_ts_string = datetime.utcnow().isoformat()
+
+        self.kwargs.update({
+            'rts': restore_ts_string
+        })
+        import time
+        time.sleep(300)
+        
+        # remove container
+        self.cmd('az cosmosdb sql container delete -g {rg} -a {acc} -d {db_name} -n {ctn_name} --yes')
+        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
+        assert len(container_list) == 0
+        
+        # 6. Restore non-existent container - expect failure
+        invalid_ctn_string = datetime.utcnow().isoformat()
+        self.kwargs.update({
+            'invalid_ctn_name': invalid_ctn_string
+        })
+        
+        # restore invalid container
+        self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {invalid_ctn_name}'))
+
+        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
+        assert len(container_list) == 0
+
+        # restore valid container
+        self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name}')
+        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
+        assert len(container_list) == 1
+        
+        # delete database
+        self.cmd('az cosmosdb sql database delete -g {rg} -a {acc} -n {db_name} --yes')
+        database_list = self.cmd('az cosmosdb sql database list -g {rg} -a {acc}').get_output_in_json()
+        assert len(database_list) == 0
+
+        # restore container expect failure
+        # with deleted database collection is non-existent
+        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
+        assert len(container_list) == 0
+        # restore when database is offline
+        self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name}'))
+        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
+        assert len(container_list) == 0
+
+        # restore database
+        self.cmd('az cosmosdb sql database restore -g {rg} -a {acc} -n {db_name}')
+
+        database_restore = self.cmd('az cosmosdb sql database show -g {rg} -a {acc} -n {db_name}').get_output_in_json()
+        assert database_restore["name"] == db_name
+
+        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
+        assert len(container_list) == 0
+
+        # restore container
+        self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name}')
+        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
+        assert len(container_list) == 1
+        
+        # restore again expect failure(already container online)
+        self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name}'))
+        
+        # delete database
+        self.cmd('az cosmosdb sql database delete -g {rg} -a {acc} -n {db_name} --yes')
+        database_list = self.cmd('az cosmosdb sql database list -g {rg} -a {acc}').get_output_in_json()
+        assert len(database_list) == 0
+        
+        # 6. Restore non-existent database - expect failure
+        invalid_db_name_string = "invalid_database"
+        self.kwargs.update({
+            'invalid_db_name': invalid_db_name_string
+        })
+        
+        self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql database restore -g {rg} -a {acc} -n {invalid_db_name}'))
+        
+        # restore database
+        self.cmd('az cosmosdb sql database restore -g {rg} -a {acc} -n {db_name}')
+        database_restore = self.cmd('az cosmosdb sql database show -g {rg} -a {acc} -n {db_name}').get_output_in_json()
+        assert database_restore["name"] == db_name
+        
+        # restore database again
+        self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql database restore -g {rg} -a {acc} -n {db_name}'))
+
+        self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}')
+
+        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
+        assert len(container_list) == 1
+
+        container_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
+        assert container_show["name"] == ctn_name
