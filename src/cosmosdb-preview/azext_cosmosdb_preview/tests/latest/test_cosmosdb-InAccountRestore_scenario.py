@@ -646,16 +646,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         database_list = self.cmd('az cosmosdb mongodb database list -g {rg} -a {acc}').get_output_in_json()
         assert len(database_list) == 0
 
-    # test
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_coding')
-    def test_coding(self, resource_group):
 
-        #container_restore = self.cmd('az cosmosdb sql container restore --resource-group "agarwalvivekfun" --account-name "pitr-mm-r1" --database-name "sharedrudb" --name "sharedDBProviosnedColl1"')
-        self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore --resource-group "agarwalvivekfun" --account-name "pitr-mm-r1" --database-name "sharedrudb" --name "sharedDBProviosnedColl1"'))
-        #assert len(container_restore) == 0
-
-    
  # InAccount No timestamp restore validation
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore_nt')
@@ -787,4 +778,3 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         logger.info("# Step 20: Validate container exists")
         container_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
         assert container_show["name"] == ctn_name
-
