@@ -8,11 +8,14 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import datetime
+from knack.log import get_logger
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
+logger = get_logger(__name__)
 
 class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
