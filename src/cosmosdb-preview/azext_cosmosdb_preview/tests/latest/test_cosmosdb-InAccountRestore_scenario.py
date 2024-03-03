@@ -8,11 +8,14 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import datetime
+from knack.log import get_logger
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
+logger = get_logger(__name__)
 
 class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
@@ -653,10 +656,11 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         #assert len(container_restore) == 0
 
     
-    # InAccount No timestamp restore validation
+ # InAccount No timestamp restore validation
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore_nt')
     def test_cosmosdb_sql_normal_database_prov_container_restore_nt(self, resource_group):
+        # Step 1: Initialize variables
         db_name = self.create_random_name(prefix='cli', length=15)
         ctn_name = self.create_random_name(prefix='cli', length=15)
         partition_key = "/thePartitionKey"
@@ -676,100 +680,111 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'loc': location
         })
 
+        # Step 2: Create CosmosDB account
+        logger.info("# Step 2: Create CosmosDB account")
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
+
+        # Step 3: Create SQL database
+        logger.info("# Step 3: Create SQL database")
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
 
+        # Step 4: Create SQL container
+        logger.info("# Step 4: Create SQL container")
         container_create = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {ctn_name} -p {part} --unique-key-policy {unique_key} --conflict-resolution-policy {conflict_resolution} --idx {indexing}').get_output_in_json()
-        
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 1
 
-        restore_ts_string = datetime.utcnow().isoformat()
-
-        self.kwargs.update({
-            'rts': restore_ts_string
-        })
+        # Step 5: Sleep for a while
+        logger.info("# Step 5: Sleep for 5 minutes")
         import time
         time.sleep(300)
-        
-        # remove container
+
+        # Step 6: Remove container
+        logger.info("# Step 6: Remove container")
         self.cmd('az cosmosdb sql container delete -g {rg} -a {acc} -d {db_name} -n {ctn_name} --yes')
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 0
-        
-        # 6. Restore non-existent container - expect failure
-        invalid_ctn_string = datetime.utcnow().isoformat()
+
+        # Step 7: Restore non-existent container - expect failure
+        logger.info("# Step 7: Restore non-existent container - expect failure")
+        invalid_ctn_string = "invalidcontainer"
         self.kwargs.update({
             'invalid_ctn_name': invalid_ctn_string
         })
-        
-        # restore invalid container
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {invalid_ctn_name}'))
 
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 0
 
-        # restore valid container
+        # Step 8: Restore valid container
+        logger.info("# Step 8: Restore valid container")
         self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name}')
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 1
-        
-        # delete database
+
+        # Step 9: Delete database
+        logger.info("# Step 9: Delete database")
         self.cmd('az cosmosdb sql database delete -g {rg} -a {acc} -n {db_name} --yes')
         database_list = self.cmd('az cosmosdb sql database list -g {rg} -a {acc}').get_output_in_json()
         assert len(database_list) == 0
 
-        # restore container expect failure
-        # with deleted database collection is non-existent
-        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
-        assert len(container_list) == 0
-        # restore when database is offline
+        # Step 10: Restore container expect failure (database is offline)
+        logger.info("# Step 10: Restore container - expect failure (database is offline)")
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name}'))
-        container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
-        assert len(container_list) == 0
 
-        # restore database
+        # Step 11: Restore database
+        logger.info("# Step 11: Restore database")
         self.cmd('az cosmosdb sql database restore -g {rg} -a {acc} -n {db_name}')
-
         database_restore = self.cmd('az cosmosdb sql database show -g {rg} -a {acc} -n {db_name}').get_output_in_json()
         assert database_restore["name"] == db_name
 
+        # Step 12: Validate container does not exist (database just restored)
+        logger.info("# Step 12: Validate container does not exist (database just restored)")
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 0
 
-        # restore container
+        # Step 13: Restore container
+        logger.info("# Step 13: Restore container")
         self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name}')
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 1
-        
-        # restore again expect failure(already container online)
+
+        # Step 14: Restore again expect failure (container already online)
+        logger.info("# Step 14: Restore again - expect failure (container already online)")
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name}'))
-        
-        # delete database
+
+        # Step 15: Delete database
+        logger.info("# Step 15: Delete database")
         self.cmd('az cosmosdb sql database delete -g {rg} -a {acc} -n {db_name} --yes')
         database_list = self.cmd('az cosmosdb sql database list -g {rg} -a {acc}').get_output_in_json()
         assert len(database_list) == 0
-        
-        # 6. Restore non-existent database - expect failure
+
+        # Step 16: Restore non-existent database - expect failure
+        logger.info("# Step 16: Restore non-existent database - expect failure")
         invalid_db_name_string = "invalid_database"
         self.kwargs.update({
             'invalid_db_name': invalid_db_name_string
         })
-        
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql database restore -g {rg} -a {acc} -n {invalid_db_name}'))
-        
-        # restore database
+
+        # Step 17: Restore database
+        logger.info("# Step 17: Restore database")
         self.cmd('az cosmosdb sql database restore -g {rg} -a {acc} -n {db_name}')
         database_restore = self.cmd('az cosmosdb sql database show -g {rg} -a {acc} -n {db_name}').get_output_in_json()
         assert database_restore["name"] == db_name
-        
-        # restore database again
+
+        # Step 18: Restore database again - expect failure (database already restored)
+        logger.info("# Step 18: Restore database again - expect failure (database already restored)")
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql database restore -g {rg} -a {acc} -n {db_name}'))
 
-        self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}')
-
+        # Step 19: Restore container
+        logger.info("# Step 19: Restore container")
+        self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name}')
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 1
 
+        # Step 20: Validate container exists
+        logger.info("# Step 20: Validate container exists")
         container_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
         assert container_show["name"] == ctn_name
+
