@@ -641,10 +641,10 @@ class PostgresFlexHandler(TargetHandler):
 
     def check_db_existence(self):
         try:
-            db_info = run_cli_cmd(
-                'az postgres flexible-server db show --server-name {} --database-name {} -g {} --subscription {}'.format(
-                    self.db_server, self.dbname, self.resource_group, self.subscription))
-            if db_info is None:
+            db_list = run_cli_cmd(
+                'az postgres flexible-server db list --server-name {} -g {} --subscription {}'.format(
+                    self.db_server, self.resource_group, self.subscription))
+            if db_list is None or self.dbname not in [db.get('name') for db in db_list]:
                 e = ResourceNotFoundError(
                     "No database '{}' found for server '{}'".format(self.dbname, self.db_server))
                 telemetry.set_exception(e, "No-Db")

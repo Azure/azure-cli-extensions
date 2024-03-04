@@ -4,6 +4,10 @@ Release History
 ===============
 1.0.1
 ++++++
+* Bypass error of `az postgres flexible-server db show`
+
+1.0.1
+++++++
 * Make some improvements to fix non-json output issue
 
 1.0.0
