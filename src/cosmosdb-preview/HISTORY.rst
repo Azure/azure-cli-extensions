@@ -3,7 +3,7 @@
 Release History
 ===============
 0.27.0
-* Add support for Per-Region Per-Partition Autoscale. '--enable-per-region-per-partition-autoscale' parameter can be used during account create/update.
+* Add support for Per-Region Per-Partition Autoscale. '--enable-prpp-autoscale' parameter can be used during account create/update.
 * Add support for Restore with Time-To-Live Disabled. '--disable-ttl' parameter can be used during restore.
 * Add support for online mode in container copy job.
 
