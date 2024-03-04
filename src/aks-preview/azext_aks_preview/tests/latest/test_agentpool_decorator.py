@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER
+from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_SSH_ACCESS_LOCALUSER
 from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolContext,
@@ -316,6 +316,37 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_enable_artifact_streaming(), None)
 
+    def common_get_pod_ip_allocation_mode(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"pod_ip_allocation_mode": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_pod_ip_allocation_mode(), None)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            pod_ip_allocation_mode="StaticBlock"
+        )
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_pod_ip_allocation_mode(), None)
+
+        # default to raw even if agentpool has different value
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"pod_ip_allocation_mode": "DynamicIndividual"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_pod_ip_allocation_mode(), "DynamicIndividual")
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            pod_ip_allocation_mode="StaticBlock"
+        )
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_pod_ip_allocation_mode(), "StaticBlock")
+
     def common_get_skip_gpu_driver_install(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -467,6 +498,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
 
+    def test_get_pod_ip_allocation_mode(self):
+        self.common_get_pod_ip_allocation_mode()
+
     def test_get_os_sku(self):
         self.common_get_os_sku()
 
@@ -511,6 +545,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
+
+    def test_get_pod_ip_allocation_mode(self):
+        self.common_get_pod_ip_allocation_mode()
 
     def test_get_os_sku(self):
         self.common_get_os_sku()
@@ -775,6 +812,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
             dec_agentpool_1 = dec_1.construct_agentpool_profile_preview()
 
         ground_truth_upgrade_settings_1 = self.models.AgentPoolUpgradeSettings()
+        # CLI will create sshAccess=localuser by default
+        ground_truth_security_profile = self.models.AgentPoolSecurityProfile()
+        ground_truth_security_profile.ssh_access = CONST_SSH_ACCESS_LOCALUSER
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
             nodepool_name="test_nodepool_name",
             vm_size=CONST_DEFAULT_NODE_VM_SIZE,
@@ -794,6 +834,7 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
             network_profile=self.models.AgentPoolNetworkProfile(),
+            security_profile=ground_truth_security_profile,
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
@@ -878,6 +919,9 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
             dec_agentpool_1 = dec_1.construct_agentpool_profile_preview()
 
         upgrade_settings_1 = self.models.AgentPoolUpgradeSettings()
+        # CLI will create sshAccess=localuser by default
+        ground_truth_security_profile = self.models.AgentPoolSecurityProfile()
+        ground_truth_security_profile.ssh_access = CONST_SSH_ACCESS_LOCALUSER
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
             nodepool_name="nodepool1",
             orchestrator_version="",
@@ -897,6 +941,7 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             enable_custom_ca_trust=False,
             network_profile=self.models.AgentPoolNetworkProfile(),
+            security_profile=ground_truth_security_profile,
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 

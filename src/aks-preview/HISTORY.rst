@@ -11,7 +11,27 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add parameter to set revision `--revision` for the Azure Service Mesh addon while creating AKS cluster.
+
+2.0.0b2
++++++++
+* Add `--pod-ip-allocation-mode` to `az aks create` and `az aks nodepool` commands.
+
+2.0.0b1
++++++++
+* [BREAKING CHANGE] Replace `guardrails` parameters with `safeguards`.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
+* Add `az aks nodepool delete-machines` command.
+* Update `az aks approuting zone` command to support private dns zones.
+* Vendor new SDK and bump API version to 2024-01-02-preview.
+
+1.0.0b6
++++++++
 * Vendor new SDK and bump API version to 2023-11-02-preview.
+* Add `--ssh-access` to the `az aks create` command.
+* Add `--ssh-access` to the `az aks update` command.
+* Add `--ssh-access` to the `az aks nodepool add` command.
+* Add `--ssh-access` to the `az aks nodepool update` command.
 * Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
 * Add `az aks nodepool delete-machines` command.
 

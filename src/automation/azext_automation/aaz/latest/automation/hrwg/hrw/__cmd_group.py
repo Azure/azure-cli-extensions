@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "automation hrwg hrw",
 )
 class __CMDGroup(AAZCommandGroup):
-    """hrw
+    """Manage Automation Hybrid Runbook Worker.
     """
     pass
 
