@@ -651,6 +651,8 @@ class PostgresFlexHandler(TargetHandler):
                         "No server found for '{}'".format(self.db_server))
                     telemetry.set_exception(e, "No-Server")
                     raise e
+                else:
+                    return
             db_info = run_cli_cmd(
                 'az postgres flexible-server db show --server-name {} --database-name {} -g {} --subscription {}'.format(
                     self.db_server, self.dbname, self.resource_group, self.subscription))
