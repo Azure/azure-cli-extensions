@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.6.6
+++++++
+* Fix proxy live test.
+* Fix unused variable and parameter.
+* Use makedirs instead of mkdir for installing kubectl.
+
 1.6.5
 ++++++
 * Fix tenant ID retrieval for proxy command.
@@ -10,6 +16,8 @@ Release History
 1.6.4
 ++++++
 * Replace AAD Graph with Microsoft Graph for getting Custom Locations RP service principal application object ID.
+* Will require Application.Read.All permission for Microsoft Graph to activate Custom Locations automatically. See below for work-around:
+https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/custom-locations#enable-custom-locations-on-your-cluster
 
 1.6.3
 ++++++

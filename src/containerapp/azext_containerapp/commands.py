@@ -150,3 +150,18 @@ def load_command_table(self, _):
         g.custom_command('list', 'connected_env_list_storages')
         g.custom_command('set', 'connected_env_create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('remove', 'connected_env_remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp env java-component', is_preview=True) as g:
+        g.custom_command('list', 'list_java_components')
+
+    with self.command_group('containerapp env java-component spring-cloud-config') as g:
+        g.custom_command('create', 'create_spring_cloud_config', supports_no_wait=True)
+        g.custom_command('update', 'update_spring_cloud_config', supports_no_wait=True)
+        g.custom_show_command('show', 'show_spring_cloud_config')
+        g.custom_command('delete', 'delete_spring_cloud_config', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp env java-component spring-cloud-eureka') as g:
+        g.custom_command('create', 'create_spring_cloud_eureka', supports_no_wait=True)
+        g.custom_command('update', 'update_spring_cloud_eureka', supports_no_wait=True)
+        g.custom_show_command('show', 'show_spring_cloud_eureka')
+        g.custom_command('delete', 'delete_spring_cloud_eureka', confirmation=True, supports_no_wait=True)
