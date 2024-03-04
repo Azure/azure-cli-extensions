@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List certificate profiles under a trusted signing account.
+
+    :example: Lists certificate profile under a trusted signing account
+        az codesigning certificate-profile list -g MyResourceGroup --account-name
     """
 
     _aaz_info = {

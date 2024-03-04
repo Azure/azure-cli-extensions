@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class CheckNameAvailability(AAZCommand):
     """Checks that the trusted signing account name is valid and is not already in use.
+
+    :example: Check if account name is available
+        az codesigning check-name-availability --name MyAccount
     """
 
     _aaz_info = {
@@ -45,7 +48,7 @@ class CheckNameAvailability(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
-            options=["--name"],
+            options=["-n", "--name"],
             arg_group="Body",
             help="Trusted signing account name.",
             required=True,

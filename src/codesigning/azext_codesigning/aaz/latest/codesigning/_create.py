@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a trusted Signing Account.
 
     :example: Create an account
-        az codesigning create -n testaccount -l westus -g testRg -sku Basic
+        az codesigning create -n MyAccount -l westus -g MyResourceGroup  -sku Basic
     """
 
     _aaz_info = {
@@ -64,7 +64,7 @@ class Create(AAZCommand):
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
             arg_group="Properties",
-            help="SKU of the trusted signing account.",
+            help="Name of the SKU. Allowed values: Basic, Premium",
         )
 
         sku = cls._args_schema.sku

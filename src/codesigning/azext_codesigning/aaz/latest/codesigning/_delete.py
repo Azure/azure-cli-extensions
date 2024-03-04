@@ -20,7 +20,7 @@ class Delete(AAZCommand):
     """Delete a trusted signing account.
 
     :example: Delete an account
-        az codesigning delete -n testaccount -g testRG
+        az codesigning delete -n MyAccount -g MyResourceGroup
     """
 
     _aaz_info = {

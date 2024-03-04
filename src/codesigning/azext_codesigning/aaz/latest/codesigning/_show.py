@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get a trusted Signing Account.
 
     :example: Show the details of an account
-        az codesigning show -n testaccount -g testRg
+        az codesigning show -n MyAccount  -g MyResourceGroup
     """
 
     _aaz_info = {

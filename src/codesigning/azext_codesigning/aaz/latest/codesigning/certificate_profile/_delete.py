@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a certificate profile.
+
+    :example: Delete a certificate profile
+        az codesigning certificate-profile delete -g MyResourceGroup --account-name MyAccount -n MyProfile
     """
 
     _aaz_info = {

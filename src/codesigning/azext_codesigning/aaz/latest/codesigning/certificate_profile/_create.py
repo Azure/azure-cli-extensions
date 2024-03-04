@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a certificate profile.
+
+    :example: Create a certificate profile that includes street address in subject name of certificate
+        az codesigning certificate-profile create -g MyResourceGroup --account-name MyAccount -n MyProfile --profile-type PublicTrust --identity-validation-id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx --include-street true
     """
 
     _aaz_info = {
@@ -67,7 +70,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.identity_validation_id = AAZStrArg(
-            options=["--id", "--identity-validation-id"],
+            options=["--identity-validation-id"],
             arg_group="Properties",
             help="Identity validation id used for the certificate subject name.",
         )
@@ -96,7 +99,7 @@ class Create(AAZCommand):
             default=False,
         )
         _args_schema.include_street_address = AAZBoolArg(
-            options=["--include-street-address"],
+            options=["--include-street", "--include-street-address"],
             arg_group="Properties",
             help="Whether to include STREET in the certificate subject name.",
             default=False,
@@ -104,7 +107,7 @@ class Create(AAZCommand):
         _args_schema.profile_type = AAZStrArg(
             options=["--profile-type"],
             arg_group="Properties",
-            help="Profile type of the certificate.",
+            help="Profile type of the certificate. Allowed values: PublicTrust, PrivateTrust, PrivateTrustCIPolicy, VBSEnclave, PublicTrustTest",
             enum={"PrivateTrust": "PrivateTrust", "PrivateTrustCIPolicy": "PrivateTrustCIPolicy", "PublicTrust": "PublicTrust", "PublicTrustTest": "PublicTrustTest", "VBSEnclave": "VBSEnclave"},
         )
         return cls._args_schema

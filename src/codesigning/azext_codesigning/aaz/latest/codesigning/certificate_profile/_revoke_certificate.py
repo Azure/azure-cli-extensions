@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "codesigning certificate-profile revoke-certificate",
-    is_preview=True,
-)
 class RevokeCertificate(AAZCommand):
     """Revoke a certificate under a certificate profile.
     """

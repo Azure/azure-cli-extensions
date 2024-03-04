@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List trusted signing accounts within a subscription.
 
-    :example: Lists accounts
-        az codesigning list -g testRg
+    :example: Lists accounts under a resource group
+        az codesigning list -g MyResourceGroup
     """
 
     _aaz_info = {

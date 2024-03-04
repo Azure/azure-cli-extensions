@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get details of a certificate profile.
+
+    :example: Get details of a profile
+        az codesigning certificate-profile show -g MyResourceGroup --account-name MyAccount -n MyProfile
     """
 
     _aaz_info = {
