@@ -2,6 +2,11 @@
 
 Release History
 ===============
+5.2.0
+++++++
+* Added device run ro support
+* Allowed null values for acl ids in nni
+
 5.0.0
 ++++++
 * Added Resync functionality for Network taps and Network tap rules
