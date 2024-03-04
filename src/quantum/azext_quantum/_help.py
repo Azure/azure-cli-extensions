@@ -296,6 +296,11 @@ helps['quantum workspace update'] = """
             az quantum workspace update --enable-api-key False
 """
 
+helps['quantum workspace keys'] = """
+    type: group
+    short-summary: Manage Azure Quantum Workspace api keys.
+"""
+
 helps['quantum workspace keys list'] = """
     type: command
     short-summary: List api keys for the given (or current) Azure Quantum workspace.
