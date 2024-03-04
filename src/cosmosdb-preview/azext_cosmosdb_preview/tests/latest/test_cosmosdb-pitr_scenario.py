@@ -188,7 +188,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_command', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_command', location='westcentralus')
     @AllowLargeResponse(size_kb=9999)
     def test_cosmosdb_table_account_restore_command(self, resource_group):
         table = self.create_random_name(prefix='cli', length=15)
@@ -197,7 +197,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'table': table,
-            'loc': 'eastus2'
+            'loc': 'westcentralus'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
@@ -216,16 +216,18 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         time.sleep(240)
         restore_ts_string = restore_ts.isoformat()
         self.kwargs.update({
-            'rts': restore_ts_string
+            'rts': restore_ts_string,
+            'dt': True
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc}')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --disable-ttl {dt}')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
 
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
+        assert restored_account['restoreParameters']['restoreWithTtlDisabled'] == True
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_restorable_commands', location='eastus2')
     @AllowLargeResponse(size_kb=9999)

@@ -131,7 +131,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_shared_database_restore')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_shared_database_restore', location='westcentralus')
     def test_cosmosdb_sql_shared_database_restore(self, resource_group):
         db_name = self.create_random_name(prefix='cli', length=15)
         ctn_name = self.create_random_name(prefix='cli', length=15)
@@ -139,8 +139,9 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         unique_key_policy = '"{\\"uniqueKeys\\": [{\\"paths\\": [\\"/path/to/key1\\"]}, {\\"paths\\": [\\"/path/to/key2\\"]}]}"'
         conflict_resolution_policy = '"{\\"mode\\": \\"lastWriterWins\\", \\"conflictResolutionPath\\": \\"/path\\"}"'
         indexing = '"{\\"indexingMode\\": \\"consistent\\", \\"automatic\\": true, \\"includedPaths\\": [{\\"path\\": \\"/*\\"}], \\"excludedPaths\\": [{\\"path\\": \\"/headquarters/employees/?\\"}]}"'
-        location = "WestUS"
+        location = "WestCentralUS"
         tp1 = 1000
+        ttl = 1800
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=15),
@@ -151,7 +152,8 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             "conflict_resolution": conflict_resolution_policy,
             "indexing": indexing,
             'loc': location,
-            'tp1': tp1
+            'tp1': tp1,
+            'ttl': ttl
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc}')
@@ -159,10 +161,11 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
         assert not self.cmd('az cosmosdb sql container exists -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
 
-        container_create = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {ctn_name} -p {part} --unique-key-policy {unique_key} --conflict-resolution-policy {conflict_resolution} --idx {indexing}').get_output_in_json()
+        container_create = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {ctn_name} -p {part} --unique-key-policy {unique_key} --conflict-resolution-policy {conflict_resolution} --idx {indexing} --ttl {ttl}').get_output_in_json()
 
         assert container_create["name"] == ctn_name
         assert container_create["resource"]["partitionKey"]["paths"][0] == partition_key
+        assert container_create["resource"]["defaultTtl"] == ttl
         assert len(container_create["resource"]["uniqueKeyPolicy"]["uniqueKeys"]) == 2
         assert container_create["resource"]["conflictResolutionPolicy"]["mode"] == "lastWriterWins"
         assert container_create["resource"]["indexingPolicy"]["excludedPaths"][0]["path"] == "/headquarters/employees/?"
@@ -176,7 +179,8 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         restore_ts_string = datetime.datetime.utcnow().isoformat()
 
         self.kwargs.update({
-            'rts': restore_ts_string
+            'rts': restore_ts_string,
+            'dt': True
         })
         import time
         time.sleep(300)
@@ -200,7 +204,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         import time
         time.sleep(500)
 
-        self.cmd('az cosmosdb sql database restore -g {rg} -a {acc} -n {db_name} --restore-timestamp {rts}')
+        self.cmd('az cosmosdb sql database restore -g {rg} -a {acc} -n {db_name} --restore-timestamp {rts} --disable-ttl {dt}')
 
         database_restore = self.cmd('az cosmosdb sql database show -g {rg} -a {acc} -n {db_name}').get_output_in_json()
         assert database_restore["name"] == db_name
@@ -210,6 +214,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
         container_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
         assert container_show["name"] == ctn_name
+        assert container_show["resource"]["defaultTtl"] == None
 
         self.cmd('az cosmosdb sql database delete -g {rg} -a {acc} -n {db_name} --yes')
         database_list = self.cmd('az cosmosdb sql database list -g {rg} -a {acc}').get_output_in_json()
