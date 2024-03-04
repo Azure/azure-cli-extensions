@@ -53,7 +53,6 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
         if platform.system() != 'Windows':
             raise azclierror.BadRequestError("RDP connection is not supported for this platform. "
                                              "Supported platforms: Windows")
-        logger.warning("RDP feature is in preview.")
         op_call = rdp_utils.start_rdp_connection
 
     ssh_session = ssh_info.SSHSession(resource_group_name, vm_name, ssh_ip, public_key_file,
