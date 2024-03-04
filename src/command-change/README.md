@@ -1,6 +1,8 @@
 # Azure CLI CommandChange Extension #
 This is an extension to Azure CLI to manage CommandChange resources.
 
+## New Items
+
 ## How to use ##
 Install this extension using the below CLI command
 ```
