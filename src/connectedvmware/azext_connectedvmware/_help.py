@@ -427,6 +427,31 @@ helps[
 """
 
 helps[
+    'connectedvmware vm create-from-machines'
+] = """
+    type: command
+    short-summary: "Create VMInstance resource(s) from existing Microsoft.HybridCompute machines."
+    examples:
+      - name: Create VMware resources from the specified Arc for Servers machine in the vCenter
+        text: |-
+                az connectedvmware vm create-from-machines \
+--resource-group contoso-rg --name contoso-vm \
+--vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+
+      - name: Creates VMware resources from all Arc for Servers machines in the specified resource group belonging to that vCenter
+        text: |-
+                az connectedvmware vm create-from-machines \
+--resource-group contoso-rg \
+--vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+
+      - name: Create VMware resources from all Arc for Servers machines in the specified subscription belonging to that vCenter
+        text: |-
+                az connectedvmware vm create-from-machines \
+--subscription contoso-sub \
+--vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+"""
+
+helps[
     'connectedvmware vm delete'
 ] = """
     type: command

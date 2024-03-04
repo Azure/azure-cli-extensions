@@ -212,7 +212,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
             resourceProperties["grafanaConfigurations"] = instance.properties.grafana_configurations
 
         if smtp:
-            resourceProperties["grafanaConfigurations"].smtp.enabled = (smtp == "Enabled")
+            resourceProperties["grafanaConfigurations"].smtp.enabled = smtp == "Enabled"
         if host:
             resourceProperties["grafanaConfigurations"].smtp.host = host
         if user:
@@ -529,7 +529,7 @@ def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, defin
         pass
 
     if re.match(r"^[a-z]+://", definition.lower()):
-        response = requests.get(definition, verify=(not should_disable_connection_verify()))
+        response = requests.get(definition, verify=not should_disable_connection_verify())
         if response.status_code == 200:
             definition = json.loads(response.content.decode())
         else:
@@ -999,7 +999,7 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
                                 headers=headers,
                                 json=body,
                                 timeout=60,
-                                verify=(not should_disable_connection_verify()))
+                                verify=not should_disable_connection_verify())
     if response.status_code >= 400:
         if raise_for_error_status:
             logger.warning(str(response.content))
