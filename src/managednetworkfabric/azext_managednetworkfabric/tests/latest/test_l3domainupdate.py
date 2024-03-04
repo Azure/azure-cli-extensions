@@ -38,7 +38,6 @@ def step_update(test, checks=None):
         'az networkfabric l3domain update --resource-group {rg} --resource-name {name} --aggregate-route-configuration {updatedAggregateRouteConf}', checks=checks)
 
 
-
 class GA_L3DomainUpdateScenarioTest1(ScenarioTest):
     ''' L3 Domain Scenario test'''
 
