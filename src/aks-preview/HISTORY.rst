@@ -11,7 +11,6 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Add parameter to set revision `--revision` for the Azure Service Mesh addon while creating AKS cluster.
 
 2.0.0b3
 +++++++
@@ -19,6 +18,7 @@ Pending
 * Add `--disable-vtpm` to the `az aks nodepool update` command.
 * Add `--enable-secure-boot` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
 * Add `--disable-secure-boot` to the `az aks nodepool update` command.
+* Add parameter to set revision `--revision` for the Azure Service Mesh addon while creating AKS cluster.
 
 2.0.0b2
 +++++++

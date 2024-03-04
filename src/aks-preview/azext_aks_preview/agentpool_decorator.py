@@ -52,7 +52,7 @@ class AKSPreviewAgentPoolModels(AKSAgentPoolModels):
     The api version of the class corresponding to a model is determined by resource_type.
     """
 
-
+# pylint: disable=too-many-public-methods
 class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
     def __init__(
         self,
