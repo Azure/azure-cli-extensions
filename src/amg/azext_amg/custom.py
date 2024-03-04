@@ -195,7 +195,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
                                          "deprecated and any migrated legacy alert may require manual adjustments "
                                          "to function properly under the new alerting system. Do you wish to proceed? "
                                          "(Y/N): ")):
-                return
+                return None
         resourceProperties["grafanaMajorVersion"] = major_version
 
     if tags:
@@ -486,7 +486,6 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
         payload['folderId'] = folder['id']
 
     payload['overwrite'] = overwrite or False
-
     payload['inputs'] = []
 
     # provide parameter values for datasource
@@ -534,7 +533,6 @@ def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, defin
             definition = json.loads(response.content.decode())
         else:
             raise ArgumentUsageError(f"Failed to dashboard definition from '{definition}'. Error: '{response}'.")
-
     else:
         definition = json.loads(_try_load_file_content(definition))
 
@@ -681,7 +679,6 @@ def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_toke
                 raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
                                           f"unique identifiers"))
             return result[0]
-
     return json.loads(response.content)
 
 
@@ -770,8 +767,7 @@ def update_service_account(cmd, grafana_name, service_account, new_name=None,
 
 
 def list_service_accounts(cmd, grafana_name, resource_group_name=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get",
-                             "/api/serviceaccounts/search")
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/serviceaccounts/search")
     return json.loads(response.content)['serviceAccounts']
 
 
@@ -864,8 +860,7 @@ def list_users(cmd, grafana_name, resource_group_name=None, api_key_or_token=Non
 
 
 def show_user(cmd, grafana_name, user, resource_group_name=None, api_key_or_token=None):
-    users = list_users(cmd, grafana_name, resource_group_name=resource_group_name,
-                       api_key_or_token=api_key_or_token)
+    users = list_users(cmd, grafana_name, resource_group_name=resource_group_name, api_key_or_token=api_key_or_token)
     match = next((u for u in users if u['name'].lower() == user.lower()), None)
 
     if match:
@@ -994,11 +989,7 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
     }
 
     # TODO: handle re-try on 429
-    response = requests.request(http_method,
-                                url=endpoint + path,
-                                headers=headers,
-                                json=body,
-                                timeout=60,
+    response = requests.request(http_method, url=endpoint + path, headers=headers, json=body, timeout=60,
                                 verify=not should_disable_connection_verify())
     if response.status_code >= 400:
         if raise_for_error_status:
