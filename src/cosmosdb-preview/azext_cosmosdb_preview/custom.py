@@ -780,7 +780,7 @@ def cli_cosmosdb_create(cmd,
                         enable_burst_capacity=None,
                         enable_priority_based_execution=None,
                         default_priority_level=None,
-                        enable_per_region_per_partition_autoscale=None):
+                        enable_prpp_autoscale=None):
     """Create a new Azure Cosmos DB database account."""
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -837,7 +837,7 @@ def cli_cosmosdb_create(cmd,
                                     enable_burst_capacity=enable_burst_capacity,
                                     enable_priority_based_execution=enable_priority_based_execution,
                                     default_priority_level=default_priority_level,
-                                    enable_per_region_per_partition_autoscale=enable_per_region_per_partition_autoscale)
+                                    enable_prpp_autoscale=enable_prpp_autoscale)
 
 
 # pylint: disable=too-many-branches
@@ -872,7 +872,7 @@ def cli_cosmosdb_update(client,
                         enable_burst_capacity=None,
                         enable_priority_based_execution=None,
                         default_priority_level=None,
-                        enable_per_region_per_partition_autoscale=None):
+                        enable_prpp_autoscale=None):
     """Update an existing Azure Cosmos DB database account. """
     existing = client.get(resource_group_name, account_name)
 
@@ -966,7 +966,7 @@ def cli_cosmosdb_update(client,
         enable_burst_capacity=enable_burst_capacity,
         enable_priority_based_execution=enable_priority_based_execution,
         default_priority_level=default_priority_level,
-        enable_per_region_per_partition_autoscale=enable_per_region_per_partition_autoscale)
+        enable_per_region_per_partition_autoscale=enable_prpp_autoscale)
 
     async_docdb_update = client.begin_update(resource_group_name, account_name, params)
     docdb_account = async_docdb_update.result()
@@ -1172,7 +1172,7 @@ def _create_database_account(client,
                              source_backup_location=None,
                              enable_priority_based_execution=None,
                              default_priority_level=None,
-                             enable_per_region_per_partition_autoscale=None):
+                             enable_prpp_autoscale=None):
 
     consistency_policy = None
     if default_consistency_level is not None:
@@ -1312,7 +1312,7 @@ def _create_database_account(client,
         enable_burst_capacity=enable_burst_capacity,
         enable_priority_based_execution=enable_priority_based_execution,
         default_priority_level=default_priority_level,
-        enable_per_region_per_partition_autoscale=enable_per_region_per_partition_autoscale
+        enable_per_region_per_partition_autoscale=enable_prpp_autoscale
     )
 
     async_docdb_create = client.begin_create_or_update(resource_group_name, account_name, params)

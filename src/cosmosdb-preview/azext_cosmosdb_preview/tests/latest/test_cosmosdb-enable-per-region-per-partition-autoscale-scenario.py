@@ -25,21 +25,21 @@ class Cosmosdb_previewEnablePerRegionPerPartitionAutoscaleScenarioTest(ScenarioT
         })
 
         #create enablePerRegionPerPartitionAutoscale enabled account
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-per-region-per-partition-autoscale true')
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-prpp-autoscale true')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enablePerRegionPerPartitionAutoscale', True),
         ])
         print('Created enablePerRegionPerPartitionAutoscale enabled account')
 
         #disable enablePerRegionPerPartitionAutoscale
-        self.cmd('az cosmosdb update -n {acc} -g {rg} --enable-per-region-per-partition-autoscale false')
+        self.cmd('az cosmosdb update -n {acc} -g {rg} --enable-prpp-autoscale false')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enablePerRegionPerPartitionAutoscale', False),
         ])
         print('Disabled enablePerRegionPerPartitionAutoscale')
 
         #enable enablePerRegionPerPartitionAutoscale
-        self.cmd('az cosmosdb update -n {acc} -g {rg} --enable-per-region-per-partition-autoscale true')
+        self.cmd('az cosmosdb update -n {acc} -g {rg} --enable-prpp-autoscale true')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enablePerRegionPerPartitionAutoscale', True),
         ])
