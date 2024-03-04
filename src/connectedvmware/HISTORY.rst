@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.1.0
++++++
+apo
+
 0.2.4
 ++++++
 * Link existing HCRP machine to vCenter using the CLI.
