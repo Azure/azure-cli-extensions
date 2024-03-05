@@ -13,10 +13,10 @@ interactions:
       ParameterSetName:
       - -g -w -l -a -r --skip-autoadd
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
-        az-cli-ext/1.0.0b1
+      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+        az-cli-ext/1.0.0b2
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/westus2/offerings?api-version=2022-01-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/westus2/offerings?api-version=2023-11-13-preview
   response:
     body:
       string: "{\"value\":[{\"id\":\"ionq\",\"name\":\"IonQ\",\"properties\":{\"description\":\"IonQ\u2019s
@@ -247,28 +247,28 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:04:16 GMT
+      - Mon, 04 Mar 2024 17:44:07 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 0c49e109-b4ea-4cbc-9fa9-0b6ba7850cbe
+      - e95322c0-7522-4e75-af21-a3f268200802
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ARRAffinity=9a7320ce2eba13f7d318aad5be73341a989686fae5ec76174d0f62020c4dec4a;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
-      - ARRAffinitySameSite=9a7320ce2eba13f7d318aad5be73341a989686fae5ec76174d0f62020c4dec4a;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
-      - ASLBSA=00033e1a523226cb88459125bd9cbe3395b1cbe5bd2ed900250d74e060083f5fca90;
+      - ARRAffinity=d6e7ae766d6a2701cf079eade52fcf281dece87f221d9cfe74e21b7013b05268;Path=/;HttpOnly;Secure;Domain=app-cp-westcentralus.azurewebsites.net
+      - ARRAffinitySameSite=d6e7ae766d6a2701cf079eade52fcf281dece87f221d9cfe74e21b7013b05268;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westcentralus.azurewebsites.net
+      - ASLBSA=00033d780c700b693140d294c3227eed904ba1a153a47dbd5c4c964a287359876df3;
         path=/; httponly; secure
-      - ASLBSACORS=00033e1a523226cb88459125bd9cbe3395b1cbe5bd2ed900250d74e060083f5fca90;
+      - ASLBSACORS=00033d780c700b693140d294c3227eed904ba1a153a47dbd5c4c964a287359876df3;
         samesite=none; path=/; httponly; secure
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
       - Accept-Encoding
       x-azure-ref:
-      - 0AcrfZQAAAAAI8oN+1ULPRaklKvr2/Jh7V1NURURHRTA4MjIAMzJhNzJjYWUtNWM3YS00NTk4LWEyOWYtYzkyMzM3OWUzMzcx
+      - 0ZwjmZQAAAAAWR4bkblnjQqrQxaXK6O4eV1NURURHRTA4MjIAMzJhNzJjYWUtNWM3YS00NTk4LWEyOWYtYzkyMzM3OWUzMzcx
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -276,7 +276,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-msedge-ref:
-      - 'Ref A: 909F5DBAA8574C31A531C70BDFC66AE2 Ref B: CO6AA3150219025 Ref C: 2024-02-29T00:04:17Z'
+      - 'Ref A: 2230B684AD05476C82D661AA37A43D6A Ref B: CO6AA3150219045 Ref C: 2024-03-04T17:44:07Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -296,22 +296,22 @@ interactions:
       ParameterSetName:
       - -g -w -l -a -r --skip-autoadd
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-mgmt-marketplaceordering/1.1.0 Python/3.11.4
+      - AZURECLI/2.57.0 azsdk-python-mgmt-marketplaceordering/1.1.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/quantumcircuitsinc1598045891596/offers/qci-aq/plans/qci-freepreview/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/quantumcircuitsinc1598045891596/offers/qci-aq/plans/qci-freepreview/agreements/current","name":"qci-freepreview","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"quantumcircuitsinc1598045891596","product":"qci-aq","plan":"qci-freepreview","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_QUANTUMCIRCUITSINC1598045891596%253a24QCI%253a2DAQ%253a24QCI%253a2DFREEPREVIEW%253a24PP3GLE327RQ6PXCFKVKKUIHX2KTKAPSMYHMY4RTIDVZNPA5MI4TAS4E3EMRM43OT3R3PWF5I7NG2Z2AYJYYMAIATBW7A256UYHC34CY.txt","privacyPolicyLink":"https://www.quantumcircuits.com/privacy-policy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2024-02-29T00:04:20.3161445Z","signature":"QMG2BMGCGFGMBF24ASK64E52VUHV2O4QIZ7CNZGRIGEMZOA7KVHEVOD7LTXYQGSMMR6NAR2GBPZDNDNFWUVSWQCT5IPQS7P5QPIXDTQ","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2024-02-29T00:04:20.425583+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2024-02-29T00:04:20.425583+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/quantumcircuitsinc1598045891596/offers/qci-aq/plans/qci-freepreview/agreements/current","name":"qci-freepreview","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"quantumcircuitsinc1598045891596","product":"qci-aq","plan":"qci-freepreview","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_QUANTUMCIRCUITSINC1598045891596%253a24QCI%253a2DAQ%253a24QCI%253a2DFREEPREVIEW%253a24PP3GLE327RQ6PXCFKVKKUIHX2KTKAPSMYHMY4RTIDVZNPA5MI4TAS4E3EMRM43OT3R3PWF5I7NG2Z2AYJYYMAIATBW7A256UYHC34CY.txt","privacyPolicyLink":"https://www.quantumcircuits.com/privacy-policy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2024-03-04T17:44:09.7739949Z","signature":"UGLZD56XV22HP6PV6FGYBESOEFZWUYLBLVTFRPNXCQ4UXWJ6YFGP4HQGYKBB6AN5DXBXZ6L5G7FJJHJR25TS74LP4AJ7XPACQSLPBFQ","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2024-03-04T17:44:09.9146609+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2024-03-04T17:44:09.9146609+00:00"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1468'
+      - '1470'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:04:20 GMT
+      - Mon, 04 Mar 2024 17:44:09 GMT
       expires:
       - '-1'
       pragma:
@@ -327,7 +327,7 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-msedge-ref:
-      - 'Ref A: 0B3AF27099674A91A63564A8EA0BA6A3 Ref B: CO6AA3150219035 Ref C: 2024-02-29T00:04:18Z'
+      - 'Ref A: D43DE5A25ACF408097FC814F377B5674 Ref B: CO6AA3150220021 Ref C: 2024-03-04T17:44:08Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -347,13 +347,13 @@ interactions:
       ParameterSetName:
       - -g -w -l -a -r --skip-autoadd
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-mgmt-marketplaceordering/1.1.0 Python/3.11.4
+      - AZURECLI/2.57.0 azsdk-python-mgmt-marketplaceordering/1.1.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current","name":"azure-quantum-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"rigetticoinc1644276861431","product":"rigetti-aq","plan":"azure-quantum-credits","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_RIGETTICOINC1644276861431%253a24RIGETTI%253a2DAQ%253a24AZURE%253a2DQUANTUM%253a2DCREDITS%253a24H35R3FYQURHQDNSLAZ4YCHIHABQ4NR4UI66LMJ3K53EHCQWZJMC3BLGZODKSAMOQ4ZI5CVO37XQXKFBQ3YWK444S7B3XGBK67JHVZNI.txt","privacyPolicyLink":"https://www.rigetti.com/privacy-policy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2024-02-29T00:04:23.3002661Z","signature":"NC6LY7PRGRGCXQMHRG7OTATHT6BHHTSRWBJRWN4UGORC6MROM7AOEHPMR7QCETDXTQWZJYSCVERUCBVEVBCRFAPUOHRPKNYNM745DEA","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2024-02-29T00:04:23.3940766+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2024-02-29T00:04:23.3940766+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current","name":"azure-quantum-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"rigetticoinc1644276861431","product":"rigetti-aq","plan":"azure-quantum-credits","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_RIGETTICOINC1644276861431%253a24RIGETTI%253a2DAQ%253a24AZURE%253a2DQUANTUM%253a2DCREDITS%253a24H35R3FYQURHQDNSLAZ4YCHIHABQ4NR4UI66LMJ3K53EHCQWZJMC3BLGZODKSAMOQ4ZI5CVO37XQXKFBQ3YWK444S7B3XGBK67JHVZNI.txt","privacyPolicyLink":"https://www.rigetti.com/privacy-policy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2024-03-04T17:44:11.4946148Z","signature":"6GDGRLQQEDY6QJUQVKUU5GM4LOVIWP36PZITERXZQEBHFZT6M662LB5K4ODKZOHUNXVS3MPR5FLEXUIHLUNDDOJEUH6IDYMKY5RMY7Y","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2024-03-04T17:44:11.5727065+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2024-03-04T17:44:11.5727065+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -362,7 +362,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:04:23 GMT
+      - Mon, 04 Mar 2024 17:44:11 GMT
       expires:
       - '-1'
       pragma:
@@ -378,7 +378,7 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-msedge-ref:
-      - 'Ref A: 632EAA479E944D898AFFBEB7BE60D159 Ref B: CO6AA3150220037 Ref C: 2024-02-29T00:04:21Z'
+      - 'Ref A: D3E63A646E8C4F4BB00D2812489BB785 Ref B: CO6AA3150219025 Ref C: 2024-03-04T17:44:10Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -398,13 +398,13 @@ interactions:
       ParameterSetName:
       - -g -w -l -a -r --skip-autoadd
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-mgmt-marketplaceordering/1.1.0 Python/3.11.4
+      - AZURECLI/2.57.0 azsdk-python-mgmt-marketplaceordering/1.1.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/pay-as-you-go-cred/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/pay-as-you-go-cred/agreements/current","name":"pay-as-you-go-cred","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"ionqinc1582730893633","product":"ionq-aq","plan":"pay-as-you-go-cred","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_IONQINC1582730893633%253a24IONQ%253a2DAQ%253a24PAY%253a2DAS%253a2DYOU%253a2DGO%253a2DCRED%253a247ODGLEAK7RQISNHUEU4KJYVC6QLVZF5IANNQFGBHOKJMXWIW3OPRUADLB63ROSGS5FVYSHLINGX5BK7GF7Y2ZO24HKBHSPKMXBHFBAQ.txt","privacyPolicyLink":"https://ionq.com/privacy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2024-02-29T00:04:25.5074963Z","signature":"S56ZFJ7QNE6EB44PQEKW3AKJBDPNOPABQXJCDEBPD4ER6W6YRKK3KLRAOTDUYAGQNUAXIDJTJF7O2X5DCHTSQOCRNPH4SE76A4DPWJI","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2024-02-29T00:04:25.5855914+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2024-02-29T00:04:25.5855914+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/pay-as-you-go-cred/agreements/current","name":"pay-as-you-go-cred","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"ionqinc1582730893633","product":"ionq-aq","plan":"pay-as-you-go-cred","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_IONQINC1582730893633%253a24IONQ%253a2DAQ%253a24PAY%253a2DAS%253a2DYOU%253a2DGO%253a2DCRED%253a247ODGLEAK7RQISNHUEU4KJYVC6QLVZF5IANNQFGBHOKJMXWIW3OPRUADLB63ROSGS5FVYSHLINGX5BK7GF7Y2ZO24HKBHSPKMXBHFBAQ.txt","privacyPolicyLink":"https://ionq.com/privacy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2024-03-04T17:44:12.9927066Z","signature":"W7NYLOTIUHWSRSV7B67URUNABK3CXYUSOKAS67YGDF45C45YEVM7W6Y75IW7UL4Q42SJFANR7SWQ6VMVB5HDS2EXVEW5DUUSOENHEHI","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2024-03-04T17:44:13.2427126+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2024-03-04T17:44:13.2427126+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -413,7 +413,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:04:24 GMT
+      - Mon, 04 Mar 2024 17:44:12 GMT
       expires:
       - '-1'
       pragma:
@@ -429,7 +429,7 @@ interactions:
       x-frame-options:
       - SAMEORIGIN
       x-msedge-ref:
-      - 'Ref A: AE3C0CF5CDB54A58BF6620B8ECE70339 Ref B: CO6AA3150219053 Ref C: 2024-02-29T00:04:24Z'
+      - 'Ref A: D9D0D7BA7E0A4480BFD83BAF25112990 Ref B: CO6AA3150220037 Ref C: 2024-03-04T17:44:11Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -449,7 +449,7 @@ interactions:
       ParameterSetName:
       - -g -w -l -a -r --skip-autoadd
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts?api-version=2023-01-01
   response:
@@ -463,7 +463,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Feb 2024 00:04:27 GMT
+      - Mon, 04 Mar 2024 17:44:13 GMT
       expires:
       - '-1'
       pragma:
@@ -475,7 +475,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 0E684D51E3EB4E5FA79940A317507918 Ref B: CO6AA3150220021 Ref C: 2024-02-29T00:04:26Z'
+      - 'Ref A: 984FABF1BBC742D7833ABECD8CF1B8DB Ref B: CO6AA3150217053 Ref C: 2024-03-04T17:44:13Z'
     status:
       code: 200
       message: OK
@@ -518,7 +518,7 @@ interactions:
       "principalId": "[reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
       ''2019-11-04-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
       "dependsOn": ["[parameters(''storageAccountId'')]"]}]}}}], "outputs": {}}, "parameters":
-      {"quantumWorkspaceName": {"value": "e2e-test-w7382274"}, "location": {"value":
+      {"quantumWorkspaceName": {"value": "e2e-test-w9845207"}, "location": {"value":
       "westus2"}, "tags": {"value": {}}, "providers": {"value": [{"providerId": "qci",
       "providerSku": "qci-freepreview"}, {"providerId": "rigetti", "providerSku":
       "azure-quantum-credits"}, {"providerId": "ionq", "providerSku": "pay-as-you-go-cred"},
@@ -526,7 +526,7 @@ interactions:
       {"value": "e2etests"}, "storageAccountId": {"value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},
       "storageAccountLocation": {"value": "westus2"}, "storageAccountSku": {"value":
       "Standard_LRS"}, "storageAccountKind": {"value": "Storage"}, "storageAccountDeploymentName":
-      {"value": "Microsoft.StorageAccount-29-Feb-2024-00-04-25"}}, "mode": "Incremental"}}'
+      {"value": "Microsoft.StorageAccount-04-Mar-2024-17-44-15"}}, "mode": "Incremental"}}'
     headers:
       Accept:
       - application/json
@@ -539,15 +539,15 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7382274","name":"Microsoft.AzureQuantum-e2e-test-w7382274","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6354453805046911057","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w7382274"},"location":{"type":"String","value":"westus2"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"qci","providerSku":"qci-freepreview"},{"providerId":"rigetti","providerSku":"azure-quantum-credits"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop"}]},"storageAccountName":{"type":"String","value":"e2etests"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},"storageAccountLocation":{"type":"String","value":"westus2"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"Storage"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Feb-2024-00-04-25"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2024-02-29T00:04:29.1303486Z","duration":"PT0.0004114S","correlationId":"537daf2a-0ee4-40c5-a976-ee44a5c659ec","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus2"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w7382274","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w7382274"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w7382274","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Feb-2024-00-04-25","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-29-Feb-2024-00-04-25"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w9845207","name":"Microsoft.AzureQuantum-e2e-test-w9845207","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6354453805046911057","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w9845207"},"location":{"type":"String","value":"westus2"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"qci","providerSku":"qci-freepreview"},{"providerId":"rigetti","providerSku":"azure-quantum-credits"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop"}]},"storageAccountName":{"type":"String","value":"e2etests"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},"storageAccountLocation":{"type":"String","value":"westus2"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"Storage"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-04-Mar-2024-17-44-15"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2024-03-04T17:44:16.0657464Z","duration":"PT0.0004571S","correlationId":"85af6462-0b9c-4394-ade9-04e4ecff55f4","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus2"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w9845207","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w9845207"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w9845207","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-04-Mar-2024-17-44-15","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-04-Mar-2024-17-44-15"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7382274/operationStatuses/08584924418168984374?api-version=2022-09-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w9845207/operationStatuses/08584920326301872059?api-version=2022-09-01
       cache-control:
       - no-cache
       content-length:
@@ -555,7 +555,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:04:28 GMT
+      - Mon, 04 Mar 2024 17:44:15 GMT
       expires:
       - '-1'
       pragma:
@@ -569,7 +569,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: 98F7BC50E6794D87B171D2F9F3134572 Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:04:27Z'
+      - 'Ref A: D3A99C16ACD344E09E5E324BF8D49F92 Ref B: CO6AA3150219047 Ref C: 2024-03-04T17:44:14Z'
     status:
       code: 201
       message: Created
@@ -583,21 +583,21 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
-      string: '{"status":"Running"}'
+      string: '{"status":"Accepted"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '20'
+      - '21'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:04:28 GMT
+      - Mon, 04 Mar 2024 17:44:16 GMT
       expires:
       - '-1'
       pragma:
@@ -609,7 +609,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 94CD581C234E4E0DA8A141F0D139EB19 Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:04:29Z'
+      - 'Ref A: E23EC1933D4041279117C1645E1FD5F1 Ref B: CO6AA3150219025 Ref C: 2024-03-04T17:44:16Z'
     status:
       code: 200
       message: OK
@@ -623,9 +623,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -637,7 +637,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:04:58 GMT
+      - Mon, 04 Mar 2024 17:44:45 GMT
       expires:
       - '-1'
       pragma:
@@ -649,7 +649,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 97707087EEAE42C28ABB0C214A1DF3D8 Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:04:59Z'
+      - 'Ref A: 2A86F7FA49DF4B0F90305614E1DF1E30 Ref B: CO6AA3150220039 Ref C: 2024-03-04T17:44:46Z'
     status:
       code: 200
       message: OK
@@ -663,9 +663,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -677,7 +677,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:05:28 GMT
+      - Mon, 04 Mar 2024 17:45:16 GMT
       expires:
       - '-1'
       pragma:
@@ -689,7 +689,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 916406518A724202908D4CF972CEAF4A Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:05:29Z'
+      - 'Ref A: D50EFB18F0214D758F18AC566940534E Ref B: CO6AA3150217039 Ref C: 2024-03-04T17:45:17Z'
     status:
       code: 200
       message: OK
@@ -703,9 +703,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -717,7 +717,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:05:58 GMT
+      - Mon, 04 Mar 2024 17:45:46 GMT
       expires:
       - '-1'
       pragma:
@@ -729,7 +729,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 944F9EA6C59545F4A5BAB2CB267BA9EA Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:05:59Z'
+      - 'Ref A: F657E545DAD8410F86160A4B07EBE87B Ref B: CO6AA3150219035 Ref C: 2024-03-04T17:45:47Z'
     status:
       code: 200
       message: OK
@@ -743,9 +743,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -757,7 +757,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:06:28 GMT
+      - Mon, 04 Mar 2024 17:46:16 GMT
       expires:
       - '-1'
       pragma:
@@ -769,7 +769,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: DF0668DA0EE741B9BC622DC594E8A764 Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:06:29Z'
+      - 'Ref A: 00A71089373B49EF8010C232543BC5BD Ref B: CO6AA3150217021 Ref C: 2024-03-04T17:46:17Z'
     status:
       code: 200
       message: OK
@@ -783,9 +783,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -797,7 +797,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:06:59 GMT
+      - Mon, 04 Mar 2024 17:46:47 GMT
       expires:
       - '-1'
       pragma:
@@ -809,7 +809,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 75B32A464CA54936A09E9FF79A6E2F6C Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:06:59Z'
+      - 'Ref A: CB3F86079F20407E8635AE54532E0111 Ref B: CO6AA3150219049 Ref C: 2024-03-04T17:46:47Z'
     status:
       code: 200
       message: OK
@@ -823,9 +823,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -837,7 +837,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:07:29 GMT
+      - Mon, 04 Mar 2024 17:47:18 GMT
       expires:
       - '-1'
       pragma:
@@ -849,7 +849,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: EAC3B0DE287D4E338C5AB254AC49CB53 Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:07:29Z'
+      - 'Ref A: 9BFCFA1FD78146F5A69D79D77D5160E4 Ref B: CO6AA3150219023 Ref C: 2024-03-04T17:47:18Z'
     status:
       code: 200
       message: OK
@@ -863,9 +863,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -877,7 +877,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:07:59 GMT
+      - Mon, 04 Mar 2024 17:47:48 GMT
       expires:
       - '-1'
       pragma:
@@ -889,7 +889,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 03217939CF4C4C668CA601F9EA1F0DA9 Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:07:59Z'
+      - 'Ref A: 97B5DF847370492CA5D8747957A62A70 Ref B: CO6AA3150217039 Ref C: 2024-03-04T17:47:48Z'
     status:
       code: 200
       message: OK
@@ -903,9 +903,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -917,7 +917,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:08:29 GMT
+      - Mon, 04 Mar 2024 17:48:17 GMT
       expires:
       - '-1'
       pragma:
@@ -929,7 +929,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 04F56F194A7D4B16838092E90195C86F Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:08:29Z'
+      - 'Ref A: 2EC5346F4C66470EAC117C754EB6EEF7 Ref B: CO6AA3150220023 Ref C: 2024-03-04T17:48:18Z'
     status:
       code: 200
       message: OK
@@ -943,9 +943,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -957,7 +957,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:08:59 GMT
+      - Mon, 04 Mar 2024 17:48:48 GMT
       expires:
       - '-1'
       pragma:
@@ -969,7 +969,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 99CF98616E6B48638A64B47D54B5F59B Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:09:00Z'
+      - 'Ref A: 5A7D2DF5C8A646D3AFCE0C5C431CE8EF Ref B: CO6AA3150217047 Ref C: 2024-03-04T17:48:48Z'
     status:
       code: 200
       message: OK
@@ -983,9 +983,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -997,7 +997,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:09:29 GMT
+      - Mon, 04 Mar 2024 17:49:18 GMT
       expires:
       - '-1'
       pragma:
@@ -1009,7 +1009,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 9EAB47D7B1064102926BE93916644707 Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:09:30Z'
+      - 'Ref A: E5BA29702CDE466D85CCF20646AF0AA0 Ref B: CO6AA3150217021 Ref C: 2024-03-04T17:49:19Z'
     status:
       code: 200
       message: OK
@@ -1023,9 +1023,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584924418168984374?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584920326301872059?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1037,7 +1037,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:09:59 GMT
+      - Mon, 04 Mar 2024 17:49:48 GMT
       expires:
       - '-1'
       pragma:
@@ -1049,7 +1049,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 2691EB9815D648FFA6CCE84D22C85064 Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:10:00Z'
+      - 'Ref A: 5EA1F4B2BB6646118E5C31D3B3FF1CEF Ref B: CO6AA3150218029 Ref C: 2024-03-04T17:49:49Z'
     status:
       code: 200
       message: OK
@@ -1063,12 +1063,12 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w7382274","name":"Microsoft.AzureQuantum-e2e-test-w7382274","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6354453805046911057","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w7382274"},"location":{"type":"String","value":"westus2"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"qci","providerSku":"qci-freepreview"},{"providerId":"rigetti","providerSku":"azure-quantum-credits"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop"}]},"storageAccountName":{"type":"String","value":"e2etests"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},"storageAccountLocation":{"type":"String","value":"westus2"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"Storage"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-29-Feb-2024-00-04-25"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2024-02-29T00:09:48.1483775Z","duration":"PT5M19.0184403S","correlationId":"537daf2a-0ee4-40c5-a976-ee44a5c659ec","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus2"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w7382274","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w7382274"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w7382274","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-29-Feb-2024-00-04-25","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-29-Feb-2024-00-04-25"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests/providers/Microsoft.Authorization/roleAssignments/b5e42427-2873-56ce-8e98-a15c8d1f6640"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w9845207","name":"Microsoft.AzureQuantum-e2e-test-w9845207","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6354453805046911057","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w9845207"},"location":{"type":"String","value":"westus2"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"qci","providerSku":"qci-freepreview"},{"providerId":"rigetti","providerSku":"azure-quantum-credits"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop"}]},"storageAccountName":{"type":"String","value":"e2etests"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},"storageAccountLocation":{"type":"String","value":"westus2"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"Storage"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-04-Mar-2024-17-44-15"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2024-03-04T17:49:47.2819962Z","duration":"PT5M31.2167069S","correlationId":"85af6462-0b9c-4394-ade9-04e4ecff55f4","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus2"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w9845207","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w9845207"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w9845207","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-04-Mar-2024-17-44-15","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-04-Mar-2024-17-44-15"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests/providers/Microsoft.Authorization/roleAssignments/39cc9287-436b-5c2b-9a28-3d1ea1dc4d5d"}]}}'
     headers:
       cache-control:
       - no-cache
@@ -1077,7 +1077,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:09:59 GMT
+      - Mon, 04 Mar 2024 17:49:49 GMT
       expires:
       - '-1'
       pragma:
@@ -1089,7 +1089,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 4EA21B074EAF491E9BE31DE8890589F8 Ref B: CO6AA3150217045 Ref C: 2024-02-29T00:10:00Z'
+      - 'Ref A: CC5A752AAA2A40A1A036A0E9BA4180AE Ref B: CO6AA3150217021 Ref C: 2024-03-04T17:49:49Z'
     status:
       code: 200
       message: OK
@@ -1107,24 +1107,24 @@ interactions:
       ParameterSetName:
       - -g -w -l
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
-        az-cli-ext/1.0.0b1
+      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+        az-cli-ext/1.0.0b2
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274?api-version=2022-01-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274","name":"e2e-test-w7382274","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2024-02-29T00:04:29.9688458Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-29T00:04:29.9688458Z"},"identity":{"principalId":"0a52ec9b-e869-4b74-99d2-6dc083e760b2","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"qci","providerSku":"qci-freepreview","applicationName":"e2e-test-w7382274-qci","provisioningState":"Succeeded"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w7382274-rigetti","provisioningState":"Succeeded","resourceUsageId":"4e1d1161-3b85-4e02-a114-75f026934d13"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"e2e-test-w7382274-ionq","provisioningState":"Succeeded","resourceUsageId":"2a0e8563-0378-4c37-85fc-21ebb908ed7c"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-test-w7382274-microsoft-qc","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","endpointUri":"https://e2e-test-w7382274.westus2.quantum.azure.com"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207","name":"e2e-test-w9845207","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"guyi@microsoft.com","createdByType":"User","createdAt":"2024-03-04T17:44:17.5108004Z","lastModifiedBy":"guyi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-04T17:44:17.5108004Z"},"identity":{"principalId":"cd512b12-1cd4-48ca-bff9-451dc88190d3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"qci","providerSku":"qci-freepreview","applicationName":"e2e-test-w9845207-qci","provisioningState":"Succeeded"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w9845207-rigetti","provisioningState":"Succeeded","resourceUsageId":"2455b8cd-577a-4058-aa34-932b9bae6661"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"e2e-test-w9845207-ionq","provisioningState":"Succeeded","resourceUsageId":"ca0f9eea-2ffd-4336-a9f6-d70eb62ec1a1"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-test-w9845207-microsoft-qc","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","apiKeyEnabled":true,"endpointUri":"https://e2e-test-w9845207.westus2.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1576'
+      - '1589'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:02 GMT
+      - Mon, 04 Mar 2024 17:49:50 GMT
       etag:
-      - '"0902da41-0000-0800-0000-65dfcb310000"'
+      - '"0900d6df-0000-0800-0000-65e6099c0000"'
       expires:
       - '-1'
       pragma:
@@ -1138,7 +1138,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-msedge-ref:
-      - 'Ref A: 09755210E24242E7A1DAD74E9BA3C57C Ref B: CO6AA3150218047 Ref C: 2024-02-29T00:10:03Z'
+      - 'Ref A: F1A24E470CA94B64B281F0797B5A223D Ref B: CO6AA3150220011 Ref C: 2024-03-04T17:49:50Z'
     status:
       code: 200
       message: OK
@@ -1152,23 +1152,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/providerStatus
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"qci","currentAvailability":"Degraded","targets":[{"id":"qci.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.machine1","currentAvailability":"Unavailable","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.simulator.noisy","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://quantumcircuits.com"}]},{"id":"rigetti","currentAvailability":"Degraded","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-9q-1","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-2","currentAvailability":"Degraded","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":6093453,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Available","averageQueueTime":6083353,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":9153761,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]}],"nextLink":null}'
+      string: '{"value":[{"id":"qci","currentAvailability":"Degraded","targets":[{"id":"qci.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.machine1","currentAvailability":"Unavailable","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.simulator.noisy","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://quantumcircuits.com"}]},{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-9q-1","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-2","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":6523353,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Available","averageQueueTime":5338,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Available","averageQueueTime":8095150,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]}],"nextLink":null}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1620'
+      - '1617'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:04 GMT
+      - Mon, 04 Mar 2024 17:49:51 GMT
       mise-correlation-id:
-      - baf37b5a-6c94-4e22-8017-3b3526e68676
+      - f029ff63-424c-487f-9c32-ac06d9372f2e
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1204,24 +1204,24 @@ interactions:
       ParameterSetName:
       - -t --job-input-format -t --job-input-file --job-output-format -o
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
-        az-cli-ext/1.0.0b1
+      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+        az-cli-ext/1.0.0b2
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274?api-version=2022-01-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274","name":"e2e-test-w7382274","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2024-02-29T00:04:29.9688458Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-29T00:04:29.9688458Z"},"identity":{"principalId":"0a52ec9b-e869-4b74-99d2-6dc083e760b2","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"qci","providerSku":"qci-freepreview","applicationName":"e2e-test-w7382274-qci","provisioningState":"Succeeded"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w7382274-rigetti","provisioningState":"Succeeded","resourceUsageId":"4e1d1161-3b85-4e02-a114-75f026934d13"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"e2e-test-w7382274-ionq","provisioningState":"Succeeded","resourceUsageId":"2a0e8563-0378-4c37-85fc-21ebb908ed7c"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-test-w7382274-microsoft-qc","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","endpointUri":"https://e2e-test-w7382274.westus2.quantum.azure.com"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207","name":"e2e-test-w9845207","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"guyi@microsoft.com","createdByType":"User","createdAt":"2024-03-04T17:44:17.5108004Z","lastModifiedBy":"guyi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-04T17:44:17.5108004Z"},"identity":{"principalId":"cd512b12-1cd4-48ca-bff9-451dc88190d3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"qci","providerSku":"qci-freepreview","applicationName":"e2e-test-w9845207-qci","provisioningState":"Succeeded"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w9845207-rigetti","provisioningState":"Succeeded","resourceUsageId":"2455b8cd-577a-4058-aa34-932b9bae6661"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"e2e-test-w9845207-ionq","provisioningState":"Succeeded","resourceUsageId":"ca0f9eea-2ffd-4336-a9f6-d70eb62ec1a1"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-test-w9845207-microsoft-qc","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","apiKeyEnabled":true,"endpointUri":"https://e2e-test-w9845207.westus2.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1576'
+      - '1589'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:04 GMT
+      - Mon, 04 Mar 2024 17:49:50 GMT
       etag:
-      - '"0902da41-0000-0800-0000-65dfcb310000"'
+      - '"0900d6df-0000-0800-0000-65e6099c0000"'
       expires:
       - '-1'
       pragma:
@@ -1235,7 +1235,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-msedge-ref:
-      - 'Ref A: 2294D75BCD6A4EA291E58C42904E7D33 Ref B: CO6AA3150219029 Ref C: 2024-02-29T00:10:04Z'
+      - 'Ref A: 12EF0A6EF87E46A5B53D565D2C52CD1E Ref B: CO6AA3150219053 Ref C: 2024-03-04T17:49:51Z'
     status:
       code: 200
       message: OK
@@ -1255,7 +1255,7 @@ interactions:
       ParameterSetName:
       - -t --job-input-format -t --job-input-file --job-output-format -o
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests/listKeys?api-version=2023-01-01&$expand=kerb
   response:
@@ -1269,7 +1269,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Feb 2024 00:10:04 GMT
+      - Mon, 04 Mar 2024 17:49:50 GMT
       expires:
       - '-1'
       pragma:
@@ -1283,7 +1283,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
       x-msedge-ref:
-      - 'Ref A: 7FEE29DB0C5E4C3A951D7B77974C3B6D Ref B: CO6AA3150220025 Ref C: 2024-02-29T00:10:05Z'
+      - 'Ref A: B485E72CAD234CE69BAE2E6C25E1267C Ref B: CO6AA3150217011 Ref C: 2024-03-04T17:49:51Z'
     status:
       code: 200
       message: OK
@@ -1301,7 +1301,7 @@ interactions:
       ParameterSetName:
       - -t --job-input-format -t --job-input-file --job-output-format -o
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests?api-version=2023-01-01
   response:
@@ -1315,7 +1315,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Feb 2024 00:10:04 GMT
+      - Mon, 04 Mar 2024 17:49:51 GMT
       expires:
       - '-1'
       pragma:
@@ -1327,7 +1327,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 4DAFB8D263314852A32324A3773585D7 Ref B: CO6AA3150220025 Ref C: 2024-02-29T00:10:05Z'
+      - 'Ref A: 78174A0C0E9D4711B1D6FA6C39A28568 Ref B: CO6AA3150218031 Ref C: 2024-03-04T17:49:51Z'
     status:
       code: 200
       message: OK
@@ -1341,24 +1341,24 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-storage-blob/12.14.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-storage-blob/12.14.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:04 GMT
+      - Mon, 04 Mar 2024 17:49:53 GMT
       x-ms-version:
       - '2021-08-06'
     method: GET
-    uri: https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9?restype=container
+    uri: https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de?restype=container
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ContainerNotFound</Code><Message>The
-        specified container does not exist.\nRequestId:1e8e60d6-a01e-0029-13a3-6aa199000000\nTime:2024-02-29T00:10:06.0219268Z</Message></Error>"
+        specified container does not exist.\nRequestId:ece17fc5-101e-004e-1d5c-6eb165000000\nTime:2024-03-04T17:49:52.0984767Z</Message></Error>"
     headers:
       content-length:
       - '223'
       content-type:
       - application/xml
       date:
-      - Thu, 29 Feb 2024 00:10:05 GMT
+      - Mon, 04 Mar 2024 17:49:51 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-error-code:
@@ -1380,13 +1380,13 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - azsdk-python-storage-blob/12.14.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-storage-blob/12.14.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:04 GMT
+      - Mon, 04 Mar 2024 17:49:53 GMT
       x-ms-version:
       - '2021-08-06'
     method: PUT
-    uri: https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9?restype=container
+    uri: https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de?restype=container
   response:
     body:
       string: ''
@@ -1394,11 +1394,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 29 Feb 2024 00:10:05 GMT
+      - Mon, 04 Mar 2024 17:49:52 GMT
       etag:
-      - '"0x8DC38BAC89B6B85"'
+      - '"0x8DC3C737E8F8796"'
       last-modified:
-      - Thu, 29 Feb 2024 00:10:06 GMT
+      - Mon, 04 Mar 2024 17:49:52 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -1416,13 +1416,13 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-storage-blob/12.14.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-storage-blob/12.14.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:04 GMT
+      - Mon, 04 Mar 2024 17:49:53 GMT
       x-ms-version:
       - '2021-08-06'
     method: GET
-    uri: https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9?restype=container
+    uri: https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de?restype=container
   response:
     body:
       string: ''
@@ -1430,11 +1430,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 29 Feb 2024 00:10:05 GMT
+      - Mon, 04 Mar 2024 17:49:52 GMT
       etag:
-      - '"0x8DC38BAC89B6B85"'
+      - '"0x8DC3C737E8F8796"'
       last-modified:
-      - Thu, 29 Feb 2024 00:10:06 GMT
+      - Mon, 04 Mar 2024 17:49:52 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-default-encryption-scope:
@@ -1457,17 +1457,8 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: 'DECLARE ro BIT[2]
-
-
-      H 0
-
-      CNOT 0 1
-
-
-      MEASURE 0 ro[0]
-
-      MEASURE 1 ro[1]'
+    body: "DECLARE ro BIT[2]\r\n\r\nH 0\r\nCNOT 0 1\r\n\r\nMEASURE 0 ro[0]\r\nMEASURE
+      1 ro[1]"
     headers:
       Accept:
       - application/xml
@@ -1476,21 +1467,21 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '64'
+      - '70'
       Content-Type:
       - application/octet-stream
       If-None-Match:
       - '*'
       User-Agent:
-      - azsdk-python-storage-blob/12.14.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-storage-blob/12.14.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
       x-ms-blob-type:
       - BlockBlob
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:05 GMT
+      - Mon, 04 Mar 2024 17:49:54 GMT
       x-ms-version:
       - '2021-08-06'
     method: PUT
-    uri: https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/inputData
+    uri: https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/inputData
   response:
     body:
       string: ''
@@ -1498,17 +1489,17 @@ interactions:
       content-length:
       - '0'
       content-md5:
-      - iLNwFlq8NNFY0yf3i4YlOQ==
+      - wBue1+6CQmWpgL5BeUu42Q==
       date:
-      - Thu, 29 Feb 2024 00:10:05 GMT
+      - Mon, 04 Mar 2024 17:49:52 GMT
       etag:
-      - '"0x8DC38BAC8A2A3FA"'
+      - '"0x8DC3C737EB65102"'
       last-modified:
-      - Thu, 29 Feb 2024 00:10:06 GMT
+      - Mon, 04 Mar 2024 17:49:52 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-content-crc64:
-      - 5odBhY2FeiM=
+      - csHCMZWsMR0=
       x-ms-request-server-encrypted:
       - 'true'
       x-ms-version:
@@ -1517,7 +1508,7 @@ interactions:
       code: 201
       message: Created
 - request:
-    body: '{"containerUri": "https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9",
+    body: '{"containerUri": "https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de",
       "inputDataFormat": "rigetti.quil.v1", "inputParams": {}, "providerId": "rigetti",
       "target": "rigetti.sim.qvm", "outputDataFormat": "rigetti.quil-results.v1",
       "tags": []}'
@@ -1533,23 +1524,23 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/01ad7212-e4dd-4223-9104-1de4312d49e9
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/ef7a82a2-8024-4c88-9ff8-da4db1fb86de
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9","inputDataUri":"https://e2etests.blob.core.windows.net:443/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/inputData","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net:443/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/outputData","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":null,"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"01ad7212-e4dd-4223-9104-1de4312d49e9","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-02-29T00:10:06.695681+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de","inputDataUri":"https://e2etests.blob.core.windows.net:443/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/inputData","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net:443/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/outputData","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":null,"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"ef7a82a2-8024-4c88-9ff8-da4db1fb86de","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-03-04T17:49:52.6846088+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '868'
+      - '869'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:06 GMT
+      - Mon, 04 Mar 2024 17:49:52 GMT
       mise-correlation-id:
-      - 8af9e4ae-a987-48f8-b674-cfa05e9af653
+      - ad82c6cf-2ae5-4593-b24e-aab2bde834d6
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1581,23 +1572,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/01ad7212-e4dd-4223-9104-1de4312d49e9
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/ef7a82a2-8024-4c88-9ff8-da4db1fb86de
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A07Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A07Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":null,"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"01ad7212-e4dd-4223-9104-1de4312d49e9","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-02-29T00:10:06.695681+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A53Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A53Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":null,"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"ef7a82a2-8024-4c88-9ff8-da4db1fb86de","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-03-04T17:49:52.6846088+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1245'
+      - '1242'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:07 GMT
+      - Mon, 04 Mar 2024 17:49:53 GMT
       mise-correlation-id:
-      - c71dc939-a19b-4c59-a497-312c7eb08686
+      - 2080419a-2724-4405-8053-133276c55c6e
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1629,25 +1620,25 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/01ad7212-e4dd-4223-9104-1de4312d49e9
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/ef7a82a2-8024-4c88-9ff8-da4db1fb86de
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A07Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A07Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"01ad7212-e4dd-4223-9104-1de4312d49e9","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-02-29T00:10:06.695681+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A53Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A53Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"ef7a82a2-8024-4c88-9ff8-da4db1fb86de","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-03-04T17:49:52.6846088+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1252'
+      - '1249'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:07 GMT
+      - Mon, 04 Mar 2024 17:49:53 GMT
       mise-correlation-id:
-      - 81dee59f-1ece-4b4f-9ccb-5ade5db74e94
+      - 31401b6e-c27d-4d93-aad3-29d098da13f9
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1676,25 +1667,25 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/01ad7212-e4dd-4223-9104-1de4312d49e9
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/ef7a82a2-8024-4c88-9ff8-da4db1fb86de
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A08Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A08Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"01ad7212-e4dd-4223-9104-1de4312d49e9","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-02-29T00:10:06.695681+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A54Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A54Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"ef7a82a2-8024-4c88-9ff8-da4db1fb86de","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-03-04T17:49:52.6846088+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1248'
+      - '1247'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:08 GMT
+      - Mon, 04 Mar 2024 17:49:54 GMT
       mise-correlation-id:
-      - 1376310b-4f02-4577-8b32-7fc76da152ad
+      - fe691a25-04dc-4340-8594-3d8eee5eece5
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1723,25 +1714,25 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/01ad7212-e4dd-4223-9104-1de4312d49e9
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/ef7a82a2-8024-4c88-9ff8-da4db1fb86de
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A08Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A08Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"01ad7212-e4dd-4223-9104-1de4312d49e9","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-02-29T00:10:06.695681+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A54Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A54Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"ef7a82a2-8024-4c88-9ff8-da4db1fb86de","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-03-04T17:49:52.6846088+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1248'
+      - '1247'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:08 GMT
+      - Mon, 04 Mar 2024 17:49:54 GMT
       mise-correlation-id:
-      - 58e32f35-a6e9-47d6-83a9-ab7bbaecafc5
+      - 55db6a32-7419-4f28-abc2-8f716e90f7a3
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1770,25 +1761,25 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/01ad7212-e4dd-4223-9104-1de4312d49e9
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/ef7a82a2-8024-4c88-9ff8-da4db1fb86de
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A09Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A09Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"01ad7212-e4dd-4223-9104-1de4312d49e9","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-02-29T00:10:06.695681+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A55Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A55Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"ef7a82a2-8024-4c88-9ff8-da4db1fb86de","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-03-04T17:49:52.6846088+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1256'
+      - '1255'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:09 GMT
+      - Mon, 04 Mar 2024 17:49:55 GMT
       mise-correlation-id:
-      - 8b7e4f10-a3d4-416d-a390-4a6cb62b0861
+      - fdd03eb1-0d7f-4577-a1cb-3239253587a5
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1817,25 +1808,25 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/01ad7212-e4dd-4223-9104-1de4312d49e9
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/ef7a82a2-8024-4c88-9ff8-da4db1fb86de
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A10Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A10Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"01ad7212-e4dd-4223-9104-1de4312d49e9","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-02-29T00:10:06.695681+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A56Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A56Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"ef7a82a2-8024-4c88-9ff8-da4db1fb86de","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-03-04T17:49:52.6846088+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1248'
+      - '1251'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:10 GMT
+      - Mon, 04 Mar 2024 17:49:56 GMT
       mise-correlation-id:
-      - f0add774-af31-4d93-bf3b-13f749b45938
+      - 9416a054-13a3-4ccd-94e2-7105c255bdfc
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1864,26 +1855,26 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/01ad7212-e4dd-4223-9104-1de4312d49e9
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/ef7a82a2-8024-4c88-9ff8-da4db1fb86de
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A11Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Succeeded","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A11Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json","beginExecutionTime":"2024-02-29T00:10:10.5947058Z","cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"01ad7212-e4dd-4223-9104-1de4312d49e9","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-02-29T00:10:06.695681+00:00","endExecutionTime":"2024-02-29T00:10:10.9887111Z","costEstimate":{"currencyCode":"USD","events":[{"dimensionId":"qpu_time_centiseconds","dimensionName":"QPU
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A58Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Succeeded","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A58Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json","beginExecutionTime":"2024-03-04T17:49:55.9495318Z","cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"ef7a82a2-8024-4c88-9ff8-da4db1fb86de","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-03-04T17:49:52.6846088+00:00","endExecutionTime":"2024-03-04T17:49:56.2779322Z","costEstimate":{"currencyCode":"USD","events":[{"dimensionId":"qpu_time_centiseconds","dimensionName":"QPU
         Execution Time","measureUnit":"10ms (rounded up)","amountBilled":0.0,"amountConsumed":0.0,"unitPrice":0.0}],"estimatedTotal":0.0},"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1518'
+      - '1519'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:11 GMT
+      - Mon, 04 Mar 2024 17:49:58 GMT
       mise-correlation-id:
-      - 29519c77-fa0f-493d-b89d-aff647845b5d
+      - f3d6348b-0907-405a-bd77-9771cee31845
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1912,24 +1903,24 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/01ad7212-e4dd-4223-9104-1de4312d49e9
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/ef7a82a2-8024-4c88-9ff8-da4db1fb86de
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A12Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Succeeded","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A12Z&sp=r&rscd=attachment%3B%20filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json","beginExecutionTime":"2024-02-29T00:10:10.5947058Z","cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"01ad7212-e4dd-4223-9104-1de4312d49e9","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-02-29T00:10:06.695681+00:00","endExecutionTime":"2024-02-29T00:10:10.9887111Z","costEstimate":{"currencyCode":"USD","events":[{"dimensionId":"qpu_time_centiseconds","dimensionName":"QPU
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A58Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.input.json","inputDataFormat":"rigetti.quil.v1","inputParams":{},"metadata":null,"sessionId":null,"status":"Succeeded","jobType":"QuantumComputing","outputDataFormat":"rigetti.quil-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A58Z&sp=r&rscd=attachment%3B%20filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json","beginExecutionTime":"2024-03-04T17:49:55.9495318Z","cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"ef7a82a2-8024-4c88-9ff8-da4db1fb86de","providerId":"rigetti","target":"rigetti.sim.qvm","creationTime":"2024-03-04T17:49:52.6846088+00:00","endExecutionTime":"2024-03-04T17:49:56.2779322Z","costEstimate":{"currencyCode":"USD","events":[{"dimensionId":"qpu_time_centiseconds","dimensionName":"QPU
         Execution Time","measureUnit":"10ms (rounded up)","amountBilled":0.0,"amountConsumed":0.0,"unitPrice":0.0}],"estimatedTotal":0.0},"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1516'
+      - '1519'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:12 GMT
+      - Mon, 04 Mar 2024 17:49:58 GMT
       mise-correlation-id:
-      - 07cdbdd3-994d-4ed6-9a63-22aa58a82a76
+      - 8745a68e-b803-4125-9428-0fd1513b8373
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1957,13 +1948,13 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.11.4; Windows 10) AZURECLI/2.57.0
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.10.11; Windows 10) AZURECLI/2.57.0
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:11 GMT
+      - Mon, 04 Mar 2024 17:50:00 GMT
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A12Z&sp=r&rscd=attachment%3B+filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json
+    uri: https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A58Z&sp=r&rscd=attachment%3B+filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json
   response:
     body:
       string: ''
@@ -1971,7 +1962,7 @@ interactions:
       accept-ranges:
       - bytes
       content-disposition:
-      - attachment; filename=job-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json
+      - attachment; filename=job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json
       content-length:
       - '14'
       content-md5:
@@ -1979,17 +1970,17 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Feb 2024 00:10:12 GMT
+      - Mon, 04 Mar 2024 17:49:58 GMT
       etag:
-      - '"0x8DC38BACB8B2693"'
+      - '"0x8DC3C7380FB0AF2"'
       last-modified:
-      - Thu, 29 Feb 2024 00:10:10 GMT
+      - Mon, 04 Mar 2024 17:49:56 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-blob-type:
       - BlockBlob
       x-ms-creation-time:
-      - Thu, 29 Feb 2024 00:10:07 GMT
+      - Mon, 04 Mar 2024 17:49:53 GMT
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -2007,15 +1998,15 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.11.4; Windows 10) AZURECLI/2.57.0
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.10.11; Windows 10) AZURECLI/2.57.0
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:11 GMT
+      - Mon, 04 Mar 2024 17:50:00 GMT
       x-ms-range:
       - bytes=0-33554431
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://e2etests.blob.core.windows.net/quantum-job-01ad7212-e4dd-4223-9104-1de4312d49e9/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A12Z&sp=r&rscd=attachment%3B+filename%3Djob-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json
+    uri: https://e2etests.blob.core.windows.net/quantum-job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A49%3A58Z&sp=r&rscd=attachment%3B+filename%3Djob-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json
   response:
     body:
       string: '{"ro":[[0,0]]}'
@@ -2023,7 +2014,7 @@ interactions:
       accept-ranges:
       - bytes
       content-disposition:
-      - attachment; filename=job-01ad7212-e4dd-4223-9104-1de4312d49e9.output.json
+      - attachment; filename=job-ef7a82a2-8024-4c88-9ff8-da4db1fb86de.output.json
       content-length:
       - '14'
       content-range:
@@ -2031,11 +2022,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Feb 2024 00:10:12 GMT
+      - Mon, 04 Mar 2024 17:49:59 GMT
       etag:
-      - '"0x8DC38BACB8B2693"'
+      - '"0x8DC3C7380FB0AF2"'
       last-modified:
-      - Thu, 29 Feb 2024 00:10:10 GMT
+      - Mon, 04 Mar 2024 17:49:56 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-blob-content-md5:
@@ -2043,7 +2034,7 @@ interactions:
       x-ms-blob-type:
       - BlockBlob
       x-ms-creation-time:
-      - Thu, 29 Feb 2024 00:10:07 GMT
+      - Mon, 04 Mar 2024 17:49:53 GMT
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -2065,23 +2056,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/providerStatus
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"qci","currentAvailability":"Degraded","targets":[{"id":"qci.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.machine1","currentAvailability":"Unavailable","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.simulator.noisy","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://quantumcircuits.com"}]},{"id":"rigetti","currentAvailability":"Degraded","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-9q-1","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-2","currentAvailability":"Degraded","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":6093453,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Available","averageQueueTime":6083353,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Unavailable","averageQueueTime":9153761,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]}],"nextLink":null}'
+      string: '{"value":[{"id":"qci","currentAvailability":"Degraded","targets":[{"id":"qci.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.machine1","currentAvailability":"Unavailable","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.simulator.noisy","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://quantumcircuits.com"}]},{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-9q-1","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.ankaa-2","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":6523353,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Available","averageQueueTime":5338,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-2","currentAvailability":"Available","averageQueueTime":8095150,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://status.ionq.co"}]},{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]}],"nextLink":null}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1620'
+      - '1617'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:13 GMT
+      - Mon, 04 Mar 2024 17:49:59 GMT
       mise-correlation-id:
-      - 4d63bc7d-135c-430c-a029-d2988afbeb14
+      - b556ca85-5bd0-4e0f-be1d-41e54241140c
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -2118,24 +2109,24 @@ interactions:
       - -t --shots --job-input-format --job-input-file --job-output-format --job-params
         -o
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
-        az-cli-ext/1.0.0b1
+      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+        az-cli-ext/1.0.0b2
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274?api-version=2022-01-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274","name":"e2e-test-w7382274","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2024-02-29T00:04:29.9688458Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-29T00:04:29.9688458Z"},"identity":{"principalId":"0a52ec9b-e869-4b74-99d2-6dc083e760b2","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"qci","providerSku":"qci-freepreview","applicationName":"e2e-test-w7382274-qci","provisioningState":"Succeeded"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w7382274-rigetti","provisioningState":"Succeeded","resourceUsageId":"4e1d1161-3b85-4e02-a114-75f026934d13"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"e2e-test-w7382274-ionq","provisioningState":"Succeeded","resourceUsageId":"2a0e8563-0378-4c37-85fc-21ebb908ed7c"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-test-w7382274-microsoft-qc","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","endpointUri":"https://e2e-test-w7382274.westus2.quantum.azure.com"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207","name":"e2e-test-w9845207","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"guyi@microsoft.com","createdByType":"User","createdAt":"2024-03-04T17:44:17.5108004Z","lastModifiedBy":"guyi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-04T17:44:17.5108004Z"},"identity":{"principalId":"cd512b12-1cd4-48ca-bff9-451dc88190d3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"qci","providerSku":"qci-freepreview","applicationName":"e2e-test-w9845207-qci","provisioningState":"Succeeded"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w9845207-rigetti","provisioningState":"Succeeded","resourceUsageId":"2455b8cd-577a-4058-aa34-932b9bae6661"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"e2e-test-w9845207-ionq","provisioningState":"Succeeded","resourceUsageId":"ca0f9eea-2ffd-4336-a9f6-d70eb62ec1a1"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-test-w9845207-microsoft-qc","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","apiKeyEnabled":true,"endpointUri":"https://e2e-test-w9845207.westus2.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1576'
+      - '1589'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:13 GMT
+      - Mon, 04 Mar 2024 17:49:59 GMT
       etag:
-      - '"0902da41-0000-0800-0000-65dfcb310000"'
+      - '"0900d6df-0000-0800-0000-65e6099c0000"'
       expires:
       - '-1'
       pragma:
@@ -2149,7 +2140,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-msedge-ref:
-      - 'Ref A: B80EA31A1E6149C7A027DF0DDEDBDFC9 Ref B: CO6AA3150218037 Ref C: 2024-02-29T00:10:14Z'
+      - 'Ref A: 0139C4D0013F41E19EB3B5B15B4C5C2C Ref B: CO6AA3150218023 Ref C: 2024-03-04T17:49:59Z'
     status:
       code: 200
       message: OK
@@ -2170,7 +2161,7 @@ interactions:
       - -t --shots --job-input-format --job-input-file --job-output-format --job-params
         -o
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests/listKeys?api-version=2023-01-01&$expand=kerb
   response:
@@ -2184,7 +2175,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Feb 2024 00:10:14 GMT
+      - Mon, 04 Mar 2024 17:50:00 GMT
       expires:
       - '-1'
       pragma:
@@ -2198,7 +2189,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
       x-msedge-ref:
-      - 'Ref A: 91B2115EE4BB41C4B80D8E1DA1635A26 Ref B: CO6AA3150220023 Ref C: 2024-02-29T00:10:14Z'
+      - 'Ref A: DA780989456B4C4B9AFEB18CEAA6E2D4 Ref B: CO6AA3150219037 Ref C: 2024-03-04T17:49:59Z'
     status:
       code: 200
       message: OK
@@ -2217,7 +2208,7 @@ interactions:
       - -t --shots --job-input-format --job-input-file --job-output-format --job-params
         -o
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests?api-version=2023-01-01
   response:
@@ -2231,7 +2222,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Feb 2024 00:10:14 GMT
+      - Mon, 04 Mar 2024 17:50:00 GMT
       expires:
       - '-1'
       pragma:
@@ -2243,7 +2234,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 4B7725213EC44D2DA6E204F6DBE48E45 Ref B: CO6AA3150220023 Ref C: 2024-02-29T00:10:15Z'
+      - 'Ref A: B000B954E93D45588CB4D6C9AC482387 Ref B: CO6AA3150217029 Ref C: 2024-03-04T17:50:00Z'
     status:
       code: 200
       message: OK
@@ -2257,24 +2248,24 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-storage-blob/12.14.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-storage-blob/12.14.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:14 GMT
+      - Mon, 04 Mar 2024 17:50:02 GMT
       x-ms-version:
       - '2021-08-06'
     method: GET
-    uri: https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128?restype=container
+    uri: https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35?restype=container
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ContainerNotFound</Code><Message>The
-        specified container does not exist.\nRequestId:54db2232-101e-0061-04a3-6abcae000000\nTime:2024-02-29T00:10:15.8825540Z</Message></Error>"
+        specified container does not exist.\nRequestId:220127bf-001e-0052-475c-6ee305000000\nTime:2024-03-04T17:50:00.5261093Z</Message></Error>"
     headers:
       content-length:
       - '223'
       content-type:
       - application/xml
       date:
-      - Thu, 29 Feb 2024 00:10:15 GMT
+      - Mon, 04 Mar 2024 17:49:59 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-error-code:
@@ -2296,13 +2287,13 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - azsdk-python-storage-blob/12.14.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-storage-blob/12.14.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:14 GMT
+      - Mon, 04 Mar 2024 17:50:02 GMT
       x-ms-version:
       - '2021-08-06'
     method: PUT
-    uri: https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128?restype=container
+    uri: https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35?restype=container
   response:
     body:
       string: ''
@@ -2310,11 +2301,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 29 Feb 2024 00:10:15 GMT
+      - Mon, 04 Mar 2024 17:49:59 GMT
       etag:
-      - '"0x8DC38BACE7C2F4B"'
+      - '"0x8DC3C738397E8F7"'
       last-modified:
-      - Thu, 29 Feb 2024 00:10:15 GMT
+      - Mon, 04 Mar 2024 17:50:00 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -2332,13 +2323,13 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-storage-blob/12.14.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-storage-blob/12.14.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:14 GMT
+      - Mon, 04 Mar 2024 17:50:02 GMT
       x-ms-version:
       - '2021-08-06'
     method: GET
-    uri: https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128?restype=container
+    uri: https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35?restype=container
   response:
     body:
       string: ''
@@ -2346,11 +2337,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 29 Feb 2024 00:10:15 GMT
+      - Mon, 04 Mar 2024 17:50:00 GMT
       etag:
-      - '"0x8DC38BACE7C2F4B"'
+      - '"0x8DC3C738397E8F7"'
       last-modified:
-      - Thu, 29 Feb 2024 00:10:15 GMT
+      - Mon, 04 Mar 2024 17:50:00 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-default-encryption-scope:
@@ -2390,17 +2381,17 @@ interactions:
       If-None-Match:
       - '*'
       User-Agent:
-      - azsdk-python-storage-blob/12.14.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-storage-blob/12.14.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
       x-ms-blob-content-type:
       - application/json
       x-ms-blob-type:
       - BlockBlob
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:14 GMT
+      - Mon, 04 Mar 2024 17:50:02 GMT
       x-ms-version:
       - '2021-08-06'
     method: PUT
-    uri: https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData
+    uri: https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData
   response:
     body:
       string: ''
@@ -2410,11 +2401,11 @@ interactions:
       content-md5:
       - 3+pg2wKa9x2rK+IB+BmzGA==
       date:
-      - Thu, 29 Feb 2024 00:10:15 GMT
+      - Mon, 04 Mar 2024 17:50:00 GMT
       etag:
-      - '"0x8DC38BACE846FA4"'
+      - '"0x8DC3C7383BD951C"'
       last-modified:
-      - Thu, 29 Feb 2024 00:10:15 GMT
+      - Mon, 04 Mar 2024 17:50:00 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-content-crc64:
@@ -2427,7 +2418,7 @@ interactions:
       code: 201
       message: Created
 - request:
-    body: '{"containerUri": "https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128",
+    body: '{"containerUri": "https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35",
       "inputDataFormat": "ionq.circuit.v1", "inputParams": {"count": 100, "shots":
       100}, "providerId": "ionq", "target": "ionq.simulator", "outputDataFormat":
       "ionq.quantum-results.v1", "tags": []}'
@@ -2443,12 +2434,12 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/2f05acef-7b38-4f4f-9019-33993f5c2128
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/958da7b9-d015-4432-9a2c-d127f0d12b35
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128","inputDataUri":"https://e2etests.blob.core.windows.net:443/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net:443/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/outputData","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":null,"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"2f05acef-7b38-4f4f-9019-33993f5c2128","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-02-29T00:10:16.5092841+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35","inputDataUri":"https://e2etests.blob.core.windows.net:443/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net:443/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/outputData","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":null,"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"958da7b9-d015-4432-9a2c-d127f0d12b35","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-03-04T17:50:01.0894361+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
@@ -2457,9 +2448,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:16 GMT
+      - Mon, 04 Mar 2024 17:50:01 GMT
       mise-correlation-id:
-      - 57fa574c-8796-47e7-9444-4886a763a85c
+      - 174c219a-8b06-4e74-90ed-c7f56f6012cb
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -2491,12 +2482,12 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/2f05acef-7b38-4f4f-9019-33993f5c2128
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/958da7b9-d015-4432-9a2c-d127f0d12b35
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A17Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A17Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"2f05acef-7b38-4f4f-9019-33993f5c2128","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-02-29T00:10:16.5092841+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A01Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A01Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"958da7b9-d015-4432-9a2c-d127f0d12b35","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-03-04T17:50:01.0894361+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
@@ -2505,9 +2496,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:17 GMT
+      - Mon, 04 Mar 2024 17:50:01 GMT
       mise-correlation-id:
-      - 2b892896-3c0f-4386-821c-82a4c1401a02
+      - aa1f1d2b-9c98-4279-aa8a-865189aabb5b
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -2539,14 +2530,14 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/2f05acef-7b38-4f4f-9019-33993f5c2128
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/958da7b9-d015-4432-9a2c-d127f0d12b35
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A17Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A17Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"2f05acef-7b38-4f4f-9019-33993f5c2128","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-02-29T00:10:16.5092841+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A01Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A01Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"958da7b9-d015-4432-9a2c-d127f0d12b35","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-03-04T17:50:01.0894361+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
@@ -2555,9 +2546,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:17 GMT
+      - Mon, 04 Mar 2024 17:50:01 GMT
       mise-correlation-id:
-      - 7c061762-3fcc-417f-862d-7b38fb632d91
+      - efd770e5-44ca-4fd7-80af-7e530a8d4db5
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -2586,14 +2577,14 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/2f05acef-7b38-4f4f-9019-33993f5c2128
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/958da7b9-d015-4432-9a2c-d127f0d12b35
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A17Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A17Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"2f05acef-7b38-4f4f-9019-33993f5c2128","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-02-29T00:10:16.5092841+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A02Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A02Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"958da7b9-d015-4432-9a2c-d127f0d12b35","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-03-04T17:50:01.0894361+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
@@ -2602,9 +2593,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:17 GMT
+      - Mon, 04 Mar 2024 17:50:02 GMT
       mise-correlation-id:
-      - 0dbef36c-48cb-48ef-9790-600ff9b3ca98
+      - 799d4dc6-b27e-4b5c-8178-6cd9e83ebf3f
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -2633,25 +2624,25 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/2f05acef-7b38-4f4f-9019-33993f5c2128
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/958da7b9-d015-4432-9a2c-d127f0d12b35
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A18Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A18Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"2f05acef-7b38-4f4f-9019-33993f5c2128","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-02-29T00:10:16.5092841+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A02Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A02Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"958da7b9-d015-4432-9a2c-d127f0d12b35","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-03-04T17:50:01.0894361+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1272'
+      - '1266'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:18 GMT
+      - Mon, 04 Mar 2024 17:50:02 GMT
       mise-correlation-id:
-      - 6394a0fa-faaf-4118-8192-74b2b1d4fcf3
+      - 98a6cc04-9a7f-45d3-9a4a-26cfac8252c7
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -2680,25 +2671,25 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/2f05acef-7b38-4f4f-9019-33993f5c2128
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/958da7b9-d015-4432-9a2c-d127f0d12b35
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A18Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A18Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"2f05acef-7b38-4f4f-9019-33993f5c2128","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-02-29T00:10:16.5092841+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A03Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A03Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"958da7b9-d015-4432-9a2c-d127f0d12b35","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-03-04T17:50:01.0894361+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1272'
+      - '1262'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:18 GMT
+      - Mon, 04 Mar 2024 17:50:03 GMT
       mise-correlation-id:
-      - a5d2dd83-f0f8-4100-be8c-44d93f9654b1
+      - 49d21e13-d793-4bc9-8182-4166d44f311e
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -2727,25 +2718,25 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/2f05acef-7b38-4f4f-9019-33993f5c2128
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/958da7b9-d015-4432-9a2c-d127f0d12b35
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A19Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A19Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"2f05acef-7b38-4f4f-9019-33993f5c2128","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-02-29T00:10:16.5092841+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A04Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A04Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"958da7b9-d015-4432-9a2c-d127f0d12b35","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-03-04T17:50:01.0894361+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1264'
+      - '1266'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:19 GMT
+      - Mon, 04 Mar 2024 17:50:04 GMT
       mise-correlation-id:
-      - 3c3c2417-4662-4166-8ce2-cec0e0c9d241
+      - 64079798-defc-4525-a2bd-24b121ac1987
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -2774,25 +2765,25 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/2f05acef-7b38-4f4f-9019-33993f5c2128
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/958da7b9-d015-4432-9a2c-d127f0d12b35
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A21Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Waiting","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A21Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json","beginExecutionTime":null,"cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"2f05acef-7b38-4f4f-9019-33993f5c2128","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-02-29T00:10:16.5092841+00:00","endExecutionTime":null,"costEstimate":null,"itemType":"Job"}'
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A06Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Executing","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/outputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A06Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json","beginExecutionTime":"2024-03-04T17:50:04.624Z","cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"958da7b9-d015-4432-9a2c-d127f0d12b35","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-03-04T17:50:01.0894361+00:00","endExecutionTime":"2024-03-04T17:50:04.639Z","costEstimate":null,"itemType":"Job"}'
     headers:
       connection:
       - keep-alive
       content-length:
-      - '1270'
+      - '1312'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:21 GMT
+      - Mon, 04 Mar 2024 17:50:06 GMT
       mise-correlation-id:
-      - 4c3c2728-6ef7-46c9-8dd4-2f140a1fd928
+      - e50ba56f-f1af-43ef-b8c8-e13b3752f06e
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -2821,61 +2812,14 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc
       User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/2f05acef-7b38-4f4f-9019-33993f5c2128
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/958da7b9-d015-4432-9a2c-d127f0d12b35
   response:
     body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A23Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Succeeded","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A23Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json","beginExecutionTime":"2024-02-29T00:10:20.389Z","cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"2f05acef-7b38-4f4f-9019-33993f5c2128","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-02-29T00:10:16.5092841+00:00","endExecutionTime":"2024-02-29T00:10:20.706Z","costEstimate":{"currencyCode":"USD","events":[{"dimensionId":"gs1q","dimensionName":"1Q
-        Gate Shot","measureUnit":"1q gate shot","amountBilled":0.0,"amountConsumed":0.0,"unitPrice":0.0},{"dimensionId":"gs2q","dimensionName":"2Q
-        Gate Shot","measureUnit":"2q gate shot","amountBilled":0.0,"amountConsumed":0.0,"unitPrice":0.0}],"estimatedTotal":0.0},"itemType":"Job"}'
-    headers:
-      connection:
-      - keep-alive
-      content-length:
-      - '1647'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 29 Feb 2024 00:10:23 GMT
-      mise-correlation-id:
-      - 52d5a3b1-532e-4b3b-9f74-b008919ed08a
-      request-context:
-      - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
-      server:
-      - Microsoft-IIS/10.0
-      set-cookie:
-      - ARRAffinity=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
-      - ARRAffinitySameSite=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
-      strict-transport-security:
-      - max-age=2592000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - az-cli-ext/1.0.0b1 azsdk-python-quantum/0.0.0.1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274/jobs/2f05acef-7b38-4f4f-9019-33993f5c2128
-  response:
-    body:
-      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A24Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Succeeded","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A24Z&sp=r&rscd=attachment%3B%20filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json","beginExecutionTime":"2024-02-29T00:10:20.389Z","cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"2f05acef-7b38-4f4f-9019-33993f5c2128","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-02-29T00:10:16.5092841+00:00","endExecutionTime":"2024-02-29T00:10:20.706Z","costEstimate":{"currencyCode":"USD","events":[{"dimensionId":"gs1q","dimensionName":"1Q
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A08Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Succeeded","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A08Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json","beginExecutionTime":"2024-03-04T17:50:04.624Z","cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"958da7b9-d015-4432-9a2c-d127f0d12b35","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-03-04T17:50:01.0894361+00:00","endExecutionTime":"2024-03-04T17:50:04.639Z","costEstimate":{"currencyCode":"USD","events":[{"dimensionId":"gs1q","dimensionName":"1Q
         Gate Shot","measureUnit":"1q gate shot","amountBilled":0.0,"amountConsumed":0.0,"unitPrice":0.0},{"dimensionId":"gs2q","dimensionName":"2Q
         Gate Shot","measureUnit":"2q gate shot","amountBilled":0.0,"amountConsumed":0.0,"unitPrice":0.0}],"estimatedTotal":0.0},"itemType":"Job"}'
     headers:
@@ -2886,9 +2830,56 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:24 GMT
+      - Mon, 04 Mar 2024 17:50:08 GMT
       mise-correlation-id:
-      - 31a0fc1a-9ca5-4600-aaed-08705f0b740d
+      - 2b569d13-64ff-46f6-acff-31e0b6af7f8c
+      request-context:
+      - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
+      server:
+      - Microsoft-IIS/10.0
+      set-cookie:
+      - ARRAffinity=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
+      - ARRAffinitySameSite=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
+      strict-transport-security:
+      - max-age=2592000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - az-cli-ext/1.0.0b2 azsdk-python-quantum/0.0.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207/jobs/958da7b9-d015-4432-9a2c-d127f0d12b35
+  response:
+    body:
+      string: '{"containerUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35","inputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/inputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A08Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.input.json","inputDataFormat":"ionq.circuit.v1","inputParams":{"count":100,"shots":100},"metadata":null,"sessionId":null,"status":"Succeeded","jobType":"QuantumComputing","outputDataFormat":"ionq.quantum-results.v1","outputDataUri":"https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A08Z&sp=r&rscd=attachment%3B%20filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json","beginExecutionTime":"2024-03-04T17:50:04.624Z","cancellationTime":null,"quantumComputingData":{"count":1},"errorData":null,"isCancelling":false,"tags":[],"name":null,"id":"958da7b9-d015-4432-9a2c-d127f0d12b35","providerId":"ionq","target":"ionq.simulator","creationTime":"2024-03-04T17:50:01.0894361+00:00","endExecutionTime":"2024-03-04T17:50:04.639Z","costEstimate":{"currencyCode":"USD","events":[{"dimensionId":"gs1q","dimensionName":"1Q
+        Gate Shot","measureUnit":"1q gate shot","amountBilled":0.0,"amountConsumed":0.0,"unitPrice":0.0},{"dimensionId":"gs2q","dimensionName":"2Q
+        Gate Shot","measureUnit":"2q gate shot","amountBilled":0.0,"amountConsumed":0.0,"unitPrice":0.0}],"estimatedTotal":0.0},"itemType":"Job"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '1639'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 04 Mar 2024 17:50:08 GMT
+      mise-correlation-id:
+      - 351f325f-7406-47d4-8a9a-8b97a5e78872
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -2916,13 +2907,13 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.11.4; Windows 10) AZURECLI/2.57.0
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.10.11; Windows 10) AZURECLI/2.57.0
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:23 GMT
+      - Mon, 04 Mar 2024 17:50:10 GMT
       x-ms-version:
       - '2018-11-09'
     method: HEAD
-    uri: https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A24Z&sp=r&rscd=attachment%3B+filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json
+    uri: https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A08Z&sp=r&rscd=attachment%3B+filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json
   response:
     body:
       string: ''
@@ -2930,23 +2921,23 @@ interactions:
       accept-ranges:
       - bytes
       content-disposition:
-      - attachment; filename=job-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json
+      - attachment; filename=job-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json
       content-length:
       - '47'
       content-type:
       - application/json
       date:
-      - Thu, 29 Feb 2024 00:10:24 GMT
+      - Mon, 04 Mar 2024 17:50:08 GMT
       etag:
-      - '"0x8DC38BAD1B25591"'
+      - '"0x8DC3C7386671CAB"'
       last-modified:
-      - Thu, 29 Feb 2024 00:10:21 GMT
+      - Mon, 04 Mar 2024 17:50:05 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-blob-type:
       - BlockBlob
       x-ms-creation-time:
-      - Thu, 29 Feb 2024 00:10:18 GMT
+      - Mon, 04 Mar 2024 17:50:03 GMT
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -2964,15 +2955,15 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.11.4; Windows 10) AZURECLI/2.57.0
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.10.11; Windows 10) AZURECLI/2.57.0
       x-ms-date:
-      - Thu, 29 Feb 2024 00:10:23 GMT
+      - Mon, 04 Mar 2024 17:50:10 GMT
       x-ms-range:
       - bytes=0-33554431
       x-ms-version:
       - '2018-11-09'
     method: GET
-    uri: https://e2etests.blob.core.windows.net/quantum-job-2f05acef-7b38-4f4f-9019-33993f5c2128/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-04T00%3A10%3A24Z&sp=r&rscd=attachment%3B+filename%3Djob-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json
+    uri: https://e2etests.blob.core.windows.net/quantum-job-958da7b9-d015-4432-9a2c-d127f0d12b35/rawOutputData?sv=2019-07-07&sr=b&sig=REDACTED&se=2024-03-08T17%3A50%3A08Z&sp=r&rscd=attachment%3B+filename%3Djob-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json
   response:
     body:
       string: '{"histogram":{"0":0.500000000,"7":0.500000000}}'
@@ -2980,7 +2971,7 @@ interactions:
       accept-ranges:
       - bytes
       content-disposition:
-      - attachment; filename=job-2f05acef-7b38-4f4f-9019-33993f5c2128.output.json
+      - attachment; filename=job-958da7b9-d015-4432-9a2c-d127f0d12b35.output.json
       content-length:
       - '47'
       content-range:
@@ -2988,17 +2979,17 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Feb 2024 00:10:24 GMT
+      - Mon, 04 Mar 2024 17:50:08 GMT
       etag:
-      - '"0x8DC38BAD1B25591"'
+      - '"0x8DC3C7386671CAB"'
       last-modified:
-      - Thu, 29 Feb 2024 00:10:21 GMT
+      - Mon, 04 Mar 2024 17:50:05 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-blob-type:
       - BlockBlob
       x-ms-creation-time:
-      - Thu, 29 Feb 2024 00:10:18 GMT
+      - Mon, 04 Mar 2024 17:50:03 GMT
       x-ms-lease-state:
       - available
       x-ms-lease-status:
@@ -3026,16 +3017,16 @@ interactions:
       ParameterSetName:
       - -g -w
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
-        az-cli-ext/1.0.0b1
+      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+        az-cli-ext/1.0.0b2
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274?api-version=2022-01-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207?api-version=2023-11-13-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS2/operationStatuses/ab9bd14f-f149-487b-8074-10166124be3f*EE6CEAACBA9EDC4F6F468430EF4BBADC37714338700BE617A3F554A0D63479F1?api-version=2022-01-10-preview&t=638447622261623832&c=MIIHADCCBeigAwIBAgITfARmPsJdo2ShuN-ImAAABGY-wjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMxMjIwNzA5WhcNMjUwMTI1MjIwNzA5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOVFiSMi9Sg6cKnrBuPHbDk_Zwa1ZNYHwLVPJArEI9N2bLrgd1mU0ZdNVcdf6rtZCkUUuCe3vxnVTGwufpwH9GPWDgJOpJoL9wgKOzUDiHLUeiWPjrK1AoaQVprZgjnzXBIWiZC2tZjbUT9pOI_ixYJJPrsCfLt7HEccnhObROE1mo_hpiPDrtOQDaX-BboNceB8vI1wmSPApGpPRM9hBRQbXgqKFC8094UNsMVkWPCrsPvP5YlMBLARlGf2WTevGKRREjstkApf1Swi7uKnpyhhsidD1yREMU0mWY9wnZfAX0jpEp3p9jKVMPQ3L-m-nSZI4zrtbW0AnI0O3pAEwe0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT2vcy9ccvhGewsiHI1BQHsz3Wn8zAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBADNBZjhX44bpBtC8kogZJGe4lYeHX95whfZ7X_CMSUuZRbQQ_b6raUpp8V8eF0YUa9b3Oa-DGrs5WfzogCuGcJPeoEVnDYzc1jlKubSIpGw73aGZzhbTjJeNf-Qe-5vTG-GcNzVtIcrwi93YSiK2LSbgrLpTL7T7znjePcGRRkCBjAslrV5SqufcsrpGmqvPAVKXRV-OIOzvXy6qmn9CHmdo0RGBXGIakbLMec_1SIS8NdPsB6i6XPjL2SDjqKTa5car7bVYlXEVsgL-000VF1t6x1II3VBNfsEJ81CdJyxaCJnwvWI6kHtCtJX9QYK3qZab9PfZRBvcetJoPdMFvBU&s=5BW8WpPlJq4CmUfuPknlSuSaxexXUm_w76gRdeA7KcCxUoS7OlbrJMiUMErv0gEdZjwmMoZ6Ligd163bU5GdQThEw2CYgfguSWUpFK_IqHVrJi-8YwTz2Wi1WWkghsPF2z3vpnPeUP_42CIv98Cbij1BHTUsR6nX21ADTmnYM9j3xt-CNGn83heconN1c9qN98BXNNHeAdHOx40OG_rNL6NmhYlZwtyTnPyzGT3opqhLn4wHO3kuQHY6V_gwjYCbrm5qwRTUh6geHFOnTND_ukVulmH05a5Bqv6DXr1n33c4-T_mwNYmgYs7pFzfQjMcUc8338Bg9PqujafJJqsjfw&h=2SihW9MNqigtu0ZVvGHyAR3kyN2gMSP0Zuf-qOcJSgk
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS2/operationStatuses/f0856fed-984c-456b-bab3-5c804762008f*67C7C1936EC758783C74E37B818EB6271A631B2808D728CFF0D147193E5C6812?api-version=2023-11-13-preview&t=638451714106678810&c=MIIHADCCBeigAwIBAgITfARmPsJdo2ShuN-ImAAABGY-wjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMxMjIwNzA5WhcNMjUwMTI1MjIwNzA5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOVFiSMi9Sg6cKnrBuPHbDk_Zwa1ZNYHwLVPJArEI9N2bLrgd1mU0ZdNVcdf6rtZCkUUuCe3vxnVTGwufpwH9GPWDgJOpJoL9wgKOzUDiHLUeiWPjrK1AoaQVprZgjnzXBIWiZC2tZjbUT9pOI_ixYJJPrsCfLt7HEccnhObROE1mo_hpiPDrtOQDaX-BboNceB8vI1wmSPApGpPRM9hBRQbXgqKFC8094UNsMVkWPCrsPvP5YlMBLARlGf2WTevGKRREjstkApf1Swi7uKnpyhhsidD1yREMU0mWY9wnZfAX0jpEp3p9jKVMPQ3L-m-nSZI4zrtbW0AnI0O3pAEwe0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT2vcy9ccvhGewsiHI1BQHsz3Wn8zAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBADNBZjhX44bpBtC8kogZJGe4lYeHX95whfZ7X_CMSUuZRbQQ_b6raUpp8V8eF0YUa9b3Oa-DGrs5WfzogCuGcJPeoEVnDYzc1jlKubSIpGw73aGZzhbTjJeNf-Qe-5vTG-GcNzVtIcrwi93YSiK2LSbgrLpTL7T7znjePcGRRkCBjAslrV5SqufcsrpGmqvPAVKXRV-OIOzvXy6qmn9CHmdo0RGBXGIakbLMec_1SIS8NdPsB6i6XPjL2SDjqKTa5car7bVYlXEVsgL-000VF1t6x1II3VBNfsEJ81CdJyxaCJnwvWI6kHtCtJX9QYK3qZab9PfZRBvcetJoPdMFvBU&s=MCtf6kkWboEKnCbqhl17hbeP23MJqV6UnikfzmHuPLjnogCQ8GmhPgJzRi9GpwfVonz_7dObv4-l1C2ClqxTMPr0u6b6i478x_0-mCSfBdoUCnRlJWGNcoEIiyyy4NMDhJoBq269mmAk98pW5uOWnmCZeOemDBDUKNguBdWw1o6huVl42joisUWr5TX1P7qUz4hlEhmRTWfRtKKAiz_MbLH_90sM-ZXdd-Kk-7qcEhutW3ZiRiDDGsfxY4aphyqOqYy--UUkMhP3PSZsm7dKaIG8Pk2yU4qPB-w7JATVA7iI88uiQujPUGGYrUCeOoJoArSNvGQLZWI91NoH-6C0yw&h=KiECC8my7bueKzBhnAMYGaKJlc_u30CB-HQ8ChCAYm8
       cache-control:
       - no-cache
       content-length:
@@ -3043,30 +3034,30 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:26 GMT
+      - Mon, 04 Mar 2024 17:50:09 GMT
       etag:
-      - '"0902b943-0000-0800-0000-65dfcb720000"'
+      - '"09001fe0-0000-0800-0000-65e609d20000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS2/operationStatuses/ab9bd14f-f149-487b-8074-10166124be3f*EE6CEAACBA9EDC4F6F468430EF4BBADC37714338700BE617A3F554A0D63479F1?api-version=2022-01-10-preview&t=638447622261623832&c=MIIHADCCBeigAwIBAgITfARmPsJdo2ShuN-ImAAABGY-wjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMxMjIwNzA5WhcNMjUwMTI1MjIwNzA5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOVFiSMi9Sg6cKnrBuPHbDk_Zwa1ZNYHwLVPJArEI9N2bLrgd1mU0ZdNVcdf6rtZCkUUuCe3vxnVTGwufpwH9GPWDgJOpJoL9wgKOzUDiHLUeiWPjrK1AoaQVprZgjnzXBIWiZC2tZjbUT9pOI_ixYJJPrsCfLt7HEccnhObROE1mo_hpiPDrtOQDaX-BboNceB8vI1wmSPApGpPRM9hBRQbXgqKFC8094UNsMVkWPCrsPvP5YlMBLARlGf2WTevGKRREjstkApf1Swi7uKnpyhhsidD1yREMU0mWY9wnZfAX0jpEp3p9jKVMPQ3L-m-nSZI4zrtbW0AnI0O3pAEwe0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT2vcy9ccvhGewsiHI1BQHsz3Wn8zAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBADNBZjhX44bpBtC8kogZJGe4lYeHX95whfZ7X_CMSUuZRbQQ_b6raUpp8V8eF0YUa9b3Oa-DGrs5WfzogCuGcJPeoEVnDYzc1jlKubSIpGw73aGZzhbTjJeNf-Qe-5vTG-GcNzVtIcrwi93YSiK2LSbgrLpTL7T7znjePcGRRkCBjAslrV5SqufcsrpGmqvPAVKXRV-OIOzvXy6qmn9CHmdo0RGBXGIakbLMec_1SIS8NdPsB6i6XPjL2SDjqKTa5car7bVYlXEVsgL-000VF1t6x1II3VBNfsEJ81CdJyxaCJnwvWI6kHtCtJX9QYK3qZab9PfZRBvcetJoPdMFvBU&s=5BW8WpPlJq4CmUfuPknlSuSaxexXUm_w76gRdeA7KcCxUoS7OlbrJMiUMErv0gEdZjwmMoZ6Ligd163bU5GdQThEw2CYgfguSWUpFK_IqHVrJi-8YwTz2Wi1WWkghsPF2z3vpnPeUP_42CIv98Cbij1BHTUsR6nX21ADTmnYM9j3xt-CNGn83heconN1c9qN98BXNNHeAdHOx40OG_rNL6NmhYlZwtyTnPyzGT3opqhLn4wHO3kuQHY6V_gwjYCbrm5qwRTUh6geHFOnTND_ukVulmH05a5Bqv6DXr1n33c4-T_mwNYmgYs7pFzfQjMcUc8338Bg9PqujafJJqsjfw&h=2SihW9MNqigtu0ZVvGHyAR3kyN2gMSP0Zuf-qOcJSgk
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS2/operationStatuses/f0856fed-984c-456b-bab3-5c804762008f*67C7C1936EC758783C74E37B818EB6271A631B2808D728CFF0D147193E5C6812?api-version=2023-11-13-preview&t=638451714106991037&c=MIIHADCCBeigAwIBAgITfARmPsJdo2ShuN-ImAAABGY-wjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMxMjIwNzA5WhcNMjUwMTI1MjIwNzA5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOVFiSMi9Sg6cKnrBuPHbDk_Zwa1ZNYHwLVPJArEI9N2bLrgd1mU0ZdNVcdf6rtZCkUUuCe3vxnVTGwufpwH9GPWDgJOpJoL9wgKOzUDiHLUeiWPjrK1AoaQVprZgjnzXBIWiZC2tZjbUT9pOI_ixYJJPrsCfLt7HEccnhObROE1mo_hpiPDrtOQDaX-BboNceB8vI1wmSPApGpPRM9hBRQbXgqKFC8094UNsMVkWPCrsPvP5YlMBLARlGf2WTevGKRREjstkApf1Swi7uKnpyhhsidD1yREMU0mWY9wnZfAX0jpEp3p9jKVMPQ3L-m-nSZI4zrtbW0AnI0O3pAEwe0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT2vcy9ccvhGewsiHI1BQHsz3Wn8zAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBADNBZjhX44bpBtC8kogZJGe4lYeHX95whfZ7X_CMSUuZRbQQ_b6raUpp8V8eF0YUa9b3Oa-DGrs5WfzogCuGcJPeoEVnDYzc1jlKubSIpGw73aGZzhbTjJeNf-Qe-5vTG-GcNzVtIcrwi93YSiK2LSbgrLpTL7T7znjePcGRRkCBjAslrV5SqufcsrpGmqvPAVKXRV-OIOzvXy6qmn9CHmdo0RGBXGIakbLMec_1SIS8NdPsB6i6XPjL2SDjqKTa5car7bVYlXEVsgL-000VF1t6x1II3VBNfsEJ81CdJyxaCJnwvWI6kHtCtJX9QYK3qZab9PfZRBvcetJoPdMFvBU&s=OzR23yGhVAIN6kYrHUwnTXv_OWpmUtLFuP7d_xl86NPJa0zn0SR0ic45AHlF-_rxVfb1ab2RkeSBsOLM4pt6XLVk03sRGgehmfJGOwSCY4O3Gw8ruPDu6Gttpu4hxar_TZqWoU9a7sqibUCjxAMUwqrC6hnlEpmEjBwl9FzhqGouO6c-Imit82m_G-56p1TCJesQ_dj9pLDgIWllqYMrVIGZrWlgNzqn0WbN2NXOz2X3SAirG6FC3fZ0FQr9L-mhxOQTOfEgfqXDye7zFOBlw9b1wtOayk_qO47zWmbpX-MFMqwYSmmINxYUhuR75maqkJ4gzxDg73JxzYWIPKEDkg&h=lsyIcFTWCeJpvbp0dWRJzcUCcfWweMOE_Q-ffCIfmT4
       mise-correlation-id:
-      - 092beaa9-543a-46ef-8cba-a0e3f5e98fec
+      - 92bf1095-14e1-40d5-b6da-6868a49cd1f6
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ARRAffinity=b9e95e3c3c931ad78153943313b68f27e3fa032b10fbb2314397e6ab822fa7f5;Path=/;HttpOnly;Secure;Domain=app-cp-westcentralus.azurewebsites.net
-      - ARRAffinitySameSite=b9e95e3c3c931ad78153943313b68f27e3fa032b10fbb2314397e6ab822fa7f5;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westcentralus.azurewebsites.net
-      - ASLBSA=00033d780c700b693140d294c3227eed904ba1a153a47dbd5c4c964a287359876df3;
-        Path=/; Secure; HttpOnly;
-      - ASLBSACORS=00033d780c700b693140d294c3227eed904ba1a153a47dbd5c4c964a287359876df3;
-        SameSite=none; Path=/; Secure; HttpOnly;
+      - ARRAffinity=9a7320ce2eba13f7d318aad5be73341a989686fae5ec76174d0f62020c4dec4a;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ARRAffinitySameSite=9a7320ce2eba13f7d318aad5be73341a989686fae5ec76174d0f62020c4dec4a;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ASLBSA=00033e1a523226cb88459125bd9cbe3395b1cbe5bd2ed900250d74e060083f5fca90;
+        path=/; httponly; secure
+      - ASLBSACORS=00033e1a523226cb88459125bd9cbe3395b1cbe5bd2ed900250d74e060083f5fca90;
+        samesite=none; path=/; httponly; secure
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 20240229T001025Z-s51906xr3t6bzep91rr988a4nn00000007u0000000005zpw
+      - 00gnmZQAAAABmbpqoKMoaTJugJO3MATs1V1NURURHRTA4MjEAMzJhNzJjYWUtNWM3YS00NTk4LWEyOWYtYzkyMzM3OWUzMzcx
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -3076,7 +3067,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-msedge-ref:
-      - 'Ref A: 510D5B06B763415B8EFA02CE590F889E Ref B: CO6AA3150218045 Ref C: 2024-02-29T00:10:25Z'
+      - 'Ref A: 767E35473D6F4E5BA8CEE22C34DB2504 Ref B: CO6AA3150220021 Ref C: 2024-03-04T17:50:09Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -3094,29 +3085,29 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ASLBSA=00033d780c700b693140d294c3227eed904ba1a153a47dbd5c4c964a287359876df3;
-        ASLBSACORS=00033d780c700b693140d294c3227eed904ba1a153a47dbd5c4c964a287359876df3
+      - ASLBSA=00033e1a523226cb88459125bd9cbe3395b1cbe5bd2ed900250d74e060083f5fca90;
+        ASLBSACORS=00033e1a523226cb88459125bd9cbe3395b1cbe5bd2ed900250d74e060083f5fca90
       ParameterSetName:
       - -g -w
       User-Agent:
-      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.11.4 (Windows-10-10.0.22621-SP0)
-        az-cli-ext/1.0.0b1
+      - AZURECLI/2.57.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+        az-cli-ext/1.0.0b2
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274?api-version=2022-01-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207?api-version=2023-11-13-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w7382274","name":"e2e-test-w7382274","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"kikomiss@microsoft.com","createdByType":"User","createdAt":"2024-02-29T00:04:29.9688458Z","lastModifiedBy":"kikomiss@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-29T00:04:29.9688458Z"},"identity":{"principalId":"0a52ec9b-e869-4b74-99d2-6dc083e760b2","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"qci","providerSku":"qci-freepreview","applicationName":"e2e-test-w7382274-qci","provisioningState":"Succeeded"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w7382274-rigetti","provisioningState":"Succeeded","resourceUsageId":"4e1d1161-3b85-4e02-a114-75f026934d13"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"e2e-test-w7382274-ionq","provisioningState":"Succeeded","resourceUsageId":"2a0e8563-0378-4c37-85fc-21ebb908ed7c"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-test-w7382274-microsoft-qc","provisioningState":"Succeeded"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","endpointUri":"https://e2e-test-w7382274.westus2.quantum.azure.com"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9845207","name":"e2e-test-w9845207","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"guyi@microsoft.com","createdByType":"User","createdAt":"2024-03-04T17:44:17.5108004Z","lastModifiedBy":"guyi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-04T17:44:17.5108004Z"},"identity":{"principalId":"cd512b12-1cd4-48ca-bff9-451dc88190d3","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"qci","providerSku":"qci-freepreview","applicationName":"e2e-test-w9845207-qci","provisioningState":"Succeeded"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w9845207-rigetti","provisioningState":"Succeeded","resourceUsageId":"2455b8cd-577a-4058-aa34-932b9bae6661"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"e2e-test-w9845207-ionq","provisioningState":"Succeeded","resourceUsageId":"ca0f9eea-2ffd-4336-a9f6-d70eb62ec1a1"},{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-test-w9845207-microsoft-qc","provisioningState":"Succeeded"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","apiKeyEnabled":true,"endpointUri":"https://e2e-test-w9845207.westus2.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1575'
+      - '1588'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Feb 2024 00:10:26 GMT
+      - Mon, 04 Mar 2024 17:50:10 GMT
       etag:
-      - '"0902b943-0000-0800-0000-65dfcb720000"'
+      - '"09001fe0-0000-0800-0000-65e609d20000"'
       expires:
       - '-1'
       pragma:
@@ -3130,7 +3121,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-msedge-ref:
-      - 'Ref A: A58AAB346C95438186EA20AE45185459 Ref B: CO6AA3150218045 Ref C: 2024-02-29T00:10:26Z'
+      - 'Ref A: FB1ADD3ABE2B42289CE1E9CF21479A22 Ref B: CO6AA3150219053 Ref C: 2024-03-04T17:50:10Z'
     status:
       code: 200
       message: OK

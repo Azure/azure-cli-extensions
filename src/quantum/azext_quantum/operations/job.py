@@ -382,9 +382,9 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if storage is None:
         from .workspace import get as ws_get
         ws = ws_get(cmd)
-        if ws.storage_account is None:
+        if ws.properties.storage_account is None:
             raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
-        storage = ws.storage_account.split('/')[-1]
+        storage = ws.properties.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
     container_name = "quantum-job-" + job_id
     connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
