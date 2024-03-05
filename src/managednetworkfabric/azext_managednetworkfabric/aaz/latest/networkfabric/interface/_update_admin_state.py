@@ -22,9 +22,9 @@ class UpdateAdminState(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}/updateadministrativestate", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}/updateadministrativestate", "2023-06-15"],
         ]
     }
 
@@ -58,6 +58,7 @@ class UpdateAdminState(AAZCommand):
             id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of the resource group",
             required=True,
         )
 
@@ -165,7 +166,7 @@ class UpdateAdminState(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
