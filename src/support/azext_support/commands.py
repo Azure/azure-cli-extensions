@@ -12,6 +12,8 @@ from azure.cli.core.commands import CliCommandType
 from azext_support.custom import TicketUpdate, TicketCreate
 from azext_support.custom import CommunicationCreate
 from azext_support.custom import CommunicationNoSubscriptionCreate
+from azext_support.custom import TicketUpdateNoSubscription
+from azext_support.custom import TicketCreateNoSubscription
 
 
 def load_command_table(self, _):
@@ -59,3 +61,5 @@ def load_command_table(self, _):
     self.command_table['support in-subscription tickets create'] = TicketCreate(loader=self)
     self.command_table['support in-subscription communication create'] = CommunicationCreate(loader=self)
     self.command_table['support no-subscription communication create'] = CommunicationNoSubscriptionCreate(loader=self)
+    self.command_table['support no-subscription tickets update'] = TicketUpdateNoSubscription(loader=self)
+    self.command_table['support no-subscription tickets create'] = TicketCreateNoSubscription(loader=self)

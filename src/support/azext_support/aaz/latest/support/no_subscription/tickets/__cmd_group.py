@@ -11,6 +11,9 @@
 from azure.cli.core.aaz import *
 
 
+@register_command_group(
+    "support no-subscription tickets",
+)
 class __CMDGroup(AAZCommandGroup):
     """Create and manage Azure support ticket without a subscription.
     """
