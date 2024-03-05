@@ -32,6 +32,11 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
         assert cluster['properties']['provisioningState'] == 'Succeeded'
 
+        # Deallocate Cluster
+        self.cmd('az managed-cassandra cluster deallocate -c {c} -g {rg} --force \"true\" --yes')
+        cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
+        assert cluster['properties']['deallocated'] == True
+
         # Delete Cluster
         try:
             self.cmd('az managed-cassandra cluster delete -c {c} -g {rg} --yes')

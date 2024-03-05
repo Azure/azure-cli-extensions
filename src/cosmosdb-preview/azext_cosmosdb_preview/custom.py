@@ -450,7 +450,6 @@ def cli_cosmosdb_managed_cassandra_cluster_deallocate(client,
                                                       resource_group_name,
                                                       cluster_name,
                                                       force='false'):
-
     """Deallocate Azure Managed Cassandra Cluster"""
     return client.begin_deallocate(resource_group_name, cluster_name, force)
 
