@@ -48,6 +48,8 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["--resource-group"],
+            help="Resource Group Name",
             required=True,
         )
         return cls._args_schema

@@ -12,24 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "confluent organization environment list",
+    "confluent organization list-users",
 )
-class List(AAZCommand):
-    """List of all the environments in a organization
+class ListUsers(AAZCommand):
+    """Organization users details
     """
 
     _aaz_info = {
         "version": "2024-02-13",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/environments", "2024-02-13"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/access/default/listusers", "2024-02-13"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -46,25 +45,30 @@ class List(AAZCommand):
             options=["--organization-name"],
             help="Organization resource name",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["--resource-group"],
-            help="Resource Group Name",
+            help="Resource group name",
             required=True,
         )
-        _args_schema.page_size = AAZIntArg(
-            options=["--page-size"],
-            help="Pagination size",
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.search_filters = AAZDictArg(
+            options=["--search-filters"],
+            arg_group="Body",
+            help="Search filters for the request",
         )
-        _args_schema.page_token = AAZStrArg(
-            options=["--page-token"],
-            help="An opaque pagination token to fetch the next set of records",
-        )
+
+        search_filters = cls._args_schema.search_filters
+        search_filters.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.OrganizationListEnvironments(ctx=self.ctx)()
+        self.AccessListUsers(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,11 +80,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class OrganizationListEnvironments(AAZHttpOperation):
+    class AccessListUsers(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,13 +97,13 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Confluent/organizations/{organizationName}/environments",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Confluent/organizations/{organizationName}/access/default/listUsers",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -128,12 +131,6 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "pageSize", self.ctx.args.page_size,
-                ),
-                **self.serialize_query_param(
-                    "pageToken", self.ctx.args.page_token,
-                ),
-                **self.serialize_query_param(
                     "api-version", "2024-02-13",
                     required=True,
                 ),
@@ -144,10 +141,28 @@ class List(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("searchFilters", AAZDictType, ".search_filters")
+
+            search_filters = _builder.get(".searchFilters")
+            if search_filters is not None:
+                search_filters.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -167,45 +182,40 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.data = AAZListType()
+            _schema_on_200.kind = AAZStrType()
+            _schema_on_200.metadata = AAZObjectType()
 
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
+            data = cls._schema_on_200.data
+            data.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element
+            _element = cls._schema_on_200.data.Element
+            _element.auth_type = AAZStrType()
+            _element.email = AAZStrType()
+            _element.full_name = AAZStrType()
             _element.id = AAZStrType()
             _element.kind = AAZStrType()
-            _element.name = AAZStrType()
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.metadata = AAZObjectType()
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.metadata = AAZObjectType()
-
-            metadata = cls._schema_on_200.value.Element.properties.metadata
-            metadata.created_timestamp = AAZStrType(
-                serialized_name="createdTimestamp",
-            )
-            metadata.deleted_timestamp = AAZStrType(
-                serialized_name="deletedTimestamp",
-            )
-            metadata.resource_name = AAZStrType(
-                serialized_name="resourceName",
-            )
+            metadata = cls._schema_on_200.data.Element.metadata
+            metadata.created_at = AAZStrType()
+            metadata.deleted_at = AAZStrType()
+            metadata.resource_name = AAZStrType()
             metadata.self = AAZStrType()
-            metadata.updated_timestamp = AAZStrType(
-                serialized_name="updatedTimestamp",
-            )
+            metadata.updated_at = AAZStrType()
+
+            metadata = cls._schema_on_200.metadata
+            metadata.first = AAZStrType()
+            metadata.last = AAZStrType()
+            metadata.next = AAZStrType()
+            metadata.prev = AAZStrType()
+            metadata.total_size = AAZIntType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ListUsersHelper:
+    """Helper class for ListUsers"""
 
 
-__all__ = ["List"]
+__all__ = ["ListUsers"]

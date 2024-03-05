@@ -43,7 +43,10 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["--resource-group"],
+            help="Resource Group Name",
+        )
         return cls._args_schema
 
     def _execute_operations(self):

@@ -53,6 +53,8 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["--resource-group"],
+            help="Resource Group Name",
             required=True,
         )
         _args_schema.page_size = AAZIntArg(

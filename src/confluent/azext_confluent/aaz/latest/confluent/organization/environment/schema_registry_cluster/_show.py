@@ -42,8 +42,8 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_id = AAZStrArg(
-            options=["-n", "--name", "--cluster-id"],
-            help="Confluent kafka or schema registry cluster id",
+            options=["--cluster-id"],
+            help="Confluent kafka or schema registry cluster id prefixed with lkc or lks",
             required=True,
             id_part="child_name_2",
         )
@@ -60,6 +60,8 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["--resource-group"],
+            help="Resource Group Name",
             required=True,
         )
         return cls._args_schema

@@ -12,25 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "confluent organization delete",
+    "confluent organization role-binding delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete Organization resource
+    """Delete role bindings
     """
 
     _aaz_info = {
         "version": "2024-02-13",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}", "2024-02-13"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.confluent/organizations/{}/access/default/deleterolebinding/{}", "2024-02-13"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -44,21 +43,27 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.organization_name = AAZStrArg(
-            options=["-n", "--name", "--organization-name"],
+            options=["--organization-name"],
             help="Organization resource name",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["--resource-group"],
-            help="Resource Group Name",
+            help="Resource group name",
             required=True,
+        )
+        _args_schema.role_binding_id = AAZStrArg(
+            options=["--role-binding-id"],
+            help="Confluent Role binding id",
+            required=True,
+            id_part="child_name_2",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.OrganizationDelete(ctx=self.ctx)()
+        self.AccessDeleteRoleBinding(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,46 +74,23 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class OrganizationDelete(AAZHttpOperation):
+    class AccessDeleteRoleBinding(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Confluent/organizations/{organizationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Confluent/organizations/{organizationName}/access/default/deleteRoleBinding/{roleBindingId}",
                 **self.url_parameters
             )
 
@@ -129,6 +111,10 @@ class Delete(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "roleBindingId", self.ctx.args.role_binding_id,
                     required=True,
                 ),
                 **self.serialize_url_param(

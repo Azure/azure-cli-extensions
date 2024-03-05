@@ -60,6 +60,8 @@ class CreateApiKey(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["--resource-group"],
+            help="Resource group name",
             required=True,
         )
 
