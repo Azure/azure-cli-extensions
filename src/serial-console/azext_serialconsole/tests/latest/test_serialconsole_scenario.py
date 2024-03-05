@@ -32,7 +32,7 @@ class CheckResourceTest(ScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS',
+            'urn': 'Ubuntu2204',
             'loc': 'westus2'
         })
 
@@ -41,12 +41,15 @@ class CheckResourceTest(ScenarioTest):
         with self.assertRaises(ComputeClientResourceNotFoundError):
             check_resource(self.cli_ctx, resource_group, name, "0")
 
-        self.cmd('az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc}')
+        self.cmd('az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc} --orchestration-mode uniform')
 
         with self.assertRaises(ResourceNotFoundError):
             check_resource(self.cli_ctx, resource_group, name, None)
 
-        iid = self.cmd('vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()[1]
+        iid = self.cmd('vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()[0]
+        # iid = self.cmd('vmss list-instances --resource-group {rg} --name {name}').get_output_in_json()
+        print("DEBUG: IID", iid);
+        # print("DEBUG: ", )
         self.kwargs.update({'id': iid})
         self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\" : null}}}}"')
         self.cmd('az vmss update-instances -g {rg} -n {name} --instance-ids {id}')
@@ -122,7 +125,7 @@ class CheckResourceTest(ScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS',
+            'urn': 'Ubuntu2204',
             'loc': 'westus2'
         })
 
@@ -239,11 +242,11 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS',
+            'urn': 'Ubuntu2204',
             'loc': 'westus2'
         })
         self.cmd(
-            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc}')
+            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc} --orchestration-mode uniform')
         self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
         result = self.cmd(
             'vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()
@@ -274,11 +277,11 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS',
+            'urn': 'Ubuntu2204',
             'loc': 'westus2'
         })
         self.cmd(
-            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc}')
+            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc} --orchestration-mode uniform')
         self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
         result = self.cmd(
             'vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()
@@ -309,11 +312,11 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS',
+            'urn': 'Ubuntu2204',
             'loc': 'westus2'
         })
         self.cmd(
-            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc}')
+            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc} --orchestration-mode uniform')
         self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
         result = self.cmd(
             'vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()
@@ -341,7 +344,7 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS',
+            'urn': 'Ubuntu2204',
             'loc': 'westus2'
         })
         self.cmd(
@@ -369,7 +372,7 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS',
+            'urn': 'Ubuntu2204',
             'loc': 'westus2'
         })
         self.cmd(
@@ -397,7 +400,7 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS',
+            'urn': 'Ubuntu2204',
             'loc': 'westus2'
         })
         self.cmd(
