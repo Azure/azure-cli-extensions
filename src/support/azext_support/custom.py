@@ -17,6 +17,8 @@ from .aaz.latest.support.in_subscription.tickets import Update as _Update
 from .aaz.latest.support.in_subscription.tickets import Create as _CreateTicket
 from .aaz.latest.support.in_subscription.communication import Create as _CreateCommunication
 from .aaz.latest.support.no_subscription.communication import Create as _CreateNoSubscriptionCommunication
+from .aaz.latest.support.no_subscription.tickets import Update as _UpdateNoSubscription
+from .aaz.latest.support.no_subscription.tickets import Create as _CreateTicketNoSubscription
 
 def list_support_tickets(cmd, client, filters=None):
     if filters is None:
@@ -272,3 +274,45 @@ class CommunicationNoSubscriptionCreate(_CreateNoSubscriptionCommunication):
         super().pre_operations()
         args = self.ctx.args
         _check_name_availability_no_subscription(self.cli_ctx, str(args.communication_name), "Microsoft.Support/communications")
+
+
+class TicketUpdateNoSubscription(_UpdateNoSubscription):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZArgEnum
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.contact_language.enum = AAZArgEnum(languages)
+        args_schema.contact_timezone.enum = AAZArgEnum(timezones)
+        return args_schema
+
+
+class TicketCreateNoSubscription(_CreateTicketNoSubscription):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZArgEnum
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.contact_language.enum = AAZArgEnum(languages)
+        args_schema.contact_timezone.enum = AAZArgEnum(timezones)
+
+        return args_schema
+
+    def pre_operations(self):
+        from azext_support._validators import validate_tickets_create_no_subscription_new
+        super().pre_operations()
+        args = self.ctx.args
+        if hasattr(args, 'technical_resource'):
+            validate_tickets_create_no_subscription_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name),
+                                        str(args.technical_resource))
+        else:
+            validate_tickets_create_no_subscription_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name))
+
+    class SupportTicketsNoSubscriptionCreate(_CreateTicketNoSubscription.SupportTicketsNoSubscriptionCreate):
+        @property
+        def content(self):
+            body = super().content
+            service_name = parse_support_area_path(body["properties"]["problemClassificationId"])["service_name"]
+            body["properties"]["serviceId"] = "/providers/Microsoft.Support/services/{0}".format(service_name)
+            if "problemStartTime" not in body["properties"]:
+                start_time = datetime.utcnow().strftime(("%Y-%m-%dT%H:%M:%SZ"))
+                body["properties"]["problemStartTime"] = start_time
+            return body

@@ -40,6 +40,12 @@ def validate_tickets_create_new(cli_ctx, problem_classification, ticket_name, te
         _validate_resource_name_new(cli_ctx, technical_resource)
     _check_name_availability_subscription(cli_ctx, ticket_name, "Microsoft.Support/supportTickets")
 
+def validate_tickets_create_no_subscription_new(cli_ctx, problem_classification, ticket_name, technical_resource=None):
+    _validate_problem_classification_name(problem_classification)
+    if is_technical_ticket(parse_support_area_path(problem_classification)["service_name"]):
+        _validate_resource_name_new(cli_ctx, technical_resource)
+    _check_name_availability_no_subscription(cli_ctx, ticket_name, "Microsoft.Support/supportTickets")
+
 def validate_communication_create(cmd, namespace):
     _validate_communication_name(cmd, namespace.ticket_name, namespace.communication_name)
 
