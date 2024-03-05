@@ -216,6 +216,7 @@ def create_and_verify_containerapp_up_for_default_registry_image(
 
         # Assert that the Container App only has one container and the quickstart image is used
         app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
+        test_cls.assertEqual(app["properties"]["template"]["containers"][0]["name"], container_name)
         test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"], image)
         test_cls.assertEqual(len(app["properties"]["template"]["containers"]), 1)
 
