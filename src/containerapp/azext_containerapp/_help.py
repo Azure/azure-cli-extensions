@@ -1330,6 +1330,16 @@ helps['containerapp env telemetry'] = """
     short-summary: Commands to manage telemetry settings for the container apps environment.
 """
 
+helps['containerapp env telemetry data-dog'] = """
+    type: group
+    short-summary: Commands to manage data dog settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry app-insights'] = """
+    type: group
+    short-summary: Commands to manage app insights settings for the container apps environment.
+"""
+
 helps['containerapp env telemetry data-dog set'] = """
     type: command
     short-summary: Create or update container apps environment telemetry data dog settings.
