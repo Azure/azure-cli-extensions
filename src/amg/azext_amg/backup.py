@@ -139,6 +139,10 @@ def _get_individual_dashboard_setting_and_save(dashboards, folder_path, log_file
 
                 (status, content) = get_dashboard(board_uri, grafana_url, http_headers)
                 if status == 200:
+                    # do not back up provisioned dashboards
+                    if content['meta']['provisioned']:
+                        logger.warning("Dashboard: \"%s\" is provisioned, skipping...", board['title'])
+                        continue
                     _save_dashboard_setting(
                         board['title'],
                         board_uri,
@@ -334,7 +338,7 @@ def _get_all_annotations_and_save(folder_path, grafana_url, http_get_headers):
 
     ts_to = now
     ts_from = now - one_month_in_ms
-    thirteen_months_retention = (now - (13 * one_month_in_ms))
+    thirteen_months_retention = now - (13 * one_month_in_ms)
 
     while ts_from > thirteen_months_retention:
         status_code_and_content = search_annotations(grafana_url, ts_from, ts_to, http_get_headers)

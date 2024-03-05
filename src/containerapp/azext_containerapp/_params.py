@@ -64,6 +64,19 @@ def load_arguments(self, _):
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
 
+    # Telemetry 
+    with self.argument_context('containerapp env telemetry data-dog set') as c:
+        c.argument('site', options_list=['--site'], help='Specify the data dog site')
+        c.argument('key', options_list=['--key'], help='Specify the data dog api key')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry traces')
+        c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry metrics')
+
+    with self.argument_context('containerapp env telemetry app-insights set') as c:
+        c.argument('connection_string', options_list=['--connection-string'], help='Application Insights connection string used by container apps environment')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry traces')
+        c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry logs')
+
+    # Storage
     with self.argument_context('containerapp env storage') as c:
         c.argument('storage_type', arg_type=get_enum_type(['AzureFile', 'NfsAzureFile']), help="Type of the storage. Assumed to be AzureFile if not specified.", is_preview=True)
         c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]),

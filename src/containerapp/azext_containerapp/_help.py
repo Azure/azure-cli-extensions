@@ -1322,3 +1322,58 @@ helps['containerapp env java-component spring-cloud-eureka update'] = """
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
 """
+
+# Container Apps Telemetry Commands
+
+helps['containerapp env telemetry'] = """
+    type: group
+    short-summary: Commands to manage telemetry settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry data-dog'] = """
+    type: group
+    short-summary: Commands to manage data dog settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry app-insights'] = """
+    type: group
+    short-summary: Commands to manage app insights settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry data-dog set'] = """
+    type: command
+    short-summary: Create or update container apps environment telemetry data dog settings.
+    examples:
+    - name: Create or update container apps environment telemetry data dog settings.
+      text: |
+          az containerapp env telemetry data-dog set -n MyContainerappEnvironment -g MyResourceGroup \\
+              --site dataDogSite --key dataDogKey --enable-open-telemetry-traces true --enable-open-telemetry-metrics true
+"""
+
+helps['containerapp env telemetry app-insights set'] = """
+    type: command
+    short-summary: Create or update container apps environment telemetry app insights settings.
+    examples:
+    - name: Create or update container apps environment telemetry app insights settings.
+      text: |
+          az containerapp env telemetry app-insights set -n MyContainerappEnvironment -g MyResourceGroup \\
+              --connection-string connectionString --enable-open-telemetry-traces true --enable-open-telemetry-logs true
+"""
+
+helps['containerapp env telemetry data-dog delete'] = """
+    type: command
+    short-summary: Delete container apps environment telemetry data dog settings.
+    examples:
+    - name: Delete container apps environment telemetry data dog settings.
+      text: |
+          az containerapp env telemetry data-dog delete -n MyContainerappEnvironment -g MyResourceGroup
+"""
+
+helps['containerapp env telemetry app-insights delete'] = """
+    type: command
+    short-summary: Delete container apps environment telemetry app insights settings.
+    examples:
+    - name: Delete container apps environment telemetry app insights settings.
+      text: |
+          az containerapp env telemetry app-insights delete -n MyContainerappEnvironment -g MyResourceGroup
+"""
