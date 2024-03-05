@@ -4,13 +4,24 @@ Release History
 ===============
 upcoming
 ++++++
-* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
-* 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
-* 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
 * 'az containerapp env telemetry data-dog set': support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
 * 'az containerapp env telemetry data-dog delete': support delete environment data dog configuration
 * 'az containerapp env telemetry app-insights set': support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
 * 'az containerapp env telemetry app-insights delete': support delete environment app insights configuration
+
+0.3.48
+++++++
+* 'az containerapp service': Remove deprecated command group altogether, only keep 'az containerapp add-on' for add-ons
+* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
+* 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
+* 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
+* 'az containerapp up': Fix registry not found error in subscription when registry server parameters are provided for ACR from another subscription
+* 'az containerapp env java-component': Support list Java components
+* 'az containerapp env java-component spring-cloud-config': Support create/update/show/delete Spring Cloud Config
+* 'az containerapp env java-component spring-cloud-eureka': Support create/update/show/delete Spring Cloud Eureka
+* 'az containerapp create/update': Support bind Java component with --bind
+* 'az containerapp create/update/up': Fix issue with logs when the Cloud Build project to use generates UTF-8 logs.
+* 'az containerapp update/up': Fix bug for multiple containers provisioned for source to cloud build
 
 0.3.47
 ++++++

@@ -239,100 +239,14 @@ helps['containerapp env create'] = """
               --location eastus2 --mi-system-assigned --mi-user-assigned MyUserIdentityResourceId
 """
 
-helps['containerapp service'] = """
-    type: group
-    short-summary: Commands to manage services available within the environment.
-    deprecate_info: This command group is deprecated. Use 'az containerapp add-on' instead.
-"""
-
 helps['containerapp add-on'] = """
     type: group
     short-summary: Commands to manage add-ons available within the environment.
 """
 
-helps['containerapp service list'] = """
-    type: command
-    short-summary: List all services within the environment.
-"""
-
 helps['containerapp add-on list'] = """
     type: command
     short-summary: List all add-ons within the environment.
-"""
-
-helps['containerapp service redis'] = """
-    type: group
-    short-summary: Commands to manage the redis service for the Container Apps environment.
-"""
-
-helps['containerapp service postgres'] = """
-    type: group
-    short-summary: Commands to manage the postgres service for the Container Apps environment.
-"""
-
-helps['containerapp service kafka'] = """
-    type: group
-    short-summary: Commands to manage the kafka service for the Container Apps environment.
-"""
-
-helps['containerapp service mariadb'] = """
-    type: group
-    short-summary: Commands to manage the mariadb service for the Container Apps environment.
-"""
-
-helps['containerapp service qdrant'] = """
-    type: group
-    short-summary: Commands to manage the qdrant service for the Container Apps environment.
-"""
-
-helps['containerapp service redis create'] = """
-    type: command
-    short-summary: Command to create the redis service.
-"""
-
-helps['containerapp service postgres create'] = """
-    type: command
-    short-summary: Command to create the postgres service.
-"""
-
-helps['containerapp service kafka create'] = """
-    type: command
-    short-summary: Command to create the kafka service.
-"""
-
-helps['containerapp service mariadb create'] = """
-    type: command
-    short-summary: Command to create the mariadb service.
-"""
-
-helps['containerapp service qdrant create'] = """
-    type: command
-    short-summary: Command to create the qdrant service.
-"""
-
-helps['containerapp service redis delete'] = """
-    type: command
-    short-summary: Command to delete the redis service.
-"""
-
-helps['containerapp service postgres delete'] = """
-    type: command
-    short-summary: Command to delete the postgres service.
-"""
-
-helps['containerapp service kafka delete'] = """
-    type: command
-    short-summary: Command to delete the kafka service.
-"""
-
-helps['containerapp service mariadb delete'] = """
-    type: command
-    short-summary: Command to delete the mariadb service.
-"""
-
-helps['containerapp service qdrant delete'] = """
-    type: command
-    short-summary: Command to delete the qdrant service.
 """
 
 helps['containerapp resiliency'] = """
@@ -1273,6 +1187,140 @@ helps['containerapp job create'] = """
               --parallelism 1 \\
               --image imageName \\
               --workload-profile-name my-wlp
+"""
+
+# Java Components Commands
+helps['containerapp env java-component'] = """
+    type: group
+    short-summary: Commands to manage Java components within the environment.
+"""
+
+helps['containerapp env java-component list'] = """
+    type: command
+    short-summary: List all Java components within the environment.
+    examples:
+    - name: List all Java components within an environment.
+      text: |
+          az containerapp env java-component list -g MyResourceGroup --environment MyEnvironment
+"""
+
+helps['containerapp env java-component spring-cloud-config'] = """
+    type: group
+    short-summary: Commands to manage the Spring Cloud Config for the Container Apps environment.
+"""
+
+helps['containerapp env java-component spring-cloud-config create'] = """
+    type: command
+    short-summary: Command to create the Spring Cloud Config.
+    examples:
+    - name: Create a Spring Cloud Config.
+      text: |
+          az containerapp env java-component spring-cloud-config create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component spring-cloud-config delete'] = """
+    type: command
+    short-summary: Command to delete the Spring Cloud Config.
+    examples:
+    - name: Delete a Spring Cloud Config.
+      text: |
+          az containerapp env java-component spring-cloud-config delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component spring-cloud-config show'] = """
+    type: command
+    short-summary: Command to show the Spring Cloud Config.
+    examples:
+    - name: Show a Spring Cloud Config.
+      text: |
+          az containerapp env java-component spring-cloud-config show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component spring-cloud-config update'] = """
+    type: command
+    short-summary: Command to update the Spring Cloud Config.
+    examples:
+    - name: Delete all configurations of the Spring Cloud Config.
+      text: |
+          az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update a Spring Cloud Config with custom configurations.
+      text: |
+          az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component spring-cloud-eureka'] = """
+    type: group
+    short-summary: Commands to manage the Spring Cloud Eureka for the Container Apps environment.
+"""
+
+helps['containerapp env java-component spring-cloud-eureka create'] = """
+    type: command
+    short-summary: Command to create the Spring Cloud Eureka.
+    examples:
+    - name: Create a Spring Cloud Eureka with default configuration.
+      text: |
+          az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+    - name: Create a Spring Cloud Eureka with custom configurations.
+      text: |
+          az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component spring-cloud-eureka delete'] = """
+    type: command
+    short-summary: Command to delete the Spring Cloud Eureka.
+    examples:
+    - name: Delete a Spring Cloud Eureka.
+      text: |
+          az containerapp env java-component spring-cloud-eureka delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component spring-cloud-eureka show'] = """
+    type: command
+    short-summary: Command to show the Spring Cloud Eureka.
+    examples:
+    - name: Show a Spring Cloud Eureka.
+      text: |
+          az containerapp env java-component spring-cloud-eureka show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component spring-cloud-eureka update'] = """
+    type: command
+    short-summary: Command to update the Spring Cloud Eureka.
+    examples:
+    - name: Delete all configurations of the Spring Cloud Eureka.
+      text: |
+          az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update a Spring Cloud Eureka with custom configurations.
+      text: |
+          az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
 """
 
 # Container Apps Telemetry Commands
