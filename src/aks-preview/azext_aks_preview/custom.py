@@ -2973,12 +2973,11 @@ def aks_mesh_get_upgrades(
     # 'upgradeProfiles' is an ItemPaged object
     upgrades = []
     # Iterate over items within pages
-    for page in upgradeProfiles.by_page():
-        for item in page:
-            upgrades.append(item)
+    for item in upgradeProfiles:
+        upgrades.append(item.properties)
 
     if upgrades:
-        return upgrades[0].properties
+        return upgrades[0]
     return None
 
 
