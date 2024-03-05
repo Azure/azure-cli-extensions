@@ -1347,7 +1347,7 @@ helps['containerapp env telemetry app-insights set'] = """
     - name: Create or update container apps environment telemetry app insights settings.
       text: |
           az containerapp env telemetry app-insights set -n MyContainerappEnvironment -g MyResourceGroup \\
-              --connection-string connectionString --enable-open-telemetry-traces true --enable-open-telemetry-metrics true
+              --connection-string connectionString --enable-open-telemetry-traces true --enable-open-telemetry-logs true
 """
 
 helps['containerapp env telemetry data-dog delete'] = """
