@@ -1026,7 +1026,7 @@ def cli_cosmosdb_restore(cmd,
     restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
 
     # If restore timestamp is timezone aware, get the utcnow as timezone aware as well
-    from datetime import datetime, timezone
+    from datetime import datetime, timezone  # pylint: disable=redefined-outer-name,reimported
     current_dateTime = datetime.utcnow()
     if restore_timestamp_datetime_utc.tzinfo is not None and restore_timestamp_datetime_utc.tzinfo.utcoffset(restore_timestamp_datetime_utc) is not None:
         current_dateTime = datetime.now(timezone.utc)
@@ -1798,7 +1798,6 @@ def _handle_exists_exception(http_response_error):
 
 
 def process_restorable_databases(restorable_databases, database_name):
-
     latest_database_delete_time = datetime.datetime.utcfromtimestamp(0)
     latest_database_create_or_recreate_time = datetime.datetime.utcfromtimestamp(0)
     database_rid = None
@@ -1860,7 +1859,7 @@ def cli_cosmosdb_sql_database_restore(cmd,
                                       restore_timestamp=None,
                                       disable_ttl=None):
 
-    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
+    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts  # pylint: disable=redefined-outer-name,reimported
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -1946,13 +1945,13 @@ def cli_cosmosdb_sql_container_restore(cmd,
                                        restore_timestamp=None,
                                        disable_ttl=None):
 
-    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
+    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts  # pylint: disable=redefined-outer-name,reimported
     # """Restores the deleted Azure Cosmos DB SQL container """
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
     restorable_database_account = None
-    
+
     if restore_timestamp is not None:
         restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
         for account in restorable_database_accounts_list:
@@ -2025,7 +2024,7 @@ def cli_cosmosdb_sql_container_restore(cmd,
     )
 
     if disable_ttl is not None:
-       restore_parameters.restore_with_ttl_disabled = disable_ttl
+        restore_parameters.restore_with_ttl_disabled = disable_ttl
 
     sql_container_resource = SqlContainerResource(
         id=container_name,
@@ -2051,7 +2050,7 @@ def cli_cosmosdb_mongodb_database_restore(cmd,
                                           restore_timestamp=None,
                                           disable_ttl=None):
 
-    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
+    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts  # pylint: disable=redefined-outer-name,reimported
     # """Restores the deleted Azure Cosmos DB MongoDB database"""
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
@@ -2114,7 +2113,7 @@ def cli_cosmosdb_mongodb_database_restore(cmd,
     )
 
     if disable_ttl is not None:
-       restore_parameters.restore_with_ttl_disabled = disable_ttl
+        restore_parameters.restore_with_ttl_disabled = disable_ttl
 
     mongodb_database_resource = MongoDBDatabaseCreateUpdateParameters(
         resource=MongoDBDatabaseResource(id=database_name,
@@ -2137,7 +2136,7 @@ def cli_cosmosdb_mongodb_collection_restore(cmd,
                                             restore_timestamp=None,
                                             disable_ttl=None):
 
-    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
+    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts  # pylint: disable=redefined-outer-name,reimported
     # """Restores the Azure Cosmos DB MongoDB collection """
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
@@ -2216,7 +2215,7 @@ def cli_cosmosdb_mongodb_collection_restore(cmd,
     )
 
     if disable_ttl is not None:
-       restore_parameters.restore_with_ttl_disabled = disable_ttl
+        restore_parameters.restore_with_ttl_disabled = disable_ttl
 
     mongodb_collection_resource = MongoDBCollectionResource(id=collection_name,
                                                             create_mode=create_mode,
@@ -2414,7 +2413,7 @@ def cli_cosmosdb_gremlin_database_restore(cmd,
                                           restore_timestamp=None,
                                           disable_ttl=None):
 
-    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
+    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts  # pylint: disable=redefined-outer-name,reimported
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -2476,7 +2475,7 @@ def cli_cosmosdb_gremlin_database_restore(cmd,
     )
 
     if disable_ttl is not None:
-       restore_parameters.restore_with_ttl_disabled = disable_ttl
+        restore_parameters.restore_with_ttl_disabled = disable_ttl
 
     gremlin_database_resource = GremlinDatabaseCreateUpdateParameters(
         resource=SqlDatabaseResource(
@@ -2500,7 +2499,7 @@ def cli_cosmosdb_gremlin_graph_restore(cmd,
                                        restore_timestamp=None,
                                        disable_ttl=None):
 
-    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
+    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts  # pylint: disable=redefined-outer-name,reimported
     # """Restores the deleted Azure Cosmos DB Gremlin graph """
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
@@ -2579,7 +2578,7 @@ def cli_cosmosdb_gremlin_graph_restore(cmd,
     )
 
     if disable_ttl is not None:
-       restore_parameters.restore_with_ttl_disabled = disable_ttl
+        restore_parameters.restore_with_ttl_disabled = disable_ttl
 
     gremlin_graph_resource = GremlinGraphResource(
         id=graph_name,
@@ -2595,6 +2594,8 @@ def cli_cosmosdb_gremlin_graph_restore(cmd,
                                                     database_name,
                                                     graph_name,
                                                     gremlin_graph_create_update_resource)
+
+
 def cli_cosmosdb_table_restore(cmd,
                                client,
                                resource_group_name,
@@ -2603,7 +2604,7 @@ def cli_cosmosdb_table_restore(cmd,
                                restore_timestamp=None,
                                disable_ttl=None):
 
-    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts
+    from azure.cli.command_modules.cosmosdb._client_factory import cf_restorable_database_accounts  # pylint: disable=redefined-outer-name,reimported
     # """Restores the deleted Azure Cosmos DB Table"""
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
@@ -2666,7 +2667,7 @@ def cli_cosmosdb_table_restore(cmd,
     )
 
     if disable_ttl is not None:
-       restore_parameters.restore_with_ttl_disabled = disable_ttl
+        restore_parameters.restore_with_ttl_disabled = disable_ttl
 
     table_resource = TableCreateUpdateParameters(
         resource=TableResource(id=table_name,
@@ -2678,4 +2679,3 @@ def cli_cosmosdb_table_restore(cmd,
                                             account_name,
                                             table_name,
                                             table_resource)
-
