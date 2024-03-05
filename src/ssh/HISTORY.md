@@ -1,6 +1,6 @@
 Release History
 ===============
-2.0.3
+upcoming
 -----
 * Add support to ARM64 clients when connecting to Arc Machines. Connect proxy now available for ARM64 architecture.
 
