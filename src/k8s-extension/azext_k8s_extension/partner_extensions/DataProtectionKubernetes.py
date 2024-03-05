@@ -35,7 +35,7 @@ class DataProtectionKubernetes(DefaultExtension):
         self.blob_container = "blobContainer"
         self.storage_account = "storageAccount"
         self.storage_account_resource_group = "storageAccountResourceGroup"
-        self.storage_account_subsrciption = "storageAccountSubscriptionId"
+        self.storage_account_subscription = "storageAccountSubscriptionId"
         self.cpu_limit = "cpuLimit"
         self.memory_limit = "memoryLimit"
         self.use_aad = "useAAD"
@@ -45,7 +45,7 @@ class DataProtectionKubernetes(DefaultExtension):
             self.blob_container.lower(): self.BACKUP_STORAGE_ACCOUNT_CONTAINER,
             self.storage_account.lower(): self.BACKUP_STORAGE_ACCOUNT_NAME,
             self.storage_account_resource_group.lower(): self.BACKUP_STORAGE_ACCOUNT_RESOURCE_GROUP,
-            self.storage_account_subsrciption.lower(): self.BACKUP_STORAGE_ACCOUNT_SUBSCRIPTION,
+            self.storage_account_subscription.lower(): self.BACKUP_STORAGE_ACCOUNT_SUBSCRIPTION,
             self.cpu_limit.lower(): self.RESOURCE_LIMIT_CPU,
             self.memory_limit.lower(): self.RESOURCE_LIMIT_MEMORY,
             self.use_aad.lower(): self.BACKUP_STORAGE_ACCOUNT_USE_AAD,
@@ -56,7 +56,7 @@ class DataProtectionKubernetes(DefaultExtension):
             self.blob_container,
             self.storage_account,
             self.storage_account_resource_group,
-            self.storage_account_subsrciption
+            self.storage_account_subscription
         ]
 
     def Create(
