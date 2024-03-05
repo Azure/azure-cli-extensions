@@ -61,19 +61,19 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.sku = AAZObjectArg(
+        _args_schema.sku = AAZStrArg(
             options=["--sku"],
             arg_group="Properties",
-            help="Name of the SKU. Allowed values: Basic, Premium",
+            help="SKU name. Allowed values: Basic, Premium.",
         )
 
-        sku = cls._args_schema.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="Name of the SKU.",
-            required=True,
-            enum={"Basic": "Basic", "Premium": "Premium"},
-        )
+        # sku = cls._args_schema.sku
+        # sku.name = AAZStrArg(
+        #     options=["name"],
+        #     help="Name of the SKU.",
+        #     required=True,
+        #     enum={"Basic": "Basic", "Premium": "Premium"},
+        # )
 
         # define Arg Group "Resource"
 
@@ -205,14 +205,14 @@ class Create(AAZCommand):
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
-
+            
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("sku", AAZObjectType, ".sku")
+                properties.set_prop("sku", AAZObjectType)
 
             sku = _builder.get(".properties.sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                sku.set_prop("name", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
