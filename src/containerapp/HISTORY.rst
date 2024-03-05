@@ -4,6 +4,10 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env telemetry data-dog set': support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry data-dog delete': support delete environment data dog configuration
+* 'az containerapp env telemetry app-insights set': support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
+* 'az containerapp env telemetry app-insights delete': support delete environment app insights configuration
 
 0.3.48
 ++++++
