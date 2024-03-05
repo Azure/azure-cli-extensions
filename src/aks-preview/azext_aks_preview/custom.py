@@ -2955,8 +2955,7 @@ def check_iterator(iterator):
         return True, iterator
     except TypeError:       # iterator is not iterable, e.g. None
         return True, iterator
-    else:
-        return False, itertools.chain([first], iterator)
+    return False, itertools.chain([first], iterator)
 
 
 def aks_mesh_get_upgrades(
@@ -2968,7 +2967,8 @@ def aks_mesh_get_upgrades(
     upgradeProfiles = client.list_mesh_upgrade_profiles(resource_group_name, name)
     is_empty, upgradeProfiles = check_iterator(upgradeProfiles)
     if is_empty:
-        logger.warning("No mesh upgrade profiles found for the cluster '%s' in the resource group '%s'.", name, resource_group_name)
+        logger.warning("No mesh upgrade profiles found for the cluster '%s'" +
+                       "in the resource group '%s'.", name, resource_group_name)
         return None
     # 'upgradeProfiles' is an ItemPaged object
     upgrades = []
