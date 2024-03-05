@@ -6,6 +6,10 @@ upcoming
 ++++++
 * 'az containerapp update/up': Bugfix - For Cloud Build scenarios, n-1 existing containers are removed and the remaining last container is replaced with cloud build image.
                                However, the name of the replaced container is not set as of today, so even though the image name changes, the container name is the same. Explicitly set container name to container app name for source to cloud builds.
+* 'az containerapp env telemetry data-dog set': support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry data-dog delete': support delete environment data dog configuration
+* 'az containerapp env telemetry app-insights set': support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
+* 'az containerapp env telemetry app-insights delete': support delete environment app insights configuration
 
 0.3.48
 ++++++
