@@ -36,13 +36,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
     program_args_type = CLIArgumentType(nargs='*', help='List of arguments expected by the Q# operation specified as --name=value after `--`.')
     target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Execution engine for quantum computing jobs. When a workspace is configured with a set of providers, they each enable one or more targets. You can configure the default target using `az quantum target set`.', configured_default='target_id')
-    project_type = CLIArgumentType(help='[Becoming deprecated] The location of the Q# project to submit. Defaults to current folder.')
+    project_type = CLIArgumentType(help='[Deprecated] The location of the Q# project to submit. Defaults to current folder.')
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
     job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
     job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs, json string, or `@{file}` with json content.', action=JobParamsAction, nargs='+')
     target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the compiler.')
     shots_type = CLIArgumentType(help='The number of times to run the Q# program on the given target.')
-    no_build_type = CLIArgumentType(help='[Becoming deprecated] If specified, the Q# program is not built before submitting.')
+    no_build_type = CLIArgumentType(help='[Deprecated] If specified, the Q# program is not built before submitting.')
     storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage is used to store job data and results.')
     max_poll_wait_secs_type = CLIArgumentType(help='Poll time in seconds to query Azure Quantum for results of the corresponding job.')
     tag_type = CLIArgumentType(help='Show only quantum workspaces that have associated the specified tag.')
@@ -58,6 +58,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for QIR. Ignored on Q# jobs.')
     item_type = CLIArgumentType(help='The item index in a batching job.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
+    key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
+    enable_key = CLIArgumentType(options_list=['--enable-api-key'], help='Enable or disable api key authentication.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -135,3 +137,14 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
 
     with self.argument_context('quantum offerings list') as c:
         c.argument('autoadd_only', autoadd_only_type)
+
+    with self.argument_context('quantum workspace keys list') as c:
+        c.argument('workspace_name', workspace_name_type)
+
+    with self.argument_context('quantum workspace keys regenerate') as c:
+        c.argument('workspace_name', workspace_name_type)
+        c.argument('key_type', key_type)
+
+    with self.argument_context('quantum workspace update') as c:
+        c.argument('workspace_name', workspace_name_type)
+        c.argument('enable_key', enable_key)

@@ -7,41 +7,92 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - networkfabric npb list
+      - networkfabric npb show
       Connection:
       - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.29.4 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers?api-version=2023-06-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers/lab100gfabnf-eus-npb?api-version=2024-02-15-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/microsoft.managednetworkfabric/networkpacketbrokers/default","name":"default","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-08-07T05:50:33.448454Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-08-23T10:15:28.1280864Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nflabtest2108","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nflabtest2108-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nflabtest2108-AggrRack-NPB2"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ashish-rg/providers/microsoft.managednetworkfabric/networkpacketbrokers/default","name":"default","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-08-17T09:11:15.0639187Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-08-18T16:58:34.5448261Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ashish-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfcrp1fabric2","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ashish-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfcrp1fabric2-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ashish-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfcrp1fabric2-AggrRack-NPB2"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/microsoft.managednetworkfabric/networkpacketbrokers/nflabtest1808-npb","name":"nflabtest1808-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-08-28T06:29:10.1457917Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-08-28T06:29:10.1457917Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nflabtest1808","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nflabtest1808-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nflabtest1808-AggrRack-NPB2"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/microsoft.managednetworkfabric/networkpacketbrokers/nfceosvmtest9-npb","name":"nfceosvmtest9-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-08-28T06:55:15.5352054Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-08-28T06:55:15.5352054Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfceosvmtest9","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest9-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest9-AggrRack-NPB2"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/microsoft.managednetworkfabric/networkpacketbrokers/nfceosvmtest280801-npb","name":"nfceosvmtest280801-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-08-28T08:03:17.8143209Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-09-04T06:32:04.5614834Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfceosvmtest280801","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest280801-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest280801-AggrRack-NPB2"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/microsoft.managednetworkfabric/networkpacketbrokers/nfceosvmtest5-npb","name":"nfceosvmtest5-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-08-31T07:17:45.0741578Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-09-01T08:03:40.4102856Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfceosvmtest5","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest5-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest5-AggrRack-NPB2"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/microsoft.managednetworkfabric/networkpacketbrokers/nfceosvmtest0409-npb","name":"nfceosvmtest0409-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-09-04T08:51:33.0274269Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-09-05T11:05:10.9709296Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfceosvmtest0409","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest0409-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest0409-AggrRack-NPB2"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/microsoft.managednetworkfabric/networkpacketbrokers/nfceosvmtest0509-npb","name":"nfceosvmtest0509-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-09-05T13:42:35.4520446Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-09-05T13:42:35.4520446Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/v-mahimas-rg/providers/microsoft.managednetworkfabric/networkfabrics/nfceosvmtest0509","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest0509-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest0509-AggrRack-NPB2"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/microsoft.managednetworkfabric/networkpacketbrokers/nfceosvmtest140901-npb","name":"nfceosvmtest140901-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-09-19T10:07:08.5954571Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-09-19T10:07:08.5954571Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfceosvmtest140901","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest140901-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v-mahimas-rg/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfceosvmtest140901-AggrRack-NPB2"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab1LabNF-4-2/providers/microsoft.managednetworkfabric/networkpacketbrokers/nfcfab1-4-2-npb","name":"nfcfab1-4-2-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-11-06T13:18:24.4826285Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-11-16T13:42:16.8377716Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab1LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfcfab1-4-2","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab1LabNF-4-2/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfcfab1-4-2-AggrRack-NPB1"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/microsoft.managednetworkfabric/networkpacketbrokers/nffab3-4-2-bf-npb","name":"nffab3-4-2-bf-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-11-15T11:08:12.5289156Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-11-15T11:08:12.5289156Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab3LabNF-4-2-BF/providers/microsoft.managednetworkfabric/networkfabrics/nffab3-4-2-BF","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-4-2-BF-AggrRack-NPB1"]}}]}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/microsoft.managednetworkfabric/networkpacketbrokers/lab100gfabnf-eus-npb","name":"lab100gfabnf-eus-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2024-01-25T10:25:39.9492021Z","lastModifiedBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T11:14:13.9293576Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-NPB1"]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '12088'
+      - '979'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Nov 2023 13:53:27 GMT
+      - Sat, 03 Feb 2024 20:00:05 GMT
+      etag:
+      - '"5c00aad7-0000-0100-0000-65b242860000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: A0F130DFF2C04750B1775A49E10816BB Ref B: MAA201060515037 Ref C: 2024-02-03T20:00:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric npb list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers?api-version=2024-02-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/microsoft.managednetworkfabric/networkpacketbrokers/lab100gfabnf-eus-npb","name":"lab100gfabnf-eus-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2024-01-25T10:25:39.9492021Z","lastModifiedBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T11:14:13.9293576Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-NPB1"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stg02lab-nf01/providers/microsoft.managednetworkfabric/networkpacketbrokers/stg02labnf001-npb","name":"stg02labnf001-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2024-01-25T16:14:11.8151244Z","lastModifiedBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T16:14:11.8151244Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stg02lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkFabrics/stg02labnf001","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stg02lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkDevices/stg02labnf001-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stg02lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkDevices/stg02labnf001-AggrRack-NPB2"]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2120'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 03 Feb 2024 20:00:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 4f45c818-b890-4935-909f-d6fa25c4983d
-      - 65963323-fb37-4cf1-8364-b7d95faa3706
-      - d44b7430-f94c-4b85-8c06-29254dd38931
-      - e330a0eb-a253-49a8-b264-bcfa41ba4a32
-      - b8b22942-0dcc-412f-9de0-1778d0c8153f
+      - 58188e9a-03cd-4c30-91b3-6a2f468a3669
+      - c2a7f1c6-c73a-4b15-9d07-8298bbafa4df
+      - 2cb097ce-14bd-4219-b664-6688ee0e1202
+      - a79b3e5b-a0fb-44c1-a391-cfb6fb63e655
+      - dcdc0496-1cc8-4d82-9d48-147c3e27b78f
+      - 7027c5fb-1b0d-446f-9224-70f182ab8271
+      x-msedge-ref:
+      - 'Ref A: 606A5E5B1B3A4D4C8FCD2CEB7307A52A Ref B: MAA201060515009 Ref C: 2024-02-03T20:00:10Z'
     status:
       code: 200
       message: OK
@@ -59,37 +110,40 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.29.4 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers?api-version=2023-06-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers?api-version=2024-02-15-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/microsoft.managednetworkfabric/networkpacketbrokers/nffab3-4-2-bf-npb","name":"nffab3-4-2-bf-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","createdByType":"Application","createdAt":"2023-11-15T11:08:12.5289156Z","lastModifiedBy":"427cb791-d1e7-4a20-b5b5-60b5d51d96de","lastModifiedByType":"Application","lastModifiedAt":"2023-11-15T11:08:12.5289156Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab3LabNF-4-2-BF/providers/microsoft.managednetworkfabric/networkfabrics/nffab3-4-2-BF","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-4-2-BF/providers/Microsoft.ManagedNetworkFabric/networkDevices/nffab3-4-2-BF-AggrRack-NPB1"]}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/microsoft.managednetworkfabric/networkpacketbrokers/lab100gfabnf-eus-npb","name":"lab100gfabnf-eus-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2024-01-25T10:25:39.9492021Z","lastModifiedBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T11:14:13.9293576Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-NPB1"]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '982'
+      - '991'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Nov 2023 13:53:33 GMT
+      - Sat, 03 Feb 2024 20:00:15 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 07e9ac13-4b32-4c82-96cb-17e452e46165
-      - e07e12ef-d51c-4067-9b2d-022229d5176d
-      - b4359f2a-15db-42d2-a266-3db762b1dd14
-      - 1913bea8-a1ea-4cf6-a769-7490d8f9df09
-      - fba75fb3-f10c-42c9-b7a7-c2ea80fa21a3
+      - 841cf5af-cbb9-44d6-8107-060cb46b5f2c
+      - be713784-c4d6-4dcd-909c-28d6ade465a1
+      - 323e15f2-a6c5-4360-907b-5f6056ab82f6
+      - 598acdca-d87b-444e-a7b5-13fe3781615f
+      - b7617560-45a8-408b-84a3-f8b778086f59
+      - 6d3d0ce1-60be-452a-8565-ec8a438f75f7
+      x-msedge-ref:
+      - 'Ref A: D469AE958162488FB35DA75430721C46 Ref B: MAA201060516019 Ref C: 2024-02-03T20:00:13Z'
     status:
       code: 200
       message: OK

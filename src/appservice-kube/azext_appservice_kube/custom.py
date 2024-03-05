@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long
 import time
 
 from binascii import hexlify
@@ -12,9 +12,10 @@ import json
 from knack.util import CLIError
 from knack.log import get_logger
 
-from azure.cli.core.util import send_raw_request, sdk_no_wait, get_json_object
+from azure.cli.core.util import send_raw_request, sdk_no_wait, get_json_object, get_file_json
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.custom import (
+    list_runtimes,
     update_container_settings,
     _rename_server_farm_props,
     get_site_configs,
@@ -67,8 +68,8 @@ from ._create_util import (get_app_details, get_site_availability, get_current_s
                            generate_default_app_service_plan_name)
 from ._client_factory import web_client_factory, ex_handler_factory, customlocation_client_factory
 
-
 logger = get_logger(__name__)
+
 
 # pylint: disable=too-many-locals,too-many-lines,consider-using-f-string
 
@@ -360,11 +361,14 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
                            cmd=cmd, resource_group_name=resource_group_name,
                            name=name, kube_environment_envelope=kube_environment)
     except Exception as e:
+        msg = ""
         try:
             msg = json.loads(e.response._content)['Message']
         except Exception as e2:
             raise e from e2
-    raise ValidationError(msg)
+        if msg != "":
+            raise ValidationError(msg) from e
+        raise e
 
 
 def list_kube_environments(cmd, resource_group_name=None):
@@ -491,7 +495,7 @@ def _check_custom_location_exists(cmd, name, resource_group):
         custom_location_client.custom_locations.get(resource_name=name, resource_group_name=resource_group)
     except E as e:
         custom_locations = [cl.id for cl in custom_location_client.custom_locations.list_by_subscription()]
-        logger.warning(f"\nPlease choose a custom location from your subscription: \n{custom_locations}\n")
+        logger.warning("\nPlease choose a custom location from your subscription: \n%s\n", custom_locations)
         raise e
 
 
@@ -691,6 +695,14 @@ def _get_custom_location_id(cmd, custom_location, resource_group_name):
         name=custom_location)
 
 
+def list_runtimes_kube(cmd, os_type=None, linux=False, is_kube=False):
+    if is_kube:
+        runtime_helper = _AppOnArcStackRuntimeHelper(cmd=cmd, linux=True, windows=False)
+        return runtime_helper.get_stack_names_only(delimiter=":")
+
+    return list_runtimes(cmd, os_type, linux)
+
+
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
@@ -721,7 +733,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         if resource_group_name is not None and (resource_group_name.lower() != current_rg.lower()):
             raise CLIError("The webapp '{}' exists in resource group '{}' and does not "
                            "match the value entered '{}'. Please re-run command with the "
-                           "correct parameters.". format(name, current_rg, resource_group_name))
+                           "correct parameters.".format(name, current_rg, resource_group_name))
         existing_app_settings = _generic_site_operation(cmd.cli_ctx, resource_group_name,
                                                         name, 'list_application_settings')
         settings = []
@@ -811,6 +823,9 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD',
                                                               value=docker_registry_server_password))
     helper = _StackRuntimeHelper(cmd, linux=bool(is_linux or is_kube), windows=not bool(is_linux or is_kube))
+    if is_kube:
+        helper = _AppOnArcStackRuntimeHelper(cmd, linux=bool(is_linux or is_kube), windows=not bool(is_linux or is_kube))
+
     if runtime:
         runtime = helper.remove_delimiters(runtime)
 
@@ -828,7 +843,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
             match = helper.resolve(runtime, linux=True)
             if not match:
                 raise CLIError("Linux Runtime '{}' is not supported."
-                               "Please invoke 'list-runtimes' to cross check".format(runtime))
+                               "Please invoke 'list-runtimes --kube' to cross check".format(runtime))
             helper.get_site_config_setter(match, linux=True)(cmd=cmd, stack=match, site_config=site_config)
         elif deployment_container_image_name:
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
@@ -973,7 +988,7 @@ def set_webapp(cmd, resource_group_name, name, slot=None, **kwargs):  # pylint: 
     instance = kwargs['parameters']
     client = web_client_factory(cmd.cli_ctx)
     updater = client.web_apps.begin_create_or_update_slot if slot else client.web_apps.begin_create_or_update
-    kwargs = dict(resource_group_name=resource_group_name, name=name, site_envelope=instance)
+    kwargs = {"resource_group_name": resource_group_name, "name": name, "site_envelope": instance}
     if slot:
         kwargs['slot'] = slot
 
@@ -1038,7 +1053,7 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
     from azure.mgmt.web.models import Site
     SiteConfig, NameValuePair, SkuDescription = cmd.get_models('SiteConfig', 'NameValuePair', 'SkuDescription')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
-    disable_app_insights = (disable_app_insights == "true")
+    disable_app_insights = disable_app_insights == "true"
 
     custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
 
@@ -1108,7 +1123,7 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
     if not storage_account and not is_kube:
         raise ValidationError("--storage-account required for non-kubernetes function apps")
 
-    runtime_helper = _FunctionAppStackRuntimeHelper(cmd, linux=is_linux, windows=(not is_linux))
+    runtime_helper = _FunctionAppStackRuntimeHelper(cmd, linux=is_linux, windows=not is_linux)
     matched_runtime = runtime_helper.resolve("dotnet" if not runtime else runtime,
                                              runtime_version, functions_version, is_linux)
 
@@ -1150,12 +1165,12 @@ def create_functionapp(cmd, resource_group_name, name, storage_account=None, pla
             site_config.app_settings.append(NameValuePair(name='FUNCTION_APP_EDIT_MODE', value='readOnly'))
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
             site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL',
-                                            value=docker_registry_server_url))
+                                                          value=docker_registry_server_url))
             if docker_registry_server_user is not None and docker_registry_server_password is not None:
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME',
-                                                value=docker_registry_server_user))
+                                                              value=docker_registry_server_user))
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD',
-                                                value=docker_registry_server_password))
+                                                              value=docker_registry_server_password))
         else:
             site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE', value='true'))
             site_config.linux_fx_version = _get_linux_fx_kube_functionapp(runtime, runtime_version)
@@ -1389,7 +1404,7 @@ def config_source_control(cmd, resource_group_name, name, repo_url, repository_t
 
     source_control = SiteSourceControl(location=location, repo_url=repo_url, branch=branch,
                                        is_manual_integration=manual_integration,
-                                       is_mercurial=(repository_type != 'git'))
+                                       is_mercurial=repository_type != 'git')
 
     # SCC config can fail if previous commands caused SCMSite shutdown, so retry here.
     for i in range(5):
@@ -1849,3 +1864,31 @@ def unbind_ssl_cert(cmd, resource_group_name, name, certificate_thumbprint, slot
     SslState = cmd.get_models('SslState')
     return _update_ssl_binding(cmd, resource_group_name, name,
                                certificate_thumbprint, SslState.disabled, slot)
+
+
+# WebApps stack class
+class _AppOnArcStackRuntimeHelper(_StackRuntimeHelper):
+
+    def __init__(self, cmd, linux=False, windows=False):
+        super().__init__(cmd, linux=linux, windows=windows)
+
+    def _load_stacks(self):
+        if self._stacks:
+            return
+        self._load_stacks_hardcoded()
+
+    # override _load_stacks() to call this method to use hardcoded stacks
+    def _load_stacks_hardcoded(self):
+        import os
+        stacks_file = os.path.abspath(os.path.join(os.path.abspath(__file__), '../resources/WebappRuntimeStacks.json'))
+        if self._stacks:
+            return
+        stacks = []
+        if self._linux:
+            stacks_json = get_file_json(stacks_file)['linux']
+            for r in stacks_json:
+                stacks.append(self.Runtime(display_name=r.get("displayName"),
+                                           configs=r.get("configs"),
+                                           github_actions_properties=r.get("github_actions_properties"),
+                                           linux=True))
+        self._stacks = stacks

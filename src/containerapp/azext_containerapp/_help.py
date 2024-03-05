@@ -239,100 +239,14 @@ helps['containerapp env create'] = """
               --location eastus2 --mi-system-assigned --mi-user-assigned MyUserIdentityResourceId
 """
 
-helps['containerapp service'] = """
-    type: group
-    short-summary: Commands to manage services available within the environment.
-    deprecate_info: This command group is deprecated. Use 'az containerapp add-on' instead.
-"""
-
 helps['containerapp add-on'] = """
     type: group
     short-summary: Commands to manage add-ons available within the environment.
 """
 
-helps['containerapp service list'] = """
-    type: command
-    short-summary: List all services within the environment.
-"""
-
 helps['containerapp add-on list'] = """
     type: command
     short-summary: List all add-ons within the environment.
-"""
-
-helps['containerapp service redis'] = """
-    type: group
-    short-summary: Commands to manage the redis service for the Container Apps environment.
-"""
-
-helps['containerapp service postgres'] = """
-    type: group
-    short-summary: Commands to manage the postgres service for the Container Apps environment.
-"""
-
-helps['containerapp service kafka'] = """
-    type: group
-    short-summary: Commands to manage the kafka service for the Container Apps environment.
-"""
-
-helps['containerapp service mariadb'] = """
-    type: group
-    short-summary: Commands to manage the mariadb service for the Container Apps environment.
-"""
-
-helps['containerapp service qdrant'] = """
-    type: group
-    short-summary: Commands to manage the qdrant service for the Container Apps environment.
-"""
-
-helps['containerapp service redis create'] = """
-    type: command
-    short-summary: Command to create the redis service.
-"""
-
-helps['containerapp service postgres create'] = """
-    type: command
-    short-summary: Command to create the postgres service.
-"""
-
-helps['containerapp service kafka create'] = """
-    type: command
-    short-summary: Command to create the kafka service.
-"""
-
-helps['containerapp service mariadb create'] = """
-    type: command
-    short-summary: Command to create the mariadb service.
-"""
-
-helps['containerapp service qdrant create'] = """
-    type: command
-    short-summary: Command to create the qdrant service.
-"""
-
-helps['containerapp service redis delete'] = """
-    type: command
-    short-summary: Command to delete the redis service.
-"""
-
-helps['containerapp service postgres delete'] = """
-    type: command
-    short-summary: Command to delete the postgres service.
-"""
-
-helps['containerapp service kafka delete'] = """
-    type: command
-    short-summary: Command to delete the kafka service.
-"""
-
-helps['containerapp service mariadb delete'] = """
-    type: command
-    short-summary: Command to delete the mariadb service.
-"""
-
-helps['containerapp service qdrant delete'] = """
-    type: command
-    short-summary: Command to delete the qdrant service.
 """
 
 helps['containerapp resiliency'] = """
@@ -825,6 +739,18 @@ helps['containerapp env workload-profile set'] = """
           az containerapp env workload-profile set -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
 """
 
+helps['containerapp env storage set'] = """
+    type: command
+    short-summary: Create or update a storage.
+    examples:
+    - name: Create a azure file storage.
+      text: |
+          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --azure-file-account-key MyAccountKey --azure-file-account-name MyAccountName --azure-file-share-name MyShareName
+    - name: Create a nfs azure file storage.
+      text: |
+          az containerapp env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --storage-type NfsAzureFile --access-mode ReadOnly --server MyNfsServer.file.core.windows.net --file-share /MyNfsServer/MyShareName
+"""
+
 # Compose commands
 helps['containerapp compose'] = """
     type: group
@@ -1261,4 +1187,193 @@ helps['containerapp job create'] = """
               --parallelism 1 \\
               --image imageName \\
               --workload-profile-name my-wlp
+"""
+
+# Java Components Commands
+helps['containerapp env java-component'] = """
+    type: group
+    short-summary: Commands to manage Java components within the environment.
+"""
+
+helps['containerapp env java-component list'] = """
+    type: command
+    short-summary: List all Java components within the environment.
+    examples:
+    - name: List all Java components within an environment.
+      text: |
+          az containerapp env java-component list -g MyResourceGroup --environment MyEnvironment
+"""
+
+helps['containerapp env java-component spring-cloud-config'] = """
+    type: group
+    short-summary: Commands to manage the Spring Cloud Config for the Container Apps environment.
+"""
+
+helps['containerapp env java-component spring-cloud-config create'] = """
+    type: command
+    short-summary: Command to create the Spring Cloud Config.
+    examples:
+    - name: Create a Spring Cloud Config.
+      text: |
+          az containerapp env java-component spring-cloud-config create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component spring-cloud-config delete'] = """
+    type: command
+    short-summary: Command to delete the Spring Cloud Config.
+    examples:
+    - name: Delete a Spring Cloud Config.
+      text: |
+          az containerapp env java-component spring-cloud-config delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component spring-cloud-config show'] = """
+    type: command
+    short-summary: Command to show the Spring Cloud Config.
+    examples:
+    - name: Show a Spring Cloud Config.
+      text: |
+          az containerapp env java-component spring-cloud-config show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component spring-cloud-config update'] = """
+    type: command
+    short-summary: Command to update the Spring Cloud Config.
+    examples:
+    - name: Delete all configurations of the Spring Cloud Config.
+      text: |
+          az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update a Spring Cloud Config with custom configurations.
+      text: |
+          az containerapp env java-component spring-cloud-config update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component spring-cloud-eureka'] = """
+    type: group
+    short-summary: Commands to manage the Spring Cloud Eureka for the Container Apps environment.
+"""
+
+helps['containerapp env java-component spring-cloud-eureka create'] = """
+    type: command
+    short-summary: Command to create the Spring Cloud Eureka.
+    examples:
+    - name: Create a Spring Cloud Eureka with default configuration.
+      text: |
+          az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+    - name: Create a Spring Cloud Eureka with custom configurations.
+      text: |
+          az containerapp env java-component spring-cloud-eureka create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component spring-cloud-eureka delete'] = """
+    type: command
+    short-summary: Command to delete the Spring Cloud Eureka.
+    examples:
+    - name: Delete a Spring Cloud Eureka.
+      text: |
+          az containerapp env java-component spring-cloud-eureka delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component spring-cloud-eureka show'] = """
+    type: command
+    short-summary: Command to show the Spring Cloud Eureka.
+    examples:
+    - name: Show a Spring Cloud Eureka.
+      text: |
+          az containerapp env java-component spring-cloud-eureka show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component spring-cloud-eureka update'] = """
+    type: command
+    short-summary: Command to update the Spring Cloud Eureka.
+    examples:
+    - name: Delete all configurations of the Spring Cloud Eureka.
+      text: |
+          az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update a Spring Cloud Eureka with custom configurations.
+      text: |
+          az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+# Container Apps Telemetry Commands
+
+helps['containerapp env telemetry'] = """
+    type: group
+    short-summary: Commands to manage telemetry settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry data-dog'] = """
+    type: group
+    short-summary: Commands to manage data dog settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry app-insights'] = """
+    type: group
+    short-summary: Commands to manage app insights settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry data-dog set'] = """
+    type: command
+    short-summary: Create or update container apps environment telemetry data dog settings.
+    examples:
+    - name: Create or update container apps environment telemetry data dog settings.
+      text: |
+          az containerapp env telemetry data-dog set -n MyContainerappEnvironment -g MyResourceGroup \\
+              --site dataDogSite --key dataDogKey --enable-open-telemetry-traces true --enable-open-telemetry-metrics true
+"""
+
+helps['containerapp env telemetry app-insights set'] = """
+    type: command
+    short-summary: Create or update container apps environment telemetry app insights settings.
+    examples:
+    - name: Create or update container apps environment telemetry app insights settings.
+      text: |
+          az containerapp env telemetry app-insights set -n MyContainerappEnvironment -g MyResourceGroup \\
+              --connection-string connectionString --enable-open-telemetry-traces true --enable-open-telemetry-logs true
+"""
+
+helps['containerapp env telemetry data-dog delete'] = """
+    type: command
+    short-summary: Delete container apps environment telemetry data dog settings.
+    examples:
+    - name: Delete container apps environment telemetry data dog settings.
+      text: |
+          az containerapp env telemetry data-dog delete -n MyContainerappEnvironment -g MyResourceGroup
+"""
+
+helps['containerapp env telemetry app-insights delete'] = """
+    type: command
+    short-summary: Delete container apps environment telemetry app insights settings.
+    examples:
+    - name: Delete container apps environment telemetry app insights settings.
+      text: |
+          az containerapp env telemetry app-insights delete -n MyContainerappEnvironment -g MyResourceGroup
 """

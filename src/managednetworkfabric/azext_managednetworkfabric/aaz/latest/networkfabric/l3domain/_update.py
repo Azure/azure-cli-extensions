@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-15",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -55,7 +55,6 @@ class Update(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
 
@@ -134,16 +133,19 @@ class Update(AAZCommand):
         connected_subnet_route_policy.export_route_policy_id = AAZResourceIdArg(
             options=["export-route-policy-id"],
             help="ARM Resource ID of the Route Policy. This is used for the backward compatibility.",
+            nullable=True,
         )
 
         export_route_policy = cls._args_schema.connected_subnet_route_policy.export_route_policy
         export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
             options=["export-ipv4-route-policy-id"],
             help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
         )
         export_route_policy.export_ipv6_route_policy_id = AAZResourceIdArg(
             options=["export-ipv6-route-policy-id"],
             help="ARM Resource ID of the RoutePolicy.",
+            nullable=True,
         )
         return cls._args_schema
 
@@ -250,7 +252,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-15",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -302,12 +304,12 @@ class Update(AAZCommand):
             connected_subnet_route_policy = _builder.get(".properties.connectedSubnetRoutePolicy")
             if connected_subnet_route_policy is not None:
                 connected_subnet_route_policy.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy")
-                connected_subnet_route_policy.set_prop("exportRoutePolicyId", AAZStrType, ".export_route_policy_id")
+                connected_subnet_route_policy.set_prop("exportRoutePolicyId", AAZStrType, ".export_route_policy_id", typ_kwargs={"nullable": True})
 
             export_route_policy = _builder.get(".properties.connectedSubnetRoutePolicy.exportRoutePolicy")
             if export_route_policy is not None:
-                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
-                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
+                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id", typ_kwargs={"nullable": True})
+                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id", typ_kwargs={"nullable": True})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -407,14 +409,17 @@ class Update(AAZCommand):
             )
             connected_subnet_route_policy.export_route_policy_id = AAZStrType(
                 serialized_name="exportRoutePolicyId",
+                nullable=True,
             )
 
             export_route_policy = cls._schema_on_200.properties.connected_subnet_route_policy.export_route_policy
             export_route_policy.export_ipv4_route_policy_id = AAZStrType(
                 serialized_name="exportIpv4RoutePolicyId",
+                nullable=True,
             )
             export_route_policy.export_ipv6_route_policy_id = AAZStrType(
                 serialized_name="exportIpv6RoutePolicyId",
+                nullable=True,
             )
 
             system_data = cls._schema_on_200.system_data

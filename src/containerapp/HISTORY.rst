@@ -4,6 +4,28 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env telemetry data-dog set': Support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry data-dog delete': Support delete environment data dog configuration
+* 'az containerapp env telemetry app-insights set': Support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
+* 'az containerapp env telemetry app-insights delete': Support delete environment app insights configuration
+* 'az containerapp update/up': Explicitly set container name to container app name for source to cloud builds.
+
+0.3.48
+++++++
+* 'az containerapp service': Remove deprecated command group altogether, only keep 'az containerapp add-on' for add-ons
+* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
+* 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
+* 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
+* 'az containerapp up': Fix registry not found error in subscription when registry server parameters are provided for ACR from another subscription
+* 'az containerapp env java-component': Support list Java components
+* 'az containerapp env java-component spring-cloud-config': Support create/update/show/delete Spring Cloud Config
+* 'az containerapp env java-component spring-cloud-eureka': Support create/update/show/delete Spring Cloud Eureka
+* 'az containerapp create/update': Support bind Java component with --bind
+* 'az containerapp create/update/up': Fix issue with logs when the Cloud Build project to use generates UTF-8 logs.
+* 'az containerapp update/up': Fix bug for multiple containers provisioned for source to cloud build
+
+0.3.47
+++++++
 * 'az containerapp add-on' : support for add-on milvus create and delete commands
 * [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.59.0
 * 'az containerapp add-on' : support for add-on weaviate create and delete commands
@@ -12,6 +34,8 @@ upcoming
 * 'az containerapp create/update': support --max-inactive-revisions
 * 'az containerapp env create': support --mi-system-assigned and --mi-user-assigned for environment create commands
 * 'az containerapp env identity': support for container app environment assign/remove/show commands
+* 'az containerapp env storage set': Support create or update managed environment storage with NFS Azure File.
+* 'az containerapp up': Update the Docker error string used to identify unauthorized push.
 
 0.3.46
 ++++++

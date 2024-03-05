@@ -2,6 +2,15 @@
 
 Release History
 ===============
+1.0.0b1
+++++++
+* `az automation account list-keys`: Add new command to retrieve the automation keys for an account.
+* `az automation account show-linked-workspace`: Add new command to get the linked workspace.
+* `az automation configuration`: Add new command group to support Dsc Configuration management.
+* `az automation runtime-environment`: Add new command group to support managing runtime environment.
+* `az automation runtime-environment package`: Add new command group to support managing runtime environment packages.
+* `az automation source-control sync-job stream show/list`: Add new command to retrieve sync job stream.
+
 0.2.2
 ++++++
 * Updated create software update configuration cmdlet to address the bug to allow multiple values for classifications.
