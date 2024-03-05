@@ -66849,31 +66849,45 @@
                         "Intended Audience :: Developers",
                         "Intended Audience :: System Administrators",
                         "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
                         "Programming Language :: Python :: 3.8",
                         "License :: OSI Approved :: MIT License"
                     ],
                     "extensions": {
                         "python.details": {
-                            "contacts": [
-                                {
-                                    "email": "azpycli@microsoft.com",
-                                    "name": "Microsoft Corporation",
-                                    "role": "author"
-                                }
-                            ],
-                            "document_names": {
-                                "description": "DESCRIPTION.rst"
-                            },
-                            "project_urls": {
-                                "Home": "https://msazure.visualstudio.com/msk8s/_git/azstackhci-util?version=GBmain"
+                        "contacts": [
+                            {
+                            "email": "azpycli@microsoft.com",
+                            "name": "Microsoft Corporation",
+                            "role": "author"
                             }
+                        ],
+                        "document_names": {
+                            "description": "DESCRIPTION.rst"
+                        },
+                        "project_urls": {
+                            "Home": "***/tree/master/src/stack-hci-vm"
+                        }
                         }
                     },
+                    "extras": [],
                     "generator": "bdist_wheel (0.30.0)",
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "stack-hci-vm",
-                    "summary": "Microsoft Azure Command-Line Tools AzureStackHCIClient Extension ",
+                    "run_requires": [
+                        {
+                        "requires": [
+                            "azure-identity",
+                            "azure-identity",
+                            "azure-mgmt-resourcegraph",
+                            "azure-mgmt-resourcegraph"
+                        ]
+                        }
+                    ],
+                    "summary": "Microsoft Azure Command-Line Tools Stack-HCi-VM Extension",
                     "version": "1.0.0"
                 },
                 "sha256Digest": "6046dbfa02b5fc5232acaab8a1ef7c3b6c08a5946f880eea0e86e5133cd659b2"
