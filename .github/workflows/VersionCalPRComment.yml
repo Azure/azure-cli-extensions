@@ -95,6 +95,8 @@ jobs:
         id: get_comment_message
         env:
           pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
+          base_branch: ${{ github.event.pull_request.base.ref }}
+          diff_branch: ${{ github.event.pull_request.head.ref }}
           base_meta_path: "./base_meta/"
           diff_meta_path: "./diff_meta/"
           output_file: "version_update.txt"
