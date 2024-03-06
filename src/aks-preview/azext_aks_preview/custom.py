@@ -2967,12 +2967,10 @@ def aks_mesh_get_upgrades(
     upgradeProfiles = client.list_mesh_upgrade_profiles(resource_group_name, name)
     is_empty, upgradeProfiles = check_iterator(upgradeProfiles)
     if is_empty:
-        logger.warning("No mesh upgrade profiles found for the cluster '%s'" +
+        logger.warning("No mesh upgrade profiles found for the cluster '%s' " +
                        "in the resource group '%s'.", name, resource_group_name)
         return None
-    # 'upgradeProfiles' is an ItemPaged object
     upgrades = []
-    # Iterate over items within pages
     for item in upgradeProfiles:
         upgrades.append(item.properties)
 
