@@ -101,28 +101,28 @@ jobs:
            source ./env/bin/activate
            set -ev
            git checkout ${{ env.base_branch }}
-           mkdir ${base_meta_path}
+           mkdir ${{ env.base_meta_path }}
            for mod in ${{ env.changed_module_list }}
            do
               echo **************************
               echo changed module: ${mod}
-              azdev extension add ${mod} && azdev command-change meta-export ${mod} --meta-output-path ./${base_meta_path}/ && azdev extension remove ${mod}
+              azdev extension add ${mod} && azdev command-change meta-export ${mod} --meta-output-path ./${{ env.base_meta_path }}/ && azdev extension remove ${mod}
               echo **************************
            done
            git checkout ${{ env.diff_branch }}
-           mkdir ${diff_meta_path}
+           mkdir ${{ env.diff_meta_path }}
            for mod in ${{ env.changed_module_list }}
            do
               echo **************************
               echo changed module: ${mod}
-              azdev extension add ${mod} && azdev command-change meta-export ${mod} --meta-output-path ./${diff_meta_path}/ && azdev extension remove ${mod}
+              azdev extension add ${mod} && azdev command-change meta-export ${mod} --meta-output-path ./${{ env.diff_meta_path }}/ && azdev extension remove ${mod}
               echo **************************
            done
-           ls ./${base_meta_path}/
-           ls ./${diff_meta_path}/
+           ls ./${{ env.base_meta_path }}/
+           ls ./${{ env.diff_meta_path }}/
            git checkout ${{ env.base_branch }}
            python scripts/ci/release_version_cal.py
-           # echo "commit_message=$(cat ${output_file})" >> $GITHUB_ENV
+           # echo "commit_message=$(cat ${{ env.output_file }})" >> $GITHUB_ENV
       - name: Comment on the pull request
         uses: mshick/add-pr-comment@v2
         with:
