@@ -37,8 +37,6 @@ class GlobalVariables:
         self.block_print = False
         self.trycount = 0
         self.os_is_windows = False
-        self.new_auth_flow = "0"
-
 
 class PrintClass:
     CYAN = 36
@@ -302,6 +300,7 @@ class SerialConsole:
 
         self.websocket_url = None
         self.access_token = None
+        self.new_auth_flow = "0"
 
     @staticmethod
     def listen_for_keys():

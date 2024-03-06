@@ -3,7 +3,7 @@ Release History
 
 0.1.7
 ++++++
-New websocket authentication mechanism
+* Preparation for the new websocket authentication mechanism
 
 0.1.6
 ++++++
