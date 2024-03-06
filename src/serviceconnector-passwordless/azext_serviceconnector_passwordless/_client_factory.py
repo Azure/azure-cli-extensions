@@ -2,8 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
 import os
+
+
 # pylint: disable=consider-using-f-string
 def cf_connection_cl(cli_ctx, *_):
     from azure.mgmt.servicelinker import ServiceLinkerManagementClient
