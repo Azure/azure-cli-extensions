@@ -61,7 +61,7 @@ helps['quantum job list'] = """
 
 helps['quantum job output'] = """
     type: command
-    short-summary: Get the results of running a Q# job.
+    short-summary: Get the results of running a job.
     examples:
       - name: Print the results of a successful Azure Quantum job.
         text: |-
@@ -99,7 +99,7 @@ helps['quantum job submit'] = """
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --target-capability MyTargetCapability
-      - name: Submit QIR bitcode from a file in the current folder.
+      - name: Submit QIR bitcode or human-readable LLVM code from a file in the current folder.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\

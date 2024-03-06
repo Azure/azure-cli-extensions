@@ -21,6 +21,8 @@ from azext_logic.aaz.latest.logic.integration_account import Update as _Integrat
 from azext_logic.aaz.latest.logic.integration_account import List as _IntegrationAccountList
 from azext_logic.aaz.latest.logic.integration_account.map import Create as _MapCreate
 from azext_logic.aaz.latest.logic.integration_account.map import Update as _MapUpdate
+from azext_logic.aaz.latest.logic.integration_account.partner import List as _PartnerList
+from azext_logic.aaz.latest.logic.integration_account.session import List as _SessionList
 
 logger = get_logger(__name__)
 
@@ -134,6 +136,7 @@ class WorkflowCreate(_WorkflowCreate):
                                                 "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         )
         args_schema.identity._registered = False
+        args_schema.parameters._registered = False
         return args_schema
 
     def pre_operations(self):
@@ -142,6 +145,7 @@ class WorkflowCreate(_WorkflowCreate):
             raise RequiredArgumentMissingError("--definition does not contain a 'definition' key")
         definition = args.definition.to_serialized_data()
         args.access_control = definition.get('accessControl', args.access_control)
+        args.parameters = definition.get('parameters', None)
         args.definition = definition['definition']
         if args.mi_system_assigned:
             args.identity.type = "SystemAssigned"
@@ -165,6 +169,7 @@ class WorkflowUpdate(_WorkflowUpdate):
         args_schema.integration_service_environment._registered = False
         args_schema.integration_account._registered = False
         args_schema.access_control._registered = False
+        args_schema.parameters._registered = False
         return args_schema
 
     def pre_operations(self):
@@ -175,6 +180,7 @@ class WorkflowUpdate(_WorkflowUpdate):
             definition = args.definition.to_serialized_data()
             args.definition = definition['definition']
             args.access_control = definition.get('accessControl', args.access_control)
+            args.parameters = definition.get('parameters', None)
 
     def pre_instance_update(self, instance):
         self.ctx.args.location = instance.location
@@ -292,6 +298,30 @@ class IntegrationAccountList(_IntegrationAccountList):
 
 
 class WorkflowList(_WorkflowList):
+    def _output(self, *args, **kwargs):
+        args = self.ctx.args
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        if has_value(args.top):
+            next_link = None
+            if len(result) > self.ctx.args.top:
+                result = result[:args.top.to_serialized_data()]
+        return result, next_link
+
+
+class PartnerList(_PartnerList):
+    def _output(self, *args, **kwargs):
+        args = self.ctx.args
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        if has_value(args.top):
+            next_link = None
+            if len(result) > self.ctx.args.top:
+                result = result[:args.top.to_serialized_data()]
+        return result, next_link
+
+
+class SessionList(_SessionList):
     def _output(self, *args, **kwargs):
         args = self.ctx.args
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)

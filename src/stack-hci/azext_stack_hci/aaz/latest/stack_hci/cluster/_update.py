@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}", "2023-08-01"],
         ]
     }
 
@@ -192,7 +192,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-08-01",
                     required=True,
                 ),
             }
@@ -275,7 +275,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-08-01",
                     required=True,
                 ),
             }
@@ -459,8 +459,15 @@ class _UpdateHelper:
         properties.cloud_management_endpoint = AAZStrType(
             serialized_name="cloudManagementEndpoint",
         )
+        properties.connectivity_status = AAZStrType(
+            serialized_name="connectivityStatus",
+            flags={"read_only": True},
+        )
         properties.desired_properties = AAZObjectType(
             serialized_name="desiredProperties",
+        )
+        properties.isolated_vm_attestation_configuration = AAZObjectType(
+            serialized_name="isolatedVmAttestationConfiguration",
         )
         properties.last_billing_timestamp = AAZStrType(
             serialized_name="lastBillingTimestamp",
@@ -508,6 +515,20 @@ class _UpdateHelper:
             serialized_name="windowsServerSubscription",
         )
 
+        isolated_vm_attestation_configuration = _schema_cluster_read.properties.isolated_vm_attestation_configuration
+        isolated_vm_attestation_configuration.attestation_resource_id = AAZStrType(
+            serialized_name="attestationResourceId",
+            flags={"read_only": True},
+        )
+        isolated_vm_attestation_configuration.attestation_service_endpoint = AAZStrType(
+            serialized_name="attestationServiceEndpoint",
+            flags={"read_only": True},
+        )
+        isolated_vm_attestation_configuration.relying_party_service_endpoint = AAZStrType(
+            serialized_name="relyingPartyServiceEndpoint",
+            flags={"read_only": True},
+        )
+
         reported_properties = _schema_cluster_read.properties.reported_properties
         reported_properties.cluster_id = AAZStrType(
             serialized_name="clusterId",
@@ -540,6 +561,10 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         reported_properties.nodes = AAZListType(
+            flags={"read_only": True},
+        )
+        reported_properties.oem_activation = AAZStrType(
+            serialized_name="oemActivation",
             flags={"read_only": True},
         )
         reported_properties.supported_capabilities = AAZListType(
@@ -583,6 +608,10 @@ class _UpdateHelper:
             serialized_name="nodeType",
             flags={"read_only": True},
         )
+        _element.oem_activation = AAZStrType(
+            serialized_name="oemActivation",
+            flags={"read_only": True},
+        )
         _element.os_display_version = AAZStrType(
             serialized_name="osDisplayVersion",
             flags={"read_only": True},
@@ -605,9 +634,7 @@ class _UpdateHelper:
         )
 
         supported_capabilities = _schema_cluster_read.properties.reported_properties.supported_capabilities
-        supported_capabilities.Element = AAZStrType(
-            flags={"read_only": True},
-        )
+        supported_capabilities.Element = AAZStrType()
 
         software_assurance_properties = _schema_cluster_read.properties.software_assurance_properties
         software_assurance_properties.last_updated = AAZStrType(
@@ -619,6 +646,7 @@ class _UpdateHelper:
         )
         software_assurance_properties.software_assurance_status = AAZStrType(
             serialized_name="softwareAssuranceStatus",
+            flags={"read_only": True},
         )
 
         system_data = _schema_cluster_read.system_data

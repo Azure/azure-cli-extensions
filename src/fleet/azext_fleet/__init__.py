@@ -26,9 +26,9 @@ class FleetCommandsLoader(AzCommandsLoader):
         register_fleet_resource_type()
 
         fleet_custom = CliCommandType(operations_tmpl='azext_fleet.custom#{}')
-        super(FleetCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  resource_type=CUSTOM_MGMT_FLEET,
-                                                  custom_command_type=fleet_custom)
+        super().__init__(cli_ctx=cli_ctx,
+                         resource_type=CUSTOM_MGMT_FLEET,
+                         custom_command_type=fleet_custom)
 
     def load_command_table(self, args):
         from azext_fleet.commands import load_command_table

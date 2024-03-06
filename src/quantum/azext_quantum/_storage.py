@@ -48,8 +48,8 @@ def create_container_using_client(container_client: ContainerClient):
     """
     if not container_client.exists():
         logger.debug(
-            f'{"  - uploading to **new** container:"}'
-            f"{container_client.container_name}"
+            "  - uploading to **new** container: %s",
+            container_client.container_name
         )
         container_client.create_container()
 
@@ -82,13 +82,13 @@ def upload_blob(
     blob = container.get_blob_client(blob_name)
 
     blob.upload_blob(data, content_settings=content_settings)
-    logger.debug(f"  - blob '{blob_name}' uploaded. generating sas token.")
+    logger.debug("  - blob '%s' uploaded. generating sas token.", blob_name)
 
     if return_sas_token:
         uri = get_blob_uri_with_sas_token(blob)
     else:
         uri = remove_sas_token(blob.url)
-    logger.debug(f"  - blob access url: '{uri}'.")
+    logger.debug("  - blob access url: '%s'.", uri)
 
     return uri
 

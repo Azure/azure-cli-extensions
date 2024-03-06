@@ -3,6 +3,22 @@
 Release History
 ===============
 
+1.0.0b1
+++++++
+* [2024-02-08] Version intended to work with QDK version 0.29.0
+* Updated documentations and messages.
+
+0.21.0
+++++++
+* [2024-01-10] Version intended to work with QDK version 0.29.0
+* Updated documentation to support the Modern QDK. Users can now utilize the Modern QDK to generate QIR in human-readable LLVM code and submit it using CLI. For detailed instructions, please refer to: https://github.com/microsoft/qsharp/wiki/Differences-from-the-previous-QDK#qir-generation.
+* Added a message to warn users that the Classic QDK is on its way to deprecation.
+
+0.20.0
+++++++
+* [2023-12-13] Version intended to work with QDK version 0.29.0
+* Adding an ability to get a job output (for certain targets) even if the job is in `Failed` state.
+
 0.19.0
 ++++++
 * [2023-02-27] Version intended to work with QDK version 0.27.253010

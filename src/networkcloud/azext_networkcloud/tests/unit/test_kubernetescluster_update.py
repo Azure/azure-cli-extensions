@@ -3,12 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
-from abc import ABC
 from unittest import mock
 
 from azext_networkcloud import NetworkcloudCommandsLoader
-from azext_networkcloud.operations.common_ssh import CustomSshOptions
 from azext_networkcloud.operations.kubernetescluster._update import Update
+from azure.cli.core.aaz._base import AAZUndefined
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.mock import DummyCli
@@ -62,16 +61,37 @@ class TestKubernetesClusterUpdate(unittest.TestCase):
         args = mock.Mock()
         self.cmd.ctx = mock.Mock()
 
+        # no ssh keys passed to agent pool
+        args.ssh_key_values = AAZUndefined
+        args.control_plane_node_configuration.ssh_key_values = []
+        args.ssh_dest_key_path = AAZUndefined
+        args.generate_ssh_keys = AAZUndefined
+        args.ssh_public_keys = AAZUndefined
+
+        self.cmd.ctx = mock.Mock()
+        self.cmd.ctx.args = args
+
+        self.cmd.pre_operations()
+        self.assertEqual(
+            None,
+            args.ssh_public_keys,
+            "no ssh keys passed - none are expected after transformation",
+        )
+
         # Mock data to contain only root level admin configuration provided
         args.ssh_key_values = self.keys
         args.control_plane_node_configuration.ssh_key_values = []
-        args.ssh_dest_key_path = []
-        args.generate_ssh_keys = []
+        args.ssh_dest_key_path = AAZUndefined
+        args.generate_ssh_keys = AAZUndefined
+        args.ssh_public_keys = AAZUndefined
         self.cmd.ctx.args = args
 
-        # Call func
         self.cmd.pre_operations()
-        self.assertEqual(len(args.ssh_public_keys), 2)
+        self.assertEqual(
+            len(args.ssh_public_keys),
+            len(self.keys),
+            "ssh keys are expected in the cluster admin configuration",
+        )
 
         # Test admin configuration in control_plane_node_configuration is updated
         args.control_plane_node_configuration.ssh_public_keys = None
@@ -80,23 +100,43 @@ class TestKubernetesClusterUpdate(unittest.TestCase):
         args.control_plane_node_configuration.ssh_key_values = self.keys
         self.cmd.ctx.args = args
 
-        # Call func
         self.cmd.pre_operations()
-        # Validate control_plane_node_configuration is updated
         self.assertEqual(len(args.ssh_public_keys), 0)
-        self.assertEqual(len(args.control_plane_node_configuration.ssh_public_keys), 2)
+        self.assertEqual(
+            len(args.control_plane_node_configuration.ssh_public_keys),
+            len(self.keys),
+            "ssh keys are expected in the control plane node configuration",
+        )
 
         # Validate control_plane_node_configuration structure does not contain ssh_public_keys array
         # when no ssh key is provided in the input
         args.ssh_key_values = []
         args.control_plane_node_configuration.ssh_public_keys = None
+        args.control_plane_node_configuration.ssh_key_values = AAZUndefined
+        self.cmd.ctx.args = args
+
+        self.cmd.pre_operations()
+        self.assertEqual(len(args.ssh_public_keys), 0)
+        self.assertEqual(
+            None,
+            args.control_plane_node_configuration.ssh_public_keys,
+            "no ssh keys are expected in the control plane node configuration",
+        )
+
+        # Validate control_plane_node_configuration structure contain empty array
+        # when an empty array is provided in the input
+        args.ssh_key_values = []
+        args.control_plane_node_configuration.ssh_public_keys = None
         args.control_plane_node_configuration.ssh_key_values = []
         self.cmd.ctx.args = args
 
-        # Call func
         self.cmd.pre_operations()
         self.assertEqual(len(args.ssh_public_keys), 0)
-        self.assertEqual(None, args.control_plane_node_configuration.ssh_public_keys)
+        self.assertEqual(
+            0,
+            len(args.control_plane_node_configuration.ssh_public_keys),
+            "no ssh keys are expected in the control plane node configuration",
+        )
 
     @mock.patch("azure.cli.core.keys.generate_ssh_keys")
     @mock.patch("os.path.expanduser")

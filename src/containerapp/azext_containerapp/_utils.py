@@ -692,3 +692,23 @@ def log_in_file(log_text, opened_file, no_print=False):
 def remove_ansi_characters(text):
     regular_expression = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
     return regular_expression.sub("", text)
+
+
+def parse_build_env_vars(env_list):
+    if not env_list:
+        return None
+
+    env_pairs = {}
+
+    for pair in env_list:
+        key_val = pair.split('=', 1)
+        env_pairs[key_val[0]] = key_val[1]
+
+    env_var_def = []
+    for key, value in env_pairs.items():
+        env_var_def.append({
+            "name": key,
+            "value": value
+        })
+
+    return env_var_def

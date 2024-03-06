@@ -15,6 +15,7 @@ from azext_confcom.os_util import load_json_from_str
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
+
 class TemplateUtil(unittest.TestCase):
     def test_case_insensitive_dict_get(self):
         test_dict = {"key1": "value1", "key2": "value2", "KEY3": "value3"}
@@ -76,7 +77,7 @@ class TemplateUtil(unittest.TestCase):
                                 "strategy": "string",
                         },
                         {
-                                "pattern": "((?i)FABRIC)_.+=.+",
+                                "pattern": "(?i)(FABRIC)_.+=.+",
                                 "required": false,
                                 "strategy": "re2",
                         },

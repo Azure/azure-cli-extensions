@@ -16,20 +16,17 @@ from knack.arguments import CLIArgumentType
 from ._completers import get_af_subresource_completion_list
 from ._validators import (
     get_public_ip_validator, get_subnet_validator, validate_application_rule_protocols,
-    validate_firewall_policy, validate_rule_group_collection, process_private_ranges,
+    validate_firewall_policy, process_private_ranges,
     process_threat_intel_allowlist_ip_addresses, process_threat_intel_allowlist_fqdns,
-    validate_virtual_hub, get_management_subnet_validator, get_management_public_ip_validator,
-    validate_ip_groups)
+    validate_virtual_hub, get_management_subnet_validator, get_management_public_ip_validator)
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
 def load_arguments(self, _):
     (AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType,
-     AzureFirewallNatRCActionType, FirewallPolicySkuTier, FirewallPolicyIntrusionDetectionStateType,
-     FirewallPolicyIntrusionDetectionProtocol, AzureFirewallSkuTier) = \
+     AzureFirewallNatRCActionType, AzureFirewallSkuTier) = \
         self.get_models('AzureFirewallNetworkRuleProtocol', 'AzureFirewallRCActionType',
-                        'AzureFirewallNatRCActionType', 'FirewallPolicySkuTier', 'FirewallPolicyIntrusionDetectionStateType',
-                        'FirewallPolicyIntrusionDetectionProtocol', 'AzureFirewallSkuTier')
+                        'AzureFirewallNatRCActionType', 'AzureFirewallSkuTier')
 
     firewall_name_type = CLIArgumentType(options_list=['--firewall-name', '-f'], metavar='NAME', help='Azure Firewall name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/azureFirewalls'))
     collection_name_type = CLIArgumentType(options_list=['--collection-name', '-c'], help='Name of the rule collection.', id_part='child_name_1')

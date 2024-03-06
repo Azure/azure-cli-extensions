@@ -203,7 +203,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             ],
         ).get_output_in_json()
         vm_moRefId = vm['infrastructureProfile']['moRefId']
-        self.kwargs.update({ 'vm_moRefId': vm_moRefId })
+        self.kwargs.update({'vm_moRefId': vm_moRefId})
         self.assertIsNotNone(vm_moRefId)
         self.assertNotEqual(len(vm_moRefId), 0, 'moRefId of the VM should not be empty')
 

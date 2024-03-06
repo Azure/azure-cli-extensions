@@ -23,7 +23,8 @@ def validate_kubernetes_version(namespace):
         found = k8s_release_regex.findall(namespace.kubernetes_version)
         if not found:
             raise InvalidArgumentValueError(
-                '--kubernetes-version should be the full version number or alias minor version, such as "1.7.12" or "1.7"')
+                '--kubernetes-version should be the full version number '
+                'or alias minor version, such as "1.7.12" or "1.7"')
 
 
 def validate_apiserver_subnet_id(namespace):
@@ -36,12 +37,12 @@ def validate_agent_subnet_id(namespace):
 
 def validate_update_strategy_name(namespace):
     if namespace.update_strategy_name is not None and not namespace.update_strategy_name.strip():
-            raise CLIError("--update-strategy-name is not a valid name")
+        raise CLIError("--update-strategy-name is not a valid name")
 
 
 def validate_vm_size(namespace):
     if namespace.vm_size is not None and not namespace.vm_size.strip():
-            raise CLIError("--vm-size is not a valid value")
+        raise CLIError("--vm-size is not a valid value")
 
 
 def _validate_subnet_id(subnet_id, name):

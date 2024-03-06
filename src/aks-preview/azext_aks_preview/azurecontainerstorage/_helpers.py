@@ -3,12 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.azclierror import UnknownError
-from azure.cli.command_modules.acs._roleassignments import (
-    add_role_assignment,
-    build_role_scope,
-    delete_role_assignments,
-)
+import time
+from datetime import datetime
+
 from azext_aks_preview._client_factory import get_providers_client_factory
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_K8S_EXTENSION_NAME,
@@ -16,25 +13,32 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
     CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
     CONST_K8S_EXTENSION_NAME,
-    CONST_STORAGE_POOL_NAME_PREFIX,
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     RP_REGISTRATION_POLLING_INTERVAL_IN_SEC,
 )
-
-from datetime import datetime
+from azure.cli.command_modules.acs._roleassignments import (
+    add_role_assignment,
+    build_role_scope,
+    delete_role_assignments,
+)
+from azure.cli.core.azclierror import UnknownError
 from knack.log import get_logger
-import time
 
 logger = get_logger(__name__)
 
 
 def register_dependent_rps(cmd, subscription_id) -> bool:
     required_rp = 'Microsoft.KubernetesConfiguration'
-    from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
+    from azure.mgmt.resource.resources.models import (
+        ProviderConsentDefinition, ProviderRegistrationRequest)
 
-    properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=False))
+    properties = ProviderRegistrationRequest(
+        third_party_provider_consent=ProviderConsentDefinition(
+            consent_to_authorization=False
+        )
+    )
     client = get_providers_client_factory(cmd.cli_ctx)
     is_registered = False
     try:
@@ -50,16 +54,17 @@ def register_dependent_rps(cmd, subscription_id) -> bool:
             is_registered = _is_rp_registered(cmd, required_rp, subscription_id)
             time.sleep(RP_REGISTRATION_POLLING_INTERVAL_IN_SEC)
             if (datetime.utcnow() - start).seconds >= timeout_secs:
-                logger.error("Timed out while waiting for the {0} resource provider to be registered.".format(required_rp))
+                logger.error(
+                    "Timed out while waiting for the %s resource provider to be registered.", required_rp
+                )
                 break
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-except
         logger.error(
-            "Installation of Azure Container Storage requires registering to the following resource provider: {0}. "
-            "We were unable to perform the registration on your behalf due to the following error: {1}\n"
-            "Please check with your admin on permissions, "
-            "or try running registration manually with: `az provider register --namespace {0}` command."
-            .format(required_rp, e.msg)
+            "Installation of Azure Container Storage requires registering to the following resource provider: %s. "
+            "We were unable to perform the registration on your behalf due to the following error: %s\n"
+            "Please check with your admin on permissions, or try running registration manually with: "
+            "`az provider register --namespace %s` command.", required_rp, e, required_rp
         )
 
     return is_registered
@@ -75,7 +80,13 @@ def should_create_storagepool(
     agentpool_details,
     nodepool_name,
 ):
-    role_assignment_success = perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, True)
+    role_assignment_success = perform_role_operations_on_managed_rg(
+        cmd,
+        subscription_id,
+        node_resource_group,
+        kubelet_identity_object_id,
+        True
+    )
     return_val = True
 
     if not role_assignment_success:
@@ -108,7 +119,13 @@ def should_create_storagepool(
     return return_val
 
 
-def perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, assign):
+def perform_role_operations_on_managed_rg(
+    cmd,
+    subscription_id,
+    node_resource_group,
+    kubelet_identity_object_id,
+    assign
+):
     managed_rg_role_scope = build_role_scope(node_resource_group, None, subscription_id)
     roles = ["Reader", "Network Contributor", "Elastic SAN Owner", "Elastic SAN Volume Group Owner"]
     result = True
@@ -136,7 +153,7 @@ def perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_gr
 
             if not result:
                 break
-        except Exception as ex:
+        except Exception:  # pylint: disable=broad-except
             break
     else:
         return True
@@ -156,8 +173,8 @@ def get_k8s_extension_module(module_name):
         from importlib import import_module
         azext_custom = import_module(module_name)
         return azext_custom
-    except ImportError as ie:
-        raise UnknownError(
+    except ImportError:
+        raise UnknownError(  # pylint: disable=raise-missing-from
             "Please add CLI extension `k8s-extension` for performing Azure Container Storage operations.\n"
             "Run command `az extension add --name k8s-extension`"
         )
@@ -180,7 +197,7 @@ def check_if_extension_is_installed(cmd, resource_group, cluster_name) -> bool:
         extension_type = extension.extension_type.lower()
         if extension_type != CONST_ACSTOR_K8S_EXTENSION_NAME:
             return_val = False
-    except:
+    except:  # pylint: disable=bare-except
         return_val = False
 
     return return_val

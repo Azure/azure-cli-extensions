@@ -156,7 +156,7 @@ def _add_quantum_providers(cmd, workspace, providers, auto_accept, skip_autoadd)
         _autoadd_providers(cmd, providers_in_region, providers_selected, workspace.location, auto_accept)
 
     # If there weren't any autoAdd providers and none were specified with the -r parameter, we have a problem...
-    if providers_selected == []:
+    if not providers_selected:
         raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs (plans) is required.",
                                            "Supply the missing -r parameter. For example:\n"
                                            "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
@@ -202,12 +202,10 @@ def _create_role_assignment(cmd, quantum_workspace):
 
 def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tiers_or_kinds):
     if tier_or_kind not in supported_tiers_or_kinds:
-        tier_or_kind_list = ''
-        for item in supported_tiers_or_kinds:
-            tier_or_kind_list += f"{item}, "
+        tier_or_kind_list = ', '.join(supported_tiers_or_kinds)
         plural = 's' if len(supported_tiers_or_kinds) != 1 else ''
         raise InvalidArgumentValueError(f"Storage account {tier_or_kind_msg_text} '{tier_or_kind}' is not supported.\n"
-                                        f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list[:-2]}")
+                                        f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list}")
 
 
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,

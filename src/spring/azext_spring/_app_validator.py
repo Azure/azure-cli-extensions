@@ -159,6 +159,6 @@ def _validate_container_registry(cmd, namespace):
                         " See more details in https://learn.microsoft.com/en-us/azure/spring-apps/how-to-deploy-with-custom-container-image?tabs=azure-cli")
         except ResourceNotFoundError:
             if namespace.source_path or namespace.artifact_path:
-                    raise InvalidArgumentValueError(
-                        "The instance without build service can only use '--container-image' to deploy."
-                        " See more details in https://learn.microsoft.com/en-us/azure/spring-apps/how-to-deploy-with-custom-container-image?tabs=azure-cli")
+                raise InvalidArgumentValueError(
+                    "The instance without build service can only use '--container-image' to deploy."
+                    " See more details in https://learn.microsoft.com/en-us/azure/spring-apps/how-to-deploy-with-custom-container-image?tabs=azure-cli")

@@ -3,14 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
-from abc import ABC
 from unittest import mock
 
 from azext_networkcloud import NetworkcloudCommandsLoader
-from azext_networkcloud.operations.common_ssh import CustomSshOptions
 from azext_networkcloud.operations.kubernetescluster._create import Create
-from azure.cli.core.azclierror import InvalidArgumentValueError
-from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.mock import DummyCli
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa

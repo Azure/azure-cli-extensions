@@ -117,7 +117,7 @@ def transform_output(results):
                 ]))
         return table
 
-    elif isinstance(results, list) and len(results) > 0 and 'reportData' in results[0]:
+    elif isinstance(results, list) and len(results) > 0 and 'reportData' in results[0]:  # pylint: disable=too-many-nested-blocks
         table = []
 
         indices = range(len(results))

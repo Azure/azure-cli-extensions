@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=line-too-long
+
 from azure.cli.core import AzCommandsLoader
 
 import azext_quantum._help  # pylint: disable=unused-import
@@ -11,7 +13,7 @@ import azext_quantum._help  # pylint: disable=unused-import
 # This is the version reported by the CLI to the service when submitting requests.
 # This should be in sync with the extension version in 'setup.py', unless we need to
 # submit using a different version.
-CLI_REPORTED_VERSION = "0.19.0"
+CLI_REPORTED_VERSION = "1.0.0b1"
 
 
 class QuantumCommandsLoader(AzCommandsLoader):
@@ -35,7 +37,7 @@ class QuantumCommandsLoader(AzCommandsLoader):
         from ._version_check_helper import check_version
         from .operations.workspace import _show_tip
         from datetime import datetime
-        message = check_version(self.cli_ctx_config, CLI_REPORTED_VERSION, str(datetime.today()).split(' ')[0])
+        message = check_version(self.cli_ctx_config, CLI_REPORTED_VERSION, str(datetime.today()).split(' ', maxsplit=1)[0])
         if message is not None:
             _show_tip(message)
 

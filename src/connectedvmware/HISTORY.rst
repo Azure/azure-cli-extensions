@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.2.4
+++++++
+* Link existing HCRP machine to vCenter using the CLI.
+* Add examples in help.
+
 0.2.3
 ++++++
 * Fix docs and help for vm creation from template with disk override.

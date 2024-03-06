@@ -92,15 +92,6 @@ class DisableRemoteVendorManagement(AAZCommand):
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
@@ -164,9 +155,6 @@ class DisableRemoteVendorManagement(AAZCommand):
                 ),
             }
             return parameters
-
-        def on_204(self, session):
-            pass
 
         def on_200_201(self, session):
             data = self.deserialize_http_content(session)

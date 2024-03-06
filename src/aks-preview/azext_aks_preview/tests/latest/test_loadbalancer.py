@@ -7,13 +7,9 @@ import unittest
 from azext_aks_preview import _loadbalancer as loadbalancer
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview.managed_cluster_decorator import (
-    AKSPreviewManagedClusterModels,
-)
+from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterModels
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockCmd
-from azure.cli.core.azclierror import (
-    InvalidArgumentValueError,
-)
+
 
 class TestLoadBalancer(unittest.TestCase):
     def setUp(self):
@@ -51,15 +47,17 @@ class TestLoadBalancer(unittest.TestCase):
 
         profile = ManagedClusterLoadBalancerProfile()
         # ips -> i_ps due to track 2 naming issue
-        profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-            count=2
+        profile.managed_outbound_i_ps = (
+            ManagedClusterLoadBalancerProfileManagedOutboundIPs(count=2)
         )
         # ips -> i_ps due to track 2 naming issue
         profile.outbound_i_ps = ManagedClusterLoadBalancerProfileOutboundIPs(
             public_i_ps="public_ips"
         )
-        profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
-            public_ip_prefixes="public_ip_prefixes"
+        profile.outbound_ip_prefixes = (
+            ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                public_ip_prefixes="public_ip_prefixes"
+            )
         )
 
         p = loadbalancer.configure_load_balancer_profile(
@@ -107,17 +105,18 @@ class TestLoadBalancer(unittest.TestCase):
 
         profile = ManagedClusterLoadBalancerProfile()
         # ips -> i_ps due to track 2 naming issue
-        profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-            count=2
+        profile.managed_outbound_i_ps = (
+            ManagedClusterLoadBalancerProfileManagedOutboundIPs(count=2)
         )
         # ips -> i_ps due to track 2 naming issue
         profile.outbound_i_ps = ManagedClusterLoadBalancerProfileOutboundIPs(
             public_i_ps="public_ips"
         )
-        profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
-            public_ip_prefixes="public_ip_prefixes"
+        profile.outbound_ip_prefixes = (
+            ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                public_ip_prefixes="public_ip_prefixes"
+            )
         )
-        err = "outbound ip/ipprefix and managed ip should be mutual exclusive."
         p = loadbalancer.configure_load_balancer_profile(
             managed_outbound_ip_count,
             managed_outbound_ipv6_count,
@@ -131,11 +130,18 @@ class TestLoadBalancer(unittest.TestCase):
         )
         self.assertEqual(p.managed_outbound_i_ps.count, 5)
         self.assertEqual(p.managed_outbound_i_ps.count_ipv6, 3)
-        self.assertEqual(p.outbound_i_ps.public_i_ps, [self.load_balancer_models.ResourceReference(id=x.strip()) for x in ["testpip1","testpip2"]])
+        self.assertEqual(
+            p.outbound_i_ps.public_i_ps,
+            [
+                self.load_balancer_models.ResourceReference(id=x.strip())
+                for x in ["testpip1", "testpip2"]
+            ],
+        )
         self.assertEqual(p.outbound_ip_prefixes, None)
         self.assertEqual(p.allocated_outbound_ports, 80)
         self.assertEqual(p.idle_timeout_in_minutes, 3600)
         self.assertEqual(p.backend_pool_type, "nodeIP")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

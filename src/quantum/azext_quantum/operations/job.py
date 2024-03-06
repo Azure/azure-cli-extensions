@@ -42,6 +42,14 @@ PASS_THROUGH_JOB = 3
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
 
+_targets_with_allowed_failure_output = {"microsoft.dft"}
+
+
+def _show_warning(msg):
+    import colorama
+    colorama.init()
+    print(f"\033[1m{colorama.Fore.YELLOW}{msg}{colorama.Style.RESET_ALL}")
+
 
 def list(cmd, resource_group_name, workspace_name, location):
     """
@@ -262,7 +270,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
             raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
 
     # An entry point is required on QIR jobs
-    if job_type == QIR_JOB:
+    if job_type == QIR_JOB:  # pylint: disable=too-many-nested-blocks
         # An entry point is required for a QIR job, but there are four ways to specify it in a CLI command:
         #   -  Use the --entry-point parameter
         #   -  Include it in --job-params as entryPoint=MyEntryPoint
@@ -406,8 +414,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if shots is not None:
         try:
             job_params["shots"] = int(shots)
-        except:
-            raise InvalidArgumentValueError("Invalid --shots value.  Shots must be an integer.")
+        except Exception as exc:
+            raise InvalidArgumentValueError("Invalid --shots value.  Shots must be an integer.") from exc
     if target_capability is not None:
         job_params["targetCapability"] = target_capability
     if entry_point is not None:
@@ -417,8 +425,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if "count" in job_params.keys():
         try:
             job_params["count"] = int(job_params["count"])
-        except:
-            raise InvalidArgumentValueError("Invalid count value.  Count must be an integer.")
+        except Exception as exc:
+            raise InvalidArgumentValueError("Invalid count value.  Count must be an integer.") from exc
 
     # Convert all other numeric parameter values from string to int or float
     _convert_numeric_params(job_params)
@@ -462,7 +470,7 @@ def _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, locat
     """
     Submit a Q# project to run on Azure Quantum.
     """
-
+    _show_warning('The direct submission of Q# project folders will soon be fully deprecated. Instead, you can submit QIR bitcode or human-readable LLVM code. Modern QDK can be used to generate human-readable LLVM code from Q#.')
     # We first build and then call run.
     # Can't call run directly because it fails to understand the
     # `ExecutionTarget` property when passed in the command line
@@ -535,83 +543,25 @@ def _validate_item(provided_value, num_items):
 
 def output(cmd, job_id, resource_group_name, workspace_name, location, item=None):
     """
-    Get the results of running a Q# job.
+    Get the results of running a job.
     """
-    import tempfile
-    from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
-
-    path = os.path.join(tempfile.gettempdir(), job_id)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
     job = client.get(job_id)
 
-    if os.path.exists(path):
-        logger.debug("Using existing blob from %s", path)
-    else:
-        logger.debug("Downloading job results blob into %s", path)
+    if job.status != "Succeeded":
+        if job.status == "Failed" and job.target in _targets_with_allowed_failure_output:
+            logger.debug("Job submitted against target \"%s\" failed, but the job output can still be returned. Trying to produce the output.", job.target)
+            job_output = _get_job_output(cmd, job, item)
+            if job_output is not None:
+                return job_output
 
-        if job.status != "Succeeded":
-            return job  # If "-o table" is specified, this allows transform_output() in commands.py
-            #             to format the output, so the error info is shown. If "-o json" or no "-o"
-            #             parameter is specified, then the full JSON job output is displayed, being
-            #             consistent with other commands.
+        return job  # If "-o table" is specified, this allows transform_output() in commands.py
+        #             to format the output, so the error info is shown. If "-o json" or no "-o"
+        #             parameter is specified, then the full JSON job output is displayed, being
+        #             consistent with other commands.
 
-        args = _parse_blob_url(job.output_data_uri)
-        blob_service = blob_data_service_factory(cmd.cli_ctx, args)
-        blob_service.get_blob_to_path(args['container'], args['blob'], path)
-
-    with open(path) as json_file:
-        lines = [line.strip() for line in json_file.readlines()]
-
-        # Receiving an empty response is valid.
-        if len(lines) == 0:
-            return
-
-        if job.target.startswith("microsoft.simulator") and job.target != "microsoft.simulator.resources-estimator":
-            result_start_line = len(lines) - 1
-            is_result_string = lines[-1].endswith('"')
-            if is_result_string:
-                while result_start_line >= 0 and not lines[result_start_line].startswith('"'):
-                    result_start_line -= 1
-            if result_start_line < 0:
-                raise AzureResponseError("Job output is malformed, mismatched quote characters.")
-
-            # Print the job output and then the result of the operation as a histogram.
-            # If the result is a string, trim the quotation marks.
-            print('\n'.join(lines[:result_start_line]))
-            raw_result = ' '.join(lines[result_start_line:])
-            result = raw_result[1:-1] if is_result_string else raw_result
-            print('_' * len(result) + '\n')
-
-            json_string = '{ "histogram" : { "' + result + '" : 1 } }'
-            data = json.loads(json_string)
-        else:
-            json_file.seek(0)  # Reset the file pointer before loading
-            data = json.load(json_file)
-
-        # Consider item if it's a batch job, otherwise ignore
-        import builtins  # list has been overriden as a function above
-        if item and isinstance(data, builtins.list):
-            item = _validate_item(item, len(data))
-            return data[item]
-
-        return data
-
-
-def _validate_max_poll_wait_secs(max_poll_wait_secs):
-    valid_max_poll_wait_secs = 0.0
-    error_message = f"--max-poll-wait-secs parameter is not valid: {max_poll_wait_secs}"
-    error_recommendation = f"Must be a number greater than or equal to {MINIMUM_MAX_POLL_WAIT_SECS}"
-
-    try:
-        valid_max_poll_wait_secs = float(max_poll_wait_secs)
-    except ValueError as e:
-        raise InvalidArgumentValueError(error_message, error_recommendation) from e
-
-    if valid_max_poll_wait_secs < MINIMUM_MAX_POLL_WAIT_SECS:
-        raise InvalidArgumentValueError(error_message, error_recommendation)
-
-    return valid_max_poll_wait_secs
+    return _get_job_output(cmd, job, item)
 
 
 def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wait_secs=5):
@@ -668,9 +618,6 @@ def run(cmd, program_args, resource_group_name, workspace_name, location, target
     job = wait(cmd, job.id, resource_group_name, workspace_name, location)
     logger.debug(job)
 
-    if not job.status == "Succeeded":
-        return job
-
     return output(cmd, job.id, resource_group_name, workspace_name, location)
 
 
@@ -691,3 +638,81 @@ def cancel(cmd, job_id, resource_group_name, workspace_name, location):
 
     # Wait for the job status to complete or be reported as cancelled
     return wait(cmd, job_id, info.resource_group, info.name, info.location)
+
+
+def _get_job_output(cmd, job, item=None):
+
+    import tempfile
+    path = os.path.join(tempfile.gettempdir(), job.id)
+
+    if os.path.exists(path):
+        logger.debug("Using existing blob from %s", path)
+    else:
+        logger.debug("Downloading job results blob into %s", path)
+
+        from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
+
+        args = _parse_blob_url(job.output_data_uri)
+        blob_service = blob_data_service_factory(cmd.cli_ctx, args)
+
+        containerName = args['container']
+        blobName = args['blob']
+        blobProperties = blob_service.get_blob_properties(containerName, blobName)
+
+        if blobProperties.properties.content_length == 0:
+            return
+
+        blob_service.get_blob_to_path(containerName, blobName, path)
+
+    with open(path, encoding="utf-8") as json_file:
+        lines = [line.strip() for line in json_file.readlines()]
+
+        # Receiving an empty response is valid.
+        if len(lines) == 0:
+            return
+
+        if job.target.startswith("microsoft.simulator") and job.target != "microsoft.simulator.resources-estimator":
+            result_start_line = len(lines) - 1
+            is_result_string = lines[-1].endswith('"')
+            if is_result_string:
+                while result_start_line >= 0 and not lines[result_start_line].startswith('"'):
+                    result_start_line -= 1
+            if result_start_line < 0:
+                raise AzureResponseError("Job output is malformed, mismatched quote characters.")
+
+            # Print the job output and then the result of the operation as a histogram.
+            # If the result is a string, trim the quotation marks.
+            print('\n'.join(lines[:result_start_line]))
+            raw_result = ' '.join(lines[result_start_line:])
+            result = raw_result[1:-1] if is_result_string else raw_result
+            print('_' * len(result) + '\n')
+
+            json_string = '{ "histogram" : { "' + result + '" : 1 } }'
+            data = json.loads(json_string)
+        else:
+            json_file.seek(0)  # Reset the file pointer before loading
+            data = json.load(json_file)
+
+        # Consider item if it's a batch job, otherwise ignore
+        import builtins  # list has been overriden as a function above
+        if item and isinstance(data, builtins.list):
+            item = _validate_item(item, len(data))
+            return data[item]
+
+        return data
+
+
+def _validate_max_poll_wait_secs(max_poll_wait_secs):
+    valid_max_poll_wait_secs = 0.0
+    error_message = f"--max-poll-wait-secs parameter is not valid: {max_poll_wait_secs}"
+    error_recommendation = f"Must be a number greater than or equal to {MINIMUM_MAX_POLL_WAIT_SECS}"
+
+    try:
+        valid_max_poll_wait_secs = float(max_poll_wait_secs)
+    except ValueError as e:
+        raise InvalidArgumentValueError(error_message, error_recommendation) from e
+
+    if valid_max_poll_wait_secs < MINIMUM_MAX_POLL_WAIT_SECS:
+        raise InvalidArgumentValueError(error_message, error_recommendation)
+
+    return valid_max_poll_wait_secs

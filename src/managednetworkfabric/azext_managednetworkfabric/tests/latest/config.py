@@ -20,7 +20,7 @@ class LoadConfig:
 
     def __init__(self):
         self._config_instance = None  # Initial value
-        filename = path.dirname(__file__)+"/config.ini"
+        filename = path.dirname(__file__) + "/config.ini"
         self.config = self.readconfig(filename)
 
     def readconfig(self, filename):

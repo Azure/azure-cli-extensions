@@ -17,6 +17,7 @@ from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class AppDeploy(ScenarioTest):
     def __init__(self, method_name):
         super(AppDeploy, self).__init__(
@@ -24,12 +25,18 @@ class AppDeploy(ScenarioTest):
             recording_processors=[SpringTestEndpointReplacer()]
         )
 
+    def test_replacer(self):
+        original_string = '"primaryKey":"xxxxxxxxx"abcdefg'
+        expected_string = '"primaryKey":"fake"abcdefg'
+        actual_string = SpringTestEndpointReplacer()._replace(original_string)
+        self.assertEqual(expected_string, actual_string)
+
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
     def test_deploy_app(self, resource_group, spring, app):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\", "/")
         self.kwargs.update({
             'app': app,
             'serviceName': spring,
@@ -51,13 +58,12 @@ class AppDeploy(ScenarioTest):
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
 
-
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
     def test_deploy_app_1(self, resource_group, spring, app):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\", "/")
         self.kwargs.update({
             'app': app,
             'serviceName': spring,
@@ -122,7 +128,6 @@ class AppCRUD(ScenarioTest):
             self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
-
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
@@ -147,6 +152,22 @@ class AppCRUD(ScenarioTest):
             self.check('properties.deploymentSettings.resourceRequests.cpu', '1'),
             self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
             self.check('sku.capacity', 1)
+        ])
+
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
+    @SpringAppNamePreparer()
+    def test_app_create_binding_tanzu_components(self, resource_group, spring, app):
+        self.kwargs.update({
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --bind-service-registry --bind-application-configuration-service', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.addonConfigs.applicationConfigurationService.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(self.get_subscription_id(), resource_group, spring)),
+            self.check('properties.addonConfigs.serviceRegistry.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(self.get_subscription_id(), resource_group, spring))
         ])
 
 
@@ -204,6 +225,7 @@ class BlueGreenTest(ScenarioTest):
             self.check('properties.active', False)
         ])
 
+
 @record_only()
 class CustomImageTest(ScenarioTest):
 
@@ -225,7 +247,6 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
             self.check('properties.source.customContainer.languageFramework', None),
         ])
-
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])

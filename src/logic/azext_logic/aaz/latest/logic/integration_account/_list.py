@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "logic integration-account list",
 )
 class List(AAZCommand):
-    """List a list of integration accounts by subscription.
+    """List integration accounts
 
     :example: List integration accounts by resource group name
         az logic integration-account list --resource-group rg
