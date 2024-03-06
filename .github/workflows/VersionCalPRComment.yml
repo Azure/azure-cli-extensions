@@ -6,6 +6,10 @@ on:
       types: [opened, labeled, unlabeled, synchronize]
       paths:
         - '**.py'
+  pull_request:
+    types: [ opened, labeled, unlabeled, synchronize ]
+    paths:
+      - '**.py'
 
 permissions:
   pull-requests: write
@@ -44,8 +48,7 @@ jobs:
             git --version
             git log --oneline | head -n 30
             git branch -a
-            git remote add upstream git@github.com:Azure/azure-cli-extensions.git
-            git fetch upstream
+            git fetch https://github.com/Azure/azure-cli-extensions.git main:main
             git checkout ${{ env.base_branch }}
             git log --oneline | head -n 30
             git checkout ${{ env.diff_branch }}
