@@ -598,7 +598,7 @@ helps['containerapp env certificate upload'] = """
           az containerapp env certificate upload -g MyResourceGroup --name MyEnvironment --certificate-file MyFilepath --certificate-name MyCertificateName
     - name: Add or update a certificate from azure key vault using managed identity.
       text: |
-          az containerapp env certificate upload -g MyResourceGroup --name MyEnvironment --key-vault-url akvSecretUrl --identity system
+          az containerapp env certificate upload -g MyResourceGroup --name MyEnvironment --akv-url akvSecretUrl --identity system
 """
 
 helps['containerapp env certificate list'] = """
