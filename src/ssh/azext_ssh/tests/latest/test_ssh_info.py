@@ -43,7 +43,6 @@ class SSHInfoTest(unittest.TestCase):
         self.assertEqual(session.winrdp, True)
         self.assertEqual(session.yes_without_prompt, False)
 
-
     def test_ssh_session_get_host(self):
         session = ssh_info.SSHSession(None, None, "ip", None, None, False, "user", None, None, None, [], False, "Microsoft.Compute/virtualMachines", None, None, False, False)
         self.assertEqual("ip", session.get_host())
@@ -62,7 +61,7 @@ class SSHInfoTest(unittest.TestCase):
         session = ssh_info.SSHSession("rg", "vm", "ip", "pub", "priv", False, "user", "cert", "port", "client/folder", [], None, "Microsoft.HybridCompute/machines", None, None, True, False)
         session.proxy_path = "proxy_path"
         self.assertEqual(["-o", "ProxyCommand=\"proxy_path\" -p port", "-i", "priv_path", "-o", "CertificateFile=\"cert_path\""], session.build_args())
- 
+
     @mock.patch('os.path.abspath')
     def test_config_session(self, mock_abspath):
         mock_abspath.side_effect = ["config_path", "pub_path", "priv_path", "cert_path", "client_path", "proxy_path", "cred_path"]
@@ -121,7 +120,6 @@ class SSHInfoTest(unittest.TestCase):
         self.assertEqual(session._get_rg_and_vm_entry(True), expected_lines_aad)
         self.assertEqual(session._get_rg_and_vm_entry(False), expected_lines_local_user)
 
-    
     @mock.patch('os.path.abspath')
     def test_get_ip_entry(self, mock_abspath):
         expected_lines_aad = [
@@ -239,6 +237,7 @@ class SSHInfoTest(unittest.TestCase):
         session.proxy_path = "proxy_path"
         self.assertEqual(session.get_config_text(True), expected_lines_aad)
         self.assertEqual(session.get_config_text(False), expected_lines_local_user)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -10,6 +10,7 @@ from azext_ssh import rdp_utils
 from azext_ssh import ssh_info
 from azext_ssh import ssh_utils
 
+
 class RDPUtilsTest(unittest.TestCase):
     @mock.patch('os.environ.copy')
     @mock.patch.object(ssh_utils, 'get_ssh_client_path')
@@ -24,13 +25,13 @@ class RDPUtilsTest(unittest.TestCase):
         op_info.proxy_path = "proxy"
         op_info.relay_info = "relay"
 
-        mock_env.return_value = {'var1':'value1', 'var2':'value2', 'var3':'value3'}
+        mock_env.return_value = {'var1': 'value1', 'var2': 'value2', 'var3': 'value3'}
         mock_path.return_value = 'ssh'
         mock_relay.return_value = 'relay_string'
         mock_popen.return_value = 'ssh_process'
 
         expected_command = ['ssh', "vm", '-l', 'user', '-o', 'ProxyCommand=\"proxy\" -p port', '-i', 'priv', '-o', 'CertificateFile=\"cert\"', 'arg1', 'arg2', '-v']
-        expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3', 'SSHPROXY_RELAY_INFO':'relay_string'}
+        expected_env = {'var1': 'value1', 'var2': 'value2', 'var3': 'value3', 'SSHPROXY_RELAY_INFO': 'relay_string'}
 
         ssh_sub, print_logs = rdp_utils.start_ssh_tunnel(op_info)
 
@@ -62,7 +63,7 @@ class RDPUtilsTest(unittest.TestCase):
         mock_join.assert_has_calls(expected_join_calls)
         mock_isfile.assert_called_once_with('root/sys/rdp')
 
-    #start rdp connection
+    # start rdp connection
     @mock.patch.object(rdp_utils, '_get_open_port')
     @mock.patch.object(rdp_utils, 'is_local_port_open')
     @mock.patch.object(rdp_utils, 'start_ssh_tunnel')
@@ -81,14 +82,14 @@ class RDPUtilsTest(unittest.TestCase):
         mock_getport.return_value = 1020
         mock_isopen.return_value = True
         ssh_pro = mock.Mock()
-        #ssh_pro.return_value.poll.return_value = None
+        # ssh_pro.return_value.poll.return_value = None
         mock_tunnel.return_value = ssh_pro, False
         mock_wait.return_value = True, [], False
 
         rdp_utils.start_rdp_connection(op_info, True, True)
-        
+
         mock_terminate.assert_called_once_with(ssh_pro, [], False)
-        #mock_rdp.assert_called_once_with(1020)
+        # mock_rdp.assert_called_once_with(1020)
         mock_tunnel.assert_called_once_with(op_info)
         mock_wait.assert_called_once_with(ssh_pro, False)
 

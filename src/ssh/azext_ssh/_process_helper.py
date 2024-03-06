@@ -5,6 +5,7 @@
 
 # pylint: disable=too-few-public-methods
 # pylint: disable=consider-using-with
+# pylint: disable=superfluous-parens
 
 import subprocess
 from ctypes import WinDLL, c_int, c_size_t, Structure, WinError, sizeof, pointer
