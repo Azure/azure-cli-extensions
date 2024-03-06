@@ -10,7 +10,8 @@ def cf_connection_cl(cli_ctx, *_):
     from azure.mgmt.servicelinker import ServiceLinkerManagementClient
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .config import NAME, VERSION
-    os.environ['AZURE_HTTP_USER_AGENT'] = "CliExtension/{}({})".format(NAME, VERSION)
+    os.environ['AZURE_HTTP_USER_AGENT'] = (os.environ.get('AZURE_HTTP_USER_AGENT')
+                                           or '') + " CliExtension/{}({})".format(NAME, VERSION)
     return get_mgmt_service_client(cli_ctx, ServiceLinkerManagementClient,
                                    subscription_bound=False, api_version="2022-11-01-preview")
 
