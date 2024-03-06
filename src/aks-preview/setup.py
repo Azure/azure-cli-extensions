@@ -9,7 +9,7 @@ from codecs import open as open1
 
 from setuptools import setup, find_packages
 
-VERSION = "1.0.0b5"
+VERSION = "2.0.0b2"
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
@@ -33,16 +33,14 @@ with open1("HISTORY.rst", "r", encoding="utf-8") as f:
 setup(
     name="aks-preview",
     version=VERSION,
-    description='Provides a preview for upcoming AKS features',
-    long_description=README + '\n\n' + HISTORY,
-    license='MIT',
-    author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-preview',
+    description="Provides a preview for upcoming AKS features",
+    long_description=README + "\n\n" + HISTORY,
+    license="MIT",
+    author="Microsoft Corporation",
+    author_email="azpycli@microsoft.com",
+    url="https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-preview",
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={
-        "azext_aks_preview": ["azext_metadata.json"]
-    },
+    package_data={"azext_aks_preview": ["azext_metadata.json"]},
     install_requires=DEPENDENCIES,
 )

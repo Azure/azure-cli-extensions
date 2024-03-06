@@ -10,6 +10,7 @@ import tarfile
 import tempfile
 
 from azure.cli.core.azclierror import ArgumentUsageError
+from azure.cli.core.style import print_styled_text, Style
 from knack.log import get_logger
 
 from .utils import (get_folder_id, send_grafana_post, send_grafana_patch,
@@ -98,7 +99,10 @@ def _create_dashboard(grafana_url, file_path, http_headers):
 
     result = send_grafana_post(f'{grafana_url}/api/dashboards/db', json.dumps(payload), http_headers)
     dashboard_title = content['dashboard'].get('title', '')
-    logger.warning("Create dashboard \"%s\". %s", dashboard_title, "SUCCESS" if result[0] == 200 else "FAILURE")
+    print_styled_text([
+        (Style.WARNING, f'Create dashboard {dashboard_title}: '),
+        (Style.SUCCESS, 'SUCCESS') if result[0] == 200 else (Style.ERROR, 'FAILURE')
+    ])
     logger.info("status: %s, msg: %s", result[0], result[1])
 
 
@@ -130,7 +134,10 @@ def _create_library_panel(grafana_url, file_path, http_headers):
             }
             (status, content) = send_grafana_patch(f'{grafana_url}/api/library-elements/{uid}',
                                                    json.dumps(patch_payload), http_headers)
-    logger.warning("Create library panel \"%s\". %s", panel_name, "SUCCESS" if status == 200 else "FAILURE")
+    print_styled_text([
+        (Style.WARNING, f'Create library panel {panel_name}: '),
+        (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')
+    ])
     logger.info("status: %s, msg: %s", status, content)
 
 
@@ -146,7 +153,11 @@ def _create_snapshot(grafana_url, file_path, http_headers):
         snapshot['name'] = "Untitled Snapshot"
 
     (status, content) = send_grafana_post(f'{grafana_url}/api/snapshots', json.dumps(snapshot), http_headers)
-    logger.warning("Create snapshot \"%s\". %s", snapshot['name'], "SUCCESS" if status == 200 else "FAILURE")
+    snapshot_name = snapshot['name']
+    print_styled_text([
+        (Style.WARNING, f'Create snapshot {snapshot_name}: '),
+        (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')
+    ])
     logger.info("status: %s, msg: %s", status, content)
 
 
@@ -157,9 +168,12 @@ def _create_folder(grafana_url, file_path, http_headers):
 
     folder = json.loads(data)
     result = send_grafana_post(f'{grafana_url}/api/folders', json.dumps(folder), http_headers)
-    # 412 means the folder has existed
-    logger.warning("Create folder \"%s\". %s", folder.get('title', ''),
-                   "SUCCESS" if result[0] in [200, 412] else "FAILURE")
+    folder_name = folder.get('title', '')
+    # 412 means the folder already exists
+    print_styled_text([
+        (Style.WARNING, f'Create folder {folder_name}: '),
+        (Style.SUCCESS, 'SUCCESS') if result[0] in [200, 412] else (Style.ERROR, 'FAILURE')
+    ])
     logger.info("status: %s, msg: %s", result[0], result[1])
 
 
@@ -170,7 +184,11 @@ def _create_annotation(grafana_url, file_path, http_headers):
 
     annotation = json.loads(data)
     result = send_grafana_post(f'{grafana_url}/api/annotations', json.dumps(annotation), http_headers)
-    logger.warning("Create annotation \"%s\". %s", annotation['id'], "SUCCESS" if result[0] == 200 else "FAILURE")
+    annotation_id = annotation['id']
+    print_styled_text([
+        (Style.WARNING, f'Create annotation {annotation_id}: '),
+        (Style.SUCCESS, 'SUCCESS') if result[0] == 200 else (Style.ERROR, 'FAILURE')
+    ])
     logger.info("status: %s, msg: %s", result[0], result[1])
 
 
@@ -181,5 +199,10 @@ def _create_datasource(grafana_url, file_path, http_headers):
 
     datasource = json.loads(data)
     result = send_grafana_post(f'{grafana_url}/api/datasources', json.dumps(datasource), http_headers)
-    logger.warning("Create datasource \"%s\". %s", datasource['name'], "SUCCESS" if result[0] == 200 else "FAILURE")
+    datasource_name = datasource['name']
+    # 409 means the data source already exists
+    print_styled_text([
+        (Style.WARNING, f'Create datasource {datasource_name}: '),
+        (Style.SUCCESS, 'SUCCESS') if result[0] in [200, 409] else (Style.ERROR, 'FAILURE')
+    ])
     logger.info("status: %s, msg: %s", result[0], result[1])

@@ -3,6 +3,7 @@ Release History
 2.0.3
 -----
 * [Bug Fix] Ensure that certificate validity value is always an integer when retrieving relay information for connecting to Arc Machines.
+* Add support to ARM64 clients when connecting to Arc Machines. Connect proxy now available for ARM64 architecture.
 
 2.0.2
 -----

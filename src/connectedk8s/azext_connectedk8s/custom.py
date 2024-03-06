@@ -434,7 +434,7 @@ def validate_existing_provisioned_cluster_for_reput(cluster_resource, kubernetes
         validation_values = [
             kubernetes_distro,
             kubernetes_infra,
-            converted_priv_link_value,
+            enable_private_link,
             private_link_scope_resource_id,
             distribution_version,
             azure_hybrid_benefit,
@@ -2259,6 +2259,8 @@ def get_custom_locations_oid(cmd, cl_oid):
     try:
         graph_client = graph_client_factory(cmd.cli_ctx)
         app_id = "bc313c14-388c-4e7d-a58e-70017303ee3b"
+        # Requires Application.Read.All for Microsoft Graph since AAD Graph is deprecated. See below for work-around.
+        # https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/custom-locations#enable-custom-locations-on-your-cluster
         app_object = graph_client.service_principal_list(filter="appId eq '{}'".format(app_id))
         if len(app_object) != 0:
             if cl_oid is not None and cl_oid != app_object[0]['id']:
@@ -2462,7 +2464,7 @@ def install_kubectl_client():
         kubectl_filepath = os.path.join(home_dir, '.azure', 'kubectl-client')
 
         try:
-            os.mkdir(kubectl_filepath)
+            os.makedirs(kubectl_filepath)
         except FileExistsError:
             pass
 

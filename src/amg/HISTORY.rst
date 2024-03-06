@@ -40,3 +40,11 @@ Release History
 1.2.8
 ++++++
 * `az grafana create`: support deterministic outbound IP argument
+
+1.2.10
+++++++
+* `az grafana backup`: exclude provisioned dashboards during backup
+
+1.3.0
+++++++
+* `az grafana update`: support Grafana major version argument

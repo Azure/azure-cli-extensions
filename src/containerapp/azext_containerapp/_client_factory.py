@@ -93,7 +93,7 @@ def handle_non_404_exception(e):
 def handle_non_404_status_code_exception(e):
     import json
 
-    if hasattr(e, 'status_code') and e.status_code == 404:
+    if (hasattr(e, 'status_code') and e.status_code == 404) or (hasattr(e, 'response') and hasattr(e.response, 'status_code') and e.response.status_code == 404):
         return e
 
     string_err = str(e)

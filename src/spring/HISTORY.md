@@ -1,5 +1,9 @@
 Release History
 ===============
+1.19.4
+---
+* Enhance managed component log streaming when `-i/--instance` and `--all-instances` parameters are not specified.
+
 1.19.3
 ---
 * Add arguments `--refresh-interval` in `spring application-configuration-service create` and `spring application-configuration-service update`.

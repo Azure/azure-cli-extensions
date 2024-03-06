@@ -94,6 +94,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="ARM Resource ID of the RoutePolicy. This is used for the backward compatibility.",
         )
+        _args_schema.nni_id = AAZResourceIdArg(
+            options=["--nni-id"],
+            arg_group="Properties",
+            help="ARM Resource ID of the networkToNetworkInterconnectId of the ExternalNetwork resource.",
+        )
         _args_schema.option_a_properties = AAZObjectArg(
             options=["--option-a-properties"],
             arg_group="Properties",
@@ -386,6 +391,7 @@ class Create(AAZCommand):
                 properties.set_prop("exportRoutePolicyId", AAZStrType, ".export_route_policy_id")
                 properties.set_prop("importRoutePolicy", AAZObjectType, ".import_route_policy")
                 properties.set_prop("importRoutePolicyId", AAZStrType, ".import_route_policy_id")
+                properties.set_prop("networkToNetworkInterconnectId", AAZStrType, ".nni_id")
                 properties.set_prop("optionAProperties", AAZObjectType, ".option_a_properties")
                 properties.set_prop("optionBProperties", AAZObjectType, ".option_b_properties")
                 properties.set_prop("peeringOption", AAZStrType, ".peering_option", typ_kwargs={"flags": {"required": True}})
@@ -516,7 +522,6 @@ class Create(AAZCommand):
             )
             properties.network_to_network_interconnect_id = AAZStrType(
                 serialized_name="networkToNetworkInterconnectId",
-                flags={"read_only": True},
             )
             properties.option_a_properties = AAZObjectType(
                 serialized_name="optionAProperties",

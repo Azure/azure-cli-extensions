@@ -309,7 +309,7 @@ def check_is_apiserver_vnet_integration_cluster(mc: ManagedCluster) -> bool:
     return False
 
 
-def setup_common_guardrails_profile(level, version, excludedNamespaces, mc: ManagedCluster, models) -> ManagedCluster:
+def setup_common_safeguards_profile(level, version, excludedNamespaces, mc: ManagedCluster, models) -> ManagedCluster:
     if (level is not None or version is not None or excludedNamespaces is not None) and mc.safeguards_profile is None:
         mc.safeguards_profile = models.SafeguardsProfile(
             level=level,
