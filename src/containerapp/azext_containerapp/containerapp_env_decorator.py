@@ -64,7 +64,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
                 raise ValidationError("Cannot use --certificate-file with --certificate-akv-url at the same time")
             if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
-                raise ValidationError("Either --certificate-file or --certificate-akv-url should be set when hostName is set")
+                raise ValidationError("Either --certificate-file or --certificate-akv-url should be set when --dns-suffix is set")
 
     def set_up_dynamic_json_columns(self):
         if self.get_argument_logs_destination() == "log-analytics" and self.get_argument_logs_dynamic_json_columns() is not None:
