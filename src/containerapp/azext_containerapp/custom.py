@@ -67,7 +67,8 @@ from .daprcomponent_resiliency_decorator import (
 )
 from .containerapp_env_telemetry_decorator import (
     ContainerappEnvTelemetryDataDogPreviewSetDecorator,
-    ContainerappEnvTelemetryAppInsightsPreviewSetDecorator
+    ContainerappEnvTelemetryAppInsightsPreviewSetDecorator,
+    ContainerappEnvTelemetryOtlpPreviewSetDecorator
 )
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
@@ -2408,3 +2409,74 @@ def delete_environment_telemetry_app_insights(cmd,
     
     return r
 
+
+def add_environment_telemetry_otlp(cmd,
+                                   name,
+                                   resource_group_name,
+                                   otlp_name,
+                                   endpoint,
+                                   insecure=False,
+                                   enable_open_telemetry_traces=False,
+                                   enable_open_telemetry_logs=False,
+                                   enable_open_telemetry_metrics=False,
+                                   headers=None,
+                                   no_wait=False):
+    raw_parameters = locals()
+    containerapp_env_telemetry_otlp_decorator = ContainerappEnvTelemetryOtlpPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_otlp_decorator.construct_payload()
+    r = containerapp_env_telemetry_otlp_decorator.update()
+    
+    return r
+
+
+def update_environment_telemetry_otlp(cmd,
+                                      name,
+                                      resource_group_name,
+                                      otlp_name,
+                                      endpoint=None,
+                                      insecure=None,
+                                      enable_open_telemetry_traces=None,
+                                      enable_open_telemetry_logs=None,
+                                      enable_open_telemetry_metrics=None,
+                                      headers=None,
+                                      no_wait=False):
+    raw_parameters = locals()
+    containerapp_env_telemetry_otlp_decorator = ContainerappEnvTelemetryOtlpPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_otlp_decorator.construct_payload()
+    r = containerapp_env_telemetry_otlp_decorator.update()
+    
+    return r
+
+
+def remove_environment_telemetry_otlp(cmd,
+                                      name,
+                                      resource_group_name,
+                                      otlp_name,
+                                      no_wait=False):
+    raw_parameters = locals()
+    containerapp_env_telemetry_otlp_decorator = ContainerappEnvTelemetryOtlpPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_otlp_decorator.construct_payload()
+    r = containerapp_env_telemetry_otlp_decorator.update()
+    
+    return r
