@@ -199,9 +199,9 @@ class ContainerappEnvCertificatePreviweUploadDecorator(ContainerappEnvCertificat
     def validate_arguments(self):
         # validate arguments
         if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
-            raise ValidationError("Cannot use --certificate-file/--certificate-password with --certificate-key-vault-url/--certificate-identity at the same time")
+            raise ValidationError("Cannot use --certificate-file/--certificate-password with --certificate-akv-url/--certificate-identity at the same time")
         if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
-            raise ValidationError("Either --certificate-file/--certificate-password or --certificate-key-vault-url/--certificate-identity should be set when hostName is set")
+            raise ValidationError("Either --certificate-file/--certificate-password or --certificate-akv-url/--certificate-identity should be set when hostName is set")
 
     def set_up_certificate_from_key_vault(self):
         if self.get_argument_certificate_key_vault_url():

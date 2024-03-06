@@ -9,6 +9,8 @@ upcoming
 * 'az containerapp env telemetry app-insights set': Support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
 * 'az containerapp env telemetry app-insights delete': Support delete environment app insights configuration
 * 'az containerapp update/up': Explicitly set container name to container app name for source to cloud builds.
+* 'az containerapp env create/update': Add support for environment custom domain from azure key vault using managed identity
+* 'az containerapp env certificate upload': Add support for environment certificate from azure key vault using managed identity
 
 0.3.48
 ++++++
@@ -23,8 +25,6 @@ upcoming
 * 'az containerapp create/update': Support bind Java component with --bind
 * 'az containerapp create/update/up': Fix issue with logs when the Cloud Build project to use generates UTF-8 logs.
 * 'az containerapp update/up': Fix bug for multiple containers provisioned for source to cloud build
-* 'az containerapp env create/update': Add support for environment custom domain from azure key vault using managed identity
-* 'az containerapp env certificate upload': Add support for environment certificate from azure key vault using managed identity
 
 0.3.47
 ++++++

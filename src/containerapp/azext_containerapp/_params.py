@@ -131,9 +131,9 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 
     with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
-        c.argument('certificate_identity', options_list=['--custom-domain-certificate-identity', '--certificate-identity'], 
+        c.argument('certificate_identity', options_list=['--custom-domain-certificate-identity', '--certificate-identity'],
                    help='Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.', is_preview=True)
-        c.argument('certificate_key_vault_url', options_list=['--custom-domain-certificate-key-vault-url', '--certificate-key-vault-url'], 
+        c.argument('certificate_key_vault_url', options_list=['--custom-domain-certificate-akv-url', '--certificate-akv-url'],
                    help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
      
     with self.argument_context('containerapp env create') as c:
@@ -148,7 +148,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env certificate upload') as c:
         c.argument('certificate_identity', options_list=['--certificate-identity', '--identity'], 
                    help='Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.', is_preview=True)
-        c.argument('certificate_key_vault_url', options_list=['--certificate-key-vault-url', '--key-vault-url'], 
+        c.argument('certificate_key_vault_url', options_list=['--certificate-akv-url', '--akv-url'], 
                    help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
 
     with self.argument_context('containerapp env certificate create') as c:

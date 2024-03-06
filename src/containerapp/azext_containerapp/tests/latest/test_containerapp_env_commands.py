@@ -27,7 +27,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus2euap"
+            location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
         user_identity_name1 = self.create_random_name(prefix='env-msi1', length=24)
@@ -84,7 +84,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus2euap"
+            location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
@@ -123,7 +123,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus2euap"
+            location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
 
         user_identity_name1 = self.create_random_name(prefix='env-msi1', length=24)
@@ -181,7 +181,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
     def test_containerapp_env_msi_custom_domains(self, resource_group):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus2euap"
+            location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
 
@@ -224,7 +224,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         self.cmd(f"keyvault set-policy -n {key_vault_name} -g {resource_group} --object-id {principal_id1} --secret-permissions get list")
 
         # create an environment with custom domain and user assigned identity
-        self.cmd('containerapp env create -g {} -n {} --mi-user-assigned {} --logs-destination none --dns-suffix {} --certificate-identity {} --certificate-key-vault-url {}'.format(
+        self.cmd('containerapp env create -g {} -n {} --mi-user-assigned {} --logs-destination none --dns-suffix {} --certificate-identity {} --certificate-akv-url {}'.format(
             resource_group, env_name, user_identity_id1, hostname_1, user_identity_id1, akv_secret_url))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -252,7 +252,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         ])
 
         # update env with custom domain using msi
-        self.cmd('containerapp env update -g {} -n {} --certificate-identity {} --certificate-key-vault-url {}'.format(
+        self.cmd('containerapp env update -g {} -n {} --certificate-identity {} --certificate-akv-url {}'.format(
             resource_group, env_name, user_identity_id1, akv_secret_url))
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
@@ -270,7 +270,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
     def test_containerapp_env_msi_certificate(self, resource_group):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus2euap"
+            location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
         env_name = self.create_random_name(prefix='capp-env', length=24)
         key_vault_name = self.create_random_name(prefix='capp-kv-', length=24)
@@ -301,7 +301,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         self.cmd(f"keyvault set-policy -n {key_vault_name} -g {resource_group} --object-id {principal_id} --secret-permissions get list")
         
         containerapp_cert_name = self.create_random_name(prefix='containerapp-cert', length=24)
-        cert = self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} -c {containerapp_cert_name}  --key-vault-url {akv_secret_url}", checks=[
+        cert = self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} -c {containerapp_cert_name}  --akv-url {akv_secret_url}", checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
         ]).get_output_in_json()
         containerapp_cert_id = cert["id"]
@@ -327,7 +327,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
             ])
         
         containerapp_cert_name = self.create_random_name(prefix='containerapp-cert', length=24)
-        self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} -c {containerapp_cert_name} --key-vault-url {akv_secret_url}", checks=[
+        self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} -c {containerapp_cert_name} --akv-url {akv_secret_url}", checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
             JMESPathCheck('properties.certificateKeyVaultProperties.keyVaultUrl', akv_secret_url),
             JMESPathCheck('properties.certificateKeyVaultProperties.identity', "system"),
@@ -342,7 +342,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
     def test_containerapp_env_msi_certificate_random_name(self, resource_group):
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus2euap"
+            location = "eastus"
         self.cmd('configure --defaults location={}'.format(location))
         env_name = self.create_random_name(prefix='capp-env', length=24)
         key_vault_name = self.create_random_name(prefix='capp-kv-', length=24)
@@ -378,7 +378,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         
-        cert = self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} --key-vault-url {akv_secret_url} --identity {user_identity_id}", checks=[
+        cert = self.cmd(f"containerapp env certificate upload -g {resource_group} -n {env_name} --akv-url {akv_secret_url} --identity {user_identity_id}", checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
         ]).get_output_in_json()
         containerapp_cert_name = cert["name"]
