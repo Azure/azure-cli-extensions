@@ -6,11 +6,14 @@ upcoming
 ++++++
 * 'az containerapp env telemetry data-dog set': support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
 * 'az containerapp env telemetry data-dog delete': support delete environment data dog configuration
+* 'az containerapp env telemetry data-dog show': support show environment data dog configuration
 * 'az containerapp env telemetry app-insights set': support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
 * 'az containerapp env telemetry app-insights delete': support delete environment app insights configuration
+* 'az containerapp env telemetry app-insights show': support show environment app insights configuration
 * 'az containerapp env telemetry otlp add': support add environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
 * 'az containerapp env telemetry otlp update': support update environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
 * 'az containerapp env telemetry otlp remove': support remove environment otlp configuration with --otlp-name
+* 'az containerapp env telemetry otlp show': support show environment otlp configuration with --otlp-name
 
 0.3.48
 ++++++

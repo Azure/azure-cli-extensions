@@ -2448,8 +2448,8 @@ def delete_environment_telemetry_app_insights(cmd,
 
 
 def show_environment_telemetry_app_insights(cmd,
-                                        name,
-                                        resource_group_name):
+                                            name,
+                                            resource_group_name):
     raw_parameters = locals()
 
     containerapp_env_telemetry_app_insights_decorator = ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(
