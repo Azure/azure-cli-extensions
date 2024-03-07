@@ -22,8 +22,8 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-class CheckResourceTest(ScenarioTest):
 
+class CheckResourceTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
     @StorageAccountPreparer(name_prefix='cli', location="westus2")
@@ -204,9 +204,9 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
         vm_path = f"virtualMachineScaleSets/{vm_vmss_name}/virtualMachines/{vmss_instanceid}" \
             if vmss_instanceid else f"virtualMachines/{vm_vmss_name}"
         connection_url = (f"{ARM_ENDPOINT}/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}"
-                         f"/providers/Microsoft.Compute/{vm_path}"
-                         f"/providers/{RP_PROVIDER}/serialPorts/0"
-                         f"/connect?api-version=2018-05-01")
+                            f"/providers/Microsoft.Compute/{vm_path}"
+                            f"/providers/{RP_PROVIDER}/serialPorts/0"
+                            f"/connect?api-version=2018-05-01")
 
         from azure.cli.core._profile import Profile
         token_info, _, _ = Profile().get_raw_token()
