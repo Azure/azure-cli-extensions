@@ -120,7 +120,7 @@ def load_command_table(self, _):
     with self.command_group('containerapp env telemetry otlp', is_preview=True) as g:
         g.custom_command('add', 'add_environment_telemetry_otlp', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_environment_telemetry_otlp', supports_no_wait=True, exception_handler=ex_handler_factory())
-        g.custom_command('remove', 'delete_environment_telemetry_otlp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'remove_environment_telemetry_otlp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp github-action') as g:
         g.custom_command('add', 'create_or_update_github_action', exception_handler=ex_handler_factory())

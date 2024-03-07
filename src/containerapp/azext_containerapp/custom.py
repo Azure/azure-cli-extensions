@@ -2476,7 +2476,7 @@ def remove_environment_telemetry_otlp(cmd,
     )
     containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
 
-    containerapp_env_telemetry_otlp_decorator.construct_payload()
+    containerapp_env_telemetry_otlp_decorator.construct_remove_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
     
     return r

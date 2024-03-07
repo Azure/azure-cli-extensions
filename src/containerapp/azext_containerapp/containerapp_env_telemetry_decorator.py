@@ -6,6 +6,7 @@ from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 from knack.log import get_logger
 from knack.util import CLIError
 from ._client_factory import handle_raw_exception
+from azure.cli.core.azclierror import ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.core.commands import AzCliCommand
 from typing import Any, Dict
@@ -192,13 +193,39 @@ class ContainerappEnvTelemetryOtlpPreviewSetDecorator(BaseResource):
         self.set_up_open_telemetry_logs_destinations()
         self.set_up_open_telemetry_metrics_destinations()
 
+    def construct_remove_payload(self):
+        # Get current containerapp env telemetry properties
+        try:
+            self.existing_managed_env_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+        except Exception as e:
+            handle_raw_exception(e)
+
+        otlp_name = self.get_argument_open_telemetry_otlp_name()
+        existing_otlps = safe_get(self.existing_managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
+        if existing_otlps is not None:
+            otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
+            if otlp is not None:
+                existing_otlps.remove(otlp)
+                safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
+            else:
+                raise ValidationError(f"No otlp entry with name {otlp_name} found")
+        else:
+            raise ValidationError(f"No otlp entry with name {otlp_name} found")
+
     def set_up_open_telemetry_open_telemetry_otlp(self):
         if self.get_argument_open_telemetry_otlp_name() and self.get_argument_open_telemetry_otlp_name() is not None:
+
+            # Get current containerapp env telemetry properties
+            try:
+                self.existing_managed_env_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            except Exception as e:
+                handle_raw_exception(e)
+
             otlp_name = self.get_argument_open_telemetry_otlp_name()
             endpoint = self.get_argument_open_telemetry_otlp_endpoint()
             insecure = self.get_argument_open_telemetry_otlp_insecure()
             headers = self.get_argument_open_telemetry_otlp_headers()
-            existing_otlps = safe_get(self.existing_managed_env_def, "properties", "openTelemetryConfiguration", "otlpConfigurations")
+            existing_otlps = safe_get(self.existing_managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
             otlp = {"name": otlp_name} 
             update = False
             if existing_otlps is not None:
@@ -206,6 +233,9 @@ class ContainerappEnvTelemetryOtlpPreviewSetDecorator(BaseResource):
                 if otlp:
                     otlp = otlp[0]
                     update = True
+                else:
+                    otlp = {"name": otlp_name} 
+                    existing_otlps.append(otlp)
             else:
                 existing_otlps = [otlp]
             
@@ -234,7 +264,6 @@ class ContainerappEnvTelemetryOtlpPreviewSetDecorator(BaseResource):
                 existing_otlps[idx] = otlp
             
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
-            logger.warning(f'managed_env_def: {self.managed_env_def}')
 
     def set_up_open_telemetry_traces_destinations(self):
         if self.get_argument_enable_open_telemetry_traces() is not None:
