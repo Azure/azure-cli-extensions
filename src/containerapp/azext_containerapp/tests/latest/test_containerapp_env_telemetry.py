@@ -224,4 +224,21 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
             JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations',f'[\'{otlp_name}\']'),
         ])
 
+        self.cmd(f'containerapp env telemetry otlp remove -g {resource_group} -n {env_name} --otlp-name {otlp_name_test} --yes')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[0].name', otlp_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[0].endpoint', otlp_endpoint_update),
+            JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[1]', None),
+            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration',None),
+            JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations',f'[\'{otlp_name}\']'),
+            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations',f'[\'{otlp_name}\']'),
+        ])
+
         self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes --no-wait')
