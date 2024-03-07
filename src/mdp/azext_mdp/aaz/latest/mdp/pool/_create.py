@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dev-ops-infrastructure pool create",
+    "mdp pool create",
     is_preview=True,
 )
 class Create(AAZCommand):

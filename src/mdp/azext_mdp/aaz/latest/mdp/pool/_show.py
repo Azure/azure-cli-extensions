@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dev-ops-infrastructure pool show",
+    "mdp pool show",
     is_preview=True,
 )
 class Show(AAZCommand):

@@ -6,20 +6,20 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_devopsinfrastructure._help import helps  # pylint: disable=unused-import
+from azext_mdp._help import helps  # pylint: disable=unused-import
 
 
-class DevopsinfrastructureCommandsLoader(AzCommandsLoader):
+class MdpCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_devopsinfrastructure.custom#{}')
+            operations_tmpl='azext_mdp.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
-        from azext_devopsinfrastructure.commands import load_command_table
+        from azext_mdp.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -35,8 +35,8 @@ class DevopsinfrastructureCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_devopsinfrastructure._params import load_arguments
+        from azext_mdp._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = DevopsinfrastructureCommandsLoader
+COMMAND_LOADER_CLS = MdpCommandsLoader

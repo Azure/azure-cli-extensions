@@ -8,6 +8,6 @@
 from azure.cli.testsdk import *
 
 
-class DevopsinfrastructureScenario(ScenarioTest):
+class MdpScenario(ScenarioTest):
     # TODO: add tests here
     pass

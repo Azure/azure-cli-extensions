@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "dev-ops-infrastructure pool",
+    "mdp pool",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage resources of Managed DevOps pools
+    """Manage a pool resource
     """
     pass
 
