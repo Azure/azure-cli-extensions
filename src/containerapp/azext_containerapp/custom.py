@@ -38,7 +38,7 @@ from azure.cli.command_modules.containerapp._utils import (_validate_subscriptio
                                                            generate_randomized_cert_name, load_cert_file,
                                                            generate_randomized_managed_cert_name,
                                                            check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                                                           trigger_workflow, set_managed_identity, _ensure_identity_resource_id,
+                                                           trigger_workflow, _ensure_identity_resource_id,
                                                            AppType)
 
 from knack.log import get_logger
@@ -48,7 +48,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
-    ContainerappEnvCertificateUploadDecorator
+    ContainerappEnvCertificatePreviweUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
@@ -64,6 +64,10 @@ from .daprcomponent_resiliency_decorator import (
     DaprComponentResiliencyPreviewShowDecorator,
     DaprComponentResiliencyPreviewListDecorator,
     DaprComponentResiliencyPreviewUpdateDecorator
+)
+from .containerapp_env_telemetry_decorator import (
+    ContainerappEnvTelemetryDataDogPreviewSetDecorator,
+    ContainerappEnvTelemetryAppInsightsPreviewSetDecorator
 )
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
@@ -698,6 +702,8 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
+                               certificate_identity = None,
+                               certificate_key_vault_url=None,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
                                enable_dedicated_gpu=False,
@@ -732,6 +738,8 @@ def update_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
+                               certificate_identity = None,
+                               certificate_key_vault_url=None,
                                tags=None,
                                workload_profile_type=None,
                                workload_profile_name=None,
@@ -1272,16 +1280,17 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
     return containerapp_env_certificate_list_decorator.list()
 
 
-def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+def upload_certificate(cmd, name, resource_group_name, certificate_file=None, certificate_name=None, certificate_password=None, location=None, prompt=False, certificate_identity = None, certificate_key_vault_url=None):
     raw_parameters = locals()
 
-    containerapp_env_certificate_upload_decorator = ContainerappEnvCertificateUploadDecorator(
+    containerapp_env_certificate_upload_decorator = ContainerappEnvCertificatePreviweUploadDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_env_certificate_upload_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_certificate_upload_decorator.validate_arguments()
     containerapp_env_certificate_upload_decorator.construct_payload()
 
     return containerapp_env_certificate_upload_decorator.create_or_update()
@@ -2313,3 +2322,94 @@ def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resourc
 
 def delete_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)
+
+
+def set_environment_telemetry_data_dog(cmd,
+                                       name,
+                                       resource_group_name,
+                                       site=None,
+                                       key=None,
+                                       enable_open_telemetry_traces=None,
+                                       enable_open_telemetry_metrics=None,
+                                       no_wait=False):
+    raw_parameters = locals()
+    containerapp_env_telemetry_data_dog_decorator = ContainerappEnvTelemetryDataDogPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_data_dog_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_data_dog_decorator.construct_payload()
+    r = containerapp_env_telemetry_data_dog_decorator.update()
+    
+    return r
+
+
+def delete_environment_telemetry_data_dog(cmd,
+                                          name,
+                                          resource_group_name,
+                                          no_wait=False):
+    raw_parameters = locals()
+    raw_parameters["site"] = ""
+    raw_parameters["key"] = ""
+    raw_parameters["enable_open_telemetry_traces"] = False
+    raw_parameters["enable_open_telemetry_metrics"] = False
+    containerapp_env_telemetry_data_dog_decorator = ContainerappEnvTelemetryDataDogPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_data_dog_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_data_dog_decorator.construct_payload()
+    r = containerapp_env_telemetry_data_dog_decorator.update()
+    
+    return r
+
+
+def set_environment_telemetry_app_insights(cmd,
+                                           name,
+                                           resource_group_name,
+                                           connection_string=None,
+                                           enable_open_telemetry_traces=None,
+                                           enable_open_telemetry_logs=None,
+                                           no_wait=False):
+    raw_parameters = locals()
+    containerapp_env_telemetry_app_insights_decorator = ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_app_insights_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_app_insights_decorator.construct_payload()
+    r = containerapp_env_telemetry_app_insights_decorator.update()
+    
+    return r
+
+
+def delete_environment_telemetry_app_insights(cmd,
+                                              name,
+                                              resource_group_name,
+                                              no_wait=False):
+    raw_parameters = locals()
+    raw_parameters["connection_string"] = ""
+    raw_parameters["enable_open_telemetry_traces"] = False
+    raw_parameters["enable_open_telemetry_logs"] = False
+    containerapp_env_telemetry_app_insights_decorator = ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_app_insights_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_app_insights_decorator.construct_payload()
+    r = containerapp_env_telemetry_app_insights_decorator.update()
+    
+    return r
+

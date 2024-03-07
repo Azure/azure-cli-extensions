@@ -11,17 +11,23 @@ from azure.core import CaseInsensitiveEnumMeta
 
 
 class CreatedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The type of identity that created the resource.
-    """
+    """The type of identity that created the resource."""
 
     USER = "User"
     APPLICATION = "Application"
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
+
+class KeyType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """KeyType."""
+
+    PRIMARY = "Primary"
+    SECONDARY = "Secondary"
+
+
 class ProvisioningStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Provisioning status field
-    """
+    """Provisioning status field."""
 
     SUCCEEDED = "Succeeded"
     PROVIDER_LAUNCHING = "ProviderLaunching"
@@ -30,16 +36,16 @@ class ProvisioningStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     PROVIDER_PROVISIONING = "ProviderProvisioning"
     FAILED = "Failed"
 
+
 class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The identity type.
-    """
+    """The identity type."""
 
     SYSTEM_ASSIGNED = "SystemAssigned"
     NONE = "None"
 
+
 class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Provisioning status field
-    """
+    """Provisioning status field."""
 
     SUCCEEDED = "Succeeded"
     LAUNCHING = "Launching"
@@ -48,9 +54,9 @@ class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     DELETED = "Deleted"
     FAILED = "Failed"
 
+
 class UsableStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Whether the current workspace is ready to accept Jobs.
-    """
+    """Whether the current workspace is ready to accept Jobs."""
 
     YES = "Yes"
     NO = "No"

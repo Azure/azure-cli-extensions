@@ -64,6 +64,19 @@ def load_arguments(self, _):
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
 
+    # Telemetry 
+    with self.argument_context('containerapp env telemetry data-dog set') as c:
+        c.argument('site', options_list=['--site'], help='Specify the data dog site')
+        c.argument('key', options_list=['--key'], help='Specify the data dog api key')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry traces')
+        c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry metrics')
+
+    with self.argument_context('containerapp env telemetry app-insights set') as c:
+        c.argument('connection_string', options_list=['--connection-string'], help='Application Insights connection string used by container apps environment')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry traces')
+        c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry logs')
+
+    # Storage
     with self.argument_context('containerapp env storage') as c:
         c.argument('storage_type', arg_type=get_enum_type(['AzureFile', 'NfsAzureFile']), help="Type of the storage. Assumed to be AzureFile if not specified.", is_preview=True)
         c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]),
@@ -117,6 +130,12 @@ def load_arguments(self, _):
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 
+    with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
+        c.argument('certificate_identity', options_list=['--custom-domain-certificate-identity', '--certificate-identity'],
+                   help='Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.', is_preview=True)
+        c.argument('certificate_key_vault_url', options_list=['--custom-domain-certificate-akv-url', '--certificate-akv-url'],
+                   help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
+     
     with self.argument_context('containerapp env create') as c:
         c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
         c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"],
@@ -125,6 +144,12 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env create', arg_group='Identity', is_preview=True) as c:
         c.argument('system_assigned', options_list=['--mi-system-assigned'], help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
         c.argument('user_assigned', options_list=['--mi-user-assigned'], nargs='+', help='Space-separated user identities to be assigned.')
+
+    with self.argument_context('containerapp env certificate upload') as c:
+        c.argument('certificate_identity', options_list=['--certificate-identity', '--identity'], 
+                   help='Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.', is_preview=True)
+        c.argument('certificate_key_vault_url', options_list=['--certificate-akv-url', '--akv-url'], 
+                   help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
 
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
