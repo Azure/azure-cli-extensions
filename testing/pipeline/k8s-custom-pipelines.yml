@@ -117,7 +117,7 @@ stages:
       - bash: pip install wheel==0.30.0 pylint==1.9.5 flake8==3.5.0 requests
         displayName: 'Install wheel, pylint, flake8, requests'
       # - bash: python scripts/ci/source_code_static_analysis.
-      - bash: python scripts/ci/verify_linter.py
+      - bash: python scripts/ci/azdev_linter_style.py --type style
         displayName: "Static Analysis"
 
   - job: IndexVerify
