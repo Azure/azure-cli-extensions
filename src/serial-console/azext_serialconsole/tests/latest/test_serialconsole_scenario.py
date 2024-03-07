@@ -24,6 +24,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class CheckResourceTest(ScenarioTest):
 
+
     @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
     @StorageAccountPreparer(name_prefix='cli', location="westus2")
     def test_check_resource_VMSS(self, resource_group, storage_account):
@@ -47,9 +48,6 @@ class CheckResourceTest(ScenarioTest):
             check_resource(self.cli_ctx, resource_group, name, None)
 
         iid = self.cmd('vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()[0]
-        # iid = self.cmd('vmss list-instances --resource-group {rg} --name {name}').get_output_in_json()
-        print("DEBUG: IID", iid);
-        # print("DEBUG: ", )
         self.kwargs.update({'id': iid})
         self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\" : null}}}}"')
         self.cmd('az vmss update-instances -g {rg} -n {name} --instance-ids {id}')
