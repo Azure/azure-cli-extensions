@@ -112,15 +112,18 @@ def load_command_table(self, _):
     with self.command_group('containerapp env telemetry data-dog', is_preview=True) as g:
         g.custom_command('set', 'set_environment_telemetry_data_dog', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_environment_telemetry_data_dog', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_environment_telemetry_data_dog')
 
     with self.command_group('containerapp env telemetry app-insights', is_preview=True) as g:
         g.custom_command('set', 'set_environment_telemetry_app_insights', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_environment_telemetry_app_insights', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_environment_telemetry_app_insights')
 
     with self.command_group('containerapp env telemetry otlp', is_preview=True) as g:
         g.custom_command('add', 'add_environment_telemetry_otlp', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_environment_telemetry_otlp', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_environment_telemetry_otlp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_environment_telemetry_otlp')
 
     with self.command_group('containerapp github-action') as g:
         g.custom_command('add', 'create_or_update_github_action', exception_handler=ex_handler_factory())

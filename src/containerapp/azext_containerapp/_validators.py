@@ -187,3 +187,4 @@ def validate_otlp_headers(cmd, namespace):
                 "Duplicate headers {header} found, header names must be unique.".format(
                     header=key_val[0]))
         header_pairs[key_val[0]] = key_val[1]
+

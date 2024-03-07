@@ -12,6 +12,7 @@ import subprocess
 from concurrent.futures import ThreadPoolExecutor
 
 from azure.cli.core import telemetry as telemetry_core
+from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -2366,6 +2367,42 @@ def delete_environment_telemetry_data_dog(cmd,
     return r
 
 
+def show_environment_telemetry_data_dog(cmd,
+                                        name,
+                                        resource_group_name):
+    raw_parameters = locals()
+
+    containerapp_env_telemetry_data_dog_decorator = ContainerappEnvTelemetryDataDogPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    
+    containerapp_env_def = None
+    try:
+        containerapp_env_def = containerapp_env_telemetry_data_dog_decorator.show()
+    except Exception as e:
+        handle_raw_exception(e)
+
+    if not containerapp_env_def:
+        raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
+
+    try:
+        r = containerapp_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"]["dataDogConfiguration"]
+        if r is None:
+            raise ValidationError("The containerapp environment '{}' does not have data dog enabled.".format(name)) from e
+        r = {}
+        safe_set(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", value=safe_get(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"))
+        safe_set(r, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=safe_get(r, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations"))
+        safe_set(r, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=safe_get(r, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations"))
+        safe_set(r, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=safe_get(r, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations"))
+
+        return r
+    except Exception as e:
+        raise ValidationError("The containerapp environment '{}' does not have data dog enabled.".format(name)) from e
+
+
 def set_environment_telemetry_app_insights(cmd,
                                            name,
                                            resource_group_name,
@@ -2410,6 +2447,43 @@ def delete_environment_telemetry_app_insights(cmd,
     return r
 
 
+def show_environment_telemetry_app_insights(cmd,
+                                        name,
+                                        resource_group_name):
+    raw_parameters = locals()
+
+    containerapp_env_telemetry_app_insights_decorator = ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    
+    containerapp_env_def = None
+    try:
+        containerapp_env_def = containerapp_env_telemetry_app_insights_decorator.show()
+    except:
+        pass
+
+    if not containerapp_env_def:
+        raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
+
+    try:
+        r = containerapp_env_def["properties"]["appInsightsConfiguration"]
+        if r is None:
+            raise ValidationError("The containerapp environment '{}' does not have app insights enabled.".format(name)) from e
+        
+        r = {}
+        safe_set(r, "properties", "appInsightsConfiguration", value=safe_get(r, "properties", "appInsightsConfiguration"))
+        safe_set(r, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=safe_get(r, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations"))
+        safe_set(r, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=safe_get(r, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations"))
+        safe_set(r, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=safe_get(r, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations"))
+
+        return r
+    except Exception as e:
+        raise ValidationError("The containerapp environment '{}' does not have app insights enabled.".format(name)) from e
+
+
 def add_environment_telemetry_otlp(cmd,
                                    name,
                                    resource_group_name,
@@ -2429,6 +2503,18 @@ def add_environment_telemetry_otlp(cmd,
         models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
+
+    try:
+        r = containerapp_env_telemetry_otlp_decorator.show()
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    existing_otlps = safe_get(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
+    if existing_otlps is not None:
+        otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
+
+        if otlp:
+            raise ValidationError(f"Otlp entry with name {otlp_name} already exist, please retry with different name")
 
     containerapp_env_telemetry_otlp_decorator.construct_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
@@ -2456,6 +2542,18 @@ def update_environment_telemetry_otlp(cmd,
     )
     containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
 
+    try:
+        r = containerapp_env_telemetry_otlp_decorator.show()
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    existing_otlps = safe_get(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
+    if existing_otlps is not None:
+        otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
+
+        if not otlp:
+            raise ValidationError(f"Otlp entry with name {otlp_name} does not exist, please make sure the {otlp_name} already added")
+
     containerapp_env_telemetry_otlp_decorator.construct_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
     
@@ -2468,6 +2566,9 @@ def remove_environment_telemetry_otlp(cmd,
                                       otlp_name,
                                       no_wait=False):
     raw_parameters = locals()
+    raw_parameters["enable_open_telemetry_traces"] = False
+    raw_parameters["enable_open_telemetry_logs"] = False
+    raw_parameters["enable_open_telemetry_metrics"] = False
     containerapp_env_telemetry_otlp_decorator = ContainerappEnvTelemetryOtlpPreviewSetDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,
@@ -2480,3 +2581,41 @@ def remove_environment_telemetry_otlp(cmd,
     r = containerapp_env_telemetry_otlp_decorator.update()
     
     return r
+
+def show_environment_telemetry_otlp(cmd,
+                                    name,
+                                    resource_group_name,
+                                    otlp_name):
+    raw_parameters = locals()
+
+    containerapp_env_decorator = ContainerAppEnvDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    
+    containerapp_env_def = None
+    try:
+        containerapp_env_def = containerapp_env_decorator.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_env_def:
+        raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
+
+    existing_otlps = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
+    if existing_otlps is not None:
+        otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
+
+        if not otlp:
+            raise ValidationError(f"Otlp entry with name {otlp_name} does not exist, please retry with different name")
+        
+        idx = [i for i, p in enumerate(existing_otlps) if p["name"].lower() == otlp_name.lower()][0]
+
+        r = {}
+        safe_set(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", f"otlpConfigurations[{idx}]", value=safe_get(r, "properties", "openTelemetryConfiguration","destinationsConfiguration", f"otlpConfigurations[{idx}]"))
+        safe_set(r, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=safe_get(r, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations"))
+        safe_set(r, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=safe_get(r, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations"))
+        safe_set(r, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=safe_get(r, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations"))
+

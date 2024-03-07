@@ -77,7 +77,7 @@ def load_arguments(self, _):
         c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry traces')
         c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry logs')
 
-    with self.argument_context('containerapp env telemetry otlp add') as c:
+    with self.argument_context('containerapp env telemetry otlp') as c:
         c.argument('otlp_name', options_list=['--otlp-name'], help='The name of the otlp entry')
         c.argument('endpoint', options_list=['--endpoint', '-e'], help='The endpoint of the otlp entry')
         c.argument('insecure', options_list=['--insecure'], arg_type=get_three_state_flag(), help='Boolean indicating whether the otlp is insecure or not')
@@ -86,18 +86,6 @@ def load_arguments(self, _):
         c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry metrics')
         c.argument('headers', options_list=['--headers'], nargs='*', help="A list of headers for the otlp. Space-separated values in 'key=value' format.",
                    validator=validate_otlp_headers)
-
-    with self.argument_context('containerapp env telemetry otlp update') as c:
-        c.argument('otlp_name', options_list=['--otlp-name'], help='The name of the otlp entry')
-        c.argument('endpoint', options_list=['--endpoint', '-e'], help='The endpoint of the otlp entry')
-        c.argument('insecure', options_list=['--insecure'], arg_type=get_three_state_flag(), help='Boolean indicating whether the otlp is insecure or not')
-        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry traces')
-        c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry logs')
-        c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry metrics')
-        c.argument('headers', options_list=['--headers'], nargs='*', help="A list of headers for the otlp. Space-separated values in 'key=value' format.")
-
-    with self.argument_context('containerapp env telemetry otlp remove') as c:
-        c.argument('otlp_name', options_list=['--otlp-name'], help='The name of the otlp entry')
 
     # Storage
     with self.argument_context('containerapp env storage') as c:

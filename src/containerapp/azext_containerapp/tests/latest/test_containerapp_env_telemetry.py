@@ -48,6 +48,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.dataDogConfiguration.site', data_dog_site),
             JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations','[\'dataDog\']'),
             JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations','[\'dataDog\']'),
@@ -62,6 +63,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.dataDogConfiguration.site', data_dog_site),
             JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations','[\'dataDog\']'),
             JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration',None),
@@ -76,6 +78,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration',None),
             JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration',None),
         ])
@@ -113,6 +116,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations','[\'appInsights\']'),
             JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations','[\'appInsights\']'),
         ])
@@ -126,6 +130,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration',None),
             JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations','[\'appInsights\']'),
         ])
@@ -139,6 +144,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration',None),
             JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration',None),
         ])
@@ -170,6 +176,10 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         otlp_endpoint = "otlp.nr-data.net:4317"
         otlp_insecure = False
         otlp_headers = "api-key=test"
+        otlp_incorrect_headers="key"
+        
+        self.cmd(f'containerapp env telemetry otlp add -g {resource_group} -n {env_name} --otlp-name {otlp_name} --endpoint {otlp_endpoint} --insecure {otlp_insecure} --headers {otlp_incorrect_headers} --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true', expect_failure=True)
+
         self.cmd(f'containerapp env telemetry otlp add -g {resource_group} -n {env_name} --otlp-name {otlp_name} --endpoint {otlp_endpoint} --insecure {otlp_insecure} --headers {otlp_headers} --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true')
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
@@ -179,18 +189,19 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[0].name', otlp_name),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[0].endpoint', otlp_endpoint),
-            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations',f'[\'{otlp_name}\']'),
-            JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations',f'[\'{otlp_name}\']'),
-            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations',f'[\'{otlp_name}\']'),
+            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations[0]',otlp_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations[0]',otlp_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations[0]',otlp_name),
         ])
 
         otlp_name_test = "testotlp"
         otlp_endpoint_test = "otlp.net:4318"
         otlp_insecure_test = False
         otlp_headers_test = "api-key=test"
-        self.cmd(f'containerapp env telemetry otlp add -g {resource_group} -n {env_name} --otlp-name {otlp_name_test} --endpoint {otlp_endpoint_test} --insecure {otlp_insecure_test} --headers {otlp_headers_test}')
+        self.cmd(f'containerapp env telemetry otlp add -g {resource_group} -n {env_name} --otlp-name {otlp_name_test} --endpoint {otlp_endpoint_test} --insecure {otlp_insecure_test} --headers {otlp_headers_test} --enable-open-telemetry-traces true')
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
 
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
@@ -199,10 +210,13 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[0].name', otlp_name),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[0].endpoint', otlp_endpoint),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[1].name', otlp_name_test),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[1].endpoint', otlp_endpoint_test),
+            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations[0]',otlp_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations[1]',otlp_name_test),
         ])
 
         otlp_endpoint_update = "otlp.nr-dataupdate.net:4317"
@@ -215,13 +229,14 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[0].name', otlp_name),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[0].endpoint', otlp_endpoint_update),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[1].name', otlp_name_test),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[1].endpoint', otlp_endpoint_test),
-            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration',None),
-            JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations',f'[\'{otlp_name}\']'),
-            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations',f'[\'{otlp_name}\']'),
+            JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration.destinations[0]',otlp_name_test),
+            JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations[0]',otlp_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations[0]',otlp_name),
         ])
 
         self.cmd(f'containerapp env telemetry otlp remove -g {resource_group} -n {env_name} --otlp-name {otlp_name_test} --yes')
@@ -233,12 +248,13 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[0].name', otlp_name),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[0].endpoint', otlp_endpoint_update),
             JMESPathCheck('properties.openTelemetryConfiguration.destinationsConfiguration.otlpConfigurations[1]', None),
             JMESPathCheck('properties.openTelemetryConfiguration.tracesConfiguration',None),
-            JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations',f'[\'{otlp_name}\']'),
-            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations',f'[\'{otlp_name}\']'),
+            JMESPathCheck('properties.openTelemetryConfiguration.logsConfiguration.destinations[0]',otlp_name),
+            JMESPathCheck('properties.openTelemetryConfiguration.metricsConfiguration.destinations[0]',otlp_name),
         ])
 
         self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes --no-wait')

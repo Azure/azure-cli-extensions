@@ -1350,6 +1350,15 @@ helps['containerapp env telemetry data-dog set'] = """
               --site dataDogSite --key dataDogKey --enable-open-telemetry-traces true --enable-open-telemetry-metrics true
 """
 
+helps['containerapp env telemetry data-dog show'] = """
+    type: command
+    short-summary: Show container apps environment telemetry data dog settings.
+    examples:
+    - name: Show container apps environment telemetry data dog settings.
+      text: |
+          az containerapp env telemetry data-dog show -n MyContainerappEnvironment -g MyResourceGroup 
+"""
+
 helps['containerapp env telemetry app-insights set'] = """
     type: command
     short-summary: Create or update container apps environment telemetry app insights settings.
@@ -1358,6 +1367,15 @@ helps['containerapp env telemetry app-insights set'] = """
       text: |
           az containerapp env telemetry app-insights set -n MyContainerappEnvironment -g MyResourceGroup \\
               --connection-string connectionString --enable-open-telemetry-traces true --enable-open-telemetry-logs true
+"""
+
+helps['containerapp env telemetry app-insights show'] = """
+    type: command
+    short-summary: Show container apps environment telemetry app insights settings.
+    examples:
+    - name: Show container apps environment telemetry app insights settings.
+      text: |
+          az containerapp env telemetry app-insights show -n MyContainerappEnvironment -g MyResourceGroup 
 """
 
 helps['containerapp env telemetry data-dog delete'] = """
@@ -1413,4 +1431,14 @@ helps['containerapp env telemetry otlp remove'] = """
       text: |
           az containerapp env telemetry otlp remove -n MyContainerappEnvironment -g MyResourceGroup \\
               --otlp-name otlpName
+"""
+
+helps['containerapp env telemetry otlp show'] = """
+    type: command
+    short-summary: Show container apps environment telemetry otlp settings.
+    examples:
+    - name: Show container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry app-insights show -n MyContainerappEnvironment -g MyResourceGroup \\
+          --otlp-name otlpName
 """
