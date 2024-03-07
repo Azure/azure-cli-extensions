@@ -20,19 +20,19 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             {
                 'rg': 'azcli-contoso-rg',
                 'loc': 'eastus',
-                'cus_loc': 'azcli-contoso-cl',
-                'vc_name': 'azcli-contoso-vc',
-                'rp_inventory_item': 'resgroup-724471',
+                'cus_loc': 'azcli-contoso-avs-cl',
+                'vc_name': 'azcli-contoso-avs-vc',
+                'rp_inventory_item': 'resgroup-251086',
                 'rp_name': 'azcli-contoso-resource-pool',
-                'cluster_inventory_item': 'domain-c649660',
+                'cluster_inventory_item': 'domain-c8',
                 'cluster_name': 'azcli-contoso-cluster',
-                'datastore_inventory_item': 'datastore-563660',
+                'datastore_inventory_item': 'datastore-13',
                 'datastore_name': 'azcli-contoso-datastore',
-                'host_inventory_item': 'host-1147412',
+                'host_inventory_item': 'host-87223',
                 'host_name': 'azcli-contoso-host',
-                'vnet_inventory_item': 'network-563661',
+                'vnet_inventory_item': 'network-o96',
                 'vnet_name': 'azcli-contoso-virtual-network',
-                'vmtpl_inventory_item': 'vmtpl-vm-1184288',
+                'vmtpl_inventory_item': 'vmtpl-vm-251226',
                 'vmtpl_name': 'azcli-contoso-vm-template',
                 'vm_name': 'azcli-contoso-vm-0',
                 'guest_username': 'azcli-user',
@@ -48,12 +48,14 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         )
 
         # Validate the show command output with vcenter name.
-        self.cmd(
+        vcenter_props = self.cmd(
             'az connectedvmware vcenter show -g {rg} --name {vc_name}',
             checks=[
                 self.check('name', '{vc_name}'),
             ],
-        )
+        ).get_output_in_json()
+        vcenter_id = vcenter_props['id']
+        self.kwargs.update({'vcenter_id': vcenter_id})
 
         # Count the vcenter resources in this resource group with list command
         count = len(
@@ -275,23 +277,27 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             extension['instanceView']['status']['message']
         )
 
-        # Update VM.
         self.cmd(
-            'az connectedvmware vm update -g {rg} --name {vm_name} --memory-size 2048 --num-CPUs 2',
-            checks=[
-                self.check('hardwareProfile.memorySizeMb', '2048'),
-                self.check('hardwareProfile.numCpUs', '2'),
-            ],
+            'az connectedvmware vm create-from-machines -g {rg} --name {vm_name} --vcenter-id {vcenter_id}',
         )
 
         # Stop VM.
         self.cmd('az connectedvmware vm stop -g {rg} --name {vm_name}')
 
+        # Update VM.
+        self.cmd(
+            'az connectedvmware vm update -g {rg} --name {vm_name} --memory-size 8192 --num-CPUs 4',
+            checks=[
+                self.check('hardwareProfile.memorySizeMb', '8192'),
+                self.check('hardwareProfile.numCpUs', '4'),
+            ],
+        )
+
         # Start VM.
         self.cmd('az connectedvmware vm start -g {rg} --name {vm_name}')
 
         # Disable the VM from azure; delete the ARM resource, retain the VM in vCenter.
-        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} -y')
+        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} --retain-machine -y')
 
         # Enable the VM to azure again.
         self.cmd(

@@ -183,7 +183,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         thread = display_spinner("Streaming Cloud Build logs")
         headers = {'Authorization': 'Bearer ' + token}
         logs_stream_retries = 0
-        maximum_logs_stream_retries = 5
+        maximum_logs_stream_retries = 8
         while logs_stream_retries < maximum_logs_stream_retries:
             logs_stream_retries += 1
             response_log_streaming = requests.get(

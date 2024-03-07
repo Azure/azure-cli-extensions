@@ -17,6 +17,7 @@ from azext_aks_preview.tests.latest.custom_preparers import (
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
 from azure.cli.core.azclierror import ClientRequestError
+from azure.core.exceptions import (HttpResponseError)
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
@@ -62,6 +63,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             if version > min_version and version < max_version:
                 return version
         return ""
+
+    def _get_asm_supported_revision(self, location):
+        revisions_cmd = f"aks mesh get-revisions -l {location}"
+        revisions = self.cmd(revisions_cmd).get_output_in_json()
+        assert len(revisions["meshRevisions"]) > 0
+        return revisions['meshRevisions'][0]['revision']
 
     @classmethod
     def generate_ssh_keys(cls):
@@ -11394,6 +11401,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "revision": self._get_asm_supported_revision(resource_group_location),
             }
         )
 
@@ -11411,7 +11419,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # enable azure service mesh again
-        update_cmd = "aks mesh enable --resource-group={resource_group} --name={name}"
+        update_cmd = "aks mesh enable --resource-group={resource_group} --name={name} --revision={revision}"
         self.cmd(
             update_cmd,
             checks=[
@@ -11464,6 +11472,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "revision": self._get_asm_supported_revision(resource_group_location),
             }
         )
 
@@ -11472,7 +11481,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview "
             "--ssh-key-value={ssh_key_value} "
-            "--enable-azure-service-mesh --output=json"
+            "--enable-azure-service-mesh --revision={revision} --output=json"
         )
         self.cmd(
             create_cmd,
@@ -11556,6 +11565,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "revision": self._get_asm_supported_revision(resource_group_location)
             }
         )
 
@@ -11564,7 +11574,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview "
             "--ssh-key-value={ssh_key_value} "
-            "--enable-azure-service-mesh --output=json"
+            "--enable-azure-service-mesh --revision={revision} --output=json"
         )
         self.cmd(
             create_cmd,
@@ -11579,57 +11589,69 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
             "--egress-gateway-nodeselector istio=egress"
         )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("serviceMeshProfile.mode", "Istio"),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
-                    "egress",
-                ),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                    True,
-                ),
-            ],
-        )
+        try:
+            self.cmd(
+                update_cmd,
+                checks=[
+                    self.check("serviceMeshProfile.mode", "Istio"),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
+                        "egress",
+                    ),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                        True,
+                    ),
+                ],
+            )
+        except HttpResponseError as e:
+            # fails because egress gateway has been disabled
+            self.assertTrue(e.status_code == 400)
 
-        # remove egress gateway nodeselector
-        update_cmd = (
-            "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
-            "--egress-gateway-nodeselector "
-        )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("serviceMeshProfile.mode", "Istio"),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
-                    None,
-                ),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                    True,
-                ),
-            ],
-        )
+        try:
+            # remove egress gateway nodeselector
+            update_cmd = (
+                "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
+                "--egress-gateway-nodeselector "
+            )
+            self.cmd(
+                update_cmd,
+                checks=[
+                    self.check("serviceMeshProfile.mode", "Istio"),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
+                        None,
+                    ),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                        True,
+                    ),
+                ],
+            )
+        except HttpResponseError as e:
+            # fails because egress gateway has been disabled
+            self.assertTrue(e.status_code == 400)
 
         # disable egress gateway
-        update_cmd = "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} --yes"
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("serviceMeshProfile.mode", "Istio"),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                    None,
-                ),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector",
-                    None,
-                ),
-            ],
-        )
+        try:
+            update_cmd = "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} --yes"
+            self.cmd(
+                update_cmd,
+                checks=[
+                    self.check("serviceMeshProfile.mode", "Istio"),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                        None,
+                    ),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector",
+                        None,
+                    ),
+                ],
+            )
+        except HttpResponseError as e:
+            # fails because egress gateway has been disabled
+            self.assertTrue(e.status_code == 400)
 
         # delete the cluster
         delete_cmd = (
@@ -11666,6 +11688,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "akv_resource_id": akv_resource_id,
+                "revision": self._get_asm_supported_revision(resource_group_location),
             }
         )
 
@@ -11698,7 +11721,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--ca-cert-object-name my-ca-cert "
             "--ca-key-object-name my-ca-key "
             "--cert-chain-object-name my-cert-chain "
-            "--root-cert-object-name my-root-cert"
+            "--root-cert-object-name my-root-cert "
+            "--revision {revision}"
         )
 
         self.cmd(
@@ -11772,6 +11796,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "revision": self._get_asm_supported_revision(resource_group_location),
             }
         )
 
@@ -11784,7 +11809,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         # enable azure service mesh
-        enable_cmd = "aks mesh enable --resource-group={resource_group} --name={name}"
+        enable_cmd = "aks mesh enable --resource-group={resource_group} --name={name} --revision={revision}"
         self.cmd(
             enable_cmd,
             checks=[
@@ -13170,3 +13195,102 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="centraluseuap",
+        preserve_default_location=True,
+    )
+    def test_aks_create_with_pod_ip_allocation_mode_static_block(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+        vnet_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "aks_name": aks_name,
+                "vnet_name": vnet_name,
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create virtual network
+        create_vnet = (
+            "network vnet create --resource-group={resource_group} --name={vnet_name} "
+            "--address-prefix 10.0.0.0/8 -o json"
+        )
+        vnet = self.cmd(
+            create_vnet, checks=[self.check("newVNet.provisioningState", "Succeeded")]
+        ).get_output_in_json()
+        vnet_id = vnet["newVNet"]["id"]
+        assert vnet_id is not None
+
+        # create node subnet
+        create_node_subnet = (
+            "network vnet subnet create -n nodeSubnet --resource-group={resource_group} --vnet-name {vnet_name} "
+            "--address-prefixes 10.240.0.0/16"
+        )
+        show_node_subnet_cmd = "network vnet subnet show \
+            --resource-group={resource_group} \
+            --vnet-name={vnet_name} \
+            --name nodeSubnet"
+        self.cmd(create_node_subnet, checks=[self.check("provisioningState", "Succeeded")])
+        node_subnet_output = self.cmd(show_node_subnet_cmd).get_output_in_json()
+        node_subnet_id = node_subnet_output["id"]
+        assert node_subnet_id is not None
+
+        # create pod subnet
+        create_pod_subnet = (
+            "network vnet subnet create -n podSubnet --resource-group={resource_group} --vnet-name {vnet_name} "
+            "--address-prefixes 10.40.0.0/13"
+        )
+        show_pod_subnet_cmd = "network vnet subnet show \
+            --resource-group={resource_group} \
+            --vnet-name={vnet_name} \
+            --name podSubnet"
+        self.cmd(create_pod_subnet, checks=[self.check("provisioningState", "Succeeded")])
+        pod_subnet_output = self.cmd(show_pod_subnet_cmd).get_output_in_json()
+        pod_subnet_id = pod_subnet_output["id"]
+        assert pod_subnet_id is not None
+
+        pod_ip_allocation_mode = "StaticBlock"
+        self.kwargs.update(
+            {
+                "vnet_id": vnet_id,
+                "node_subnet_id": node_subnet_id,
+                "pod_subnet_id": pod_subnet_id,
+                "pod_ip_allocation_mode": pod_ip_allocation_mode,
+            }
+        )
+
+        # create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
+            "--network-plugin azure --ssh-key-value={ssh_key_value} --max-pods 80 "
+            "--vnet-subnet-id {node_subnet_id} --pod-subnet-id {pod_subnet_id} --node-count 3 "
+            "--pod-ip-allocation-mode={pod_ip_allocation_mode} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureVnetScalePreview"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.networkPlugin", "azure"),
+                self.check("agentPoolProfiles[0].podSubnetId", pod_subnet_id),
+                self.check("agentPoolProfiles[0].podIpAllocationMode", pod_ip_allocation_mode),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {aks_name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )

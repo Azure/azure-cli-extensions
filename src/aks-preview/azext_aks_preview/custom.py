@@ -533,6 +533,7 @@ def aks_create(
     snapshot_id=None,
     vnet_subnet_id=None,
     pod_subnet_id=None,
+    pod_ip_allocation_mode=None,
     enable_node_public_ip=False,
     node_public_ip_prefix_id=None,
     enable_cluster_autoscaler=False,
@@ -598,6 +599,7 @@ def aks_create(
     safeguards_excluded_ns=None,
     # azure service mesh
     enable_azure_service_mesh=None,
+    revision=None,
     # azure monitor profile
     enable_azuremonitormetrics=False,
     enable_azure_monitor_metrics=False,
@@ -1142,6 +1144,7 @@ def aks_agentpool_add(
     snapshot_id=None,
     vnet_subnet_id=None,
     pod_subnet_id=None,
+    pod_ip_allocation_mode=None,
     enable_node_public_ip=False,
     node_public_ip_prefix_id=None,
     enable_cluster_autoscaler=False,
