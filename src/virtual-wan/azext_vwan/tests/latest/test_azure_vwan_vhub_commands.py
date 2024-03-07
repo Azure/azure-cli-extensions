@@ -479,13 +479,13 @@ class AzureVWanVHubScenario(ScenarioTest):
                  '--remote-vpn-site {sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site} '
                  '--vpn-site-link "{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site}/vpnSiteLinks/{vpn_site}" '
                  '--with-link')
- 
+
         # Test issue:
         # Ipsec policy setted on conneciton will fail due to multi-links on connection
         with self.assertRaisesRegexp(HttpResponseError, 'VpnConnectionPropertyIsDeprecated'):
             self.cmd('network vpn-gateway connection ipsec-policy add -g {rg} --gateway-name {vpngateway} --connection-name {connection} '
-                    '--ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 --sa-data-size 429496 --ike-encryption AES256 '
-                    '--ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
+                     '--ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 --sa-data-size 429496 --ike-encryption AES256 '
+                     '--ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
 
         # Test link-conn ipsec policy
         self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy add -g {rg} --gateway-name {vpngateway} --connection-name {connection} '
@@ -520,7 +520,7 @@ class AzureVWanVHubScenario(ScenarioTest):
             vhub = self.cmd('network vhub show -g {rg} -n {vhub}').get_output_in_json()
 
         self.cmd('network vhub bgpconnection create -n {conn} -g {rg} --vhub-name {vhub} --peer-asn 20000  --peer-ip "10.0.0.3" '
-                    '--vhub-conn {sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualHubs/{vhub}/hubVirtualNetworkConnections/{vhub_conn}')
+                 '--vhub-conn {sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualHubs/{vhub}/hubVirtualNetworkConnections/{vhub_conn}')
         self.cmd('network vhub bgpconnection list -g {rg} --vhub-name {vhub}')
 
         # HubBgpConnectionPeerIpCannotBeUpdated and HubBgpConnectionPeerASNCannotBeUpdated
@@ -684,11 +684,11 @@ class AzureVWanVHubScenario(ScenarioTest):
 
         # You need to create a virtual hub and a P2S VPN gateway with connection, then connect them together before running the following command.
         result = self.cmd('network vhub get-effective-routes '
-                 '-g {rg} '
-                 '-n {vhub} '
-                 '--resource-type {resource_type} '
-                 '--resource-id {resource_id} '
-                 '-o table')
+                          '-g {rg} '
+                          '-n {vhub} '
+                          '--resource-type {resource_type} '
+                          '--resource-id {resource_id} '
+                          '-o table')
         lines = result.output.strip().split('\n')
         self.assertTrue(len(lines) == 7)
 
@@ -778,6 +778,7 @@ class RoutingIntentClientTest(ScenarioTest):
 
         self.cmd("extension remove -n azure-firewall")
 
+
 class RouteMapScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix="cli_test_route_map", location="westus")
     def test_vhub_route_map(self):
@@ -801,7 +802,7 @@ class RouteMapScenario(ScenarioTest):
             self.check('rules[0].matchCriteria[0].routePrefix[0]', '10.0.0.0/8'),
             self.check('rules[0].name', 'rule1')
         ])
-        self.cmd("network vhub route-map list -g {rg} --vhub-name {vhub_name}",checks=[
+        self.cmd("network vhub route-map list -g {rg} --vhub-name {vhub_name}", checks=[
             self.check('[0].name', '{route_map_name}'),
             self.check('[0].rules[0].actions[0].parameters[0].asPath[0]', '22334'),
             self.check('[0].rules[0].actions[0].type', 'Add'),

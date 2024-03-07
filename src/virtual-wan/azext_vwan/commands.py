@@ -142,7 +142,7 @@ def load_command_table(self, _):
 
     # region VpnGateways
     with self.command_group("network vpn-gateway nat-rule"):
-        from .custom import VPNGatewayNatRuleCreate, VPNGatewayNatRuleUpdate, VPNGatewayNatRuleList,\
+        from .custom import VPNGatewayNatRuleCreate, VPNGatewayNatRuleUpdate, VPNGatewayNatRuleList, \
             VPNGatewayNatRuleShow
         self.command_table["network vpn-gateway nat-rule create"] = VPNGatewayNatRuleCreate(loader=self)
         self.command_table["network vpn-gateway nat-rule update"] = VPNGatewayNatRuleUpdate(loader=self)
