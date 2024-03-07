@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Creates a new support ticket for Billing, Subscription Management, and Technical issues for no subscription.
 
     :example: Create a ticket for Billing related issues
-        az support no-subscription tickets create --support-ticket-name "BillingTestTicketName" --title "BillingTicketTitle"--contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "BillingTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification-id "/providers/Microsoft.Support/services/BillingServiceNameGuid/problemClassifications/BillingProblemClassificationNameGuid" --severity "minimal"
+        az support no-subscription tickets create --ticket-name "BillingTestTicketName" --title "BillingTicketTitle"--contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "BillingTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification  "/providers/Microsoft.Support/services/BillingServiceNameGuid/problemClassifications/BillingProblemClassificationNameGuid" --severity "minimal"
 
     :example: Create a ticket for Subscription Management related issues.
-        az support no-subscription tickets create --support-ticket-name "SubMgmtTestTicketName" --title "SubMgmtTicketTitle" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "SubMgmtTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification-id "/providers/Microsoft.Support/services/SubMgmtServiceNameGuid/problemClassifications/SubMgmtProblemClassificationNameGuid" --severity "minimal"
+        az support no-subscription tickets create --ticket-name "SubMgmtTestTicketName" --title "SubMgmtTicketTitle" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "SubMgmtTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification  "/providers/Microsoft.Support/services/SubMgmtServiceNameGuid/problemClassifications/SubMgmtProblemClassificationNameGuid" --severity "minimal"
 
     :example: Create a ticket for Technical issue related to a specific resource
-        az support no-subscription tickets create --support-ticket-name "TechnicalTestTicketName" --title "TechnicalTicketTitle" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com"--description "TechnicalTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification-id "/providers/Microsoft.Support/services/TechnicalServiceNameGuid/problemClassifications/TechnicalProblemClassificationNameGuid" --severity "minimal" --technical-resource "/RgName/providers/Microsoft.Compute/virtualMachines/RName" --secondary-consent "[{type:VirtualMachineMemoryDump,user-consent:No}]"
+        az support no-subscription tickets create --ticket-name "TechnicalTestTicketName" --title "TechnicalTicketTitle" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com"--description "TechnicalTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification  "/providers/Microsoft.Support/services/TechnicalServiceNameGuid/problemClassifications/TechnicalProblemClassificationNameGuid" --severity "minimal" --technical-resource "/RgName/providers/Microsoft.Compute/virtualMachines/RName" --secondary-consent "[{type:VirtualMachineMemoryDump,user-consent:No}]"
     """
 
     _aaz_info = {
@@ -51,8 +51,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.support_ticket_name = AAZStrArg(
-            options=["--support-ticket-name"],
+        _args_schema.ticket_name = AAZStrArg(
+            options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
         )
@@ -71,8 +71,8 @@ class Create(AAZCommand):
             options=["--file-workspace-name"],
             help="File workspace name.",
         )
-        _args_schema.problem_classification_id = AAZStrArg(
-            options=["--problem-classification-id"],
+        _args_schema.problem_classification = AAZStrArg(
+            options=["--problem-classification"],
             help="Each Azure service has its own set of issue categories, also known as problem classification. This parameter is the unique Id for the type of problem you are experiencing.",
             required=True,
         )
@@ -281,7 +281,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    "supportTicketName", self.ctx.args.ticket_name,
                     required=True,
                 ),
             }
@@ -324,7 +324,7 @@ class Create(AAZCommand):
                 properties.set_prop("contactDetails", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("fileWorkspaceName", AAZStrType, ".file_workspace_name")
-                properties.set_prop("problemClassificationId", AAZStrType, ".problem_classification_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("problemClassificationId", AAZStrType, ".problem_classification", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("problemStartTime", AAZStrType, ".start_time")
                 properties.set_prop("quotaTicketDetails", AAZObjectType)
                 properties.set_prop("require24X7Response", AAZBoolType, ".require_24_by_7_response")

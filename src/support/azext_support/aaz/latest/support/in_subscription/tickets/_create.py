@@ -18,22 +18,19 @@ class Create(AAZCommand):
     """Creates a new support ticket for Quota increase, Technical, Billing, and Subscription Management issues for the specified subscription.
 
     :example: Create a ticket for Billing related issues
-        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "BillingTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/BillingServiceNameGuid/problemClassifications/BillingProblemClassificationNameGuid" --severity "minimal" --ticket-name "BillingTestTicketName" --title "BillingTicketTitle"
+        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "BillingTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/BillingServiceNameGuid/problemClassifications/BillingProblemClassificationNameGuid" --severity "minimal" --ticket-name "BillingTestTicketName" --title "BillingTicketTitle"
 
     :example: Create a ticket for Subscription Management related issues.
-        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "SubMgmtTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/SubMgmtServiceNameGuid/problemClassifications/SubMgmtProblemClassificationNameGuid" --severity "minimal" --ticket-name "SubMgmtTestTicketName" --title "SubMgmtTicketTitle"
+        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "SubMgmtTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/SubMgmtServiceNameGuid/problemClassifications/SubMgmtProblemClassificationNameGuid" --severity "minimal" --ticket-name "SubMgmtTestTicketName" --title "SubMgmtTicketTitle"
 
     :example: Create a ticket for Technical issue related to a specific resource
-        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com"--description "TechnicalTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/TechnicalServiceNameGuid/problemClassifications/TechnicalProblemClassificationNameGuid" --severity "minimal" --ticket-name "TechnicalTestTicketName" --title "TechnicalTicketTitle" --technical-resource "/subscriptions/SubscriptionGuid/resourceGroups/RgName/providers/Microsoft.Compute/virtualMachines/RName" --secondary-consent "[{type:VirtualMachineMemoryDump,user-consent:No}]"
+        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com"--description "TechnicalTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/TechnicalServiceNameGuid/problemClassifications/TechnicalProblemClassificationNameGuid" --severity "minimal" --ticket-name "TechnicalTestTicketName" --title "TechnicalTicketTitle" --technical-resource "/subscriptions/SubscriptionGuid/resourceGroups/RgName/providers/Microsoft.Compute/virtualMachines/RName" --secondary-consent "[{type:VirtualMachineMemoryDump,user-consent:No}]"
 
     :example: Create a ticket to request Quota increase for Compute VM Cores.
-        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "QuotaTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/CoresQuotaProblemClassificationNameGuid" --severity "minimal" --ticket-name "QuotaTestTicketName" --title "QuotaTicketTitle"  --quota-change-version "1.0" --quota-change-requests [0].region="EASTUS" --quota-change-requests [0].payload="'{\`"VMFamily\`":\`"DSv3 Series\`",\`"NewLimit\`":\`"110\`"}'"
+        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "QuotaTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/CoresQuotaProblemClassificationNameGuid" --severity "minimal" --ticket-name "QuotaTestTicketName" --title "QuotaTicketTitle"  --quota-change-version "1.0" --quota-change-requests [0].region="EASTUS" --quota-change-requests [0].payload="{\"VMFamily\":\"DSv3 Series\",\"NewLimit\":110}"
 
     :example: Create a ticket for Generic Quota increase for any Azure Service.
-        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "QuotaTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/GenericProblemClassificationNameGuid" --severity "minimal" --ticket-name "QuotaTestTicketName" --title "QuotaTicketTitle"
-
-    :example: Create a ticket to request Quota increase for Pools for a Batch account.
-        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "QuotaTicketDescription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/BatchQuotaProblemClassificationNameGuid" --severity "minimal" --ticket-name "QuotaTestTicketName" --title "QuotaTicketTitle"  --quota-change-version "1.0" --quota-change-requests [0].region="WESTUS" --quota-change-requests [0].payload="'{\`"AccountName\`": \`"test\`", \`"NewLimit\`": 102, \`"Type\`": \`"Pools\`"}'"
+        az support in-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "QuotaTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/GenericProblemClassificationNameGuid" --severity "minimal" --ticket-name "QuotaTestTicketName" --title "QuotaTicketTitle"
     """
 
     _aaz_info = {
@@ -65,14 +62,16 @@ class Create(AAZCommand):
             help="Support ticket name.",
             required=True,
         )
-        _args_schema.diagnostic_consent = AAZStrArg(
-            options=["--diagnostic-consent"],
+        _args_schema.advanced_diagnostic_consent = AAZStrArg(
+            options=["--advanced-diagnostic-consent"],
             help="Advanced diagnostic consent to be updated on the support ticket.",
             enum={"No": "No", "Yes": "Yes"},
+            required=True,
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             help="Detailed description of the question or issue.",
+            required=True,
         )
         _args_schema.file_workspace = AAZStrArg(
             options=["--file-workspace"],
@@ -81,6 +80,7 @@ class Create(AAZCommand):
         _args_schema.problem_classification = AAZStrArg(
             options=["--problem-classification"],
             help="Each Azure service has its own set of issue categories, also known as problem classification. This parameter is the unique Id for the type of problem you are experiencing.",
+            required=True,
         )
         _args_schema.start_time = AAZDateTimeArg(
             options=["--start-time"],
@@ -98,10 +98,12 @@ class Create(AAZCommand):
             options=["--severity"],
             help="A value that indicates the urgency of the case, which in turn determines the response time according to the service level agreement of the technical support plan you have with Azure. Note: 'Highest critical impact', also known as the 'Emergency - Severe impact' level in the Azure portal is reserved only for our Premium customers.",
             enum={"critical": "critical", "highestcriticalimpact": "highestcriticalimpact", "minimal": "minimal", "moderate": "moderate"},
+            required=True,
         )
         _args_schema.title = AAZStrArg(
             options=["--title"],
             help="Title of the support ticket.",
+            required=True,
         )
 
         secondary_consent = cls._args_schema.secondary_consent
@@ -130,16 +132,19 @@ class Create(AAZCommand):
             options=["--contact-country"],
             arg_group="Contact",
             help="Country of the user. This is the ISO 3166-1 alpha-3 code.",
+            required=True,
         )
         _args_schema.contact_first_name = AAZStrArg(
             options=["--contact-first-name"],
             arg_group="Contact",
             help="First name.",
+            required=True,
         )
         _args_schema.contact_last_name = AAZStrArg(
             options=["--contact-last-name"],
             arg_group="Contact",
             help="Last name.",
+            required=True,
         )
         _args_schema.contact_phone_number = AAZStrArg(
             options=["--contact-phone-number"],
@@ -151,21 +156,25 @@ class Create(AAZCommand):
             arg_group="Contact",
             help="Preferred contact method.",
             enum={"email": "email", "phone": "phone"},
+            required=True,
         )
         _args_schema.contact_language = AAZStrArg(
             options=["--contact-language"],
             arg_group="Contact",
             help={"short-summary": "Preferred language of support from Azure. Support languages vary based on the severity you choose for your support ticket. Use the standard language-country code.", "long-summary": "Preferred language of support from Azure. Support languages vary based on the severity you choose for your support ticket. Use the standard language-country code. Valid values are 'en-us' for English, 'zh-hans' for Chinese, 'es-es' for Spanish, 'fr-fr' for French, 'ja-jp' for Japanese, 'ko-kr' for Korean, 'ru-ru' for Russian, 'pt-br' for Portuguese, 'it-it' for Italian, 'zh-tw' for Chinese and 'de-de' for German."},
+            required=True,
         )
         _args_schema.contact_timezone = AAZStrArg(
             options=["--contact-timezone"],
             arg_group="Contact",
             help="Time zone of the user. This is the name of the time zone from Microsoft Time Zone Index Values.",
+            required=True,
         )
         _args_schema.contact_email = AAZStrArg(
             options=["--contact-email"],
             arg_group="Contact",
             help="Primary email address.",
+            required=True,
         )
 
         contact_additional_emails = cls._args_schema.contact_additional_emails
@@ -321,7 +330,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("advancedDiagnosticConsent", AAZStrType, ".diagnostic_consent")
+                properties.set_prop("advancedDiagnosticConsent", AAZStrType, ".advanced_diagnostic_consent")
                 properties.set_prop("contactDetails", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("fileWorkspaceName", AAZStrType, ".file_workspace")

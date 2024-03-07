@@ -18,21 +18,21 @@ class Update(AAZCommand):
     """Update API allows you to update the severity level, ticket status, advanced diagnostic consent, secondary consent, and your contact information in the support ticket.<br/><br/>Note: The severity levels cannot be changed if a support ticket is actively being worked upon by an Azure support engineer. In such a case, contact your support engineer to request severity update by adding a new communication using the Communications API.
 
     :example: Update support ticket severity.
-        az support no-subscription tickets update --support-ticket-name "TestTicketName" --severity "moderate"
+        az support no-subscription tickets update --ticket-name "TestTicketName" --severity "moderate"
 
     :example: Update support ticket status.
-        az support no-subscription tickets update --support-ticket-name "TestTicketName" --status "closed"
+        az support no-subscription tickets update --ticket-name "TestTicketName" --status "closed"
 
     :example: Update support ticket customer contact details properties
-        az support no-subscription tickets update --support-ticket-name "TestTicketName" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "phone" --contact-phone-number "123-456-7890" --contact-timezone "Pacific Standard Time"
+        az support no-subscription tickets update --ticket-name "TestTicketName" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "phone" --contact-phone-number "123-456-7890" --contact-timezone "Pacific Standard Time"
 
     :example: Update advanced diagnostic consent of a support ticket
-        az support no-subscription tickets update --support-ticket-name "TestTicketName" --diagnostic-consent "Yes"
+        az support no-subscription tickets update --ticket-name "TestTicketName" --advanced-diagnostic-consent "Yes"
 
     :example: Update secondary consent of a support ticket
-        az support no-subscription tickets update --support-ticket-name "TestTicketName" --secondary-consent "[{type:VirtualMachineMemoryDump,user-consent:No}]"
-        az support no-subscription tickets update --support-ticket-name "TestTicketName" --secondary-consent [0].type="VirtualMachineMemoryDump" [0].user-consent="No"
-        az support no-subscription tickets update --support-ticket-name "TestTicketName" --secondary-consent [0]="{type:VirtualMachineMemoryDump,user-consent:No}"
+        az support no-subscription tickets update --ticket-name "TestTicketName" --secondary-consent "[{type:VirtualMachineMemoryDump,user-consent:No}]"
+        az support no-subscription tickets update --ticket-name "TestTicketName" --secondary-consent [0].type="VirtualMachineMemoryDump" --secondary-consent [0].user-consent="No"
+        az support no-subscription tickets update --ticket-name "TestTicketName" --secondary-consent [0]="{type:VirtualMachineMemoryDump,user-consent:No}"
     """
 
     _aaz_info = {
@@ -58,8 +58,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.support_ticket_name = AAZStrArg(
-            options=["--support-ticket-name"],
+        _args_schema.ticket_name = AAZStrArg(
+            options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
         )
@@ -198,7 +198,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    "supportTicketName", self.ctx.args.ticket_name,
                     required=True,
                 ),
             }

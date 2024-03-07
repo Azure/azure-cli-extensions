@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "support in-subscription tickets update",
 )
 class Update(AAZCommand):
-    """Updates severity level, status, advanced diagnostic consent, secondary consent, and customer contact information for a support ticket.
+    """Update API allows you to update the severity level, ticket status, advanced diagnostic consent, secondary consent, and your contact information in the support ticket.<br/><br/>Note: The severity levels cannot be changed if a support ticket is actively being worked upon by an Azure support engineer. In such a case, contact your support engineer to request severity update by adding a new communication using the Communications API.
 
     :example: Update support ticket severity.
         az support in-subscription tickets update --ticket-name "TestTicketName" --severity "moderate"
@@ -27,11 +27,11 @@ class Update(AAZCommand):
         az support in-subscription tickets update --ticket-name "TestTicketName" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "phone" --contact-phone-number "123-456-7890" --contact-timezone "Pacific Standard Time"
 
     :example: Update advanced diagnostic consent of a support ticket
-        az support in-subscription tickets update --ticket-name "TestTicketName" --diagnostic-consent "Yes"
+        az support in-subscription tickets update --ticket-name "TestTicketName" --advanced-diagnostic-consent "Yes"
 
     :example: Update secondary consent of a support ticket
         az support in-subscription tickets update --ticket-name "TestTicketName" --secondary-consent "[{type:VirtualMachineMemoryDump,user-consent:No}]"
-        az support in-subscription tickets update --ticket-name "TestTicketName" --secondary-consent [0].type="VirtualMachineMemoryDump" [0].user-consent="No"
+        az support in-subscription tickets update --ticket-name "TestTicketName" --secondary-consent [0].type="VirtualMachineMemoryDump" --secondary-consent [0].user-consent="No"
         az support in-subscription tickets update --ticket-name "TestTicketName" --secondary-consent [0]="{type:VirtualMachineMemoryDump,user-consent:No}"
     """
 
@@ -62,10 +62,9 @@ class Update(AAZCommand):
             options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
-            id_part="name",
         )
-        _args_schema.diagnostic_consent = AAZStrArg(
-            options=["--diagnostic-consent"],
+        _args_schema.advanced_diagnostic_consent = AAZStrArg(
+            options=["--advanced-diagnostic-consent"],
             help="Advanced diagnostic consent to be updated on the support ticket.",
             enum={"No": "No", "Yes": "Yes"},
         )
@@ -238,7 +237,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("advancedDiagnosticConsent", AAZStrType, ".diagnostic_consent")
+            _builder.set_prop("advancedDiagnosticConsent", AAZStrType, ".advanced_diagnostic_consent")
             _builder.set_prop("contactDetails", AAZObjectType)
             _builder.set_prop("secondaryConsent", AAZListType, ".secondary_consent")
             _builder.set_prop("severity", AAZStrType, ".severity")

@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Adds a new customer communication to an Azure support ticket.
 
     :example: Adds a new customer communication to an Azure support ticket.
-        az support no-subscription communication create --support-ticket-name "TestTicketName "--communication-name "TestTicketCommunicationName" --body "TicketCommunicationBody" --subject "TicketCommunicationSubject"
+        az support no-subscription communication create --ticket-name "TestTicketName "--communication-name "TestTicketCommunicationName" --communication-body "TicketCommunicationBody" --communication-subject "TicketCommunicationSubject"
     """
 
     _aaz_info = {
@@ -50,22 +50,22 @@ class Create(AAZCommand):
             help="Communication name.",
             required=True,
         )
-        _args_schema.support_ticket_name = AAZStrArg(
-            options=["--support-ticket-name"],
+        _args_schema.ticket_name = AAZStrArg(
+            options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
         )
-        _args_schema.body = AAZStrArg(
-            options=["--body"],
+        _args_schema.communication_body = AAZStrArg(
+            options=["--communication-body"],
             help="Body of the communication.",
             required=True,
         )
-        _args_schema.sender = AAZStrArg(
-            options=["--sender"],
+        _args_schema.communication_sender = AAZStrArg(
+            options=["--communication-sender"],
             help="Email address of the sender. This property is required if called by a service principal.",
         )
-        _args_schema.subject = AAZStrArg(
-            options=["--subject"],
+        _args_schema.communication_subject = AAZStrArg(
+            options=["--communication-subject"],
             help="Subject of the communication.",
             required=True,
         )
@@ -138,7 +138,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    "supportTicketName", self.ctx.args.ticket_name,
                     required=True,
                 ),
             }
@@ -177,9 +177,9 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("body", AAZStrType, ".body", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("sender", AAZStrType, ".sender")
-                properties.set_prop("subject", AAZStrType, ".subject", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("body", AAZStrType, ".communication_body", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("sender", AAZStrType, ".communication_sender")
+                properties.set_prop("subject", AAZStrType, ".communication_subject", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 

@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List all communications (attachments not included) for a support ticket. <br/></br> You can also filter support ticket communications by _CreatedDate_ or _CommunicationType_ using the $filter parameter. The only type of communication supported today is _Web_. Output will be a paged result with _nextLink_, using which you can retrieve the next set of Communication results. <br/><br/>Support ticket data is available for 18 months after ticket creation. If a ticket was created more than 18 months ago, a request for data might cause an error.
 
     :example: List web communication created on or after a specific date for a no subscription support ticket.
-        az support no-subscription communication list --support-ticket-name "TestTicketName" --filter "CreatedDate ge 2024-01-01"
+        az support no-subscription communication list --ticket-name "TestTicketName" --filter "CreatedDate ge 2024-01-01"
     """
 
     _aaz_info = {
@@ -45,18 +45,14 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.support_ticket_name = AAZStrArg(
-            options=["--support-ticket-name"],
-            help="Support ticket name",
+        _args_schema.ticket_name = AAZStrArg(
+            options=["--ticket-name"],
+            help="Support ticket name.",
             required=True,
         )
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
             help="The filter to apply on the operation. You can filter by communicationType and createdDate properties. CommunicationType supports Equals ('eq') operator and createdDate supports Greater Than ('gt') and Greater Than or Equals ('ge') operators. You may combine the CommunicationType and CreatedDate filters by Logical And ('and') operator.",
-        )
-        _args_schema.top = AAZIntArg(
-            options=["--top"],
-            help="The number of values to return in the collection. Default is 10 and max is 10.",
         )
         return cls._args_schema
 
@@ -108,7 +104,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    "supportTicketName", self.ctx.args.ticket_name,
                     required=True,
                 ),
             }
@@ -119,9 +115,6 @@ class List(AAZCommand):
             parameters = {
                 **self.serialize_query_param(
                     "$filter", self.ctx.args.filter,
-                ),
-                **self.serialize_query_param(
-                    "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
                     "api-version", "2022-09-01-preview",

@@ -27,10 +27,13 @@ class List(AAZCommand):
         az support in-subscription tickets list --filter "Status eq 'Updating'"
 
     :example: List support tickets with a certain problem classification id for a subscription
-        az support in-subscription tickets list --filter "ServiceId eq 'service_guid'"
+        az support in-subscription tickets list --filter "ProblemClassificationId eq 'problem_classification_guid'"
 
     :example: List support tickets created on or after a certain date and in open state for a subscription
         az support in-subscription tickets list --filter "CreatedDate ge 2024-01-01T22:08:51Z and Status eq 'Open'"
+
+    :example: List support tickets with a certain service id for a subscription
+        az support in-subscription tickets list --filter "ServiceId eq 'service_guid'"
     """
 
     _aaz_info = {
@@ -59,7 +62,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
-            help="The filter to apply on the operation. We support 'OData v4.0' filter semantics. Status, ServiceId, and ProblemClassificationId filters can only be used with Equals ('eq') operator. For CreatedDate filter, the supported operators are Greater Than ('gt') and Greater Than or Equals ('ge'). When using both filters, combine them using the logical 'and'. Default is CreatedDate >= one week",
+            help="The filter to apply on the operation. We support 'OData v4.0' filter semantics. Status, ServiceId, and ProblemClassificationId filters can only be used with Equals ('eq') operator. For CreatedDate filter, the supported operators are Greater Than ('gt') and Greater Than or Equals ('ge'). When using both filters, combine them using the logical 'and'.",
         )
         return cls._args_schema
 

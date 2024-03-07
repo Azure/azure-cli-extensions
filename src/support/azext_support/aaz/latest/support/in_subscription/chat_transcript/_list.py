@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List all chat transcripts for a support ticket under subscription
 
     :example: List all chat transcripts for a support ticket under subscription
-        az support in-subscription chat-transcript list --support-ticket-name "TestTicketName"
+        az support in-subscription chat-transcript list --ticket-name "TestTicketName"
     """
 
     _aaz_info = {
@@ -45,8 +45,8 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.support_ticket_name = AAZStrArg(
-            options=["--support-ticket-name"],
+        _args_schema.ticket_name = AAZStrArg(
+            options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
         )
@@ -104,7 +104,7 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    "supportTicketName", self.ctx.args.ticket_name,
                     required=True,
                 ),
             }

@@ -31,6 +31,9 @@ class List(AAZCommand):
 
     :example: List support tickets created on or after a certain date and in open state for a no subscription
         az support no-subscription tickets list --filter "CreatedDate ge 2024-01-01T22:08:51Z and Status eq 'Open'"
+
+    :example: List support tickets with a certain service id for a no subscription
+        az support no-subscription tickets list --filter "ServiceId eq 'service_guid'"
     """
 
     _aaz_info = {
@@ -59,11 +62,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
-            help="The filter to apply on the operation. We support 'odata v4.0' filter semantics. <a target='_blank' href='https://docs.microsoft.com/odata/concepts/queryoptions-overview'>Learn more</a> <br/><i>Status</i> , <i>ServiceId</i>, and <i>ProblemClassificationId</i> filters can only be used with 'eq' operator. For <i>CreatedDate</i> filter, the supported operators are 'gt' and 'ge'. When using both filters, combine them using the logical 'AND'.",
-        )
-        _args_schema.top = AAZIntArg(
-            options=["--top"],
-            help="The number of values to return in the collection. Default is 25 and max is 100.",
+            help="The filter to apply on the operation. We support 'OData v4.0' filter semantics. Status, ServiceId, and ProblemClassificationId filters can only be used with Equals ('eq') operator. For CreatedDate filter, the supported operators are Greater Than ('gt') and Greater Than or Equals ('ge'). When using both filters, combine them using the logical 'and'.",
         )
         return cls._args_schema
 
@@ -116,9 +115,6 @@ class List(AAZCommand):
             parameters = {
                 **self.serialize_query_param(
                     "$filter", self.ctx.args.filter,
-                ),
-                **self.serialize_query_param(
-                    "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
                     "api-version", "2022-09-01-preview",

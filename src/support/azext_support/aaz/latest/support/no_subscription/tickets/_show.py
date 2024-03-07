@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get details for a specific support ticket. Support ticket data is available for 18 months after ticket creation. If a ticket was created more than 18 months ago, a request for data might cause an error.
 
     :example: Get details of a no subscription ticket
-        az support no-subscription tickets show --support-ticket-name "TestTicketName"
+        az support no-subscription tickets show --ticket-name "TestTicketName"
     """
 
     _aaz_info = {
@@ -44,8 +44,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.support_ticket_name = AAZStrArg(
-            options=["--support-ticket-name"],
+        _args_schema.ticket_name = AAZStrArg(
+            options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
         )
@@ -98,7 +98,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    "supportTicketName", self.ctx.args.ticket_name,
                     required=True,
                 ),
             }

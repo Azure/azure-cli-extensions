@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get communication details for a support ticket.
 
     :example: Get communication details for a no subscription support ticket.
-        az support no-subscription communication show --support-ticket-name "TestTicketName" --communication-name "TestTicketCommunicationName"
+        az support no-subscription communication show --ticket-name "TestTicketName" --communication-name "TestTicketCommunicationName"
     """
 
     _aaz_info = {
@@ -49,8 +49,8 @@ class Show(AAZCommand):
             help="Communication name.",
             required=True,
         )
-        _args_schema.support_ticket_name = AAZStrArg(
-            options=["--support-ticket-name"],
+        _args_schema.ticket_name = AAZStrArg(
+            options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
         )
@@ -107,7 +107,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    "supportTicketName", self.ctx.args.ticket_name,
                     required=True,
                 ),
             }

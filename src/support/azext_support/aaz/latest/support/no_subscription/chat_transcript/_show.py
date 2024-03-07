@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get chatTranscript details for a no subscription support ticket.
 
     :example: Get chatTranscript details for a support ticket
-        az support no-subscription chat-transcript show --support-ticket-name "TestTicketName" --chat-transcript-name "TestChatTranscriptName"
+        az support no-subscription chat-transcript show --ticket-name "TestTicketName" --chat-transcript-name "TestChatTranscriptName"
     """
 
     _aaz_info = {
@@ -49,8 +49,8 @@ class Show(AAZCommand):
             help="ChatTranscript name.",
             required=True,
         )
-        _args_schema.support_ticket_name = AAZStrArg(
-            options=["--support-ticket-name"],
+        _args_schema.ticket_name = AAZStrArg(
+            options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
         )
@@ -107,7 +107,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    "supportTicketName", self.ctx.args.ticket_name,
                     required=True,
                 ),
             }

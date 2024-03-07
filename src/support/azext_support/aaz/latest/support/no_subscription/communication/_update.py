@@ -46,29 +46,22 @@ class Update(AAZCommand):
             help="Communication name.",
             required=True,
         )
-        _args_schema.support_ticket_name = AAZStrArg(
-            options=["--support-ticket-name"],
+        _args_schema.ticket_name = AAZStrArg(
+            options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.body = AAZStrArg(
-            options=["--body"],
-            arg_group="Properties",
+        _args_schema.communication_body = AAZStrArg(
+            options=["--communication-body"],
             help="Body of the communication.",
         )
-        _args_schema.sender = AAZStrArg(
-            options=["--sender"],
-            arg_group="Properties",
+        _args_schema.communication_sender = AAZStrArg(
+            options=["--communication-sender"],
             help="Email address of the sender. This property is required if called by a service principal.",
             nullable=True,
         )
-        _args_schema.subject = AAZStrArg(
-            options=["--subject"],
-            arg_group="Properties",
+        _args_schema.communication_subject = AAZStrArg(
+            options=["--communication-subject"],
             help="Subject of the communication.",
         )
         return cls._args_schema
@@ -137,7 +130,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    "supportTicketName", self.ctx.args.ticket_name,
                     required=True,
                 ),
             }
@@ -232,7 +225,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    "supportTicketName", self.ctx.args.ticket_name,
                     required=True,
                 ),
             }
@@ -304,9 +297,9 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("body", AAZStrType, ".body", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("sender", AAZStrType, ".sender")
-                properties.set_prop("subject", AAZStrType, ".subject", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("body", AAZStrType, ".communication_body", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("sender", AAZStrType, ".communication_sender")
+                properties.set_prop("subject", AAZStrType, ".communication_subject", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
