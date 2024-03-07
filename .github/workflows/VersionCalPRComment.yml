@@ -34,9 +34,9 @@ jobs:
            ls
       - name: Get Diff Files
         env:
-          bash_sha: ${{github.event.pull_request.base.sha}}
+          bash_sha: ${{ github.event.pull_request.base.sha }}
           base_branch: ${{ github.event.pull_request.base.ref }}
-          diff_sha: ${{github.event.pull_request.head.sha}}
+          diff_sha: ${{ github.event.pull_request.head.sha }}
           diff_branch: ${{ github.event.pull_request.head.ref }}
           repo_full_name: ${{ github.event.pull_request.head.repo.full_name }}
         run: |
