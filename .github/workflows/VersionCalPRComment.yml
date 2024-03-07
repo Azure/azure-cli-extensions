@@ -26,8 +26,8 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 0 # checkout all branches
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}  # checkout pull request branch
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}  # checkout pull request branch
       - name: Show workdirectory after site cloned
         run: |
            pwd
@@ -126,7 +126,7 @@ jobs:
       - name: Comment on the pull request
         uses: mshick/add-pr-comment@v2
         with:
-           repo-token: ${{ secrets.GITHUB_TOKEN  }}
+           repo-token: ${{ secrets.GITHUB_TOKEN }}
            message-id: versioncommentbot
            message-path: |
             version_update.txt
