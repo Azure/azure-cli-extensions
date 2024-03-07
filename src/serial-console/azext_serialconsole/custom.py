@@ -38,6 +38,7 @@ class GlobalVariables:
         self.trycount = 0
         self.os_is_windows = False
 
+
 class PrintClass:
     CYAN = 36
     YELLOW = 33
@@ -300,7 +301,7 @@ class SerialConsole:
 
         self.websocket_url = None
         self.access_token = None
-        self.new_auth_flow = "0"
+        self.new_auth_flow = "1"
 
     @staticmethod
     def listen_for_keys():
@@ -430,7 +431,7 @@ class SerialConsole:
         def on_open(_):
             if (self.new_auth_flow == "1"):
                 GV.websocket_instance.send(self.access_token)
-    
+
         def on_message(_, message):
             if GV.first_message:
                 PC.clear_screen()
@@ -561,7 +562,8 @@ class SerialConsole:
                     ws.close()
 
             wsapp = websocket.WebSocketApp(
-                self.websocket_url + "?authorization=" + self.access_token + "?new=" + self.new_auth_flow, on_message=on_message)
+                self.websocket_url + "?authorization=" + self.access_token + "?new="
+                + self.new_auth_flow, on_message=on_message)
             wsapp.run_forever()
             GV.loading = False
             if GV.trycount == 0:
