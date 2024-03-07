@@ -1407,10 +1407,10 @@ helps['containerapp env telemetry otlp update'] = """
 
 helps['containerapp env telemetry otlp remove'] = """
     type: command
-    short-summary: Update container apps environment telemetry otlp settings.
+    short-summary: Remove container apps environment telemetry otlp settings.
     examples:
-    - name: Update container apps environment telemetry otlp settings.
+    - name: Remove container apps environment telemetry otlp settings.
       text: |
-          az containerapp env telemetry otlp update -n MyContainerappEnvironment -g MyResourceGroup \\
+          az containerapp env telemetry otlp remove -n MyContainerappEnvironment -g MyResourceGroup \\
               --otlp-name otlpName
 """

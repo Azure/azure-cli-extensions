@@ -205,13 +205,15 @@ class ContainerappEnvTelemetryOtlpPreviewSetDecorator(BaseResource):
         if existing_otlps is not None:
             otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
             if otlp is not None:
-                existing_otlps.remove(otlp)
+                idx = [i for i, p in enumerate(existing_otlps) if p["name"].lower() == otlp_name.lower()][0]
+                otlp_to_remove = existing_otlps[idx]
+                existing_otlps.remove(otlp_to_remove)
                 safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
             else:
                 raise ValidationError(f"No otlp entry with name {otlp_name} found")
         else:
             raise ValidationError(f"No otlp entry with name {otlp_name} found")
-
+        
     def set_up_open_telemetry_open_telemetry_otlp(self):
         if self.get_argument_open_telemetry_otlp_name() and self.get_argument_open_telemetry_otlp_name() is not None:
 

@@ -80,7 +80,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env telemetry otlp add') as c:
         c.argument('otlp_name', options_list=['--otlp-name'], help='The name of the otlp entry')
         c.argument('endpoint', options_list=['--endpoint', '-e'], help='The endpoint of the otlp entry')
-        c.argument('insecure', options_list=['--insecure'], arg_type=get_three_state_flag(), help='Boolean indicating whether the otlp is insecure of not')
+        c.argument('insecure', options_list=['--insecure'], arg_type=get_three_state_flag(), help='Boolean indicating whether the otlp is insecure or not')
         c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry traces')
         c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry logs')
         c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry metrics')
@@ -90,7 +90,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env telemetry otlp update') as c:
         c.argument('otlp_name', options_list=['--otlp-name'], help='The name of the otlp entry')
         c.argument('endpoint', options_list=['--endpoint', '-e'], help='The endpoint of the otlp entry')
-        c.argument('insecure', options_list=['--insecure'], arg_type=get_three_state_flag(), help='Boolean indicating whether the otlp is insecure of not')
+        c.argument('insecure', options_list=['--insecure'], arg_type=get_three_state_flag(), help='Boolean indicating whether the otlp is insecure or not')
         c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry traces')
         c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry logs')
         c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry metrics')
