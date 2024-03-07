@@ -12,13 +12,17 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-2.0.0b3
+2.0.0b4
 +++++++
 * Add `--enable-vtpm` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
 * Add `--disable-vtpm` to the `az aks nodepool update` command.
 * Add `--enable-secure-boot` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
 * Add `--disable-secure-boot` to the `az aks nodepool update` command.
+
+2.0.0b3
++++++++
 * Add parameter to set revision `--revision` for the Azure Service Mesh addon while creating AKS cluster.
+* Fix for `az aks mesh get-upgrades` command panic response when ASM addon is not enabled.
 
 2.0.0b2
 +++++++
