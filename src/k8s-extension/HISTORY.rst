@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.5.4
+1.6.0
 ++++++++++++++++++
 * AAD related changes in dataprotection aks ext CLI
 * microsoft.azuremonitor.containers: Make containerlogv2 as default as true and remove region dependency for ARC

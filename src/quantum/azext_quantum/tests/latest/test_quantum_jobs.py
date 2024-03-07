@@ -12,7 +12,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
-from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_location_for_dft, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
+from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_location_for_dft, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name, get_test_capabilities
 from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
@@ -282,10 +282,18 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     @live_only()
     def test_submit_dft(self):
+        elements_provider_name = "microsoft-elements"
+        elements_capability_name = f"submit.{elements_provider_name}"
+
+        test_capabilities = get_test_capabilities()
+
+        if elements_capability_name not in test_capabilities.split(";"):
+            self.skipTest(f"Skipping test_submit_dft: \"{elements_capability_name}\" capability was not found in \"AZURE_QUANTUM_CAPABILITIES\" env variable.")
+
         test_location = get_test_workspace_location_for_dft()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = "microsoft-elements/elements-internal-testing"
+        test_provider_sku_list = f"{elements_provider_name}/elements-internal-testing"
         test_storage = get_test_workspace_storage()
 
         self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r \"{test_provider_sku_list}\" --skip-autoadd")

@@ -8,6 +8,8 @@ MANAGED_ENVIRONMENT_RESOURCE_TYPE = "managedEnvironments"
 CONNECTED_ENVIRONMENT_RESOURCE_TYPE = "connectedEnvironments"
 CUSTOM_LOCATION_RESOURCE_TYPE = "customLocations"
 CONNECTED_CLUSTER_TYPE = "connectedClusters"
+AZURE_FILE_STORAGE_TYPE = "azureFile"
+NFS_AZURE_FILE_STORAGE_TYPE = "nfsAzureFile"
 
 MAXIMUM_SECRET_LENGTH = 20
 MAXIMUM_CONTAINER_APP_NAME_LENGTH = 32
@@ -51,7 +53,7 @@ PRIVATE_CERTIFICATE_RT = "certificates"
 DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST = ["postgres", "redis"]
 DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST = ["kafka", "redis"]
 
-DEV_SERVICE_LIST = ["kafka", "postgres", "redis", "mariadb", "qdrant", "weaviate"]
+DEV_SERVICE_LIST = ["kafka", "postgres", "redis", "mariadb", "qdrant", "weaviate", "milvus"]
 
 DEV_KAFKA_IMAGE = 'kafka'
 DEV_KAFKA_SERVICE_TYPE = 'kafka'
@@ -76,6 +78,10 @@ DEV_QDRANT_CONTAINER_NAME = 'qdrant'
 DEV_WEAVIATE_IMAGE = 'weaviate'
 DEV_WEAVIATE_SERVICE_TYPE = 'weaviate'
 DEV_WEAVIATE_CONTAINER_NAME = 'weaviate'
+
+DEV_MILVUS_IMAGE = 'milvus'
+DEV_MILVUS_SERVICE_TYPE = 'milvus'
+DEV_MILVUS_CONTAINER_NAME = 'milvus'
 
 PENDING_STATUS = "Pending"
 SUCCEEDED_STATUS = "Succeeded"
@@ -111,8 +117,8 @@ steps:
     timeout: 1800
 """
 
-ACA_BUILDER_BULLSEYE_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bullseye-20231107.2"
-ACA_BUILDER_BOOKWORM_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bookworm-20231107.2"
+ACA_BUILDER_BULLSEYE_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bullseye-20240124.1"
+ACA_BUILDER_BOOKWORM_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bookworm-20240124.1"
 
 DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world image
 
@@ -122,3 +128,6 @@ LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enab
 
 DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAME = "containerapp-ext"
 DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE = "containerapp-ns"
+
+JAVA_COMPONENT_CONFIG = "SpringCloudConfig"
+JAVA_COMPONENT_EUREKA = "SpringCloudEureka"

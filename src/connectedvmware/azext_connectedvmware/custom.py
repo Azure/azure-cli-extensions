@@ -5,19 +5,22 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
+from collections import defaultdict
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (
+    CLIInternalError,
     UnrecognizedArgumentError,
     RequiredArgumentMissingError,
     MutuallyExclusiveArgumentError,
     InvalidArgumentValueError,
 )
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
 from msrestazure.tools import is_valid_resource_id
 
 from .pwinput import pwinput
-from .vmware_utils import get_resource_id
+from .vmware_utils import get_logger, get_resource_id
 from .vmware_constants import (
     VCENTER_KIND_GET_API_VERSION,
     MACHINES_RESOURCE_TYPE,
@@ -58,7 +61,6 @@ from .vendored_sdks.connectedvmware.models import (
     HardwareProfile,
     InfrastructureProfile,
     InventoryItem,
-    InventoryType,
     IPAddressAllocationMethod,
     NetworkInterface,
     NetworkInterfaceUpdate,
@@ -98,6 +100,8 @@ from .vendored_sdks.hybridcompute.models import (
     MachineUpdate,
 )
 
+from .vendored_sdks.resourcegraph.models import QueryRequest, QueryRequestOptions, QueryResponse
+
 from .vendored_sdks.connectedvmware.operations import (
     VCentersOperations,
     ResourcePoolsOperations,
@@ -117,8 +121,10 @@ from .vendored_sdks.hybridcompute.operations import (
 )
 
 from ._client_factory import (
+    cf_inventory_item,
     cf_machine,
     cf_virtual_machine_instance,
+    cf_resource_graph,
 )
 
 # region VCenters
@@ -764,12 +770,185 @@ def get_hcrp_machine_id(
     return machine_id
 
 
+def reverseEndianLeftHalf(biosId: str):
+    """
+    Reverses the left half of the biosId.
+    This is required because the biosId format is different in HCRP Machine and InventoryItem.
+    Machine: 12345678-1234-1234-1234-123456789ABC
+    InventoryItem: 78563412-3412-3412-1234-123456789abc
+    """
+    def _rev(part: str):
+        return "".join(reversed([part[i:i + 2] for i in range(0, len(part), 2)]))
+    parts = biosId.split("-")
+    return "-".join(
+        [
+            _rev(parts[0]),
+            _rev(parts[1]),
+            _rev(parts[2]),
+            *parts[3:],
+        ]
+    )
+
+
+def create_from_machines(
+    cmd,
+    client: VirtualMachineInstancesOperations,
+    vcenter,
+    rg_name=None,
+    resource_name=None,
+):
+    vcenter_id = vcenter
+    machine_id = resource_name
+    if resource_name is not None:
+        if rg_name is None:
+            raise RequiredArgumentMissingError(
+                "--resource-group is required when --machine-name is provided."
+            )
+        machine_id = get_resource_id(
+            cmd,
+            rg_name,
+            HCRP_NAMESPACE,
+            MACHINES_RESOURCE_TYPE,
+            resource_name,
+        )
+    if not is_valid_resource_id(vcenter_id):
+        raise InvalidArgumentValueError(
+            "Please provide a valid vcenter resource id "
+            "using --vcenter-id."
+        )
+    assert isinstance(vcenter_id, str)
+
+    logger = get_logger(__name__)
+    arg_client = cf_resource_graph(cmd.cli_ctx)
+    machine_client = cf_machine(cmd.cli_ctx)
+    vcenter_sub = vcenter_id.split("/")[2]
+    resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
+    vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
+    logger.info("Searching for machines in the vCenter %s ...", vcenter.name)
+
+    query = f"""
+Resources
+{rg_name and "| where resourceGroup =~ '{}'".format(rg_name) or ""}
+{machine_id and "| where id =~ '{}'".format(machine_id) or ""}
+| where type =~ 'Microsoft.HybridCompute/machines'
+| where isempty(kind) or kind =~ '{vcenter.kind}'
+| extend p=parse_json(properties)
+| extend u = tolower(tostring(p['vmUuid']))
+| where isnotempty(u)
+| where location =~ '{vcenter.location}'
+| extend vmUuidRev = strcat(
+    substring(u, 6, 2), substring(u, 4, 2), substring(u, 2, 2), substring(u, 0, 2), '-',
+    substring(u, 11, 2), substring(u, 9, 2), '-',
+    substring(u, 16, 2), substring(u, 14, 2), '-',
+    substring(u, 19))
+| project machineId=id, name, resourceGroup, vmUuidRev, kind
+| join kind=inner (
+ConnectedVMwareVsphereResources
+| where type =~ 'Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems'
+| where kind =~ 'VirtualMachine'
+| where id startswith '{vcenter.id}/InventoryItems'
+| extend p=parse_json(properties)
+| extend biosId = tolower(tostring(p['smbiosUuid']))
+| extend managedResourceId=tolower(tostring(p['managedResourceId']))
+| project inventoryId=id, biosId, managedResourceId
+) on $left.vmUuidRev == $right.biosId
+| project-away vmUuidRev
+"""
+    query = " ".join(query.splitlines())
+
+    # https://github.com/wpbrown/azmeta-libs/blob/4495d2d55f052032fe11416f5c59e2f2e79c2d73/azmeta/src/azmeta/access/resource_graph.py
+    skip_token = None
+    vm_list = []
+    while True:
+        query_options = QueryRequestOptions(skip_token=skip_token)
+        query_request = QueryRequest(
+            subscriptions=[get_subscription_id(cmd.cli_ctx)],
+            query=query,
+            options=query_options,
+        )
+        query_response: QueryResponse = arg_client.resources(query_request)
+        vm_list.extend(query_response.data)
+        skip_token = query_response.skip_token
+        if skip_token is None:
+            break
+    logger.info("%s machines will be attempted to be linked to the vCenter %s ...", len(vm_list), vcenter.name)
+    failed = 0
+    linked = 0
+    biosId2VM = defaultdict(list)
+    for vm in vm_list:
+        biosId2VM[vm["biosId"]].append(vm)
+    for i, vm in enumerate(vm_list):
+        prefix = f"[{i+1}/{len(vm_list)}]"
+        machineId = vm["machineId"]
+        machineName = vm["name"]
+        machineRG = vm["resourceGroup"]
+        machineKind = vm["kind"]
+        inventoryId = vm["inventoryId"]
+        managedResourceId = vm["managedResourceId"]
+        biosId = vm["biosId"]
+        if len(biosId2VM[biosId]) > 1:
+            logger.warning(
+                "%s Skipping machine %s with biosId %s "
+                "because there are multiple machines with the same biosId: %s .",
+                prefix, machineName, biosId, biosId2VM[biosId])
+            continue
+        if managedResourceId:
+            if VMWARE_NAMESPACE.lower() in managedResourceId.lower():
+                logger.info(
+                    "%s Machine %s is already linked to managed resource %s .",
+                    prefix, machineName, managedResourceId)
+                continue
+            if managedResourceId.lower() != machineId.lower():
+                logger.warning(
+                    "%s Skipping machine %s because the inventory item "
+                    "is linked to a different resource: %s .",
+                    prefix, machineName, managedResourceId)
+                continue
+        logger.info(
+            "%s Linking machine %s to vCenter %s with inventoryId: %s ...",
+            prefix, machineName, vcenter.name, inventoryId)
+        vmi = VirtualMachineInstance(
+            extended_location=ExtendedLocation(
+                type=EXTENDED_LOCATION_TYPE,
+                name=vcenter.extended_location.name,
+            ),
+            infrastructure_profile=InfrastructureProfile(
+                inventory_item_id=inventoryId,
+            ),
+        )
+        try:
+            if not machineKind:
+                m = MachineUpdate(
+                    kind=vcenter.kind,
+                )
+                _ = machine_client.update(machineRG, machineName, m)
+            _ = client.begin_create_or_update(
+                machineId, vmi
+            ).result()
+            linked += 1
+        except Exception as e:  # pylint: disable=broad-except
+            logger.warning(
+                "%s Failed to link machine %s to vCenter %s. Error: %s",
+                prefix, machineName, vcenter.name, e)
+            failed += 1
+    logger.info(
+        "[%s/%s] machines were successfully linked to the vCenter %s .",
+        linked, len(vm_list), vcenter.name)
+    logger.info(
+        "[%s/%s] machines failed to be linked to the vCenter %s .",
+        failed, len(vm_list), vcenter.name)
+    logger.info(
+        "[%s/%s] machines were skipped.",
+        len(vm_list) - linked - failed, len(vm_list))
+
+
 def create_vm(
     cmd,
     client: VirtualMachineInstancesOperations,
-    resource_group_name,
-    resource_name,
-    custom_location,
+    resource_group_name=None,
+    resource_name=None,
+    custom_location=None,
+    machine_id=None,
     location=None,
     vcenter=None,
     vm_template=None,
@@ -788,7 +967,124 @@ def create_vm(
     tags=None,
     no_wait=False,
 ):
-    if not any([vm_template, inventory_item, datastore]):
+    try:
+        assert resource_group_name is not None
+        assert isinstance(resource_group_name, str)
+        assert resource_name is not None
+        assert isinstance(resource_name, str)
+    except AssertionError as e:
+        # We expect this codepath should not hit if the
+        # process_missing_vm_resource_parameters validator is working correctly.
+        raise CLIInternalError(
+            f"unexpected internal error, "
+            f"resource_group_name or resource_name could not be extracted from machine_id: {machine_id}"
+        ) from e
+
+    inventory_item_id = None
+    vcenter_id = None
+
+    if inventory_item is not None:
+        inventory_item_id = get_resource_id(
+            cmd,
+            resource_group_name,
+            VMWARE_NAMESPACE,
+            VCENTER_RESOURCE_TYPE,
+            vcenter,
+            child_type_1=INVENTORY_ITEM_TYPE,
+            child_name_1=inventory_item,
+        )
+        assert inventory_item_id is not None
+        vcenter_id = "/".join(inventory_item_id.rstrip("/").split("/")[:-2])
+    else:
+        if vcenter is None:
+            raise RequiredArgumentMissingError("Missing parameter, please provide vcenter name or id.")
+
+        vcenter_id = get_resource_id(
+            cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
+        )
+        assert vcenter_id is not None
+
+    # The subscription of the vCenter can be different from the machine resource.
+    # There was no straightforward way to change the subscription for vcenter client factory.
+    # Hence using the generic get client.
+    vcenter_sub = vcenter_id.split("/")[2]
+    resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
+    vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
+
+    if custom_location is None:
+        custom_location = vcenter.extended_location.name
+    if location is None:
+        location = vcenter.location
+
+    machine_client = cf_machine(cmd.cli_ctx)
+    machine = None
+    try:
+        machine = machine_client.get(resource_group_name, resource_name)
+        machine_kind = None
+        if f"{machine.kind}".lower() != f"{vcenter.kind}".lower():
+            if machine.kind:
+                raise InvalidArgumentValueError(
+                    "The existing Machine resource is not of the same kind as the vCenter. " +
+                    f"Machine kind: '{machine.kind}', vCenter kind: '{vcenter.kind}'"
+                )
+            machine_kind = vcenter.kind
+        if location is not None and machine.location != location:
+            raise InvalidArgumentValueError(
+                "The location of the existing Machine cannot be updated. " +
+                "Either specify the existing location or keep the location unspecified. " +
+                f"Existing location: {machine.location}, Provided location: {location}"
+            )
+        if any(x is not None for x in [machine_kind, tags]):
+            m = MachineUpdate(
+                kind=machine_kind,
+                tags=tags,
+            )
+            machine = machine_client.update(resource_group_name, resource_name, m)
+    except ResourceNotFoundError:
+        m = Machine(
+            location=location,
+            kind=vcenter.kind,
+            tags=tags,
+        )
+        machine = machine_client.create_or_update(resource_group_name, resource_name, m)
+
+    assert machine.id is not None
+
+    if machine.vm_uuid and not inventory_item_id:
+        # existing Arc for servers machine. Figure out inventory id.
+        machine.vm_uuid = machine.vm_uuid.lower()
+        machine_uuid_rev = reverseEndianLeftHalf(machine.vm_uuid)
+        # Force deserialization of SMBIOS UUID. This is required because autorest generated
+        # SDK deserializes only the inventory properties common to all inventory types.
+        InventoryItem._attribute_map["smbiosUuid"] = {  # pylint: disable=protected-access
+            "key": "properties.smbiosUuid",
+            "type": "str"
+        }
+        inventory_item_client = cf_inventory_item(cmd.cli_ctx)
+        inventory_items = inventory_item_client.list_by_v_center(resource_group_name, vcenter.name)
+        for inv_item in inventory_items:
+            if not hasattr(inv_item, "smbiosUuid"):
+                raise CLIInternalError(
+                    f"unexpected internal error, "
+                    f"inventory item {inv_item.name} does not have smbiosUuid attribute."  # type: ignore
+                )
+            biosId = inv_item.smbiosUuid  # type: ignore
+            if biosId is None:
+                continue
+            biosId = biosId.lower()
+            if biosId in (machine_uuid_rev, machine.vm_uuid):
+                inventory_item_id = inv_item.id  # type: ignore
+                break
+        # Explicitly remove inventory_items from memory.
+        del inventory_items
+
+    if not any([vm_template, inventory_item_id, datastore]):
+        if machine.vm_uuid:
+            # We were not able to find the inventory item in the vCenter corresponding to the machine.
+            raise RequiredArgumentMissingError(
+                "Could not find an inventory item in the vCenter corresponding to the machine. " +
+                "Please provide the inventory item id."
+            )
         raise RequiredArgumentMissingError(
             "either vm_template, inventory_item id or datastore must be provided."
         )
@@ -804,7 +1100,7 @@ def create_vm(
             "at max one of resource_pool, cluster or host can be provided."
         )
 
-    if inventory_item is not None:
+    if inventory_item_id is not None:
         if vm_template is not None:
             raise MutuallyExclusiveArgumentError(
                 "both vm_template and inventory_item id cannot be provided together."
@@ -866,8 +1162,6 @@ def create_vm(
 
     # infrastructure profile parametes
     infrastructure_profile = None
-    inventory_item_id = None
-    vcenter_id = None
     vm_template_id = None
 
     # placement profile parameters
@@ -877,31 +1171,11 @@ def create_vm(
     host_id = None
     datastore_id = None
 
-    if inventory_item is not None:
-        inventory_item_id = get_resource_id(
-            cmd,
-            resource_group_name,
-            VMWARE_NAMESPACE,
-            VCENTER_RESOURCE_TYPE,
-            vcenter,
-            child_type_1=INVENTORY_ITEM_TYPE,
-            child_name_1=inventory_item,
-        )
-        assert inventory_item_id is not None
-
-        vcenter_id = "/".join(inventory_item_id.rstrip("/").split("/")[:-2])
-
+    if inventory_item_id is not None:
         infrastructure_profile = InfrastructureProfile(
             inventory_item_id=inventory_item_id,
         )
     else:
-        if vcenter is None:
-            raise RequiredArgumentMissingError("Missing parameter, provide vcenter name or id.")
-
-        vcenter_id = get_resource_id(
-            cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
-        )
-
         if vm_template is not None:
             vm_template_id = get_resource_id(
                 cmd,
@@ -971,51 +1245,6 @@ def create_vm(
 
     assert vcenter_id is not None
 
-    # The subscription of the vCenter can be different from the machine resource.
-    # There was no straightforward way to change the subscription for vcenter client factory.
-    # Hence using the generic get client.
-    vcenter_sub = vcenter_id.split("/")[2]
-    resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
-    vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
-
-    machine_client = cf_machine(cmd.cli_ctx)
-    machine = None
-    try:
-        machine = machine_client.get(resource_group_name, resource_name)
-        machine_kind = None
-        if f"{machine.kind}".lower() != f"{vcenter.kind}".lower():
-            if machine.kind:
-                raise InvalidArgumentValueError(
-                    "The existing Machine resource is not of the same kind as the vCenter. " +
-                    f"Machine kind: '{machine.kind}', vCenter kind: '{vcenter.kind}'"
-                )
-            machine_kind = vcenter.kind
-        if location is not None and machine.location != location:
-            raise InvalidArgumentValueError(
-                "The location of the existing Machine cannot be updated. " +
-                "Either specify the existing location or keep the location unspecified. " +
-                f"Existing location: {machine.location}, Provided location: {location}"
-            )
-        if any(x is not None for x in [machine_kind, tags]):
-            m = MachineUpdate(
-                kind=machine_kind,
-                tags=tags,
-            )
-            machine = machine_client.update(resource_group_name, resource_name, m)
-    except ResourceNotFoundError as e:
-        if location is None:
-            raise RequiredArgumentMissingError(
-                "The parent Machine resource does not exist, " +
-                "location is required while creating a new machine."
-            ) from e
-        m = Machine(
-            location=location,
-            kind=vcenter.kind,
-            tags=tags,
-        )
-        machine = machine_client.create_or_update(resource_group_name, resource_name, m)
-
-    assert machine.id is not None
     return sdk_no_wait(
         no_wait, client.begin_create_or_update, machine.id, vm
     )
@@ -1089,10 +1318,19 @@ def delete_vm(
     resource_name,
     force=None,
     delete_from_host=None,
+    retain_machine=None,
     delete_machine=None,
     retain=None,
     no_wait=False,
 ):
+    if delete_machine and retain_machine:
+        raise MutuallyExclusiveArgumentError(
+            "Arguments --delete-machine and --retain-machine cannot be used together."
+        )
+    if retain_machine:
+        delete_machine = False
+    else:
+        delete_machine = True
 
     if retain and delete_from_host:
         raise MutuallyExclusiveArgumentError(
@@ -1111,7 +1349,8 @@ def delete_vm(
     if no_wait and delete_machine:
         if delete_from_host:
             raise MutuallyExclusiveArgumentError(
-                "Cannot delete VMWare VM from host when --no-wait and --delete-machine is provided."
+                "Cannot delete VMWare VM from host when --no-wait is provided "
+                "but --retain-machine is not provided."
             )
         machine_client.delete(resource_group_name, resource_name)
         return

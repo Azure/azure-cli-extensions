@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic api version",
 )
 class __CMDGroup(AAZCommandGroup):
-    """API version
+    """Commands to manage API Versions in API Center
     """
     pass
 

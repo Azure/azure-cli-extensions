@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic api",
 )
 class __CMDGroup(AAZCommandGroup):
-    """API
+    """Commands to manage APIs in API Center
     """
     pass
 

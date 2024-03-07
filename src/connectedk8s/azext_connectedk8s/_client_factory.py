@@ -87,25 +87,6 @@ def resource_providers_client(cli_ctx, subscription_id=None):
     # return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
 
 
-def _graph_client_factory(cli_ctx, **_):
-    if os.getenv(consts.Azure_Access_Token_Variable):
-        credential = AccessTokenCredential(access_token=os.getenv(consts.Azure_Access_Token_Variable))
-        client = GraphRbacManagementClient(credential, os.getenv('AZURE_TENANT_ID'),
-                                           base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    else:
-        profile = Profile(cli_ctx=cli_ctx)
-        cred, _, tenant_id = profile.get_login_credentials(
-            resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-        client = GraphRbacManagementClient(cred, tenant_id,
-                                           base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    configure_common_settings(cli_ctx, client)
-    return client
-
-
-def get_graph_client_service_principals(cli_ctx):
-    return _graph_client_factory(cli_ctx).service_principals
-
-
 class AccessTokenCredential:
     """Simple access token Authentication. Returns the access token as-is.
     """

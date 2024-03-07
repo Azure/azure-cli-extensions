@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
 import json
 import requests
 import platform
 import stat
+import psutil
 from knack.util import CLIError
 import azext_connectedk8s._constants as consts
 import urllib.request
@@ -17,9 +17,9 @@ import time
 from knack.log import get_logger
 from azure.cli.core import get_default_cli
 import subprocess
-from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
+from subprocess import PIPE
 from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, live_only)  # pylint: disable=import-error
-from azure.cli.core.azclierror import RequiredArgumentMissingError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 logger = get_logger(__name__)
@@ -557,8 +557,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
     def test_proxy(self,resource_group):
         managed_cluster_name = self.create_random_name(prefix='test-proxy', length=24)
-        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
-        kubeconfig2="%s" % (_get_test_data_file(managed_cluster_name + '-config2.yaml'))
+        kubeconfig = _get_test_data_file(managed_cluster_name + '-config.yaml')
+        kubeconfig2 = _get_test_data_file(managed_cluster_name + '-config2.yaml')
         name = self.create_random_name(prefix='cc-', length=12)
         self.kwargs.update({
             'name': name,
@@ -569,6 +569,28 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'location': CONFIG['location']
         })
 
+        # Check for existing process using the required ports for the proxy test.
+        # Commands to check which process is using the required ports:
+        # Windows: netstat -ano | findstr :<port number>
+        # Linux: sudo ss -lptn 'sport = :<port number>'
+        # Kill process:
+        # Windows: taskkill /PID <PID> /F
+        # Linux: kill -SIGTERM <PID>
+        # It might take some time before your OS kills the process using the port.
+        access_denied = False
+        for proc in psutil.process_iter():
+            try:
+                for conn in proc.connections():
+                    if conn.laddr.port == consts.API_SERVER_PORT or conn.laddr.port == consts.CLIENT_PROXY_PORT:
+                        raise ValidationError(f"Ports {consts.API_SERVER_PORT} or {consts.CLIENT_PROXY_PORT} are in use by process named {proc.name()}. Please kill it before proceeding with the live test.\nProcess currently using the ports: {proc}")
+            # Might get AccessDenied in Unix environments. This is because elevated privilege is required to view system and root processes. 
+            # The proxy process is not a system or root process, so we ignore the AccessDenied exceptions.
+            except psutil.AccessDenied:
+                access_denied = True
+                continue
+        if access_denied:
+            print(f"""Warning: the test does not have elevated privileges to access some processes to verify that they are not using the ports required by the proxy process.
+If there are any issues with the test, please verify manually that there are no processes using ports {consts.API_SERVER_PORT} and {consts.CLIENT_PROXY_PORT}.""")
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
@@ -580,23 +602,102 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             self.check('resourceGroup', '{rg}'),
             self.check('tags.foo', 'doo')
         ])
-        # starting the proxy
-        script = ['az','connectedk8s', 'proxy', '-n', name, '-g', resource_group, '-f' , kubeconfig2, '&']
-        process = subprocess.Popen(script, shell=True)
 
-        # Time to let the kubeconfig merge in current context
-        time.sleep(10)
+        expected_status = "LISTEN"
+        operating_system = platform.system()
+        windows_os = "Windows"
+        proxy_process_name = None
+        if operating_system == windows_os:
+            proxy_process_name = f"arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe"
+        else:
+            proxy_process_name = f"arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}"
 
-        # Start running proxy as a background process
-        process2 = subprocess.Popen(['disown %1'],shell=True)
+        # There cannot be more than one connectedk8s proxy running, since they would use the same port.
+        script = ['az','connectedk8s', 'proxy', '-n', name, '-g', resource_group, '-f' , kubeconfig2]
 
-        # testing if the proxy kubeconfig file is created
-        process3 = ['sudo', 'cat', kubeconfig2]
-        process3 = subprocess.run(process3,shell=True)
+        # Subprocesses functions sometimes don't work as expected on Windows. Try to limit their usage in the tests.
+        # The proxy command requires creating a new process since it creates an infinite loop until user exits with CTRL + C.
+        parent_process = None
+        if operating_system == windows_os:
+            parent_process = subprocess.Popen(script, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+        else:
+            parent_process = subprocess.Popen(script, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        # Cleaning up the cluster
+        # Time to let the kubeconfig merge in current context. No way to detect when exactly the merge is done because the 
+        # "az connectedk8s proxy" command creates an infinite loop that requires CTRL+C to exit.
+        time.sleep(15)
+        # Note that the found_proxy_process is the actual child proxy process.
+        found_proxy_process = None
+        for proc in psutil.process_iter():
+            if proc.name() == proxy_process_name and (proc.connections()[0].laddr.port in {consts.API_SERVER_PORT, consts.CLIENT_PROXY_PORT}):
+                found_proxy_process = proc
+        wait_interval = 5
+        timeout = 60
+        cur = 0
+        # Wait for proxy process to be created.
+        while not found_proxy_process and not (cur > timeout):
+            time.sleep(wait_interval)
+            cur += wait_interval
+            for proc in psutil.process_iter():
+                if proc.name() == proxy_process_name and (proc.connections()[0].laddr.port in {consts.API_SERVER_PORT, consts.CLIENT_PROXY_PORT}):
+                    found_proxy_process = proc
+        if cur > timeout:
+            proxy_process_stdout, proxy_process_stderr = parent_process.communicate()
+            proxy_process_stdout = proxy_process_stdout.decode("utf-8") if proxy_process_stdout else None
+            proxy_process_stderr = proxy_process_stderr.decode("utf-8") if proxy_process_stderr else None
+            raise ValidationError(f"""Timed out waiting for creation of {proxy_process_name} process.
+Proxy process stdout retrieval attempt:\n{proxy_process_stdout}
+Proxy process stderr retrieval attempt:\n{proxy_process_stderr}""")
+        proxy_connections = found_proxy_process.connections()
+        api_server_port = None
+        api_server_port_status = None
+        proxy_port = None
+        proxy_port_status = None
+        # Proxy listens on two ports. Verify it is listening on the correct ports.
+        for conn in proxy_connections:
+            if conn.laddr.port == consts.CLIENT_PROXY_PORT:
+                proxy_port = conn.laddr.port
+                api_server_port_status = conn.status
+            elif conn.laddr.port == consts.API_SERVER_PORT:
+                api_server_port = conn.laddr.port
+                proxy_port_status = conn.status
+        if (api_server_port_status != expected_status and proxy_port_status != expected_status) or not api_server_port or not proxy_port:
+            found_proxy_process.terminate()
+            proxy_process_stdout, proxy_process_stderr = parent_process.communicate()
+            proxy_process_stdout = proxy_process_stdout.decode("utf-8") if proxy_process_stdout else None
+            proxy_process_stderr = proxy_process_stderr.decode("utf-8") if proxy_process_stderr else None
+            raise ValidationError(f"""Connectedk8s proxy process is in an unexpected state.
+Expected status 'LISTEN' on ports '{consts.API_SERVER_PORT}' and '{consts.CLIENT_PROXY_PORT}'.
+Current proxy process status: {found_proxy_process}.
+Proxy process stdout retrieval attempt:\n{proxy_process_stdout}
+Proxy process stderr retrieval attempt:\n{proxy_process_stderr}""")
+
+        # Wait for kubeconfig file to be merged into kube kubeconfig2
+        kubeconfig2_fixed_path = kubeconfig2.replace(os.sep, '/')
+        cur = 0
+        while not (os.path.isfile(kubeconfig2_fixed_path)) and not (cur > timeout):
+            time.sleep(wait_interval)
+            cur += wait_interval
+
+        # Check if the proxy kubeconfig file was created.
+        if not (os.path.isfile(kubeconfig2_fixed_path)):
+            raise ValidationError(f"Failed to find kube config file '{kubeconfig2}'.")
+
+        found_proxy_process.terminate()
+        # Wait some time for the process to terminate.
+        time.sleep(15)
+
+        # Subprocess' communicate() can also be used to send stdin to its child process that is our proxy process.
+        proxy_process_stdout, proxy_process_stderr = parent_process.communicate()
+        proxy_process_stdout = proxy_process_stdout.decode("utf-8") if proxy_process_stdout else None
+        proxy_process_stderr = proxy_process_stderr.decode("utf-8") if proxy_process_stderr else None
+        # For some reason logger.info doesn't output to stdout during the test.
+        print(f"Output received while exiting proxy process:\nstdout:\n{proxy_process_stdout}\nstderr:{proxy_process_stderr}")
+
+        # Clean up the cluster.
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
         self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
 
-        # delete the kube config
-        os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
+        # Delete the kube config files.
+        os.remove(kubeconfig)
+        os.remove(kubeconfig2)

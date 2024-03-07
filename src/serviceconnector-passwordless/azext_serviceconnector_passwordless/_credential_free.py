@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=no-member, too-many-lines, anomalous-backslash-in-string, redefined-outer-name, no-else-raise, attribute-defined-outside-init
 
 import struct
 import sys
@@ -147,7 +148,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
     return enable_mi_for_db_linker
 
 
-# pylint: disable=no-self-use, unused-argument, too-many-instance-attributes
+# pylint: disable=unused-argument, too-many-instance-attributes
 def getTargetHandler(cmd, target_id, target_type, auth_info, client_type, connection_name, skip_prompt):
     if target_type in {RESOURCE.Sql}:
         return SqlHandler(cmd, target_id, target_type, auth_info, connection_name, skip_prompt)
@@ -505,7 +506,7 @@ class SqlHandler(TargetHandler):
                 if not self.ip:
                     error_code = ''
                     error_res = re.search(
-                        '\((\d{5})\)', str(e))
+                        r'\((\d{5})\)', str(e))
                     if error_res:
                         error_code = error_res.group(1)
                     telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
@@ -523,7 +524,7 @@ class SqlHandler(TargetHandler):
                     "Please confirm local environment can connect to database and try again.")
                 error_code = ''
                 error_res = re.search(
-                    '\((\d{5})\)', str(e))
+                    r'\((\d{5})\)', str(e))
                 if error_res:
                     error_code = error_res.group(1)
                 telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
@@ -640,6 +641,18 @@ class PostgresFlexHandler(TargetHandler):
 
     def check_db_existence(self):
         try:
+            # `az postgres flexible-server db show -d postgres` will throw exception
+            if self.dbname == "postgres":
+                server_info = run_cli_cmd(
+                    'az postgres flexible-server show -n {} -g {} --subscription {}'.format(
+                        self.db_server, self.resource_group, self.subscription))
+                if server_info is None:
+                    e = ResourceNotFoundError(
+                        "No server found for '{}'".format(self.db_server))
+                    telemetry.set_exception(e, "No-Server")
+                    raise e
+                else:
+                    return
             db_info = run_cli_cmd(
                 'az postgres flexible-server db show --server-name {} --database-name {} -g {} --subscription {}'.format(
                     self.db_server, self.dbname, self.resource_group, self.subscription))
@@ -693,7 +706,7 @@ class PostgresFlexHandler(TargetHandler):
         except AzureConnectionError as e:
             logger.warning(e)
             if 'password authentication failed' in str(e):
-                raise ValidationError('Please confirm current user as Microsoft Entra admin and try again.')
+                raise ValidationError('Please confirm current user as Microsoft Entra admin and try again.') from e
             # allow local access
             ip_address = self.ip or get_local_ip()
             if not ip_address:
@@ -928,7 +941,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
 
 
 def getSourceHandler(source_id, source_type):
-    if source_type in {RESOURCE.WebApp}:
+    if source_type in {RESOURCE.WebApp, RESOURCE.FunctionApp}:
         return WebappHandler(source_id, source_type)
     if source_type in {RESOURCE.ContainerApp}:
         return ContainerappHandler(source_id, source_type)
@@ -1019,15 +1032,15 @@ class WebappHandler(SourceHandler):
             logger.warning('Enabling WebApp System Identity...')
             if self.slot_name is None:
                 run_cli_cmd(
-                    'az webapp identity assign --ids {}'.format(self.source_id))
+                    'az webapp identity assign --ids "{}"'.format(self.source_id))
 
                 identity = run_cli_cmd(
-                    'az webapp identity show --ids {}'.format(self.source_id), 15, 5, output_is_none)
+                    'az webapp identity show --ids "{}"'.format(self.source_id), 15, 5, output_is_none)
             else:
                 run_cli_cmd(
-                    'az webapp identity assign --ids {} --slot {}'.format(self.source_id, self.slot_name))
+                    'az webapp identity assign --ids "{}" --slot "{}"'.format(self.source_id, self.slot_name))
                 identity = run_cli_cmd(
-                    'az webapp identity show --ids {} --slot {}'.format(self.source_id, self.slot_name), 15, 5, output_is_none)
+                    'az webapp identity show --ids "{}" --slot "{}"'.format(self.source_id, self.slot_name), 15, 5, output_is_none)
 
         if identity is None:
             ex = CLIInternalError(

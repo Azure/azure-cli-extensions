@@ -86,6 +86,7 @@ def load_command_table(self: AzCommandsLoader, _):
         'connectedvmware vm', client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('create', 'create_vm', supports_no_wait=True)
+        g.custom_command('create-from-machines', 'create_from_machines')
         g.custom_command('delete', 'delete_vm', supports_no_wait=True, confirmation=True)
         g.custom_command('update', 'update_vm', supports_no_wait=True)
         g.custom_show_command('show', 'show_vm')
