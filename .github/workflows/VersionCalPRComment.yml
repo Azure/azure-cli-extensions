@@ -44,7 +44,7 @@ jobs:
             git --version
             git log --oneline | head -n 30
             git branch -a
-            git fetch https://github.com/Azure/azure-cli-extensions.git main:main
+            git fetch https://github.com/Azure/azure-cli-extensions.git ${{ env.base_branch }}:${{ env.base_branch }}
             git checkout ${{ env.base_branch }}
             git log --oneline | head -n 30
             git checkout ${{ env.diff_branch }}
