@@ -57,7 +57,7 @@ jobs:
         run: |
             for mod in ${{ env.changed_module_list }}
             do
-              echo changed module: ${mod}
+              echo changed module: "${mod}"
             done
       - name: Checkout CLI main repo 
         uses: actions/checkout@master
@@ -104,19 +104,15 @@ jobs:
            mkdir ${{ env.base_meta_path }}
            for mod in ${{ env.changed_module_list }}
            do
-              echo **************************
-              echo changed module: ${mod}
-              azdev extension add ${mod} && azdev command-change meta-export ${mod} --meta-output-path ./${{ env.base_meta_path }}/ && azdev extension remove ${mod}
-              echo **************************
+              echo changed module: "${mod}"
+              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./${{ env.base_meta_path }}/ && azdev extension remove "${mod}"
            done
            git checkout ${{ env.diff_branch }}
            mkdir ${{ env.diff_meta_path }}
            for mod in ${{ env.changed_module_list }}
            do
-              echo **************************
-              echo changed module: ${mod}
-              azdev extension add ${mod} && azdev command-change meta-export ${mod} --meta-output-path ./${{ env.diff_meta_path }}/ && azdev extension remove ${mod}
-              echo **************************
+              echo changed module: "${mod}"
+              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./${{ env.diff_meta_path }}/ && azdev extension remove "${mod}"
            done
            ls ./${{ env.base_meta_path }}/
            ls ./${{ env.diff_meta_path }}/
