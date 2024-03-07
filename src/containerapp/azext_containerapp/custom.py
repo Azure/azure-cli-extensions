@@ -2612,7 +2612,7 @@ def show_environment_telemetry_otlp(cmd,
             raise ValidationError(f"Otlp entry with name {otlp_name} does not exist, please retry with different name")
                 
         r = {}
-        safe_set(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", f"otlpConfigurations", value=otlp)
+        safe_set(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=otlp)
         safe_set(r, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations"))
         safe_set(r, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations"))
         safe_set(r, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations"))

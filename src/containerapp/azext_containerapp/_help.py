@@ -1408,7 +1408,7 @@ helps['containerapp env telemetry otlp add'] = """
     - name: Add container apps environment telemetry otlp settings.
       text: |
           az containerapp env telemetry otlp add -n MyContainerappEnvironment -g MyResourceGroup \\
-              --otlp-name otlpName --endpoint otlpEndpoint --insecure false --headers api-key=apiKey \\ 
+              --otlp-name otlpName --endpoint otlpEndpoint --insecure false --headers api-key=apiKey \\
               --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true
 """
 
@@ -1419,7 +1419,7 @@ helps['containerapp env telemetry otlp update'] = """
     - name: Update container apps environment telemetry otlp settings.
       text: |
           az containerapp env telemetry otlp update -n MyContainerappEnvironment -g MyResourceGroup \\
-              --otlp-name otlpName --endpoint otlpEndpoint --insecure false --headers api-key=apiKey \\ 
+              --otlp-name otlpName --endpoint otlpEndpoint --insecure false --headers api-key=apiKey \\
               --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true
 """
 
