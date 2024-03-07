@@ -8,3 +8,6 @@
 # pylint: skip-file
 # flake8: noqa
 
+from .__cmd_group import *
+from ._disconnect import *
+from ._reset import *

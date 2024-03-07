@@ -267,6 +267,12 @@ class AzureVWanVHubScenario(ScenarioTest):
             self.check('length(p2SConnectionConfigurations[0].vpnClientAddressPool.addressPrefixes)', 2),
             self.check('vpnGatewayScaleUnit', 3)
         ])
+        # test disconnect P2S vpn connections
+        vpn_id = self.cmd('az network p2s-vpn-gateway connection list -g {rg} --gateway-name {vp2sgateway}').get_output_in_json()
+        self.kwargs.update({'vpn_connection': vpn_id[0]['id']})
+        self.cmd('az network p2s-vpn-gateway disconnect -g {rg} -n {vp2sgateway} --vpn-connection-ids {vpn_connection}')
+        # test resets the primary of the p2s vpn gateway
+        self.cmd('az network p2s-vpn-gateway reset -g {rg} -n {vp2sgateway}')
         self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway} -y')
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}')
@@ -334,6 +340,8 @@ class AzureVWanVHubScenario(ScenarioTest):
                  ])
 
         self.cmd('network vpn-gateway connection update -g {rg} --gateway-name {vpngateway} -n {connection} --labels x1 x2')
+
+        self.cmd('network vpn-gateway connection packet-capture start -g {rg} --gateway-name {vpngateway} --connection-name {connection} --link-connection-names {connection}')
 
         self.cmd('network vpn-gateway connection delete '
                  '-g {rg} '
@@ -930,6 +938,37 @@ class RouteMapScenario(ScenarioTest):
             self.check('routingConfiguration.inboundRouteMap.id', '{route_map_id_3}'),
             self.check('routingConfiguration.outboundRouteMap.id', '{route_map_id_4}')
         ])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_vpn_gateway_nat_rule')
+    def test_vpn_gateway_nat_rule(self):
+        self.kwargs.update({
+            'vwan': self.create_random_name('vwan', 10),
+            'vhub': self.create_random_name('vhub', 10),
+            'vpn_gateway': self.create_random_name('gateway', 15),
+            'nat_rule': self.create_random_name('nat-rule', 15),
+        })
+        self.cmd('network vwan create -g {rg} -n {vwan}')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
+        self.cmd('network vpn-gateway create -g {rg} --vhub {vhub} --name {vpn_gateway}')
+        self.cmd('network vpn-gateway nat-rule create -g {rg} --gateway-name {vpn_gateway} --name {nat_rule} '
+                 '--internal-mappings [{{"address-space":10.4.0.0/24}}] '
+                 '--external-mappings [{{"address-space":192.168.21.0/24}}] '
+                 '--type Static --mode EgressSnat',
+                 checks=[self.check('name', '{nat_rule}'),
+                         self.check('type', 'Static'),
+                         self.check('mode', 'EgressSnat'),
+                         self.check('internalMappings[0].addressSpace', '10.4.0.0/24'),
+                         self.check('externalMappings[0].addressSpace', '192.168.21.0/24')])
+        self.cmd('network vpn-gateway nat-rule update -g {rg} --gateway-name {vpn_gateway} --name {nat_rule} '
+                 '--internal-mappings [{{"address-space":10.3.0.0/24}}]',
+                 checks=[self.check('name', '{nat_rule}'),
+                         self.check('type', 'Static'),
+                         self.check('mode', 'EgressSnat'),
+                         self.check('internalMappings[0].addressSpace', '10.3.0.0/24'),
+                         self.check('externalMappings[0].addressSpace', '192.168.21.0/24')])
+        self.cmd('network vpn-gateway nat-rule list -g {rg} --gateway-name {vpn_gateway}', self.check('type(@)', 'array'))
+        self.cmd('network vpn-gateway nat-rule show -g {rg} --gateway-name {vpn_gateway} --name {nat_rule}', self.check('name', '{nat_rule}'))
+        self.cmd('network vpn-gateway nat-rule delete -g {rg} --gateway-name {vpn_gateway} --name {nat_rule} -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_p2s_vpn_gateway_inbound_outbound_routemap', location='westcentralus')
     def test_p2s_vpn_gateway_inbound_outbound_routemap(self, resource_group):

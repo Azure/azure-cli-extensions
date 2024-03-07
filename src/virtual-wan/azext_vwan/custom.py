@@ -16,6 +16,8 @@ from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.aaz import has_value
 from azure.cli.core.aaz.utils import assign_aaz_list_arg
 from .aaz.latest.network.vhub.connection import Create as _VHubConnectionCreate, Update as _VHubConnectionUpdate
+from .aaz.latest.network.vpn_gateway.nat_rule import Create as _VPNGatewayNatRuleCreate,\
+    Show as _VPNGatewayNatRuleShow, List as _VPNGatewayNatRuleList, Update as _VPNGatewayNatRuleUpdate
 from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections
 from ._util import _get_property
 
@@ -1134,4 +1136,54 @@ def _load_certificates_and_build_name_and_public_cert_data(model, file_paths_lis
         kwargs['public_cert_data'] = match.group('public').strip()
         certificates.append(model(**kwargs))
     return certificates
+
+
+class VPNGatewayNatRuleCreate(_VPNGatewayNatRuleCreate):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rule = self.ctx.vars.instance.to_serialized_data()
+            if 'type' in nat_rule:
+                nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance = nat_rule
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+
+class VPNGatewayNatRuleShow(_VPNGatewayNatRuleShow):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rule = self.ctx.vars.instance.to_serialized_data()
+            if 'type' in nat_rule:
+                nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance = nat_rule
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+
+class VPNGatewayNatRuleList(_VPNGatewayNatRuleList):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rules = self.ctx.vars.instance.value.to_serialized_data()
+            for nat_rule in nat_rules:
+                if 'type' in nat_rule:
+                    nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance.value = nat_rules
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
+
+
+class VPNGatewayNatRuleUpdate(_VPNGatewayNatRuleUpdate):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rule = self.ctx.vars.instance.to_serialized_data()
+            if 'type' in nat_rule:
+                nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance = nat_rule
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 # endregion

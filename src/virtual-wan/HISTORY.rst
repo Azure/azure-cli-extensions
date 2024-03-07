@@ -3,6 +3,13 @@
 Release History
 ===============
 
+0.3.1
+++++++
+* add new command: `az network p2s-vpn-gateway disconnect`.
+* add new command: `az network p2s-vpn-gateway reset`.
+* add new command: `az network vpn-gateway connection packet-capture start`.
+* add new command group: `az network vpn-gateway nat-rule`.
+
 0.3.0
 ++++++
 * `az network vhub connection`: Fix cross-tenant connection cannot be created.
