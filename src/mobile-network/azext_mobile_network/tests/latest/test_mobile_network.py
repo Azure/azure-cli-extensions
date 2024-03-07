@@ -263,7 +263,7 @@ class MobileNetworkScenario(ScenarioTest):
              self.check('name', '{data_network}')
          ])
         self.cmd('mobile-network attached-data-network create -n {data_network} -g {rg} --pccp-name {pccp_name} --pcdp-name {pcdp_name} --dns-addresses [1.1.1.1]'
-                 ' --data-interface {{name:N2,ipv4Address:10.28.128.2,ipv4Subnet:10.28.128.0/24,ipv4Gateway:10.28.128.1}}', checks=[
+                 ' --data-interface {{name:N2,ipv4Address:10.28.128.2,ipv4Subnet:10.28.128.0/24,ipv4Gateway:10.28.128.1}} --address-pool [2.2.0.0/16]', checks=[
             self.check('dnsAddresses[0]', '1.1.1.1'),
             self.check('userPlaneDataInterface.ipv4Address', '10.28.128.2'),
             self.check('userPlaneDataInterface.ipv4Gateway', '10.28.128.1'),
@@ -443,7 +443,7 @@ class MobileNetworkScenario(ScenarioTest):
         ])
         self.cmd('mobile-network slice delete --mobile-network-name {mobile_network} -n {slice} -g {rg} -y')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_mobile_network', location='westcentralus')
+    @ResourceGroupPreparer(name_prefix='cli_test_mobile_network', location='centraluseuap')
     def test_mobile_network_bulk_sim_upload(self, resource_group):
         self.kwargs.update({
             'mobile_network': self.create_random_name('mobile_network_', 20),
