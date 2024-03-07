@@ -48,3 +48,7 @@ Release History
 1.3.0
 ++++++
 * `az grafana update`: support Grafana major version argument
+
+1.3.1
+++++++
+* `az grafana delete`: bump azure-mgmt-authorization package version
