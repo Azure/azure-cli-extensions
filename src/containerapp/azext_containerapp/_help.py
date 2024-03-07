@@ -1377,3 +1377,40 @@ helps['containerapp env telemetry app-insights delete'] = """
       text: |
           az containerapp env telemetry app-insights delete -n MyContainerappEnvironment -g MyResourceGroup
 """
+
+helps['containerapp env telemetry otlp'] = """
+    type: group
+    short-summary: Commands to manage otlp settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry otlp add'] = """
+    type: command
+    short-summary: Add container apps environment telemetry otlp settings.
+    examples:
+    - name: Add container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp add -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName --endpoint otlpEndpoint --insecure false --headers api-key=apiKey \\ 
+              --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true
+"""
+
+helps['containerapp env telemetry otlp update'] = """
+    type: command
+    short-summary: Update container apps environment telemetry otlp settings.
+    examples:
+    - name: Update container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp update -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName --endpoint otlpEndpoint --insecure false --headers api-key=apiKey \\ 
+              --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true
+"""
+
+helps['containerapp env telemetry otlp remove'] = """
+    type: command
+    short-summary: Update container apps environment telemetry otlp settings.
+    examples:
+    - name: Update container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp update -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName
+"""
