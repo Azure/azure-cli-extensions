@@ -46,7 +46,7 @@ def perform_enable_azure_container_storage(
     storage_pool_size,
     storage_pool_sku,
     storage_pool_option,
-    agentpool_details,
+    acstor_nodepool_skus,
     is_cluster_create,
     is_extension_installed=False,
     is_azureDisk_enabled=False,
@@ -92,8 +92,6 @@ def perform_enable_azure_container_storage(
 
     azure_disk_enabled = is_azureDisk_enabled if is_extension_installed else False
     elastic_san_enabled = is_elasticSan_enabled if is_extension_installed else False
-    ephemeral_disk_enabled = (is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled) if \
-                             is_extension_installed else False
     ephemeral_disk_nvme_enabled = is_ephemeralDisk_nvme_enabled if is_extension_installed else False
     ephemeral_disk_localssd_enabled = is_ephemeralDisk_localssd_enabled if is_extension_installed else False
 
@@ -147,7 +145,7 @@ def perform_enable_azure_container_storage(
             is_elasticSan_enabled,
             is_ephemeralDisk_localssd_enabled,
             is_ephemeralDisk_nvme_enabled,
-            agentpool_details,
+            acstor_nodepool_skus,
             True,
         )
 
@@ -155,7 +153,7 @@ def perform_enable_azure_container_storage(
         resource_args = get_initial_resource_value_args(
             storage_pool_type,
             storage_pool_option,
-            agentpool_details,
+            acstor_nodepool_skus,
         )
 
     config_settings.extend(resource_args)

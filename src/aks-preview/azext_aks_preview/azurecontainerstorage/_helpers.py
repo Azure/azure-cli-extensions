@@ -253,7 +253,7 @@ def get_extension_installed_and_cluster_configs(cmd, resource_group, cluster_nam
 def get_initial_resource_value_args(
     storage_pool_type,
     storage_pool_option,
-    agentpool_details,
+    nodepool_skus,
 ):
     core_value = memory_value = hugepages_value = hugepages_number = 0
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK or \
@@ -265,7 +265,7 @@ def get_initial_resource_value_args(
         hugepages_number = 512
     elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
       storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
-        core_value = _get_cpu_value_based_on_vm_size(agentpool_details)
+        core_value = _get_cpu_value_based_on_vm_size(nodepool_skus)
         memory_value = 2
         hugepages_value = 2
         hugepages_number = 1024
@@ -283,7 +283,7 @@ def get_current_resource_value_args(
     is_ephemeralDisk_localssd_enabled,
     is_ephemeralDisk_nvme_enabled,
     current_core_value=None,
-    agentpool_details=None,
+    nodepool_skus=None,
 ):
     (
         current_core_value,
@@ -296,7 +296,7 @@ def get_current_resource_value_args(
         is_ephemeralDisk_localssd_enabled,
         is_ephemeralDisk_nvme_enabled,
         current_core_value,
-        agentpool_details,
+        nodepool_skus,
     )
 
     return _generate_k8s_extension_resource_args(
@@ -315,7 +315,7 @@ def get_desired_resource_value_args(
     is_elasticSan_enabled,
     is_ephemeralDisk_localssd_enabled,
     is_ephemeralDisk_nvme_enabled,
-    agentpool_details,
+    nodepool_skus,
     is_enabling_op,
 ):
     (
@@ -329,7 +329,7 @@ def get_desired_resource_value_args(
         is_ephemeralDisk_localssd_enabled,
         is_ephemeralDisk_nvme_enabled,
         current_core_value,
-        agentpool_details,
+        nodepool_skus,
     )
 
     updated_core_value = updated_memory_value = \
@@ -345,7 +345,7 @@ def get_desired_resource_value_args(
             updated_hugepages_number = 512
         elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
            storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
-            updated_core_value = _get_cpu_value_based_on_vm_size(agentpool_details)
+            updated_core_value = _get_cpu_value_based_on_vm_size(nodepool_skus)
             updated_memory_value = 2
             updated_hugepages_value = 2
             updated_hugepages_number = 1024
@@ -393,6 +393,36 @@ def get_desired_resource_value_args(
     )
 
 
+# get_cores_from_sku returns the number of core in the vm_size passed.
+# Returns -1 if there is a problem with parsing the vm_size.
+def get_cores_from_sku(vm_size):
+    cpu_value = -1
+    pattern = r'standard_([a-z]+)(\d+)([a-z]+)_v(\d+)'
+    match = re.search(pattern, vm_size.lower())
+    if match:
+        series_prefix = match.group(1)
+        size_val = int(match.group(2))
+        series_suffix = match.group(3)
+        version = int(match.group(4))
+
+        cpu_value = size_val
+        # https://learn.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series
+        # https://learn.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series-memory
+        if version == 2 and (series_prefix == 'd' or series_prefix == 'ds'):
+            if size_val == 2 or size_val == 11:
+                cpu_value = 2
+            elif size_val == 3 or size_val == 12:
+                cpu_value = 4
+            elif size_val == 4 or size_val == 13:
+                cpu_value = 8
+            elif size_val == 5 or size_val == 14:
+                cpu_value = 16
+            elif size_val == 15:
+                cpu_value = 20
+
+    return cpu_value
+
+
 def _is_rp_registered(cmd, required_rp, subscription_id):
     registered = False
     try:
@@ -405,24 +435,22 @@ def _is_rp_registered(cmd, required_rp, subscription_id):
     return registered
 
 
-def _get_cpu_value_based_on_vm_size(agentpool_details):
+def _get_cpu_value_based_on_vm_size(nodepool_skus):
     cpu_value = -1
-    for vm_size in agentpool_details:
-        pattern = r'standard_[a-z]+(\d+)[a-z]+_v\d+'
-        match = re.search(pattern, vm_size.lower())
-        if match:
-            number_of_cores = int(match.group(1))
+    for vm_size in nodepool_skus:
+        number_of_cores = get_cores_from_sku(vm_size)
+        if number_of_cores != -1:
             if cpu_value == -1:
                 cpu_value = number_of_cores * 0.25
             else:
                 cpu_value = (number_of_cores * 0.25) if \
                             (cpu_value > number_of_cores * 0.25) else \
                             cpu_value
-
         else:
-            logger.warning(
-                f"Unable to get the number of cores in nodepool of vm size: {vm_size}"
+            raise UnknownError(
+                f"Unable to determine the number of cores in nodepool of node size: {vm_size}"
             )
+
 
     if cpu_value == -1:
         cpu_value = 1
@@ -435,7 +463,7 @@ def _get_current_resource_values(
     is_ephemeralDisk_localssd_enabled,
     is_ephemeralDisk_nvme_enabled,    
     current_core_value=None,
-    agentpool_details=None,
+    nodepool_skus=None,
 ):
     # Setting these to default values set in the cluster when
     # all the storagepools used to be enabled by default.
@@ -452,8 +480,8 @@ def _get_current_resource_values(
         current_hugepages_value = 1
         current_hugepages_number = 512
     if is_ephemeralDisk_nvme_enabled:
-        if current_core_value is None and agentpool_details is not None:
-            core_value = _get_cpu_value_based_on_vm_size(agentpool_details)
+        if current_core_value is None and nodepool_skus is not None:
+            core_value = _get_cpu_value_based_on_vm_size(nodepool_skus)
         current_memory_value = 2
         current_hugepages_value = 2
         current_hugepages_number = 1024

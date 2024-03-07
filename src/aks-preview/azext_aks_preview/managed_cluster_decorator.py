@@ -3499,11 +3499,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
             node_resource_group = cluster.node_resource_group
             nodepool_name = self.context.get_intermediate("azure_container_storage_nodepools")
-            agent_pool_details = []
+            agent_pool_vm_sizes = []
             if len(cluster.agent_pool_profiles) > 0:
                 # Cluster creation has only 1 agentpool
                 agentpool_profile = cluster.agent_pool_profiles[0]
-                agent_pool_details.append(agentpool_profile.vm_size)
+                agent_pool_vm_sizes.append(agentpool_profile.vm_size)
 
             self.context.external_functions.perform_enable_azure_container_storage(
                 self.cmd,
@@ -3517,7 +3517,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_size,
                 pool_sku,
                 pool_option,
-                agent_pool_details,
+                agent_pool_vm_sizes,
                 True,
             )
 
@@ -4809,10 +4809,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             pool_size = self.context.raw_param.get("storage_pool_size")
             nodepool_list = self.context.get_intermediate("azure_container_storage_nodepools")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
-            agent_pool_details = []
+            acstor_nodepool_skus = []
             for agentpool_profile in cluster.agent_pool_profiles:
                 if agentpool_profile.name in nodepool_list:
-                    agent_pool_details.append(agentpool_profile.vm_size)
+                    acstor_nodepool_skus.append(agentpool_profile.vm_size)
 
             self.context.external_functions.perform_enable_azure_container_storage(
                 self.cmd,
@@ -4826,7 +4826,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_size,
                 pool_sku,
                 pool_option,
-                agent_pool_details,
+                acstor_nodepool_skus,
                 False,
                 is_extension_installed,
                 is_azureDisk_enabled,
