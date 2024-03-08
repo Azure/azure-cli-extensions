@@ -13,6 +13,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class HdinsightonaksClusterScenario(ScenarioTest):
     location = 'westus3'
+    keyVaultResourceId = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.KeyVault/vaults/sqlpass"
 
     def test_available_cluster_version_list(self):
         self.kwargs.update({
@@ -51,11 +52,6 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         # Get trino cluster version and ossVersion.
         trino_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Trino\']"').get_output_in_json()
 
-        # Assert whether the version is correctly obtained.
-        # assert trino_versions[0]["clusterVersion"] == "1.0.6"
-        # assert trino_versions[0]["ossVersion"] == "0.410.0"
-
-        
         # Create a cluster pool.
         self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
             self.check("name", '{poolName}'),
@@ -90,7 +86,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         ])
 
         # Get cluster instance view.
-        self.cmd('az hdinsight-on-aks cluster show-instance-view  --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
+        self.cmd('az hdinsight-on-aks cluster instance-view show --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
             self.check("status.ready", True)
         ])     
 
@@ -120,9 +116,9 @@ class HdinsightonaksClusterScenario(ScenarioTest):
                 "poolName": self.create_random_name(prefix='hilopool-', length=18),
                 "clusterName": self.create_random_name(prefix='hilo-', length=18),
                 "clusterType": "Trino",
-                "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D8d_v5').get_output_in_json(),    # Create a cluster node-profile object.
+                "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4').get_output_in_json(),    # Create a cluster node-profile object.
 
-                "keyVaultResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.KeyVault/vaults/sqlpass",
+                "keyVaultResourceId": self.keyVaultResourceId,
                 "trinoHiveCatalogOption": self.cmd('az hdinsight-on-aks cluster trino-hive-catalog create --catalog-name ' + self.catalogName \
                                                                 + ' --metastore-db-connection-url ' + self.metastoreDbConnectionURL + ' --metastore-db-connection-user-name ' + self.metastoreDbUserName \
                                                                 + ' --metastore-db-connection-password-secret ' + self.metastoreDbPasswordSecret + ' --metastore-warehouse-dir ' + self.metastoreWarehouseDir).get_output_in_json(),
@@ -133,11 +129,7 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         trino_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Trino\']"').get_output_in_json()
 
         # Create a cluster pool.
-        # self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
-        #     self.check("name", '{poolName}'),
-        #     self.check("location", '{loc}'),
-        #     self.check("status", 'Running')
-        # ])
+        self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3')
 
         # Create a Trino cluster.
         create_command = 'az hdinsight-on-aks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g cli -l {loc} --cluster-type {clusterType} --cluster-version ' \
@@ -150,44 +142,69 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         ])
 
 
-    # def test_run_flink_job(self):
-    #     self.kwargs.update({
-    #             "loc": self.location,
-    #             "rgName": 'cli', # Set your rg
-    #             "poolName": 'testclipool', # Set your cluster poll name.
-    #             "clusterName": "hiloflinkcluster", # self.create_random_name(prefix='hilo-', length=18),
+    def test_run_flink_job(self):
+        self.kwargs.update({
+                "loc": self.location,
+                "poolName": self.create_random_name(prefix='hilopool-', length=18),
+                "clusterName": self.create_random_name(prefix='hilo-', length=18),
+                "clusterType": "Flink",
+                "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --type Worker --vm-size Standard_D16a_v4').get_output_in_json(), 
+                "storageUri": "abfs://testflinkjob@hilostorage.dfs.core.windows.net",
+            })
+        
+        # Create a cluster pool.
+        self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
+            self.check("name", '{poolName}'),
+            self.check("location", '{loc}'),
+            self.check("status", 'Running')
+        ])
 
-    #             "clusterType": "Flink",
-    #             "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --type Worker --vm-size Standard_D8d_v5').get_output_in_json(), 
-    #             "storageUri": "abfs://testflinkjob@hilostorage.dfs.core.windows.net",
-    #             "jobProperty": "{'action':'NEW','job_name':'testJob','type':'FlinkJob','job_jar_directory':'abfs://flinkjob@hilosa.dfs.core.windows.net/jars','jar_name':'jarName','entry_class':'com.microsoft.hilo.flink.job.streaming.SleepJob','args':'test','flink_configuration':{\"parallelism\":\"1\"}}"
-    #         })
         # Get trino cluster version and ossVersion.
-        # flink_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Flink\']"').get_output_in_json()
+        flink_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Flink\']"').get_output_in_json()
 
         # Create a Flink cluster.
-        # create_command = 'az hdinsight-on-aks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g {rgName} -l {loc} --cluster-type {clusterType} --cluster-version ' \
-        #       + flink_versions[0]["clusterVersion"] + ' --oss-version ' + flink_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' \
-        #         +' '+ HdinsightonaksClusterScenario.authorization_info() + " " + HdinsightonaksClusterScenario.flink_config_str() + ' --flink-storage-uri {storageUri}'
+        create_command = 'az hdinsight-on-aks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g {rgName} -l {loc} --cluster-type {clusterType} --cluster-version ' \
+              + flink_versions[0]["clusterVersion"] + ' --oss-version ' + flink_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' \
+                +' '+ HdinsightonaksClusterScenario.authorization_info() + " " + HdinsightonaksClusterScenario.flink_config_str() + ' --flink-storage-uri {storageUri}'
 
-        # self.cmd(create_command,checks=[
-        #     self.check("name", '{clusterName}'),
-        #     self.check("location", '{loc}'),
-        # ])
+        self.cmd(create_command,checks=[
+            self.check("name", '{clusterName}'),
+            self.check("location", '{loc}'),
+        ])
 
         # Run a job on a Flink cluster.
-        # self.cmd('az hdinsight-on-aks cluster job run --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName} --flink-job {jobProperty}')
+        self.cmd('az hdinsight-on-aks cluster job run --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName} --flink-job job-name="test" job-jar-directory="abfs://demodfs@flinkdemo.dfs.core.windows.net/jars" jar-name="FlinkJobDemo-1.0-SNAPSHOT.jar" entry-class="org.example.SleepJob" action="NEW" flink-configuration="{parallelism:1}')
         # List a cluster job list.
-        # self.cmd('az hdinsight-on-aks cluster job list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName}')
+        self.cmd('az hdinsight-on-aks cluster job list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rgName}')
  
     def test_update_cluster_config(self):
         self.kwargs.update({
                 "rgName": 'PSGroup', # Set your rg
-                "poolName": 'ps-test-pool', # Set your cluster poll name.
-                "clusterName": "testpsspark",
+                "poolName": self.create_random_name(prefix='hilopool-', length=18),
+                "clusterName": self.create_random_name(prefix='hilo-', length=18),
+                "clusterType": "Spark",
                 'config_path': os.path.join(TEST_DIR, 'config.json'),
+                "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4').get_output_in_json(),    # Create a cluster node-profile object.
             })      
+        
+        # Create a cluster pool.
+        self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3', checks=[
+            self.check("name", '{poolName}'),
+            self.check("location", '{loc}'),
+            self.check("status", 'Running')
+        ])
 
+        # Get spark cluster version and ossVersion.
+        spark_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
+
+        # Create a spark cluster.
+        create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --cluster-version ' + spark_versions[0]["clusterVersion"] + ' --oss-version ' + spark_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ HdinsightonaksClusterScenario.authorization_info()
+        self.cmd(create_command,checks=[
+            self.check("name", '{clusterName}'),
+            self.check("location", '{loc}'),
+            self.check("computeProfile.nodes[1].count", 5)
+
+        ])
         # Test update a cluster's service config.
         self.cmd('az hdinsight-on-aks cluster update -n {clusterName} --cluster-pool-name {poolName} -g {rgName} --service-configs-profiles @"{config_path}"', checks=[
             self.check("clusterProfile.serviceConfigsProfiles[0].serviceName", "yarn-service"),

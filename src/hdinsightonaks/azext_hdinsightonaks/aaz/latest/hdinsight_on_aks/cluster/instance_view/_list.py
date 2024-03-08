@@ -12,27 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hdinsight-on-aks cluster show-instance-view",
-    is_preview=True,
+    "hdinsight-on-aks cluster instance-view list",
 )
-class ShowInstanceView(AAZCommand):
-    """Get the status of a cluster instance.
-
-    :example: Get cluster instance view.
-        az hdinsight-on-aks cluster show-instance-view  --cluster-name testcluster --cluster-pool-name testpool -g RG
+class List(AAZCommand):
+    """List the lists of instance views
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/instanceviews/default", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/instanceviews", "2023-11-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -49,13 +46,11 @@ class ShowInstanceView(AAZCommand):
             options=["--cluster-name"],
             help="The name of the HDInsight cluster.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.cluster_pool_name = AAZStrArg(
             options=["--cluster-pool-name"],
             help="The name of the cluster pool.",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -64,7 +59,7 @@ class ShowInstanceView(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClustersGetInstanceView(ctx=self.ctx)()
+        self.ClustersListInstanceViews(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,10 +71,11 @@ class ShowInstanceView(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ClustersGetInstanceView(AAZHttpOperation):
+    class ClustersListInstanceViews(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,7 +89,7 @@ class ShowInstanceView(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/instanceViews/default",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/instanceViews",
                 **self.url_parameters
             )
 
@@ -131,7 +127,7 @@ class ShowInstanceView(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }
@@ -164,14 +160,24 @@ class ShowInstanceView(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+                flags={"read_only": True},
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.name = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _element.properties = AAZObjectType(
                 flags={"required": True, "client_flatten": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.service_statuses = AAZListType(
                 serialized_name="serviceStatuses",
                 flags={"required": True},
@@ -180,10 +186,10 @@ class ShowInstanceView(AAZCommand):
                 flags={"required": True},
             )
 
-            service_statuses = cls._schema_on_200.properties.service_statuses
+            service_statuses = cls._schema_on_200.value.Element.properties.service_statuses
             service_statuses.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.service_statuses.Element
+            _element = cls._schema_on_200.value.Element.properties.service_statuses.Element
             _element.kind = AAZStrType(
                 flags={"required": True},
             )
@@ -192,7 +198,7 @@ class ShowInstanceView(AAZCommand):
                 flags={"required": True},
             )
 
-            status = cls._schema_on_200.properties.status
+            status = cls._schema_on_200.value.Element.properties.status
             status.message = AAZStrType()
             status.ready = AAZStrType(
                 flags={"required": True},
@@ -202,8 +208,8 @@ class ShowInstanceView(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowInstanceViewHelper:
-    """Helper class for ShowInstanceView"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["ShowInstanceView"]
+__all__ = ["List"]

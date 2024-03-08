@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "hdinsight-on-aks clusterpool",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """clusterpool operations

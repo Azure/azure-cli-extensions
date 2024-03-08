@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "hdinsight-on-aks",
+    "hdinsight-on-aks clusterpool upgrade",
 )
 class __CMDGroup(AAZCommandGroup):
-    """HDInsight on Aks CLI.
+    """Upgrade clusterpool.
     """
     pass
 

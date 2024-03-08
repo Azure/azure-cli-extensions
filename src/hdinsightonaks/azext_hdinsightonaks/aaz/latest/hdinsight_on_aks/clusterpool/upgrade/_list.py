@@ -12,20 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hdinsight-on-aks cluster list-service-config",
-    is_preview=True,
+    "hdinsight-on-aks clusterpool upgrade list",
 )
-class ListServiceConfig(AAZCommand):
-    """List the config dump of all services running in cluster.
-
-    :example: Lists the config dump of all services running in cluster.
-        az hdinsight-on-aks cluster list-service-config  --cluster-name testcluster --cluster-pool-name testpool -g RG
+class List(AAZCommand):
+    """List a cluster pool available upgrade.
     """
 
     _aaz_info = {
         "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/serviceconfigs", "2023-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/availableupgrades", "2023-11-01-preview"],
         ]
     }
 
@@ -46,11 +42,6 @@ class ListServiceConfig(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
-            help="The name of the HDInsight cluster.",
-            required=True,
-        )
         _args_schema.cluster_pool_name = AAZStrArg(
             options=["--cluster-pool-name"],
             help="The name of the cluster pool.",
@@ -63,7 +54,7 @@ class ListServiceConfig(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClustersListServiceConfigs(ctx=self.ctx)()
+        self.ClusterPoolAvailableUpgradesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,7 +70,7 @@ class ListServiceConfig(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ClustersListServiceConfigs(AAZHttpOperation):
+    class ClusterPoolAvailableUpgradesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,7 +84,7 @@ class ListServiceConfig(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/serviceConfigs",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/availableUpgrades",
                 **self.url_parameters
             )
 
@@ -108,10 +99,6 @@ class ListServiceConfig(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "clusterPoolName", self.ctx.args.cluster_pool_name,
                     required=True,
@@ -166,58 +153,79 @@ class ListServiceConfig(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.component_name = AAZStrType(
-                serialized_name="componentName",
+            properties.upgrade_type = AAZStrType(
+                serialized_name="upgradeType",
                 flags={"required": True},
             )
-            properties.content = AAZStrType()
-            properties.custom_keys = AAZDictType(
-                serialized_name="customKeys",
-            )
-            properties.default_keys = AAZDictType(
-                serialized_name="defaultKeys",
-            )
-            properties.file_name = AAZStrType(
-                serialized_name="fileName",
-                flags={"required": True},
-            )
-            properties.path = AAZStrType()
-            properties.service_name = AAZStrType(
-                serialized_name="serviceName",
-                flags={"required": True},
-            )
-            properties.type = AAZStrType()
 
-            custom_keys = cls._schema_on_200.value.Element.properties.custom_keys
-            custom_keys.Element = AAZStrType()
+            disc_aks_patch_upgrade = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "AKSPatchUpgrade")
+            disc_aks_patch_upgrade.current_version = AAZStrType(
+                serialized_name="currentVersion",
+            )
+            disc_aks_patch_upgrade.current_version_status = AAZStrType(
+                serialized_name="currentVersionStatus",
+            )
+            disc_aks_patch_upgrade.latest_version = AAZStrType(
+                serialized_name="latestVersion",
+            )
 
-            default_keys = cls._schema_on_200.value.Element.properties.default_keys
-            default_keys.Element = AAZObjectType()
+            disc_node_os_upgrade = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "NodeOsUpgrade")
+            disc_node_os_upgrade.latest_version = AAZStrType(
+                serialized_name="latestVersion",
+            )
 
-            _element = cls._schema_on_200.value.Element.properties.default_keys.Element
-            _element.description = AAZStrType()
-            _element.value = AAZStrType(
-                flags={"required": True},
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200
 
 
-class _ListServiceConfigHelper:
-    """Helper class for ListServiceConfig"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["ListServiceConfig"]
+__all__ = ["List"]

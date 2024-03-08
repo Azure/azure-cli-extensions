@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "hdinsight-on-aks",
+    "hdinsight-on-aks cluster instance-view",
 )
 class __CMDGroup(AAZCommandGroup):
-    """HDInsight on Aks CLI.
+    """Gets the status of a cluster instances.
     """
     pass
 

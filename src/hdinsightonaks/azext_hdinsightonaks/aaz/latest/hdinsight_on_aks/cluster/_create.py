@@ -32,9 +32,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}", "2023-11-01-preview"],
         ]
     }
 
@@ -235,6 +235,11 @@ class Create(AAZCommand):
             arg_group="ClusterProfile",
             help="This property is for graceful decommission timeout; It has a default setting of 3600 seconds before forced shutdown takes place. This is the maximal time to wait for running containers and applications to complete before transition a DECOMMISSIONING node into DECOMMISSIONED. The default value is 3600 seconds. Negative value (like -1) is handled as infinite timeout.",
         )
+        _args_schema.cluster_access_profile = AAZObjectArg(
+            options=["--cluster-access-profile"],
+            arg_group="ClusterProfile",
+            help="Cluster access profile.",
+        )
         _args_schema.cluster_version = AAZStrArg(
             options=["--cluster-version"],
             arg_group="ClusterProfile",
@@ -264,7 +269,7 @@ class Create(AAZCommand):
             arg_group="ClusterProfile",
             help="ResourceId of the MSI.",
         )
-        _args_schema.kafka_profile = AAZFreeFormDictArg(
+        _args_schema.kafka_profile = AAZObjectArg(
             options=["--kafka-profile"],
             arg_group="ClusterProfile",
             help="Kafka cluster profile.",
@@ -281,6 +286,16 @@ class Create(AAZCommand):
             fmt=AAZStrArgFormat(
                 pattern="^(0|[1-9][0-9]{0,18})\.(0|[1-9][0-9]{0,18})\.(0|[1-9][0-9]{0,18})$",
             ),
+        )
+        _args_schema.ranger_plugin_profile = AAZObjectArg(
+            options=["--ranger-plugin-profile"],
+            arg_group="ClusterProfile",
+            help="Cluster Ranger plugin profile.",
+        )
+        _args_schema.ranger_profile = AAZObjectArg(
+            options=["--ranger-profile"],
+            arg_group="ClusterProfile",
+            help="The ranger cluster profile.",
         )
         _args_schema.script_action_profiles = AAZListArg(
             options=["--script-action-profiles"],
@@ -303,6 +318,153 @@ class Create(AAZCommand):
 
         authorization_user_id = cls._args_schema.authorization_user_id
         authorization_user_id.Element = AAZStrArg()
+
+        cluster_access_profile = cls._args_schema.cluster_access_profile
+        cluster_access_profile.enable_internal_ingress = AAZBoolArg(
+            options=["enable-internal-ingress"],
+            help="Whether to create cluster using private IP instead of public IP. This property must be set at create time.",
+            required=True,
+        )
+
+        kafka_profile = cls._args_schema.kafka_profile
+        kafka_profile.disk_storage = AAZObjectArg(
+            options=["disk-storage"],
+            help="Kafka disk storage profile.",
+            required=True,
+        )
+        kafka_profile.enable_k_raft = AAZBoolArg(
+            options=["enable-k-raft"],
+            help="Expose Kafka cluster in KRaft mode.",
+            default=True,
+        )
+        kafka_profile.enable_public_endpoints = AAZBoolArg(
+            options=["enable-public-endpoints"],
+            help="Expose worker nodes as public endpoints.",
+            default=False,
+        )
+        kafka_profile.remote_storage_uri = AAZStrArg(
+            options=["remote-storage-uri"],
+            help="Fully qualified path of Azure Storage container used for Tiered Storage.",
+            fmt=AAZStrArgFormat(
+                pattern="^(https?|abfss?):\/\/[^/]+(?:\/|$)",
+            ),
+        )
+
+        disk_storage = cls._args_schema.kafka_profile.disk_storage
+        disk_storage.data_disk_size = AAZIntArg(
+            options=["data-disk-size"],
+            help="Managed Disk size in GB. The maximum supported disk size for Standard and Premium HDD/SSD is 32TB, except for Premium SSD v2, which supports up to 64TB.",
+            required=True,
+        )
+        disk_storage.data_disk_type = AAZStrArg(
+            options=["data-disk-type"],
+            help="Managed Disk Type.",
+            required=True,
+            enum={"Premium_SSD_LRS": "Premium_SSD_LRS", "Premium_SSD_ZRS": "Premium_SSD_ZRS", "Premium_SSD_v2_LRS": "Premium_SSD_v2_LRS", "Standard_HDD_LRS": "Standard_HDD_LRS", "Standard_SSD_LRS": "Standard_SSD_LRS", "Standard_SSD_ZRS": "Standard_SSD_ZRS"},
+        )
+
+        ranger_plugin_profile = cls._args_schema.ranger_plugin_profile
+        ranger_plugin_profile.enabled = AAZBoolArg(
+            options=["enabled"],
+            help="Enable Ranger for cluster or not.",
+            required=True,
+            default=False,
+        )
+
+        ranger_profile = cls._args_schema.ranger_profile
+        ranger_profile.ranger_admin = AAZObjectArg(
+            options=["ranger-admin"],
+            help="Specification for the Ranger Admin service.",
+            required=True,
+        )
+        ranger_profile.ranger_audit = AAZObjectArg(
+            options=["ranger-audit"],
+            help="Properties required to describe audit log storage.",
+        )
+        ranger_profile.ranger_usersync = AAZObjectArg(
+            options=["ranger-usersync"],
+            help="Specification for the Ranger Usersync service",
+            required=True,
+        )
+
+        ranger_admin = cls._args_schema.ranger_profile.ranger_admin
+        ranger_admin.admins = AAZListArg(
+            options=["admins"],
+            help="List of usernames that should be marked as ranger admins. These usernames should match the user principal name (UPN) of the respective AAD users.",
+            required=True,
+        )
+        ranger_admin.database = AAZObjectArg(
+            options=["database"],
+            required=True,
+        )
+
+        admins = cls._args_schema.ranger_profile.ranger_admin.admins
+        admins.Element = AAZStrArg()
+
+        database = cls._args_schema.ranger_profile.ranger_admin.database
+        database.host = AAZStrArg(
+            options=["host"],
+            help="The database URL",
+            required=True,
+        )
+        database.name = AAZStrArg(
+            options=["name"],
+            help="The database name",
+            required=True,
+        )
+        database.password_secret_ref = AAZStrArg(
+            options=["password-secret-ref"],
+            help="Reference for the database password",
+        )
+        database.username = AAZStrArg(
+            options=["username"],
+            help="The name of the database user",
+        )
+
+        ranger_audit = cls._args_schema.ranger_profile.ranger_audit
+        ranger_audit.storage_account = AAZStrArg(
+            options=["storage-account"],
+            help="Azure storage location of the blobs. MSI should have read/write access to this Storage account.",
+            fmt=AAZStrArgFormat(
+                pattern="^(https)|(abfss)://.*$",
+                min_length=1,
+            ),
+        )
+
+        ranger_usersync = cls._args_schema.ranger_profile.ranger_usersync
+        ranger_usersync.enabled = AAZBoolArg(
+            options=["enabled"],
+            help="Denotes whether usersync service should be enabled",
+            default=True,
+        )
+        ranger_usersync.groups = AAZListArg(
+            options=["groups"],
+            help="List of groups that should be synced. These group names should match the object id of the respective AAD groups.",
+        )
+        ranger_usersync.mode = AAZStrArg(
+            options=["mode"],
+            help="User & groups can be synced automatically or via a static list that's refreshed.",
+            default="automatic",
+            enum={"automatic": "automatic", "static": "static"},
+        )
+        ranger_usersync.user_mapping_location = AAZStrArg(
+            options=["user-mapping-location"],
+            help="Azure storage location of a mapping file that lists user & group associations.",
+            fmt=AAZStrArgFormat(
+                pattern="^(https)|(abfss)://.*$",
+                min_length=1,
+            ),
+        )
+        ranger_usersync.users = AAZListArg(
+            options=["users"],
+            help="List of user names that should be synced. These usernames should match the User principal name of the respective AAD users.",
+        )
+
+        groups = cls._args_schema.ranger_profile.ranger_usersync.groups
+        groups.Element = AAZStrArg()
+
+        users = cls._args_schema.ranger_profile.ranger_usersync.users
+        users.Element = AAZStrArg()
 
         script_action_profiles = cls._args_schema.script_action_profiles
         script_action_profiles.Element = AAZObjectArg()
@@ -341,7 +503,7 @@ class Create(AAZCommand):
             help="Url of the script file.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^(https)|(http)|(abfss)|(abfs)|(wasbs)|(wasb)://.*$",
+                pattern="^(https)|(http)://.*$",
             ),
         )
 
@@ -492,6 +654,12 @@ class Create(AAZCommand):
             arg_group="FlinkProfile",
             help="User name for database connection.",
         )
+        _args_schema.deployment_mode = AAZStrArg(
+            options=["--deployment-mode"],
+            arg_group="FlinkProfile",
+            help="A string property that indicates the deployment mode of Flink cluster. It can have one of the following enum values => Application, Session. Default value is Session",
+            enum={"Application": "Application", "Session": "Session"},
+        )
         _args_schema.history_server_cpu = AAZFloatArg(
             options=["--history-server-cpu"],
             arg_group="FlinkProfile",
@@ -512,6 +680,11 @@ class Create(AAZCommand):
             arg_group="FlinkProfile",
             help="Job manager memory size.",
         )
+        _args_schema.job_spec = AAZObjectArg(
+            options=["--job-spec"],
+            arg_group="FlinkProfile",
+            help="Job specifications for flink clusters in application deployment mode. The specification is immutable even if job properties are changed by calling the RunJob API, please use the ListJob API to get the latest job information.",
+        )
         _args_schema.num_replicas = AAZIntArg(
             options=["--num-replicas"],
             arg_group="FlinkProfile",
@@ -521,6 +694,9 @@ class Create(AAZCommand):
             options=["--flink-storage-uri"],
             arg_group="FlinkProfile",
             help="Storage account uri which is used for savepoint and checkpoint state.",
+            fmt=AAZStrArgFormat(
+                pattern="^(\w{4,5})://(.*)@(.*).\b(blob|dfs)\b.*$",
+            ),
         )
         _args_schema.flink_storage_key = AAZStrArg(
             options=["--flink-storage-key"],
@@ -536,6 +712,36 @@ class Create(AAZCommand):
             options=["--task-manager-memory"],
             arg_group="FlinkProfile",
             help="The task manager memory size.",
+        )
+
+        job_spec = cls._args_schema.job_spec
+        job_spec.args = AAZStrArg(
+            options=["args"],
+            help="A string property representing additional JVM arguments for the Flink job. It should be space separated value.",
+        )
+        job_spec.entry_class = AAZStrArg(
+            options=["entry-class"],
+            help="A string property that specifies the entry class for the Flink job. If not specified, the entry point is auto-detected from the flink job jar package.",
+        )
+        job_spec.jar_name = AAZStrArg(
+            options=["jar-name"],
+            help="A string property that represents the name of the job JAR.",
+            required=True,
+        )
+        job_spec.job_jar_directory = AAZStrArg(
+            options=["job-jar-directory"],
+            help="A string property that specifies the directory where the job JAR is located.",
+            required=True,
+        )
+        job_spec.save_point_name = AAZStrArg(
+            options=["save-point-name"],
+            help="A string property that represents the name of the savepoint for the Flink job",
+        )
+        job_spec.upgrade_mode = AAZStrArg(
+            options=["upgrade-mode"],
+            help="A string property that indicates the upgrade mode to be performed on the Flink job. It can have one of the following enum values => STATELESS_UPDATE, UPDATE, LAST_STATE_UPDATE.",
+            required=True,
+            enum={"LAST_STATE_UPDATE": "LAST_STATE_UPDATE", "STATELESS_UPDATE": "STATELESS_UPDATE", "UPDATE": "UPDATE"},
         )
 
         # define Arg Group "HDInsightCluster"
@@ -558,6 +764,17 @@ class Create(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
+        # define Arg Group "Hive"
+
+        _args_schema = cls._args_schema
+        _args_schema.metastore_db_connection_authentication_mode = AAZStrArg(
+            options=["--metastore-db-connection-authentication-mode"],
+            arg_group="Hive",
+            help="The authentication mode to connect to your Hive metastore database. More details: https://learn.microsoft.com/en-us/azure/azure-sql/database/logins-create-manage?view=azuresql#authentication-and-authorization",
+            default="IdentityAuth",
+            enum={"IdentityAuth": "IdentityAuth", "SqlAuth": "SqlAuth"},
+        )
+
         # define Arg Group "LogAnalyticsProfile"
 
         _args_schema = cls._args_schema
@@ -570,6 +787,17 @@ class Create(AAZCommand):
             options=["--enable-la-metrics", "--log-analytic-profile-metrics-enabled"],
             arg_group="LogAnalyticsProfile",
             help="True if metrics are enabled, otherwise false.",
+        )
+
+        # define Arg Group "MetastoreSpec"
+
+        _args_schema = cls._args_schema
+        _args_schema.db_connection_authentication_mode = AAZStrArg(
+            options=["--db-connection-authentication-mode"],
+            arg_group="MetastoreSpec",
+            help="The authentication mode to connect to your Hive metastore database. More details: https://learn.microsoft.com/en-us/azure/azure-sql/database/logins-create-manage?view=azuresql#authentication-and-authorization",
+            default="IdentityAuth",
+            enum={"IdentityAuth": "IdentityAuth", "SqlAuth": "SqlAuth"},
         )
 
         # define Arg Group "PrometheusProfile"
@@ -756,10 +984,15 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
+        _element.metastore_db_connection_authentication_mode = AAZStrArg(
+            options=["metastore-db-connection-authentication-mode"],
+            help="The authentication mode to connect to your Hive metastore database. More details: https://learn.microsoft.com/en-us/azure/azure-sql/database/logins-create-manage?view=azuresql#authentication-and-authorization",
+            default="IdentityAuth",
+            enum={"IdentityAuth": "IdentityAuth", "SqlAuth": "SqlAuth"},
+        )
         _element.metastore_db_connection_password_secret = AAZStrArg(
             options=["metastore-db-connection-password-secret"],
             help="Secret reference name from secretsProfile.secrets containing password for database connection.",
-            required=True,
         )
         _element.metastore_db_connection_url = AAZStrArg(
             options=["metastore-db-connection-url"],
@@ -769,7 +1002,6 @@ class Create(AAZCommand):
         _element.metastore_db_connection_user_name = AAZStrArg(
             options=["metastore-db-connection-user-name"],
             help="User name for database connection.",
-            required=True,
         )
         _element.metastore_warehouse_dir = AAZStrArg(
             options=["metastore-warehouse-dir"],
@@ -939,7 +1171,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }
@@ -978,14 +1210,17 @@ class Create(AAZCommand):
             if cluster_profile is not None:
                 cluster_profile.set_prop("authorizationProfile", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 cluster_profile.set_prop("autoscaleProfile", AAZObjectType)
+                cluster_profile.set_prop("clusterAccessProfile", AAZObjectType, ".cluster_access_profile")
                 cluster_profile.set_prop("clusterVersion", AAZStrType, ".cluster_version", typ_kwargs={"flags": {"required": True}})
                 cluster_profile.set_prop("flinkProfile", AAZObjectType)
-                cluster_profile.set_prop("identityProfile", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-                cluster_profile.set_prop("kafkaProfile", AAZFreeFormDictType, ".kafka_profile")
+                cluster_profile.set_prop("identityProfile", AAZObjectType)
+                cluster_profile.set_prop("kafkaProfile", AAZObjectType, ".kafka_profile")
                 cluster_profile.set_prop("llapProfile", AAZFreeFormDictType, ".llap_profile")
                 cluster_profile.set_prop("logAnalyticsProfile", AAZObjectType)
                 cluster_profile.set_prop("ossVersion", AAZStrType, ".oss_version", typ_kwargs={"flags": {"required": True}})
                 cluster_profile.set_prop("prometheusProfile", AAZObjectType)
+                cluster_profile.set_prop("rangerPluginProfile", AAZObjectType, ".ranger_plugin_profile")
+                cluster_profile.set_prop("rangerProfile", AAZObjectType, ".ranger_profile")
                 cluster_profile.set_prop("scriptActionProfiles", AAZListType, ".script_action_profiles")
                 cluster_profile.set_prop("secretsProfile", AAZObjectType)
                 cluster_profile.set_prop("serviceConfigsProfiles", AAZListType, ".service_configs_profiles")
@@ -1060,11 +1295,17 @@ class Create(AAZCommand):
             if days is not None:
                 days.set_elements(AAZStrType, ".")
 
+            cluster_access_profile = _builder.get(".properties.clusterProfile.clusterAccessProfile")
+            if cluster_access_profile is not None:
+                cluster_access_profile.set_prop("enableInternalIngress", AAZBoolType, ".enable_internal_ingress", typ_kwargs={"flags": {"required": True}})
+
             flink_profile = _builder.get(".properties.clusterProfile.flinkProfile")
             if flink_profile is not None:
                 flink_profile.set_prop("catalogOptions", AAZObjectType)
+                flink_profile.set_prop("deploymentMode", AAZStrType, ".deployment_mode")
                 flink_profile.set_prop("historyServer", AAZObjectType)
                 flink_profile.set_prop("jobManager", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+                flink_profile.set_prop("jobSpec", AAZObjectType, ".job_spec")
                 flink_profile.set_prop("numReplicas", AAZIntType, ".num_replicas")
                 flink_profile.set_prop("storage", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 flink_profile.set_prop("taskManager", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
@@ -1075,9 +1316,10 @@ class Create(AAZCommand):
 
             hive = _builder.get(".properties.clusterProfile.flinkProfile.catalogOptions.hive")
             if hive is not None:
-                hive.set_prop("metastoreDbConnectionPasswordSecret", AAZStrType, ".flink_hive_catalog_db_connection_password_secret", typ_kwargs={"flags": {"required": True}})
+                hive.set_prop("metastoreDbConnectionAuthenticationMode", AAZStrType, ".metastore_db_connection_authentication_mode")
+                hive.set_prop("metastoreDbConnectionPasswordSecret", AAZStrType, ".flink_hive_catalog_db_connection_password_secret")
                 hive.set_prop("metastoreDbConnectionURL", AAZStrType, ".flink_hive_catalog_db_connection_url", typ_kwargs={"flags": {"required": True}})
-                hive.set_prop("metastoreDbConnectionUserName", AAZStrType, ".flink_hive_catalog_db_connection_user_name", typ_kwargs={"flags": {"required": True}})
+                hive.set_prop("metastoreDbConnectionUserName", AAZStrType, ".flink_hive_catalog_db_connection_user_name")
 
             history_server = _builder.get(".properties.clusterProfile.flinkProfile.historyServer")
             if history_server is not None:
@@ -1088,6 +1330,15 @@ class Create(AAZCommand):
             if job_manager is not None:
                 job_manager.set_prop("cpu", AAZFloatType, ".job_manager_cpu", typ_kwargs={"flags": {"required": True}})
                 job_manager.set_prop("memory", AAZIntType, ".job_manager_memory", typ_kwargs={"flags": {"required": True}})
+
+            job_spec = _builder.get(".properties.clusterProfile.flinkProfile.jobSpec")
+            if job_spec is not None:
+                job_spec.set_prop("args", AAZStrType, ".args")
+                job_spec.set_prop("entryClass", AAZStrType, ".entry_class")
+                job_spec.set_prop("jarName", AAZStrType, ".jar_name", typ_kwargs={"flags": {"required": True}})
+                job_spec.set_prop("jobJarDirectory", AAZStrType, ".job_jar_directory", typ_kwargs={"flags": {"required": True}})
+                job_spec.set_prop("savePointName", AAZStrType, ".save_point_name")
+                job_spec.set_prop("upgradeMode", AAZStrType, ".upgrade_mode", typ_kwargs={"flags": {"required": True}})
 
             storage = _builder.get(".properties.clusterProfile.flinkProfile.storage")
             if storage is not None:
@@ -1107,7 +1358,15 @@ class Create(AAZCommand):
 
             kafka_profile = _builder.get(".properties.clusterProfile.kafkaProfile")
             if kafka_profile is not None:
-                kafka_profile.set_anytype_elements(".")
+                kafka_profile.set_prop("diskStorage", AAZObjectType, ".disk_storage", typ_kwargs={"flags": {"required": True}})
+                kafka_profile.set_prop("enableKRaft", AAZBoolType, ".enable_k_raft")
+                kafka_profile.set_prop("enablePublicEndpoints", AAZBoolType, ".enable_public_endpoints")
+                kafka_profile.set_prop("remoteStorageUri", AAZStrType, ".remote_storage_uri")
+
+            disk_storage = _builder.get(".properties.clusterProfile.kafkaProfile.diskStorage")
+            if disk_storage is not None:
+                disk_storage.set_prop("dataDiskSize", AAZIntType, ".data_disk_size", typ_kwargs={"flags": {"required": True}})
+                disk_storage.set_prop("dataDiskType", AAZStrType, ".data_disk_type", typ_kwargs={"flags": {"required": True}})
 
             llap_profile = _builder.get(".properties.clusterProfile.llapProfile")
             if llap_profile is not None:
@@ -1127,6 +1386,52 @@ class Create(AAZCommand):
             prometheus_profile = _builder.get(".properties.clusterProfile.prometheusProfile")
             if prometheus_profile is not None:
                 prometheus_profile.set_prop("enabled", AAZBoolType, ".enable_prometheu", typ_kwargs={"flags": {"required": True}})
+
+            ranger_plugin_profile = _builder.get(".properties.clusterProfile.rangerPluginProfile")
+            if ranger_plugin_profile is not None:
+                ranger_plugin_profile.set_prop("enabled", AAZBoolType, ".enabled", typ_kwargs={"flags": {"required": True}})
+
+            ranger_profile = _builder.get(".properties.clusterProfile.rangerProfile")
+            if ranger_profile is not None:
+                ranger_profile.set_prop("rangerAdmin", AAZObjectType, ".ranger_admin", typ_kwargs={"flags": {"required": True}})
+                ranger_profile.set_prop("rangerAudit", AAZObjectType, ".ranger_audit")
+                ranger_profile.set_prop("rangerUsersync", AAZObjectType, ".ranger_usersync", typ_kwargs={"flags": {"required": True}})
+
+            ranger_admin = _builder.get(".properties.clusterProfile.rangerProfile.rangerAdmin")
+            if ranger_admin is not None:
+                ranger_admin.set_prop("admins", AAZListType, ".admins", typ_kwargs={"flags": {"required": True}})
+                ranger_admin.set_prop("database", AAZObjectType, ".database", typ_kwargs={"flags": {"required": True}})
+
+            admins = _builder.get(".properties.clusterProfile.rangerProfile.rangerAdmin.admins")
+            if admins is not None:
+                admins.set_elements(AAZStrType, ".")
+
+            database = _builder.get(".properties.clusterProfile.rangerProfile.rangerAdmin.database")
+            if database is not None:
+                database.set_prop("host", AAZStrType, ".host", typ_kwargs={"flags": {"required": True}})
+                database.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                database.set_prop("passwordSecretRef", AAZStrType, ".password_secret_ref")
+                database.set_prop("username", AAZStrType, ".username")
+
+            ranger_audit = _builder.get(".properties.clusterProfile.rangerProfile.rangerAudit")
+            if ranger_audit is not None:
+                ranger_audit.set_prop("storageAccount", AAZStrType, ".storage_account")
+
+            ranger_usersync = _builder.get(".properties.clusterProfile.rangerProfile.rangerUsersync")
+            if ranger_usersync is not None:
+                ranger_usersync.set_prop("enabled", AAZBoolType, ".enabled")
+                ranger_usersync.set_prop("groups", AAZListType, ".groups")
+                ranger_usersync.set_prop("mode", AAZStrType, ".mode")
+                ranger_usersync.set_prop("userMappingLocation", AAZStrType, ".user_mapping_location")
+                ranger_usersync.set_prop("users", AAZListType, ".users")
+
+            groups = _builder.get(".properties.clusterProfile.rangerProfile.rangerUsersync.groups")
+            if groups is not None:
+                groups.set_elements(AAZStrType, ".")
+
+            users = _builder.get(".properties.clusterProfile.rangerProfile.rangerUsersync.users")
+            if users is not None:
+                users.set_elements(AAZStrType, ".")
 
             script_action_profiles = _builder.get(".properties.clusterProfile.scriptActionProfiles")
             if script_action_profiles is not None:
@@ -1204,11 +1509,12 @@ class Create(AAZCommand):
 
             metastore_spec = _builder.get(".properties.clusterProfile.sparkProfile.metastoreSpec")
             if metastore_spec is not None:
+                metastore_spec.set_prop("dbConnectionAuthenticationMode", AAZStrType, ".db_connection_authentication_mode")
                 metastore_spec.set_prop("dbName", AAZStrType, ".spark_hive_catalog_db_name", typ_kwargs={"flags": {"required": True}})
-                metastore_spec.set_prop("dbPasswordSecretName", AAZStrType, ".spark_hive_catalog_db_password_secret", typ_kwargs={"flags": {"required": True}})
+                metastore_spec.set_prop("dbPasswordSecretName", AAZStrType, ".spark_hive_catalog_db_password_secret")
                 metastore_spec.set_prop("dbServerHost", AAZStrType, ".spark_hive_catalog_db_server_name", typ_kwargs={"flags": {"required": True}})
-                metastore_spec.set_prop("dbUserName", AAZStrType, ".spark_hive_catalog_db_user_name", typ_kwargs={"flags": {"required": True}})
-                metastore_spec.set_prop("keyVaultId", AAZStrType, ".spark_hive_catalog_key_vault_id", typ_kwargs={"flags": {"required": True}})
+                metastore_spec.set_prop("dbUserName", AAZStrType, ".spark_hive_catalog_db_user_name")
+                metastore_spec.set_prop("keyVaultId", AAZStrType, ".spark_hive_catalog_key_vault_id")
                 metastore_spec.set_prop("thriftUrl", AAZStrType, ".spark_hive_catalog_thrift_url")
 
             user_plugins_spec = _builder.get(".properties.clusterProfile.sparkProfile.userPluginsSpec")
@@ -1250,9 +1556,10 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.clusterProfile.trinoProfile.catalogOptions.hive[]")
             if _elements is not None:
                 _elements.set_prop("catalogName", AAZStrType, ".catalog_name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("metastoreDbConnectionPasswordSecret", AAZStrType, ".metastore_db_connection_password_secret", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("metastoreDbConnectionAuthenticationMode", AAZStrType, ".metastore_db_connection_authentication_mode")
+                _elements.set_prop("metastoreDbConnectionPasswordSecret", AAZStrType, ".metastore_db_connection_password_secret")
                 _elements.set_prop("metastoreDbConnectionURL", AAZStrType, ".metastore_db_connection_url", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("metastoreDbConnectionUserName", AAZStrType, ".metastore_db_connection_user_name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("metastoreDbConnectionUserName", AAZStrType, ".metastore_db_connection_user_name")
                 _elements.set_prop("metastoreWarehouseDir", AAZStrType, ".metastore_warehouse_dir", typ_kwargs={"flags": {"required": True}})
 
             coordinator = _builder.get(".properties.clusterProfile.trinoProfile.coordinator")
@@ -1393,6 +1700,9 @@ class Create(AAZCommand):
             cluster_profile.autoscale_profile = AAZObjectType(
                 serialized_name="autoscaleProfile",
             )
+            cluster_profile.cluster_access_profile = AAZObjectType(
+                serialized_name="clusterAccessProfile",
+            )
             cluster_profile.cluster_version = AAZStrType(
                 serialized_name="clusterVersion",
                 flags={"required": True},
@@ -1409,9 +1719,9 @@ class Create(AAZCommand):
             )
             cluster_profile.identity_profile = AAZObjectType(
                 serialized_name="identityProfile",
-                flags={"required": True},
             )
-            cluster_profile.kafka_profile = AAZFreeFormDictType(
+            _CreateHelper._build_schema_identity_profile_read(cluster_profile.identity_profile)
+            cluster_profile.kafka_profile = AAZObjectType(
                 serialized_name="kafkaProfile",
             )
             cluster_profile.llap_profile = AAZFreeFormDictType(
@@ -1426,6 +1736,12 @@ class Create(AAZCommand):
             )
             cluster_profile.prometheus_profile = AAZObjectType(
                 serialized_name="prometheusProfile",
+            )
+            cluster_profile.ranger_plugin_profile = AAZObjectType(
+                serialized_name="rangerPluginProfile",
+            )
+            cluster_profile.ranger_profile = AAZObjectType(
+                serialized_name="rangerProfile",
             )
             cluster_profile.script_action_profiles = AAZListType(
                 serialized_name="scriptActionProfiles",
@@ -1564,6 +1880,16 @@ class Create(AAZCommand):
             days = cls._schema_on_200_201.properties.cluster_profile.autoscale_profile.schedule_based_config.schedules.Element.days
             days.Element = AAZStrType()
 
+            cluster_access_profile = cls._schema_on_200_201.properties.cluster_profile.cluster_access_profile
+            cluster_access_profile.enable_internal_ingress = AAZBoolType(
+                serialized_name="enableInternalIngress",
+                flags={"required": True},
+            )
+            cluster_access_profile.private_link_service_id = AAZStrType(
+                serialized_name="privateLinkServiceId",
+                flags={"read_only": True},
+            )
+
             components = cls._schema_on_200_201.properties.cluster_profile.components
             components.Element = AAZObjectType()
 
@@ -1584,15 +1910,24 @@ class Create(AAZCommand):
             _element.endpoint = AAZStrType(
                 flags={"required": True},
             )
+            _element.private_ssh_endpoint = AAZStrType(
+                serialized_name="privateSshEndpoint",
+            )
 
             web = cls._schema_on_200_201.properties.cluster_profile.connectivity_profile.web
             web.fqdn = AAZStrType(
                 flags={"required": True},
             )
+            web.private_fqdn = AAZStrType(
+                serialized_name="privateFqdn",
+            )
 
             flink_profile = cls._schema_on_200_201.properties.cluster_profile.flink_profile
             flink_profile.catalog_options = AAZObjectType(
                 serialized_name="catalogOptions",
+            )
+            flink_profile.deployment_mode = AAZStrType(
+                serialized_name="deploymentMode",
             )
             flink_profile.history_server = AAZObjectType(
                 serialized_name="historyServer",
@@ -1603,6 +1938,9 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
             _CreateHelper._build_schema_compute_resource_definition_read(flink_profile.job_manager)
+            flink_profile.job_spec = AAZObjectType(
+                serialized_name="jobSpec",
+            )
             flink_profile.num_replicas = AAZIntType(
                 serialized_name="numReplicas",
             )
@@ -1619,9 +1957,11 @@ class Create(AAZCommand):
             catalog_options.hive = AAZObjectType()
 
             hive = cls._schema_on_200_201.properties.cluster_profile.flink_profile.catalog_options.hive
+            hive.metastore_db_connection_authentication_mode = AAZStrType(
+                serialized_name="metastoreDbConnectionAuthenticationMode",
+            )
             hive.metastore_db_connection_password_secret = AAZStrType(
                 serialized_name="metastoreDbConnectionPasswordSecret",
-                flags={"required": True},
             )
             hive.metastore_db_connection_url = AAZStrType(
                 serialized_name="metastoreDbConnectionURL",
@@ -1629,6 +1969,26 @@ class Create(AAZCommand):
             )
             hive.metastore_db_connection_user_name = AAZStrType(
                 serialized_name="metastoreDbConnectionUserName",
+            )
+
+            job_spec = cls._schema_on_200_201.properties.cluster_profile.flink_profile.job_spec
+            job_spec.args = AAZStrType()
+            job_spec.entry_class = AAZStrType(
+                serialized_name="entryClass",
+            )
+            job_spec.jar_name = AAZStrType(
+                serialized_name="jarName",
+                flags={"required": True},
+            )
+            job_spec.job_jar_directory = AAZStrType(
+                serialized_name="jobJarDirectory",
+                flags={"required": True},
+            )
+            job_spec.save_point_name = AAZStrType(
+                serialized_name="savePointName",
+            )
+            job_spec.upgrade_mode = AAZStrType(
+                serialized_name="upgradeMode",
                 flags={"required": True},
             )
 
@@ -1641,17 +2001,46 @@ class Create(AAZCommand):
                 flags={"secret": True},
             )
 
-            identity_profile = cls._schema_on_200_201.properties.cluster_profile.identity_profile
-            identity_profile.msi_client_id = AAZStrType(
-                serialized_name="msiClientId",
+            kafka_profile = cls._schema_on_200_201.properties.cluster_profile.kafka_profile
+            kafka_profile.cluster_identity = AAZObjectType(
+                serialized_name="clusterIdentity",
+            )
+            _CreateHelper._build_schema_identity_profile_read(kafka_profile.cluster_identity)
+            kafka_profile.connectivity_endpoints = AAZObjectType(
+                serialized_name="connectivityEndpoints",
+            )
+            kafka_profile.disk_storage = AAZObjectType(
+                serialized_name="diskStorage",
                 flags={"required": True},
             )
-            identity_profile.msi_object_id = AAZStrType(
-                serialized_name="msiObjectId",
+            kafka_profile.enable_k_raft = AAZBoolType(
+                serialized_name="enableKRaft",
+            )
+            kafka_profile.enable_public_endpoints = AAZBoolType(
+                serialized_name="enablePublicEndpoints",
+            )
+            kafka_profile.remote_storage_uri = AAZStrType(
+                serialized_name="remoteStorageUri",
+            )
+
+            connectivity_endpoints = cls._schema_on_200_201.properties.cluster_profile.kafka_profile.connectivity_endpoints
+            connectivity_endpoints.bootstrap_server_endpoint = AAZStrType(
+                serialized_name="bootstrapServerEndpoint",
+            )
+            connectivity_endpoints.broker_endpoints = AAZListType(
+                serialized_name="brokerEndpoints",
+            )
+
+            broker_endpoints = cls._schema_on_200_201.properties.cluster_profile.kafka_profile.connectivity_endpoints.broker_endpoints
+            broker_endpoints.Element = AAZStrType()
+
+            disk_storage = cls._schema_on_200_201.properties.cluster_profile.kafka_profile.disk_storage
+            disk_storage.data_disk_size = AAZIntType(
+                serialized_name="dataDiskSize",
                 flags={"required": True},
             )
-            identity_profile.msi_resource_id = AAZStrType(
-                serialized_name="msiResourceId",
+            disk_storage.data_disk_type = AAZStrType(
+                serialized_name="dataDiskType",
                 flags={"required": True},
             )
 
@@ -1678,6 +2067,67 @@ class Create(AAZCommand):
             prometheus_profile.enabled = AAZBoolType(
                 flags={"required": True},
             )
+
+            ranger_plugin_profile = cls._schema_on_200_201.properties.cluster_profile.ranger_plugin_profile
+            ranger_plugin_profile.enabled = AAZBoolType(
+                flags={"required": True},
+            )
+
+            ranger_profile = cls._schema_on_200_201.properties.cluster_profile.ranger_profile
+            ranger_profile.ranger_admin = AAZObjectType(
+                serialized_name="rangerAdmin",
+                flags={"required": True},
+            )
+            ranger_profile.ranger_audit = AAZObjectType(
+                serialized_name="rangerAudit",
+            )
+            ranger_profile.ranger_usersync = AAZObjectType(
+                serialized_name="rangerUsersync",
+                flags={"required": True},
+            )
+
+            ranger_admin = cls._schema_on_200_201.properties.cluster_profile.ranger_profile.ranger_admin
+            ranger_admin.admins = AAZListType(
+                flags={"required": True},
+            )
+            ranger_admin.database = AAZObjectType(
+                flags={"required": True},
+            )
+
+            admins = cls._schema_on_200_201.properties.cluster_profile.ranger_profile.ranger_admin.admins
+            admins.Element = AAZStrType()
+
+            database = cls._schema_on_200_201.properties.cluster_profile.ranger_profile.ranger_admin.database
+            database.host = AAZStrType(
+                flags={"required": True},
+            )
+            database.name = AAZStrType(
+                flags={"required": True},
+            )
+            database.password_secret_ref = AAZStrType(
+                serialized_name="passwordSecretRef",
+            )
+            database.username = AAZStrType()
+
+            ranger_audit = cls._schema_on_200_201.properties.cluster_profile.ranger_profile.ranger_audit
+            ranger_audit.storage_account = AAZStrType(
+                serialized_name="storageAccount",
+            )
+
+            ranger_usersync = cls._schema_on_200_201.properties.cluster_profile.ranger_profile.ranger_usersync
+            ranger_usersync.enabled = AAZBoolType()
+            ranger_usersync.groups = AAZListType()
+            ranger_usersync.mode = AAZStrType()
+            ranger_usersync.user_mapping_location = AAZStrType(
+                serialized_name="userMappingLocation",
+            )
+            ranger_usersync.users = AAZListType()
+
+            groups = cls._schema_on_200_201.properties.cluster_profile.ranger_profile.ranger_usersync.groups
+            groups.Element = AAZStrType()
+
+            users = cls._schema_on_200_201.properties.cluster_profile.ranger_profile.ranger_usersync.users
+            users.Element = AAZStrType()
 
             script_action_profiles = cls._schema_on_200_201.properties.cluster_profile.script_action_profiles
             script_action_profiles.Element = AAZObjectType()
@@ -1781,13 +2231,15 @@ class Create(AAZCommand):
             )
 
             metastore_spec = cls._schema_on_200_201.properties.cluster_profile.spark_profile.metastore_spec
+            metastore_spec.db_connection_authentication_mode = AAZStrType(
+                serialized_name="dbConnectionAuthenticationMode",
+            )
             metastore_spec.db_name = AAZStrType(
                 serialized_name="dbName",
                 flags={"required": True},
             )
             metastore_spec.db_password_secret_name = AAZStrType(
                 serialized_name="dbPasswordSecretName",
-                flags={"required": True},
             )
             metastore_spec.db_server_host = AAZStrType(
                 serialized_name="dbServerHost",
@@ -1795,11 +2247,9 @@ class Create(AAZCommand):
             )
             metastore_spec.db_user_name = AAZStrType(
                 serialized_name="dbUserName",
-                flags={"required": True},
             )
             metastore_spec.key_vault_id = AAZStrType(
                 serialized_name="keyVaultId",
-                flags={"required": True},
             )
             metastore_spec.thrift_url = AAZStrType(
                 serialized_name="thriftUrl",
@@ -1849,9 +2299,11 @@ class Create(AAZCommand):
                 serialized_name="catalogName",
                 flags={"required": True},
             )
+            _element.metastore_db_connection_authentication_mode = AAZStrType(
+                serialized_name="metastoreDbConnectionAuthenticationMode",
+            )
             _element.metastore_db_connection_password_secret = AAZStrType(
                 serialized_name="metastoreDbConnectionPasswordSecret",
-                flags={"required": True},
             )
             _element.metastore_db_connection_url = AAZStrType(
                 serialized_name="metastoreDbConnectionURL",
@@ -1859,7 +2311,6 @@ class Create(AAZCommand):
             )
             _element.metastore_db_connection_user_name = AAZStrType(
                 serialized_name="metastoreDbConnectionUserName",
-                flags={"required": True},
             )
             _element.metastore_warehouse_dir = AAZStrType(
                 serialized_name="metastoreWarehouseDir",
@@ -1977,6 +2428,36 @@ class _CreateHelper:
 
         _schema.cpu = cls._schema_compute_resource_definition_read.cpu
         _schema.memory = cls._schema_compute_resource_definition_read.memory
+
+    _schema_identity_profile_read = None
+
+    @classmethod
+    def _build_schema_identity_profile_read(cls, _schema):
+        if cls._schema_identity_profile_read is not None:
+            _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
+            _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
+            _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
+            return
+
+        cls._schema_identity_profile_read = _schema_identity_profile_read = AAZObjectType()
+
+        identity_profile_read = _schema_identity_profile_read
+        identity_profile_read.msi_client_id = AAZStrType(
+            serialized_name="msiClientId",
+            flags={"required": True},
+        )
+        identity_profile_read.msi_object_id = AAZStrType(
+            serialized_name="msiObjectId",
+            flags={"required": True},
+        )
+        identity_profile_read.msi_resource_id = AAZStrType(
+            serialized_name="msiResourceId",
+            flags={"required": True},
+        )
+
+        _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
+        _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
+        _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
 
     _schema_trino_debug_config_read = None
 

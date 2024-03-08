@@ -8,16 +8,6 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "hdinsight-on-aks",
-)
-class __CMDGroup(AAZCommandGroup):
-    """HDInsight on Aks CLI.
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._list import *
+from ._run import *
