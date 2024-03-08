@@ -289,6 +289,13 @@ def perform_disable_azure_container_storage(
         {"global.cli.storagePool.install.size": ""},
         {"global.cli.storagePool.install.type": ""},
         {"global.cli.storagePool.install.diskType": ""},
+        # Set these values to ensure cluster state incase of
+        # a cluster where cli operation has not yet run or older
+        # version of charts were installed.
+        {"global.cli.storagePool.azureDisk.enabled": is_azureDisk_enabled},
+        {"global.cli.storagePool.elasticSan.enabled": is_elasticSan_enabled},
+        {"global.cli.storagePool.ephemeralDisk.nvme.enabled": is_ephemeralDisk_nvme_enabled},
+        {"global.cli.storagePool.ephemeralDisk.temp.enabled": is_ephemeralDisk_localssd_enabled},
     ]
 
     pool_option = ""
@@ -306,6 +313,10 @@ def perform_disable_azure_container_storage(
         config_settings = [
             {"global.cli.storagePool.disable.validation": True},
             {"global.cli.storagePool.disable.type": storage_pool_type},
+            {"global.cli.storagePool.azureDisk.enabled": is_azureDisk_enabled},
+            {"global.cli.storagePool.elasticSan.enabled": is_elasticSan_enabled},
+            {"global.cli.storagePool.ephemeralDisk.nvme.enabled": is_ephemeralDisk_nvme_enabled},
+            {"global.cli.storagePool.ephemeralDisk.temp.enabled": is_ephemeralDisk_localssd_enabled},
         ]
 
         config_settings.extend(reset_install_settings)
@@ -339,6 +350,10 @@ def perform_disable_azure_container_storage(
                 {"global.cli.storagePool.disable.validation": False},
                 {"global.cli.storagePool.disable.type": ""},
                 {"global.cli.storagePool.disable.diskType": ""},
+                {"global.cli.storagePool.azureDisk.enabled": is_azureDisk_enabled},
+                {"global.cli.storagePool.elasticSan.enabled": is_elasticSan_enabled},
+                {"global.cli.storagePool.ephemeralDisk.nvme.enabled": is_ephemeralDisk_nvme_enabled},
+                {"global.cli.storagePool.ephemeralDisk.temp.enabled": is_ephemeralDisk_localssd_enabled},
             ]
 
             config_settings.extend(reset_install_settings)
@@ -414,14 +429,26 @@ def perform_disable_azure_container_storage(
 
         config_settings.extend(reset_install_settings)
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
-            config_settings.append({"global.cli.storagePool.azureDisk.enabled": False})
+            is_azureDisk_enabled = False
         elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
-            config_settings.append({"global.cli.storagePool.elasticSan.enabled": False})
+            is_elasticSan_enabled = False
         elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
             if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
-                config_settings.append({"global.cli.storagePool.ephemeralDisk.nvme.enabled": False})
+                is_ephemeralDisk_nvme_enabled = False
             elif storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
-                config_settings.append({"global.cli.storagePool.ephemeralDisk.temp.enabled": False})
+                is_ephemeralDisk_localssd_enabled = False
+            elif storage_pool_option == CONST_ACSTOR_ALL:
+                is_ephemeralDisk_nvme_enabled = False
+                is_ephemeralDisk_localssd_enabled = False
+
+        config_settings.extend(
+            [
+                {"global.cli.storagePool.azureDisk.enabled": is_azureDisk_enabled},
+                {"global.cli.storagePool.elasticSan.enabled": is_elasticSan_enabled},
+                {"global.cli.storagePool.ephemeralDisk.nvme.enabled": is_ephemeralDisk_nvme_enabled},
+                {"global.cli.storagePool.ephemeralDisk.temp.enabled": is_ephemeralDisk_localssd_enabled},
+            ]
+        )
 
         # Define the new resource values for ioEngine and hugepages.
         resource_args = get_desired_resource_value_args(
