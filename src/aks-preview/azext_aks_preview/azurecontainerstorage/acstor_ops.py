@@ -114,6 +114,7 @@ def perform_enable_azure_container_storage(
 
     config_settings.extend(
         [
+            {"global.cli.activeControl": True},
             {"global.cli.storagePool.install.create": True},
             {"global.cli.storagePool.install.name": storage_pool_name},
             {"global.cli.storagePool.install.size": storage_pool_size},
@@ -164,6 +165,7 @@ def perform_enable_azure_container_storage(
 
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     update_settings = [
+        {"global.cli.activeControl": True},
         {"global.cli.storagePool.install.create": False},
         {"global.cli.storagePool.install.name": ""},
         {"global.cli.storagePool.install.size": ""},
@@ -281,6 +283,7 @@ def perform_disable_azure_container_storage(
 
     # Ensure that all the install storagepool fields are turned off
     reset_install_settings = [
+        {"global.cli.activeControl": True},
         {"global.cli.storagePool.install.create": False},
         {"global.cli.storagePool.install.name": ""},
         {"global.cli.storagePool.install.size": ""},
@@ -438,6 +441,7 @@ def perform_disable_azure_container_storage(
         # process is completed. This config variable
         # will be used after the disabling operation is completed.
         update_settings = [
+            {"global.cli.activeControl": True},
             {"global.cli.storagePool.disable.validation": False},
             {"global.cli.storagePool.disable.type": ""},
             {"global.cli.storagePool.disable.active": False},

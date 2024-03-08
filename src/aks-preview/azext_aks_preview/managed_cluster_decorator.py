@@ -3726,22 +3726,36 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         "in the process of updating agentpool profile."
                     )
 
+                from azext_aks_preview.azurecontainerstorage._consts import (
+                    CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
+                    CONST_ACSTOR_IO_ENGINE_LABEL_VAL
+                )
+                labelled_nodepool_arr = []
                 for agentpool in mc.agent_pool_profiles:
                     pool_details = {}
                     pool_details["vm_size"] = agentpool.vm_size
+                    node_name = agentpool.name
+                    pool_details["name"] = node_name
                     if agentpool.node_labels is not None:
-                        pool_details["node_labels"] = agentpool.node_labels
-                    pool_details["name"] = agentpool.name
+                        node_labels = agentpool.node_labels
+                        if node_labels is not None and \
+                           node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and \
+                           node_name is not None:
+                            labelled_nodepool_arr.append(node_name)
+                        pool_details["node_labels"] = node_labels
                     agentpool_details.append(pool_details)
 
-                # Incase of a new installation, handle the default values of the
-                # nodepool on which we will install Azure Container Storage.
-                # When not defined, either pick nodepool1 as default, or if only
+                # Incase of a new installation, if the nodepool list is not defined
+                # then check for all the nodepools which are marked with acstor io-engine
+                # labels and include them for installation. If none of the nodepools are
+                # labelled, either pick nodepool1 as default, or if only
                 # one nodepool exists, choose the only nodepool by default.
                 if not is_extension_installed:
                     if nodepool_list is None:
                         nodepool_list = "nodepool1"
-                        if len(agentpool_details) == 1:
+                        if len(labelled_nodepool_arr) > 0:
+                            nodepool_list = ','.join(labelled_nodepool_arr)
+                        elif len(agentpool_details) == 1:
                             pool_detail = agentpool_details[0]
                             nodepool_list = pool_detail.get("name")
 
@@ -3761,31 +3775,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     is_ephemeralDisk_nvme_enabled,
                 )
 
-                from azext_aks_preview.azurecontainerstorage._consts import (
-                    CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
-                    CONST_ACSTOR_IO_ENGINE_LABEL_VAL
-                )
                 # If the extension is already installed,
                 # we expect that the Azure Container Storage
                 # nodes are already labelled. Use those label
                 # to generate the nodepool_list.
                 if is_extension_installed:
-                    nodepool_list_arr = []
-                    for agentpool in agentpool_details:
-                        node_labels = agentpool.get("node_labels")
-                        node_name = agentpool.get("name")
-                        if node_labels is not None and \
-                           node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and \
-                           node_name is not None:
-                            nodepool_list_arr.append(node_name)
-
-                    nodepool_list = ','.join(nodepool_list_arr)
+                     nodepool_list = ','.join(labelled_nodepool_arr)
                 else:
                     # Set Azure Container Storage labels on the required nodepools.
-                    azure_container_storage_nodepools_list = nodepool_list.split(',')
+                    nodepool_list_arr = nodepool_list.split(',')
                     for agentpool in mc.agent_pool_profiles:
                         labels = agentpool.node_labels
-                        if agentpool.name in azure_container_storage_nodepools_list:
+                        if agentpool.name in nodepool_list_arr:
                             if labels is None:
                                 labels = {}
                             labels[CONST_ACSTOR_IO_ENGINE_LABEL_KEY] = CONST_ACSTOR_IO_ENGINE_LABEL_VAL
@@ -3826,7 +3827,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 from azext_aks_preview.azurecontainerstorage._consts import (
                     CONST_ACSTOR_ALL,
                 )
-
                 if disable_pool_type != CONST_ACSTOR_ALL:
                     msg = (
                         f"Disabling Azure Container Storage for storagepool type {disable_pool_type} "

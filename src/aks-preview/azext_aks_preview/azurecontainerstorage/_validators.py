@@ -120,23 +120,36 @@ def validate_disable_azure_container_storage_params(
             f'type {storage_pool_type} in the cluster.'
         )
 
-    number_of_storagepool_types_active = 0
-    if is_azureDisk_enabled:
-        number_of_storagepool_types_active += 1
-    if is_elasticSan_enabled:
-        number_of_storagepool_types_active += 1
-    if is_ephemeralDisk_nvme_enabled:
-        number_of_storagepool_types_active += 1
-    if is_ephemeralDisk_localssd_enabled:
-        number_of_storagepool_types_active += 1
+    if storage_pool_type != CONST_ACSTOR_ALL:
+        number_of_storagepool_types_active = 0
+        if is_azureDisk_enabled:
+            number_of_storagepool_types_active += 1
+        if is_elasticSan_enabled:
+            number_of_storagepool_types_active += 1
+        if is_ephemeralDisk_nvme_enabled:
+            number_of_storagepool_types_active += 1
+        if is_ephemeralDisk_localssd_enabled:
+            number_of_storagepool_types_active += 1
 
-    if number_of_storagepool_types_active == 1 and \
-      storage_pool_type != CONST_ACSTOR_ALL:
-        raise ArgumentUsageError(
-            f'Since {storage_pool_type} is the only storagepool type enabled for Azure Container Storage, '
-            'disabling the storagepool type will lead to disabling Azure Container Storage from the cluster. '
-            f'To disable Azure Container Storage, set --disable-azure-container-storage to {CONST_ACSTOR_ALL}.'
-        )
+        number_of_storagepool_types_to_be_disabled = 0
+        if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK or \
+           storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN or \
+           (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
+            storage_pool_option != CONST_ACSTOR_ALL):
+            number_of_storagepool_types_to_be_disabled = 1
+        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
+           storage_pool_option == CONST_ACSTOR_ALL:
+            if is_ephemeralDisk_nvme_enabled:
+                number_of_storagepool_types_to_be_disabled += 1
+            if is_ephemeralDisk_localssd_enabled:
+                number_of_storagepool_types_to_be_disabled += 1
+
+        if number_of_storagepool_types_active == number_of_storagepool_types_to_be_disabled:
+            raise ArgumentUsageError(
+                f'Since {storage_pool_type} is the only storagepool type enabled for Azure Container Storage, '
+                'disabling the storagepool type will lead to disabling Azure Container Storage from the cluster. '
+                f'To disable Azure Container Storage, set --disable-azure-container-storage to {CONST_ACSTOR_ALL}.'
+            )
 
 
 def validate_enable_azure_container_storage_params(
@@ -267,8 +280,8 @@ def _validate_nodepools(
     nodepool_arr = []
     insufficient_core_error = (
         'Cannot operate Azure Container Storage on a nodepool consisting of '
-        f'nodes with cores less than 4. Nodepool: {pool_name} with node size: {vm_size} '
-        f'which is assigned for Azure Container Storage has nodes with {cpu_value} cores.'
+        'nodes with cores less than 4. Nodepool: {0} with node size: {1} '
+        'which is assigned for Azure Container Storage has nodes with {2} cores.'
     )
     if is_extension_installed:
         if nodepool_list is not None:
@@ -292,10 +305,10 @@ def _validate_nodepools(
             )
 
         insufficient_core_error = (
-            'Cannot enable Azure Container Storage storagepool type: {storage_pool_type} '
+            f'Cannot enable Azure Container Storage storagepool type: {storage_pool_type} '
             'on a nodepool consisting of nodes with cores less than 4. '
-            f'Nodepool: {pool_name} with node size: {vm_size} has nodes with {cpu_value} cores. '
-            'Remove the label {CONST_ACSTOR_IO_ENGINE_LABEL_KEY}={CONST_ACSTOR_IO_ENGINE_LABEL_VAL} '
+            'Nodepool: {0} with node size: {1} has nodes with {2} cores. '
+            f'Remove the label {CONST_ACSTOR_IO_ENGINE_LABEL_KEY}={CONST_ACSTOR_IO_ENGINE_LABEL_VAL} '
             'from the nodepool and use nodepools which has nodes with 4 or more cores and try again.'
         )
     else:
@@ -315,7 +328,7 @@ def _validate_nodepools(
                             f'Unable to determine number of cores in nodepool: {pool_name}, node size: {vm_size}'
                         )
                     elif cpu_value < 4:
-                        raise InvalidArgumentValueError(insufficient_core_error)
+                        raise InvalidArgumentValueError(insufficient_core_error.format(pool_name, vm_size, cpu_value))
 
                     if vm_size.lower().startswith('standard_l'):
                         nvme_nodepool_found = True

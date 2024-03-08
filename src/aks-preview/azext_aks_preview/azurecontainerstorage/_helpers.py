@@ -210,32 +210,26 @@ def get_extension_installed_and_cluster_configs(cmd, resource_group, cluster_nam
         if is_extension_installed:
             config_settings = extension.configuration_settings
             if config_settings is not None:
-                is_azureDisk_enabled = True if config_settings.get("global.cli.storagePool.azureDisk.enabled", "False") == "True" \
+                is_cli_operation_active = True if config_settings.get("global.cli.activeControl", "False") == "True" \
                                        else False
-                is_elasticSan_enabled = True if config_settings.get("global.cli.storagePool.elasticSan.enabled", "False") == "True" \
-                                        else False
-                is_ephemeralDisk_nvme_enabled = True if config_settings.get("global.cli.storagePool.ephemeralDisk.nvme.enabled", "False") == "True" \
+                if is_cli_operation_active:
+                    is_azureDisk_enabled = True if config_settings.get("global.cli.storagePool.azureDisk.enabled", "False") == "True" \
                                            else False
-                is_ephemeralDisk_localssd_enabled = True if config_settings.get("global.cli.storagePool.ephemeralDisk.temp.enabled", "False") == "True" \
-                                           else False
-                # Handling values set in older clusters through cli
-                # This case will be useful to capture details from earlier
-                # ARC versions.
-                storagepool_type_val = config_settings.get("cli.storagePool.type", '')
-                if storagepool_type_val:
-                    if storagepool_type_val == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
-                        is_azureDisk_enabled = True
-                    elif storagepool_type_val == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
-                        is_elasticSan_enabled = True
-                    elif storagepool_type_val == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-                        ephemeral_disk_type = config_settings.get("cli.storagePool.ephemeralDisk.diskType", CONST_STORAGE_POOL_OPTION_NVME)
-                        if ephemeral_disk_type == CONST_STORAGE_POOL_OPTION_NVME:
-                            is_ephemeralDisk_nvme_enabled = True
-                        elif ephemeral_disk_type == CONST_STORAGE_POOL_OPTION_SSD:
-                            is_ephemeralDisk_localssd_enabled = True
-                cpu_value = config_settings.get("global.cli.resources.ioEngine.cpu", None)
-                if cpu_value is not None:
-                    resource_cpu_value = float(cpu_value)
+                    is_elasticSan_enabled = True if config_settings.get("global.cli.storagePool.elasticSan.enabled", "False") == "True" \
+                                            else False
+                    is_ephemeralDisk_nvme_enabled = True if config_settings.get("global.cli.storagePool.ephemeralDisk.nvme.enabled", "False") == "True" \
+                                               else False
+                    is_ephemeralDisk_localssd_enabled = True if config_settings.get("global.cli.storagePool.ephemeralDisk.temp.enabled", "False") == "True" \
+                                               else False
+                    cpu_value = config_settings.get("global.cli.resources.ioEngine.cpu", None)
+                    if cpu_value is not None:
+                        resource_cpu_value = float(cpu_value)
+                else:
+                    # For versions where "global.cli.activeControl" were not set it signifies
+                    # that selective control of storgepool type was not yet defined.
+                    # Hence, all the storagepool types are active and io engine core count is 1.
+                    is_azureDisk_enabled = is_elasticSan_enabled = is_ephemeralDisk_localssd_enabled = is_ephemeralDisk_nvme_enabled = True
+                    resource_cpu_value = 1
 
     except:  # pylint: disable=bare-except
         is_extension_installed = False
@@ -397,7 +391,7 @@ def get_desired_resource_value_args(
 # Returns -1 if there is a problem with parsing the vm_size.
 def get_cores_from_sku(vm_size):
     cpu_value = -1
-    pattern = r'standard_([a-z]+)(\d+)([a-z]+)_v(\d+)'
+    pattern = r'standard_([a-z]+)(\d+)([a-z]*)_v(\d+)'
     match = re.search(pattern, vm_size.lower())
     if match:
         series_prefix = match.group(1)
