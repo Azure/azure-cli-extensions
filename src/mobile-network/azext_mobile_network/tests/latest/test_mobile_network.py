@@ -254,7 +254,7 @@ class MobileNetworkScenario(ScenarioTest):
             self.check('userPlaneAccessInterface.name', 'N2')
         ])
         self.cmd('mobile-network data-network create -n {data_network} -g {rg} --mobile-network-name {mobile_network}', checks=[
-             self.check('name', '{data_network}')
+            self.check('name', '{data_network}')
         ])
         self.cmd('mobile-network attached-data-network create -n {data_network} -g {rg} --pccp-name {pccp_name} --pcdp-name {pcdp_name} --dns-addresses [1.1.1.1] --data-interface {{name:N2,ipv4Address:10.28.128.2,ipv4Subnet:10.28.128.0/24,ipv4Gateway:10.28.128.1}} --address-pool [2.2.0.0/16]', checks=[
             self.check('dnsAddresses[0]', '1.1.1.1'),
