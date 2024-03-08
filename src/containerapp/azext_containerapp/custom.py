@@ -69,7 +69,9 @@ from .daprcomponent_resiliency_decorator import (
 from .containerapp_env_telemetry_decorator import (
     ContainerappEnvTelemetryDataDogPreviewSetDecorator,
     ContainerappEnvTelemetryAppInsightsPreviewSetDecorator,
-    ContainerappEnvTelemetryOtlpPreviewSetDecorator
+    ContainerappEnvTelemetryOtlpPreviewSetDecorator,
+    APP_INSIGHTS_DEST,
+    DATA_DOG_DEST
 )
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
@@ -115,7 +117,7 @@ from ._constants import (CONTAINER_APPS_RP,
 
 
 logger = get_logger(__name__)
-
+DEFAULT_CONFIGURED_STR = 'Configured'
 
 def list_all_services(cmd, environment_name, resource_group_name):
     services = list_containerapp(cmd, resource_group_name=resource_group_name, managed_env=environment_name)
@@ -2393,10 +2395,25 @@ def show_environment_telemetry_data_dog(cmd,
         if r is None:
             raise ValidationError("The containerapp environment '{}' does not have data dog enabled.".format(name)) from e
         r = {}
-        safe_set(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"))
-        safe_set(r, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations"))
-        safe_set(r, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations"))
-        safe_set(r, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations"))
+
+        if "key" in containerapp_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"]["dataDogConfiguration"]:
+            safe_set(r, "dataDogConfiguration", "key", value=DEFAULT_CONFIGURED_STR)
+
+        safe_set(r, "dataDogConfiguration", "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
+
+        enable_open_telemetry_traces = False
+        existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
+        if existing_traces and DATA_DOG_DEST in existing_traces:
+            enable_open_telemetry_traces = True
+        
+        safe_set(r, "dataDogConfiguration", "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+
+        enable_open_telemetry_metrics = False
+        existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
+        if existing_metrics and DATA_DOG_DEST in existing_metrics:
+            enable_open_telemetry_metrics = True
+        
+        safe_set(r, "dataDogConfiguration", "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
 
         return r
     except Exception as e:
@@ -2474,10 +2491,23 @@ def show_environment_telemetry_app_insights(cmd,
             raise ValidationError("The containerapp environment '{}' does not have app insights enabled.".format(name)) from e
         
         r = {}
-        safe_set(r, "properties", "appInsightsConfiguration", value=safe_get(containerapp_env_def, "properties", "appInsightsConfiguration"))
-        safe_set(r, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations"))
-        safe_set(r, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations"))
-        safe_set(r, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations"))
+
+        if "connectionString" in containerapp_env_def["properties"]["appInsightsConfiguration"]:
+            safe_set(r, "appInsightsConfiguration", "connectionString", value=DEFAULT_CONFIGURED_STR)
+
+        enable_open_telemetry_traces = False
+        existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
+        if existing_traces and APP_INSIGHTS_DEST in existing_traces:
+            enable_open_telemetry_traces = True
+        
+        safe_set(r, "appInsightsConfiguration", "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+
+        enable_open_telemetry_logs = False
+        existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
+        if existing_logs and APP_INSIGHTS_DEST in existing_logs:
+            enable_open_telemetry_logs = True
+        
+        safe_set(r, "appInsightsConfiguration", "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
 
         return r
     except Exception as e:
@@ -2612,10 +2642,35 @@ def show_environment_telemetry_otlp(cmd,
             raise ValidationError(f"Otlp entry with name {otlp_name} does not exist, please retry with different name")
                 
         r = {}
-        safe_set(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=otlp)
-        safe_set(r, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations"))
-        safe_set(r, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations"))
-        safe_set(r, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations"))
+
+        if "headers" in otlp[0]:
+            dict = otlp[0]["headers"]
+            for header in dict:
+                if "value" in header:
+                    header["value"] = DEFAULT_CONFIGURED_STR
+
+        safe_set(r, "otlpConfiguration", value=otlp[0])
+
+        enable_open_telemetry_traces = False
+        existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
+        if existing_traces and otlp_name in existing_traces:
+            enable_open_telemetry_traces = True
+        
+        safe_set(r, "otlpConfiguration", "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+
+        enable_open_telemetry_logs = False
+        existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
+        if existing_logs and otlp_name in existing_logs:
+            enable_open_telemetry_logs = True
+        
+        safe_set(r, "otlpConfiguration", "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
+
+        enable_open_telemetry_metrics = False
+        existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
+        if existing_metrics and otlp_name in existing_metrics:
+            enable_open_telemetry_metrics = True
+        
+        safe_set(r, "otlpConfiguration", "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
 
         return r
 
