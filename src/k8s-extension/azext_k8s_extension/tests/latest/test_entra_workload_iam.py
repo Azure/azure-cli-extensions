@@ -8,8 +8,8 @@
 import unittest
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azext_k8s_extension.partner_extensions.WorkloadIAM import (
-    WorkloadIAM,
+from azext_k8s_extension.partner_extensions.EntraWorkloadIAM import (
+    EntraWorkloadIAM,
     CONFIG_SETTINGS_USER_TRUST_DOMAIN,
     CONFIG_SETTINGS_USER_LOCAL_AUTHORITY,
     CONFIG_SETTINGS_USER_TENANT_ID,
@@ -23,7 +23,7 @@ from knack.util import CLIError
 
 from unittest.mock import patch
 
-class TestWorkloadIAM(unittest.TestCase):
+class TestEntraWorkloadIAM(unittest.TestCase):
 
     def test_workload_iam_create_with_instance_name_too_long(self):
         """
@@ -33,7 +33,7 @@ class TestWorkloadIAM(unittest.TestCase):
         instance_name = "workload-iam-extra-long-instance-name"
 
         with self.assertRaises(InvalidArgumentValueError) as context:
-            workload_iam = WorkloadIAM()
+            workload_iam = EntraWorkloadIAM()
             workload_iam.Create(cmd=None, client=None, resource_group_name=None,
                 cluster_name=None, name=instance_name, cluster_type=None, cluster_rp=None,
                 extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
@@ -72,13 +72,13 @@ class TestWorkloadIAM(unittest.TestCase):
             assert(configuration_settings[CONFIG_SETTINGS_HELM_TENANT_ID] == mock_tenant_id)
 
 
-        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.Extension.__init__',
+        with patch('azext_k8s_extension.partner_extensions.EntraWorkloadIAM.Extension.__init__',
                 new=mock_extension_init), \
-            patch('azext_k8s_extension.partner_extensions.WorkloadIAM.WorkloadIAM.get_join_token',
+            patch('azext_k8s_extension.partner_extensions.EntraWorkloadIAM.EntraWorkloadIAM.get_join_token',
                 return_value=mock_join_token):
 
             # Test & assert
-            workload_iam = WorkloadIAM()
+            workload_iam = EntraWorkloadIAM()
             _, name, _ = workload_iam.Create(cmd=None, client=None, resource_group_name=None,
                 cluster_name=None, name='workload-iam', cluster_type=None, cluster_rp=None,
                 extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
@@ -118,13 +118,13 @@ class TestWorkloadIAM(unittest.TestCase):
             assert(configuration_settings[CONFIG_SETTINGS_HELM_TENANT_ID] == mock_tenant_id)
 
 
-        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.Extension.__init__',
+        with patch('azext_k8s_extension.partner_extensions.EntraWorkloadIAM.Extension.__init__',
                 new=mock_extension_init), \
-            patch('azext_k8s_extension.partner_extensions.WorkloadIAM.WorkloadIAM.get_join_token',
+            patch('azext_k8s_extension.partner_extensions.EntraWorkloadIAM.EntraWorkloadIAM.get_join_token',
                 return_value='BAD_JOIN_TOKEN'):
 
             # Test & assert
-            workload_iam = WorkloadIAM()
+            workload_iam = EntraWorkloadIAM()
             _, name, _ = workload_iam.Create(cmd=None, client=None, resource_group_name=None,
                 cluster_name=None, name='workload-iam', cluster_type=None, cluster_rp=None,
                 extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
@@ -162,13 +162,13 @@ class TestWorkloadIAM(unittest.TestCase):
             assert(configuration_settings[CONFIG_SETTINGS_HELM_TENANT_ID] == mock_tenant_id)
 
 
-        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.Extension.__init__',
+        with patch('azext_k8s_extension.partner_extensions.EntraWorkloadIAM.Extension.__init__',
                 new=mock_extension_init), \
-            patch('azext_k8s_extension.partner_extensions.WorkloadIAM.WorkloadIAM.get_join_token',
+            patch('azext_k8s_extension.partner_extensions.EntraWorkloadIAM.EntraWorkloadIAM.get_join_token',
                 return_value='BAD_JOIN_TOKEN'):
 
             # Test & assert
-            workload_iam = WorkloadIAM()
+            workload_iam = EntraWorkloadIAM()
             _, name, _ = workload_iam.Create(cmd=None, client=None, resource_group_name=None,
                 cluster_name=None, name='workload-iam', cluster_type=None, cluster_rp=None,
                 extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
@@ -193,7 +193,7 @@ class TestWorkloadIAM(unittest.TestCase):
         }
 
         with self.assertRaises(InvalidArgumentValueError) as context:
-            workload_iam = WorkloadIAM()
+            workload_iam = EntraWorkloadIAM()
             workload_iam.Create(cmd=None, client=None, resource_group_name=None,
                 cluster_name=None, name='workload-iam', cluster_type=None, cluster_rp=None,
                 extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
@@ -214,7 +214,7 @@ class TestWorkloadIAM(unittest.TestCase):
         bad_scope = 'namespace'
 
         with self.assertRaises(InvalidArgumentValueError) as context:
-            workload_iam = WorkloadIAM()
+            workload_iam = EntraWorkloadIAM()
             workload_iam.Create(cmd=None, client=None, resource_group_name=None,
                 cluster_name=None, name='workload-iam', cluster_type=None, cluster_rp=None,
                 extension_type=None, scope=bad_scope, auto_upgrade_minor_version=None,
@@ -246,7 +246,7 @@ class TestWorkloadIAM(unittest.TestCase):
         }
 
         with self.assertRaises(InvalidArgumentValueError) as context:
-            workload_iam = WorkloadIAM()
+            workload_iam = EntraWorkloadIAM()
             workload_iam.Create(cmd=None, client=None, resource_group_name=None,
                 cluster_name=None, name='workload-iam', cluster_type=None, cluster_rp=None,
                 extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
@@ -268,7 +268,7 @@ class TestWorkloadIAM(unittest.TestCase):
         }
 
         with self.assertRaises(InvalidArgumentValueError) as context:
-            workload_iam = WorkloadIAM()
+            workload_iam = EntraWorkloadIAM()
             workload_iam.Create(cmd=None, client=None, resource_group_name=None,
                 cluster_name=None, name='workload-iam', cluster_type=None, cluster_rp=None,
                 extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
@@ -304,10 +304,10 @@ class TestWorkloadIAM(unittest.TestCase):
 
                 self.result = MockResult()
 
-        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.get_default_cli',
+        with patch('azext_k8s_extension.partner_extensions.EntraWorkloadIAM.get_default_cli',
                    return_value=MockCLI()):
             # Test & assert
-            workload_iam = WorkloadIAM()
+            workload_iam = EntraWorkloadIAM()
             join_token = workload_iam.get_join_token(mock_trust_domain_name, mock_local_authority_name)
             self.assertEqual(join_token, mock_join_token)
 
@@ -344,10 +344,10 @@ class TestWorkloadIAM(unittest.TestCase):
 
                 self.result = MockResult()
 
-        with patch('azext_k8s_extension.partner_extensions.WorkloadIAM.get_default_cli',
+        with patch('azext_k8s_extension.partner_extensions.EntraWorkloadIAM.get_default_cli',
                    return_value=MockCLI()):
             # Test & assert
-            workload_iam = WorkloadIAM()
+            workload_iam = EntraWorkloadIAM()
             cmd_str = " ".join(cmd)
             self.assertRaisesRegex(CLIError,
                 f"Error while generating a join token. Command: {cmd_str}",
