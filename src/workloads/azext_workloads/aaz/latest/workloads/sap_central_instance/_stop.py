@@ -26,9 +26,6 @@ class Stop(AAZCommand):
 
     :example: Stop Central services instance of the SAP system with Virtual Machine
         az workloads sap-central-instance stop --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <cs-instance-name> --deallocate-vm
-
-    :example: Soft Stop Central services instance of the SAP system
-        az workloads sap-central-instance stop --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <cs-instance-name> --soft-stop-timeout-seconds <timeout-in-seconds>
     """
 
     _aaz_info = {
@@ -85,12 +82,6 @@ class Stop(AAZCommand):
             arg_group="Body",
             help="The boolean value indicates whether to Stop and deallocate the virtual machines along with the SAP instances.",
             default=False,
-        )
-        _args_schema.soft_stop_timeout_seconds = AAZIntArg(
-            options=["--soft-stop-timeout-seconds"],
-            arg_group="Body",
-            help="This parameter defines how long (in seconds) the soft shutdown waits until the RFC/HTTP clients no longer consider the server for calls with load balancing. Value 0 means that the kernel does not wait, but goes directly into the next shutdown state, i.e. hard stop.",
-            default=0,
         )
         return cls._args_schema
 
@@ -205,7 +196,6 @@ class Stop(AAZCommand):
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
             _builder.set_prop("deallocateVm", AAZBoolType, ".deallocate_vm")
-            _builder.set_prop("softStopTimeoutSeconds", AAZIntType, ".soft_stop_timeout_seconds")
 
             return self.serialize_content(_content_value)
 
