@@ -20,13 +20,14 @@ from azure.cli.command_modules.containerapp._clients import (
     ContainerAppsJobClient,
     DaprComponentClient,
     ManagedEnvironmentClient,
-    WorkloadProfileClient)
+    WorkloadProfileClient,
+    StorageClient)
 
 from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2023-08-01-preview"
+PREVIEW_API_VERSION = "2023-11-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -299,8 +300,38 @@ class SubscriptionPreviewClient():
         return r.json()
 
 
+class StoragePreviewClient(StorageClient):
+    api_version = PREVIEW_API_VERSION
+
+
 class ManagedEnvironmentPreviewClient(ManagedEnvironmentClient):
     api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def update(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
+
+        if no_wait:
+            return
+        elif r.status_code == 202:
+            operation_url = r.headers.get(HEADER_LOCATION)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find a container app")
+            else:
+                return response
+
+        return r.json()
 
     @classmethod
     def list_usages(cls, cmd, resource_group_name, name):
@@ -778,7 +809,7 @@ class BuildClient():
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def create(cls, cmd, builder_name, build_name, resource_group_name, location, no_wait=False):
+    def create(cls, cmd, builder_name, build_name, resource_group_name, location, build_env_vars, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/builders/{}/builds/{}?api-version={}"
@@ -791,7 +822,11 @@ class BuildClient():
             cls.api_version)
         body_data = {
             "location": location,
-            "properties": {}
+            "properties": {
+                "configuration": {
+                    "environmentVariables": build_env_vars
+                }
+            }
         }
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(body_data))
@@ -838,3 +873,120 @@ class BuildClient():
         }
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(body_data))
         return r.json()
+
+
+class JavaComponentPreviewClient():
+    api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def create(cls, cmd, resource_group_name, environment_name, name, java_component_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/javaComponents/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(java_component_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            poll_status(cmd, operation_url)
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
+        return r.json()
+
+    @classmethod
+    def update(cls, cmd, resource_group_name, environment_name, name, java_component_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/javaComponents/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(java_component_envelope))
+
+        if no_wait:
+            return
+        elif r.status_code == 202:
+            operation_url = r.headers.get(HEADER_LOCATION)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find the Java component")
+            else:
+                return response
+
+        return r.json()
+
+    @classmethod
+    def delete(cls, cmd, resource_group_name, environment_name, name, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/javaComponents/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+
+        if no_wait:
+            return  # API doesn't return JSON (it returns no content)
+        elif r.status_code in [200, 201, 202, 204]:
+            if r.status_code == 202:
+                operation_url = r.headers.get(HEADER_LOCATION)
+                poll_results(cmd, operation_url)
+                logger.warning('Java component successfully deleted')
+
+    @classmethod
+    def show(cls, cmd, resource_group_name, environment_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/javaComponents/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
+        return r.json()
+
+    @classmethod
+    def list(cls, cmd, resource_group_name, environment_name):
+        java_component_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/javaComponents?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        r = r.json()
+
+        for component in r["value"]:
+            java_component_list.append(component)
+
+        return java_component_list

@@ -29,7 +29,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
                                      validate_build_env, validate_target_module, validate_runtime_version,
-                                     validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
+                                     validate_acs_ssh_or_warn, validate_refresh_interval,
+                                     validate_apm_properties, validate_apm_secrets,
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
                                      validate_build_cert_reference, validate_acs_create, not_support_enterprise,
@@ -864,6 +865,10 @@ def load_arguments(self, _):
     for scope in ['create', 'update']:
         with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
             c.argument('generation', arg_type=get_enum_type(ConfigurationServiceGeneration), help='Generation of Application Configuration Service.')
+            c.argument('refresh_interval', type=int,
+                       validator=validate_refresh_interval,
+                       help='Specify the interval (in seconds) for refreshing the repository. '
+                            'Use 0 to turn off automatic refresh. An interval of at least 60 seconds is recommended.')
 
     for scope in ['add', 'update']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:

@@ -2,6 +2,18 @@
 
 Release History
 ===============
+1.0.0
+++++++
+* Add command `az connectedvmware create-from-machines`.
+* Delete HCRP Machine resource by default during `delete vm`. To retain, use `--retain-machine` flag.
+* Use GA API Version for VCENTER_KIND_GET_API_VERSION.
+* Set extension to non-preview version
+
+0.2.4
+++++++
+* Link existing HCRP machine to vCenter using the CLI.
+* Add examples in help.
+
 0.2.3
 ++++++
 * Fix docs and help for vm creation from template with disk override.

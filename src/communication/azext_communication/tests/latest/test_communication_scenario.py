@@ -84,7 +84,7 @@ class CommunicationScenarioTest(ScenarioTest):
         super(CommunicationScenarioTest, self).__init__(recording_processors=[
             BodyReplacerProcessor(keys=["createdBy", "lastModifiedBy"])
         ], *args, **kwargs)
-        
+
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
@@ -92,7 +92,6 @@ class CommunicationScenarioTest(ScenarioTest):
         self.kwargs.update({
             'myCommunicationService': self.create_random_name(prefix='MyCommunicationResource'[:11], length=23),
         })
-
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyOtherResourceGroup'[:7], key='rg_2',
@@ -102,4 +101,3 @@ class CommunicationScenarioTest(ScenarioTest):
         call_scenario(self, rg_2, rg)
         calc_coverage(__file__)
         raise_if()
-

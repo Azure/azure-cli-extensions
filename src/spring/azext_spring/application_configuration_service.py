@@ -24,18 +24,20 @@ logger = get_logger(__name__)
 
 
 def application_configuration_service_create(cmd, client, service, resource_group,
-                                             generation=None):
+                                             generation=None, refresh_interval=None):
     if generation is None:
         generation = ConfigurationServiceGeneration.GEN1
 
     properties = models.ConfigurationServiceProperties(generation=generation)
+    if refresh_interval is not None:
+        properties.settings = models.ConfigurationServiceSettings(refresh_interval_in_seconds=refresh_interval)
     acs_resource = models.ConfigurationServiceResource(properties=properties)
     logger.warning("Create with generation {}".format(acs_resource.properties.generation))
     return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
 
 
 def application_configuration_service_update(cmd, client, service, resource_group,
-                                             generation=None):
+                                             generation=None, refresh_interval=None):
     acs_resource = client.configuration_services.get(resource_group, service, DEFAULT_NAME)
     if generation is not None:
         acs_resource.properties.generation = generation
@@ -44,6 +46,9 @@ def application_configuration_service_update(cmd, client, service, resource_grou
         acs_resource.properties.generation = ConfigurationServiceGeneration.GEN1
         logger.warning("Default generation will be Gen1")
     logger.warning(acs_resource.properties.generation)
+    if refresh_interval is not None:
+        acs_resource.properties.settings = acs_resource.properties.settings or models.ConfigurationServiceSettings()
+        acs_resource.properties.settings.refresh_interval_in_seconds = refresh_interval
     return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
 
 
