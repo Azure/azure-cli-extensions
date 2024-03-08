@@ -9,6 +9,7 @@ import re
 
 from azext_aks_preview._client_factory import get_providers_client_factory
 from azext_aks_preview.azurecontainerstorage._consts import (
+    CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
     CONST_ACSTOR_K8S_EXTENSION_NAME,
     CONST_EXT_INSTALLATION_NAME,
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
@@ -183,7 +184,7 @@ def check_if_extension_is_installed(cmd, resource_group, cluster_name) -> bool:
     return return_val
 
 
-def get_extension_installed_and_cluster_configs(cmd, resource_group, cluster_name)  -> Tuple[bool, bool, bool, bool, Union[str, None]]:
+def get_extension_installed_and_cluster_configs(cmd, resource_group, cluster_name, agentpool_profiles)  -> Tuple[bool, bool, bool, bool, Union[str, None]]:
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
@@ -228,8 +229,19 @@ def get_extension_installed_and_cluster_configs(cmd, resource_group, cluster_nam
                     # For versions where "global.cli.activeControl" were not set it signifies
                     # that selective control of storgepool type was not yet defined.
                     # Hence, all the storagepool types are active and io engine core count is 1.
-                    is_azureDisk_enabled = is_elasticSan_enabled = is_ephemeralDisk_localssd_enabled = is_ephemeralDisk_nvme_enabled = True
+                    is_azureDisk_enabled = is_elasticSan_enabled = is_ephemeralDisk_localssd_enabled = True
                     resource_cpu_value = 1
+
+                    # Determine if epehemeral NVMe was active based on the labelled nodepools present in cluster.
+                    for agentpool in agentpool_profiles:
+                        vm_size = agentpool.vm_size
+                        if agentpool.node_labels is not None:
+                            node_labels = agentpool.node_labels
+                            if node_labels is not None and \
+                               node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and \
+                               vm_size.lower().startswith('standard_l'):
+                                is_ephemeralDisk_nvme_enabled = True
+                                break
 
     except:  # pylint: disable=bare-except
         is_extension_installed = False

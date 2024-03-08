@@ -3695,6 +3695,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
 
         if enable_azure_container_storage or disable_azure_container_storage:
+            # Require the agent pool profiles for azure container storage
+            # operations. Raise exception if not found.
+            if not mc.agent_pool_profiles:
+                raise UnknownError(
+                    "Encounter an unexpected error while getting agent pool profiles from the cluster "
+                    "in the process of updating agentpool profile."
+                )
             pool_name = self.context.raw_param.get("storage_pool_name")
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
@@ -3712,20 +3719,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.cmd,
                 self.context.get_resource_group_name(),
                 self.context.get_name(),
+                mc.agent_pool_profiles,
             )
 
             if enable_azure_container_storage:
-                # Incase of enable_azure_container_storage,
-                # we will collect the agentpool_details and
-                # perform validations based on these details.
-                # Incase of disable_azure_container_storage,
-                # no processing is required on the nodepool list.
-                if not mc.agent_pool_profiles:
-                    raise UnknownError(
-                        "Encounter an unexpected error while getting agent pool profiles from the cluster "
-                        "in the process of updating agentpool profile."
-                    )
-
                 from azext_aks_preview.azurecontainerstorage._consts import (
                     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
                     CONST_ACSTOR_IO_ENGINE_LABEL_VAL

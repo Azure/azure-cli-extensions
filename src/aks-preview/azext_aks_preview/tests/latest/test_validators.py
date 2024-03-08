@@ -929,8 +929,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         err = (
             "Invalid --azure-container-storage-nodepools value. "
-            "Accepted value is a comma separated string of valid nodepool "
-            "names without any spaces.\nA valid nodepool name may only contain lowercase "
+            "Accepted value is a comma separated string of valid node pool "
+            "names without any spaces.\nA valid node pool name may only contain lowercase "
             "alphanumeric characters and must begin with a lowercase letter."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
@@ -947,9 +947,9 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         nodepool_list = "pool1"
         agentpools = [{"name": "nodepool1", "vm_size": "Standard_L8s_v3"}]
         err = (
-            "Nodepool: pool1 not found. Please provide a comma separated "
-            "string of existing nodepool names in --azure-container-storage-nodepools."
-            "\nNodepool available in the cluster is: nodepool1."
+            "Node pool: pool1 not found. Please provide a comma separated "
+            "string of existing node pool names in --azure-container-storage-nodepools."
+            "\nNode pool available in the cluster is: nodepool1."
             "\nAborting installation of Azure Container Storage."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
@@ -966,9 +966,9 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         nodepool_list = "pool1,pool2"
         agentpools = [{"name": "nodepool1"}, {"name": "nodepool2"}]
         err = (
-            "Nodepool: pool1 not found. Please provide a comma separated "
-            "string of existing nodepool names in --azure-container-storage-nodepools."
-            "\nNodepools available in the cluster are: nodepool1, nodepool2."
+            "Node pool: pool1 not found. Please provide a comma separated "
+            "string of existing node pool names in --azure-container-storage-nodepools."
+            "\nNode pools available in the cluster are: nodepool1, nodepool2."
             "\nAborting installation of Azure Container Storage."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:

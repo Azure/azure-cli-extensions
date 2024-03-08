@@ -206,9 +206,9 @@ def validate_enable_azure_container_storage_params(
                 'Cannot set --storage-pool-option when --enable-azure-container-storage is not ephemeralDisk.'
             )
 
-    _validate_nodepools(nodepool_list, agentpool_details, storage_pool_type, storage_pool_option, is_extension_installed)
-
     _validate_storage_pool_size(storage_pool_size, storage_pool_type)
+
+    _validate_nodepools(nodepool_list, agentpool_details, storage_pool_type, storage_pool_option, is_extension_installed)
 
     if is_extension_installed:
         if (is_azureDisk_enabled and \
@@ -279,8 +279,8 @@ def _validate_nodepools(
 ):
     nodepool_arr = []
     insufficient_core_error = (
-        'Cannot operate Azure Container Storage on a nodepool consisting of '
-        'nodes with cores less than 4. Nodepool: {0} with node size: {1} '
+        'Cannot operate Azure Container Storage on a node pool consisting of '
+        'nodes with cores less than 4. Node pool: {0} with node size: {1} '
         'which is assigned for Azure Container Storage has nodes with {2} cores.'
     )
     if is_extension_installed:
@@ -306,10 +306,10 @@ def _validate_nodepools(
 
         insufficient_core_error = (
             f'Cannot enable Azure Container Storage storagepool type: {storage_pool_type} '
-            'on a nodepool consisting of nodes with cores less than 4. '
-            'Nodepool: {0} with node size: {1} has nodes with {2} cores. '
+            'on a node pool consisting of nodes with cores less than 4. '
+            'Node pool: {0} with node size: {1} has nodes with {2} cores. '
             f'Remove the label {CONST_ACSTOR_IO_ENGINE_LABEL_KEY}={CONST_ACSTOR_IO_ENGINE_LABEL_VAL} '
-            'from the nodepool and use nodepools which has nodes with 4 or more cores and try again.'
+            'from the node pool and use node pools which has nodes with 4 or more cores and try again.'
         )
     else:
         _validate_nodepool_names(nodepool_list, agentpool_details)
@@ -325,7 +325,7 @@ def _validate_nodepools(
                     cpu_value = get_cores_from_sku(vm_size)
                     if cpu_value < 0:
                         raise UnknownError(
-                            f'Unable to determine number of cores in nodepool: {pool_name}, node size: {vm_size}'
+                            f'Unable to determine number of cores in node pool: {pool_name}, node size: {vm_size}'
                         )
                     elif cpu_value < 4:
                         raise InvalidArgumentValueError(insufficient_core_error.format(pool_name, vm_size, cpu_value))
@@ -339,7 +339,7 @@ def _validate_nodepools(
        not nvme_nodepool_found:
         raise ArgumentUsageError(
             f'Cannot set --storage-pool-option as {CONST_STORAGE_POOL_OPTION_NVME} '
-            'as no supporting nodepool found which can support ephemeral NVMe disk.'
+            'as none of the node pools can support ephemeral NVMe disk.'
         )
 
 
@@ -351,8 +351,8 @@ def _validate_nodepool_names(nodepool_names, agentpool_details):
     if re.fullmatch(pattern, nodepool_names) is None:
         raise InvalidArgumentValueError(
             "Invalid --azure-container-storage-nodepools value. "
-            "Accepted value is a comma separated string of valid nodepool "
-            "names without any spaces.\nA valid nodepool name may only contain lowercase "
+            "Accepted value is a comma separated string of valid node pool "
+            "names without any spaces.\nA valid node pool name may only contain lowercase "
             "alphanumeric characters and must begin with a lowercase letter."
         )
 
@@ -365,16 +365,16 @@ def _validate_nodepool_names(nodepool_names, agentpool_details):
         if nodepool not in agentpool_names:
             if len(agentpool_names) > 1:
                 raise InvalidArgumentValueError(
-                    f'Nodepool: {nodepool} not found. '
-                    'Please provide a comma separated string of existing nodepool names '
+                    f'Node pool: {nodepool} not found. '
+                    'Please provide a comma separated string of existing node pool names '
                     'in --azure-container-storage-nodepools.'
-                    f"\nNodepools available in the cluster are: {', '.join(agentpool_names)}."
+                    f"\nNode pools available in the cluster are: {', '.join(agentpool_names)}."
                     '\nAborting installation of Azure Container Storage.'
                 )
             raise InvalidArgumentValueError(
-                f'Nodepool: {nodepool} not found. '
-                'Please provide a comma separated string of existing nodepool names '
+                f'Node pool: {nodepool} not found. '
+                'Please provide a comma separated string of existing node pool names '
                 'in --azure-container-storage-nodepools.'
-                f'\nNodepool available in the cluster is: {agentpool_names[0]}.'
+                f'\nNode pool available in the cluster is: {agentpool_names[0]}.'
                 '\nAborting installation of Azure Container Storage.'
             )
