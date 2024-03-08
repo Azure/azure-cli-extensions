@@ -95,6 +95,26 @@ def _get_log_stream_urls(cmd, client, resource_group, service, component_name,
     hostname = _get_hostname(cmd, client, resource_group, service)
     url_dict = {}
 
+    if component_name and not all_instances and not instance:
+        logger.warning("No `-i/--instance` or `--all-instances` parameters specified.")
+        instances: [ManagedComponentInstance] = _list_managed_component_instances(cmd, client, resource_group, service,
+                                                                                  component_name)
+        if instances is None or len(instances) == 0:
+            # No instances found is handle by each component by provider better error handling.
+            return url_dict
+        elif instances is not None and len(instances) > 1:
+            logger.warning("Multiple instances found:")
+            for temp_instance in instances:
+                logger.warning("{}".format(temp_instance.name))
+            logger.warning("Please use '-i/--instance' parameter to specify the instance name, "
+                           "or use `--all-instance` parameter to get logs for all instances.")
+            return url_dict
+        elif instances is not None and len(instances) == 1:
+            logger.warning("Exact one instance found, will get logs for it:")
+            logger.warning('{}'.format(instances[0].name))
+            # Make it as if user has specified exact instance name
+            instance = instances[0].name
+
     if component_name and all_instances is True:
         instances: [ManagedComponentInstance] = _list_managed_component_instances(cmd, client, resource_group, service, component_name)
         if instances is None or len(instances) == 0:

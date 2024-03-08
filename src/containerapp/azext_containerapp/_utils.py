@@ -31,7 +31,7 @@ from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLFlexibleUtils, ManagedMySQLFlexibleUtils
-from ._clients import ConnectedEnvCertificateClient, ContainerAppPreviewClient
+from ._clients import ConnectedEnvCertificateClient, ContainerAppPreviewClient, JavaComponentPreviewClient
 from ._client_factory import custom_location_client_factory, k8s_extension_client_factory, providers_client_factory, \
     connected_k8s_client_factory, handle_non_404_status_code_exception
 from ._models import OryxRunImageTagProperty
@@ -87,7 +87,12 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                 if customized_keys:
                     service_bind["customizedKeys"] = customized_keys
                 service_bindings_def_list.append(service_bind)
-
+            elif service["type"] == "Microsoft.App/managedEnvironments/javaComponents":
+                service_bind = {
+                    "serviceId": service["id"],
+                    "name": binding_name
+                }
+                service_bindings_def_list.append(service_bind)
             else:
                 raise ValidationError("Service not supported")
             break
@@ -148,10 +153,15 @@ def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def
         return True
 
 
-def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name, customized_keys=None):
+def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name, environment_id, customized_keys=None):
     # Make it return both managed and dev bindings
     service_bindings_def_list = []
     service_connector_def_list = []
+
+    parsed_managed_env = parse_resource_id(environment_id)
+    managed_env_name = parsed_managed_env['name']
+    managed_env_rg = parsed_managed_env['resource_group']
+    java_component_list = JavaComponentPreviewClient.list(cmd, managed_env_rg, managed_env_name)
 
     for service_binding_str in service_bindings_list:
         parts = service_binding_str.split(",")
@@ -199,6 +209,10 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
             resource_list.append({"name": item.name, "type": item.type, "id": item.id})
 
         subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        # Add Java component into the resource_list
+        for java_component in java_component_list:
+            resource_list.append({"name": java_component["name"], "type": java_component["type"], "id": java_component["id"]})
 
         # Will work for both create and update
         process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name,
@@ -692,3 +706,23 @@ def log_in_file(log_text, opened_file, no_print=False):
 def remove_ansi_characters(text):
     regular_expression = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
     return regular_expression.sub("", text)
+
+
+def parse_build_env_vars(env_list):
+    if not env_list:
+        return None
+
+    env_pairs = {}
+
+    for pair in env_list:
+        key_val = pair.split('=', 1)
+        env_pairs[key_val[0]] = key_val[1]
+
+    env_var_def = []
+    for key, value in env_pairs.items():
+        env_var_def.append({
+            "name": key,
+            "value": value
+        })
+
+    return env_var_def

@@ -17,7 +17,10 @@ from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class ContainerAppJobsExecutionsTest(ScenarioTest):
+class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerappjob_create_with_yaml(self, resource_group):
@@ -33,11 +36,11 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         share = self.create_random_name(prefix='share', length=24)
 
         self.cmd(
-            f'az storage account create --resource-group {resource_group}  --name {storage} --location {TEST_LOCATION} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --output none')
+            f'az storage account create --resource-group {resource_group}  --name {storage} --location {location} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --output none')
         self.cmd(
             f'az storage share-rm create --resource-group {resource_group}  --storage-account {storage} --name {share} --quota 1024 --enabled-protocols SMB --output none')
 
-        create_containerapp_env(self, env, resource_group)
+        create_containerapp_env(self, env, resource_group, location)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         account_key = self.cmd(f'az storage account keys list -g {resource_group} -n {storage} --query "[0].value" '
@@ -51,7 +54,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # test job create with yaml
         containerappjob_yaml_text = f"""
-            location: {TEST_LOCATION}
+            location: {location}
             properties:
                 environmentId: {containerapp_env["id"]}
                 configuration:
@@ -161,7 +164,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # test container app job update with yaml
         containerappjob_yaml_text = f"""
-            location: {TEST_LOCATION}
+            location: {location}
             properties:
                 environmentId: {containerapp_env["id"]}
                 configuration:
@@ -283,7 +286,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # test job create with yaml
         containerappjob_yaml_text = f"""
-            location: {TEST_LOCATION}
+            location: {location}
             properties:
                 environmentId: {containerapp_env["id"]}
                 configuration:
@@ -382,7 +385,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # test container app job update with yaml
         containerappjob_yaml_text = f"""
-            location: {TEST_LOCATION}
+            location: {location}
             properties:
                 environmentId: {containerapp_env["id"]}
                 configuration:
@@ -430,6 +433,11 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].auth[0].secretRef', "personal-access-token"),
         ])
         clean_up_test_file(containerappjob_file_name)
+
+
+class ContainerAppJobsExecutionsTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")

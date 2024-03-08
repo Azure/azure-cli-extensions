@@ -410,6 +410,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         env_vars=None,
         workload_profile_name=None,
         ingress=None,
+        force_single_container_updates=None
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -422,6 +423,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.env_vars = env_vars
         self.ingress = ingress
         self.workload_profile_name = workload_profile_name
+        self.force_single_container_updates = force_single_container_updates
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -453,8 +455,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             env_vars=self.env_vars,
             workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
-            environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE
+            environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE,
+            force_single_container_updates=self.force_single_container_updates
         )
+
+    def set_force_single_container_updates(self, force_single_container_updates):
+        self.force_single_container_updates = force_single_container_updates
 
     def create_acr_if_needed(self):
         if self.should_create_acr:
@@ -495,7 +501,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 _, stderr = process.communicate()
                 if process.returncode != 0:
                     docker_push_error = stderr.decode('utf-8')
-                    if not forced_acr_login and ".azurecr.io/" in image_name and "unauthorized: authentication required" in docker_push_error:
+                    if not forced_acr_login and ".azurecr.io/" in image_name and "unauthorized" in docker_push_error:
                         # Couldn't push to ACR because the user isn't authenticated. Let's try to login to ACR and retrigger the docker push
                         logger.warning(f"The current user isn't authenticated to the {self.acr.name} ACR instance. Triggering an ACR login and retrying to push the image...")
                         # Logic to login to ACR
@@ -516,21 +522,21 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         except Exception as ex:
             raise CLIError(f"Unable to run 'docker push' command to push image to the container registry: {ex}") from ex
 
-    def build_container_from_source_with_cloud_build_service(self, source, location):
+    def build_container_from_source_with_cloud_build_service(self, source, build_env_vars, location):
         logger.warning("Using the Cloud Build Service to build container image...")
 
         run_full_id = uuid.uuid4().hex
         logs_file_path = os.path.join(tempfile.gettempdir(), f"{'build{}'.format(run_full_id)[:12]}.txt")
-        logs_file = open(logs_file_path, "w")
+        logs_file = open(logs_file_path, "w", encoding="utf-8")
 
         try:
             resource_group_name = self.resource_group.name
-            return run_cloud_build(self.cmd, source, location, resource_group_name, self.env.name, run_full_id, logs_file, logs_file_path)
+            return run_cloud_build(self.cmd, source, build_env_vars, location, resource_group_name, self.env.name, run_full_id, logs_file, logs_file_path)
         except Exception as exception:
             logs_file.close()
             raise exception
 
-    def build_container_from_source_with_buildpack(self, image_name, source, cache_image_name):  # pylint: disable=too-many-statements
+    def build_container_from_source_with_buildpack(self, image_name, source, cache_image_name, build_env_vars):  # pylint: disable=too-many-statements
         # Ensure that Docker is running
         if not is_docker_running():
             raise ValidationError("Docker is not running. Please start Docker to use buildpacks.")
@@ -570,6 +576,17 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             # Run 'pack build' to produce a runnable application image for the Container App
             # Specify the image as the 'build-cache' image to ensure that the local cache is used for build layers
             command = [pack_exec_path, 'build', cache_image_name, '--builder', builder_image, '--path', source, '--tag', image_name]
+
+            # Pass the subscription ID and caller ID to the buildpack
+            sub_id = get_subscription_id(self.cmd.cli_ctx)
+            command.extend(['--env', f"BP_SUBSCRIPTION_ID={sub_id}"])
+            from azure.cli.core import __version__ as core_version
+            command.extend(['--env', f"CALLER_ID=AZURECLI/{core_version}"])
+
+            # If the user specifies environment variables, pass it to the buildpack
+            if build_env_vars:
+                for env_var in build_env_vars:
+                    command.extend(['--env', f"{env_var}"])
 
             logger.debug(f"Calling '{' '.join(command)}'")
             try:
@@ -668,7 +685,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         for k, v in old_command_kwargs.items():
             self.cmd.command_kwargs[k] = v
 
-    def run_source_to_cloud_flow(self, source, dockerfile, can_create_acr_if_needed, registry_server):
+    def run_source_to_cloud_flow(self, source, dockerfile, build_env_vars, can_create_acr_if_needed, registry_server):
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
@@ -705,7 +722,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             location = self.env.location
         if self.should_create_acr:
             # No container registry provided. Let's use the default container registry through Cloud Build.
-            self.image = self.build_container_from_source_with_cloud_build_service(source, location)
+            self.image = self.build_container_from_source_with_cloud_build_service(source, build_env_vars, location)
             return True
 
         if can_create_acr_if_needed:
@@ -722,7 +739,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             # Build the app with a constant 'build-cache' tag to leverage the local cache containing build layers
             # NOTE: this 'build-cache' tag will not be pushed to the user's registry, only maintained locally
             build_image_name_with_cache_tag = f"{image_name}:build-cache"
-            self.build_container_from_source_with_buildpack(image_name_with_tag, source, build_image_name_with_cache_tag)
+            self.build_container_from_source_with_buildpack(image_name_with_tag, source, build_image_name_with_cache_tag, build_env_vars)
             self.image = self.registry_server + "/" + image_name_with_tag
             return False
 
@@ -997,7 +1014,7 @@ def _get_ingress_and_target_port(ingress, target_port, dockerfile_content: "list
     return ingress, target_port
 
 
-def _validate_up_args(cmd, source, artifact, image, repo, registry_server):
+def _validate_up_args(cmd, source, artifact, build_env_vars, image, repo, registry_server):
     disallowed_params = ["--only-show-errors", "--output", "-o"]
     command_args = cmd.cli_ctx.data.get("safe_params", [])
     for a in disallowed_params:
@@ -1012,6 +1029,10 @@ def _validate_up_args(cmd, source, artifact, image, repo, registry_server):
         raise MutuallyExclusiveArgumentError(
             "Cannot use --source and --repo together. "
             "Can either deploy from a local directory or a Github repo"
+        )
+    if build_env_vars and not source and not artifact and not repo:
+        raise RequiredArgumentMissingError(
+            "--build_env_vars must be used with --source, --artifact, or --repo together"
         )
     _validate_source_artifact_args(source, artifact)
     if repo and registry_server and "azurecr.io" in registry_server:
@@ -1333,7 +1354,8 @@ def _set_up_defaults(
     env: "ContainerAppEnvironment",
     app: "ContainerApp",
     custom_location: "CustomLocation",
-    extension: "Extension"
+    extension: "Extension",
+    is_registry_server_params_set=None
 ):
     # If no RG passed in and a singular app exists with the same name, get its env and rg
     _get_app_env_and_group(cmd, name, resource_group, env, location, custom_location)
@@ -1363,7 +1385,8 @@ def _set_up_defaults(
 
     _infer_existing_custom_location_or_extension(cmd, name, location, resource_group, env, custom_location, extension)
 
-    _get_acr_from_image(cmd, app)
+    if not is_registry_server_params_set:
+        _get_acr_from_image(cmd, app)
 
 
 # Try to get existed connected environment
@@ -1459,6 +1482,7 @@ def _create_github_action(
     token,
     repo,
     context_path,
+    build_env_vars,
 ):
 
     sp = _get_or_create_sp(
@@ -1492,6 +1516,7 @@ def _create_github_action(
         service_principal_tenant_id=service_principal_tenant_id,
         image=app.image,
         context_path=context_path,
+        build_env_vars=build_env_vars,
         trigger_existing_workflow=True,
     )
 

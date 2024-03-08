@@ -30,7 +30,6 @@ def call_scenario1(test):
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
-    step_delete(test, checks=[])
     cleanup_scenario1(test)
 
 
@@ -63,14 +62,6 @@ def step_list_subscription(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az networkfabric fabric list')
-
-
-def step_delete(test, checks=None):
-    '''nf delete operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric fabric delete --resource-name {deleteNFName} --resource-group {deleteNFRGName}')
 
 
 class GA_NFScenarioTest1(ScenarioTest):
