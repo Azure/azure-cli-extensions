@@ -855,6 +855,17 @@ def load_arguments(self, _):
             default=CONST_SSH_ACCESS_LOCALUSER,
             is_preview=True,
         )
+        # trusted launch
+        c.argument(
+            "enable_secure_boot",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "enable_vtpm",
+            is_preview=True,
+            action="store_true"
+        )
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1396,6 +1407,17 @@ def load_arguments(self, _):
             default=CONST_SSH_ACCESS_LOCALUSER,
             is_preview=True,
         )
+        # trusted launch
+        c.argument(
+            "enable_secure_boot",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "enable_vtpm",
+            is_preview=True,
+            action="store_true"
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1454,6 +1476,27 @@ def load_arguments(self, _):
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        # trusted launch
+        c.argument(
+            "enable_secure_boot",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "disable_secure_boot",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "enable_vtpm",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "disable_vtpm",
+            is_preview=True,
+            action="store_true"
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)
