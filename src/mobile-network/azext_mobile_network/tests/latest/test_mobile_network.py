@@ -383,9 +383,9 @@ class MobileNetworkScenario(ScenarioTest):
             self.check('tags.tag2', 'test2')
         ])
         self.cmd('mobile-network sim create -g {rg} --sim-group-name {sim_group} -n {sim} --international-msi 0000000000 --operator-key-code 00000000000000000000000000000000 --authentication-key 00000000000000000000000000000000', checks=[
-             self.check('internationalMobileSubscriberIdentity', '0000000000'),
-             self.check('name', '{sim}')
-         ])
+            self.check('internationalMobileSubscriberIdentity', '0000000000'),
+            self.check('name', '{sim}')
+        ])
         self.cmd('mobile-network sim list -g {rg} --sim-group-name {sim_group} ', checks=[
             self.check('[0].internationalMobileSubscriberIdentity', '0000000000'),
             self.check('[0].name', '{sim}')
