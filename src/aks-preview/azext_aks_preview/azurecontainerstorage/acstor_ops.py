@@ -221,7 +221,6 @@ def perform_enable_azure_container_storage(
                     " Error: %s. Resetting cluster state.", storage_pool_type, ex
                 )
 
-
                 # If enabling of storagepool type in Azure Container Storage failed,
                 # define the existing resource values for ioEngine and hugepages for
                 # resetting the cluster state.
@@ -281,7 +280,12 @@ def perform_disable_azure_container_storage(
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     no_wait_delete_op = False
 
-    # Ensure that all the install storagepool fields are turned off
+    azure_disk_enabled = is_azureDisk_enabled
+    elastic_san_enabled = is_elasticSan_enabled
+    ephemeral_disk_nvme_enabled = is_ephemeralDisk_nvme_enabled
+    ephemeral_disk_localssd_enabled = is_ephemeralDisk_localssd_enabled
+
+    # Ensure that all the install storagepool fields are turned off.
     reset_install_settings = [
         {"global.cli.activeControl": True},
         {"global.cli.storagePool.install.create": False},
@@ -289,13 +293,6 @@ def perform_disable_azure_container_storage(
         {"global.cli.storagePool.install.size": ""},
         {"global.cli.storagePool.install.type": ""},
         {"global.cli.storagePool.install.diskType": ""},
-        # Set these values to ensure cluster state incase of
-        # a cluster where cli operation has not yet run or older
-        # version of charts were installed.
-        {"global.cli.storagePool.azureDisk.enabled": is_azureDisk_enabled},
-        {"global.cli.storagePool.elasticSan.enabled": is_elasticSan_enabled},
-        {"global.cli.storagePool.ephemeralDisk.nvme.enabled": is_ephemeralDisk_nvme_enabled},
-        {"global.cli.storagePool.ephemeralDisk.temp.enabled": is_ephemeralDisk_localssd_enabled},
     ]
 
     pool_option = ""
@@ -313,10 +310,13 @@ def perform_disable_azure_container_storage(
         config_settings = [
             {"global.cli.storagePool.disable.validation": True},
             {"global.cli.storagePool.disable.type": storage_pool_type},
-            {"global.cli.storagePool.azureDisk.enabled": is_azureDisk_enabled},
-            {"global.cli.storagePool.elasticSan.enabled": is_elasticSan_enabled},
-            {"global.cli.storagePool.ephemeralDisk.nvme.enabled": is_ephemeralDisk_nvme_enabled},
-            {"global.cli.storagePool.ephemeralDisk.temp.enabled": is_ephemeralDisk_localssd_enabled},
+            # Set these values to ensure cluster state incase of
+            # a cluster where cli operation has not yet run or older
+            # version of charts were installed.
+            {"global.cli.storagePool.azureDisk.enabled": azure_disk_enabled},
+            {"global.cli.storagePool.elasticSan.enabled": elastic_san_enabled},
+            {"global.cli.storagePool.ephemeralDisk.nvme.enabled": ephemeral_disk_nvme_enabled},
+            {"global.cli.storagePool.ephemeralDisk.temp.enabled": ephemeral_disk_localssd_enabled},
         ]
 
         config_settings.extend(reset_install_settings)
@@ -350,10 +350,13 @@ def perform_disable_azure_container_storage(
                 {"global.cli.storagePool.disable.validation": False},
                 {"global.cli.storagePool.disable.type": ""},
                 {"global.cli.storagePool.disable.diskType": ""},
-                {"global.cli.storagePool.azureDisk.enabled": is_azureDisk_enabled},
-                {"global.cli.storagePool.elasticSan.enabled": is_elasticSan_enabled},
-                {"global.cli.storagePool.ephemeralDisk.nvme.enabled": is_ephemeralDisk_nvme_enabled},
-                {"global.cli.storagePool.ephemeralDisk.temp.enabled": is_ephemeralDisk_localssd_enabled},
+                # Set these values to ensure cluster state incase of
+                # a cluster where cli operation has not yet run or older
+                # version of charts were installed.
+                {"global.cli.storagePool.azureDisk.enabled": azure_disk_enabled},
+                {"global.cli.storagePool.elasticSan.enabled": elastic_san_enabled},
+                {"global.cli.storagePool.ephemeralDisk.nvme.enabled": ephemeral_disk_nvme_enabled},
+                {"global.cli.storagePool.ephemeralDisk.temp.enabled": ephemeral_disk_localssd_enabled},
             ]
 
             config_settings.extend(reset_install_settings)
@@ -387,9 +390,13 @@ def perform_disable_azure_container_storage(
                 "Validation failed. Unable to perform Azure Container Storage operation. Resetting cluster state."
             ) from ex
 
-    # Step 2: If the extension is installed and validation succeeded or skipped, call delete_k8s_extension
-    # This step is only relevant when uninstallation of Azure Container Storage is active.
+    # Step 2: If the extension is installed and validation succeeded or skipped,
+    # if we want to uninstall Azure Container Storage completely, then call
+    # delete_k8s_extension. Else, if we want to disable a storagepool type,
+    # we will perform another update_k8s_extension operation on the cluster.
+
     if storage_pool_type == CONST_ACSTOR_ALL:
+        # Uninstallation operation
         try:
             delete_op_result = k8s_extension_custom_mod.delete_k8s_extension(
                 cmd,
@@ -411,44 +418,43 @@ def perform_disable_azure_container_storage(
 
         logger.warning("Azure Container Storage has been disabled.")
 
-        # Step 3: Revoke AKS cluster's node identity the following
-        # roles on the AKS managed resource group:
-        # 1. Reader
-        # 2. Network Contributor
-        # 3. Elastic SAN Owner
-        # 4. Elastic SAN Volume Group Owner
+        # Revoke role assignments irrespective of whether ElasticSAN
+        # type was enabled on the cluster to handle older clusters where
+        # the role assignments were done for all storagepool type during
+        # installation of Azure Container Storage.
         perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, False)
     else:
-        # Here we start disabling a particular type of storagepool.
+        # Disabling a particular type of storagepool.
+        if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
+            azure_disk_enabled = False
+        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
+            elastic_san_enabled = False
+        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
+            if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
+                ephemeral_disk_nvme_enabled = False
+            elif storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
+                ephemeral_disk_localssd_enabled = False
+            elif storage_pool_option == CONST_ACSTOR_ALL:
+                ephemeral_disk_nvme_enabled = False
+                ephemeral_disk_localssd_enabled = False
+
+
         config_settings = [
             {"global.cli.storagePool.disable.validation": False},
             {"global.cli.storagePool.disable.type": storage_pool_type},
             {"global.cli.storagePool.disable.active": True},
             {"global.cli.storagePool.disable.diskType": pool_option.lower()},
+            # Set these values to ensure cluster state incase of
+            # a cluster where cli operation has not yet run or older
+            # version of charts were installed.
+            {"global.cli.storagePool.azureDisk.enabled": azure_disk_enabled},
+            {"global.cli.storagePool.elasticSan.enabled": elastic_san_enabled},
+            {"global.cli.storagePool.ephemeralDisk.nvme.enabled": ephemeral_disk_nvme_enabled},
+            {"global.cli.storagePool.ephemeralDisk.temp.enabled": ephemeral_disk_localssd_enabled},
+
         ]
 
         config_settings.extend(reset_install_settings)
-        if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
-            is_azureDisk_enabled = False
-        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
-            is_elasticSan_enabled = False
-        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-            if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
-                is_ephemeralDisk_nvme_enabled = False
-            elif storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
-                is_ephemeralDisk_localssd_enabled = False
-            elif storage_pool_option == CONST_ACSTOR_ALL:
-                is_ephemeralDisk_nvme_enabled = False
-                is_ephemeralDisk_localssd_enabled = False
-
-        config_settings.extend(
-            [
-                {"global.cli.storagePool.azureDisk.enabled": is_azureDisk_enabled},
-                {"global.cli.storagePool.elasticSan.enabled": is_elasticSan_enabled},
-                {"global.cli.storagePool.ephemeralDisk.nvme.enabled": is_ephemeralDisk_nvme_enabled},
-                {"global.cli.storagePool.ephemeralDisk.temp.enabled": is_ephemeralDisk_localssd_enabled},
-            ]
-        )
 
         # Define the new resource values for ioEngine and hugepages.
         resource_args = get_desired_resource_value_args(
@@ -490,6 +496,10 @@ def perform_disable_azure_container_storage(
                 no_wait=False,
             )
             LongRunningOperation(cmd.cli_ctx)(disable_op_result)
+
+            # Revoke role assignments if we are disabling ElasticSAN storagepool type.
+            if storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and is_elasticSan_enabled:
+                perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, False)
         except Exception as disable_ex:
             logger.error(
                 "Failure observed while disabling Azure Container Storage storagepool type: %s.\nError: %s"
@@ -508,18 +518,23 @@ def perform_disable_azure_container_storage(
             )
 
             update_settings.extend(resource_args)
-            # Also, unset the type of storagepool which was supposed to disabled.
-            if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
-                update_settings.append({"global.cli.storagePool.azureDisk.enabled": True})
-            elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
-                update_settings.append({"global.cli.storagePool.elasticSan.enabled": True})
-            elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-                if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
-                    update_settings.append({"global.cli.storagePool.ephemeralDisk.nvme.enabled": True})
-                elif storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
-                    update_settings.append({"global.cli.storagePool.ephemeralDisk.temp.enabled": True})
+            # Revert back to storagepool type states which was supposed to disabled.
+            azure_disk_enabled = is_azureDisk_enabled
+            elastic_san_enabled = is_elasticSan_enabled
+            ephemeral_disk_nvme_enabled = is_ephemeralDisk_nvme_enabled
+            ephemeral_disk_localssd_enabled = is_ephemeralDisk_localssd_enabled
             disable_op_failure = True
 
+        # Set the types of storagepool type states in the cluster
+        # based on whether the previous operation succeeded or failed.
+        update_settings.extend(
+            [
+                {"global.cli.storagePool.azureDisk.enabled": azure_disk_enabled},
+                {"global.cli.storagePool.elasticSan.enabled": elastic_san_enabled},
+                {"global.cli.storagePool.ephemeralDisk.nvme.enabled": ephemeral_disk_nvme_enabled},
+                {"global.cli.storagePool.ephemeralDisk.temp.enabled": ephemeral_disk_localssd_enabled},
+            ]
+        )
         # Since we are just resetting the cluster state,
         # we are going to perform a non waiting operation.
         k8s_extension_custom_mod.update_k8s_extension(
