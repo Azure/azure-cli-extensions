@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from knack.log import get_logger
-
+from azext_aosm.common.utils import snake_case_to_camel_case
 from azext_aosm.common.constants import BASE_SCHEMA
 from azext_aosm.inputs.base_input import BaseInput
 
@@ -42,6 +42,17 @@ class VHDFileInput(BaseInput):
         super().__init__(artifact_name, artifact_version, default_config)
         self.file_path = file_path
         self.blob_sas_uri = blob_sas_uri
+
+        formatted_config = {}
+        for (key, value) in self.default_config.items():
+            # This must be an integer, but is a string in the input file
+            if key == "image_disk_size_GB":
+                value = int(value)
+            if key == "image_api_version":
+                key = "apiVersion"
+            formatted_key = snake_case_to_camel_case(key)
+            formatted_config[formatted_key] = value
+        self.default_config = formatted_config
 
     def get_defaults(self) -> Dict[str, Any]:
         """
