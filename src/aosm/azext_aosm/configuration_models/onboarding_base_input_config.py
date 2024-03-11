@@ -35,7 +35,7 @@ class OnboardingBaseInputConfig(ABC):
         metadata={
             "comment": (
                 "Resource group for the Publisher resource.\n"
-                "You should create this before running the publish command."
+                "Will be created if it does not exist."
             )
         },
     )
