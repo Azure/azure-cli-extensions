@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-15-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/l3isolationdomains", "2024-02-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/l3isolationdomains", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains", "2023-06-15"],
         ]
     }
 
@@ -47,7 +47,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of the resource group",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -117,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -233,17 +235,14 @@ class List(AAZCommand):
             )
             connected_subnet_route_policy.export_route_policy_id = AAZStrType(
                 serialized_name="exportRoutePolicyId",
-                nullable=True,
             )
 
             export_route_policy = cls._schema_on_200.value.Element.properties.connected_subnet_route_policy.export_route_policy
             export_route_policy.export_ipv4_route_policy_id = AAZStrType(
                 serialized_name="exportIpv4RoutePolicyId",
-                nullable=True,
             )
             export_route_policy.export_ipv6_route_policy_id = AAZStrType(
                 serialized_name="exportIpv6RoutePolicyId",
-                nullable=True,
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -311,7 +310,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-15-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -427,17 +426,14 @@ class List(AAZCommand):
             )
             connected_subnet_route_policy.export_route_policy_id = AAZStrType(
                 serialized_name="exportRoutePolicyId",
-                nullable=True,
             )
 
             export_route_policy = cls._schema_on_200.value.Element.properties.connected_subnet_route_policy.export_route_policy
             export_route_policy.export_ipv4_route_policy_id = AAZStrType(
                 serialized_name="exportIpv4RoutePolicyId",
-                nullable=True,
             )
             export_route_policy.export_ipv6_route_policy_id = AAZStrType(
                 serialized_name="exportIpv6RoutePolicyId",
-                nullable=True,
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

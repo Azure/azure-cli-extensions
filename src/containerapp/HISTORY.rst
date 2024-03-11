@@ -4,17 +4,23 @@ Release History
 ===============
 upcoming
 ++++++
-* 'az containerapp env telemetry data-dog set': support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
-* 'az containerapp env telemetry data-dog delete': support delete environment data dog configuration
 * 'az containerapp env telemetry data-dog show': support show environment data dog configuration
-* 'az containerapp env telemetry app-insights set': support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
-* 'az containerapp env telemetry app-insights delete': support delete environment app insights configuration
 * 'az containerapp env telemetry app-insights show': support show environment app insights configuration
 * 'az containerapp env telemetry otlp add': support add environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
 * 'az containerapp env telemetry otlp update': support update environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
 * 'az containerapp env telemetry otlp remove': support remove environment otlp configuration with --otlp-name
 * 'az containerapp env telemetry otlp show': support show environment otlp configuration with --otlp-name
 * 'az containerapp env telemetry otlp list': support show environment otlp configurations
+
+0.3.49
+++++++
+* 'az containerapp env telemetry data-dog set': Support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry data-dog delete': Support delete environment data dog configuration
+* 'az containerapp env telemetry app-insights set': Support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
+* 'az containerapp env telemetry app-insights delete': Support delete environment app insights configuration
+* 'az containerapp update/up': Explicitly set container name to container app name for source to cloud builds.
+* 'az containerapp env create/update': Add support for environment custom domain from azure key vault using managed identity
+* 'az containerapp env certificate upload': Add support for environment certificate from azure key vault using managed identity
 
 0.3.48
 ++++++

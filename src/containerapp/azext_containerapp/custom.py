@@ -39,7 +39,7 @@ from azure.cli.command_modules.containerapp._utils import (_validate_subscriptio
                                                            generate_randomized_cert_name, load_cert_file,
                                                            generate_randomized_managed_cert_name,
                                                            check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                                                           trigger_workflow, set_managed_identity, _ensure_identity_resource_id,
+                                                           trigger_workflow, _ensure_identity_resource_id,
                                                            AppType)
 
 from knack.log import get_logger
@@ -49,7 +49,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
-    ContainerappEnvCertificateUploadDecorator
+    ContainerappEnvCertificatePreviweUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
@@ -706,6 +706,8 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
+                               certificate_identity = None,
+                               certificate_key_vault_url=None,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
                                enable_dedicated_gpu=False,
@@ -740,6 +742,8 @@ def update_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
+                               certificate_identity = None,
+                               certificate_key_vault_url=None,
                                tags=None,
                                workload_profile_type=None,
                                workload_profile_name=None,
@@ -1280,16 +1284,17 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
     return containerapp_env_certificate_list_decorator.list()
 
 
-def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+def upload_certificate(cmd, name, resource_group_name, certificate_file=None, certificate_name=None, certificate_password=None, location=None, prompt=False, certificate_identity = None, certificate_key_vault_url=None):
     raw_parameters = locals()
 
-    containerapp_env_certificate_upload_decorator = ContainerappEnvCertificateUploadDecorator(
+    containerapp_env_certificate_upload_decorator = ContainerappEnvCertificatePreviweUploadDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_env_certificate_upload_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_certificate_upload_decorator.validate_arguments()
     containerapp_env_certificate_upload_decorator.construct_payload()
 
     return containerapp_env_certificate_upload_decorator.create_or_update()
