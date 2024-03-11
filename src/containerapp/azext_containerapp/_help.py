@@ -1454,6 +1454,15 @@ helps['containerapp env telemetry otlp show'] = """
     examples:
     - name: Show container apps environment telemetry otlp settings.
       text: |
-          az containerapp env telemetry app-insights show -n MyContainerappEnvironment -g MyResourceGroup \\
+          az containerapp env telemetry otlp show -n MyContainerappEnvironment -g MyResourceGroup \\
           --otlp-name otlpName
+"""
+
+helps['containerapp env telemetry otlp list'] = """
+    type: command
+    short-summary: List container apps environment telemetry otlp settings.
+    examples:
+    - name: List container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp list -n MyContainerappEnvironment -g MyResourceGroup
 """
