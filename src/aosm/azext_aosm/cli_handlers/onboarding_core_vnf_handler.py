@@ -82,13 +82,19 @@ class OnboardingCoreVNFCLIHandler(OnboardingVNFCLIHandler):
         # Instantiate vhd processor
         if not self.config.vhd.artifact_name:
             self.config.vhd.artifact_name = self.config.nf_name + "-vhd"
+
+        if self.config.vhd.file_path:
+            file_path = Path(self.config.vhd.file_path).absolute()
+        else:
+            file_path = None
+
         vhd_processor = VHDProcessor(
             name=self.config.vhd.artifact_name,
             input_artifact=VHDFileInput(
                 artifact_name=self.config.vhd.artifact_name,
                 artifact_version=self.config.vhd.version,
                 default_config=self._get_default_config(self.config.vhd),
-                file_path=Path(self.config.vhd.file_path).absolute(),
+                file_path=file_path,
                 blob_sas_uri=self.config.vhd.blob_sas_url,
             ),
         )
