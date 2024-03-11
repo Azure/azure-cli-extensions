@@ -10680,7 +10680,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     #     # update: disable-azure-container-storage
     #     update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-    #                  '--disable-azure-container-storage'
+    #                  '--disable-azure-container-storage all'
     #     self.cmd(update_cmd, checks=[
     #         self.check('provisioningState', 'Succeeded'),
     #     ])
