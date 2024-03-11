@@ -1,5 +1,9 @@
 Release History
 ===============
+1.19.5
+---
+* Change default Application Configuration Service generation value to Gen2.
+
 1.19.4
 ---
 * Enhance managed component log streaming when `-i/--instance` and `--all-instances` parameters are not specified.
