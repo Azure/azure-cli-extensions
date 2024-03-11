@@ -22,9 +22,9 @@ class ImportFromApim(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-03-15-preview",
+        "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/importfromapim", "2024-03-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/importfromapim", "2024-03-01"],
         ]
     }
 
@@ -148,7 +148,7 @@ class ImportFromApim(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-15-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }
