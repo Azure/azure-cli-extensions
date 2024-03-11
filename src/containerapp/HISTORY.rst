@@ -14,6 +14,7 @@ upcoming
 * 'az containerapp env telemetry otlp update': support update environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
 * 'az containerapp env telemetry otlp remove': support remove environment otlp configuration with --otlp-name
 * 'az containerapp env telemetry otlp show': support show environment otlp configuration with --otlp-name
+* 'az containerapp env telemetry otlp list': support show environment otlp configurations
 
 0.3.48
 ++++++

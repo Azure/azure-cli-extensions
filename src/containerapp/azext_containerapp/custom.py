@@ -2674,3 +2674,41 @@ def show_environment_telemetry_otlp(cmd,
 
         return r
 
+
+def list_environment_telemetry_otlp(cmd,
+                                    name,
+                                    resource_group_name):
+    raw_parameters = locals()
+
+    containerapp_env_telemetry_otlp_decorator = ContainerappEnvTelemetryOtlpPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    
+    containerapp_env_def = None
+    try:
+        containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    if not containerapp_env_def:
+        raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
+
+    existing_otlps = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
+    if existing_otlps is not None:
+        r = {}
+
+        for otlp in existing_otlps:
+            if "headers" in otlp:
+                dict = otlp["headers"]
+                for header in dict:
+                    if "value" in header:
+                        header["value"] = DEFAULT_CONFIGURED_STR
+
+    safe_set(r, "otlpConfigurations", value=existing_otlps)
+
+    return r
+
+
