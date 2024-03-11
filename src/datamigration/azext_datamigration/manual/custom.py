@@ -281,12 +281,14 @@ def datamigration_login_migration(src_sql_connection_str=None,
                 elif param.__contains__("list") and parameterList[param] is not None:
                     parameterList[param] = " ".join(f"\"{i}\"" for i in parameterList[param])
                     cmd += f' {param} {parameterList[param]}'
+            print("Starting execution...")
             subprocess.call(cmd, shell=False)
 
         # When Config file.
         elif config_file_path is not None:
             helper.test_path_exist(config_file_path)
             cmd = f'{exePath} --configFile "{config_file_path}"'
+            print("Starting execution...")
             subprocess.call(cmd, shell=False)
 
         else:
