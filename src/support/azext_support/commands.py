@@ -14,6 +14,8 @@ from azext_support.custom import CommunicationCreate
 from azext_support.custom import CommunicationNoSubscriptionCreate
 from azext_support.custom import TicketUpdateNoSubscription
 from azext_support.custom import TicketCreateNoSubscription
+from azext_support.custom import TicketList
+from azext_support.custom import TicketListNoSubscription
 
 
 def load_command_table(self, _):
@@ -63,3 +65,5 @@ def load_command_table(self, _):
     self.command_table['support no-subscription communication create'] = CommunicationNoSubscriptionCreate(loader=self)
     self.command_table['support no-subscription tickets update'] = TicketUpdateNoSubscription(loader=self)
     self.command_table['support no-subscription tickets create'] = TicketCreateNoSubscription(loader=self)
+    self.command_table['support in-subscription tickets list'] = TicketList(loader=self)
+    self.command_table['support no-subscription tickets list'] = TicketListNoSubscription(loader=self)

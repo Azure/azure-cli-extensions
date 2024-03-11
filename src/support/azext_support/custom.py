@@ -22,6 +22,8 @@ from .aaz.latest.support.in_subscription.communication import Create as _CreateC
 from .aaz.latest.support.no_subscription.communication import Create as _CreateNoSubscriptionCommunication
 from .aaz.latest.support.no_subscription.tickets import Update as _UpdateNoSubscription
 from .aaz.latest.support.no_subscription.tickets import Create as _CreateTicketNoSubscription
+from .aaz.latest.support.in_subscription.tickets import List as _List
+from .aaz.latest.support.no_subscription.tickets import List as _ListNoSubscription
 
 logger = get_logger(__name__)
 
@@ -191,9 +193,10 @@ class TicketCreate(_CreateTicket):
     
     def pre_operations(self):
         from azext_support._validators import validate_tickets_create_new
+        from azure.cli.core.aaz import AAZUndefined
         super().pre_operations()
         args = self.ctx.args
-        if hasattr(args, 'technical_resource'):
+        if args.technical_resource != AAZUndefined:
             validate_tickets_create_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name), str(args.technical_resource))
         else:
             validate_tickets_create_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name))
@@ -201,13 +204,15 @@ class TicketCreate(_CreateTicket):
     class SupportTicketsCreate(_CreateTicket.SupportTicketsCreate):
         @property
         def content(self):
+            from azure.cli.core.aaz import AAZUndefined
             body = super().content
-            if str(self.ctx.args.enrollment_id) is not None:
-                enrollment_id = str(self.ctx.args.enrollment_id)
+            args = self.ctx.args
+            if args.enrollment_id != AAZUndefined:
+                enrollment_id = str(args.enrollment_id)
                 body["properties"]["enrollmentId"] = enrollment_id
             service_name = parse_support_area_path(body["properties"]["problemClassificationId"])["service_name"]
             body["properties"]["serviceId"] = "/providers/Microsoft.Support/services/{0}".format(service_name)
-            if "problemStartTime" not in body["properties"]: 
+            if args.start_time == AAZUndefined:
                 start_time = datetime.utcnow().strftime(("%Y-%m-%dT%H:%M:%SZ"))
                 body["properties"]["problemStartTime"] = start_time
             return body
@@ -252,9 +257,10 @@ class TicketCreateNoSubscription(_CreateTicketNoSubscription):
 
     def pre_operations(self):
         from azext_support._validators import validate_tickets_create_no_subscription_new
+        from azure.cli.core.aaz import AAZUndefined
         super().pre_operations()
         args = self.ctx.args
-        if hasattr(args, 'technical_resource'):
+        if args.technical_resource != AAZUndefined:
             validate_tickets_create_no_subscription_new(self.cli_ctx, str(args.problem_classification), str(args.ticket_name),
                                         str(args.technical_resource))
         else:
@@ -263,13 +269,39 @@ class TicketCreateNoSubscription(_CreateTicketNoSubscription):
     class SupportTicketsNoSubscriptionCreate(_CreateTicketNoSubscription.SupportTicketsNoSubscriptionCreate):
         @property
         def content(self):
+            from azure.cli.core.aaz import AAZUndefined
             body = super().content
-            if str(self.ctx.args.enrollment_id) is not None:
-                enrollment_id = str(self.ctx.args.enrollment_id)
+            args = self.ctx.args
+            if args.enrollment_id != AAZUndefined:
+                enrollment_id = str(args.enrollment_id)
                 body["properties"]["enrollmentId"] = enrollment_id
             service_name = parse_support_area_path(body["properties"]["problemClassificationId"])["service_name"]
             body["properties"]["serviceId"] = "/providers/Microsoft.Support/services/{0}".format(service_name)
-            if "problemStartTime" not in body["properties"]:
+            if args.start_time == AAZUndefined:
                 start_time = datetime.utcnow().strftime(("%Y-%m-%dT%H:%M:%SZ"))
                 body["properties"]["problemStartTime"] = start_time
             return body
+
+
+class TicketList(_List):
+    class SupportTicketsList(_List.SupportTicketsList):
+        @property
+        def query_parameters(self):
+            from azure.cli.core.aaz import AAZUndefined
+            parameters = super().query_parameters
+            args = self.ctx.args
+            if args.filter == AAZUndefined and args.pagination_limit == AAZUndefined:
+                parameters["$filter"] = "CreatedDate ge " + str(date.today() - timedelta(days=7))
+            return parameters
+
+
+class TicketListNoSubscription(_ListNoSubscription):
+    class SupportTicketsNoSubscriptionList(_ListNoSubscription.SupportTicketsNoSubscriptionList):
+        @property
+        def query_parameters(self):
+            from azure.cli.core.aaz import AAZUndefined
+            parameters = super().query_parameters
+            args = self.ctx.args
+            if args.filter == AAZUndefined and args.pagination_limit == AAZUndefined:
+                parameters["$filter"] = "CreatedDate ge " + str(date.today() - timedelta(days=7))
+            return parameters
