@@ -2711,4 +2711,3 @@ def list_environment_telemetry_otlp(cmd,
 
     return r
 
-
