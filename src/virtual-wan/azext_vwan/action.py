@@ -18,7 +18,7 @@ class RadiusServerAddAction(argparse._AppendAction):
             try:
                 key, value = item.split('=', 1)
                 kwargs['radius_server_' + key] = value
-            except ValueError:
-                raise ArgumentUsageError(f"usage error: {option_string} address=VALUE, score=VALUE, secret=VALUE")
+            except ValueError as exc:
+                raise ArgumentUsageError(f"usage error: {option_string} address=VALUE, score=VALUE, secret=VALUE") from exc
         action = RadiusServer(**kwargs)
         super().__call__(parser, namespace, action, option_string)

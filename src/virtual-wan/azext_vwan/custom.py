@@ -14,7 +14,7 @@ from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.aaz import has_value
 from azure.cli.core.aaz.utils import assign_aaz_list_arg
-from azure.cli.core.azclierror import ArgumentUsageError
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
 from .aaz.latest.network.vhub.connection import Create as _VHubConnectionCreate, Update as _VHubConnectionUpdate
 from .aaz.latest.network.vpn_gateway.nat_rule import Create as _VPNGatewayNatRuleCreate, \
     Show as _VPNGatewayNatRuleShow, List as _VPNGatewayNatRuleList, Update as _VPNGatewayNatRuleUpdate
@@ -64,7 +64,7 @@ def _generic_list(cli_ctx, operation_name, resource_group_name):
 def _get_property(items, name):
     result = next((x for x in items if x.name.lower() == name.lower()), None)
     if not result:
-        raise ArgumentUsageError(f"Property '{name}' does not exist")
+        raise InvalidArgumentValueError(f"Property '{name}' does not exist")
     return result
 
 
@@ -75,7 +75,7 @@ def _upsert(parent, collection_name, obj_to_add, key_name, warn=True):
 
     value = getattr(obj_to_add, key_name)
     if value is None:
-        raise ArgumentUsageError(
+        raise InvalidArgumentValueError(
             f"Unable to resolve a value for key '{key_name}' with which to match.")
     match = next((x for x in collection if getattr(x, key_name, None) == value), None)
     if match:
@@ -98,7 +98,7 @@ def _find_item_at_path(instance, path):
             # property
             curr_item = getattr(curr_item, comp, None)
         if not curr_item:
-            raise ArgumentUsageError(f"not found: '{comp}' not found at path '{'.'.join(path_comps[:i])}'")
+            raise InvalidArgumentValueError(f"not found: '{comp}' not found at path '{'.'.join(path_comps[:i])}'")
     return curr_item
 
 
@@ -357,7 +357,7 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
     try:
         hub.route_table.routes.pop(index - 1)
     except IndexError:
-        raise ArgumentUsageError(f"invalid index: {index}. Index can range from 1 to {len(hub.route_table.routes)}")
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(hub.route_table.routes)}")
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, virtual_hub_name, hub)
     try:
@@ -457,7 +457,7 @@ def remove_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, rout
     try:
         route_table.routes.pop(index - 1)
     except IndexError:
-        raise ArgumentUsageError(f"invalid index: {index}. Index can range from 1 to {len(route_table.routes)}")
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(route_table.routes)}")
 
     client = _route_table_client(cmd.cli_ctx, route_table)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
@@ -614,7 +614,7 @@ def remove_vpn_conn_ipsec_policy(cmd, resource_group_name, gateway_name, connect
     try:
         conn.ipsec_policies.pop(index - 1)
     except IndexError:
-        raise ArgumentUsageError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}")
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}")
     _upsert(gateway, 'connections', conn, 'name', warn=False)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, gateway)
@@ -666,7 +666,7 @@ def remove_vpn_gateway_connection_vpn_site_link_conn(cmd, resource_group_name, g
     try:
         conn.vpn_link_connections.pop(index - 1)
     except IndexError:
-        raise ArgumentUsageError(f"invalid index: {index}. Index can range from 1 to {len(conn.vpn_link_connections)}")
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.vpn_link_connections)}")
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, gateway_name, connection_name, conn)
 
@@ -721,7 +721,7 @@ def remove_vpn_conn_link_ipsec_policy(cmd, resource_group_name, gateway_name, co
     try:
         conn.ipsec_policies.pop(index - 1)
     except IndexError:
-        raise ArgumentUsageError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}")
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}")
     _upsert(vpn_conn, 'vpn_link_connections', conn, 'name', warn=False)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, connection_name, vpn_conn)
@@ -855,7 +855,7 @@ def remove_vpn_site_link(cmd, resource_group_name, vpn_site_name, index, no_wait
     try:
         vpn_site.vpn_site_links.pop(index - 1)
     except IndexError:
-        raise ArgumentUsageError(f"invalid index: {index}. Index can range from 1 to {len(vpn_site.vpn_site_links)}")
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(vpn_site.vpn_site_links)}")
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, vpn_site_name, vpn_site)
 
@@ -989,7 +989,7 @@ def remove_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_c
     try:
         vpn_server_config.vpn_client_ipsec_policies.pop(index)
     except IndexError:
-        raise ArgumentUsageError(f"invalid index: {index}. Index can range from 0 to {len(vpn_server_config.vpn_client_ipsec_policies)}")
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 0 to {len(vpn_server_config.vpn_client_ipsec_policies)}")
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, vpn_server_configuration_name, vpn_server_config)
     if no_wait:
