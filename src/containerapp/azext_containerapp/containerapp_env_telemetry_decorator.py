@@ -48,11 +48,11 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
         self.set_up_enable_open_telemetry_metrics()
 
     def set_up_site(self):
-        if self.get_argument_site() and self.get_argument_site() is not None:
+        if self.get_argument_site() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site", value=self.get_argument_site())
     
     def set_up_key(self):
-        if self.get_argument_key() and self.get_argument_key() is not None:
+        if self.get_argument_key() is not None:
             safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "key", value=self.get_argument_key())
 
     def set_up_enable_open_telemetry_traces(self):
@@ -117,7 +117,7 @@ class ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(BaseResource):
         self.set_up_enable_open_telemetry_logs()
 
     def set_up_connection_string(self):
-        if self.get_argument_connection_string() and self.get_argument_connection_string() is not None:
+        if self.get_argument_connection_string() is not None:
             safe_set(self.managed_env_def, "properties", "appInsightsConfiguration", "connectionString", value=self.get_argument_connection_string())
 
     def set_up_enable_open_telemetry_traces(self):

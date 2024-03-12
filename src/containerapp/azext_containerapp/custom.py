@@ -2539,6 +2539,8 @@ def add_environment_telemetry_otlp(cmd,
     )
     containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
 
+    r = {}
+
     try:
         r = containerapp_env_telemetry_otlp_decorator.show()
     except CLIError as e:
@@ -2576,6 +2578,8 @@ def update_environment_telemetry_otlp(cmd,
         models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = {}
 
     try:
         r = containerapp_env_telemetry_otlp_decorator.show()
@@ -2649,8 +2653,8 @@ def show_environment_telemetry_otlp(cmd,
         r = {}
 
         if "headers" in otlp[0]:
-            dict = otlp[0]["headers"]
-            for header in dict:
+            existing_headers = otlp[0]["headers"]
+            for header in existing_headers:
                 if "value" in header:
                     header["value"] = DEFAULT_CONFIGURED_STR
 
@@ -2679,7 +2683,6 @@ def show_environment_telemetry_otlp(cmd,
 
         return r
 
-
 def list_environment_telemetry_otlp(cmd,
                                     name,
                                     resource_group_name):
@@ -2706,9 +2709,9 @@ def list_environment_telemetry_otlp(cmd,
     existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
     existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
 
-    if existing_otlps is not None:
-        r = {}
+    r = {}
 
+    if existing_otlps is not None:
         for otlp in existing_otlps:
             if "headers" in otlp:
                 dict = otlp["headers"]
