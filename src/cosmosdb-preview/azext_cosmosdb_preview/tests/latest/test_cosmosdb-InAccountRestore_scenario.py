@@ -17,9 +17,9 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 logger = get_logger(__name__)
 
+
 class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
-#sql
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_database')
     def test_cosmosdb_sql_database(self, resource_group):
@@ -48,7 +48,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
         self.cmd('az cosmosdb sql database delete -g {rg} -a {acc} -n {db_name} --yes')
         assert not self.cmd('az cosmosdb sql database exists -g {rg} -a {acc} -n {db_name}').get_output_in_json()
-
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container')
@@ -83,7 +82,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert len(collection_list) == 1
 
         self.cmd('az cosmosdb sql container delete -g {rg} -a {acc} -d {db_name} -n {col} --yes')
-
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_restore')
@@ -131,7 +129,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 0
-
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_shared_database_restore', location='westcentralus')
@@ -195,7 +192,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert len(container_list) == 0
 
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}'))
-        #self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}')
+        # self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}')
 
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 0
@@ -222,7 +219,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql database delete -g {rg} -a {acc} -n {db_name} --yes')
         database_list = self.cmd('az cosmosdb sql database list -g {rg} -a {acc}').get_output_in_json()
         assert len(database_list) == 0
-
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore')
@@ -281,7 +277,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 0
 
-        #self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}'))
+        # self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}'))
         self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}')
 
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
@@ -367,7 +363,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 0
 
-        #self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}'))
+        # self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}'))
         self.cmd('az cosmosdb sql container restore -g {rg} -a {acc} -d {db_name} -n {ctn_name} --restore-timestamp {rts}')
 
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
@@ -393,8 +389,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         container_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
         assert container_show["name"] == ctn_name
 
-
-#mongo
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_database')
     def test_cosmosdb_mongodb_database(self, resource_group):
@@ -425,7 +419,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb mongodb database delete -g {rg} -a {acc} -n {db_name} --yes')
         database_list = self.cmd('az cosmosdb mongodb database list -g {rg} -a {acc}').get_output_in_json()
         assert len(database_list) == 0
-
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_collection')
@@ -461,7 +454,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
         self.cmd('az cosmosdb mongodb collection delete -g {rg} -a {acc} -d {db_name} -n {col} --yes')
 
-
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_normal_database_prov_collection_restore')
     def test_cosmosdb_mongodb_normal_database_prov_collection_restore(self, resource_group):
@@ -487,7 +479,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'az cosmosdb mongodb collection create -g {rg} -a {acc} -d {db_name} -n {col_name} --shard {shard_key}').get_output_in_json()
         assert collection_create["name"] == col_name
 
-        indexes_size = len(collection_create["resource"]["indexes"])
+        # indexes_size = len(collection_create["resource"]["indexes"])
         # collection_update = self.cmd(
         #    'az cosmosdb mongodb collection update -g {rg} -a {acc} -d {db_name} -n {col_name} --idx {indexes}').get_output_in_json()
         # assert len(collection_update["resource"]["indexes"]) == indexes_size + 1
@@ -551,7 +543,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'az cosmosdb mongodb collection list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(collection_list) == 0
 
-
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_shared_database_prov_collection_restore')
     def test_cosmosdb_mongodb_shared_database_prov_collection_restore(self, resource_group):
@@ -584,7 +575,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
             'az cosmosdb mongodb collection create -g {rg} -a {acc} -d {db_name} -n {col_name2} --shard {shard_key} --throughput {tp1}').get_output_in_json()
         assert collection_create["name"] == col_name2
 
-        indexes_size = len(collection_create["resource"]["indexes"])
+        # indexes_size = len(collection_create["resource"]["indexes"])
         # collection_update = self.cmd(
         #     'az cosmosdb mongodb collection update -g {rg} -a {acc} -d {db_name} -n {col_name} --idx {indexes}').get_output_in_json()
         # assert len(collection_update["resource"]["indexes"]) == indexes_size + 1
@@ -646,11 +637,10 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         database_list = self.cmd('az cosmosdb mongodb database list -g {rg} -a {acc}').get_output_in_json()
         assert len(database_list) == 0
 
-
- # InAccount No timestamp restore validation
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_normal_database_prov_container_restore_nt')
     def test_cosmosdb_sql_normal_database_prov_container_restore_nt(self, resource_group):
+        # InAccount No timestamp restore validation
         # Step 1: Initialize variables
         db_name = self.create_random_name(prefix='cli', length=15)
         ctn_name = self.create_random_name(prefix='cli', length=15)
@@ -681,7 +671,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
         # Step 4: Create SQL container
         logger.info("# Step 4: Create SQL container")
-        container_create = self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {ctn_name} -p {part} --unique-key-policy {unique_key} --conflict-resolution-policy {conflict_resolution} --idx {indexing}').get_output_in_json()
+        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {ctn_name} -p {part} --unique-key-policy {unique_key} --conflict-resolution-policy {conflict_resolution} --idx {indexing}').get_output_in_json()
         container_list = self.cmd('az cosmosdb sql container list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
         assert len(container_list) == 1
 

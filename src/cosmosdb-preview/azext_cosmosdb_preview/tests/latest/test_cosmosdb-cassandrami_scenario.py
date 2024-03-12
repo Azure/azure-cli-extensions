@@ -24,7 +24,7 @@ class ManagedCassandraScenarioTest(ScenarioTest):
             'c': self.create_random_name(prefix='cli', length=10),
             'subnet_id': self.create_subnet(resource_group),
             'seed_nodes': '127.0.0.1 127.0.0.2'
-            #'certs': './test.pem'
+            # 'certs': './test.pem'
         })
 
         # Create Cluster
@@ -35,7 +35,7 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         # Deallocate Cluster
         self.cmd('az managed-cassandra cluster deallocate -c {c} -g {rg} --force \"true\" --yes')
         cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
-        assert cluster['properties']['deallocated'] == True
+        assert cluster['properties']['deallocated'] is True
 
         # Delete Cluster
         try:
