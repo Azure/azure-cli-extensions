@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -1809,7 +1810,7 @@ def process_restorable_databases(restorable_databases, database_name):
             if resource.operation_type == "Delete" and latest_database_delete_time < event_timestamp:
                 latest_database_delete_time = event_timestamp
 
-            if (resource.operation_type == "Create" or resource.operation_type == "Recreate") and latest_database_create_or_recreate_time < event_timestamp:
+            if (resource.operation_type in ('Create', 'Recreate')) and latest_database_create_or_recreate_time < event_timestamp:
                 latest_database_create_or_recreate_time = event_timestamp
 
     if database_rid is None:
@@ -1836,7 +1837,7 @@ def process_restorable_collections(restorable_collections, collection_name, data
             if resource.operation_type == "Delete" and latest_collection_delete_time < event_timestamp:
                 latest_collection_delete_time = event_timestamp
 
-            if (resource.operation_type == "Create" or resource.operation_type == "Recreate") and latest_collection_create_or_recreate_time < event_timestamp:
+            if (resource.operation_type in ('Create', 'Recreate')) and latest_collection_create_or_recreate_time < event_timestamp:
                 latest_collection_create_or_recreate_time = event_timestamp
 
     if collection_rid is None:
