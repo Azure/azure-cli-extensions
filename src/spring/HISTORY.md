@@ -1,6 +1,6 @@
 Release History
 ===============
-1.19.5
+1.20.0
 ---
 * Change default Application Configuration Service generation value to Gen2.
 
