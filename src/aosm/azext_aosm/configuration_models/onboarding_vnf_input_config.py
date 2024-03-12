@@ -112,15 +112,6 @@ class OnboardingCoreVNFInputConfig(OnboardingNFDBaseInputConfig):
             )
         },
     )
-    image_name_parameter: str = field(
-        default="",
-        metadata={
-            "comment": (
-                "The parameter name in the VM ARM template which "
-                "specifies the name of the image to use for the VM."
-            )
-        },
-    )
 
     arm_templates: List[ArmTemplatePropertiesConfig] = field(
         default_factory=lambda: [ArmTemplatePropertiesConfig()],
@@ -160,8 +151,6 @@ class OnboardingCoreVNFInputConfig(OnboardingNFDBaseInputConfig):
     def validate(self):
         """Validate the configuration."""
         super().validate()
-        if not self.image_name_parameter:
-            raise ValidationError("image_name_parameter must be set")
         if not self.arm_templates:
             raise ValidationError("arm_template must be set")
         if not self.vhd:
@@ -176,16 +165,6 @@ class OnboardingCoreVNFInputConfig(OnboardingNFDBaseInputConfig):
 @dataclass
 class OnboardingNexusVNFInputConfig(OnboardingNFDBaseInputConfig):
     """Input configuration for onboarding VNFs."""
-
-    image_name_parameter: str = field(
-        default="",
-        metadata={
-            "comment": (
-                "The parameter name in the VM ARM template which "
-                "specifies the name of the image to use for the VM."
-            )
-        },
-    )
 
     arm_templates: List[ArmTemplatePropertiesConfig] = field(
         default_factory=lambda: [ArmTemplatePropertiesConfig()],
@@ -226,8 +205,6 @@ class OnboardingNexusVNFInputConfig(OnboardingNFDBaseInputConfig):
     def validate(self):
         """Validate the configuration."""
         super().validate()
-        if not self.image_name_parameter:
-            raise ValidationError("image_name_parameter must be set")
         if not self.arm_templates:
             raise ValidationError("arm_template must be set")
         if not self.images:

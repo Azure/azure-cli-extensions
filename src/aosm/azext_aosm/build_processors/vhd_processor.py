@@ -193,7 +193,7 @@ class VHDProcessor(BaseInputProcessor):
         else:
             params = '{}'
         logger.info(
-            "Created parameters file for Nexus image."
+            "Created parameters file for VHD image."
         )
         return LocalFileBuilder(
             Path(
