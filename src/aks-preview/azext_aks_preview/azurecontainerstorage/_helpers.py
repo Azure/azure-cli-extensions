@@ -238,8 +238,8 @@ def get_extension_installed_and_cluster_configs(cmd, resource_group, cluster_nam
                         if agentpool.node_labels is not None:
                             node_labels = agentpool.node_labels
                             if (node_labels is not None and
-                                node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and
-                                vm_size.lower().startswith('standard_l')):
+                                    node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and
+                                    vm_size.lower().startswith('standard_l')):
                                 is_ephemeralDisk_nvme_enabled = True
                                 break
 
@@ -345,13 +345,13 @@ def get_desired_resource_value_args(
     if is_enabling_op:
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK or \
            (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
-           storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD):
+                storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD):
             updated_core_value = 1
             updated_memory_value = 1
             updated_hugepages_value = 1
             updated_hugepages_number = 512
-        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
-          storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
+        elif (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
+              storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME):
             updated_core_value = _get_cpu_value_based_on_vm_size(nodepool_skus)
             updated_memory_value = 2
             updated_hugepages_value = 2
@@ -380,13 +380,13 @@ def get_desired_resource_value_args(
         # if we are disabling ElasticSan storagepool but AzureDisk or any
         # EphemeralDisk storagepool type is still enabled,
         # then we will preserve the current resource values.
-        elif (storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and
-          (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or \
-          (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and
-          (is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or \
-          (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
-          storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and
-          (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled)):
+        elif ((storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and
+                (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or
+                (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and
+                    (is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or
+                (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
+                    storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and
+                    (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled))):
             updated_core_value = current_core_value
             updated_memory_value = current_memory_value
             updated_hugepages_value = current_hugepages_value

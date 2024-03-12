@@ -135,10 +135,10 @@ def validate_disable_azure_container_storage_params(
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK or \
            storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN or \
            (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
-           storage_pool_option != CONST_ACSTOR_ALL):
+                storage_pool_option != CONST_ACSTOR_ALL):
             number_of_storagepool_types_to_be_disabled = 1
-        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
-             storage_pool_option == CONST_ACSTOR_ALL:
+        elif (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
+                storage_pool_option == CONST_ACSTOR_ALL):
             if is_ephemeralDisk_nvme_enabled:
                 number_of_storagepool_types_to_be_disabled += 1
             if is_ephemeralDisk_localssd_enabled:
@@ -223,9 +223,9 @@ def validate_enable_azure_container_storage_params(
 
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
            ((is_ephemeralDisk_nvme_enabled and
-           storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME) or
-           (is_ephemeralDisk_localssd_enabled and
-           storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD)):
+            storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME) or
+            (is_ephemeralDisk_localssd_enabled and
+                storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD)):
             ephemeral_disk_type_installed = CONST_STORAGE_POOL_OPTION_SSD if \
                 is_ephemeralDisk_localssd_enabled else CONST_STORAGE_POOL_OPTION_NVME
             raise ArgumentUsageError(
