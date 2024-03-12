@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.3.1
+1.0.0
 ++++++
 * add new command: `az network p2s-vpn-gateway disconnect`.
 * add new command: `az network p2s-vpn-gateway reset`.

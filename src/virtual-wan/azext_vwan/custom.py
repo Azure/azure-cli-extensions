@@ -456,8 +456,8 @@ def remove_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, rout
     route_table = get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name)
     try:
         route_table.routes.pop(index - 1)
-    except IndexError:
-        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(route_table.routes)}")
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(route_table.routes)}") from exc
 
     client = _route_table_client(cmd.cli_ctx, route_table)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
@@ -613,8 +613,8 @@ def remove_vpn_conn_ipsec_policy(cmd, resource_group_name, gateway_name, connect
     conn = _find_item_at_path(gateway, f"connections.{connection_name}")
     try:
         conn.ipsec_policies.pop(index - 1)
-    except IndexError:
-        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}")
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}") from exc
     _upsert(gateway, 'connections', conn, 'name', warn=False)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, gateway)
@@ -665,8 +665,8 @@ def remove_vpn_gateway_connection_vpn_site_link_conn(cmd, resource_group_name, g
     conn = client.get(resource_group_name, gateway_name, connection_name)
     try:
         conn.vpn_link_connections.pop(index - 1)
-    except IndexError:
-        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.vpn_link_connections)}")
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.vpn_link_connections)}") from exc
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, gateway_name, connection_name, conn)
 
@@ -720,8 +720,8 @@ def remove_vpn_conn_link_ipsec_policy(cmd, resource_group_name, gateway_name, co
 
     try:
         conn.ipsec_policies.pop(index - 1)
-    except IndexError:
-        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}")
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}") from exc
     _upsert(vpn_conn, 'vpn_link_connections', conn, 'name', warn=False)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, connection_name, vpn_conn)
@@ -854,8 +854,8 @@ def remove_vpn_site_link(cmd, resource_group_name, vpn_site_name, index, no_wait
     vpn_site = client.get(resource_group_name, vpn_site_name)
     try:
         vpn_site.vpn_site_links.pop(index - 1)
-    except IndexError:
-        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(vpn_site.vpn_site_links)}")
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(vpn_site.vpn_site_links)}") from exc
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, vpn_site_name, vpn_site)
 
@@ -988,8 +988,8 @@ def remove_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_c
     vpn_server_config = client.get(resource_group_name, vpn_server_configuration_name)
     try:
         vpn_server_config.vpn_client_ipsec_policies.pop(index)
-    except IndexError:
-        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 0 to {len(vpn_server_config.vpn_client_ipsec_policies)}")
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 0 to {len(vpn_server_config.vpn_client_ipsec_policies)}") from exc
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, vpn_server_configuration_name, vpn_server_config)
     if no_wait:
