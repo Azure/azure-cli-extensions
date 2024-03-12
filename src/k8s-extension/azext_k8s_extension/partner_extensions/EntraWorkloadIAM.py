@@ -28,7 +28,7 @@ CONFIG_SETTINGS_HELM_TENANT_ID = 'global.workload-iam.tenantID'
 CONFIG_SETTINGS_HELM_JOIN_TOKEN = 'workload-iam-local-authority.localAuthorityArgs.joinToken'
 
 
-class WorkloadIAM(DefaultExtension):
+class EntraWorkloadIAM(DefaultExtension):
 
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
                extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
@@ -36,7 +36,7 @@ class WorkloadIAM(DefaultExtension):
                configuration_settings_file, configuration_protected_settings_file,
                plan_name, plan_publisher, plan_product):
         """
-        Create method for ExtensionType 'microsoft.workloadiam'.
+        Create method for ExtensionType 'microsoft.entraworkloadiam'.
         """
 
         # Ensure that the values provided by the user for generic values of Arc extensions are

@@ -30,7 +30,7 @@ from .partner_extensions.OpenServiceMesh import OpenServiceMesh
 from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
 from .partner_extensions.DataProtectionKubernetes import DataProtectionKubernetes
 from .partner_extensions.Dapr import Dapr
-from .partner_extensions.WorkloadIAM import WorkloadIAM
+from .partner_extensions.EntraWorkloadIAM import EntraWorkloadIAM
 from .partner_extensions.DefaultExtension import (
     DefaultExtension,
     user_confirmation_factory,
@@ -52,7 +52,7 @@ def ExtensionFactory(extension_name):
         "microsoft.azureml.kubernetes": AzureMLKubernetes,
         "microsoft.dapr": Dapr,
         "microsoft.dataprotection.kubernetes": DataProtectionKubernetes,
-        "microsoft.workloadiam": WorkloadIAM,
+        "microsoft.entraworkloadiam": EntraWorkloadIAM,
     }
 
     # Return the extension if we find it in the map, else return the default
