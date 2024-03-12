@@ -320,3 +320,4 @@ class ContainerappEnvTelemetryOtlpPreviewSetDecorator(BaseResource):
                                       name=self.get_argument_name(), managed_environment_envelope=self.managed_env_def, no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
+

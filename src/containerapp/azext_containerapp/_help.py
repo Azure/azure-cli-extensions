@@ -1466,3 +1466,4 @@ helps['containerapp env telemetry otlp list'] = """
       text: |
           az containerapp env telemetry otlp list -n MyContainerappEnvironment -g MyResourceGroup
 """
+

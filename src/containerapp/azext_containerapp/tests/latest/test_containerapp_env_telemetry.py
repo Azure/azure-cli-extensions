@@ -304,3 +304,4 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         ])
 
         self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes --no-wait')
+
