@@ -274,6 +274,10 @@ class Create(AAZCommand):
             )
 
             _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            properties.data_api_hostname = AAZStrType(
+                serialized_name="dataApiHostname",
+                flags={"read_only": True},
+            )
             _element.client_id = AAZStrType(
                 serialized_name="clientId",
                 flags={"read_only": True},
