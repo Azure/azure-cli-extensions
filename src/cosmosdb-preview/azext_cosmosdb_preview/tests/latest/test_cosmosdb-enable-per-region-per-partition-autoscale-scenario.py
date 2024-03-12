@@ -18,7 +18,7 @@ class Cosmosdb_previewEnablePerRegionPerPartitionAutoscaleScenarioTest(ScenarioT
         # db_name = self.create_random_name(prefix='cli', length=15)
         # Assumption: There exists a cosmosTest rg.
         self.kwargs.update({
-            'rg' : 'cosmosTest',
+            'rg': 'cosmosTest',
             'acc': 'prpp-test-38129749818',
             'loc': 'australiaeast',
             'tar': '0=1200 1=1200',

@@ -214,7 +214,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
 
         container_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
         assert container_show["name"] == ctn_name
-        assert container_show["resource"]["defaultTtl"] == None
+        assert container_show["resource"]["defaultTtl"] is None
 
         self.cmd('az cosmosdb sql database delete -g {rg} -a {acc} -n {db_name} --yes')
         database_list = self.cmd('az cosmosdb sql database list -g {rg} -a {acc}').get_output_in_json()
