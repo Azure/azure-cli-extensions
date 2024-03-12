@@ -9,12 +9,13 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class Cosmosdb_previewEnablePerRegionPerPartitionAutoscaleScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_enable_per_region_per_partition_autoscale', location='australiaeast')
     def test_cosmosdb_enable_per_region_per_partition_autoscale(self):
-        col = self.create_random_name(prefix='cli', length=15)
-        db_name = self.create_random_name(prefix='cli', length=15)
+        # col = self.create_random_name(prefix='cli', length=15)
+        # db_name = self.create_random_name(prefix='cli', length=15)
         # Assumption: There exists a cosmosTest rg.
         self.kwargs.update({
             'rg' : 'cosmosTest',
@@ -24,27 +25,26 @@ class Cosmosdb_previewEnablePerRegionPerPartitionAutoscaleScenarioTest(ScenarioT
             'src': '2'
         })
 
-        #create enablePerRegionPerPartitionAutoscale enabled account
+        # create enablePerRegionPerPartitionAutoscale enabled account
         self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-prpp-autoscale true')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enablePerRegionPerPartitionAutoscale', True),
         ])
         print('Created enablePerRegionPerPartitionAutoscale enabled account')
 
-        #disable enablePerRegionPerPartitionAutoscale
+        # disable enablePerRegionPerPartitionAutoscale
         self.cmd('az cosmosdb update -n {acc} -g {rg} --enable-prpp-autoscale false')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enablePerRegionPerPartitionAutoscale', False),
         ])
         print('Disabled enablePerRegionPerPartitionAutoscale')
 
-        #enable enablePerRegionPerPartitionAutoscale
+        # enable enablePerRegionPerPartitionAutoscale
         self.cmd('az cosmosdb update -n {acc} -g {rg} --enable-prpp-autoscale true')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enablePerRegionPerPartitionAutoscale', True),
         ])
         print('Enabled enablePerRegionPerPartitionAutoscale')
 
-        #delete account
+        # delete account
         self.cmd('az cosmosdb delete -n {acc} -g {rg} --yes')
-        

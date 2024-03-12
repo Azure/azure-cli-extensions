@@ -255,7 +255,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert container_create["resource"]["conflictResolutionPolicy"]["mode"] == "lastWriterWins"
         assert container_create["resource"]["indexingPolicy"]["excludedPaths"][0]["path"] == "/headquarters/employees/?"
 
-        container_update = self.cmd('az cosmosdb sql container update -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
+        self.cmd('az cosmosdb sql container update -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
 
         container_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
         assert container_show["name"] == ctn_name
@@ -303,7 +303,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         container_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
         assert container_show["name"] == ctn_name
 
-
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_shared_database_prov_container_restore')
     def test_cosmosdb_sql_shared_database_prov_container_restore(self, resource_group):
@@ -341,7 +340,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest(ScenarioTest):
         assert container_create["resource"]["conflictResolutionPolicy"]["mode"] == "lastWriterWins"
         assert container_create["resource"]["indexingPolicy"]["excludedPaths"][0]["path"] == "/headquarters/employees/?"
 
-        container_update = self.cmd('az cosmosdb sql container update -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
+        self.cmd('az cosmosdb sql container update -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
 
         container_show = self.cmd('az cosmosdb sql container show -g {rg} -a {acc} -d {db_name} -n {ctn_name}').get_output_in_json()
         assert container_show["name"] == ctn_name

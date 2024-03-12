@@ -39,7 +39,7 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc}')
-        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # Create job
         self.cmd('az cosmosdb copy create -g {rg} --job-name {job_name} --src-account {acc} --dest-account {acc} --src-nosql database={database_name} container={container_name} --dest-nosql database={database_name} container={container_name_copied}')
