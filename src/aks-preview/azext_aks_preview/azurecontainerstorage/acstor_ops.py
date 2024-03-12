@@ -361,16 +361,20 @@ def perform_disable_azure_container_storage(
 
             config_settings.extend(reset_install_settings)
 
-            err_msg = "Validation failed. " \
-                    "Please ensure that storagepools are not being used. " \
-                    "Unable to perform disable Azure Container Storage operation. " \
-                    "Resetting cluster state."
+            err_msg = (
+                "Validation failed. "
+                "Please ensure that storagepools are not being used. "
+                "Unable to perform disable Azure Container Storage operation. "
+                "Resetting cluster state."
+            )
 
             if storage_pool_type != CONST_ACSTOR_ALL:
-                err_msg = "Validation failed. " \
-                        f"Please ensure that storagepools of type {storage_pool_type} are not being used. " \
-                        f"Unable to perform disable Azure Container Storage operation. " \
-                        "Resetting cluster state."
+                err_msg = (
+                    "Validation failed. "
+                    f"Please ensure that storagepools of type {storage_pool_type} are not being used. "
+                    f"Unable to perform disable Azure Container Storage operation. "
+                    "Resetting cluster state."
+                )
 
             k8s_extension_custom_mod.update_k8s_extension(
                 cmd,
@@ -438,7 +442,6 @@ def perform_disable_azure_container_storage(
                 ephemeral_disk_nvme_enabled = False
                 ephemeral_disk_localssd_enabled = False
 
-
         config_settings = [
             {"global.cli.storagePool.disable.validation": False},
             {"global.cli.storagePool.disable.type": storage_pool_type},
@@ -451,7 +454,6 @@ def perform_disable_azure_container_storage(
             {"global.cli.storagePool.elasticSan.enabled": elastic_san_enabled},
             {"global.cli.storagePool.ephemeralDisk.nvme.enabled": ephemeral_disk_nvme_enabled},
             {"global.cli.storagePool.ephemeralDisk.temp.enabled": ephemeral_disk_localssd_enabled},
-
         ]
 
         config_settings.extend(reset_install_settings)

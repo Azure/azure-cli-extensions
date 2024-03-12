@@ -3504,7 +3504,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             pool_size = self.context.raw_param.get("storage_pool_size")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
             node_resource_group = cluster.node_resource_group
-            nodepool_name = self.context.get_intermediate("azure_container_storage_nodepools")
             agent_pool_vm_sizes = []
             if len(cluster.agent_pool_profiles) > 0:
                 # Cluster creation has only 1 agentpool
@@ -3777,7 +3776,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 # nodes are already labelled. Use those label
                 # to generate the nodepool_list.
                 if is_extension_installed:
-                     nodepool_list = ','.join(labelled_nodepool_arr)
+                    nodepool_list = ','.join(labelled_nodepool_arr)
                 else:
                     # Set Azure Container Storage labels on the required nodepools.
                     nodepool_list_arr = nodepool_list.split(',')

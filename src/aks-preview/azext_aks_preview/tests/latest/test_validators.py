@@ -811,6 +811,7 @@ class TestValidateDisableAzureContainerStorage(unittest.TestCase):
             acstor_validator.validate_disable_azure_container_storage_params(
                 pool_type, None, None, None, None, None, True, is_azureDisk_enabled, False, False, False
             )
+        self.assertEqual(str(cm.exception), err)
 
     def test_disable_only_storage_pool_installed(self):
         pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
@@ -830,6 +831,7 @@ class TestValidateDisableAzureContainerStorage(unittest.TestCase):
         acstor_validator.validate_disable_azure_container_storage_params(
             pool_type, None, None, None, None, None, True, False, True, True, False
         )
+
 
 class TestValidateEnableAzureContainerStorage(unittest.TestCase):
     def test_enable_with_invalid_storage_pool_name(self):
@@ -985,7 +987,7 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         nodepool_list = "nodepool1,nodepool2"
         agentpools = [{"name": "nodepool1"}, {"name": "nodepool2"}]
         acstor_validator.validate_enable_azure_container_storage_params(
-            storage_pool_type, storage_pool_name, None, None, storage_pool_size, nodepool_list, agentpools, False, False, False, False, False
+            storage_pool_type, storage_pool_name, storage_pool_sku, None, storage_pool_size, nodepool_list, agentpools, False, False, False, False, False
         )
 
     def test_valid_enable_for_ephemeral_disk_pool(self):
@@ -1037,7 +1039,7 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
         agentpools = [{"name": "nodepool1", "node_labels": {"acstor.azure.com/io-engine": "acstor"}}, {"name": "nodepool2"}]
         acstor_validator.validate_enable_azure_container_storage_params(
-            storage_pool_type, storage_pool_name, None, None, storage_pool_size, None, agentpools, True, False, False, False, False
+            storage_pool_type, storage_pool_name, storage_pool_sku, None, storage_pool_size, None, agentpools, True, False, False, False, False
         )
 
 

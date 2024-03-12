@@ -83,9 +83,9 @@ def validate_disable_azure_container_storage_params(
                 f'to {CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK}.'
             )
         else:
-            if ((storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and \
-               not is_ephemeralDisk_nvme_enabled) or \
-               (storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and \
+            if ((storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and
+               not is_ephemeralDisk_nvme_enabled) or
+               (storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and
                not is_ephemeralDisk_localssd_enabled)):
                 raise InvalidArgumentValueError(
                     'Invalid --storage-pool-option value since ephemeralDisk '
@@ -108,11 +108,11 @@ def validate_disable_azure_container_storage_params(
 
     is_ephemeralDisk_enabled = is_ephemeralDisk_localssd_enabled or is_ephemeralDisk_nvme_enabled
 
-    if (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and \
+    if (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and
        not is_azureDisk_enabled) or \
-       (storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and \
+       (storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and
        not is_elasticSan_enabled) or \
-       (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
+       (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
        not is_ephemeralDisk_enabled):
         raise ArgumentUsageError(
             'Invalid --disable-azure-container-storage value. '
@@ -134,11 +134,11 @@ def validate_disable_azure_container_storage_params(
         number_of_storagepool_types_to_be_disabled = 0
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK or \
            storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN or \
-           (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
-            storage_pool_option != CONST_ACSTOR_ALL):
+           (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
+           storage_pool_option != CONST_ACSTOR_ALL):
             number_of_storagepool_types_to_be_disabled = 1
         elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
-           storage_pool_option == CONST_ACSTOR_ALL:
+             storage_pool_option == CONST_ACSTOR_ALL:
             if is_ephemeralDisk_nvme_enabled:
                 number_of_storagepool_types_to_be_disabled += 1
             if is_ephemeralDisk_localssd_enabled:
@@ -211,9 +211,9 @@ def validate_enable_azure_container_storage_params(
     _validate_nodepools(nodepool_list, agentpool_details, storage_pool_type, storage_pool_option, is_extension_installed)
 
     if is_extension_installed:
-        if (is_azureDisk_enabled and \
+        if (is_azureDisk_enabled and
            storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK) or \
-           (is_elasticSan_enabled and \
+           (is_elasticSan_enabled and
            storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN):
             raise ArgumentUsageError(
                 'Invalid --enable-azure-container-storage value. '
@@ -222,13 +222,12 @@ def validate_enable_azure_container_storage_params(
             )
 
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
-           ((is_ephemeralDisk_nvme_enabled and \
-           storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME) or \
-           (is_ephemeralDisk_localssd_enabled and \
+           ((is_ephemeralDisk_nvme_enabled and
+           storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME) or
+           (is_ephemeralDisk_localssd_enabled and
            storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD)):
             ephemeral_disk_type_installed = CONST_STORAGE_POOL_OPTION_SSD if \
-                                            is_ephemeralDisk_localssd_enabled else \
-                                            CONST_STORAGE_POOL_OPTION_NVME 
+                is_ephemeralDisk_localssd_enabled else CONST_STORAGE_POOL_OPTION_NVME
             raise ArgumentUsageError(
                 'Invalid --enable-azure-container-storage value. '
                 'Azure Container Storage is already enabled for storagepool type '
@@ -297,7 +296,7 @@ def _validate_nodepools(
                node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None:
                 nodepool_name = agentpool.get("name")
                 nodepool_arr.append(nodepool_name)
-        
+
         if len(nodepool_arr) == 0:
             raise ArgumentUsageError(
                 f'Cannot enable Azure Container Storage storagepool of type {storage_pool_type} '
@@ -333,7 +332,6 @@ def _validate_nodepools(
                     if vm_size.lower().startswith('standard_l'):
                         nvme_nodepool_found = True
 
-
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
        storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and \
        not nvme_nodepool_found:
@@ -364,11 +362,12 @@ def _validate_nodepool_names(nodepool_names, agentpool_details):
     for nodepool in nodepool_list:
         if nodepool not in agentpool_names:
             if len(agentpool_names) > 1:
+                agentpool_names_str = ', '.join(agentpool_names)
                 raise InvalidArgumentValueError(
                     f'Node pool: {nodepool} not found. '
                     'Please provide a comma separated string of existing node pool names '
                     'in --azure-container-storage-nodepools.'
-                    f"\nNode pools available in the cluster are: {', '.join(agentpool_names)}."
+                    f'\nNode pools available in the cluster are: {agentpool_names_str}.'
                     '\nAborting installation of Azure Container Storage.'
                 )
             raise InvalidArgumentValueError(
