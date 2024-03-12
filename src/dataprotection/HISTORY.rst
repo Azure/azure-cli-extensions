@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.12.0
+1.0.0
 ++++++
 * Added support for Cross Region Restore for Backup Vaults.
 * `az dataprotection backup-vault create`: New parameter `--cross-region-restore-state/--crr-state` that can be set to Enabled/Disabled.
