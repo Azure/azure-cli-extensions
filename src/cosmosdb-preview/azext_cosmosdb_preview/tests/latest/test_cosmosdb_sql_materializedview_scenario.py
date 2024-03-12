@@ -56,5 +56,5 @@ class Cosmosdb_previewMaterialiedviewScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {mvCol2} -p /mvpk --materialized-view-definition {mvDefinition}',
                  checks=[self.check('resource.materializedViewDefinition.sourceCollectionId', "src1")])
 
-        #delete account
+        # delete account
         self.cmd('az cosmosdb delete -n {acc} -g {rg} --yes')

@@ -38,30 +38,30 @@ class Cosmosdb_previewMongodbRbacScenarioTest(ScenarioTest):
             subscription, resource_group, acc_name, user_definition_id)
 
         # Contract violation request body
-        empty_id_role_definition_create_body = ' {{ \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
-            role_def_id1, db_name, role_def_name1)
-        invalid_role_id_role_definition_create_body = ' {{ \\"Id\\": \\"randomid\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
-            role_def_id1, db_name, role_def_name1)
+        empty_id_role_definition_create_body = ' {{ \\"RoleName\\": \\"{1}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{0}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
+            db_name, role_def_name1)
+        invalid_role_id_role_definition_create_body = ' {{ \\"Id\\": \\"randomid\\", \\"RoleName\\": \\"{1}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{0}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{0}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
+            db_name, role_def_name1)
         empty_name_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}},\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
-            role_def_id1, db_name, role_def_name1)    
+            role_def_id1, db_name)
         no_privilege_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Roles\\":[]}} '.format(
             role_def_id1, db_name, role_def_name1)
         no_resource_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Actions\\":[\\"insert\\",\\"find\\"]}}],\\"Roles\\":[]}} '.format(
             role_def_id1, db_name, role_def_name1)
         no_actions_role_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"RoleName\\": \\"{2}\\", \\"Type\\": \\"CustomRole\\", \\"DatabaseName\\":\\"{1}\\",\\"Privileges\\":[{{\\"Resource\\":{{\\"Db\\":\\"{1}\\",\\"Collection\\":\\"test\\"}}}}],\\"Roles\\":[]}} '.format(
             role_def_id1, db_name, role_def_name1)
-        empty_id_user_definition_create_body = ' {{ \\"Id\\": \\"\\", \\"UserName\\": \\"{2}\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{3}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
-            user_definition_id, db_name, user_name, role_def_name1)
-        invalid_id_user_definition_create_body = ' {{ \\"Id\\": \\"randomuserid\\", \\"UserName\\": \\"{2}\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{3}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
-            user_definition_id, db_name, user_name, role_def_name1)
-        empty_username_user_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"UserName\\": \\"\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{3}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
-            user_definition_id, db_name, user_name, role_def_name1)
+        empty_id_user_definition_create_body = ' {{ \\"Id\\": \\"\\", \\"UserName\\": \\"{1}\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{0}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{2}\\",\\"Db\\": \\"{0}\\"}}]}} '.format(
+            db_name, user_name, role_def_name1)
+        invalid_id_user_definition_create_body = ' {{ \\"Id\\": \\"randomuserid\\", \\"UserName\\": \\"{1}\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{0}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{2}\\",\\"Db\\": \\"{0}\\"}}]}} '.format(
+            db_name, user_name, role_def_name1)
+        empty_username_user_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"UserName\\": \\"\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{2}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
+            user_definition_id, db_name, role_def_name1)
         empty_password_user_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"UserName\\": \\"{2}\\", \\"Password\\": \\"\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{3}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
             user_definition_id, db_name, user_name, role_def_name1)
         empty_db_user_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"UserName\\": \\"{2}\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\",\\"Roles\\": [ {{\\"Role\\": \\"{3}\\",\\"Db\\": \\"{1}\\"}}]}} '.format(
             user_definition_id, db_name, user_name, role_def_name1)
         no_roles_user_definition_create_body = ' {{ \\"Id\\": \\"{0}\\", \\"UserName\\": \\"{2}\\", \\"Password\\": \\"MyPass\\", \\"CustomData\\": \\"MyCustomData\\", \\"DatabaseName\\":\\"{1}\\",\\"Mechanisms\\": \\"SCRAM-SHA-256\\"}} '.format(
-            user_definition_id, db_name, user_name, role_def_name1)
+            user_definition_id, db_name, user_name)
 
         self.kwargs.update({
             'acc': acc_name,
