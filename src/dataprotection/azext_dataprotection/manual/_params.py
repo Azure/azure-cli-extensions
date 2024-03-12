@@ -58,6 +58,13 @@ def load_arguments(self, _):
         c.argument('end_time', type=str, help="Specify the end date time in UTC (yyyy-mm-ddTHH:MM:SS)")
         c.argument('use_secondary_region', arg_type=get_three_state_flag(),
                    help='Use this flag to fetch recovery points from the secondary region')
+        c.argument('max_items', type=int, help="Total number of items to return in the command's output. If the "
+                                               "total number of items available is more than the value "
+                                               "specified, a token is provided in the command's output. To "
+                                               "resume pagination, provide the token value in `--next-token` "
+                                               "argument of a subsequent command.")
+        c.argument('next_token', type=str, help="Token to specify where to start paginating. This is the token "
+                                                "value from a previously truncated response.")
 
     with self.argument_context('dataprotection backup-vault list-from-resourcegraph') as c:
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
@@ -147,6 +154,13 @@ def load_arguments(self, _):
         c.argument('vault_name', vault_name_type)
         c.argument('use_secondary_region', arg_type=get_three_state_flag(),
                    help='Use this flag fetch list of jobs from secondary region')
+        c.argument('max_items', type=int, help="Total number of items to return in the command's output. If the "
+                                               "total number of items available is more than the value "
+                                               "specified, a token is provided in the command's output. To "
+                                               "resume pagination, provide the token value in `--next-token` "
+                                               "argument of a subsequent command.")
+        c.argument('next_token', type=str, help="Token to specify where to start paginating. This is the token "
+                                                "value from a previously truncated response.")
 
     with self.argument_context('dataprotection job list-from-resourcegraph') as c:
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
