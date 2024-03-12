@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric interface update-admin-state",
+    "networkfabric device run-ro",
 )
-class UpdateAdminState(AAZCommand):
-    """Update the admin state of the Network Interface.
+class RunRo(AAZCommand):
+    """Run the RO Command on the Network Device.
 
-    :example: Update admin state of Network Interface
-        az networkfabric interface update-admin-state -g "example-rg" --network-device-name "example-device" --resource-name "example-interface" --state "Enable"
+    :example: Run ro on the network device
+        az networkfabric device run-ro --resource-name "example-device" --resource-group "example-rg" --ro-command "example command"
     """
 
     _aaz_info = {
         "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}/updateadministrativestate", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/runrocommand", "2024-02-15-preview"],
         ]
     }
 
@@ -45,17 +45,11 @@ class UpdateAdminState(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_device_name = AAZStrArg(
-            options=["--device", "--network-device-name"],
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
             help="Name of the Network Device.",
             required=True,
             id_part="name",
-        )
-        _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
-            help="Name of the Network Interface.",
-            required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -64,25 +58,16 @@ class UpdateAdminState(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.resource_ids = AAZListArg(
-            options=["--resource-ids"],
+        _args_schema.ro_command = AAZStrArg(
+            options=["--ro-command"],
             arg_group="Body",
-            help="Network Fabrics or Network Rack resource Id.",
+            help="Specify the command.",
         )
-        _args_schema.state = AAZStrArg(
-            options=["--state"],
-            arg_group="Body",
-            help="Administrative state.",
-            enum={"Disable": "Disable", "Enable": "Enable"},
-        )
-
-        resource_ids = cls._args_schema.resource_ids
-        resource_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkInterfacesUpdateAdministrativeState(ctx=self.ctx)()
+        yield self.NetworkDevicesRunRoCommand(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -97,7 +82,7 @@ class UpdateAdminState(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkInterfacesUpdateAdministrativeState(AAZHttpOperation):
+    class NetworkDevicesRunRoCommand(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -127,7 +112,7 @@ class UpdateAdminState(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkDevices/{networkDeviceName}/networkInterfaces/{networkInterfaceName}/updateAdministrativeState",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkDevices/{networkDeviceName}/runRoCommand",
                 **self.url_parameters
             )
 
@@ -143,11 +128,7 @@ class UpdateAdminState(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkDeviceName", self.ctx.args.network_device_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "networkInterfaceName", self.ctx.args.resource_name,
+                    "networkDeviceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -190,12 +171,7 @@ class UpdateAdminState(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("resourceIds", AAZListType, ".resource_ids")
-            _builder.set_prop("state", AAZStrType, ".state")
-
-            resource_ids = _builder.get(".resourceIds")
-            if resource_ids is not None:
-                resource_ids.set_elements(AAZStrType, ".")
+            _builder.set_prop("command", AAZStrType, ".ro_command")
 
             return self.serialize_content(_content_value)
 
@@ -215,35 +191,23 @@ class UpdateAdminState(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateAdminStateHelper._build_schema_common_post_action_response_for_state_update_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            _schema_on_200.error = AAZObjectType()
+            _RunRoHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _schema_on_200.output_url = AAZStrType(
+                serialized_name="outputUrl",
+            )
 
             return cls._schema_on_200
 
 
-class _UpdateAdminStateHelper:
-    """Helper class for UpdateAdminState"""
-
-    _schema_common_post_action_response_for_state_update_read = None
-
-    @classmethod
-    def _build_schema_common_post_action_response_for_state_update_read(cls, _schema):
-        if cls._schema_common_post_action_response_for_state_update_read is not None:
-            _schema.configuration_state = cls._schema_common_post_action_response_for_state_update_read.configuration_state
-            _schema.error = cls._schema_common_post_action_response_for_state_update_read.error
-            return
-
-        cls._schema_common_post_action_response_for_state_update_read = _schema_common_post_action_response_for_state_update_read = AAZObjectType()
-
-        common_post_action_response_for_state_update_read = _schema_common_post_action_response_for_state_update_read
-        common_post_action_response_for_state_update_read.configuration_state = AAZStrType(
-            serialized_name="configurationState",
-            flags={"read_only": True},
-        )
-        common_post_action_response_for_state_update_read.error = AAZObjectType()
-        cls._build_schema_error_detail_read(common_post_action_response_for_state_update_read.error)
-
-        _schema.configuration_state = cls._schema_common_post_action_response_for_state_update_read.configuration_state
-        _schema.error = cls._schema_common_post_action_response_for_state_update_read.error
+class _RunRoHelper:
+    """Helper class for RunRo"""
 
     _schema_error_detail_read = None
 
@@ -296,4 +260,4 @@ class _UpdateAdminStateHelper:
         _schema.target = cls._schema_error_detail_read.target
 
 
-__all__ = ["UpdateAdminState"]
+__all__ = ["RunRo"]
