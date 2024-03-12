@@ -84,7 +84,7 @@ def load_command_table(self, _):
     # =               FUNCTION-BASED OVERRIDE OF AAZ COMMANDS               =
     # =======================================================================
     # Commands in this section with the format "self.command_group..." were overwritten with a function-based approach.
-    # Function-based override uses AAZ arg schema to validate input but is less manageable. Needs manual management 
+    # Function-based override uses AAZ arg schema to validate input but is less manageable. Needs manual management
     # of _params.py and _help.py. We ideally find a way to use class-based override without compromising AAZ Validation.
 
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
@@ -98,7 +98,7 @@ def load_command_table(self, _):
     # where we provide --use-secondary-region as a parameter, but behind the scenes we call an entirely different
     # API-based command when it is provided. Needs manual management of _params.py and _help.py, so we need to be
     # careful not to override defaults.
-    
+
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True)
 
