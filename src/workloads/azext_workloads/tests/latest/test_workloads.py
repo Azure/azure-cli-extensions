@@ -8,7 +8,7 @@
 import os
 import unittest
 
-from azure.cli.testsdk import *
+from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -137,24 +137,24 @@ class WorkloadsScenario(ScenarioTest):
         ])
 
     def test_workloads_svi_childinstances_stop_with_infra(self):
-            self.kwargs.update({
-                'name': 'C36',
-                'appservername': 'c36appvm0-0',
-                'csservername': 'c36ascsvm-0',
-                'dbservername': 'C36'
-            })
+        self.kwargs.update({
+            'name': 'C36',
+            'appservername': 'c36appvm0-0',
+            'csservername': 'c36ascsvm-0',
+            'dbservername': 'C36'
+        })
 
-            self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername} --deallocate-vm', checks=[
-                self.check('status', 'Succeeded')
-            ])
+        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername} --deallocate-vm', checks=[
+            self.check('status', 'Succeeded')
+        ])
 
-            self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername} --deallocate-vm', checks=[
-                self.check('status', 'Succeeded')
-            ])
+        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername} --deallocate-vm', checks=[
+            self.check('status', 'Succeeded')
+        ])
 
-            self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername} --deallocate-vm', checks=[
-                self.check('status', 'Succeeded')
-            ])
+        self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername} --deallocate-vm', checks=[
+            self.check('status', 'Succeeded')
+        ])
 
     def test_workloads_svi_childinstances_start_with_infra(self):
         self.kwargs.update({
@@ -167,7 +167,7 @@ class WorkloadsScenario(ScenarioTest):
         self.cmd('workloads sap-database-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername} --start-vm', checks=[
             self.check('status', 'Succeeded')
         ])
-        
+
         self.cmd('workloads sap-central-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername} --start-vm', checks=[
             self.check('status', 'Succeeded')
         ])
@@ -309,6 +309,3 @@ class WorkloadsScenario(ScenarioTest):
         })
 
         self.cmd('workloads sap-virtual-instance delete -g CLI-TESTING -n {name} --yes')
-
-
-

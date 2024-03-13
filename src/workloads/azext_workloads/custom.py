@@ -36,7 +36,7 @@ class SVICreate(_SVICreate):
         args_schema.mrgstracc = AAZStrArg(
             options=["--managed-rg-sa-name"],
             help="The custom storage account name for the storage account created by the service " +
-                    "in the managed resource group created as part of VIS deployment.",
+                 "in the managed resource group created as part of VIS deployment.",
             fmt=AAZStrArgFormat()
         )
         args_schema.configuration_org._registered = False
