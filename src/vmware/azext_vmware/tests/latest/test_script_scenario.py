@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from knack.prompting import NoTTYException
 
 
 class VmwareScriptScenarioTest(ScenarioTest):
@@ -39,6 +40,34 @@ class VmwareScriptScenarioTest(ScenarioTest):
         rsp = self.cmd('az vmware script-execution create --resource-group {rg} --private-cloud {privatecloud} --name {scriptExecution} --script-cmdlet-id "/subscriptions/{subscription}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/AVS.PowerCommands@1.0.0/scriptCmdlets/New-SsoExternalIdentitySource" --timeout P0Y0M0DT0H60M60S --retention P0Y0M60DT0H60M60S --parameter name=DomainName type=Value value=placeholderDomain.local --parameter name=BaseUserDN type=Value "value=DC=placeholder, DC=placeholder" --hidden-parameter name=Password type=SecureValue secureValue=PlaceholderPassword').get_output_in_json()
         self.assertEqual(rsp['type'], 'Microsoft.AVS/privateClouds/scriptExecutions')
         self.assertEqual(rsp['name'], self.kwargs.get('scriptExecution'))
+
+        raisedException = False
+        try: 
+          rsp = self.cmd('az vmware script-execution create --resource-group group1 --private-cloud cloud1 --name newVmfsDatastore0 --script-cmdlet-id "/subscriptions/subscription-id/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.VMFS/scriptCmdlets/New-VmfsDatastore" --timeout P0Y0M0DT0H60M60S')
+        except NoTTYException as e:
+          raisedException = True
+        self.assertEqual(raisedException, True)
+
+        self.cmd('az vmware script-execution create --resource-group group1 --private-cloud cloud1 --name newVmfsDatastore0 --script-cmdlet-id "/subscriptions/subscription-id/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.VMFS/scriptCmdlets/New-VmfsDatastore" --timeout P0Y0M0DT0H60M60S --yes')
+
+        raisedException = False
+        try: 
+          rsp = self.cmd('az vmware script-execution create --resource-group group1 --private-cloud cloud1 --name newVmfsDatastore0 --script-cmdlet-id "/subscriptions/subscription-id/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.NFS/scriptCmdlets/New-VmfsDatastore" --timeout P0Y0M0DT0H60M60S')
+        except NoTTYException as e:
+          raisedException = True
+        self.assertEqual(raisedException, True)
+
+        self.cmd('az vmware script-execution create --resource-group group1 --private-cloud cloud1 --name newVmfsDatastore0 --script-cmdlet-id "/subscriptions/subscription-id/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.NFS/scriptCmdlets/New-VmfsDatastore" --timeout P0Y0M0DT0H60M60S --yes')
+
+        raisedException = False
+        try: 
+          rsp = self.cmd('az vmware script-execution create --resource-group group1 --private-cloud cloud1 --name newVmfsDatastore0 --script-cmdlet-id "/subscriptions/subscription-id/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.VVOLS/scriptCmdlets/New-VmfsDatastore" --timeout P0Y0M0DT0H60M60S')
+        except NoTTYException as e:
+          raisedException = True
+        self.assertEqual(raisedException, True)
+
+        self.cmd('az vmware script-execution create --resource-group group1 --private-cloud cloud1 --name newVmfsDatastore0 --script-cmdlet-id "/subscriptions/subscription-id/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.VVOLS/scriptCmdlets/New-VmfsDatastore" --timeout P0Y0M0DT0H60M60S --yes')
+
 
         count = len(self.cmd('az vmware script-execution list -g {rg} -c {privatecloud}').get_output_in_json())
         self.assertEqual(count, 1, 'count expected to be 1')

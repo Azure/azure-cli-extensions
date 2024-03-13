@@ -106,3 +106,4 @@ def load_arguments(self, _):
         c.argument('out', nargs='*', help='Standard output stream from the powershell execution.')
         c.argument('named_outputs', action=ScriptExecutionNamedOutputAction, nargs='*', help='User-defined dictionary.')
         c.argument('script_cmdlet_id', help='A reference to the script cmdlet resource if user is running a AVS script.')
+        c.argument('yes', help='Create without confirmation.')
