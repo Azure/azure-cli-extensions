@@ -3072,16 +3072,19 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             pool_size = self.context.raw_param.get("storage_pool_size")
             if not mc.agent_pool_profiles:
                 raise UnknownError("Encountered an unexpected error while getting the agent pools from the cluster.")
-            from azext_aks_preview.azurecontainerstorage._helpers import \
+
+            from azext_aks_preview.azurecontainerstorage._helpers import (
                 generate_agentpool_details_for_acstor
+            )
             agentpool_details = generate_agentpool_details_for_acstor(mc.agent_pool_profiles)
 
             # Marking the only agentpool name as the valid nodepool for
             # installing Azure Container Storage during `az aks create`
             nodepool_list = agentpool_details[0].get("name")
 
-            from azext_aks_preview.azurecontainerstorage._validators import \
+            from azext_aks_preview.azurecontainerstorage._validators import (
                 validate_enable_azure_container_storage_params
+            )
             validate_enable_azure_container_storage_params(
                 pool_type,
                 pool_name,
@@ -3098,15 +3101,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
 
             # Setup Azure Container Storage labels on the nodepool
-            from azext_aks_preview.azurecontainerstorage._consts import (
-                CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
-                CONST_ACSTOR_IO_ENGINE_LABEL_VAL
+            from azext_aks_preview.azurecontainerstorage._helpers import (
+                label_nodepools_for_acstor
             )
-            nodepool_labels = agentpool.node_labels
-            if nodepool_labels is None:
-                nodepool_labels = {}
-            nodepool_labels[CONST_ACSTOR_IO_ENGINE_LABEL_KEY] = CONST_ACSTOR_IO_ENGINE_LABEL_VAL
-            agentpool.node_labels = nodepool_labels
+            label_nodepools_for_acstor(mc.agent_pool_profiles, [nodepool_list])
 
             # set intermediates
             self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
@@ -3684,16 +3682,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # read the azure container storage values passed
         enable_pool_type = self.context.raw_param.get("enable_azure_container_storage")
         disable_pool_type = self.context.raw_param.get("disable_azure_container_storage")
-        enable_azure_container_storage = enable_pool_type is not None
-        disable_azure_container_storage = disable_pool_type is not None
         nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
-        if enable_azure_container_storage and disable_azure_container_storage:
+
+        if enable_pool_type is not None and disable_pool_type is not None:
             raise MutuallyExclusiveArgumentError(
                 'Conflicting flags. Cannot set --enable-azure-container-storage '
                 'and --disable-azure-container-storage together.'
             )
-
-        if enable_azure_container_storage or disable_azure_container_storage:
+        if enable_pool_type is not None or disable_pool_type is not None:
             # Require the agent pool profiles for azure container storage
             # operations. Raise exception if not found.
             if not mc.agent_pool_profiles:
@@ -3722,12 +3718,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.agent_pool_profiles,
             )
 
-            if enable_azure_container_storage:
-                from azext_aks_preview.azurecontainerstorage._consts import (
-                    CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
-                    CONST_ACSTOR_IO_ENGINE_LABEL_VAL
-                )
-
+            if enable_pool_type is not None:
                 # Incase of a new installation, if the nodepool list is not defined
                 # then check for all the nodepools which are marked with acstor io-engine
                 # labels and include them for installation. If none of the nodepools are
@@ -3739,11 +3730,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         if len(labelled_nodepool_arr) > 0:
                             nodepool_list = ','.join(labelled_nodepool_arr)
                         elif len(agentpool_details) == 1:
-                            pool_detail = agentpool_details[0]
-                            nodepool_list = pool_detail.get("name")
+                            nodepool_list = agentpool_details[0].get("name")
 
-                from azext_aks_preview.azurecontainerstorage._validators import \
+                from azext_aks_preview.azurecontainerstorage._validators import (
                     validate_enable_azure_container_storage_params
+                )
                 validate_enable_azure_container_storage_params(
                     enable_pool_type,
                     self.context.raw_param.get("storage_pool_name"),
@@ -3768,25 +3759,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 else:
                     # Set Azure Container Storage labels on the required nodepools.
                     nodepool_list_arr = nodepool_list.split(',')
-                    for agentpool in mc.agent_pool_profiles:
-                        labels = agentpool.node_labels
-                        if agentpool.name in nodepool_list_arr:
-                            if labels is None:
-                                labels = {}
-                            labels[CONST_ACSTOR_IO_ENGINE_LABEL_KEY] = CONST_ACSTOR_IO_ENGINE_LABEL_VAL
-                        else:
-                            # Remove residual Azure Container Storage labels
-                            # from any other nodepools where its not intended
-                            if labels is not None:
-                                labels.pop(CONST_ACSTOR_IO_ENGINE_LABEL_KEY, None)
-                        agentpool.node_labels = labels
+                    from azext_aks_preview.azurecontainerstorage._helpers import (
+                        label_nodepools_for_acstor
+                    )
+                    label_nodepools_for_acstor(mc.agent_pool_profiles, nodepool_list_arr)
 
                 # set intermediates
                 self.context.set_intermediate("azure_container_storage_nodepools", nodepool_list, overwrite_exists=True)
                 self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
-            if disable_azure_container_storage:
-                from azext_aks_preview.azurecontainerstorage._validators import \
+            elif disable_pool_type is not None:
+                from azext_aks_preview.azurecontainerstorage._validators import (
                     validate_disable_azure_container_storage_params
+                )
                 validate_disable_azure_container_storage_params(
                     disable_pool_type,
                     self.context.raw_param.get("storage_pool_name"),
@@ -3847,7 +3831,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 overwrite_exists=True
             )
             self.context.set_intermediate("current_core_value", current_core_value, overwrite_exists=True)
-
         return mc
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:

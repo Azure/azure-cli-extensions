@@ -6,10 +6,12 @@
 import time
 from datetime import datetime
 import re
+from typing import Tuple
 
 from azext_aks_preview._client_factory import get_providers_client_factory
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
+    CONST_ACSTOR_IO_ENGINE_LABEL_VAL,
     CONST_ACSTOR_K8S_EXTENSION_NAME,
     CONST_EXT_INSTALLATION_NAME,
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
@@ -29,7 +31,6 @@ from azure.cli.command_modules.acs._roleassignments import (
 )
 from azure.cli.core.azclierror import UnknownError
 from knack.log import get_logger
-from typing import Tuple, Union
 
 logger = get_logger(__name__)
 
@@ -184,7 +185,12 @@ def check_if_extension_is_installed(cmd, resource_group, cluster_name) -> bool:
     return return_val
 
 
-def get_extension_installed_and_cluster_configs(cmd, resource_group, cluster_name, agentpool_profiles) -> Tuple[bool, bool, bool, bool, Union[str, None]]:
+def get_extension_installed_and_cluster_configs(
+    cmd,
+    resource_group,
+    cluster_name,
+    agentpool_profiles,
+) -> Tuple[bool, bool, bool, bool, float]:
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
@@ -205,43 +211,43 @@ def get_extension_installed_and_cluster_configs(cmd, resource_group, cluster_nam
         )
 
         extension_type = extension.extension_type.lower()
-        if extension_type == CONST_ACSTOR_K8S_EXTENSION_NAME:
-            is_extension_installed = True
+        config_settings = extension.configuration_settings
+        is_extension_installed = extension_type == CONST_ACSTOR_K8S_EXTENSION_NAME
+        if is_extension_installed and config_settings is not None:
+            is_cli_operation_active = (
+                config_settings.get("global.cli.activeControl", "False") == "True"
+            )
+            if is_cli_operation_active:
+                is_azureDisk_enabled = (
+                    config_settings.get("global.cli.storagePool.azureDisk.enabled", "False") == "True"
+                )
+                is_elasticSan_enabled = (
+                    config_settings.get("global.cli.storagePool.elasticSan.enabled", "False") == "True"
+                )
+                is_ephemeralDisk_nvme_enabled = (
+                    config_settings.get("global.cli.storagePool.ephemeralDisk.nvme.enabled", "False") == "True"
+                )
+                is_ephemeralDisk_localssd_enabled = (
+                    config_settings.get("global.cli.storagePool.ephemeralDisk.temp.enabled", "False") == "True"
+                )
+                cpu_value = config_settings.get("global.cli.resources.ioEngine.cpu", "1")
+                resource_cpu_value = float(cpu_value)
+            else:
+                # For versions where "global.cli.activeControl" were not set it signifies
+                # that selective control of storgepool type was not yet defined.
+                # Hence, all the storagepool types are active and io engine core count is 1.
+                is_azureDisk_enabled = is_elasticSan_enabled = is_ephemeralDisk_localssd_enabled = True
+                resource_cpu_value = 1
 
-        if is_extension_installed:
-            config_settings = extension.configuration_settings
-            if config_settings is not None:
-                is_cli_operation_active = True if config_settings.get("global.cli.activeControl", "False") == "True" \
-                    else False
-                if is_cli_operation_active:
-                    is_azureDisk_enabled = True if config_settings.get("global.cli.storagePool.azureDisk.enabled", "False") == "True" \
-                        else False
-                    is_elasticSan_enabled = True if config_settings.get("global.cli.storagePool.elasticSan.enabled", "False") == "True" \
-                        else False
-                    is_ephemeralDisk_nvme_enabled = True if config_settings.get("global.cli.storagePool.ephemeralDisk.nvme.enabled", "False") == "True" \
-                        else False
-                    is_ephemeralDisk_localssd_enabled = True if config_settings.get("global.cli.storagePool.ephemeralDisk.temp.enabled", "False") == "True" \
-                        else False
-                    cpu_value = config_settings.get("global.cli.resources.ioEngine.cpu", None)
-                    if cpu_value is not None:
-                        resource_cpu_value = float(cpu_value)
-                else:
-                    # For versions where "global.cli.activeControl" were not set it signifies
-                    # that selective control of storgepool type was not yet defined.
-                    # Hence, all the storagepool types are active and io engine core count is 1.
-                    is_azureDisk_enabled = is_elasticSan_enabled = is_ephemeralDisk_localssd_enabled = True
-                    resource_cpu_value = 1
-
-                    # Determine if epehemeral NVMe was active based on the labelled nodepools present in cluster.
-                    for agentpool in agentpool_profiles:
-                        vm_size = agentpool.vm_size
-                        if agentpool.node_labels is not None:
-                            node_labels = agentpool.node_labels
-                            if (node_labels is not None and
-                                    node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and
-                                    vm_size.lower().startswith('standard_l')):
-                                is_ephemeralDisk_nvme_enabled = True
-                                break
+                # Determine if ephemeral NVMe was active based on the labelled nodepools present in cluster.
+                for agentpool in agentpool_profiles:
+                    vm_size = agentpool.vm_size
+                    node_labels = agentpool.node_labels
+                    if (node_labels is not None and
+                            node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and
+                            vm_size.lower().startswith('standard_l')):
+                        is_ephemeralDisk_nvme_enabled = True
+                        break
 
     except:  # pylint: disable=bare-except
         is_extension_installed = False
@@ -361,9 +367,12 @@ def get_desired_resource_value_args(
         # Now, we compare and check if the current values are already greater
         # than that and if so, we preserve the current values.
         updated_core_value = current_core_value if current_core_value > updated_core_value else updated_core_value
-        updated_memory_value = current_memory_value if current_memory_value > updated_memory_value else updated_memory_value
-        updated_hugepages_value = current_hugepages_value if current_hugepages_value > updated_hugepages_value else updated_hugepages_value
-        updated_hugepages_number = current_hugepages_number if current_hugepages_number > updated_hugepages_number else updated_hugepages_number
+        updated_memory_value = current_memory_value \
+            if current_memory_value > updated_memory_value else updated_memory_value
+        updated_hugepages_value = current_hugepages_value \
+            if current_hugepages_value > updated_hugepages_value else updated_hugepages_value
+        updated_hugepages_number = current_hugepages_number \
+            if current_hugepages_number > updated_hugepages_number else updated_hugepages_number
     else:
         # If we are disabling Ephemeral NVMe storagepool but azureDisk is
         # still enabled, we will set the azureDisk storagepool type values.
@@ -380,13 +389,17 @@ def get_desired_resource_value_args(
         # if we are disabling ElasticSan storagepool but AzureDisk or any
         # EphemeralDisk storagepool type is still enabled,
         # then we will preserve the current resource values.
-        elif ((storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and
+        is_disable_azuredisk_with_ephemeral_active = (
+            (storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and
                 (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or
-                (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and
-                    (is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or
-                (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
-                    storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and
-                    (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled))):
+            (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and
+                (is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or
+            (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
+                storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and
+                (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled))
+        )
+
+        if is_disable_azuredisk_with_ephemeral_active:
             updated_core_value = current_core_value
             updated_memory_value = current_memory_value
             updated_hugepages_value = current_hugepages_value
@@ -432,19 +445,19 @@ def get_cores_from_sku(vm_size):
 def get_nodepools_labelled_for_acstor(agent_pool_profiles):
     labelled_nodepool_arr = []
     for agentpool in agent_pool_profiles:
-    node_name = agentpool.name
-    if agentpool.node_labels is not None:
-        node_labels = agentpool.node_labels
-        if node_labels is not None and \
-           node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and \
-           node_name is not None:
-            labelled_nodepool_arr.append(node_name)
+        node_name = agentpool.name
+        if agentpool.node_labels is not None:
+            node_labels = agentpool.node_labels
+            if node_labels is not None and \
+               node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and \
+               node_name is not None:
+                labelled_nodepool_arr.append(node_name)
     return labelled_nodepool_arr
 
 
 def generate_agentpool_details_for_acstor(agent_pool_profiles):
     agentpool_details = []
-    for agentpool in mc.agent_pool_profiles:
+    for agentpool in agent_pool_profiles:
         pool_details = {}
         pool_details["vm_size"] = agentpool.vm_size
         node_name = agentpool.name
@@ -454,6 +467,21 @@ def generate_agentpool_details_for_acstor(agent_pool_profiles):
             pool_details["node_labels"] = node_labels
         agentpool_details.append(pool_details)
     return agentpool_details
+
+
+def label_nodepools_for_acstor(agent_pool_profiles, nodepool_list):
+    for agentpool in agent_pool_profiles:
+        labels = agentpool.node_labels
+        if agentpool.name in nodepool_list:
+            if labels is None:
+                labels = {}
+            labels[CONST_ACSTOR_IO_ENGINE_LABEL_KEY] = CONST_ACSTOR_IO_ENGINE_LABEL_VAL
+        else:
+            # Remove residual Azure Container Storage labels
+            # from any other nodepools where its not intended
+            if labels is not None:
+                labels.pop(CONST_ACSTOR_IO_ENGINE_LABEL_KEY, None)
+        agentpool.node_labels = labels
 
 
 def _is_rp_registered(cmd, required_rp, subscription_id):
