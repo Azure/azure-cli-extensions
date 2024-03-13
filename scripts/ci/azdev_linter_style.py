@@ -62,7 +62,7 @@ class AzExtensionHelper:
         check_call(cmd, shell=True)
 
     def add_from_url(self, url):
-        self._cmd('az extension add -s {} -y'.format(url))
+        self._cmd('az extension add -s {} -y --debug --verbose'.format(url))
 
     def remove(self):
         self._cmd('az extension remove -n {}'.format(self.extension_name))
@@ -84,7 +84,7 @@ class AzdevExtensionHelper:
         self._cmd('azdev extension remove {}'.format(self.extension_name))
 
     def linter(self):
-        self._cmd('azdev linter --include-whl-extensions {}'.format(self.extension_name))
+        self._cmd('azdev linter --include-whl-extensions {} --debug --verbose'.format(self.extension_name))
 
     def style(self):
         self._cmd('azdev style {}'.format(self.extension_name))
