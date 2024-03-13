@@ -2551,7 +2551,7 @@ def add_environment_telemetry_otlp(cmd,
         otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
 
         if otlp:
-            raise ValidationError(f"Otlp entry with name {otlp_name} already exist, please retry with different name")
+            raise ValidationError(f"Otlp entry with name --otlp-name {otlp_name} already exist, please retry with different name")
 
     containerapp_env_telemetry_otlp_decorator.construct_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
@@ -2591,7 +2591,7 @@ def update_environment_telemetry_otlp(cmd,
         otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
 
         if not otlp:
-            raise ValidationError(f"Otlp entry with name {otlp_name} does not exist, please make sure the {otlp_name} already added")
+            raise ValidationError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please make sure the {otlp_name} already added")
 
     containerapp_env_telemetry_otlp_decorator.construct_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
@@ -2648,7 +2648,7 @@ def show_environment_telemetry_otlp(cmd,
         otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
 
         if not otlp:
-            raise ValidationError(f"Otlp entry with name {otlp_name} does not exist, please retry with different name")
+            raise ValidationError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
                 
         r = {}
 

@@ -211,16 +211,16 @@ class ContainerappEnvTelemetryOtlpPreviewSetDecorator(BaseResource):
                 existing_otlps.remove(otlp_to_remove)
                 safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
             else:
-                raise ValidationError(f"No otlp entry with name {otlp_name} found")
+                raise ValidationError(f"No otlp entry with --otlp-name {otlp_name} found")
         else:
-            raise ValidationError(f"No otlp entry with name {otlp_name} found")
+            raise ValidationError(f"No otlp entry with --otlp-name {otlp_name} found")
         
         self.set_up_enable_open_telemetry_traces()
         self.set_up_enable_open_telemetry_logs()
         self.set_up_enable_open_telemetry_metrics()
         
     def set_up_otlp(self):
-        if self.get_argument_otlp_name() and self.get_argument_otlp_name() is not None:
+        if self.get_argument_otlp_name() is not None:
 
             # Get current containerapp env telemetry properties
             try:
