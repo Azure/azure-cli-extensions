@@ -32,7 +32,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 # -----------------------------------------------------------------------------------------------------------------
 def validate_os_env():
 
-    if not platform.system().__contains__('Windows'):
+    if 'Windows' not in platform.system():
         raise CLIInternalError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
 
 
@@ -100,11 +100,11 @@ def loginMigration_console_app_setup():
     login_migration_console_csproj = os.path.join(downloads_folder, "Logins.Console.csproj")
     login_migration_version_file = os.path.join(downloads_folder, "loginconsoleappversion.json")
     if os.path.exists(login_migration_console_zip):
-	    os.remove(login_migration_console_zip)
+        os.remove(login_migration_console_zip)
     if os.path.exists(login_migration_console_csproj):
-	    shutil.rmtree(login_migration_console_csproj)
+        shutil.rmtree(login_migration_console_csproj)
     if os.path.exists(login_migration_version_file):
-	    os.remove(login_migration_version_file)
+        os.remove(login_migration_version_file)
 
     # check and download console app
     console_app_version = check_and_download_loginMigration_console_app(downloads_folder)
@@ -117,6 +117,7 @@ def loginMigration_console_app_setup():
     exePath = os.path.join(console_app_location, "tools", "Microsoft.SqlServer.Migration.Logins.ConsoleApp.exe")
 
     return default_output_folder, exePath
+
 
 # -----------------------------------------------------------------------------------------------------------------
 # TdeMigration helper function to do console app setup (mkdir, download and extract)
@@ -170,9 +171,9 @@ def get_default_output_folder():
 
     osPlatform = platform.system()
 
-    if osPlatform.__contains__('Linux'):
+    if 'Linux' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlAssessment")
-    elif osPlatform.__contains__('Darwin'):
+    elif 'Darwin' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlAssessment")
     else:
         defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlAssessment")
@@ -187,9 +188,9 @@ def get_loginMigration_default_output_folder():
 
     osPlatform = platform.system()
 
-    if osPlatform.__contains__('Linux'):
+    if 'Linux' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlLoginMigrations")
-    elif osPlatform.__contains__('Darwin'):
+    elif 'Darwin' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlLoginMigrations")
     else:
         defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlLoginMigrations")
@@ -204,9 +205,9 @@ def get_tdeMigration_default_output_folder():
 
     osPlatform = platform.system()
 
-    if osPlatform.__contains__('Linux'):
+    if 'Linux' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlTdeMigrations")
-    elif osPlatform.__contains__('Darwin'):
+    elif 'Darwin' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlTdeMigrations")
     else:
         defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlTdeMigrations")
@@ -221,9 +222,9 @@ def get_sqlServerSchema_default_output_folder():
 
     osPlatform = platform.system()
 
-    if osPlatform.__contains__('Linux'):
+    if 'Linux' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlSchemaMigration")
-    elif osPlatform.__contains__('Darwin'):
+    elif 'Darwin' in osPlatform:
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlSchemaMigration")
     else:
         defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlSchemaMigration")
@@ -247,6 +248,7 @@ def check_and_download_console_app(exePath, baseFolder):
         with ZipFile(zipDestination, 'r') as zipFile:
             zipFile.extractall(path=baseFolder)
 
+
 # -----------------------------------------------------------------------------------------------------------------
 # LoginMigration helper function to check if console app exists, if not download it.
 # -----------------------------------------------------------------------------------------------------------------
@@ -268,7 +270,7 @@ def check_and_download_loginMigration_console_app(downloads_folder):
         print(f"Installed Login migration console app nupkg version: {latest_local_name_and_version}")
         return latest_local_name_and_version
 
-    #if cx has no consent return local version
+    # if cx has no consent return local version
     if latest_local_name_and_version is not None:
         print(f"Installed Login migration console app nupkg version: {latest_local_name_and_version}")
         while True:
@@ -336,7 +338,7 @@ def get_latest_nuget_org_version(package_id):
     except Exception:
         print("Unable to connect to NuGet.org to check for updates.")
 
-    if(service_index_response is None or
+    if (service_index_response is None or
        service_index_response.status_code != 200 or
        len(service_index_response.content) > 999999):
         return None
@@ -357,7 +359,7 @@ def get_latest_nuget_org_version(package_id):
 
     package_versions_response = None
     package_versions_response = requests.get(f"{package_base_address_url}{package_id.lower()}/index.json")
-    if(package_versions_response.status_code != 200 or len(package_versions_response.content) > 999999):
+    if (package_versions_response.status_code != 200 or len(package_versions_response.content) > 999999):
         return None
 
     package_versions_json = json.loads(package_versions_response.content)
