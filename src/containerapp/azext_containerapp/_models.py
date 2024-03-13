@@ -21,7 +21,8 @@ ManagedEnvironment = {
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
         "workloadProfiles": None,
-        "InfrastructureResourceGroup": None
+        "infrastructureResourceGroup": None,
+        "openTelemetryConfiguration": None
     }
 }
 
@@ -382,7 +383,8 @@ ContainerAppCertificateEnvelope = {
     "location": None,
     "properties": {
         "password": None,
-        "value": None
+        "value": None,
+        "certificateKeyVaultProperties": None
     }
 }
 
@@ -536,7 +538,52 @@ ExtendedLocation = {
     "type": None
 }
 
+AppInsightsConfiguration = {
+    "connectionString": None
+}
+
+OpenTelemetryConfiguration = {
+    "destinationsConfiguration": None,
+    "tracesConfiguration": None,
+    "logsConfiguration": None,
+    "metricsConfiguration": None
+}
+
+DestinationsConfiguration = {
+    "dataDogConfiguration": None
+}
+
+DataDogConfiguration = {
+    "site": None,
+    "key": None
+}
+
+TracesConfiguration = {
+    "destinations": []
+}
+
+LogsConfiguration = {
+    "destinations": []
+}
+
+MetricsConfiguration = {
+    "destinations": []
+}
+
 ManagedServiceIdentity = {
     "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
     "userAssignedIdentities": None  # {string: UserAssignedIdentity}
+}
+
+JavaComponent = {
+    "properties": {
+        "componentType": None
+    }
+}
+
+CustomDomainConfiguration = {
+    "dnsSuffix": None,
+    "certificateValue": None,
+    "certificatePassword": None,
+    "certificateKeyVaultProperties": None
 }
