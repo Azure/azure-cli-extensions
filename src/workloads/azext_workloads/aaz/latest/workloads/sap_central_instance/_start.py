@@ -24,7 +24,7 @@ class Start(AAZCommand):
     :example: Start Central services instance of the SAP system using the Azure resource ID of the instance
         az workloads sap-central-instance start --id <resource-id>
 
-    :example: Start Central services instance of the SAP system with Virtual Machine
+    :example: Start Central services instance of the SAP system and its underlying Virtual Machine
         az workloads sap-central-instance start --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <cs-instance-name> --start-vm
     """
 

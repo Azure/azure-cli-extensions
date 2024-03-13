@@ -23,6 +23,9 @@ class Update(AAZCommand):
 
     :example: Add tags for an existing Virtual Instance for SAP solutions (VIS) resource using the Azure resource ID of the VIS
         az workloads sap-virtual-instance update --id <resource-id> --tags tag=test1
+
+    :example: Add/Change Identity and Managed Resource Network Access for an existing Virtual Instance for SAP Solutions (VIS) resource
+        az workloads sap-virtual-instance update -g <resource-group-name> -n <vis-name> --identity "{type:UserAssigned,userAssignedIdentities:{<managed-identity-resource-id>:{}}}" --managed-resources-network-access-type <public/private>
     """
 
     _aaz_info = {

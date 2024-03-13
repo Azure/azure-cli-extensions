@@ -18,13 +18,13 @@ from azure.cli.core.aaz import *
 class Start(AAZCommand):
     """Starts the database instance of the SAP system.
 
-    :example: Start Database instance of the SAP system: Currently start action is supported for SAP HANA Database only
+    :example: Start Database instance of the SAP system. Currently start action is supported for SAP HANA Database only
         az workloads sap-database-instance start --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <db-instance-name>
 
-    :example: Start Database instance of the SAP system using the Azure resource ID of the instance: Currently start action is supported for SAP HANA Database only
+    :example: Start Database instance of the SAP system using the Azure resource ID of the instance. Currently start action is supported for SAP HANA Database only
         az workloads sap-database-instance start --id <resource-id>
 
-    :example: Start Database instance of the SAP system with Virtual Machine: Currently start action is supported for SAP HANA Database only
+    :example: Start Database instance of the SAP system and its underlying Virtual Machine. Currently start action is supported for SAP HANA Database only
         az workloads sap-database-instance start --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <db-instance-name> --start-vm
     """
 

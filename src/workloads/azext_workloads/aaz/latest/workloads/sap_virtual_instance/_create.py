@@ -31,7 +31,13 @@ class Create(AAZCommand):
         az workloads sap-virtual-instance create -g <resource-group-name> -n <vis-name> --environment NonProd --sap-product s4hana --configuration <payload-file-path> --identity "{type:UserAssigned,userAssignedIdentities:{<managed-identity-resource-id>:{}}}"
 
     :example: Register an existing SAP system as a Virtual Instance for SAP solutions resource (VIS)
-        az workloads sap-virtual-instance create -g <resource-group-name> -n <vis-name>--environment NonProd --sap-product s4hana --central-server-vm <virtual-machine-id> --identity "{type:UserAssigned,userAssignedIdentities:{<managed-identity-resource-id>:{}}}"
+        az workloads sap-virtual-instance create -g <resource-group-name> -n <vis-name> --environment NonProd --sap-product s4hana --central-server-vm <virtual-machine-id> --identity "{type:UserAssigned,userAssignedIdentities:{<managed-identity-resource-id>:{}}}"
+
+    :example: Register an existing SAP system as a Virtual Instance for SAP solutions resource (VIS) with a custom Managed Resource Group and Managed Storage Account Name, and specify the Managed Storage Account Network Access Type setting as per your security requirements. [Learn more](https://go.microsoft.com/fwlink/?linkid=2256933)
+        az workloads sap-virtual-instance create -g <resource-group-name> -n <vis-name> --environment NonProd --sap-product s4hana --central-server-vm <virtual-machine-id> --identity "{type:UserAssigned,userAssignedIdentities:{<managed-identity-resource-id>:{}}}" --managed-rg-name <managed-rg-name> --managed-rg-storage-account-name <managed-rg-storage-account-name> --managed-resources-network-access-type <public/private>
+
+    :example: Deploy infrastructure for a three-tier distributed Highly Available (HA) SAP system with Azure Compute Gallary Image. See sample json payload here: https://go.microsoft.com/fwlink/?linkid=2263420
+        az workloads sap-virtual-instance create -g <resource-group-name> -n <vis-name> --environment NonProd --sap-product s4hana --configuration <payload-file-path> --identity "{type:UserAssigned,userAssignedIdentities:{<managed-identity-resource-id>:{}}}"
     """
 
     _aaz_info = {

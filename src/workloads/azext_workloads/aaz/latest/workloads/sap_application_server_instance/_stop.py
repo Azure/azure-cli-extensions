@@ -24,7 +24,7 @@ class Stop(AAZCommand):
     :example: Stop Application server instance of the SAP system using the Azure resource ID of the instance
         az workloads sap-application-server-instance stop --id <resource-id>
 
-    :example: Stop Application server instance of the SAP system with Virtual Machine
+    :example: Stop Application server instance of the SAP system and its underlying Virtual Machine
         az workloads sap-application-server-instance stop --sap-virtual-instance-name <vis-name> -g <resource-group-name> -n <app-instance-name> --deallocate-vm
 
     :example: Soft Stop Application server instance of the SAP system
