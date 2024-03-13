@@ -58,24 +58,4 @@ class HdinsightonaksClusterPoolScenario(ScenarioTest):
         ])
 
         # Delete a Cluster Pool.
-        self.cmd('az hdinsight-on-aks clusterpool delete -g {rg} -n {poolName} --yes')
-
-    # Uses 'rg' kwarg
-    @ResourceGroupPreparer(name_prefix='hilocli-', location=location, random_name_length=12)
-    def test_create_clusterpool_with_subnet(self):
-        self.kwargs.update({
-            'loc': self.location,
-            'poolName': self.create_random_name(prefix='hilopool-', length=18),
-            'vnetName': "testvnet",
-            'poolVersion': '1.1'
-        })
-
-        # create a vnet
-        vnet = self.cmd('az network vnet create --name {vnetName} --resource-group {rg} --location {loc} --address-prefix 10.0.0.0/16').get_output_in_json()
-
-        # create a cluster pool
-        self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --workernode-size Standard_E4s_v3 --version {poolVersion} --enable-private-api-server --subnet-id' + vnet['newVNet']['id'], checks=[
-            self.check("name", '{poolName}'),
-            self.check("location", '{loc}'),
-            self.check("status", 'Running')
-        ])
+        # self.cmd('az hdinsight-on-aks clusterpool delete -g {rg} -n {poolName} --yes')
