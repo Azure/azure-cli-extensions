@@ -51,6 +51,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
+    CONST_SSH_ACCESS_LOCALUSER,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
@@ -532,6 +533,7 @@ def aks_create(
     snapshot_id=None,
     vnet_subnet_id=None,
     pod_subnet_id=None,
+    pod_ip_allocation_mode=None,
     enable_node_public_ip=False,
     node_public_ip_prefix_id=None,
     enable_cluster_autoscaler=False,
@@ -591,12 +593,13 @@ def aks_create(
     nodepool_allowed_host_ports=None,
     nodepool_asg_ids=None,
     node_public_ip_tags=None,
-    # guardrails parameters
-    guardrails_level=None,
-    guardrails_version=None,
-    guardrails_excluded_ns=None,
+    # safeguards parameters
+    safeguards_level=None,
+    safeguards_version=None,
+    safeguards_excluded_ns=None,
     # azure service mesh
     enable_azure_service_mesh=None,
+    revision=None,
     # azure monitor profile
     enable_azuremonitormetrics=False,
     enable_azure_monitor_metrics=False,
@@ -616,6 +619,10 @@ def aks_create(
     storage_pool_sku=None,
     storage_pool_option=None,
     node_provisioning_mode=None,
+    ssh_access=CONST_SSH_ACCESS_LOCALUSER,
+    # trusted launch
+    enable_secure_boot=False,
+    enable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -784,10 +791,10 @@ def aks_update(
     disable_addon_autoscaling=False,
     cluster_snapshot_id=None,
     custom_ca_trust_certificates=None,
-    # guardrails parameters
-    guardrails_level=None,
-    guardrails_version=None,
-    guardrails_excluded_ns=None,
+    # safeguards parameters
+    safeguards_level=None,
+    safeguards_version=None,
+    safeguards_excluded_ns=None,
     enable_network_observability=None,
     disable_network_observability=None,
     # metrics profile
@@ -805,6 +812,7 @@ def aks_update(
     storage_pool_option=None,
     azure_container_storage_nodepools=None,
     node_provisioning_mode=None,
+    ssh_access=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1139,6 +1147,7 @@ def aks_agentpool_add(
     snapshot_id=None,
     vnet_subnet_id=None,
     pod_subnet_id=None,
+    pod_ip_allocation_mode=None,
     enable_node_public_ip=False,
     node_public_ip_prefix_id=None,
     enable_cluster_autoscaler=False,
@@ -1183,6 +1192,10 @@ def aks_agentpool_add(
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
+    ssh_access=CONST_SSH_ACCESS_LOCALUSER,
+    # trusted launch
+    enable_secure_boot=False,
+    enable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1236,6 +1249,13 @@ def aks_agentpool_update(
     asg_ids=None,
     enable_artifact_streaming=False,
     os_sku=None,
+    ssh_access=None,
+    yes=False,
+    # trusted launch
+    enable_secure_boot=False,
+    disable_secure_boot=False,
+    enable_vtpm=False,
+    disable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2938,6 +2958,17 @@ def aks_mesh_get_revisions(
     return None
 
 
+def check_iterator(iterator):
+    import itertools
+    try:
+        first = next(iterator)
+    except StopIteration:   # iterator is empty
+        return True, iterator
+    except TypeError:       # iterator is not iterable, e.g. None
+        return True, iterator
+    return False, itertools.chain([first], iterator)
+
+
 def aks_mesh_get_upgrades(
         cmd,
         client,
@@ -2945,15 +2976,14 @@ def aks_mesh_get_upgrades(
         name
 ):
     upgradeProfiles = client.list_mesh_upgrade_profiles(resource_group_name, name)
-    # 'upgradeProfiles' is an ItemPaged object
-    upgrades = []
-    # Iterate over items within pages
-    for page in upgradeProfiles.by_page():
-        for item in page:
-            upgrades.append(item)
-
-    if upgrades:
-        return upgrades[0].properties
+    is_empty, upgradeProfiles = check_iterator(upgradeProfiles)
+    if is_empty:
+        logger.warning("No mesh upgrade profiles found for the cluster '%s' " +
+                       "in the resource group '%s'.", name, resource_group_name)
+        return None
+    upgrade = next(upgradeProfiles, None)
+    if upgrade:
+        return upgrade.properties
     return None
 
 

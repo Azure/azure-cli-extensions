@@ -417,7 +417,8 @@ def dataprotection_job_list_from_resourcegraph(client, datasource_type=None, res
     return response.data
 
 
-def dataprotection_job_list(cmd, resource_group_name, vault_name, use_secondary_region=None):
+def dataprotection_job_list(cmd, resource_group_name, vault_name, use_secondary_region=None,
+                            max_items=None, next_token=None):
     from azext_dataprotection.aaz.latest.dataprotection.job import List as ListJobs
     from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore import FetchJobs as ListJobsCRR
 
@@ -431,15 +432,19 @@ def dataprotection_job_list(cmd, resource_group_name, vault_name, use_secondary_
             "location": target_location,
             "source_backup_vault_id": source_backup_vault_id,
             "source_region": source_location,
+            "pagination_limit": max_items,
+            "pagination_token": next_token
         })
 
     return ListJobs(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name,
+        "pagination_limit": max_items,
+        "pagination_token": next_token
     })
 
 
-def dataprotection_show_job(cmd, resource_group_name, vault_name, job_id, use_secondary_region=None):
+def dataprotection_job_show(cmd, resource_group_name, vault_name, job_id, use_secondary_region=None):
     from azext_dataprotection.aaz.latest.dataprotection.job import Show as ShowJob
     from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore._fetch_job import FetchJob as ShowJobCRR
 
@@ -673,7 +678,8 @@ def dataprotection_backup_policy_tag_remove_in_policy(name, policy):
 
 
 def dataprotection_recovery_point_list(cmd, backup_instance_name, resource_group_name, vault_name,
-                                       start_time=None, end_time=None, use_secondary_region=None):
+                                       start_time=None, end_time=None, use_secondary_region=None,
+                                       max_items=None, next_token=None):
     from .aaz_operations.recovery_point import List as RecoveryPointList
     from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore import FetchSecondaryRecoveryPoints
 
@@ -691,7 +697,9 @@ def dataprotection_recovery_point_list(cmd, backup_instance_name, resource_group
             "resource_group": resource_group_name,
             "location": target_location,
             "source_backup_instance_id": source_backup_instance_id,
-            "source_region": source_location
+            "source_region": source_location,
+            "pagination_limit": max_items,
+            "pagination_token": next_token
         })
 
     return RecoveryPointList(cli_ctx=cmd.cli_ctx)(command_args={
@@ -699,12 +707,14 @@ def dataprotection_recovery_point_list(cmd, backup_instance_name, resource_group
         "vault_name": vault_name,
         "backup_instance_name": backup_instance_name,
         "start_time": start_time,
-        "end_time": end_time
+        "end_time": end_time,
+        "pagination_limit": max_items,
+        "pagination_token": next_token
     })
 
 
 def dataprotection_backup_instance_restore_trigger(cmd, vault_name, resource_group_name, backup_instance_name,
-                                                   restore_request_object, use_secondary_region=None):
+                                                   restore_request_object, use_secondary_region=None, no_wait=False):
     from .aaz_operations.backup_instance import (
         RestoreTrigger,
         TriggerCRR
@@ -722,19 +732,21 @@ def dataprotection_backup_instance_restore_trigger(cmd, vault_name, resource_gro
             "location": target_location,
             "source_backup_instance_id": source_backup_instance_id,
             "source_region": source_location,
-            "restore_request_object": restore_request_object
+            "restore_request_object": restore_request_object,
+            "no_wait": no_wait
         })
 
     return RestoreTrigger(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name,
         "backup_instance_name": backup_instance_name,
-        "restore_request_object": restore_request_object
+        "restore_request_object": restore_request_object,
+        "no_wait": no_wait
     })
 
 
 def dataprotection_backup_instance_validate_for_restore(cmd, vault_name, resource_group_name, backup_instance_name,
-                                                        restore_request_object, use_secondary_region=None):
+                                                        restore_request_object, use_secondary_region=None, no_wait=False):
     from .aaz_operations.backup_instance import (
         ValidateForCRR as CRRValidateRestore,
         ValidateForRestore as BackupInstanceValidateRestore,
@@ -752,14 +764,16 @@ def dataprotection_backup_instance_validate_for_restore(cmd, vault_name, resourc
             "location": target_location,
             "source_backup_instance_id": source_backup_instance_id,
             "source_region": source_location,
-            "restore_request_object": restore_request_object
+            "restore_request_object": restore_request_object,
+            "no_wait": no_wait
         })
 
     return BackupInstanceValidateRestore(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name,
         "backup_instance_name": backup_instance_name,
-        "restore_request_object": restore_request_object
+        "restore_request_object": restore_request_object,
+        "no_wait": no_wait
     })
 
 

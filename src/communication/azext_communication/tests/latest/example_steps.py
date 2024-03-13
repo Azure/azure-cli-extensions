@@ -117,4 +117,3 @@ def step_delete(test, rg_2, rg, checks=None):
              '--name "{myCommunicationService}" '
              '--resource-group "{rg}"',
              checks=checks)
-

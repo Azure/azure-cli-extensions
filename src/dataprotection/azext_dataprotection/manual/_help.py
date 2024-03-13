@@ -212,6 +212,8 @@ helps['dataprotection backup-instance restore trigger'] = """
     examples:
       - name: Trigger a restore operation
         text: az dataprotection backup-instance restore trigger -g sample_rg --vault-name sample_backupvault --backup-instance-name sample_biname-fd53a211-3f3e-4c7e-ba45-81050e27c0be  --restore-request-object restorerequestobject.json
+      - name: Trigger a cross-region-restore operation
+        text: az dataprotection backup-instance restore trigger -g sample_rg --vault-name sample_backupvault --backup-instance-name sample_biname-fd53a211-3f3e-4c7e-ba45-81050e27c0be  --restore-request-object restorerequestobject.json --use-secondary-region
 """
 
 helps['dataprotection backup-instance validate-for-restore'] = """
@@ -220,6 +222,8 @@ helps['dataprotection backup-instance validate-for-restore'] = """
     examples:
       - name: Validate for restore
         text: az dataprotection backup-instance validate-for-restore -g sample_rg --vault-name sample_backupvault --backup-instance-name sample_biname-fd53a211-3f3e-4c7e-ba45-81050e27c0be --restore-request-object restorerequestobject.json
+      - name: Validate for cross-region-restore
+        text: az dataprotection backup-instance validate-for-restore -g sample_rg --vault-name sample_backupvault --backup-instance-name sample_biname-fd53a211-3f3e-4c7e-ba45-81050e27c0be --restore-request-object restorerequestobject.json --use-secondary-region
 """
 
 helps['dataprotection backup-vault list-from-resourcegraph'] = """

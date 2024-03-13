@@ -73,3 +73,7 @@ Release History
 1.0.3
 ++++++
 * Added `az fleet reconcile` & `az fleet member reconcile` commands.
+
+1.0.4
+++++++
+* Added new --upgrade-type parameter "ControlPlaneOnly" for command `az fleet updaterun create --upgrade-type`.

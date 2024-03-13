@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Fix for sending correct failureCriteria request payload when using `az load test create` and `az load test update` commands with `--load-test-config-file` option and config file having failureCriteria.
 
 1.0.0
 ++++++

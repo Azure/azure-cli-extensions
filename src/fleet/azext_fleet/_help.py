@@ -181,10 +181,10 @@ helps['fleet updaterun create'] = """
     parameters:
         - name: --upgrade-type
           type: string
-          short-summary: Specify the upgrade type of members. Acceptable values are 'Full' and 'NodeImageOnly'.
+          short-summary: Specify the upgrade type of members. Acceptable values are 'Full', 'ControlPlaneOnly', and 'NodeImageOnly'.
         - name: --kubernetes-version
           type: string
-          short-summary: Specify the kubernetes version to upgrade member(s) to, when --upgrade-type is set to 'Full'. Acceptable format is x.x.x (eg. 1.2.3).
+          short-summary: Specify the kubernetes version to upgrade member(s) to, when --upgrade-type is set to 'Full' or 'ControlPlaneOnly'. Acceptable format is x.x.x (eg. 1.2.3).
         - name: --stages
           type: string
           short-summary: Path to a JSON file that defines stages to upgrade a fleet. See examples for reference.
