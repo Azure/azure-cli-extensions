@@ -3678,7 +3678,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
         return mc
 
-    # pylint: too-many-statements,too-many-locals
+    # pylint: disable=too-many-statements,too-many-locals
     def update_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure container storage for the Managed Cluster object
         :return: ManagedCluster

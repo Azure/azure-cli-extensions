@@ -249,7 +249,7 @@ def perform_enable_azure_container_storage(  # pylint: disable=too-many-statemen
     )
 
 
-def perform_disable_azure_container_storage(  # pylint: disable=too-many-statements,too-many-locals
+def perform_disable_azure_container_storage(  # pylint: disable=too-many-statements,too-many-locals,too-many-branches
     cmd,
     subscription_id,
     resource_group,

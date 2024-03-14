@@ -106,10 +106,9 @@ def validate_disable_azure_container_storage_params(
             'when --disable-azure-container-storage is set.'
         )
 
-
     if storage_pool_type != CONST_ACSTOR_ALL:
         is_ephemeralDisk_enabled = is_ephemeralDisk_localssd_enabled or is_ephemeralDisk_nvme_enabled
-        is_storagepool_type_not_active =  (
+        is_storagepool_type_not_active = (
             (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and
                 not is_azureDisk_enabled) or
             (storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and

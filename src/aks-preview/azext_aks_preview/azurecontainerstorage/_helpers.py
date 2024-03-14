@@ -3,12 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import time
-from datetime import datetime
 import re
 from typing import Tuple
 
-from azext_aks_preview._client_factory import get_providers_client_factory
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
     CONST_ACSTOR_K8S_EXTENSION_NAME,
@@ -21,7 +18,6 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
-    RP_REGISTRATION_POLLING_INTERVAL_IN_SEC,
 )
 from azure.cli.command_modules.acs._roleassignments import (
     add_role_assignment,
@@ -198,13 +194,12 @@ def get_extension_installed_and_cluster_configs(
                 # Determine if epehemeral NVMe was active based on the labelled nodepools present in cluster.
                 for agentpool in agentpool_profiles:
                     vm_size = agentpool.vm_size
-                    if agentpool.node_labels is not None:
-                        node_labels = agentpool.node_labels
-                        if (node_labels is not None and
-                                node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and
-                                vm_size.lower().startswith('standard_l')):
-                            is_ephemeralDisk_nvme_enabled = True
-                            break
+                    node_labels = agentpool.node_labels
+                    if (node_labels is not None and
+                            node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and
+                            vm_size.lower().startswith('standard_l')):
+                        is_ephemeralDisk_nvme_enabled = True
+                        break
 
     except:  # pylint: disable=bare-except
         is_extension_installed = False
@@ -332,33 +327,35 @@ def get_desired_resource_value_args(
         updated_hugepages_number = current_hugepages_number \
             if current_hugepages_number > updated_hugepages_number else updated_hugepages_number
     else:
-        # If we are disabling Ephemeral NVMe storagepool but azureDisk is
-        # still enabled, we will set the azureDisk storagepool type values.
-        if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
-           storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and \
-           (is_ephemeralDisk_localssd_enabled or is_azureDisk_enabled):
-            updated_core_value = 1
-            updated_memory_value = 1
-            updated_hugepages_value = 1
-            updated_hugepages_number = 512
         # If we are disabling AzureDisk storagepool but EphemeralDisk(any) is
         # still enabled, or if we are disabling Ephemeral LocalSSD but
         # AzureDisk or Ephemeral NVMe storagepool is still enabled, or
         # if we are disabling ElasticSan storagepool but AzureDisk or any
         # EphemeralDisk storagepool type is still enabled,
         # then we will preserve the current resource values.
-        # pylint: disable=too-many-boolean-expressions
-        elif ((storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and
+        is_disabled_type_smaller_than_active_types = (
+            (storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and
                 (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or
-                (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and
-                    (is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or
-                (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
-                    storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and
-                    (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled))):
+            (storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK and
+                (is_ephemeralDisk_nvme_enabled or is_ephemeralDisk_localssd_enabled)) or
+            (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
+                storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and
+                (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled))
+        )
+        if is_disabled_type_smaller_than_active_types:
             updated_core_value = current_core_value
             updated_memory_value = current_memory_value
             updated_hugepages_value = current_hugepages_value
             updated_hugepages_number = current_hugepages_number
+        elif (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
+                storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and
+                (is_ephemeralDisk_localssd_enabled or is_azureDisk_enabled)):
+            # If we are disabling Ephemeral NVMe storagepool but azureDisk is
+            # still enabled, we will set the azureDisk storagepool type values.
+            updated_core_value = 1
+            updated_memory_value = 1
+            updated_hugepages_value = 1
+            updated_hugepages_number = 512
 
     return _generate_k8s_extension_resource_args(
         updated_core_value,
