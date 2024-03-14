@@ -381,7 +381,7 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
              '--maintenance-window-duration "02:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
              '--maintenance-window-recur-every "Day" '
-             '--maintenance-window-start-date-time "{start_date}" '
+             f'--maintenance-window-start-date-time "{start_date}" '
              '--maintenance-window-time-zone "UTC" '
              '--resource-group {rg} '
              '--resource-name clitestmrpconfinguestadvancedforcancel '
@@ -392,7 +392,7 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
 
 
 def step__maintenanceconfigurations_cancel_maintenanceconfigurations(test, start_date):
-    test.cmd('az maintenance applyupdate create-or-update --apply-update-name "{start_date}" '
+    test.cmd(f'az maintenance applyupdate create-or-update --apply-update-name "{start_date}" '
              '--provider-name "Microsoft.Maintenance" '
              '--resource-group {rg} '
              '--resource-name clitestmrpconfinguestadvancedforcancel '
