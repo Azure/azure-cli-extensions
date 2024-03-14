@@ -236,7 +236,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
         "resource_group": resource_group_name,
         "vault_name": vault_name
     })
-    principal_id = backup_vault['identity']['principalId']
+    vault_principal_id = backup_vault['identity']['principalId']
 
     role_assignments_arr = []
 
@@ -296,9 +296,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
                 keyvault_assignment_scope = helper.truncate_id_using_scope(keyvault_id, permissions_scope)
 
-                role_assignment = list_role_assignments(cmd, assignee=principal_id, role=role, scope=keyvault_id, include_inherited=True)
+                role_assignment = list_role_assignments(cmd, assignee=vault_principal_id, role=role, scope=keyvault_id, include_inherited=True)
                 if not role_assignment:
-                    assignment = create_role_assignment(cmd, assignee=principal_id, role=role, scope=keyvault_assignment_scope)
+                    assignment = create_role_assignment(cmd, assignee=vault_principal_id, role=role, scope=keyvault_assignment_scope)
                     role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
 
             else:
@@ -310,7 +310,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
                 secrets_array = []
                 for policy in keyvault.properties.access_policies:
-                    if policy.object_id == principal_id:
+                    if policy.object_id == vault_principal_id:
                         secrets_array = policy.permissions.secrets
                         break
 
@@ -322,7 +322,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
                 if not permissions_set:
                     keyvault_update = True
-                    keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
+                    keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=vault_principal_id, secret_permissions=secrets_array)
                     keyvault = keyvault.result()
 
             from azure.cli.command_modules.keyvault.custom import update_vault_setter
@@ -336,10 +336,11 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
             if keyvault_update:
                 role_assignments_arr.append(helper.get_permission_object_from_keyvault(keyvault))
 
-        for role_object in manifest['backupVaultPermissions']:
-            role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
-                                                                 backup_instance=backup_instance, principal_id=principal_id,
-                                                                 role_assignments_arr=role_assignments_arr)
+        if 'backupVaultPermissions' in manifest:
+            for role_object in manifest['backupVaultPermissions']:
+                role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
+                                                                    backup_instance=backup_instance, principal_id=vault_principal_id,
+                                                                    role_assignments_arr=role_assignments_arr)
 
         if 'dataSourcePermissions' in manifest:
             datasource_principal_id = helper.get_datasource_principal_id_from_object(cmd, datasource_type,
@@ -380,7 +381,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
         for role_object in manifest['backupVaultRestorePermissions']:
             role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
-                                                                 restore_request_object=restore_request_object, principal_id=principal_id,
+                                                                 restore_request_object=restore_request_object, principal_id=vault_principal_id,
                                                                  role_assignments_arr=role_assignments_arr)
 
         if 'dataSourcePermissions' in manifest:
@@ -388,7 +389,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                                                                                      restore_request_object=restore_request_object)
             for role_object in manifest['dataSourceRestorePermissions']:
                 role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
-                                                                     restore_request_object=restore_request_object, principal_id=principal_id,
+                                                                     restore_request_object=restore_request_object, principal_id=datasource_principal_id,
                                                                      role_assignments_arr=role_assignments_arr)
 
     if not role_assignments_arr:
