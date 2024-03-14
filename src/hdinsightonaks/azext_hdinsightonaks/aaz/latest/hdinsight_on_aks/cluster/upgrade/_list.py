@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "hdinsight-on-aks cluster upgrade list",
 )
 class List(AAZCommand):
-    """List a cluster available upgrade.
+    """List a cluster available upgrades.
+
+    :example: List a cluster available upgrades.
+        az hdinsight-on-aks cluster upgrade list --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName}
     """
 
     _aaz_info = {

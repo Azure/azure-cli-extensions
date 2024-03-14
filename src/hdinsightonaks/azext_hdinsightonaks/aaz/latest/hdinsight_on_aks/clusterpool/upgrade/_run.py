@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Run(AAZCommand):
     """Upgrade a cluster pool.
+
+    :example: Upgrade a cluster pool.
+        az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {rg} --aks-patch-upgrade target-aks-version=1.27.9 upgrade-all-cluster-nodes=false upgrade-cluster-pool=true
     """
 
     _aaz_info = {
