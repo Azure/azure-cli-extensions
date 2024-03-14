@@ -26,7 +26,6 @@ from azext_aks_preview.azurecontainerstorage._helpers import (
     get_desired_resource_value_args,
     get_initial_resource_value_args,
     perform_role_operations_on_managed_rg,
-    register_dependent_rps,
     validate_storagepool_creation,
 )
 from knack.log import get_logger
@@ -34,7 +33,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-def perform_enable_azure_container_storage(
+def perform_enable_azure_container_storage(  # pylint: disable=too-many-statements,too-many-locals,too-many-branches
     cmd,
     subscription_id,
     resource_group,
@@ -55,20 +54,11 @@ def perform_enable_azure_container_storage(
     is_ephemeralDisk_nvme_enabled=False,
     current_core_value=None,
 ):
-    # Step 1: Check and register the dependent provider for ManagedClusters i.e.
-    # Microsoft.KubernetesConfiguration
-    # if not register_dependent_rps(cmd, subscription_id):
-    #     return
-
-    # Step 2: Validate if storagepool could be created.
+    # Step 1: Validate if storagepool could be created.
     # Depends on the following:
-    #   2a: Grant AKS cluster's node identity the following
+    #   1a: Grant AKS cluster's node identity the following
     #       roles on the AKS managed resource group:
-    #       1. Reader
-    #       2. Network Contributor
-    #       3. Elastic SAN Owner
-    #       4. Elastic SAN Volume Group Owner
-    #       Azure Container Storage Operator (replace)
+    #       Azure Container Storage Operator.
     #       Ensure grant was successful if creation of
     #       Elastic SAN storagepool is requested.
     validate_storagepool_creation(
@@ -259,7 +249,7 @@ def perform_enable_azure_container_storage(
     )
 
 
-def perform_disable_azure_container_storage(
+def perform_disable_azure_container_storage(  # pylint: disable=too-many-statements,too-many-locals
     cmd,
     subscription_id,
     resource_group,
@@ -426,7 +416,13 @@ def perform_disable_azure_container_storage(
         # type was enabled on the cluster to handle older clusters where
         # the role assignments were done for all storagepool type during
         # installation of Azure Container Storage.
-        perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, False)
+        perform_role_operations_on_managed_rg(
+            cmd,
+            subscription_id,
+            node_resource_group,
+            kubelet_identity_object_id,
+            False
+        )
     else:
         # Disabling a particular type of storagepool.
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
@@ -501,8 +497,14 @@ def perform_disable_azure_container_storage(
 
             # Revoke role assignments if we are disabling ElasticSAN storagepool type.
             if storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and is_elasticSan_enabled:
-                perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, False)
-        except Exception as disable_ex:
+                perform_role_operations_on_managed_rg(
+                    cmd,
+                    subscription_id,
+                    node_resource_group,
+                    kubelet_identity_object_id,
+                    False
+                )
+        except Exception as disable_ex:  # pylint: disable=broad-except
             logger.error(
                 "Failure observed while disabling Azure Container Storage storagepool type: %s.\nError: %s"
                 "Resetting cluster state.", storage_pool_type, disable_ex

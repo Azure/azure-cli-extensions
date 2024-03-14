@@ -3082,7 +3082,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # installing Azure Container Storage during `az aks create`
             nodepool_list = agentpool.name
 
-            from azext_aks_preview.azurecontainerstorage._validators import validate_enable_azure_container_storage_params
+            from azext_aks_preview.azurecontainerstorage._validators import (
+                validate_enable_azure_container_storage_params
+            )
             validate_enable_azure_container_storage_params(
                 pool_type,
                 pool_name,
@@ -3676,6 +3678,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
         return mc
 
+    # pylint: too-many-statements,too-many-locals
     def update_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure container storage for the Managed Cluster object
         :return: ManagedCluster
@@ -3693,6 +3696,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 'and --disable-azure-container-storage together.'
             )
 
+        # pylint: disable=too-many-nested-blocks
         if enable_azure_container_storage or disable_azure_container_storage:
             # Require the agent pool profiles for azure container storage
             # operations. Raise exception if not found.
@@ -3755,7 +3759,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             pool_detail = agentpool_details[0]
                             nodepool_list = pool_detail.get("name")
 
-                from azext_aks_preview.azurecontainerstorage._validators import validate_enable_azure_container_storage_params
+                from azext_aks_preview.azurecontainerstorage._validators import (
+                    validate_enable_azure_container_storage_params
+                )
                 validate_enable_azure_container_storage_params(
                     enable_pool_type,
                     pool_name,
@@ -3797,7 +3803,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.context.set_intermediate("azure_container_storage_nodepools", nodepool_list, overwrite_exists=True)
                 self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
             if disable_azure_container_storage:
-                from azext_aks_preview.azurecontainerstorage._validators import validate_disable_azure_container_storage_params
+                from azext_aks_preview.azurecontainerstorage._validators import (
+                    validate_disable_azure_container_storage_params
+                )
                 validate_disable_azure_container_storage_params(
                     disable_pool_type,
                     pool_name,
@@ -3815,9 +3823,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
                 msg = (
                     "Disabling Azure Container Storage will forcefully delete all the storagepools in the cluster and "
-                    "affect the applications using these storagepools. Forceful deletion of storagepools can also lead to "
-                    "leaking of storage resources which are being consumed. Do you want to validate whether any of "
-                    "the storagepools are being used before disabling Azure Container Storage?"
+                    "affect the applications using these storagepools. Forceful deletion of storagepools can also "
+                    "lead to leaking of storage resources which are being consumed. Do you want to validate whether "
+                    "any of the storagepools are being used before disabling Azure Container Storage?"
                 )
 
                 from azext_aks_preview.azurecontainerstorage._consts import (
@@ -3847,8 +3855,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             self.context.set_intermediate("is_extension_installed", is_extension_installed, overwrite_exists=True)
             self.context.set_intermediate("is_azureDisk_enabled", is_azureDisk_enabled, overwrite_exists=True)
             self.context.set_intermediate("is_elasticSan_enabled", is_elasticSan_enabled, overwrite_exists=True)
-            self.context.set_intermediate("is_ephemeralDisk_nvme_enabled", is_ephemeralDisk_nvme_enabled, overwrite_exists=True)
-            self.context.set_intermediate("is_ephemeralDisk_localssd_enabled", is_ephemeralDisk_localssd_enabled, overwrite_exists=True)
+            self.context.set_intermediate(
+                "is_ephemeralDisk_nvme_enabled",
+                is_ephemeralDisk_nvme_enabled,
+                overwrite_exists=True
+            )
+            self.context.set_intermediate(
+                "is_ephemeralDisk_localssd_enabled",
+                is_ephemeralDisk_localssd_enabled,
+                overwrite_exists=True
+            )
             self.context.set_intermediate("current_core_value", current_core_value, overwrite_exists=True)
 
         return mc
