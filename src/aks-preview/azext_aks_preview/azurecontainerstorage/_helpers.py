@@ -414,46 +414,19 @@ def get_cores_from_sku(vm_size):
         cpu_value = size_val
         # https://learn.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series
         # https://learn.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series-memory
-        if version == 2 and series_prefix in ('d', 'ds'):
-            if size_val in (2, 11):
+        if version == 2 and (series_prefix == 'd' or series_prefix == 'ds'):
+            if size_val == 2 or size_val == 11:
                 cpu_value = 2
-            elif size_val in (3, 12):
+            elif size_val == 3 or size_val == 12:
                 cpu_value = 4
-            elif size_val in (4, 13):
+            elif size_val == 4 or size_val == 13:
                 cpu_value = 8
-            elif size_val in (5, 14):
+            elif size_val == 5 or size_val == 14:
                 cpu_value = 16
             elif size_val == 15:
                 cpu_value = 20
 
     return cpu_value
-
-
-def get_nodepools_labelled_for_acstor(agent_pool_profiles):
-    labelled_nodepool_arr = []
-    for agentpool in agent_pool_profiles:
-    node_name = agentpool.name
-    if agentpool.node_labels is not None:
-        node_labels = agentpool.node_labels
-        if node_labels is not None and \
-           node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and \
-           node_name is not None:
-            labelled_nodepool_arr.append(node_name)
-    return labelled_nodepool_arr
-
-
-def generate_agentpool_details_for_acstor(agent_pool_profiles):
-    agentpool_details = []
-    for agentpool in mc.agent_pool_profiles:
-        pool_details = {}
-        pool_details["vm_size"] = agentpool.vm_size
-        node_name = agentpool.name
-        pool_details["name"] = node_name
-        if agentpool.node_labels is not None:
-            node_labels = agentpool.node_labels
-            pool_details["node_labels"] = node_labels
-        agentpool_details.append(pool_details)
-    return agentpool_details
 
 
 def _is_rp_registered(cmd, required_rp, subscription_id):
