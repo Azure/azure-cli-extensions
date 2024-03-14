@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from .testUtil import *
+from .testUtil import authorization_info
 from azure.cli.testsdk import *
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 

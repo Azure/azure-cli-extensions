@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from .testUtil import *
+from .testUtil import autoScale_config_str, authorization_info
 from azure.cli.testsdk import *
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
@@ -31,8 +31,8 @@ class TestUpdateCluster(ScenarioTest):
         })
 
         # Get spark cluster version and ossVersion.
-        spark_versions = self.cmd(
-            'az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
+        # spark_versions = self.cmd(
+        #     'az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
 
         # # Create a spark cluster.
         # create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --spark-storage-url abfs://testspark@yuchenhilostorage.dfs.core.windows.net/ --cluster-version ' + spark_versions[0]["clusterVersion"] + ' --oss-version ' + spark_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ authorization_info()
