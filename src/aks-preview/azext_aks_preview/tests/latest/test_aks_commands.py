@@ -10643,9 +10643,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-    # live only due to downloading k8s-extension extension
-    # @live_only()
-    # Introduce this test back once v1.0.6-preview version of Azure container storage is released
+    @live_only()
     @AllowLargeResponse(8192)
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_azurecontainerstorage(self, resource_group, resource_group_location):
