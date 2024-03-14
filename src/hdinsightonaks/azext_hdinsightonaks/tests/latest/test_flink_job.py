@@ -12,6 +12,7 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class TestRunFlinkJob(ScenarioTest):
     location = 'westus3'
     resourceGroup = "hilocli-test"
@@ -19,14 +20,14 @@ class TestRunFlinkJob(ScenarioTest):
 
     def test_flink_job(self):
         self.kwargs.update({
-                "rg": self.resourceGroup,
-                "loc": self.location,
-                "poolName": self.clusterPoolName,
-                "clusterName": "cluster2024311163924",
-                "clusterType": "Flink",
-                "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4').get_output_in_json(), 
-                "storageUri": "abfs://testflinkjob@hiloclistorage.dfs.core.windows.net",
-            })
+            "rg": self.resourceGroup,
+            "loc": self.location,
+            "poolName": self.clusterPoolName,
+            "clusterName": "cluster2024311163924",
+            "clusterType": "Flink",
+            "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4').get_output_in_json(),
+            "storageUri": "abfs://testflinkjob@hiloclistorage.dfs.core.windows.net",
+        })
 
         # Create a Flink cluster.
         # flink_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Flink\']"').get_output_in_json()
@@ -43,5 +44,5 @@ class TestRunFlinkJob(ScenarioTest):
         # Run a job on a Flink cluster.
         # self.cmd('az hdinsight-on-aks cluster job run --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg} --flink-job job-name="test" action="DELETE"')
         # List a cluster job list.
-        self.cmd('az hdinsight-on-aks cluster job list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}')
- 
+        self.cmd(
+            'az hdinsight-on-aks cluster job list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}')

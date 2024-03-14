@@ -12,6 +12,7 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class HdinsightonaksClusterScenario(ScenarioTest):
     location = 'westus3'
     resourceGroup = "hilocli-test"
@@ -23,7 +24,8 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         })
 
         # List a list of available cluster versions.
-        cluster_version_list = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc}').get_output_in_json()
+        cluster_version_list = self.cmd(
+            'az hdinsight-on-aks list-available-cluster-version -l {loc}').get_output_in_json()
         assert len(cluster_version_list) > 0
 
     def test_check_name_availability(self):
@@ -42,21 +44,25 @@ class HdinsightonaksClusterScenario(ScenarioTest):
     # @ResourceGroupPreparer(name_prefix='hilocli-', location=location, random_name_length=12)
     def test_create_cluster(self):
         self.kwargs.update({
-                "loc": self.location,
-                "rg": self.resourceGroup,
-                "poolName": self.clusterPoolName,
-                "clusterName": self.create_random_name(prefix='hilo-', length=18),
-                "clusterType": "Spark",
-                "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 3 --node-type Worker --vm-size Standard_D16d_v5').get_output_in_json(),    # Create a cluster node-profile object.
-                "targetWorkerNodeCount": 4
-            })
+            "loc": self.location,
+            "rg": self.resourceGroup,
+            "poolName": self.clusterPoolName,
+            "clusterName": self.create_random_name(prefix='hilo-', length=18),
+            "clusterType": "Spark",
+            # Create a cluster node-profile object.
+            "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 3 --node-type Worker --vm-size Standard_D16d_v5').get_output_in_json(),
+            "targetWorkerNodeCount": 4
+        })
 
         # Get spark cluster version and ossVersion.
-        spark_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
+        spark_versions = self.cmd(
+            'az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
 
         # Create a Spark cluster.
-        create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --spark-storage-url abfs://testspzrk@yuchenhilostorage.dfs.core.windows.net/ --cluster-version ' + spark_versions[0]["clusterVersion"] + ' --oss-version ' + spark_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ authorization_info()
-        self.cmd(create_command,checks=[
+        create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --spark-storage-url abfs://testspzrk@yuchenhilostorage.dfs.core.windows.net/ --cluster-version ' + \
+            spark_versions[0]["clusterVersion"] + ' --oss-version ' + spark_versions[0]["ossVersion"] + \
+            ' --nodes ' + '{computeNodeProfile}' + ' ' + authorization_info()
+        self.cmd(create_command, checks=[
             self.check("name", '{clusterName}'),
             self.check("location", '{loc}'),
             self.check("computeProfile.nodes[1].count", 3)
@@ -64,27 +70,28 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         ])
 
         # Get a cluster with cluster name.
-        self.cmd('az hdinsight-on-aks cluster show -n {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
+        self.cmd('az hdinsight-on-aks cluster show -n {clusterName} --cluster-pool-name {poolName} -g {rg}', checks=[
             self.check("name", '{clusterName}'),
             self.check("clusterType", '{clusterType}'),
             self.check("status", 'Running')
         ])
 
         # List all cluster in a cluster pool.
-        cluster_list = self.cmd('az hdinsight-on-aks cluster list --cluster-pool-name {poolName} -g {rg}').get_output_in_json()
+        cluster_list = self.cmd(
+            'az hdinsight-on-aks cluster list --cluster-pool-name {poolName} -g {rg}').get_output_in_json()
         assert len(cluster_list) > 0
 
         # Resize a cluster.
-        self.cmd('az hdinsight-on-aks cluster resize --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --target-worker-node-count {targetWorkerNodeCount}')
-        self.cmd('az hdinsight-on-aks cluster show -n {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
+        self.cmd(
+            'az hdinsight-on-aks cluster resize --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --target-worker-node-count {targetWorkerNodeCount}')
+        self.cmd('az hdinsight-on-aks cluster show -n {clusterName} --cluster-pool-name {poolName} -g {rg}', checks=[
             self.check("computeProfile.nodes[1].count", '{targetWorkerNodeCount}')
         ])
 
         # Get cluster instance view.
-        self.cmd('az hdinsight-on-aks cluster instance-view show --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}',checks=[
+        self.cmd('az hdinsight-on-aks cluster instance-view show --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}', checks=[
             self.check("status.ready", True)
-        ])     
+        ])
 
         # Delete a cluster.
         # self.cmd('az hdinsight-on-aks cluster delete -n {clusterName} --cluster-pool-name {poolName} -g {rg} --yes')
- 

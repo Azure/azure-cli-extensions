@@ -12,20 +12,21 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class TestCreateClusterWithCataLog(ScenarioTest):
     location = 'westus3'
     resourceGroup = "hilocli-test"
     clusterPoolName = "hilopool"
 
     # Set your hive catalog config.
-    secretName="sqlpassword"
-    catalogName="hilocli"
-    metastoreDbConnectionURL="jdbc:sqlserver://yuchensqlserver.database.windows.net:1433;database=clidata;encrypt=true;trustServerCertificate=true;loginTimeout=30;"
-    metastoreDbUserName="hdi";
-    metastoreDbPasswordSecret=secretName
-    metastoreWarehouseDir="abfs://clitesta@flinkdemo125stuoi.dfs.core.windows.net/";
+    secretName = "sqlpassword"
+    catalogName = "hilocli"
+    metastoreDbConnectionURL = "jdbc:sqlserver://yuchensqlserver.database.windows.net:1433;database=clidata;encrypt=true;trustServerCertificate=true;loginTimeout=30;"
+    metastoreDbUserName = "hdi"
+    metastoreDbPasswordSecret = secretName
+    metastoreWarehouseDir = "abfs://clitesta@flinkdemo125stuoi.dfs.core.windows.net/"
     keyVaultResourceId = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Group/providers/Microsoft.KeyVault/vaults/yuchensqlpass"
-       
+
     # @ResourceGroupPreparer(name_prefix='hilocli-', location=location, random_name_length=12)
     # def test_create_cluster_with_catalog(self):
     #     self.kwargs.update({
@@ -49,7 +50,7 @@ class TestCreateClusterWithCataLog(ScenarioTest):
     #     # Create a Trino cluster.
     #     create_command = 'az hdinsight-on-aks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --cluster-version ' \
     #           + trino_versions[1]["clusterVersion"] + ' --oss-version ' + trino_versions[1]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' \
-    #             +' '+ authorization_info() + ' --secret-reference {secret_reference} --key-vault-id {keyVaultResourceId}' + ' --trino-hive-catalog {trinoHiveCatalogOption}' 
+    #             +' '+ authorization_info() + ' --secret-reference {secret_reference} --key-vault-id {keyVaultResourceId}' + ' --trino-hive-catalog {trinoHiveCatalogOption}'
 
     #     self.cmd(create_command,checks=[
     #         self.check("name", '{clusterName}'),

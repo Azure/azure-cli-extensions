@@ -12,6 +12,7 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class TestUpdateCluster(ScenarioTest):
     location = 'westus3'
     resourceGroup = "hilocli-test"
@@ -19,13 +20,14 @@ class TestUpdateCluster(ScenarioTest):
 
     def test_upgrade_cluster(self):
         self.kwargs.update({
-                "rg": self.resourceGroup,
-                "loc": self.location,
-                "poolName": self.clusterPoolName,
-                "clusterName": "cluster2024314152356",
-                "clusterType": "Spark",
-                "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4').get_output_in_json(),    # Create a cluster node-profile object.
-            })      
+            "rg": self.resourceGroup,
+            "loc": self.location,
+            "poolName": self.clusterPoolName,
+            "clusterName": "cluster2024314152356",
+            "clusterType": "Spark",
+            # Create a cluster node-profile object.
+            "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4').get_output_in_json(),
+        })
 
         # Get spark cluster version and ossVersion.
         # spark_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
@@ -40,15 +42,18 @@ class TestUpdateCluster(ScenarioTest):
         # ])
 
         # Test list a clusterpool's available upgrades.
-        upgrades = self.cmd('az hdinsight-on-aks clusterpool upgrade list --cluster-pool-name {poolName} -g {rg}').get_output_in_json()
+        upgrades = self.cmd(
+            'az hdinsight-on-aks clusterpool upgrade list --cluster-pool-name {poolName} -g {rg}').get_output_in_json()
         assert upgrades[0]["name"] == "AKSPatchUpgrade"
 
         # Test list a cluster's available upgrades.
-        upgrades = self.cmd('az hdinsight-on-aks cluster upgrade list --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName}').get_output_in_json()
+        upgrades = self.cmd(
+            'az hdinsight-on-aks cluster upgrade list --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName}').get_output_in_json()
         assert upgrades[0]["upgradeType"] == "HotfixUpgrade"
 
         # Test upgrade a clusterpool.
-        self.cmd('az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {rg} --aks-patch-upgrade target-aks-version=1.27.9 upgrade-all-cluster-nodes=false upgrade-cluster-pool=true')
-        
+        self.cmd(
+            'az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {rg} --aks-patch-upgrade target-aks-version=1.27.9 upgrade-all-cluster-nodes=false upgrade-cluster-pool=true')
+
         # Test upgrade a cluster.
         # self.cmd('az hdinsight-on-aks cluster upgrade run --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName} --hotfix-upgrade component-name=' + upgrades[0]["componentName"] + ' target-build-number='+upgrades[0]["targetBuildNumber"] +' target-cluster-version='+upgrades[0]["targetClusterVersion"] +' target-oss-version='+ upgrades[0]["targetOssVersion"])

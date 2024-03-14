@@ -12,6 +12,7 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class TestUpdateCluster(ScenarioTest):
     location = 'westus3'
     resourceGroup = "hilocli-test"
@@ -19,17 +20,19 @@ class TestUpdateCluster(ScenarioTest):
 
     def test_update_cluster(self):
         self.kwargs.update({
-                "rg": self.resourceGroup,
-                "loc": self.location,
-                "poolName": self.clusterPoolName,
-                "clusterName": "hilo-vjkn4d55e7cby",
-                "clusterType": "Spark",
-                'config_path': os.path.join(TEST_DIR, 'config.json'),
-                "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4').get_output_in_json(),    # Create a cluster node-profile object.
-            })      
+            "rg": self.resourceGroup,
+            "loc": self.location,
+            "poolName": self.clusterPoolName,
+            "clusterName": "hilo-vjkn4d55e7cby",
+            "clusterType": "Spark",
+            'config_path': os.path.join(TEST_DIR, 'config.json'),
+            # Create a cluster node-profile object.
+            "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4').get_output_in_json(),
+        })
 
         # Get spark cluster version and ossVersion.
-        spark_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
+        spark_versions = self.cmd(
+            'az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
 
         # # Create a spark cluster.
         # create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --spark-storage-url abfs://testspark@yuchenhilostorage.dfs.core.windows.net/ --cluster-version ' + spark_versions[0]["clusterVersion"] + ' --oss-version ' + spark_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ authorization_info()
@@ -48,7 +51,8 @@ class TestUpdateCluster(ScenarioTest):
         ])
 
         # Test list service config.
-        self.cmd('az hdinsight-on-aks cluster list-service-config --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}')
+        self.cmd(
+            'az hdinsight-on-aks cluster list-service-config --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}')
 
         # Test update a cluster's autoscale config.
         # self.cmd('az hdinsight-on-aks cluster update -n {clusterName} --cluster-pool-name {poolName} -g {rg} ' + autoScale_config_str(), checks=[
