@@ -2394,35 +2394,32 @@ def show_environment_telemetry_data_dog(cmd,
     if not containerapp_env_def:
         raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
 
-    try:
-        r = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration")
-        if r is None:
-            raise ValidationError("The containerapp environment '{}' does not have data dog enabled.".format(name)) from e
-        
-        r = {}
-
-        if "key" in safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"):
-            safe_set(r, "dataDogConfiguration", "key", value=DEFAULT_CONFIGURED_STR)
-
-        safe_set(r, "dataDogConfiguration", "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
-
-        enable_open_telemetry_traces = False
-        existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-        if existing_traces and DATA_DOG_DEST in existing_traces:
-            enable_open_telemetry_traces = True
-        
-        safe_set(r, "dataDogConfiguration", "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
-
-        enable_open_telemetry_metrics = False
-        existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
-        if existing_metrics and DATA_DOG_DEST in existing_metrics:
-            enable_open_telemetry_metrics = True
-        
-        safe_set(r, "dataDogConfiguration", "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
-
-        return r
-    except Exception as e:
+    r = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration")
+    if r is None:
         raise ValidationError("The containerapp environment '{}' does not have data dog enabled.".format(name)) from e
+        
+    r = {}
+
+    if "key" in safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"):
+        safe_set(r, "dataDogConfiguration", "key", value=DEFAULT_CONFIGURED_STR)
+
+    safe_set(r, "dataDogConfiguration", "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
+
+    enable_open_telemetry_traces = False
+    existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
+    if existing_traces and DATA_DOG_DEST in existing_traces:
+        enable_open_telemetry_traces = True
+        
+    safe_set(r, "dataDogConfiguration", "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+
+    enable_open_telemetry_metrics = False
+    existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
+    if existing_metrics and DATA_DOG_DEST in existing_metrics:
+        enable_open_telemetry_metrics = True
+        
+    safe_set(r, "dataDogConfiguration", "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
+
+    return r
 
 
 def set_environment_telemetry_app_insights(cmd,
@@ -2490,34 +2487,31 @@ def show_environment_telemetry_app_insights(cmd,
     if not containerapp_env_def:
         raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
 
-    try:
-        r = safe_get(containerapp_env_def, "properties", "appInsightsConfiguration")
+    r = safe_get(containerapp_env_def, "properties", "appInsightsConfiguration")
 
-        if r is None:
-            raise ValidationError("The containerapp environment '{}' does not have app insights enabled.".format(name)) from e
-        
-        r = {}
-
-        if "connectionString" in safe_get(containerapp_env_def, "properties", "appInsightsConfiguration"):
-            safe_set(r, "appInsightsConfiguration", "connectionString", value=DEFAULT_CONFIGURED_STR)
-
-        enable_open_telemetry_traces = False
-        existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-        if existing_traces and APP_INSIGHTS_DEST in existing_traces:
-            enable_open_telemetry_traces = True
-        
-        safe_set(r, "appInsightsConfiguration", "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
-
-        enable_open_telemetry_logs = False
-        existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
-        if existing_logs and APP_INSIGHTS_DEST in existing_logs:
-            enable_open_telemetry_logs = True
-        
-        safe_set(r, "appInsightsConfiguration", "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
-
-        return r
-    except Exception as e:
+    if r is None:
         raise ValidationError("The containerapp environment '{}' does not have app insights enabled.".format(name)) from e
+        
+    r = {}
+
+    if "connectionString" in safe_get(containerapp_env_def, "properties", "appInsightsConfiguration"):
+        safe_set(r, "appInsightsConfiguration", "connectionString", value=DEFAULT_CONFIGURED_STR)
+
+    enable_open_telemetry_traces = False
+    existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
+    if existing_traces and APP_INSIGHTS_DEST in existing_traces:
+        enable_open_telemetry_traces = True
+        
+    safe_set(r, "appInsightsConfiguration", "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+
+    enable_open_telemetry_logs = False
+    existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
+    if existing_logs and APP_INSIGHTS_DEST in existing_logs:
+        enable_open_telemetry_logs = True
+        
+    safe_set(r, "appInsightsConfiguration", "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
+
+    return r
 
 
 def add_environment_telemetry_otlp(cmd,
