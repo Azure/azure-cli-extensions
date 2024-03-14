@@ -12,9 +12,9 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
 from .common import TEST_LOCATION
+from ..._constants import DEFAULT_CONFIGURED_STR
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-DEFAULT_CONFIGURED_STR = 'Configured'
 
 class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
     @AllowLargeResponse(8192)

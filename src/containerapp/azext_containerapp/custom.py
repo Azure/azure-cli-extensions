@@ -113,11 +113,10 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE,
-                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA)
+                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, DEFAULT_CONFIGURED_STR)
 
 
 logger = get_logger(__name__)
-DEFAULT_CONFIGURED_STR = 'Configured'
 
 def list_all_services(cmd, environment_name, resource_group_name):
     services = list_containerapp(cmd, resource_group_name=resource_group_name, managed_env=environment_name)
@@ -2390,18 +2389,19 @@ def show_environment_telemetry_data_dog(cmd,
     try:
         containerapp_env_def = containerapp_env_telemetry_data_dog_decorator.show()
     except Exception as e:
-        handle_raw_exception(e)
+        handle_non_404_status_code_exception(e)
 
     if not containerapp_env_def:
         raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
 
     try:
-        r = containerapp_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"]["dataDogConfiguration"]
+        r = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration")
         if r is None:
             raise ValidationError("The containerapp environment '{}' does not have data dog enabled.".format(name)) from e
+        
         r = {}
 
-        if "key" in containerapp_env_def["properties"]["openTelemetryConfiguration"]["destinationsConfiguration"]["dataDogConfiguration"]:
+        if "key" in safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"):
             safe_set(r, "dataDogConfiguration", "key", value=DEFAULT_CONFIGURED_STR)
 
         safe_set(r, "dataDogConfiguration", "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
@@ -2484,20 +2484,21 @@ def show_environment_telemetry_app_insights(cmd,
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_app_insights_decorator.show()
-    except:
-        pass
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
 
     if not containerapp_env_def:
         raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
 
     try:
-        r = containerapp_env_def["properties"]["appInsightsConfiguration"]
+        r = safe_get(containerapp_env_def, "properties", "appInsightsConfiguration")
+
         if r is None:
             raise ValidationError("The containerapp environment '{}' does not have app insights enabled.".format(name)) from e
         
         r = {}
 
-        if "connectionString" in containerapp_env_def["properties"]["appInsightsConfiguration"]:
+        if "connectionString" in safe_get(containerapp_env_def, "properties", "appInsightsConfiguration"):
             safe_set(r, "appInsightsConfiguration", "connectionString", value=DEFAULT_CONFIGURED_STR)
 
         enable_open_telemetry_traces = False
@@ -2583,8 +2584,8 @@ def update_environment_telemetry_otlp(cmd,
 
     try:
         r = containerapp_env_telemetry_otlp_decorator.show()
-    except CLIError as e:
-        handle_raw_exception(e)
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
 
     existing_otlps = safe_get(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
     if existing_otlps is not None:
@@ -2637,8 +2638,8 @@ def show_environment_telemetry_otlp(cmd,
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
-    except CLIError as e:
-        handle_raw_exception(e)
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
 
     if not containerapp_env_def:
         raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
@@ -2698,8 +2699,8 @@ def list_environment_telemetry_otlp(cmd,
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
-    except CLIError as e:
-        handle_raw_exception(e)
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
 
     if not containerapp_env_def:
         raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
