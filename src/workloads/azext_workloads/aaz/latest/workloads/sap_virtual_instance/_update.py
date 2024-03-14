@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update a Virtual Instance for SAP solutions (VIS) resource
 
     :example: Add tags for an existing Virtual Instance for SAP solutions (VIS) resource
-        az workloads sap-virtual-instance update -g <resource-group-name> -n <vis-name> --tags tag=test tag2=test2
+        az workloads sap-virtual-instance update -g <resource-group-name> -n <vis-name> --tags tag1=test1 tag2=test2
 
     :example: Add tags for an existing Virtual Instance for SAP solutions (VIS) resource using the Azure resource ID of the VIS
         az workloads sap-virtual-instance update --id <resource-id> --tags tag1=test1

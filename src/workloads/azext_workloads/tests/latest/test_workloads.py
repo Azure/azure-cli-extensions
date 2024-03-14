@@ -271,7 +271,7 @@ class WorkloadsScenario(ScenarioTest):
             self.check('tags.tag2', 'test8')
         ])
 
-#    @unittest.skip('recording file not getting generted properly throwing Subscription not found')
+    @unittest.skip('recording file not getting generted properly throwing Subscription not found')
     def test_workloads_svi_discover(self):
         self.kwargs.update({
             'name': 'C36',
