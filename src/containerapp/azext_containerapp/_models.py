@@ -546,3 +546,7 @@ JavaComponent = {
         "componentType": None
     }
 }
+
+RuntimeJava = {
+    "enableMetrics": False
+}
