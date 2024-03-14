@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "hdinsight-on-aks cluster instance-view list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List the lists of instance views

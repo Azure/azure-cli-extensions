@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "hdinsight-on-aks clusterpool upgrade",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Upgrade clusterpool.

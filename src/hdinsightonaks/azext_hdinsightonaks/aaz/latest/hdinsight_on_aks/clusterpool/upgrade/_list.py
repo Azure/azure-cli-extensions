@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "hdinsight-on-aks clusterpool upgrade list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List a cluster pool available upgrade.

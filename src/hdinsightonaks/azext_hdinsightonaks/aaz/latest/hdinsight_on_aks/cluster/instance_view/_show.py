@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "hdinsight-on-aks cluster instance-view show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get the status of a cluster instance.
