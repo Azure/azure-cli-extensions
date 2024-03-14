@@ -9,6 +9,7 @@
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+
 class BackupPolicyScenarioTest(ScenarioTest):
 
     def setUp(test):
@@ -67,14 +68,16 @@ class BackupPolicyScenarioTest(ScenarioTest):
         })
 
         lifecycle_json = test.cmd('az dataprotection backup-policy retention-rule create-lifecycle --count 12 --type Days --source-datastore OperationalStore', checks=[
-                                test.check('deleteAfter.duration', "P12D"),
-                                test.check('sourceDataStore.dataStoreType', "OperationalStore")
-                            ]).get_output_in_json()
+            test.check('deleteAfter.duration', "P12D"),
+            test.check('sourceDataStore.dataStoreType', "OperationalStore")
+        ]).get_output_in_json()
         test.kwargs.update({"lifecycle": lifecycle_json})
+
         disk_policy_json = test.cmd('az dataprotection backup-policy retention-rule set --name Daily --policy "{diskPolicy}" --lifecycles "{lifecycle}"', checks=[
-                                test.check("length(policyRules[?objectType == 'AzureRetentionRule'])", 2),
-                            ]).get_output_in_json()
+            test.check("length(policyRules[?objectType == 'AzureRetentionRule'])", 2),
+        ]).get_output_in_json()
         test.kwargs.update({"diskPolicy": disk_policy_json})
+
         test.cmd('az dataprotection backup-policy retention-rule remove --name Daily --policy "{diskPolicy}"', checks=[
             test.check("length(policyRules[?objectType == 'AzureRetentionRule'])", 1)
         ])
@@ -83,10 +86,12 @@ class BackupPolicyScenarioTest(ScenarioTest):
             test.check('objectType', "ScheduleBasedBackupCriteria")
         ]).get_output_in_json()
         test.kwargs.update({"criteria": criteria_json})
+
         disk_policy_json = test.cmd('az dataprotection backup-policy tag set --name Daily --policy "{diskPolicy}" --criteria "{criteria}"', checks=[
-                                test.check("length(policyRules[0].trigger.taggingCriteria)", 2)
-                            ]).get_output_in_json()
+            test.check("length(policyRules[0].trigger.taggingCriteria)", 2)
+        ]).get_output_in_json()
         test.kwargs.update({"diskPolicy": disk_policy_json})
+
         test.cmd('az dataprotection backup-policy tag remove --name Daily --policy "{diskPolicy}"', checks=[
             test.check("length(policyRules[0].trigger.taggingCriteria)", 1)
         ])
@@ -124,6 +129,6 @@ class BackupPolicyScenarioTest(ScenarioTest):
             test.check('length(weeks_of_the_month)', 5)
         ])
         test.cmd('az dataprotection backup-policy tag create-generic-criteria --months-of-year '
-                'JANUARY February MarCh april May June July August September October November December', checks=[
-            test.check('length(months_of_year)', 12)
-        ])
+                 'JANUARY February MarCh april May June July August September October November December', checks=[
+                     test.check('length(months_of_year)', 12)
+                 ])

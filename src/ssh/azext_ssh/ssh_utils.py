@@ -270,7 +270,7 @@ def _check_for_known_errors(error_message, delete_cert, log_lines):
 
 def check_for_service_config_delay_error(error_message):
     service_config_delay_error = False
-    regex = ("{\"level\":\"fatal\",\"msg\":\"sshproxy: error connecting to the address: 404 Endpoint does not exist.*")
+    regex = "{\"level\":\"fatal\",\"msg\":\"sshproxy: error connecting to the address: 404 Endpoint does not exist.*"
     if re.search(regex, error_message):
         service_config_delay_error = True
     return service_config_delay_error

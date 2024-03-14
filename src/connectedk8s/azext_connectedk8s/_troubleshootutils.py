@@ -149,7 +149,7 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
                 except FileExistsError:
                     pass
                 # If the agent is not in Running state we wont be able to get logs of the containers
-                if(each_agent_pod.status.phase != "Running"):
+                if (each_agent_pod.status.phase != "Running"):
                     continue
                 # Traversing through all of the containers present inside each pods
                 for each_container in each_agent_pod.spec.containers:
@@ -213,7 +213,7 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
                 with open(event_logs_path, 'w+') as event_log:
                     # Adding all the individual events
                     for events in events_json["items"]:
-                            event_log.write(str(events) + "\n")
+                        event_log.write(str(events) + "\n")
             return consts.Diagnostic_Check_Passed, storage_space_available
         else:
             return consts.Diagnostic_Check_Passed, storage_space_available
@@ -323,7 +323,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                                 try:
                                     # Adding the reason for container to be not in ready state
                                     container_not_ready_reason = each_container_status.state.waiting.reason
-                                except Exception as e:
+                                except Exception:
                                     container_not_ready_reason = None
                                 # Adding the reason if continer is not in ready state
                                 if container_not_ready_reason is not None:
@@ -364,7 +364,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
                             try:
                                 # Adding the reason for container to be not in ready state
                                 container_not_ready_reason = each_container_status.state.waiting.reason
-                            except Exception as e:
+                            except Exception:
                                 container_not_ready_reason = None
                             # Adding the reason if continer is not in ready state
                         if all_containers_ready_for_each_agent is False:
@@ -409,7 +409,7 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
     try:
 
         # If the agent version in the connected cluster resource is none skip the check
-        if(connected_cluster.agent_version is None):
+        if (connected_cluster.agent_version is None):
             return consts.Diagnostic_Check_Incomplete
 
         # To get user agent version and the latest agent version
@@ -417,7 +417,7 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
         current_user_version = user_agent_version.split('.')
         latest_agent_version = azure_arc_agent_version.split('.')
         # Comparing if the user version is compatible or not
-        if((int(current_user_version[0]) < int(latest_agent_version[0])) or (int(latest_agent_version[1]) - int(current_user_version[1]) > 2)):
+        if ((int(current_user_version[0]) < int(latest_agent_version[0])) or (int(latest_agent_version[1]) - int(current_user_version[1]) > 2)):
             logger.warning("We found that you are on an older agent version that is not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
             diagnoser_output.append("We found that you are on an older agent version that is not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
             return consts.Diagnostic_Check_Failed
@@ -449,7 +449,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
         # Executing the Diagnoser job and fetching diagnoser logs obtained
         diagnoser_container_log = executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, helm_client_location, kubectl_client_location, release_namespace, probable_pod_security_policy_presence, kube_config, kube_context)
         # If diagnoser_container_log is not empty then only we will check for the results
-        if(diagnoser_container_log is not None and diagnoser_container_log != ""):
+        if (diagnoser_container_log is not None and diagnoser_container_log != ""):
             diagnoser_container_log_list = diagnoser_container_log.split("\n")
             diagnoser_container_log_list.pop(-1)
             dns_check_log = ""
@@ -469,10 +469,10 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         # If both the check passed then we will return Diagnoser checks Passed
-        if(dns_check == consts.Diagnostic_Check_Passed and outbound_connectivity_check == consts.Diagnostic_Check_Passed):
+        if (dns_check == consts.Diagnostic_Check_Passed and outbound_connectivity_check == consts.Diagnostic_Check_Passed):
             return consts.Diagnostic_Check_Passed, storage_space_available
         # If any of the check remain Incomplete than we will return Incomplete
-        elif(dns_check == consts.Diagnostic_Check_Incomplete or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete):
+        elif (dns_check == consts.Diagnostic_Check_Incomplete or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete):
             return consts.Diagnostic_Check_Incomplete, storage_space_available
         else:
             return consts.Diagnostic_Check_Failed, storage_space_available
@@ -563,9 +563,9 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             # Changing the role, rolebinding and the job args namespace field to the release-namespace
             # Secret-reader role is used to fetch the secrets present in the release-namespace
             # Also we pass release-namespace in args to read secrets for helm command that we are using in the script.
-            if(troubleshoot_yaml_part == 1 or troubleshoot_yaml_part == 2):
+            if (troubleshoot_yaml_part == 1 or troubleshoot_yaml_part == 2):
                 each_yaml['metadata']['namespace'] = release_namespace
-            elif(troubleshoot_yaml_part == 3):
+            elif (troubleshoot_yaml_part == 3):
                 each_yaml['spec']['template']['spec']['containers'][0]['args'][0] = release_namespace
             troubleshoot_yaml_part += 1
             new_yaml.append(each_yaml)
@@ -592,7 +592,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             # Checking if any exception occured or not
             exception_occured_counter = 0
             for ind_errors in error_msg_list:
-                if('Error from server (NotFound)' in ind_errors or 'deleted' in ind_errors):
+                if ('Error from server (NotFound)' in ind_errors or 'deleted' in ind_errors):
                     pass
                 else:
                     valid_exception_list.append(ind_errors)
@@ -633,7 +633,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                 if event["object"].metadata.name == "azure-arc-diagnoser-job" and event["object"].status.conditions[0].type == "Complete":
                     is_job_complete = True
                     w.stop()
-            except Exception as e:
+            except Exception:
                 continue
             else:
                 continue
@@ -663,7 +663,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                 arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
                 for each_pod in arc_agents_pod_list.items:
                     pod_name = each_pod.metadata.name
-                    if(pod_name.startswith(job_name)):
+                    if (pod_name.startswith(job_name)):
                         # To retrieve the pod logs which is stuck
                         cmd_get_diagnoser_job_events[4] = "involvedObject.name=" + pod_name
                         # Using Popen to execute the command and fetching the output
@@ -680,7 +680,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                             with open(unfinished_diagnoser_job_path, 'w+') as unfinished_diagnoser_job:
                                 # Adding all the individual events
                                 for events in events_json["items"]:
-                                        unfinished_diagnoser_job.write(str(events) + "\n")
+                                    unfinished_diagnoser_job.write(str(events) + "\n")
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             diagnoser_output.append("The diagnoser job failed to reach the completed state in the kubernetes cluster.\n")
             return
@@ -691,7 +691,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
             for each_pod in all_pods.items:
                 # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
                 pod_name = each_pod.metadata.name
-                if(pod_name.startswith(job_name)):
+                if (pod_name.startswith(job_name)):
                     # Creating a text file with the name of the container and adding that containers logs in it
                     diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="azure-arc-diagnoser-container", namespace='azure-arc')
         # Clearing all the resources after fetching the diagnoser container logs
@@ -717,7 +717,7 @@ def check_msi_certificate_presence(corev1_api_instance):
         all_secrets_azurearc = corev1_api_instance.list_namespaced_secret(namespace="azure-arc")
         for secrets in all_secrets_azurearc.items:
             # If name of secret is azure-identity-certificate then we stop there
-            if(secrets.metadata.name == consts.MSI_Certificate_Secret_Name):
+            if (secrets.metadata.name == consts.MSI_Certificate_Secret_Name):
                 msi_cert_present = True
 
         # Checking if msi cerificate is present or not
@@ -764,11 +764,11 @@ def check_probable_cluster_security_policy(corev1_api_instance, helm_client_loca
         arc_agents_pod_list = corev1_api_instance.list_namespaced_pod(namespace="azure-arc")
         # Traversing through all agents and checking if the Kube aad proxy pod is present or not
         for each_agent_pod in arc_agents_pod_list.items:
-            if(each_agent_pod.metadata.name.startswith("kube-aad-proxy")):
+            if (each_agent_pod.metadata.name.startswith("kube-aad-proxy")):
                 kap_pod_present = True
                 break
         # Checking if there is any chance of pod security policy presence
-        if(cluster_connect_feature is True and kap_pod_present is False):
+        if (cluster_connect_feature is True and kap_pod_present is False):
             logger.warning("Error: Unable to create Kube-aad-proxy deployment. There might be a pod security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
             diagnoser_output.append("Error: Unable to create Kube-aad-proxy deployment. There might be a pod security policy or security context constraint (SCC) present which is preventing the deployment of kube-aad-proxy as it doesn't have admin privileges.\nKube aad proxy pod uses the azure-arc-kube-aad-proxy-sa service account, which doesn't have admin permissions but requires the permission to mount host path.\n")
             return consts.Diagnostic_Check_Failed
@@ -801,7 +801,7 @@ def check_kap_cert(corev1_api_instance):
         all_secrets_azurearc = corev1_api_instance.list_namespaced_secret(namespace="azure-arc")
         for secrets in all_secrets_azurearc.items:
             # If name of secret is kube-aad-proxy-certificate then we stop there
-            if(secrets.metadata.name == consts.KAP_Certificate_Secret_Name):
+            if (secrets.metadata.name == consts.KAP_Certificate_Secret_Name):
                 kap_cert_present = True
         if not kap_cert_present and kap_pod_status == "ContainerCreating":
             logger.warning("Error: Unable to pull Kube aad proxy certificate. Please attempt to onboard the cluster again.\n")
@@ -875,9 +875,9 @@ def describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, a
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-            logger.warning("An exception has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Describe_Stuck_Agents_Fault_Type, summary="Error occured while storing the stuck agents description")
-            diagnoser_output.append("An exception has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Describe_Stuck_Agents_Fault_Type, summary="Error occured while storing the stuck agents description")
+        diagnoser_output.append("An exception has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
 
@@ -906,7 +906,7 @@ def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_con
             secrets_logs_path = os.path.join(filepath_with_timestamp, "azure-arc-secrets.txt")
 
             with open(secrets_logs_path, 'w+') as secrets_log:
-                    secrets_log.write(secrets_json)
+                secrets_log.write(secrets_json)
 
             return storage_space_available
 
@@ -923,9 +923,9 @@ def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_con
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-            logger.warning("An exception has occured while storing list of secrets in azure arc namespace in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Kubectl_Get_Secrets_Fault_Type, summary="Exception occured while storing azure arc secrets")
-            diagnoser_output.append("An exception has occured while storing azure arc secrets in the user local machine. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while storing list of secrets in azure arc namespace in the user local machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Fetch_Kubectl_Get_Secrets_Fault_Type, summary="Exception occured while storing azure arc secrets")
+        diagnoser_output.append("An exception has occured while storing azure arc secrets in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
 
@@ -954,18 +954,18 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
 
             # removing onboarding private key
             try:
-                if(helmvalues_json['global']['onboardingPrivateKey']):
+                if (helmvalues_json['global']['onboardingPrivateKey']):
                     del helmvalues_json['global']['onboardingPrivateKey']
-            except Exception as e:
+            except Exception:
                 pass
 
             # removing azure-rbac client id and client secret, if present
             try:
-                if(helmvalues_json['systemDefaultValues']['guard']['clientId']):
+                if (helmvalues_json['systemDefaultValues']['guard']['clientId']):
                     del helmvalues_json['systemDefaultValues']['guard']['clientId']
-                if(helmvalues_json['systemDefaultValues']['guard']['clientSecret']):
+                if (helmvalues_json['systemDefaultValues']['guard']['clientSecret']):
                     del helmvalues_json['systemDefaultValues']['guard']['clientSecret']
-            except Exception as e:
+            except Exception:
                 pass
 
             helmvalues_json = yaml.dump(helmvalues_json)
@@ -990,9 +990,9 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-            logger.warning("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Helm_Values_Save_Failed_Fault_Type, summary="Exception occured while storing helm values of azure-arc release")
-            diagnoser_output.append("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Fetch_Helm_Values_Save_Failed_Fault_Type, summary="Exception occured while storing helm values of azure-arc release")
+        diagnoser_output.append("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
 
@@ -1021,7 +1021,7 @@ def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_
             metadata_cr_logs_path = os.path.join(filepath_with_timestamp, "metadata_cr_snapshot.txt")
 
             with open(metadata_cr_logs_path, 'w+') as metadata_cr_log:
-                    metadata_cr_log.write(metadata_cr_json)
+                metadata_cr_log.write(metadata_cr_json)
 
             return storage_space_available
 
@@ -1038,9 +1038,9 @@ def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-            logger.warning("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Metadata_CR_Save_Failed_Fault_Type, summary="Error occured while storing metadata CR details")
-            diagnoser_output.append("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Fetch_Metadata_CR_Save_Failed_Fault_Type, summary="Error occured while storing metadata CR details")
+        diagnoser_output.append("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
 
@@ -1069,7 +1069,7 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
             kap_cr_logs_path = os.path.join(filepath_with_timestamp, "kube_aad_proxy_cr_snapshot.txt")
 
             with open(kap_cr_logs_path, 'w+') as kap_cr_log:
-                    kap_cr_log.write(kap_cr_json)
+                kap_cr_log.write(kap_cr_json)
 
             return storage_space_available
 
@@ -1086,9 +1086,9 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-            logger.warning("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
-            telemetry.set_exception(exception=e, fault_type=consts.Fetch_KAP_CR_Save_Failed_Fault_Type, summary="Exception occured while storing kube-aad-proxy CR details")
-            diagnoser_output.append("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Fetch_KAP_CR_Save_Failed_Fault_Type, summary="Exception occured while storing kube-aad-proxy CR details")
+        diagnoser_output.append("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
 

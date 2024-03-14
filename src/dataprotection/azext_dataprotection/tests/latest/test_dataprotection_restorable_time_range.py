@@ -9,6 +9,7 @@
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+
 class RestorableTimeRangeScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()

@@ -7,6 +7,7 @@
 
 import time
 
+
 def wait_for_job_exclusivity_on_datasource(test, data_source_id=None):
     """ Checks if any job is in progress for pre-set datasource type and
         waits for its completion. Requires dataSourceType and dataSourceId kwargs.
@@ -45,7 +46,7 @@ def get_midpoint_of_time_range(start_time_str, end_time_str):
     try:
         start_time = dparser.parse(start_time_str)
         end_time = dparser.parse(end_time_str)
-        point_in_time = start_time + (end_time - start_time)/2
+        point_in_time = start_time + (end_time - start_time) / 2
         return point_in_time.strftime("%Y-%m-%dT%H:%M:%S")
     except:
         raise Exception('One or more input dates are invalid.')

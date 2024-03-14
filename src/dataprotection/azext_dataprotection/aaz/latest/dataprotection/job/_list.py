@@ -23,9 +23,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupjobs", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupjobs", "2023-11-01"],
         ]
     }
 
@@ -122,7 +122,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -325,6 +325,10 @@ class List(AAZCommand):
                 serialized_name="targetRecoverPoint",
             )
             _ListHelper._build_schema_restore_job_recovery_point_details_read(extended_info.target_recover_point)
+            extended_info.warning_details = AAZListType(
+                serialized_name="warningDetails",
+                flags={"read_only": True},
+            )
 
             additional_details = cls._schema_on_200.value.Element.properties.extended_info.additional_details
             additional_details.Element = AAZStrType(
@@ -359,6 +363,18 @@ class List(AAZCommand):
             additional_details.Element = AAZStrType(
                 flags={"read_only": True},
             )
+
+            warning_details = cls._schema_on_200.value.Element.properties.extended_info.warning_details
+            warning_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.extended_info.warning_details.Element
+            _element.resource_name = AAZStrType(
+                serialized_name="resourceName",
+            )
+            _element.warning = AAZObjectType(
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_user_facing_error_read(_element.warning)
 
             supported_actions = cls._schema_on_200.value.Element.properties.supported_actions
             supported_actions.Element = AAZStrType()

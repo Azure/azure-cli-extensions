@@ -2,6 +2,19 @@
 
 Release History
 ===============
+
+1.0.0
+++++++
+* Added support for Cross Region Restore for Backup Vaults.
+* `az dataprotection backup-vault create`: New parameter `--cross-region-restore-state/--crr-state` that can be set to Enabled/Disabled.
+* `az dataprotection backup-vault update`: New parameter `--cross-region-restore-state/--crr-state` that can be set to Enabled/Disabled.
+* `az dataprotection backup-vault list-from-resourcegraph`: New command to fetch Backup Vault details from Azure Resource Graph.
+* `az dataprotection recovery-point list`: New parameter `--use-secondary-region` to be used when listing from the secondary region.
+* `az dataprotection backup-instance validate-for-restore`: New parameter `--use-secondary-region` to be used when restoring to the secondary region.
+* `az dataprotection backup-instance restore trigger`: New parameter `--use-secondary-region` to be used when restoring to the secondary region.
+* `az dataprotection backup-job list`: New parameter `--use-secondary-region` which can be used in disaster scenario when primary region is down.
+* `az dataprotection backup-job show`: New parameter `--use-secondary-region` which can be used in disaster scenario when primary region is down.
+
 0.11.2
 ++++++
 * `az dataprotection backup-instance update-msi-permissions`: Added UAMI support for AKS backup/restore.

@@ -15,8 +15,6 @@ from azdev.operations.constant import (PREVIEW_INIT_SUFFIX, VERSION_MAJOR_TAG, V
 from util import get_index_data
 
 
-base_branch = os.environ.get('base_branch', None)
-diff_branch = os.environ.get('diff_branch', None)
 base_meta_path = os.environ.get('base_meta_path', None)
 diff_meta_path = os.environ.get('diff_meta_path', None)
 output_file = os.environ.get('output_file', None)
@@ -96,8 +94,6 @@ def main():
     cli_ext_path = get_ext_repo_paths()[0]
     print("get_cli_repo_path: ", get_cli_repo_path())
     print("get_ext_repo_paths: ", cli_ext_path)
-    print("base_branch: ", base_branch)
-    print("diff_branch: ", diff_branch)
     print("base_meta_path: ", base_meta_path)
     print("diff_meta_path: ", diff_meta_path)
     print("output_file: ", output_file)

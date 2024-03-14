@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}", "2022-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}", "2023-09-01"],
         ]
     }
 
@@ -120,7 +120,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -176,14 +176,6 @@ class Wait(AAZWaitCommand):
             )
 
             identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
             identity.type = AAZStrType(
                 flags={"required": True},
             )
@@ -209,10 +201,26 @@ class Wait(AAZWaitCommand):
                 serialized_name="controlPlaneAccessInterface",
                 flags={"required": True},
             )
+            properties.control_plane_access_virtual_ipv4_addresses = AAZListType(
+                serialized_name="controlPlaneAccessVirtualIpv4Addresses",
+            )
             properties.core_network_technology = AAZStrType(
                 serialized_name="coreNetworkTechnology",
             )
+            properties.diagnostics_upload = AAZObjectType(
+                serialized_name="diagnosticsUpload",
+            )
+            properties.event_hub = AAZObjectType(
+                serialized_name="eventHub",
+            )
             properties.installation = AAZObjectType()
+            properties.installed_version = AAZStrType(
+                serialized_name="installedVersion",
+                flags={"read_only": True},
+            )
+            properties.interop_settings = AAZObjectType(
+                serialized_name="interopSettings",
+            )
             properties.local_diagnostics_access = AAZObjectType(
                 serialized_name="localDiagnosticsAccess",
                 flags={"required": True},
@@ -228,6 +236,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="rollbackVersion",
                 flags={"read_only": True},
             )
+            properties.signaling = AAZObjectType()
             properties.sites = AAZListType(
                 flags={"required": True},
             )
@@ -251,14 +260,43 @@ class Wait(AAZWaitCommand):
             )
             control_plane_access_interface.name = AAZStrType()
 
+            control_plane_access_virtual_ipv4_addresses = cls._schema_on_200.properties.control_plane_access_virtual_ipv4_addresses
+            control_plane_access_virtual_ipv4_addresses.Element = AAZStrType()
+
+            diagnostics_upload = cls._schema_on_200.properties.diagnostics_upload
+            diagnostics_upload.storage_account_container_url = AAZStrType(
+                serialized_name="storageAccountContainerUrl",
+                flags={"required": True},
+            )
+
+            event_hub = cls._schema_on_200.properties.event_hub
+            event_hub.id = AAZStrType(
+                flags={"required": True},
+            )
+            event_hub.reporting_interval = AAZIntType(
+                serialized_name="reportingInterval",
+            )
+
             installation = cls._schema_on_200.properties.installation
+            installation.desired_state = AAZStrType(
+                serialized_name="desiredState",
+            )
             installation.operation = AAZObjectType()
+            installation.reasons = AAZListType(
+                flags={"read_only": True},
+            )
+            installation.reinstall_required = AAZStrType(
+                serialized_name="reinstallRequired",
+            )
             installation.state = AAZStrType()
 
             operation = cls._schema_on_200.properties.installation.operation
             operation.id = AAZStrType(
                 flags={"required": True},
             )
+
+            reasons = cls._schema_on_200.properties.installation.reasons
+            reasons.Element = AAZStrType()
 
             local_diagnostics_access = cls._schema_on_200.properties.local_diagnostics_access
             local_diagnostics_access.authentication_type = AAZStrType(
@@ -322,6 +360,17 @@ class Wait(AAZWaitCommand):
 
             custom_location = cls._schema_on_200.properties.platform.custom_location
             custom_location.id = AAZStrType(
+                flags={"required": True},
+            )
+
+            signaling = cls._schema_on_200.properties.signaling
+            signaling.nas_reroute = AAZObjectType(
+                serialized_name="nasReroute",
+            )
+
+            nas_reroute = cls._schema_on_200.properties.signaling.nas_reroute
+            nas_reroute.macro_mme_group_id = AAZIntType(
+                serialized_name="macroMmeGroupId",
                 flags={"required": True},
             )
 

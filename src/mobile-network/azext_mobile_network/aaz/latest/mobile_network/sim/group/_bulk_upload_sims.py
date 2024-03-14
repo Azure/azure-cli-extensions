@@ -17,15 +17,15 @@ from azure.cli.core.aaz import *
 class BulkUploadSims(AAZCommand):
     """Bulk upload SIMs to a SIM group.
 
-    :example: Uploading multiple sims with to a sim group
+    :example: Uploading multiple sims to a sim group
         az mobile-network sim group bulk-upload-sims -g rg --sim-group-name SimGroup --sims "[{name:bulk-upload-sim-01,authentication-key:00000000000000000000000000000000,operator-key-code:00000000000000000000000000000000,international-msi:0000000000},{name:bulk-upload-sim-02,authentication-key:00000000000000000000000000000001,operator-key-code:00000000000000000000000000000001,international-msi:0000000001}]"
         az mobile-network sim group bulk-upload-sims -g rg --sim-group-name SimGroup --sims "[{name:bulk-upload-sim-01,authentication-key:00000000000000000000000000000000,operator-key-code:00000000000000000000000000000000,international-msi:0000000000,icc-id:00000000000000000000,device-type:camera,sim-policy:{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.MobileNetwork/mobileNetworks/mobile-network/simPolicies/policy01},static-ip-configuration:[{attached-data-network:{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp01/packetCoreDataPlanes/pccp01/attachedDataNetworks/internet1},slice:{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.MobileNetwork/mobileNetworks/mobile-network/slices/slice01},static-ip:{ipv4-address:2.4.0.10}}]}]"
     """
 
     _aaz_info = {
-        "version": "2022-11-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/simgroups/{}/uploadsims", "2022-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/simgroups/{}/uploadsims", "2023-09-01"],
         ]
     }
 
@@ -262,7 +262,7 @@ class BulkUploadSims(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -364,6 +364,7 @@ class BulkUploadSims(AAZCommand):
             _schema_on_200.percent_complete = AAZFloatType(
                 serialized_name="percentComplete",
             )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.resource_id = AAZStrType(
                 serialized_name="resourceId",
             )
@@ -416,6 +417,9 @@ class _BulkUploadSimsHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZObjectType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )

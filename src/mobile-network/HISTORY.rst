@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0
++++++
+* Upgrade API version to `2023-09-01`
+
 0.2.1
 +++++
 * Better examples for bulk-upload-sims

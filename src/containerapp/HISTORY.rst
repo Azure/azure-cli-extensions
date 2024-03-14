@@ -7,6 +7,16 @@ upcoming
 * Upgrade api-version to 2023-11-02-preview
 * 'az containerapp create/update': Support enable or disable Java metrics with --runtime and --enable-java-metrics
 
+0.3.49
+++++++
+* 'az containerapp env telemetry data-dog set': Support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry data-dog delete': Support delete environment data dog configuration
+* 'az containerapp env telemetry app-insights set': Support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
+* 'az containerapp env telemetry app-insights delete': Support delete environment app insights configuration
+* 'az containerapp update/up': Explicitly set container name to container app name for source to cloud builds.
+* 'az containerapp env create/update': Add support for environment custom domain from azure key vault using managed identity
+* 'az containerapp env certificate upload': Add support for environment certificate from azure key vault using managed identity
+
 0.3.48
 ++++++
 * 'az containerapp service': Remove deprecated command group altogether, only keep 'az containerapp add-on' for add-ons

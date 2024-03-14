@@ -22,9 +22,9 @@ class Rollback(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}/rollback", "2022-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}/rollback", "2023-09-01"],
         ]
     }
 
@@ -62,7 +62,7 @@ class Rollback(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.PacketCoreControlPlaneRollback(ctx=self.ctx)()
+        yield self.PacketCoreControlPlanesRollback(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,7 +77,7 @@ class Rollback(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class PacketCoreControlPlaneRollback(AAZHttpOperation):
+    class PacketCoreControlPlanesRollback(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -141,7 +141,7 @@ class Rollback(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -184,6 +184,7 @@ class Rollback(AAZCommand):
             _schema_on_200.percent_complete = AAZFloatType(
                 serialized_name="percentComplete",
             )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.resource_id = AAZStrType(
                 serialized_name="resourceId",
             )
@@ -236,6 +237,9 @@ class _RollbackHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZObjectType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )

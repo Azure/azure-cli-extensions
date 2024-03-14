@@ -44,3 +44,11 @@ Release History
 1.2.10
 ++++++
 * `az grafana backup`: exclude provisioned dashboards during backup
+
+1.3.0
+++++++
+* `az grafana update`: support Grafana major version argument
+
+1.3.1
+++++++
+* `az grafana delete`: bump azure-mgmt-authorization package version

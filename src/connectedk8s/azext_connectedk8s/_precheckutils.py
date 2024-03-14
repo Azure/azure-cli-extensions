@@ -27,7 +27,8 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
 from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
-from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
+from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, \
+    AzureResponseError, AzureInternalError, ValidationError
 from argparse import Namespace
 from pydoc import cli
 from logging import exception
@@ -46,16 +47,23 @@ logger = get_logger(__name__)
 diagnoser_output = []
 
 
-def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available):
+def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location,
+                                    kubectl_client_location, kube_config, kube_context, location, http_proxy,
+                                    https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp,
+                                    storage_space_available):
     global diagnoser_output
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
         outbound_connectivity_check = "Starting"
         # Executing the cluster_diagnostic_checks job and fetching the logs obtained
-        cluster_diagnostic_checks_container_log = executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
+        cluster_diagnostic_checks_container_log = \
+            executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location,
+                                                    kubectl_client_location, kube_config, kube_context, location,
+                                                    http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud,
+                                                    filepath_with_timestamp, storage_space_available)
         # If cluster_diagnostic_checks_container_log is not empty then only we will check for the results
-        if(cluster_diagnostic_checks_container_log is not None and cluster_diagnostic_checks_container_log != ""):
+        if (cluster_diagnostic_checks_container_log is not None and cluster_diagnostic_checks_container_log != ""):
             cluster_diagnostic_checks_container_log_list = cluster_diagnostic_checks_container_log.split("\n")
             cluster_diagnostic_checks_container_log_list.pop(-1)
             dns_check_log = ""
@@ -74,33 +82,46 @@ def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, h
                     counter_container_logs = 0
                 elif counter_container_logs == 0:
                     dns_check_log += "  " + outputs
-            dns_check, storage_space_available = azext_utils.check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output)
-            outbound_connectivity_check, storage_space_available = azext_utils.check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output)
+            dns_check, storage_space_available = \
+                azext_utils.check_cluster_DNS(dns_check_log, filepath_with_timestamp,
+                                              storage_space_available, diagnoser_output)
+            outbound_connectivity_check, storage_space_available = \
+                azext_utils.check_cluster_outbound_connectivity(outbound_connectivity_check_log,
+                                                                filepath_with_timestamp, storage_space_available,
+                                                                diagnoser_output)
         else:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         # If both the check passed then we will return cluster diagnostic checks Passed
-        if(dns_check == consts.Diagnostic_Check_Passed and outbound_connectivity_check == consts.Diagnostic_Check_Passed):
+        if (dns_check == consts.Diagnostic_Check_Passed and
+                outbound_connectivity_check == consts.Diagnostic_Check_Passed):
             return consts.Diagnostic_Check_Passed, storage_space_available
         # If any of the check remain Incomplete than we will return Incomplete
-        elif(dns_check == consts.Diagnostic_Check_Incomplete or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete):
+        elif (dns_check == consts.Diagnostic_Check_Incomplete or
+                outbound_connectivity_check == consts.Diagnostic_Check_Incomplete):
             return consts.Diagnostic_Check_Incomplete, storage_space_available
         else:
             return consts.Diagnostic_Check_Failed, storage_space_available
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while trying to execute cluster diagnostic checks container on the cluster. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type, summary="Error occured while executing the cluster diagnostic checks container")
+        logger.warning("An exception has occured while trying to execute cluster diagnostic checks container on the \
+            cluster. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type,
+                                summary="Error occured while executing the cluster diagnostic checks container")
 
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
-def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available):
+def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location,
+                                            kubectl_client_location, kube_config, kube_context, location,
+                                            http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud,
+                                            filepath_with_timestamp, storage_space_available):
     job_name = "cluster-diagnostic-checks-job"
     # Setting the log output as Empty
     cluster_diagnostic_checks_container_log = ""
-    release_namespace = azext_utils.get_release_namespace(kube_config, kube_context, helm_client_location, "cluster-diagnostic-checks")
+    release_namespace = azext_utils.get_release_namespace(kube_config, kube_context, helm_client_location,
+                                                          "cluster-diagnostic-checks")
     cmd_helm_delete = [helm_client_location, "delete", "cluster-diagnostic-checks", "-n", "azure-arc-release"]
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
@@ -113,7 +134,8 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
         config.load_kube_config(kube_config, kube_context)
         # checking existence of the release and if present we delete the stale release
         if release_namespace is not None:
-            # Attempting deletion of cluster diagnostic checks resources to handle the scenario if any stale resources are present
+            # Attempting deletion of cluster diagnostic checks resources to handle the scenario if any stale
+            # resources are present
             response_kubectl_delete_helm = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             output_kubectl_delete_helm, error_kubectl_delete_helm = response_kubectl_delete_helm.communicate()
             # If any error occured while execution of delete command
@@ -125,52 +147,72 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                 # Checking if any exception occured or not
                 exception_occured_counter = 0
                 for ind_errors in error_msg_list:
-                    if('not found' in ind_errors or 'deleted' in ind_errors):
+                    if ('not found' in ind_errors or 'deleted' in ind_errors):
                         pass
                     else:
                         valid_exception_list.append(ind_errors)
                         exception_occured_counter = 1
                 # If any exception occured we will print the exception and return
                 if exception_occured_counter == 1:
-                    logger.warning("Cleanup of previous diagnostic checks helm release failed and hence couldn't install the new helm release. Please cleanup older release using \"helm delete cluster-diagnostic-checks -n azure-arc-release\" and try onboarding again")
-                    telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed, summary="Error while executing cluster diagnostic checks Job")
+                    logger.warning("Cleanup of previous diagnostic checks helm release failed and hence couldn't \
+                        install the new helm release. Please cleanup older release using \"helm delete \
+                            cluster-diagnostic-checks -n azure-arc-release\" and try onboarding again")
+                    telemetry.set_exception(exception=error_kubectl_delete_helm.decode("ascii"),
+                                            fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed,
+                                            summary="Error while executing cluster diagnostic checks Job")
                     return
 
-        chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config, kube_context, helm_client_location, consts.Pre_Onboarding_Helm_Charts_Folder_Name, consts.Pre_Onboarding_Helm_Charts_Release_Name, False)
+        chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config,
+                                                kube_context, helm_client_location,
+                                                consts.Pre_Onboarding_Helm_Charts_Folder_Name,
+                                                consts.Pre_Onboarding_Helm_Charts_Release_Name, False)
 
-        helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, kube_config, kube_context, helm_client_location)
+        helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy,
+                                                       proxy_cert, azure_cloud, kube_config, kube_context,
+                                                       helm_client_location)
 
         # Watching for cluster diagnostic checks container to reach in completed stage
         w = watch.Watch()
         is_job_complete = False
         is_job_scheduled = False
         # To watch for changes in the pods states till it reach completed state or exit if it takes more than 180 seconds
-        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc-release', label_selector="", timeout_seconds=60):
+        for event in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc-release',
+                              label_selector="", timeout_seconds=60):
             try:
                 # Checking if job get scheduled or not
                 if event["object"].metadata.name == "cluster-diagnostic-checks-job":
                     is_job_scheduled = True
                 # Checking if job reached completed stage or not
-                if event["object"].metadata.name == "cluster-diagnostic-checks-job" and event["object"].status.conditions[0].type == "Complete":
+                if event["object"].metadata.name == "cluster-diagnostic-checks-job" and \
+                        event["object"].status.conditions[0].type == "Complete":
                     is_job_complete = True
                     w.stop()
-            except Exception as e:
+            except Exception:
                 continue
             else:
                 continue
 
-        azext_utils.save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+        azext_utils.save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_api_instance,
+                                                                   helm_client_location, kubectl_client_location,
+                                                                   kube_config, kube_context, filepath_with_timestamp,
+                                                                   storage_space_available)
 
         if (is_job_scheduled is False):
-            telemetry.set_exception(exception="Couldn't schedule cluster diagnostic checks job in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Scheduled,
+            telemetry.set_exception(exception="Couldn't schedule cluster diagnostic checks job in the cluster",
+                                    fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Scheduled,
                                     summary="Couldn't schedule cluster diagnostic checks job in the cluster")
-            logger.warning("Unable to schedule the cluster diagnostic checks job in the kubernetes cluster. The possible reasons can be presence of a security policy or security context constraint (SCC) or it may happen becuase of lack of ResourceQuota.\n")
+            logger.warning("Unable to schedule the cluster diagnostic checks job in the kubernetes cluster. The \
+                possible reasons can be presence of a security policy or security context constraint (SCC) or it may \
+                    happen becuase of lack of ResourceQuota.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         elif (is_job_scheduled is True and is_job_complete is False):
-            telemetry.set_exception(exception="Couldn't complete cluster diagnostic checks job after scheduling in the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Complete,
-                                    summary="Couldn't complete cluster diagnostic checks job after scheduling in the cluster")
-            logger.warning("Cluster diagnostics job didn't reach completed state in the kubernetes cluster. The possible reasons can be resource constraints on the cluster.\n")
+            telemetry.set_exception(exception="Couldn't complete cluster diagnostic checks job after scheduling in \
+                the cluster", fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Complete,
+                                    summary="Couldn't complete cluster diagnostic checks job after scheduling in the \
+                                        cluster")
+            logger.warning("Cluster diagnostics job didn't reach completed state in the kubernetes cluster. The \
+                possible reasons can be resource constraints on the cluster.\n")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
         else:
@@ -180,42 +222,62 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
             for each_pod in all_pods.items:
                 # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
                 pod_name = each_pod.metadata.name
-                if(pod_name.startswith(job_name)):
+                if (pod_name.startswith(job_name)):
                     # Creating a text file with the name of the container and adding that containers logs in it
-                    cluster_diagnostic_checks_container_log = corev1_api_instance.read_namespaced_pod_log(name=pod_name, container="cluster-diagnostic-checks-container", namespace='azure-arc-release')
+                    cluster_diagnostic_checks_container_log = \
+                        corev1_api_instance.read_namespaced_pod_log(name=pod_name,
+                                                                    container="cluster-diagnostic-checks-container",
+                                                                    namespace='azure-arc-release')
                     try:
                         if storage_space_available:
-                            dns_check_path = os.path.join(filepath_with_timestamp, "cluster_diagnostic_checks_job_log.txt")
+                            dns_check_path = os.path.join(filepath_with_timestamp,
+                                                          "cluster_diagnostic_checks_job_log.txt")
                             with open(dns_check_path, 'w+') as f:
                                 f.write(cluster_diagnostic_checks_container_log)
                     except OSError as e:
                         if "[Errno 28]" in str(e):
                             storage_space_available = False
-                            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+                            telemetry.set_exception(exception=e,
+                                                    fault_type=consts.No_Storage_Space_Available_Fault_Type,
+                                                    summary="No space left on device")
                             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
                         else:
-                            logger.warning("An exception has occured while saving the cluster diagnostic checks job logs in the local machine. Exception: {}".format(str(e)) + "\n")
-                            telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed, summary="Error occured while saving the cluster diagnostic checks job logs in the local machine")
+                            logger.warning("An exception has occured while saving the cluster diagnostic checks job \
+                                logs in the local machine. Exception: {}".format(str(e)) + "\n")
+                            telemetry.set_exception(exception=e,
+                                                    fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed,
+                                                    summary="Error occured while saving the cluster diagnostic \
+                                                        checks job logs in the local machine")
 
                     # To handle any exception that may occur during the execution
                     except Exception as e:
-                        logger.warning("An exception has occured while saving the cluster diagnostic checks job logs in the local machine. Exception: {}".format(str(e)) + "\n")
-                        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed, summary="Error occured while saving the cluster diagnostic checks job logs in the local machine")
+                        logger.warning("An exception has occured while saving the cluster diagnostic checks job logs \
+                            in the local machine. Exception: {}".format(str(e)) + "\n")
+                        telemetry.set_exception(exception=e,
+                                                fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed,
+                                                summary="Error occured while saving the cluster diagnostic checks \
+                                                    job logs in the local machine")
         # Clearing all the resources after fetching the cluster diagnostic checks container logs
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while trying to execute the cluster diagnostic checks in the cluster. Exception: {}".format(str(e)) + "\n")
+        logger.warning("An exception has occured while trying to execute the cluster diagnostic checks in the \
+            cluster. Exception: {}".format(str(e)) + "\n")
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type, summary="Error while executing cluster diagnostic checks Job")
+        telemetry.set_exception(exception=e, fault_type=consts.Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type,
+                                summary="Error while executing cluster diagnostic checks Job")
         return
 
     return cluster_diagnostic_checks_container_log
 
 
-def helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, kube_config, kube_context, helm_client_location, onboarding_timeout="60"):
-    cmd_helm_install = [helm_client_location, "upgrade", "--install", "cluster-diagnostic-checks", chart_path, "--namespace", "{}".format(consts.Release_Install_Namespace), "--create-namespace", "--output", "json"]
+def helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert,
+                                                   azure_cloud, kube_config, kube_context, helm_client_location,
+                                                   onboarding_timeout="60"):
+    cmd_helm_install = [helm_client_location, "upgrade", "--install", "cluster-diagnostic-checks", chart_path,
+                        "--namespace", "{}".format(consts.Release_Install_Namespace), "--create-namespace",
+                        "--output", "json"]
     # To set some other helm parameters through file
     cmd_helm_install.extend(["--set", "global.location={}".format(location)])
     cmd_helm_install.extend(["--set", "global.azureCloud={}".format(azure_cloud)])
@@ -240,11 +302,14 @@ def helm_install_release_cluster_diagnostic_checks(chart_path, location, http_pr
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
-        if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
+        if ('forbidden' in error_helm_install.decode("ascii") or
+                'timed out waiting for the condition' in error_helm_install.decode("ascii")):
             telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type,
+        telemetry.set_exception(exception=error_helm_install.decode("ascii"),
+                                fault_type=consts.Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type,
                                 summary='Unable to install cluster diagnostic checks helm release')
-        raise CLIInternalError("Unable to install cluster diagnostic checks helm release: " + error_helm_install.decode("ascii"))
+        raise CLIInternalError("Unable to install cluster diagnostic checks helm release: "
+                               + error_helm_install.decode("ascii"))
 
 
 def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
@@ -262,7 +327,8 @@ def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, f
                 with open(cli_output_logger_path, 'w+') as cli_output_writer:
                     for output in diagnoser_output:
                         cli_output_writer.write(output + "\n")
-                    # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that also to the text file
+                    # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that
+                    # also to the text file
                     if flag == 0:
                         cli_output_writer.write("Process terminated externally.\n")
 
@@ -281,12 +347,15 @@ def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, f
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
-            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type,
+                                    summary="No space left on device")
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning("An exception has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
+        logger.warning("An exception has occured while trying to store the diagnoser results. Exception: \
+            {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type,
+                                summary="Error while storing the diagnoser results")
 
     return consts.Diagnostic_Check_Failed

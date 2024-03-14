@@ -141,6 +141,29 @@ class TestSpringAppsCreateWithApplicationLiveView(BasicTest):
         self.assertIsNone(self.dev_tool)
 
 
+class TestSpringAppsCreateWithApplicationConfigurationService(BasicTest):
+    def __init__(self, methodName: str = ...):
+        super().__init__(methodName=methodName)
+        self.acs_resource = None
+        self.acs_request = None
+
+    def _execute(self, resource_group, name, **kwargs):
+        client = kwargs.pop('client', None) or _get_basic_mock_client()
+        super()._execute(resource_group, name, client=client, **kwargs)
+        self.acs_request = client.configuration_services.begin_create_or_update.call_args_list
+        self.acs_resource = self.acs_request[0][0][3] if self.acs_request else None
+
+    def test_asa_enterprise_with_acs(self):
+        self._execute('rg', 'asa', sku=self._get_sku('Enterprise'),
+                      enable_application_configuration_service=True)
+        self.assertIsNotNone(self.acs_resource)
+        self.assertEqual('rg', self.acs_request[0][0][0])
+        self.assertEqual('asa', self.acs_request[0][0][1])
+        self.assertEqual('default', self.acs_request[0][0][2])
+        self.assertIsNotNone(self.acs_resource)
+        self.assertEqual(models.ConfigurationServiceGeneration.GEN2, self.acs_resource.properties.generation)
+
+
 class TestSpringAppsCreateWithApplicationAccelerator(BasicTest):
     def __init__(self, methodName: str = ...):
         super().__init__(methodName=methodName)

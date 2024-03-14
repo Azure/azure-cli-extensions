@@ -6,13 +6,15 @@ from typing import Any, Dict
 from knack.log import get_logger
 
 from azure.cli.command_modules.containerapp._utils import certificate_matches, certificate_location_matches, \
-    load_cert_file, generate_randomized_cert_name
+    load_cert_file, generate_randomized_cert_name, _ensure_identity_resource_id
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, ValidationError
 from azure.cli.core.commands import AzCliCommand
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.cli.core.commands.client_factory import get_subscription_id
+from copy import deepcopy
 
 from ._constants import PRIVATE_CERTIFICATE_RT, MANAGED_CERTIFICATE_RT, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, \
     NAME_ALREADY_EXISTS, NAME_INVALID
@@ -86,7 +88,7 @@ class ContainerappEnvCertificateListDecorator(ContainerappEnvCertificateDecorato
 class ContainerappEnvCertificateUploadDecorator(ContainerappEnvCertificateDecorator):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
-        self.certificate = ContainerAppCertificateEnvelopeModel
+        self.certificate = deepcopy(ContainerAppCertificateEnvelopeModel)
         self.cert_name = None
 
     def get_argument_certificate_name(self):
@@ -191,3 +193,37 @@ class ContainerappPreviewEnvCertificateListDecorator(ContainerappEnvCertificateL
         managed_certs = self.get_managed_certificates(certificate_name)
         private_certs = self.get_private_certificates(certificate_name)
         return managed_certs + private_certs
+
+
+class ContainerappEnvCertificatePreviweUploadDecorator(ContainerappEnvCertificateUploadDecorator):
+    def validate_arguments(self):
+        # validate arguments
+        if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
+            raise ValidationError("Cannot use --certificate-file/--certificate-password with --certificate-akv-url/--certificate-identity at the same time")
+        if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
+            raise ValidationError("Either --certificate-file/--certificate-password or --certificate-akv-url/--certificate-identity should be set when hostName is set")
+
+    def set_up_certificate_from_key_vault(self):
+        if self.get_argument_certificate_key_vault_url():
+            identity = self.get_argument_certificate_identity()
+            if not identity:
+                identity = "system"
+            if identity.lower() != "system":
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
+                identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
+            self.certificate["properties"]["certificateKeyVaultProperties"] = {
+                "keyVaultUrl": self.get_argument_certificate_key_vault_url(),
+                "identity": identity
+            }
+            # used for autogenrate cert name
+            super().set_argument_thumbprint("cert-kv")
+
+    def construct_payload(self):
+        self.set_up_certificate_from_key_vault()
+        super().construct_payload()
+
+    def get_argument_certificate_identity(self):
+        return self.get_param("certificate_identity")
+
+    def get_argument_certificate_key_vault_url(self):
+        return self.get_param("certificate_key_vault_url")

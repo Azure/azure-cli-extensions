@@ -12,7 +12,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from azext_connectedk8s._constants import Distribution_Enum_Values, Infrastructure_Enum_Values, Feature_Values, AHB_Enum_Values
 from knack.arguments import (CLIArgumentType, CaseInsensitiveList)
 
-from._validators import validate_private_link_properties
+from . _validators import validate_private_link_properties
 
 features_types = CLIArgumentType(
     nargs='+',

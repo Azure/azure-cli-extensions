@@ -33,5 +33,6 @@ def load_command_table(self, _):
         'aceAgreementsOperations.{}',
         client_factory=cf_marketplace_agreement)
     with self.command_group('confluent terms', confluent_marketplace_agreement,
-                            client_factory=cf_marketplace_agreement, deprecate_info=g.deprecate(redirect='az term', hide=True)) as g:
+                            client_factory=cf_marketplace_agreement,
+                            deprecate_info=g.deprecate(redirect='az term', hide=True)) as g:
         g.custom_command('list', 'confluent_terms_list')

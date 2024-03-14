@@ -13,31 +13,33 @@ interactions:
       ParameterSetName:
       - -n -g --identifier
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-05T19:27:02Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_mobile_network_pccp","date":"2024-03-07T08:46:52Z","module":"mobile-network"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '336'
+      - '396'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:27:13 GMT
+      - Thu, 07 Mar 2024 08:46:54 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1252A310F7B8492C8D0C7E69511DAEC1 Ref B: MAA201060516033 Ref C: 2024-03-07T08:46:54Z'
     status:
       code: 200
       message: OK
@@ -60,35 +62,33 @@ interactions:
       ParameterSetName:
       - -n -g --identifier
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002","name":"mobile_network_000002","type":"microsoft.mobilenetwork/mobilenetworks","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T19:27:18.5440695Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T19:27:18.5440695Z"},"properties":{"provisioningState":"Succeeded","publicLandMobileNetworkIdentifier":{"mcc":"001","mnc":"01"},"serviceKey":"8392852f-350a-4a4c-9baf-6827798f21f3"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002","name":"mobile_network_000002","type":"microsoft.mobilenetwork/mobilenetworks","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2024-03-07T08:46:56.8111334Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-07T08:46:56.8111334Z"},"properties":{"provisioningState":"Accepted","publicLandMobileNetworkIdentifier":{"mcc":"001","mnc":"01"},"serviceKey":"c02c56ad-7e75-4643-a71a-19079341919e"}}'
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D?api-version=2023-09-01&t=638453980186705289&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=LFgqiX7N2p52zizj6KbQI9Ebuus41kSMnk-Vdn52f0Jv4r_5TlB9McqhpJ7TA9h71nlleYzj8ld0DP3NJAD1bh5OKFQsWb-hknbbkL82GxbMNDdmcBaCsJuZ8SrfyPM6IYuAAQj4d2JJ5lIIld6KVWq9KSrkxCjImM7U5AoV28OadJzEM1ylyGeQtdpXlov2B9YA7Z3dHB8w1rFJ1CtY3NTxI19XmQdDrs8b0TBvL50IDVchdCTL1lA2iItWdb24w5bWVwvFcAY1ojzY_4U0TDImY9fIhhSG-sGWXRaAHhWq8431KJMg5c3ujEiq_jHWNbcgtVrrqJKsCLlgGXVjrA&h=0Aq480S08hXo9jhMr8JQd567eGrYvVlP5l0Y7IhQApA
       cache-control:
       - no-cache
       content-length:
-      - '679'
+      - '678'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:27:21 GMT
+      - Thu, 07 Mar 2024 08:46:58 GMT
       etag:
-      - '"a4008f93-0000-0100-0000-63b724970000"'
+      - '"57016400-0000-0100-0000-65e97f020000"'
       expires:
       - '-1'
-      mise-correlation-id:
-      - 74f1bf59-8b6f-4c5c-b852-d6d467fd4ca5
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
@@ -97,6 +97,250 @@ interactions:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: CB277605959F4FA08CA997F8F267F597 Ref B: MAA201060514025 Ref C: 2024-03-07T08:46:55Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --identifier
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D?api-version=2023-09-01&t=638453980186705289&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=LFgqiX7N2p52zizj6KbQI9Ebuus41kSMnk-Vdn52f0Jv4r_5TlB9McqhpJ7TA9h71nlleYzj8ld0DP3NJAD1bh5OKFQsWb-hknbbkL82GxbMNDdmcBaCsJuZ8SrfyPM6IYuAAQj4d2JJ5lIIld6KVWq9KSrkxCjImM7U5AoV28OadJzEM1ylyGeQtdpXlov2B9YA7Z3dHB8w1rFJ1CtY3NTxI19XmQdDrs8b0TBvL50IDVchdCTL1lA2iItWdb24w5bWVwvFcAY1ojzY_4U0TDImY9fIhhSG-sGWXRaAHhWq8431KJMg5c3ujEiq_jHWNbcgtVrrqJKsCLlgGXVjrA&h=0Aq480S08hXo9jhMr8JQd567eGrYvVlP5l0Y7IhQApA
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D","name":"f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002","status":"Accepted","startTime":"2024-03-07T08:46:57.9454219Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 Mar 2024 08:46:59 GMT
+      etag:
+      - '"d0005649-0000-0100-0000-65e97f010000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 599B6197242E4616B57391C4FDC63E4D Ref B: MAA201060514025 Ref C: 2024-03-07T08:46:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --identifier
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D?api-version=2023-09-01&t=638453980186705289&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=LFgqiX7N2p52zizj6KbQI9Ebuus41kSMnk-Vdn52f0Jv4r_5TlB9McqhpJ7TA9h71nlleYzj8ld0DP3NJAD1bh5OKFQsWb-hknbbkL82GxbMNDdmcBaCsJuZ8SrfyPM6IYuAAQj4d2JJ5lIIld6KVWq9KSrkxCjImM7U5AoV28OadJzEM1ylyGeQtdpXlov2B9YA7Z3dHB8w1rFJ1CtY3NTxI19XmQdDrs8b0TBvL50IDVchdCTL1lA2iItWdb24w5bWVwvFcAY1ojzY_4U0TDImY9fIhhSG-sGWXRaAHhWq8431KJMg5c3ujEiq_jHWNbcgtVrrqJKsCLlgGXVjrA&h=0Aq480S08hXo9jhMr8JQd567eGrYvVlP5l0Y7IhQApA
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D","name":"f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002","status":"Accepted","startTime":"2024-03-07T08:46:57.9454219Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 Mar 2024 08:47:29 GMT
+      etag:
+      - '"d0005649-0000-0100-0000-65e97f010000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9998'
+      x-msedge-ref:
+      - 'Ref A: 047F9BFB850E43309F494FD56415D179 Ref B: MAA201060514025 Ref C: 2024-03-07T08:47:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --identifier
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D?api-version=2023-09-01&t=638453980186705289&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=LFgqiX7N2p52zizj6KbQI9Ebuus41kSMnk-Vdn52f0Jv4r_5TlB9McqhpJ7TA9h71nlleYzj8ld0DP3NJAD1bh5OKFQsWb-hknbbkL82GxbMNDdmcBaCsJuZ8SrfyPM6IYuAAQj4d2JJ5lIIld6KVWq9KSrkxCjImM7U5AoV28OadJzEM1ylyGeQtdpXlov2B9YA7Z3dHB8w1rFJ1CtY3NTxI19XmQdDrs8b0TBvL50IDVchdCTL1lA2iItWdb24w5bWVwvFcAY1ojzY_4U0TDImY9fIhhSG-sGWXRaAHhWq8431KJMg5c3ujEiq_jHWNbcgtVrrqJKsCLlgGXVjrA&h=0Aq480S08hXo9jhMr8JQd567eGrYvVlP5l0Y7IhQApA
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D","name":"f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002","status":"Accepted","startTime":"2024-03-07T08:46:57.9454219Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 Mar 2024 08:48:00 GMT
+      etag:
+      - '"d0005649-0000-0100-0000-65e97f010000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9998'
+      x-msedge-ref:
+      - 'Ref A: 044F0768B5E54769A1A07F8E150584D2 Ref B: MAA201060514025 Ref C: 2024-03-07T08:48:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --identifier
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D?api-version=2023-09-01&t=638453980186705289&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=LFgqiX7N2p52zizj6KbQI9Ebuus41kSMnk-Vdn52f0Jv4r_5TlB9McqhpJ7TA9h71nlleYzj8ld0DP3NJAD1bh5OKFQsWb-hknbbkL82GxbMNDdmcBaCsJuZ8SrfyPM6IYuAAQj4d2JJ5lIIld6KVWq9KSrkxCjImM7U5AoV28OadJzEM1ylyGeQtdpXlov2B9YA7Z3dHB8w1rFJ1CtY3NTxI19XmQdDrs8b0TBvL50IDVchdCTL1lA2iItWdb24w5bWVwvFcAY1ojzY_4U0TDImY9fIhhSG-sGWXRaAHhWq8431KJMg5c3ujEiq_jHWNbcgtVrrqJKsCLlgGXVjrA&h=0Aq480S08hXo9jhMr8JQd567eGrYvVlP5l0Y7IhQApA
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D","name":"f77a3baa-50d6-4ca4-bdb0-5633d10d03b5*71B12A61113376E19A7D15ECDEA385CA63052A609CBB6D29BF433A21060D698D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002","status":"Succeeded","startTime":"2024-03-07T08:46:57.9454219Z","endTime":"2024-03-07T08:48:04.822852Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '596'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 Mar 2024 08:48:31 GMT
+      etag:
+      - '"d000424b-0000-0100-0000-65e97f440000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 9A9567E61EC243D7A05E1207097603A2 Ref B: MAA201060514025 Ref C: 2024-03-07T08:48:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --identifier
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002","name":"mobile_network_000002","type":"microsoft.mobilenetwork/mobilenetworks","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2024-03-07T08:46:56.8111334Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-07T08:46:56.8111334Z"},"properties":{"provisioningState":"Succeeded","publicLandMobileNetworkIdentifier":{"mcc":"001","mnc":"01"},"serviceKey":"c02c56ad-7e75-4643-a71a-19079341919e"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '679'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 Mar 2024 08:48:32 GMT
+      etag:
+      - '"5701d30a-0000-0100-0000-65e97f440000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 9065A90114BE40CCBBE20BC32946D044 Ref B: MAA201060514025 Ref C: 2024-03-07T08:48:32Z'
     status:
       code: 200
       message: OK
@@ -114,31 +358,33 @@ interactions:
       ParameterSetName:
       - --mobile-network-name -n -g
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-05T19:27:02Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_mobile_network_pccp","date":"2024-03-07T08:46:52Z","module":"mobile-network","DateCreated":"2024-03-07T08:47:21Z","Creator":"v-jingszhang@microsoft.com"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '336'
+      - '472'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:27:22 GMT
+      - Thu, 07 Mar 2024 08:48:33 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: A3D84A10899141FC860E3AB8E64532CE Ref B: MAA201060515029 Ref C: 2024-03-07T08:48:34Z'
     status:
       code: 200
       message: OK
@@ -160,12 +406,12 @@ interactions:
       ParameterSetName:
       - --mobile-network-name -n -g
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003","name":"site_000003","type":"microsoft.mobilenetwork/mobilenetworks/sites","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T19:27:27.7188122Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T19:27:27.7188122Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003","name":"site_000003","type":"microsoft.mobilenetwork/mobilenetworks/sites","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2024-03-07T08:48:36.7377737Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-07T08:48:36.7377737Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -174,21 +420,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:27:29 GMT
+      - Thu, 07 Mar 2024 08:48:37 GMT
       etag:
-      - '"350173ef-0000-0100-0000-63b724a00000"'
+      - '"1c0099f0-0000-0100-0000-65e97f650000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 5a98ddb5-ae2a-4754-a1e9-3aabf0acaed7
+      - abc148b1-348e-4525-96c1-23f975340644
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
@@ -197,6 +441,8 @@ interactions:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 42344320B24E4F8AA14EC03381DBD809 Ref B: MAA201060515017 Ref C: 2024-03-07T08:48:35Z'
     status:
       code: 200
       message: OK
@@ -214,31 +460,33 @@ interactions:
       ParameterSetName:
       - -n -g --access-interface --local-diagnostics --platform --sites --sku
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-05T19:27:02Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_mobile_network_pccp","date":"2024-03-07T08:46:52Z","module":"mobile-network","DateCreated":"2024-03-07T08:47:21Z","Creator":"v-jingszhang@microsoft.com"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '336'
+      - '472'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:27:30 GMT
+      - Thu, 07 Mar 2024 08:48:38 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4A0F24B2B9ED4A8082BC71F194B426C1 Ref B: MAA201060513011 Ref C: 2024-03-07T08:48:39Z'
     status:
       code: 200
       message: OK
@@ -264,15 +512,15 @@ interactions:
       ParameterSetName:
       - -n -g --access-interface --local-diagnostics --platform --sites --sku
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T19:27:34.8945595Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T19:27:34.8945595Z"},"properties":{"controlPlaneAccessInterface":{"ipv4Address":"10.28.128.2","ipv4Gateway":"10.28.128.1","ipv4Subnet":"10.28.128.0/24","name":"N2"},"coreNetworkTechnology":"5GC","localDiagnosticsAccess":{"authenticationType":"AAD"},"platform":{"type":"AKS-HCI"},"sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"sku":"G0","ueMtu":1440,"provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2024-03-07T08:48:40.8788727Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-07T08:48:40.8788727Z"},"properties":{"controlPlaneAccessInterface":{"ipv4Address":"10.28.128.2","ipv4Gateway":"10.28.128.1","ipv4Subnet":"10.28.128.0/24","name":"N2"},"coreNetworkTechnology":"5GC","localDiagnosticsAccess":{"authenticationType":"AAD"},"platform":{"type":"AKS-HCI"},"sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"sku":"G0","ueMtu":1440,"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/cdc52419-334b-451a-a764-95a9a4e8d6e5*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453981220663825&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=WeH9NWiQ_gSOt7SaXSs3yW6g9sEmGilh9kDfFX_ouszIzEqsZhtogk7DF8JrpOB3lQEQIw7YMGVG3YVrBvvZ_LCELNrSrCyoyQQ3hin4LkIBlDgC1L_xgLZAHn5uoRA3Clw8fVGKun7yy9qMDh4zOwZPBi8cxsX9EsT9hsG4qcyL9qTQ8qFm559v-qVTZtoub0N7Nv8n9oXrC0LeWdkNgffvurgkr4ERmPk_wDWFOUAxqNKNJOQYcJcVQZPU26oKU8ZYA0MXq1wPhZ3NBpuEgquhhULAbOE0yaqmD5mSQb0Y9g6uKdSZVZz35r91Olr6wEA0ATFMmyeDOaN_7ifLbw&h=y7d9qDuFgu1kCDUtC_CykTjdkXWTgjUsq4uKWbMgMok
       cache-control:
       - no-cache
       content-length:
@@ -280,15 +528,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:27:37 GMT
+      - Thu, 07 Mar 2024 08:48:41 GMT
       etag:
-      - '"50019711-0000-0100-0000-63b724a80000"'
+      - '"ed00e699-0000-0100-0000-65e97f690000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
@@ -296,7 +546,9 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
+      x-msedge-ref:
+      - 'Ref A: DEAC0058BF5844CAAF0E53BAD47E3472 Ref B: MAA201060515037 Ref C: 2024-03-07T08:48:39Z'
     status:
       code: 201
       message: Created
@@ -314,12 +566,12 @@ interactions:
       ParameterSetName:
       - -n -g --access-interface --local-diagnostics --platform --sites --sku
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/cdc52419-334b-451a-a764-95a9a4e8d6e5*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453981220663825&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=WeH9NWiQ_gSOt7SaXSs3yW6g9sEmGilh9kDfFX_ouszIzEqsZhtogk7DF8JrpOB3lQEQIw7YMGVG3YVrBvvZ_LCELNrSrCyoyQQ3hin4LkIBlDgC1L_xgLZAHn5uoRA3Clw8fVGKun7yy9qMDh4zOwZPBi8cxsX9EsT9hsG4qcyL9qTQ8qFm559v-qVTZtoub0N7Nv8n9oXrC0LeWdkNgffvurgkr4ERmPk_wDWFOUAxqNKNJOQYcJcVQZPU26oKU8ZYA0MXq1wPhZ3NBpuEgquhhULAbOE0yaqmD5mSQb0Y9g6uKdSZVZz35r91Olr6wEA0ATFMmyeDOaN_7ifLbw&h=y7d9qDuFgu1kCDUtC_CykTjdkXWTgjUsq4uKWbMgMok
   response:
     body:
-      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/cdc52419-334b-451a-a764-95a9a4e8d6e5*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","name":"cdc52419-334b-451a-a764-95a9a4e8d6e5*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Accepted","startTime":"2023-01-05T19:27:36.3345947Z"}'
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Accepted","startTime":"2024-03-07T08:48:41.3962937Z"}'
     headers:
       cache-control:
       - no-cache
@@ -328,21 +580,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:28:08 GMT
+      - Thu, 07 Mar 2024 08:48:42 GMT
       etag:
-      - '"9e000cd3-0000-0100-0000-63b724a80000"'
+      - '"d000794c-0000-0100-0000-65e97f690000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9994'
+      x-msedge-ref:
+      - 'Ref A: BA853E8375424BA7B52241167E0ACB0B Ref B: MAA201060515037 Ref C: 2024-03-07T08:48:42Z'
     status:
       code: 200
       message: OK
@@ -360,12 +614,12 @@ interactions:
       ParameterSetName:
       - -n -g --access-interface --local-diagnostics --platform --sites --sku
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/cdc52419-334b-451a-a764-95a9a4e8d6e5*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453981220663825&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=WeH9NWiQ_gSOt7SaXSs3yW6g9sEmGilh9kDfFX_ouszIzEqsZhtogk7DF8JrpOB3lQEQIw7YMGVG3YVrBvvZ_LCELNrSrCyoyQQ3hin4LkIBlDgC1L_xgLZAHn5uoRA3Clw8fVGKun7yy9qMDh4zOwZPBi8cxsX9EsT9hsG4qcyL9qTQ8qFm559v-qVTZtoub0N7Nv8n9oXrC0LeWdkNgffvurgkr4ERmPk_wDWFOUAxqNKNJOQYcJcVQZPU26oKU8ZYA0MXq1wPhZ3NBpuEgquhhULAbOE0yaqmD5mSQb0Y9g6uKdSZVZz35r91Olr6wEA0ATFMmyeDOaN_7ifLbw&h=y7d9qDuFgu1kCDUtC_CykTjdkXWTgjUsq4uKWbMgMok
   response:
     body:
-      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/cdc52419-334b-451a-a764-95a9a4e8d6e5*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","name":"cdc52419-334b-451a-a764-95a9a4e8d6e5*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Accepted","startTime":"2023-01-05T19:27:36.3345947Z"}'
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Accepted","startTime":"2024-03-07T08:48:41.3962937Z"}'
     headers:
       cache-control:
       - no-cache
@@ -374,21 +628,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:28:38 GMT
+      - Thu, 07 Mar 2024 08:49:12 GMT
       etag:
-      - '"9e000cd3-0000-0100-0000-63b724a80000"'
+      - '"d000794c-0000-0100-0000-65e97f690000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9998'
+      x-msedge-ref:
+      - 'Ref A: 1214B558216B4950803308DEC9CB2CEC Ref B: MAA201060515037 Ref C: 2024-03-07T08:49:12Z'
     status:
       code: 200
       message: OK
@@ -406,12 +662,60 @@ interactions:
       ParameterSetName:
       - -n -g --access-interface --local-diagnostics --platform --sites --sku
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/cdc52419-334b-451a-a764-95a9a4e8d6e5*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453981220663825&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=WeH9NWiQ_gSOt7SaXSs3yW6g9sEmGilh9kDfFX_ouszIzEqsZhtogk7DF8JrpOB3lQEQIw7YMGVG3YVrBvvZ_LCELNrSrCyoyQQ3hin4LkIBlDgC1L_xgLZAHn5uoRA3Clw8fVGKun7yy9qMDh4zOwZPBi8cxsX9EsT9hsG4qcyL9qTQ8qFm559v-qVTZtoub0N7Nv8n9oXrC0LeWdkNgffvurgkr4ERmPk_wDWFOUAxqNKNJOQYcJcVQZPU26oKU8ZYA0MXq1wPhZ3NBpuEgquhhULAbOE0yaqmD5mSQb0Y9g6uKdSZVZz35r91Olr6wEA0ATFMmyeDOaN_7ifLbw&h=y7d9qDuFgu1kCDUtC_CykTjdkXWTgjUsq4uKWbMgMok
   response:
     body:
-      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/cdc52419-334b-451a-a764-95a9a4e8d6e5*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","name":"cdc52419-334b-451a-a764-95a9a4e8d6e5*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Succeeded","startTime":"2023-01-05T19:27:36.3345947Z","properties":null}'
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Accepted","startTime":"2024-03-07T08:48:41.3962937Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '536'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 Mar 2024 08:49:43 GMT
+      etag:
+      - '"d000794c-0000-0100-0000-65e97f690000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 162137B6C57049F49EA9F799372E0143 Ref B: MAA201060515037 Ref C: 2024-03-07T08:49:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pccp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --access-interface --local-diagnostics --platform --sites --sku
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453981220663825&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=WeH9NWiQ_gSOt7SaXSs3yW6g9sEmGilh9kDfFX_ouszIzEqsZhtogk7DF8JrpOB3lQEQIw7YMGVG3YVrBvvZ_LCELNrSrCyoyQQ3hin4LkIBlDgC1L_xgLZAHn5uoRA3Clw8fVGKun7yy9qMDh4zOwZPBi8cxsX9EsT9hsG4qcyL9qTQ8qFm559v-qVTZtoub0N7Nv8n9oXrC0LeWdkNgffvurgkr4ERmPk_wDWFOUAxqNKNJOQYcJcVQZPU26oKU8ZYA0MXq1wPhZ3NBpuEgquhhULAbOE0yaqmD5mSQb0Y9g6uKdSZVZz35r91Olr6wEA0ATFMmyeDOaN_7ifLbw&h=y7d9qDuFgu1kCDUtC_CykTjdkXWTgjUsq4uKWbMgMok
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"5540d8ff-ffbb-4e85-95a2-ba5074da1c81*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Succeeded","startTime":"2024-03-07T08:48:41.3962937Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -420,21 +724,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:29:09 GMT
+      - Thu, 07 Mar 2024 08:50:14 GMT
       etag:
-      - '"1500a393-0000-0600-0000-63b724eb0000"'
+      - '"1c0014c2-0000-0600-0000-65e97fac0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9997'
+      x-msedge-ref:
+      - 'Ref A: DF86217581144761BB91E8C5F739C34C Ref B: MAA201060515037 Ref C: 2024-03-07T08:50:14Z'
     status:
       code: 200
       message: OK
@@ -452,39 +758,41 @@ interactions:
       ParameterSetName:
       - -n -g --access-interface --local-diagnostics --platform --sites --sku
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T19:27:34.8945595Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T19:27:34.8945595Z"},"properties":{"provisioningState":"Succeeded","sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1440,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2024-03-07T08:48:40.8788727Z","lastModifiedBy":"54b9b9be-c365-4548-95c6-d2f2011f48f4","lastModifiedByType":"Application","lastModifiedAt":"2024-03-07T08:49:53.8864163Z"},"properties":{"provisioningState":"Succeeded","installation":{"state":"Uninstalled","reinstallRequired":"NotRequired","reasons":["NoPacketCoreDataPlane"]},"sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1440,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1037'
+      - '1163'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:29:10 GMT
+      - Thu, 07 Mar 2024 08:50:15 GMT
       etag:
-      - '"5001ce11-0000-0100-0000-63b724b20000"'
+      - '"ed00809b-0000-0100-0000-65e97fb10000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
       - 1.0.1
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: F1AA40E515A942D49510B4C5F25395F3 Ref B: MAA201060515037 Ref C: 2024-03-07T08:50:15Z'
     status:
       code: 200
       message: OK
@@ -502,46 +810,49 @@ interactions:
       ParameterSetName:
       - -n -g --ue-mtu --tags
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T19:27:34.8945595Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T19:27:34.8945595Z"},"properties":{"provisioningState":"Succeeded","sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1440,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2024-03-07T08:48:40.8788727Z","lastModifiedBy":"54b9b9be-c365-4548-95c6-d2f2011f48f4","lastModifiedByType":"Application","lastModifiedAt":"2024-03-07T08:49:53.8864163Z"},"properties":{"provisioningState":"Succeeded","installation":{"state":"Uninstalled","reinstallRequired":"NotRequired","reasons":["NoPacketCoreDataPlane"]},"sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1440,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1037'
+      - '1163'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:29:11 GMT
+      - Thu, 07 Mar 2024 08:50:18 GMT
       etag:
-      - '"5001ce11-0000-0100-0000-63b724b20000"'
+      - '"ed00809b-0000-0100-0000-65e97fb10000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
       - 1.0.1
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: B32B591855D2462B9AB37014A0D3CFF8 Ref B: MAA201060513045 Ref C: 2024-03-07T08:50:17Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"location": "eastus", "properties": {"controlPlaneAccessInterface": {"ipv4Address":
       "10.28.128.2", "ipv4Gateway": "10.28.128.1", "ipv4Subnet": "10.28.128.0/24",
-      "name": "N2"}, "coreNetworkTechnology": "5GC", "localDiagnosticsAccess": {"authenticationType":
+      "name": "N2"}, "coreNetworkTechnology": "5GC", "installation": {"reinstallRequired":
+      "NotRequired", "state": "Uninstalled"}, "localDiagnosticsAccess": {"authenticationType":
       "AAD"}, "platform": {"type": "AKS-HCI"}, "sites": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],
       "sku": "G0", "ueMtu": 1500}, "tags": {"tag": "test", "tag2": "test2"}}'
     headers:
@@ -554,37 +865,39 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '577'
+      - '655'
       Content-Type:
       - application/json
       ParameterSetName:
       - -n -g --ue-mtu --tags
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T19:27:34.8945595Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T19:29:13.1509098Z"},"properties":{"provisioningState":"Accepted","controlPlaneAccessInterface":{"ipv4Address":"10.28.128.2","ipv4Gateway":"10.28.128.1","ipv4Subnet":"10.28.128.0/24","name":"N2"},"coreNetworkTechnology":"5GC","localDiagnosticsAccess":{"authenticationType":"AAD"},"platform":{"type":"AKS-HCI"},"sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"sku":"G0","ueMtu":1500}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2024-03-07T08:48:40.8788727Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-07T08:50:18.7944512Z"},"properties":{"provisioningState":"Accepted","installation":{"reasons":["NoPacketCoreDataPlane"],"reinstallRequired":"NotRequired","state":"Uninstalled"},"controlPlaneAccessInterface":{"ipv4Address":"10.28.128.2","ipv4Gateway":"10.28.128.1","ipv4Subnet":"10.28.128.0/24","name":"N2"},"coreNetworkTechnology":"5GC","localDiagnosticsAccess":{"authenticationType":"AAD"},"platform":{"type":"AKS-HCI"},"sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"sku":"G0","ueMtu":1500}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c24b08fe-aa53-485a-aac9-3b493633e6d1*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453982224194274&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=pVHhIQKpB1mC9jPjbJFWrECJT8ytfG_mDSTNri7R2tdKTZnayaAb7JYKgHphZOTbswEYU_Qx7_DmI0pdf_w2vR_xgMWViL8cqtcEoq_yE0mRD7-5dqvYSf9RPWi_nCTxA18CgBfw_vebtZ0x5xTsKbKsAY0Rbj8BZspqFsHb5V6Va-NAnv-AWzHz2GrK6qCou6rj7bxPFjl2fkpeAGivwI1hYoJn22Fuvst8WnoeDCecdZFxqAcBsE7IEpGpPvS2BQIsRfwuzOFssn3T_3pw86xlu9a8ql3yH1AeQPlS8ccfmBZhB_nKSvPssGSot2IFk3rk8N6wlEdizsCmfp-rgg&h=CXp2oghDQ_JDYQAIfMbjiGcThxgE6eRLGcTjVhtXK58
       cache-control:
       - no-cache
       content-length:
-      - '1073'
+      - '1182'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:29:16 GMT
+      - Thu, 07 Mar 2024 08:50:22 GMT
       etag:
-      - '"50011e13-0000-0100-0000-63b7250a0000"'
+      - '"ed00229c-0000-0100-0000-65e97fcb0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
@@ -592,7 +905,9 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: ED38FF5642DE4F7EB032BBB924F65257 Ref B: MAA201060513045 Ref C: 2024-03-07T08:50:18Z'
     status:
       code: 201
       message: Created
@@ -610,12 +925,12 @@ interactions:
       ParameterSetName:
       - -n -g --ue-mtu --tags
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c24b08fe-aa53-485a-aac9-3b493633e6d1*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453982224194274&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=pVHhIQKpB1mC9jPjbJFWrECJT8ytfG_mDSTNri7R2tdKTZnayaAb7JYKgHphZOTbswEYU_Qx7_DmI0pdf_w2vR_xgMWViL8cqtcEoq_yE0mRD7-5dqvYSf9RPWi_nCTxA18CgBfw_vebtZ0x5xTsKbKsAY0Rbj8BZspqFsHb5V6Va-NAnv-AWzHz2GrK6qCou6rj7bxPFjl2fkpeAGivwI1hYoJn22Fuvst8WnoeDCecdZFxqAcBsE7IEpGpPvS2BQIsRfwuzOFssn3T_3pw86xlu9a8ql3yH1AeQPlS8ccfmBZhB_nKSvPssGSot2IFk3rk8N6wlEdizsCmfp-rgg&h=CXp2oghDQ_JDYQAIfMbjiGcThxgE6eRLGcTjVhtXK58
   response:
     body:
-      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c24b08fe-aa53-485a-aac9-3b493633e6d1*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","name":"c24b08fe-aa53-485a-aac9-3b493633e6d1*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Accepted","startTime":"2023-01-05T19:29:13.6935552Z"}'
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Accepted","startTime":"2024-03-07T08:50:19.2604586Z"}'
     headers:
       cache-control:
       - no-cache
@@ -624,21 +939,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:29:47 GMT
+      - Thu, 07 Mar 2024 08:50:22 GMT
       etag:
-      - '"9e001fd3-0000-0100-0000-63b725090000"'
+      - '"d000254f-0000-0100-0000-65e97fcb0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9998'
+      x-msedge-ref:
+      - 'Ref A: BA8F581355F3489BAF8429AB82489F00 Ref B: MAA201060513045 Ref C: 2024-03-07T08:50:22Z'
     status:
       code: 200
       message: OK
@@ -656,12 +973,12 @@ interactions:
       ParameterSetName:
       - -n -g --ue-mtu --tags
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c24b08fe-aa53-485a-aac9-3b493633e6d1*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453982224194274&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=pVHhIQKpB1mC9jPjbJFWrECJT8ytfG_mDSTNri7R2tdKTZnayaAb7JYKgHphZOTbswEYU_Qx7_DmI0pdf_w2vR_xgMWViL8cqtcEoq_yE0mRD7-5dqvYSf9RPWi_nCTxA18CgBfw_vebtZ0x5xTsKbKsAY0Rbj8BZspqFsHb5V6Va-NAnv-AWzHz2GrK6qCou6rj7bxPFjl2fkpeAGivwI1hYoJn22Fuvst8WnoeDCecdZFxqAcBsE7IEpGpPvS2BQIsRfwuzOFssn3T_3pw86xlu9a8ql3yH1AeQPlS8ccfmBZhB_nKSvPssGSot2IFk3rk8N6wlEdizsCmfp-rgg&h=CXp2oghDQ_JDYQAIfMbjiGcThxgE6eRLGcTjVhtXK58
   response:
     body:
-      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c24b08fe-aa53-485a-aac9-3b493633e6d1*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","name":"c24b08fe-aa53-485a-aac9-3b493633e6d1*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Accepted","startTime":"2023-01-05T19:29:13.6935552Z"}'
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Accepted","startTime":"2024-03-07T08:50:19.2604586Z"}'
     headers:
       cache-control:
       - no-cache
@@ -670,21 +987,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:30:18 GMT
+      - Thu, 07 Mar 2024 08:50:53 GMT
       etag:
-      - '"9e001fd3-0000-0100-0000-63b725090000"'
+      - '"d000254f-0000-0100-0000-65e97fcb0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 07A5D2777E884BEC9F0D7EBA01C69A6B Ref B: MAA201060513045 Ref C: 2024-03-07T08:50:53Z'
     status:
       code: 200
       message: OK
@@ -702,12 +1021,60 @@ interactions:
       ParameterSetName:
       - -n -g --ue-mtu --tags
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c24b08fe-aa53-485a-aac9-3b493633e6d1*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453982224194274&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=pVHhIQKpB1mC9jPjbJFWrECJT8ytfG_mDSTNri7R2tdKTZnayaAb7JYKgHphZOTbswEYU_Qx7_DmI0pdf_w2vR_xgMWViL8cqtcEoq_yE0mRD7-5dqvYSf9RPWi_nCTxA18CgBfw_vebtZ0x5xTsKbKsAY0Rbj8BZspqFsHb5V6Va-NAnv-AWzHz2GrK6qCou6rj7bxPFjl2fkpeAGivwI1hYoJn22Fuvst8WnoeDCecdZFxqAcBsE7IEpGpPvS2BQIsRfwuzOFssn3T_3pw86xlu9a8ql3yH1AeQPlS8ccfmBZhB_nKSvPssGSot2IFk3rk8N6wlEdizsCmfp-rgg&h=CXp2oghDQ_JDYQAIfMbjiGcThxgE6eRLGcTjVhtXK58
   response:
     body:
-      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c24b08fe-aa53-485a-aac9-3b493633e6d1*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","name":"c24b08fe-aa53-485a-aac9-3b493633e6d1*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Succeeded","startTime":"2023-01-05T19:29:13.6935552Z","properties":null}'
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Accepted","startTime":"2024-03-07T08:50:19.2604586Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '536'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 Mar 2024 08:51:24 GMT
+      etag:
+      - '"d000254f-0000-0100-0000-65e97fcb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9998'
+      x-msedge-ref:
+      - 'Ref A: E63D746CF2C5458C8D45266F0CCF92E8 Ref B: MAA201060513045 Ref C: 2024-03-07T08:51:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pccp update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --ue-mtu --tags
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453982224194274&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=pVHhIQKpB1mC9jPjbJFWrECJT8ytfG_mDSTNri7R2tdKTZnayaAb7JYKgHphZOTbswEYU_Qx7_DmI0pdf_w2vR_xgMWViL8cqtcEoq_yE0mRD7-5dqvYSf9RPWi_nCTxA18CgBfw_vebtZ0x5xTsKbKsAY0Rbj8BZspqFsHb5V6Va-NAnv-AWzHz2GrK6qCou6rj7bxPFjl2fkpeAGivwI1hYoJn22Fuvst8WnoeDCecdZFxqAcBsE7IEpGpPvS2BQIsRfwuzOFssn3T_3pw86xlu9a8ql3yH1AeQPlS8ccfmBZhB_nKSvPssGSot2IFk3rk8N6wlEdizsCmfp-rgg&h=CXp2oghDQ_JDYQAIfMbjiGcThxgE6eRLGcTjVhtXK58
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"6cf117a0-e871-4c56-8c06-cbbbdf1c3479*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Succeeded","startTime":"2024-03-07T08:50:19.2604586Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -716,21 +1083,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:30:48 GMT
+      - Thu, 07 Mar 2024 08:57:36 GMT
       etag:
-      - '"9e003ad3-0000-0100-0000-63b7254c0000"'
+      - '"1c00dfc3-0000-0600-0000-65e9800d0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 606B6D7214E9439B842A045E5D56B4F8 Ref B: TYO01EDGE0717 Ref C: 2024-03-07T08:57:36Z'
     status:
       code: 200
       message: OK
@@ -748,39 +1117,41 @@ interactions:
       ParameterSetName:
       - -n -g --ue-mtu --tags
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T19:27:34.8945595Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T19:29:13.1509098Z"},"properties":{"provisioningState":"Succeeded","sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1500,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2024-03-07T08:48:40.8788727Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-07T08:50:18.7944512Z"},"properties":{"provisioningState":"Succeeded","installation":{"state":"Uninstalled","reinstallRequired":"NotRequired","reasons":["NoPacketCoreDataPlane"]},"sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1500,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1074'
+      - '1183'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:30:50 GMT
+      - Thu, 07 Mar 2024 08:57:37 GMT
       etag:
-      - '"50012c13-0000-0100-0000-63b725160000"'
+      - '"ed00a29d-0000-0100-0000-65e9800b0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
       - 1.0.1
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 2EBCD1B43E424FD7B3ADC641FDBE5537 Ref B: TYO01EDGE0717 Ref C: 2024-03-07T08:57:37Z'
     status:
       code: 200
       message: OK
@@ -798,35 +1169,40 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes?api-version=2023-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T19:27:34.8945595Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T19:29:13.1509098Z"},"properties":{"provisioningState":"Succeeded","sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1500,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2024-03-07T08:48:40.8788727Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-07T08:50:18.7944512Z"},"properties":{"provisioningState":"Succeeded","installation":{"state":"Uninstalled","reinstallRequired":"NotRequired","reasons":["NoPacketCoreDataPlane"]},"sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1500,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1086'
+      - '1195'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:31:11 GMT
+      - Thu, 07 Mar 2024 08:57:42 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - ''
-      - 253e8f7b-70bb-4d5e-b83b-e1b0e5ba4bf6
-      - bce14f88-f0f2-4e8f-bc99-65598b1b549f
+      - 364ad5b3-ff29-473c-9d02-04a7b4d0d5f2
+      - 9e564b63-2204-431e-b2e8-8a892ab848eb
+      - 2d074afc-fa94-438f-a00f-d45c09c0ff30
+      - 38c4ca79-d5d7-457b-80bb-cb70c74a9f71
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: DA63A4EC05AC46E4811CA6A8F442BF1B Ref B: TYO01EDGE1918 Ref C: 2024-03-07T08:57:39Z'
     status:
       code: 200
       message: OK
@@ -844,39 +1220,41 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T19:27:34.8945595Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T19:29:13.1509098Z"},"properties":{"provisioningState":"Succeeded","sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1500,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","name":"pccp_000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2024-03-07T08:48:40.8788727Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-07T08:50:18.7944512Z"},"properties":{"provisioningState":"Succeeded","installation":{"state":"Uninstalled","reinstallRequired":"NotRequired","reasons":["NoPacketCoreDataPlane"]},"sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1500,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1074'
+      - '1183'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:31:13 GMT
+      - Thu, 07 Mar 2024 08:57:43 GMT
       etag:
-      - '"50012c13-0000-0100-0000-63b725160000"'
+      - '"ed00a29d-0000-0100-0000-65e9800b0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
       - 1.0.1
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 59A86FE0722149DA874C49B16E555A00 Ref B: TYO01EDGE2922 Ref C: 2024-03-07T08:57:43Z'
     status:
       code: 200
       message: OK
@@ -892,37 +1270,39 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions?api-version=2023-09-01
   response:
     body:
-      string: '{"value":[{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-9-0","name":"PMN-4-9-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-9-1-rc1","name":"PMN-4-9-1-rc1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-9-1","name":"PMN-4-9-1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-9-2","name":"PMN-4-9-2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-9-3","name":"PMN-4-9-3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-9-4","name":"PMN-4-9-4","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-10-0-rc1","name":"PMN-4-10-0-rc1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-11-0-rc1","name":"PMN-4-11-0-rc1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-11-0-rc2","name":"PMN-4-11-0-rc2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-11-0-rc3","name":"PMN-4-11-0-rc3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-11-0-rx3","name":"PMN-4-11-0-rx3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-11-0-rc4","name":"PMN-4-11-0-rc4","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-11-0-rc5","name":"PMN-4-11-0-rc5","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-11-0-rc6","name":"PMN-4-11-0-rc6","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-11-0","name":"PMN-4-11-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-11-1","name":"PMN-4-11-1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/DevTest","name":"DevTest","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/DevTest-05Apr","name":"DevTest-05Apr","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/zz","name":"zz","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-12-0","name":"PMN-4-12-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-13-0-rc2","name":"PMN-4-13-0-rc2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-13-0-rc3","name":"PMN-4-13-0-rc3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-13-0-rc5","name":"pmn-4-13-0-rc5","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-13-0-av2","name":"pmn-4-13-0-av2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-0-1-0-fix","name":"pmn-0-1-0-fix","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-7b1cf2","name":"pmn-7b1cf2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-13-0-rc6","name":"PMN-4-13-0-rc6","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-13-1-av2","name":"pmn-4-13-1-av2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-13-0-rc7","name":"PMN-4-13-0-rc7","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-12-1","name":"pmn-4-12-1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-0-1-4-ta2","name":"pmn-0-1-4-ta2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-0-1-5-ta2","name":"pmn-0-1-5-ta2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/PMN-4-13-1","name":"PMN-4-13-1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-0-1-6-ta2","name":"pmn-0-1-6-ta2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-13-0-av3","name":"pmn-4-13-0-av3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-0-1-7-ta2","name":"pmn-0-1-7-ta2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-0-0-0","name":"pmn-0-0-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-13-2-av","name":"pmn-4-13-2-av","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-14-0-rc1","name":"pmn-4-14-0-rc1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-14-0-rc4","name":"pmn-4-14-0-rc4","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-14-0-rc5","name":"pmn-4-14-0-rc5","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-14-0-rc6","name":"pmn-4-14-0-rc6","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-14-0-rc7","name":"pmn-4-14-0-rc7","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-15-0-rc1","name":"pmn-4-15-0-rc1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-15-0-rc2","name":"pmn-4-15-0-rc2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-15-0-rc3","name":"pmn-4-15-0-rc3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-15-0","name":"pmn-4-15-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-16-0-rc1","name":"pmn-4-16-0-rc1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-16-0-rc2","name":"pmn-4-16-0-rc2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-16-0-rc3","name":"pmn-4-16-0-rc3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-16-0","name":"pmn-4-16-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-17-0-rc4","name":"pmn-4-17-0-rc4","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-17-0-rc5","name":"pmn-4-17-0-rc5","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-17-0-rc6","name":"pmn-4-17-0-rc6","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-17-0","name":"pmn-4-17-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-17-1-rc1","name":"pmn-4-17-1-rc1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-17-1","name":"pmn-4-17-1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-17-2","name":"pmn-4-17-2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-18-0-rc1","name":"pmn-4-18-0-rc1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2213-0-0","name":"pmn-2213-0-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2216-0-0","name":"pmn-2216-0-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-18-0-rc2","name":"pmn-4-18-0-rc2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2216-0-0-3","name":"pmn-2216-0-0-3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-99-0-rc1","name":"pmn-4-99-0-rc1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-99-0","name":"pmn-4-99-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2211-0-0-2","name":"pmn-2211-0-0-2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-18-0-rc3","name":"pmn-4-18-0-rc3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2209","maximumPlatformSoftwareVersion":"2212","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-18-0","name":"pmn-4-18-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Active","minimumPlatformSoftwareVersion":"2209","maximumPlatformSoftwareVersion":"2212","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2211-0-1","name":"pmn-2211-0-1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Preview","minimumPlatformSoftwareVersion":"2211","maximumPlatformSoftwareVersion":"2212","recommendedVersion":"NotRecommended","obsoleteVersion":"NotObsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2211-0-2","name":"pmn-2211-0-2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Preview","minimumPlatformSoftwareVersion":"2210","maximumPlatformSoftwareVersion":"2303","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2211-0-3","name":"pmn-2211-0-3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Active","minimumPlatformSoftwareVersion":"2210","maximumPlatformSoftwareVersion":"2303","recommendedVersion":"Recommended","obsoleteVersion":"NotObsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-1-0-ls51","name":"pmn-1-0-ls51","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Preview","minimumPlatformSoftwareVersion":"2210","maximumPlatformSoftwareVersion":"2303","recommendedVersion":"NotRecommended","obsoleteVersion":"NotObsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2212-0-2","name":"pmn-2212-0-2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Preview","minimumPlatformSoftwareVersion":"2210","maximumPlatformSoftwareVersion":"2303","recommendedVersion":"NotRecommended","obsoleteVersion":"NotObsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2211-0-80","name":"pmn-2211-0-80","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Preview","minimumPlatformSoftwareVersion":"2210","maximumPlatformSoftwareVersion":"2303","recommendedVersion":"NotRecommended","obsoleteVersion":"NotObsolete"}]}}]}'
+      string: '{"value":[{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-18-0-rc3","name":"pmn-4-18-0-rc3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2209","maximumPlatformSoftwareVersion":"2212","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-4-18-0","name":"pmn-4-18-0","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2209","maximumPlatformSoftwareVersion":"2212","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2211-0-2","name":"pmn-2211-0-2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2210","maximumPlatformSoftwareVersion":"2212","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2211-0-3","name":"pmn-2211-0-3","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2210","maximumPlatformSoftwareVersion":"2303","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2301-0-4","name":"pmn-2301-0-4","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2210","maximumPlatformSoftwareVersion":"2304","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2301-0-5","name":"pmn-2301-0-5","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2210","maximumPlatformSoftwareVersion":"2304","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2302-0-2","name":"pmn-2302-0-2","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2301","maximumPlatformSoftwareVersion":"2306","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2303-0-4","name":"pmn-2303-0-4","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2301","maximumPlatformSoftwareVersion":"2306","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2305-0-5","name":"pmn-2305-0-5","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2303","maximumPlatformSoftwareVersion":"2308","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2306-0-5","name":"pmn-2306-0-5","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2303","maximumPlatformSoftwareVersion":"2309","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2307-0-1","name":"pmn-2307-0-1","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Deprecated","minimumPlatformSoftwareVersion":"2303","maximumPlatformSoftwareVersion":"2309","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/2308.0-4","name":"2308.0-4","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Active","minimumPlatformSoftwareVersion":"2303","maximumPlatformSoftwareVersion":"2311","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/2308.0-7","name":"2308.0-7","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Active","minimumPlatformSoftwareVersion":"2303","maximumPlatformSoftwareVersion":"2311","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/2310.0-4","name":"2310.0-4","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Active","minimumPlatformSoftwareVersion":"2309","maximumPlatformSoftwareVersion":"2401","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/2308.0-9","name":"2308.0-9","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Active","minimumPlatformSoftwareVersion":"2303","maximumPlatformSoftwareVersion":"2311","recommendedVersion":"NotRecommended","obsoleteVersion":"Obsolete"}]}},{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/2310.0-8","name":"2310.0-8","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Active","minimumPlatformSoftwareVersion":"2309","maximumPlatformSoftwareVersion":"2401","recommendedVersion":"Recommended","obsoleteVersion":"NotObsolete"}]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '16752'
+      - '6431'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:31:15 GMT
+      - Thu, 07 Mar 2024 08:57:46 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
       - 1.0.1
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 9177421BFB7B4798A9AFD0AC8D5964D3 Ref B: TYO01EDGE1510 Ref C: 2024-03-07T08:57:44Z'
     status:
       code: 200
       message: OK
@@ -940,9 +1320,9 @@ interactions:
       ParameterSetName:
       - --version-name
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2211-0-80?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2211-0-80?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/providers/Microsoft.MobileNetwork/packetCoreControlPlaneVersions/pmn-2211-0-80","name":"pmn-2211-0-80","type":"Microsoft.MobileNetwork/packetCoreControlPlaneVersions","properties":{"platforms":[{"platformType":"AKS-HCI","versionState":"Preview","minimumPlatformSoftwareVersion":"2210","maximumPlatformSoftwareVersion":"2303","recommendedVersion":"NotRecommended","obsoleteVersion":"NotObsolete"}]}}'
@@ -954,23 +1334,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:31:18 GMT
+      - Thu, 07 Mar 2024 08:57:48 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
       - 1.0.1
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: D198AA5B54294BC2BB3C1FEB5113A8D3 Ref B: TYO01EDGE3710 Ref C: 2024-03-07T08:57:47Z'
     status:
       code: 200
       message: OK
@@ -990,15 +1372,15 @@ interactions:
       ParameterSetName:
       - -n -g -y
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004?api-version=2023-09-01
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453986709314761&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=EKfwxLPjNPINS9JVz7DTWj4HcR7CTzTvgsHMiItT37ptGNbpcnEv9tG9AI_jfUyq-VzvYWOYky4GH0P8VLEz6LKkeutTRwtX9dSno5HUkcBA_UMT3wsFQaFpS0S1udcnqTFJsFAEu8Rc0JU57nDvYcZ_xVMppE6vTWIIfJmIUbhn8B4XWKHWyO9bc41bY_YV7aQ3oemHZ7HJV9_cehiJaXmWy30R13MWSZh2uKXeOZn5LrhmW3w3RwtCbply_dew3ZPurmSI1E89szPPI6xO3Y_ITltc0Q46x_ZZxNHogDGPZYolQocFcImfLmdsOEqzM3-9xjvkEbXJ4P3ODI-Tkw&h=pb9-_xwV7fkI1x4d4WSp-knqjyDmouf-cYwkJ3QRnhI
       cache-control:
       - no-cache
       content-length:
@@ -1006,17 +1388,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:31:21 GMT
+      - Thu, 07 Mar 2024 08:57:50 GMT
       etag:
-      - '"50010e15-0000-0100-0000-63b725890000"'
+      - '"ed00e4a4-0000-0100-0000-65e9818e0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453986709471022&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=Ugv7Tt1x6arS7Nt54gyvVuYpwFV9Pg_oh9KWOL7xQGJ1gpGfu7i0tGYwSVhvivVyGam6KoyyPXLwwSm_2NixWbNNGPcVICjxPdUohC1ykNHSj3UmZofaSVDl7nq_Hy7bB_8oHtgbJv6KneyUfOzN9E_dWMrUb64ST4tzbPD7T_hrb9GDEqnbcCuhnzGfHrKxI3nLlouNYUi8FsLNi0fBePkaSCqojswJ5N1mqV9ABrlOOt9NbRHTC2PbhgFMhNBRc0J9DODftyp-jcNQV_NzgoxsglxXvY5nAPd0NDAS3hEA6Q1J4Lm-8TcBnNaNjRGZ2P10BhZ68AacE7IZo4or-w&h=7dleRvmGO0dIaQF5Qoa3TqoOToZyTSGqVAxYrIfBsI0
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-build-version:
@@ -1025,6 +1409,8 @@ interactions:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
+      x-msedge-ref:
+      - 'Ref A: 531E8DAB1BE84791A91EC21C5E1581D0 Ref B: TYO01EDGE1112 Ref C: 2024-03-07T08:57:49Z'
     status:
       code: 202
       message: Accepted
@@ -1042,13 +1428,15 @@ interactions:
       ParameterSetName:
       - -n -g -y
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453986709314761&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=EKfwxLPjNPINS9JVz7DTWj4HcR7CTzTvgsHMiItT37ptGNbpcnEv9tG9AI_jfUyq-VzvYWOYky4GH0P8VLEz6LKkeutTRwtX9dSno5HUkcBA_UMT3wsFQaFpS0S1udcnqTFJsFAEu8Rc0JU57nDvYcZ_xVMppE6vTWIIfJmIUbhn8B4XWKHWyO9bc41bY_YV7aQ3oemHZ7HJV9_cehiJaXmWy30R13MWSZh2uKXeOZn5LrhmW3w3RwtCbply_dew3ZPurmSI1E89szPPI6xO3Y_ITltc0Q46x_ZZxNHogDGPZYolQocFcImfLmdsOEqzM3-9xjvkEbXJ4P3ODI-Tkw&h=pb9-_xwV7fkI1x4d4WSp-knqjyDmouf-cYwkJ3QRnhI
   response:
     body:
-      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","name":"2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Deleting","startTime":"2023-01-05T19:31:21.2092085Z"}'
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Deleting","startTime":"2024-03-07T08:57:50.5605028Z"}'
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/eastus/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453986715858483&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=SuJ9eaJKPLxcvn7S9SW9y-L6ybLj7zfvIXbA1_pY3BkepT8tFQ6WjOhnSknHGpdv-O56oZ0342RHGetYFfKEqY5YCT6MwKBEeYqphsI63mljOz_h-I_xB-pKefzFI5Q1hZbDJq5jWKjtdZ4jAwjQbe6zAXm9FvUZgrdWBf-iDw88xuDEs13Wi0NDixTpGaAn6nEPJn_Rv_mHxBBJBR8btrRfLGFa147FYDlwdFU8Qg0T2j6DuSmekw4-W9KsgS-Bkrrm8UOtZ7dsmc5q-V_1qRVdzC44iXTkWOdlvrTMsIiykfAZJXE8D93ewlHvvG5KXTZlepfMaUWbZxC_6sKOeg&h=igsKxy3k1Sz5JQJnQbrFhkLpSrJEmbNf_Mu1-a_DJwI
       cache-control:
       - no-cache
       content-length:
@@ -1056,17 +1444,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:31:51 GMT
+      - Thu, 07 Mar 2024 08:57:51 GMT
       etag:
-      - '"9e0056d3-0000-0100-0000-63b725890000"'
+      - '"d000635b-0000-0100-0000-65e9818e0000"'
       expires:
       - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/eastus/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453986716170978&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=n-1LjkMQl_OgTkLGTLJgeBDsRBgMVaWQpv2LYjWPMDzdP2o3xzkG2eoy8sXnzAQi0Hmk2nqINzB23OA-28-zJOzoTbPQ-Nl722napaFxxTsn656FhyeSbVdO-dB0P5Wti2KcH0LGOkLcWP4Lu6K_LitoWomL_zfzN_Tis4T3f8c3bV7m5npZ1SE927acvO5hmb7DS5bKzTTcJzdGzUi-oFC3iEPvUpFl_9QZA2q_GKvdl9yGWltPgrjQNPE9GKB6zb5A5rpNyWhtttTtwdKiiOIG34bG6sHrQrbEEPuGDswu5Leono_J9O77O9jMZ8G7rNHzcfhJTIHlQO-2RvhArQ&h=GEZuJx2fdfqpI-tComTPqHmR0jizXEWqEnlOkki3TK8
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9998'
+      x-msedge-ref:
+      - 'Ref A: 8F2E542EEBD748BF8DE19F9F578CB5F6 Ref B: TYO01EDGE1112 Ref C: 2024-03-07T08:57:51Z'
     status:
       code: 202
       message: Accepted
@@ -1084,13 +1480,15 @@ interactions:
       ParameterSetName:
       - -n -g -y
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453986709314761&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=EKfwxLPjNPINS9JVz7DTWj4HcR7CTzTvgsHMiItT37ptGNbpcnEv9tG9AI_jfUyq-VzvYWOYky4GH0P8VLEz6LKkeutTRwtX9dSno5HUkcBA_UMT3wsFQaFpS0S1udcnqTFJsFAEu8Rc0JU57nDvYcZ_xVMppE6vTWIIfJmIUbhn8B4XWKHWyO9bc41bY_YV7aQ3oemHZ7HJV9_cehiJaXmWy30R13MWSZh2uKXeOZn5LrhmW3w3RwtCbply_dew3ZPurmSI1E89szPPI6xO3Y_ITltc0Q46x_ZZxNHogDGPZYolQocFcImfLmdsOEqzM3-9xjvkEbXJ4P3ODI-Tkw&h=pb9-_xwV7fkI1x4d4WSp-knqjyDmouf-cYwkJ3QRnhI
   response:
     body:
-      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","name":"2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Deleting","startTime":"2023-01-05T19:31:21.2092085Z"}'
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Deleting","startTime":"2024-03-07T08:57:50.5605028Z"}'
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/eastus/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453987019430009&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=HvniY_6FR8LLCzoGgUbMW_wiuk0l3H7YGLB5GBYTzo-64gHisZ5dNLfA8Xedw42QykSJ-0Mu5HxEn-2rsY_nCPZAWBYchvsKUXKmq0KGeg6D3R40TJ8webmd0tSB741oYTDE2PXBwVWEHd0Qv3_97LR3J0Jnhl2HpMj4mlxDy_XKCYp8c1gfVtnCXgE6jEa1KQGD_RMRrnpF4U62FkTppHS7TB0hzh76uVK2dAIz_C4fyIJtInxC7iVGmRiJHRiFIOMK9dhrFwm2aDgXQNbRBmJLgF8jswhyzXmRPJ_bvUO5R4Q1HEIf48iExP6g4GSH55nTIL_kcAvPSkZZaFtVLQ&h=0A-9ihM-dIvNZRRNobYYGQ6lvUSbnpLEMMSk9v01RdA
       cache-control:
       - no-cache
       content-length:
@@ -1098,17 +1496,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:32:21 GMT
+      - Thu, 07 Mar 2024 08:58:21 GMT
       etag:
-      - '"9e0056d3-0000-0100-0000-63b725890000"'
+      - '"d000635b-0000-0100-0000-65e9818e0000"'
       expires:
       - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/eastus/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453987019430009&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=HvniY_6FR8LLCzoGgUbMW_wiuk0l3H7YGLB5GBYTzo-64gHisZ5dNLfA8Xedw42QykSJ-0Mu5HxEn-2rsY_nCPZAWBYchvsKUXKmq0KGeg6D3R40TJ8webmd0tSB741oYTDE2PXBwVWEHd0Qv3_97LR3J0Jnhl2HpMj4mlxDy_XKCYp8c1gfVtnCXgE6jEa1KQGD_RMRrnpF4U62FkTppHS7TB0hzh76uVK2dAIz_C4fyIJtInxC7iVGmRiJHRiFIOMK9dhrFwm2aDgXQNbRBmJLgF8jswhyzXmRPJ_bvUO5R4Q1HEIf48iExP6g4GSH55nTIL_kcAvPSkZZaFtVLQ&h=0A-9ihM-dIvNZRRNobYYGQ6lvUSbnpLEMMSk9v01RdA
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9998'
+      x-msedge-ref:
+      - 'Ref A: E54337EE9F284C22A3380DD1B37E967C Ref B: TYO01EDGE1112 Ref C: 2024-03-07T08:58:21Z'
     status:
       code: 202
       message: Accepted
@@ -1126,12 +1532,64 @@ interactions:
       ParameterSetName:
       - -n -g -y
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453986709314761&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=EKfwxLPjNPINS9JVz7DTWj4HcR7CTzTvgsHMiItT37ptGNbpcnEv9tG9AI_jfUyq-VzvYWOYky4GH0P8VLEz6LKkeutTRwtX9dSno5HUkcBA_UMT3wsFQaFpS0S1udcnqTFJsFAEu8Rc0JU57nDvYcZ_xVMppE6vTWIIfJmIUbhn8B4XWKHWyO9bc41bY_YV7aQ3oemHZ7HJV9_cehiJaXmWy30R13MWSZh2uKXeOZn5LrhmW3w3RwtCbply_dew3ZPurmSI1E89szPPI6xO3Y_ITltc0Q46x_ZZxNHogDGPZYolQocFcImfLmdsOEqzM3-9xjvkEbXJ4P3ODI-Tkw&h=pb9-_xwV7fkI1x4d4WSp-knqjyDmouf-cYwkJ3QRnhI
   response:
     body:
-      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","name":"2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Succeeded","startTime":"2023-01-05T19:31:21.2092085Z","properties":null}'
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Deleting","startTime":"2024-03-07T08:57:50.5605028Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/eastus/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453987326201806&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=ikYrlncyxkyJBc613xrhW-jdJP9EmllsBNVg1WeHDrkr8gvjdznp4Ydd73UmyeqBhtOxmoWoN0nICSrCCTctVltbnLM1hzgZovTdmUmNl9jGPIEUz9x4Y_mOO8JixBpu91a_smOosk7kHzmCTKvLMk-lrSCV5g8awmjtOZ9F8hLGmaBJrhJWNUbN9fFG5w6CXLtYjPQ3o9SuXf_NkkyKxNhUiBnic8Q8LA4_Ms05Kd1jQYjl9TOOkSk5zMGqC5FI0uGZ1Y7C3T3Y5hYn1PuZpV16CPbhDq_A5dDZEcVt00bmUubSTJrk8sk_9ysVuqL6MOT3UqfUcWbkf-7L2HV00Q&h=mgUZS7I5AZoVIVENpqfZMoq6CmxmooE3HHZfmX_HLhg
+      cache-control:
+      - no-cache
+      content-length:
+      - '536'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 Mar 2024 08:58:52 GMT
+      etag:
+      - '"d000635b-0000-0100-0000-65e9818e0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/eastus/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453987326201806&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=ikYrlncyxkyJBc613xrhW-jdJP9EmllsBNVg1WeHDrkr8gvjdznp4Ydd73UmyeqBhtOxmoWoN0nICSrCCTctVltbnLM1hzgZovTdmUmNl9jGPIEUz9x4Y_mOO8JixBpu91a_smOosk7kHzmCTKvLMk-lrSCV5g8awmjtOZ9F8hLGmaBJrhJWNUbN9fFG5w6CXLtYjPQ3o9SuXf_NkkyKxNhUiBnic8Q8LA4_Ms05Kd1jQYjl9TOOkSk5zMGqC5FI0uGZ1Y7C3T3Y5hYn1PuZpV16CPbhDq_A5dDZEcVt00bmUubSTJrk8sk_9ysVuqL6MOT3UqfUcWbkf-7L2HV00Q&h=mgUZS7I5AZoVIVENpqfZMoq6CmxmooE3HHZfmX_HLhg
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 1DC3A2E7A279479F860410048C50E435 Ref B: TYO01EDGE1112 Ref C: 2024-03-07T08:58:52Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pccp delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453986709314761&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=EKfwxLPjNPINS9JVz7DTWj4HcR7CTzTvgsHMiItT37ptGNbpcnEv9tG9AI_jfUyq-VzvYWOYky4GH0P8VLEz6LKkeutTRwtX9dSno5HUkcBA_UMT3wsFQaFpS0S1udcnqTFJsFAEu8Rc0JU57nDvYcZ_xVMppE6vTWIIfJmIUbhn8B4XWKHWyO9bc41bY_YV7aQ3oemHZ7HJV9_cehiJaXmWy30R13MWSZh2uKXeOZn5LrhmW3w3RwtCbply_dew3ZPurmSI1E89szPPI6xO3Y_ITltc0Q46x_ZZxNHogDGPZYolQocFcImfLmdsOEqzM3-9xjvkEbXJ4P3ODI-Tkw&h=pb9-_xwV7fkI1x4d4WSp-knqjyDmouf-cYwkJ3QRnhI
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Succeeded","startTime":"2024-03-07T08:57:50.5605028Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -1140,21 +1598,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:32:52 GMT
+      - Thu, 07 Mar 2024 08:59:22 GMT
       etag:
-      - '"9e006ed3-0000-0100-0000-63b725cb0000"'
+      - '"1c007dc8-0000-0600-0000-65e981d00000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9999'
+      x-msedge-ref:
+      - 'Ref A: 05F3A13489694D0D98A206237EA30B57 Ref B: TYO01EDGE1112 Ref C: 2024-03-07T08:59:22Z'
     status:
       code: 200
       message: OK
@@ -1172,12 +1632,12 @@ interactions:
       ParameterSetName:
       - -n -g -y
       User-Agent:
-      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5?api-version=2022-11-01
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074?api-version=2023-09-01&t=638453986709471022&c=MIIHADCCBeigAwIBAgITHgPtKFZCSVesK0WPLAAAA-0oVjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAyMTQwMTAxWhcNMjUwMTI3MTQwMTAxWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK91qXSatAXLDynhJ7OmG-j0vO0hqhAjRdFNuJg9SayOMQgzA-obKyjKzODz-eKOFoz6nV1rqHbnb7YUxvz5Ke74ZDjbxdnwYGhAju6jD9ThtiS78Bt0iUKpZpY2QDYxCrpC2DaO5kCSOWUb4PBGhVDkexnKJTTgzHe6iS1gE6V9VyO5bN14Lsq_45qNHoMXlm6258OEIXZ2gvBFpy3CkYEY1Arc4oCuWYWzDTjzP7FJj-v_gVsjhKFAqVWdVND8k982bhNvxjCDqvTMMy2wR4V0GDA6ur0EnTPCKX1N3S7GUf17d1gJdpMzlb_jeHKjnYWKYv0LNyFwaqnk7GeduL0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSg-6hed5hnNyz0o02J9YCREXHiLTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJqTNNAFYbI8tYZvhkWYcJR1aDHuYU1URw_WgivmBHLOfIAZaztxQqvdsxn7EbAcjcOcq9H3pjUKGr3BRtnBNY431tr6872Si1uhnA9Q0oY_Loy1TELqVVHSnZv5Ak_tfVj8WfIk_tPErWJFKYSyH5rm8Oib-ESxwUgReD_HF9MnY14bWX17k0lKxbWDXBozqanPn8qTmnfF9QP-lqUSWCaCx8-p8Ko_YAwLYsD8uPcZogm5XP6QN4UM88O0WhW2SbtydDRtmuU41k0j2byj3C2lK-JwND1w0CfKV6HlCFm_yKAdbmJUK50Y8Mkh2ebZhN0HOcoGcebh1hrMvD1lL1A&s=Ugv7Tt1x6arS7Nt54gyvVuYpwFV9Pg_oh9KWOL7xQGJ1gpGfu7i0tGYwSVhvivVyGam6KoyyPXLwwSm_2NixWbNNGPcVICjxPdUohC1ykNHSj3UmZofaSVDl7nq_Hy7bB_8oHtgbJv6KneyUfOzN9E_dWMrUb64ST4tzbPD7T_hrb9GDEqnbcCuhnzGfHrKxI3nLlouNYUi8FsLNi0fBePkaSCqojswJ5N1mqV9ABrlOOt9NbRHTC2PbhgFMhNBRc0J9DODftyp-jcNQV_NzgoxsglxXvY5nAPd0NDAS3hEA6Q1J4Lm-8TcBnNaNjRGZ2P10BhZ68AacE7IZo4or-w&h=7dleRvmGO0dIaQF5Qoa3TqoOToZyTSGqVAxYrIfBsI0
   response:
     body:
-      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","name":"2347981f-f724-4f94-929a-284576d583d9*6DBFB789961125AA5985A05064BE25ACE64DCEDFA779600BB77CFA9498DA04E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Succeeded","startTime":"2023-01-05T19:31:21.2092085Z","properties":null}'
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","name":"5b78bfa1-8bb6-4560-8c7e-5d5169061ec5*34CC0BAFC78F4B4711FDF127998D0248B4E5CFA58C2496EBF357AD5D6241E074","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp_000004","status":"Succeeded","startTime":"2024-03-07T08:57:50.5605028Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -1186,21 +1646,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 05 Jan 2023 19:32:52 GMT
+      - Thu, 07 Mar 2024 08:59:23 GMT
       etag:
-      - '"9e006ed3-0000-0100-0000-63b725cb0000"'
+      - '"1c007dc8-0000-0600-0000-65e981d00000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '9998'
+      x-msedge-ref:
+      - 'Ref A: 0980E5ACE63D4C6BBBB6F46FB1343692 Ref B: TYO01EDGE1112 Ref C: 2024-03-07T08:59:23Z'
     status:
       code: 200
       message: OK

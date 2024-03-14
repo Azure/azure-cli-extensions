@@ -3,9 +3,9 @@
 Release History
 ===============
 
-0.1.1
+1.0.0
 ++++++
-* Update the GA sku in the creation example.
+* Deployment identity, logging and scaling added. Configuration analyze added.
 
 0.1.0
 ++++++

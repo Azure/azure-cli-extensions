@@ -14,8 +14,7 @@ class NginxCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         nginx_custom = CliCommandType(
             operations_tmpl='azext_nginx.custom#{}')
-        super(NginxCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=nginx_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=nginx_custom)
 
     def load_command_table(self, args):
         from azext_nginx.commands import load_command_table
