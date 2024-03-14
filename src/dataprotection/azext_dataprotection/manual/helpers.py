@@ -609,38 +609,23 @@ def get_secret_params_from_uri(secret_uri):
     return secret_params
 
 
-def get_help_text_on_grant_permissions(datasource_type):
-    help_text = "This command will attempt to automatically grant the following access to the backup vault:\n"
-
-    if datasource_type == 'AzureDatabaseForPostgreSQL':
-        help_text += ("1. Backup vault's identity access on the Postgres server and the key vault\n"
-                      "2. 'Allow all Azure Services' under network connectivity in the Postgres server\n"
-                      "3. 'Allow Trusted Azure Services' under network connectivity in the Key vault")
-
-    if datasource_type == 'AzureBlob':
-        help_text += "Backup vault's identity access on the storage account"
-
-    if datasource_type == 'AzureDisk':
-        help_text += "Backup vault's identity access on the disk and snapshot resource group"
-
-    if datasource_type == "AzureKubernetesService":
-        help_text += ("1. Backup vault's identity access as Reader on the AKS Cluster and snapshot resource group\n"
-                      "2. AKS cluster's identity access as Contributor on the snapshot resource group")
-
-    help_text += "\nAre you sure you want to continue?"
-    return help_text
-
-
-def get_help_text_on_grant_permissions_templatized(datasource_type):
+def get_help_text_on_grant_permissions_templatized(datasource_type, operation):
     help_text = "This command will attempt to automatically grant the following access:\n"
     manifest = load_manifest(datasource_type)
 
-    if 'backupVaultPermissions' in manifest:
-        for role_object in manifest['backupVaultPermissions']:
+    if operation == 'Backup':
+        vault_permissions = 'backupVaultPermissions'
+        datasource_permissions = 'dataSourcePermissions'
+    if operation == 'Restore':
+        vault_permissions = 'backupVaultRestorePermissions'
+        datasource_permissions = 'dataSourceRestorePermissions'
+
+    if vault_permissions in manifest:
+        for role_object in manifest[vault_permissions]:
             help_text += help_text_permission_line_generator('Backup Vault', role_object, datasource_type)
 
-    if 'dataSourcePermissions' in manifest:
-        for role_object in manifest['dataSourcePermissions']:
+    if datasource_permissions in manifest:
+        for role_object in manifest[datasource_permissions]:
             help_text += help_text_permission_line_generator(
                 get_help_word_from_permission_type('DataSource', datasource_type),
                 role_object,
@@ -672,8 +657,11 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
     if permission_type == 'SnapshotRG':
         return 'snapshot resource group'
 
+    if permission_type == 'DataSourceRG':
+        return 'datasource resource group'
+
     if permission_type == 'DataSource':
-        helptext_dsname = ''
+        helptext_dsname = permission_type + ' '
 
         if datasource_type == 'AzureKubernetesService':
             helptext_dsname = "AKS Cluster"
@@ -683,6 +671,10 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
             helptext_dsname = 'disk'
         if datasource_type == 'AzureDatabaseForPostgreSQL':
             helptext_dsname = "Postgres server"
+        if datasource_type == 'AzureDatabaseForPostgreSQLFlexibleServer':
+            helptext_dsname = "Postgres flexible server"
+        if datasource_type == 'AzureDatabaseForMySQL':
+            helptext_dsname = "MySQL server"
 
         return helptext_dsname
 

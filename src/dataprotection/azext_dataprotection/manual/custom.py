@@ -228,7 +228,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
     manifest = helper.load_manifest(datasource_type)
 
-    warning_message = helper.get_help_text_on_grant_permissions_templatized(datasource_type)
+    warning_message = helper.get_help_text_on_grant_permissions_templatized(datasource_type, operation)
     if not yes and not prompt_y_n(warning_message):
         return None
 
