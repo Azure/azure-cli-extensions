@@ -2401,23 +2401,23 @@ def show_environment_telemetry_data_dog(cmd,
     r = {}
 
     if "key" in safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"):
-        safe_set(r, "dataDogConfiguration", "key", value=DEFAULT_CONFIGURED_STR)
+        safe_set(r, "key", value=DEFAULT_CONFIGURED_STR)
 
-    safe_set(r, "dataDogConfiguration", "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
+    safe_set(r, "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
 
     enable_open_telemetry_traces = False
     existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
     if existing_traces and DATA_DOG_DEST in existing_traces:
         enable_open_telemetry_traces = True
         
-    safe_set(r, "dataDogConfiguration", "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+    safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
 
     enable_open_telemetry_metrics = False
     existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
     if existing_metrics and DATA_DOG_DEST in existing_metrics:
         enable_open_telemetry_metrics = True
         
-    safe_set(r, "dataDogConfiguration", "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
+    safe_set(r, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
 
     return r
 
@@ -2490,26 +2490,26 @@ def show_environment_telemetry_app_insights(cmd,
     r = safe_get(containerapp_env_def, "properties", "appInsightsConfiguration")
 
     if r is None:
-        raise ValidationError("The containerapp environment '{}' does not have app insights enabled.".format(name)) from e
+        raise ValidationError("The containerapp environment '{}' does not have app insights enabled.".format(name))
         
     r = {}
 
     if "connectionString" in safe_get(containerapp_env_def, "properties", "appInsightsConfiguration"):
-        safe_set(r, "appInsightsConfiguration", "connectionString", value=DEFAULT_CONFIGURED_STR)
+        safe_set(r, "connectionString", value=DEFAULT_CONFIGURED_STR)
 
     enable_open_telemetry_traces = False
     existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
     if existing_traces and APP_INSIGHTS_DEST in existing_traces:
         enable_open_telemetry_traces = True
         
-    safe_set(r, "appInsightsConfiguration", "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+    safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
 
     enable_open_telemetry_logs = False
     existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
     if existing_logs and APP_INSIGHTS_DEST in existing_logs:
         enable_open_telemetry_logs = True
         
-    safe_set(r, "appInsightsConfiguration", "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
+    safe_set(r, "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
 
     return r
 
@@ -2653,7 +2653,7 @@ def show_environment_telemetry_otlp(cmd,
                 if "value" in header:
                     header["value"] = DEFAULT_CONFIGURED_STR
 
-        safe_set(r, "otlpConfiguration", value=otlp[0])
+        r = otlp[0]
 
         enable_open_telemetry_traces = False
         existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
@@ -2704,7 +2704,7 @@ def list_environment_telemetry_otlp(cmd,
     existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
     existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
 
-    r = {}
+    r = existing_otlps
 
     if existing_otlps is not None:
         for otlp in existing_otlps:
@@ -2734,8 +2734,6 @@ def list_environment_telemetry_otlp(cmd,
                 enable_open_telemetry_metrics = True
         
             safe_set(otlp, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
-
-    safe_set(r, "otlpConfigurations", value=existing_otlps)
 
     return r
 

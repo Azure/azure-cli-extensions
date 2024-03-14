@@ -55,10 +55,10 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         ])
 
         self.cmd('containerapp env telemetry data-dog show -n {} -g {}'.format(env_name, resource_group), checks=[
-            JMESPathCheck('dataDogConfiguration."enable-open-telemetry-metrics"', True),
-            JMESPathCheck('dataDogConfiguration."enable-open-telemetry-traces"', True),
-            JMESPathCheck('dataDogConfiguration.key', DEFAULT_CONFIGURED_STR),
-            JMESPathCheck('dataDogConfiguration.site', data_dog_site),
+            JMESPathCheck('"enable-open-telemetry-metrics"', True),
+            JMESPathCheck('"enable-open-telemetry-traces"', True),
+            JMESPathCheck('key', DEFAULT_CONFIGURED_STR),
+            JMESPathCheck('site', data_dog_site),
         ])
 
         self.cmd(f'containerapp env telemetry data-dog set -g {resource_group} -n {env_name} --enable-open-telemetry-metrics false')
@@ -77,10 +77,10 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         ])
 
         self.cmd('containerapp env telemetry data-dog show -n {} -g {}'.format(env_name, resource_group), checks=[
-            JMESPathCheck('dataDogConfiguration."enable-open-telemetry-metrics"', False),
-            JMESPathCheck('dataDogConfiguration."enable-open-telemetry-traces"', True),
-            JMESPathCheck('dataDogConfiguration.key', DEFAULT_CONFIGURED_STR),
-            JMESPathCheck('dataDogConfiguration.site', data_dog_site),
+            JMESPathCheck('"enable-open-telemetry-metrics"', False),
+            JMESPathCheck('"enable-open-telemetry-traces"', True),
+            JMESPathCheck('key', DEFAULT_CONFIGURED_STR),
+            JMESPathCheck('site', data_dog_site),
         ])
 
         self.cmd(f'containerapp env telemetry data-dog delete -g {resource_group} -n {env_name} --yes')
@@ -138,9 +138,9 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         ])
 
         self.cmd('containerapp env telemetry app-insights show -n {} -g {}'.format(env_name, resource_group), checks=[
-            JMESPathCheck('appInsightsConfiguration."enable-open-telemetry-logs"', True),
-            JMESPathCheck('appInsightsConfiguration."enable-open-telemetry-traces"', True),
-            JMESPathCheck('appInsightsConfiguration.connectionString', DEFAULT_CONFIGURED_STR),
+            JMESPathCheck('"enable-open-telemetry-logs"', True),
+            JMESPathCheck('"enable-open-telemetry-traces"', True),
+            JMESPathCheck('connectionString', DEFAULT_CONFIGURED_STR),
         ])
         
         self.cmd(f'containerapp env telemetry app-insights set -g {resource_group} -n {env_name} --enable-open-telemetry-traces false')
@@ -158,9 +158,9 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         ])
 
         self.cmd('containerapp env telemetry app-insights show -n {} -g {}'.format(env_name, resource_group), checks=[
-            JMESPathCheck('appInsightsConfiguration."enable-open-telemetry-logs"', True),
-            JMESPathCheck('appInsightsConfiguration."enable-open-telemetry-traces"', False),
-            JMESPathCheck('appInsightsConfiguration.connectionString', DEFAULT_CONFIGURED_STR),
+            JMESPathCheck('"enable-open-telemetry-logs"', True),
+            JMESPathCheck('"enable-open-telemetry-traces"', False),
+            JMESPathCheck('connectionString', DEFAULT_CONFIGURED_STR),
         ])
 
         self.cmd(f'containerapp env telemetry app-insights delete -g {resource_group} -n {env_name} --yes')
@@ -228,11 +228,11 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         ])
 
         self.cmd('containerapp env telemetry otlp show -n {} -g {} --otlp-name {}'.format(env_name, resource_group, otlp_name), checks=[
-            JMESPathCheck('otlpConfiguration.name', otlp_name),
-            JMESPathCheck('otlpConfiguration.endpoint', otlp_endpoint),
-            JMESPathCheck('otlpConfiguration."enable-open-telemetry-metrics"', True),
-            JMESPathCheck('otlpConfiguration."enable-open-telemetry-traces"', True),
-            JMESPathCheck('otlpConfiguration."enable-open-telemetry-logs"', True),
+            JMESPathCheck('name', otlp_name),
+            JMESPathCheck('endpoint', otlp_endpoint),
+            JMESPathCheck('"enable-open-telemetry-metrics"', True),
+            JMESPathCheck('"enable-open-telemetry-traces"', True),
+            JMESPathCheck('"enable-open-telemetry-logs"', True),
         ])
 
         otlp_name_test = "testotlp"
@@ -258,11 +258,11 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         ])
 
         self.cmd('containerapp env telemetry otlp show -n {} -g {} --otlp-name {}'.format(env_name, resource_group, otlp_name_test), checks=[
-            JMESPathCheck('otlpConfiguration.name', otlp_name_test),
-            JMESPathCheck('otlpConfiguration.endpoint', otlp_endpoint_test),
-            JMESPathCheck('otlpConfiguration."enable-open-telemetry-metrics"', False),
-            JMESPathCheck('otlpConfiguration."enable-open-telemetry-traces"', True),
-            JMESPathCheck('otlpConfiguration."enable-open-telemetry-logs"', False),
+            JMESPathCheck('name', otlp_name_test),
+            JMESPathCheck('endpoint', otlp_endpoint_test),
+            JMESPathCheck('"enable-open-telemetry-metrics"', False),
+            JMESPathCheck('"enable-open-telemetry-traces"', True),
+            JMESPathCheck('"enable-open-telemetry-logs"', False),
         ])
 
         otlp_endpoint_update = "otlp.nr-dataupdate.net:4317"

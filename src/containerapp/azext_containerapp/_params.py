@@ -86,9 +86,6 @@ def load_arguments(self, _):
         c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry metrics')
         c.argument('headers', nargs='*', help="A list of headers for the otlp. Space-separated values in 'key=value' format.",
                    validator=validate_otlp_headers)
-        
-    with self.argument_context('containerapp env telemetry otlp list') as c:
-        c.argument('name', id_part=None)
 
     # Storage
     with self.argument_context('containerapp env storage') as c:
