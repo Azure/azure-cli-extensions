@@ -22,7 +22,7 @@ class Update(AAZCommand):
         az workloads sap-virtual-instance update -g <resource-group-name> -n <vis-name> --tags tag=test tag2=test2
 
     :example: Add tags for an existing Virtual Instance for SAP solutions (VIS) resource using the Azure resource ID of the VIS
-        az workloads sap-virtual-instance update --id <resource-id> --tags tag=test1
+        az workloads sap-virtual-instance update --id <resource-id> --tags tag1=test1
 
     :example: Add/Change Identity and Managed Resource Network Access for an existing Virtual Instance for SAP Solutions (VIS) resource
         az workloads sap-virtual-instance update -g <resource-group-name> -n <vis-name> --identity "{type:UserAssigned,userAssignedIdentities:{<managed-identity-resource-id>:{}}}" --managed-resources-network-access-type <public/private>
@@ -115,13 +115,13 @@ class Update(AAZCommand):
             help="Defines if the SAP system is being created using Azure Center for SAP solutions (ACSS) or if an existing SAP system is being registered with ACSS",
         )
         _args_schema.managed_resource_group_configuration = AAZObjectArg(
-            options=["--managed-resource-group-configuration"],
+            options=["--mrg-config", "--managed-resource-group-configuration"],
             arg_group="Properties",
             help="Managed resource group configuration",
             nullable=True,
         )
         _args_schema.managed_resources_network_access_type = AAZStrArg(
-            options=["--managed-resources-network-access-type"],
+            options=["--mrg-network-access-typ", "--managed-resources-network-access-type"],
             arg_group="Properties",
             help="Specifies the network access configuration for the resources that will be deployed in the Managed Resource Group. The options to choose from are Public and Private. If 'Private' is chosen, the Storage Account service tag should be enabled on the subnets in which the SAP VMs exist. This is required for establishing connectivity between VM extensions and the managed resource group storage account. This setting is currently applicable only to Storage Account. Learn more here https://go.microsoft.com/fwlink/?linkid=2247228",
             nullable=True,
