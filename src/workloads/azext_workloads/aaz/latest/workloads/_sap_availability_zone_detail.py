@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workloads sap-supported-sku",
+    "workloads sap-availability-zone-detail",
     is_preview=True,
 )
-class SapSupportedSku(AAZCommand):
-    """Show a list of SAP supported SKUs for ASCS, Application and Database tier.
+class SapAvailabilityZoneDetail(AAZCommand):
+    """Show the recommended SAP Availability Zone Pair Details for your region.
 
-    :example: Get a list of SKUs supported for your SAP system deployment type from Azure Center for SAP solutions
-        az workloads sap-supported-sku --app-location "eastus" --database-type "HANA" --deployment-type "ThreeTier" --environment "Prod" --high-availability-type "AvailabilitySet" --sap-product "S4HANA" --location "eastus"
+    :example: Show the sap availability zone detail
+        az workloads sap-availability-zone-detail --app-location "northeurope" --database-type "HANA" --sap-product "S4HANA" --location "northeurope"
     """
 
     _aaz_info = {
         "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getsapsupportedsku", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getavailabilityzonedetails", "2023-10-01-preview"],
         ]
     }
 
@@ -50,41 +50,23 @@ class SapSupportedSku(AAZCommand):
             id_part="name",
         )
 
-        # define Arg Group "SAPSupportedSku"
+        # define Arg Group "SAPAvailabilityZoneDetails"
 
         _args_schema = cls._args_schema
         _args_schema.app_location = AAZStrArg(
             options=["--app-location"],
-            arg_group="SAPSupportedSku",
-            help="The geo-location where the resource is to be created.",
+            arg_group="SAPAvailabilityZoneDetails",
+            help="The geo-location where the SAP resources will be created.",
         )
         _args_schema.database_type = AAZStrArg(
             options=["--database-type"],
-            arg_group="SAPSupportedSku",
+            arg_group="SAPAvailabilityZoneDetails",
             help="The database type. Eg: HANA, DB2, etc",
             enum={"DB2": "DB2", "HANA": "HANA"},
         )
-        _args_schema.deployment_type = AAZStrArg(
-            options=["--deployment-type"],
-            arg_group="SAPSupportedSku",
-            help="The deployment type. Eg: SingleServer/ThreeTier",
-            enum={"SingleServer": "SingleServer", "ThreeTier": "ThreeTier"},
-        )
-        _args_schema.environment = AAZStrArg(
-            options=["--environment"],
-            arg_group="SAPSupportedSku",
-            help="Defines the environment type - Production/Non Production.",
-            enum={"NonProd": "NonProd", "Prod": "Prod"},
-        )
-        _args_schema.high_availability_type = AAZStrArg(
-            options=["--high-availability-type"],
-            arg_group="SAPSupportedSku",
-            help="The high availability type.",
-            enum={"AvailabilitySet": "AvailabilitySet", "AvailabilityZone": "AvailabilityZone"},
-        )
         _args_schema.sap_product = AAZStrArg(
             options=["--sap-product"],
-            arg_group="SAPSupportedSku",
+            arg_group="SAPAvailabilityZoneDetails",
             help="Defines the SAP Product type.",
             enum={"ECC": "ECC", "Other": "Other", "S4HANA": "S4HANA"},
         )
@@ -92,7 +74,7 @@ class SapSupportedSku(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPSupportedSku(ctx=self.ctx)()
+        self.SAPAvailabilityZoneDetails(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -107,7 +89,7 @@ class SapSupportedSku(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPSupportedSku(AAZHttpOperation):
+    class SAPAvailabilityZoneDetails(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -121,7 +103,7 @@ class SapSupportedSku(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.Workloads/locations/{location}/sapVirtualInstanceMetadata/default/getSapSupportedSku",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Workloads/locations/{location}/sapVirtualInstanceMetadata/default/getAvailabilityZoneDetails",
                 **self.url_parameters
             )
 
@@ -178,9 +160,6 @@ class SapSupportedSku(AAZCommand):
             )
             _builder.set_prop("appLocation", AAZStrType, ".app_location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("databaseType", AAZStrType, ".database_type", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("deploymentType", AAZStrType, ".deployment_type", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("environment", AAZStrType, ".environment", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("highAvailabilityType", AAZStrType, ".high_availability_type")
             _builder.set_prop("sapProduct", AAZStrType, ".sap_product", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
@@ -203,29 +182,26 @@ class SapSupportedSku(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.supported_skus = AAZListType(
-                serialized_name="supportedSkus",
+            _schema_on_200.availability_zone_pairs = AAZListType(
+                serialized_name="availabilityZonePairs",
             )
 
-            supported_skus = cls._schema_on_200.supported_skus
-            supported_skus.Element = AAZObjectType()
+            availability_zone_pairs = cls._schema_on_200.availability_zone_pairs
+            availability_zone_pairs.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.supported_skus.Element
-            _element.is_app_server_certified = AAZBoolType(
-                serialized_name="isAppServerCertified",
+            _element = cls._schema_on_200.availability_zone_pairs.Element
+            _element.zone_a = AAZIntType(
+                serialized_name="zoneA",
             )
-            _element.is_database_certified = AAZBoolType(
-                serialized_name="isDatabaseCertified",
-            )
-            _element.vm_sku = AAZStrType(
-                serialized_name="vmSku",
+            _element.zone_b = AAZIntType(
+                serialized_name="zoneB",
             )
 
             return cls._schema_on_200
 
 
-class _SapSupportedSkuHelper:
-    """Helper class for SapSupportedSku"""
+class _SapAvailabilityZoneDetailHelper:
+    """Helper class for SapAvailabilityZoneDetail"""
 
 
-__all__ = ["SapSupportedSku"]
+__all__ = ["SapAvailabilityZoneDetail"]
