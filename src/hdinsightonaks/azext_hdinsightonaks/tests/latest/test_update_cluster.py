@@ -7,7 +7,6 @@
 
 import os
 from .testUtil import autoScale_config_str, authorization_info
-from azure.cli.testsdk import *
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
