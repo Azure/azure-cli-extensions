@@ -2,6 +2,11 @@
 
 Release History
 ===============
+5.2.4
+++++++
+* Added device run ro support
+* Allowed null values for acl ids in nni
+
 5.2.1
 ++++++
 * Reverted changes to 5.0.0 version
