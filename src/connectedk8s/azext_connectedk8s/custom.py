@@ -628,7 +628,7 @@ def install_helm_client():
     download_dir = os.path.dirname(download_location)
     install_location = os.path.expanduser(os.path.join('~', install_location_string))
 
-    # Download compressed halm binary if not already present
+    # Download compressed Helm binary if not already present
     if not os.path.isfile(download_location):
         # Creating the helm folder if it doesnt exist
         if not os.path.exists(download_dir):

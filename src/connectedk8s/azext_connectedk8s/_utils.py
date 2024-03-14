@@ -72,12 +72,12 @@ def validate_location(cmd, location):
 def validate_custom_token(cmd, resource_group_name, location):
     if os.getenv('AZURE_ACCESS_TOKEN'):
         if os.getenv('AZURE_SUBSCRIPTION_ID') is None:
-            telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
-                                    summary='Required environment variables and parameters are not set')
+            telemetry.set_exception(exception='Required environment variable SubscriptionId not set', fault_type=consts.Custom_Token_Environments_Fault_Type_Sub_Id,
+                                    summary='Required environment variable for SubscriptionId not set')
             raise ValidationError("Environment variable 'AZURE_SUBSCRIPTION_ID' should be set when custom access token is enabled.")
         if os.getenv('AZURE_TENANT_ID') is None:
-            telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
-                                    summary='Required environment variables and parameters are not set')
+            telemetry.set_exception(exception='Required environment variable for TenantId not set', fault_type=consts.Custom_Token_Environments_Fault_Type_Tenant_Id,
+                                    summary='Required environment variable for TenantId not set')
             raise ValidationError("Environment variable 'AZURE_TENANT_ID' should be set when custom access token is enabled.")
         if location is None:
             try:
