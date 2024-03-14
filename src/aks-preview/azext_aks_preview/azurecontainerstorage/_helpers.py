@@ -34,47 +34,6 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-def register_dependent_rps(cmd, subscription_id) -> bool:
-    required_rp = 'Microsoft.KubernetesConfiguration'
-    from azure.mgmt.resource.resources.models import (
-        ProviderConsentDefinition, ProviderRegistrationRequest)
-
-    properties = ProviderRegistrationRequest(
-        third_party_provider_consent=ProviderConsentDefinition(
-            consent_to_authorization=False
-        )
-    )
-    client = get_providers_client_factory(cmd.cli_ctx)
-    is_registered = False
-    try:
-        is_registered = _is_rp_registered(cmd, required_rp, subscription_id)
-        if is_registered:
-            return True
-        client.register(required_rp, properties=properties)
-        # wait for registration to finish
-        timeout_secs = 120
-        start = datetime.utcnow()
-        is_registered = _is_rp_registered(cmd, required_rp, subscription_id)
-        while not is_registered:
-            is_registered = _is_rp_registered(cmd, required_rp, subscription_id)
-            time.sleep(RP_REGISTRATION_POLLING_INTERVAL_IN_SEC)
-            if (datetime.utcnow() - start).seconds >= timeout_secs:
-                logger.error(
-                    "Timed out while waiting for the %s resource provider to be registered.", required_rp
-                )
-                break
-
-    except Exception as e:  # pylint: disable=broad-except
-        logger.error(
-            "Installation of Azure Container Storage requires registering to the following resource provider: %s. "
-            "We were unable to perform the registration on your behalf due to the following error: %s\n"
-            "Please check with your admin on permissions, or try running registration manually with: "
-            "`az provider register --namespace %s` command.", required_rp, e, required_rp
-        )
-
-    return is_registered
-
-
 def validate_storagepool_creation(
     cmd,
     subscription_id,
@@ -107,8 +66,7 @@ def perform_role_operations_on_managed_rg(
     assign
 ):
     managed_rg_role_scope = build_role_scope(node_resource_group, None, subscription_id)
-    roles = ["Reader", "Network Contributor", "Elastic SAN Owner", "Elastic SAN Volume Group Owner"]
-    # roles = ["Azure Container Storage Operator"]
+    roles = ["Azure Container Storage Operator"]
     result = True
 
     for role in roles:
@@ -437,18 +395,6 @@ def get_cores_from_sku(vm_size):
                 cpu_value = 20
 
     return cpu_value
-
-
-def _is_rp_registered(cmd, required_rp, subscription_id):
-    registered = False
-    try:
-        providers_client = get_providers_client_factory(cmd.cli_ctx, subscription_id)
-        registration_state = getattr(providers_client.get(required_rp), 'registration_state', "NotRegistered")
-
-        registered = (registration_state and registration_state.lower() == 'registered')
-    except Exception:  # pylint: disable=broad-except
-        pass
-    return registered
 
 
 def _get_cpu_value_based_on_vm_size(nodepool_skus):
