@@ -87,7 +87,7 @@ def load_arguments(self, _):
         c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry traces')
         c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry logs')
         c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry metrics')
-        c.argument('headers', nargs='*', help="A list of headers for the otlp. Space-separated values in 'key=value' format.",
+        c.argument('headers', nargs='+', help="A list of headers for the otlp. Space-separated values in 'key=value' format.",
                    validator=validate_otlp_headers)
 
     # Storage
