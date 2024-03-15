@@ -19,7 +19,7 @@ class Run(AAZCommand):
     """Upgrade a cluster pool.
 
     :example: Upgrade a cluster pool.
-        az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {rg} --aks-patch-upgrade target-aks-version=1.27.9 upgrade-all-cluster-nodes=false upgrade-cluster-pool=true
+        az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {RG} --aks-patch-upgrade {target-aks-version=1.27.9 upgrade-all-cluster-nodes=false upgrade-cluster-pool=true}
     """
 
     _aaz_info = {
@@ -47,9 +47,10 @@ class Run(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_pool_name = AAZStrArg(
-            options=["--cluster-pool-name"],
+            options=["-n", "--name", "--cluster-pool-name"],
             help="The name of the cluster pool.",
             required=True,
+            is_preview=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(

@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a cluster pool.
 
     :example: Create a cluster pool.
-        az hdinsight-on-aks clusterpool create -g RG -n poolName -l westus3 --workernode-size Standard_E4s_v3 --version 1.1
+        az hdinsight-on-aks clusterpool create -g {RG} -n {poolName} -l {westus3} --workernode-size {Standard_E4s_v3} --version {1.1}
     """
 
     _aaz_info = {

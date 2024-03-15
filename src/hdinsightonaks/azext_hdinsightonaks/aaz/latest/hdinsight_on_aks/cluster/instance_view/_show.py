@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get the status of a cluster instance.
 
     :example: Get cluster instance view.
-        az hdinsight-on-aks cluster instance-view show --cluster-name testcluster --cluster-pool-name testpool -g RG
+        az hdinsight-on-aks cluster instance-view show --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName}
     """
 
     _aaz_info = {

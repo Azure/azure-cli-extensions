@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the lists of instance views
+
+    :example: List the list of instance views.
+        az hdinsight-on-aks cluster instance-view list --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName}
     """
 
     _aaz_info = {

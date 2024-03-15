@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List jobs of HDInsight on AKS cluster.
 
     :example: Get jobs of HDInsight on AKS cluster.
-        az hdinsight-on-aks cluster job list --cluster-name testcluster --cluster-pool-name testpool -g RG
+        az hdinsight-on-aks cluster job list --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName}
     """
 
     _aaz_info = {

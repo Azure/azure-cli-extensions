@@ -19,7 +19,7 @@ class Run(AAZCommand):
     """Operations on jobs of HDInsight on AKS cluster.
 
     :example: Operations on jobs of HDInsight on AKS cluster.
-        az hdinsight-on-aks cluster job run --cluster-name clusterName --cluster-pool-name poolName -g RG --flink-job job-name="test" job-jar-directory="abfs://demodfs@flinkdemo.dfs.core.windows.net/jars" jar-name="FlinkJobDemo-1.0-SNAPSHOT.jar" entry-class="org.example.SleepJob" action="NEW" flink-configuration="{parallelism:1}"
+        az hdinsight-on-aks cluster job run --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName} --flink-job job-name="test" job-jar-directory="abfs://demodfs@flinkdemo.dfs.core.windows.net/jars" jar-name="FlinkJobDemo-1.0-SNAPSHOT.jar" entry-class="org.example.SleepJob" action="NEW" flink-configuration="{parallelism:1}"
     """
 
     _aaz_info = {

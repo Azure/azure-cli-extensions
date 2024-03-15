@@ -19,7 +19,7 @@ class ListServiceConfig(AAZCommand):
     """List the config dump of all services running in cluster.
 
     :example: Lists the config dump of all services running in cluster.
-        az hdinsight-on-aks cluster list-service-config  --cluster-name testcluster --cluster-pool-name testpool -g RG
+        az hdinsight-on-aks cluster list-service-config  --cluster-name {clusterName} --cluster-pool-name {poolName}-g {RG}
     """
 
     _aaz_info = {

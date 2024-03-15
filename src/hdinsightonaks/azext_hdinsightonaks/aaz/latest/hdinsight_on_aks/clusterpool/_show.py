@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get a cluster pool.
 
     :example: Gets a cluster pool.
-        az hdinsight-on-aks clusterpool show -g RG -n testpool
+        az hdinsight-on-aks clusterpool show -g {RG} -n {poolName}
     """
 
     _aaz_info = {

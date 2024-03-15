@@ -20,7 +20,7 @@ class Delete(AAZCommand):
     """Delete a cluster.
 
     :example: Delete a cluster.
-        az hdinsight-on-aks cluster delete  -n testcluster --cluster-pool-name testpool -g RG
+        az hdinsight-on-aks cluster delete  -n {clusterName} --cluster-pool-name {poolName} -g {RG}
     """
 
     _aaz_info = {

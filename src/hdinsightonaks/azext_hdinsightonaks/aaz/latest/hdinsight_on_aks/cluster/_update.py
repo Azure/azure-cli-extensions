@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update a cluster.
 
     :example: Update a cluster service-config.
-        az hdinsight-on-aks cluster update -n testpsspark --cluster-pool-name ps-test-pool -g Group --service-configs-profiles @config.json
+        az hdinsight-on-aks cluster update -n {clusterName} --cluster-pool-name {poolName} -g {RG} -service-configs {"[{service-name:yarn-service,configs:[{component:hadoop-config-client,files:[{file-name:yarn-site.xml,values:{yarn.nodemanager.resource.memory-mb:33333}}]}]}]"}
     """
 
     _aaz_info = {

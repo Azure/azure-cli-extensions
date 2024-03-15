@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List a cluster pool available upgrade.
 
     :example: List a cluster pool available upgrade.
-        az hdinsight-on-aks clusterpool upgrade list --cluster-pool-name hilopool -g RG --debug
+        az hdinsight-on-aks clusterpool upgrade list --g {RG} -n {poolName}
     """
 
     _aaz_info = {
@@ -47,9 +47,10 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_pool_name = AAZStrArg(
-            options=["--cluster-pool-name"],
+            options=["-n", "--name", "--cluster-pool-name"],
             help="The name of the cluster pool.",
             required=True,
+            is_preview=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
