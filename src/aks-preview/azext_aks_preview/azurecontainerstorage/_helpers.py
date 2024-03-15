@@ -62,7 +62,7 @@ def perform_role_operations_on_managed_rg(
     assign
 ):
     managed_rg_role_scope = build_role_scope(node_resource_group, None, subscription_id)
-    roles = ["Azure Container Storage Operator"]
+    roles = ["Azure Container Storage Operator", "Reader"]
     result = True
 
     for role in roles:
