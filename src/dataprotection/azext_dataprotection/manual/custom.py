@@ -213,7 +213,8 @@ def dataprotection_backup_vault_list_from_resourcegraph(client, resource_groups=
 
 def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_name, datasource_type, vault_name, operation,
                                                           permissions_scope, backup_instance=None, restore_request_object=None,
-                                                          keyvault_id=None, snapshot_resource_group_id=None, yes=False):
+                                                          keyvault_id=None, snapshot_resource_group_id=None, 
+                                                          target_storage_account_id=None, yes=False):
     if operation == 'Backup' and backup_instance is None:
         raise RequiredArgumentMissingError("--backup-instance needs to be given when --operation is given as Backup")
 
@@ -382,7 +383,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
         for role_object in manifest['backupVaultRestorePermissions']:
             role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
                                                                  restore_request_object=restore_request_object, principal_id=vault_principal_id,
-                                                                 role_assignments_arr=role_assignments_arr)
+                                                                 role_assignments_arr=role_assignments_arr,
+                                                                 target_storage_account_id=target_storage_account_id,
+                                                                 snapshot_resource_group_id=snapshot_resource_group_id)
 
         if 'dataSourcePermissions' in manifest:
             datasource_principal_id = helper.get_datasource_principal_id_from_object(cmd, datasource_type,
@@ -390,7 +393,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
             for role_object in manifest['dataSourceRestorePermissions']:
                 role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
                                                                      restore_request_object=restore_request_object, principal_id=datasource_principal_id,
-                                                                     role_assignments_arr=role_assignments_arr)
+                                                                     role_assignments_arr=role_assignments_arr,
+                                                                     target_storage_account_id=target_storage_account_id,
+                                                                     snapshot_resource_group_id=snapshot_resource_group_id)
 
     if not role_assignments_arr:
         logger.warning("The required permissions are already assigned!")

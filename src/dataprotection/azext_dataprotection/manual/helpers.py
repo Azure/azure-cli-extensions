@@ -41,7 +41,8 @@ datasource_map = {
     "AzureBlob": "Microsoft.Storage/storageAccounts/blobServices",
     "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
     "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
-    "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers"
+    "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers",
+    "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers"
 }
 
 # This is ideally temporary, as Backup Vault contains secondary region information. But in some cases
@@ -550,12 +551,6 @@ def get_resource_id_from_restore_request_object(restore_request_object, role_typ
 
     if role_type == 'DataSource':
         resource_id = restore_request_object['restore_target_info']['datasource_info']['resource_id']
-    elif role_type == "TargetStorageAccount":
-        # This is only usable for Recovery As Files
-        if restore_request_object['restore_target_info']['object_type'] != 'RestoreFilesTargetInfo':
-            raise ValueError("The restore mode has to be data recovery as files, incorrect restore object passed")
-        container_id = restore_request_object['restore_target_info']['target_details']['target_resource_arm_id']
-        resource_id = get_storage_account_from_container_id(container_id)
 
     return resource_id
 
@@ -864,7 +859,7 @@ def get_datasource_principal_id_from_object(cmd, datasource_type, backup_instanc
 
 def check_and_assign_roles(cmd, role_object, principal_id, role_assignments_arr, permissions_scope,
                            backup_instance=None, restore_request_object=None,
-                           snapshot_resource_group_id=None):
+                           snapshot_resource_group_id=None, target_storage_account_id=None):
     if backup_instance is None and restore_request_object is None:
         raise CLIInternalError("Please enter either one of backup_instance or restore_request_object")
     if backup_instance is not None and restore_request_object is not None:
@@ -879,8 +874,13 @@ def check_and_assign_roles(cmd, role_object, principal_id, role_assignments_arr,
                 logger.warning('snapshot-resource-group-id parameter is required to assign permissions '
                                'over snapshot resource group, skipping')
                 return role_assignments_arr
-            else:
-                resource_id = snapshot_resource_group_id
+            resource_id = snapshot_resource_group_id
+        if role_object['type'] == 'TargetStorageAccount':
+            if target_storage_account_id is None:
+                logger.warning('target-storage-account parameter is required to assign permissions '
+                                'over target resource group, skipping')
+                return role_assignments_arr
+            resource_id = target_storage_account_id
 
     resource_id = truncate_id_using_scope(resource_id, "Resource")
 
