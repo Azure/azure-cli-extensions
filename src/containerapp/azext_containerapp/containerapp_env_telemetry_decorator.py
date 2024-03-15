@@ -374,10 +374,11 @@ class ContainerappEnvTelemetryOtlpPreviewSetDecorator(BaseResource):
                 for otlp in existing_otlps:
                     if "headers" in otlp:
                         dict = otlp["headers"]
-                        for header in dict:
-                            if "value" in header:
-                                header["value"] = None
-                            enable_open_telemetry_traces = False
+                        if dict:
+                            for header in dict:
+                                if "value" in header:
+                                    header["value"] = None
+                                enable_open_telemetry_traces = False
 
                     otlp_name = safe_get(otlp, "name")
 
