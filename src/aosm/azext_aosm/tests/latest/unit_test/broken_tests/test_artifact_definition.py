@@ -23,13 +23,17 @@
 #         mock_read_text.return_value = """
 #         [
 #             {
+#                 "artifact_type": "ArmTemplate",
+#                 "artifact_name": "abc",
+#                 "artifact_version": "1.0.0",
 #                 "type": "MockType1",
-#                 "artifact_manifest": "def",
 #                 "file_path": "def"
 #             },
 #             {
+#                 "artifact_type": "ArmTemplate",
+#                 "artifact_name": "ghi",
+#                 "artifact_version": "2.1.1",
 #                 "type": "MockType2",
-#                 "artifact_manifest": "jkl",
 #                 "file_path": "jkl"
 #             }
 #         ]
@@ -52,7 +56,9 @@
 #             definition_element = ArtifactDefinitionElement(element_path, False)
 
 #         # Deploy the element.
-#         definition_element.deploy()
+#         mock_config = MagicMock()
+#         mock_context = MagicMock()
+#         definition_element.deploy(config=mock_config, command_context=mock_context)
 
 #         # Check results.
 #         mock_type_1.assert_has_calls(

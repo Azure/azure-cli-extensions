@@ -6,7 +6,7 @@ from unittest.mock import Mock
 from azext_aosm.build_processors.helm_chart_processor import HelmChartProcessor
 
 code_directory = os.path.dirname(__file__)
-parent_directory = os.path.abspath(os.path.join(code_directory, ".."))
+parent_directory = os.path.abspath(os.path.join(code_directory, "../.."))
 mock_cnf_directory = os.path.join(parent_directory, "mock_cnf")
 
 HELM_TEMPLATE_MOCK_OUTPUT_FILE = "nf-agent-cnf-helm_template_output.yaml"

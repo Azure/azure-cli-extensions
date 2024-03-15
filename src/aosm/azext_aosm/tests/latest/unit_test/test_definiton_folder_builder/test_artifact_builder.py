@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import json
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
@@ -37,5 +37,6 @@ class TestArtifactDefinitionElementBuilder(TestCase):
         mock_mkdir.assert_called_once()
         artifact_1.to_dict.assert_called_once()
         artifact_2.to_dict.assert_called_once()
-        mock_write_text.assert_called_once_with(
-            '[\n    {\n        "abc": "def"\n    },\n    {\n        "ghi": "jkl"\n    }\n]')
+        expected_params = [{"abc":"def"},
+                           {"ghi":"jkl"}]
+        mock_write_text.assert_called_once_with(json.dumps(expected_params, indent=4))

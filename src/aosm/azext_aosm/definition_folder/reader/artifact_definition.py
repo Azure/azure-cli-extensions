@@ -40,7 +40,7 @@ class ArtifactDefinitionElement(BaseDefinitionElement):
         """
         if "type" not in artifact or artifact["type"] not in ARTIFACT_TYPE_TO_CLASS:
             raise ValueError(
-                "Artifact type is missing or invalid for artifact {artifact}"
+                f"Artifact type is missing or invalid for artifact {artifact}"
             )
         # Use reflection to get the required fields for the artifact class
         class_sig = inspect.signature(ARTIFACT_TYPE_TO_CLASS[artifact["type"]].__init__)

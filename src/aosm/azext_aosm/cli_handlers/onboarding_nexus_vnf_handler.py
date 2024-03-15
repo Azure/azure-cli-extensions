@@ -11,7 +11,6 @@ from knack.log import get_logger
 
 from azext_aosm.build_processors.arm_processor import NexusArmBuildProcessor
 from azext_aosm.build_processors.nexus_image_processor import NexusImageProcessor
-from azext_aosm.build_processors.base_processor import BaseInputProcessor
 from azext_aosm.common.constants import (
     BASE_FOLDER_NAME,
     VNF_TEMPLATE_FOLDER_NAME,

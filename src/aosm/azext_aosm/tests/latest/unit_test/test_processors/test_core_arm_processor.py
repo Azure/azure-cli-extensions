@@ -4,46 +4,47 @@ import sys
 import json
 from unittest import TestCase
 from unittest.mock import MagicMock
-from azext_aosm.build_processors.arm_processor import NexusArmBuildProcessor
+from azext_aosm.build_processors.arm_processor import AzureCoreArmBuildProcessor
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 from azext_aosm.vendored_sdks.models import (
-    AzureOperatorNexusNetworkFunctionArmTemplateApplication,
+    AzureCoreNetworkFunctionArmTemplateApplication,
     ApplicationEnablement, ArmResourceDefinitionResourceElementTemplate,
     ArmResourceDefinitionResourceElementTemplateDetails,
     ArmTemplateArtifactProfile,
     ArmTemplateMappingRuleProfile,
+    AzureCoreArmTemplateArtifactProfile,
     NSDArtifactProfile,
     TemplateType,
-    AzureOperatorNexusArmTemplateDeployMappingRuleProfile,
-    AzureOperatorNexusArmTemplateArtifactProfile,
+    AzureCoreArmTemplateDeployMappingRuleProfile,
     DependsOnProfile,
     ManifestArtifactFormat,
     ReferencedResource,
 )
+from azext_aosm.common.constants import TEMPLATE_PARAMETERS_FILENAME
 from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.common.artifact import LocalFileACRArtifact
-from azext_aosm.common.constants import TEMPLATE_PARAMETERS_FILENAME
 
 code_directory = os.path.dirname(__file__)
 parent_directory = os.path.abspath(os.path.join(code_directory, "../.."))
-mock_vnf_directory = os.path.join(parent_directory, "mock_nexus_vnf")
+mock_vnf_directory = os.path.join(parent_directory, "mock_core_vnf")
 
 
-class NexusArmProcessorTest(TestCase):
-    """Class to test Nexus ARM Processor functionality"""
+class AzureCoreArmProcessorTest(TestCase):
+    """Class to test AzureCore ARM Processor functionality"""
+
     def setUp(self):
         logging.basicConfig(level=logging.INFO, stream=sys.stdout)
         mock_arm_template_path = os.path.join(mock_vnf_directory, "ubuntu-template.json")
-        self.nexus_arm_input = ArmTemplateInput(
+        self.core_arm_input = ArmTemplateInput(
             artifact_name="test-artifact-name",
             artifact_version="1.1.1",
             template_path=mock_arm_template_path,
             default_config=None
         )
-        self.processor = NexusArmBuildProcessor("test-name", self.nexus_arm_input)
+        self.processor = AzureCoreArmBuildProcessor("test-name", self.core_arm_input)
 
     def test_get_artifact_manifest_list(self):
-        """Test get artifact manifest list for nexus arm processor."""
+        """Test get artifact manifest list for Azure Core arm processor."""
         manifest_list = self.processor.get_artifact_manifest_list()
         mock_manifest_artifact_format = ManifestArtifactFormat(
             artifact_name="test-artifact-name",
@@ -53,10 +54,9 @@ class NexusArmProcessorTest(TestCase):
         self.assertEqual(len(manifest_list), 1)
         self.assertIsInstance(manifest_list[0], ManifestArtifactFormat)
         self.assertEqual(manifest_list[0], mock_manifest_artifact_format)
-        assert True
 
     def test_artifact_details(self):
-        """Test get artifact details for nexus arm processor."""
+        """Test get artifact details for Azure Core arm processor."""
         artifact_details = self.processor.get_artifact_details()
         mock_arm_template_path = os.path.join(mock_vnf_directory, "ubuntu-template.json")
         mock_artifact = [LocalFileACRArtifact(
@@ -66,24 +66,25 @@ class NexusArmProcessorTest(TestCase):
             file_path=mock_arm_template_path,
         )]
 
-        # Ensure no list of LocalFileBuilders is returned, as this is only for NSDs
+        # Testing each individial part of artifact are equal,
+        # as two artifacts objects are never equal, even if they contain the same content
         self.assertEqual(artifact_details[0][0].artifact_name, mock_artifact[0].artifact_name)
         self.assertEqual(artifact_details[0][0].artifact_version, mock_artifact[0].artifact_version)
         self.assertEqual(artifact_details[0][0].artifact_type, mock_artifact[0].artifact_type)
         self.assertEqual(artifact_details[0][0].file_path, mock_artifact[0].file_path)
+        # Ensure no list of LocalFileBuilders is returned, as this is only for NSDs
         self.assertEqual(artifact_details[1], [])
         assert True
 
     def test_generate_nf_application(self):
-        """Test generate nf application for nexus arm processor."""
+        """Test generate nf application for Azure Core ARM Processor."""
         # Check type is correct, other functionality is tested in appropriate functions
         # (such as test_generate_artifact_profile)
         nf_application = self.processor.generate_nf_application()
-        self.assertIsInstance(nf_application,
-                              AzureOperatorNexusNetworkFunctionArmTemplateApplication)
+        self.assertIsInstance(nf_application, AzureCoreNetworkFunctionArmTemplateApplication)
 
     def test_generate_resource_element_template(self):
-        """Test generate RET for Nexus ARM Processor"""
+        """Test generate RET for Azure Core ARM Processor"""
         result = self.processor.generate_resource_element_template()
 
         # Assert the expected output
@@ -109,8 +110,7 @@ class NexusArmProcessorTest(TestCase):
                          expected_template.configuration.artifact_profile)
 
     def test_generate_parameters_file(self):
-        """ Test generate parameters file for Nexus ARM Processor"""
-
+        """ Test generate parameters file for Azure Core ARM Processor"""
         # Mock private function
         # (generate mapping rule profile is tested elsewhere)
         mapping_rule_profile = MagicMock()
@@ -129,10 +129,11 @@ class NexusArmProcessorTest(TestCase):
 
         # Assert the contents
         self.assertEqual(parameters_file.file_content, expected_json)
-        # Assert name of the file includes templateParameters
-        # (We want to know that in the instance of Nexus ARM Templates,
+        # Assert name of the file includes 
+        # (We want to know that in the instance of Azure Core ARM Templates,
         # we are creating template parameters)
         assert TEMPLATE_PARAMETERS_FILENAME in str(parameters_file.path)
+
         # Assert the type is LocalFileBuilder
         self.assertIsInstance(parameters_file, LocalFileBuilder)
         # Assert that the necessary methods were called
@@ -149,14 +150,14 @@ class NexusArmProcessorTest(TestCase):
         })
         expected_arm_mapping_profile = ArmTemplateMappingRuleProfile(
             template_parameters=mock_template_params)
-        expected_nexus_arm_mapping_profile = AzureOperatorNexusArmTemplateDeployMappingRuleProfile(
+        expected_nexus_arm_mapping_profile = AzureCoreArmTemplateDeployMappingRuleProfile(
             application_enablement=ApplicationEnablement.ENABLED,
             template_mapping_rule_profile=expected_arm_mapping_profile,
         )
         self.assertEqual(nf_application.deploy_parameters_mapping_rule_profile,
                          expected_nexus_arm_mapping_profile)
         self.assertIsInstance(nf_application.deploy_parameters_mapping_rule_profile,
-                              AzureOperatorNexusArmTemplateDeployMappingRuleProfile)
+                              AzureCoreArmTemplateDeployMappingRuleProfile)
 
     def test_generate_artifact_profile(self):
         """ Test generate artifact profile returned correctly with generate_nf_application."""
@@ -164,10 +165,9 @@ class NexusArmProcessorTest(TestCase):
         nf_application = self.processor.generate_nf_application()
         expected_arm_artifact_profile = ArmTemplateArtifactProfile(
             template_name="test-artifact-name", template_version="1.1.1")
-        expected_nexus_arm_artifact_profile = AzureOperatorNexusArmTemplateArtifactProfile(
+        expected_nexus_arm_artifact_profile = AzureCoreArmTemplateArtifactProfile(
             artifact_store=ReferencedResource(id=""),
             template_artifact_profile=expected_arm_artifact_profile
         )
         self.assertEqual(nf_application.artifact_profile, expected_nexus_arm_artifact_profile)
-        self.assertIsInstance(nf_application.artifact_profile,
-                              AzureOperatorNexusArmTemplateArtifactProfile)
+        self.assertIsInstance(nf_application.artifact_profile, AzureCoreArmTemplateArtifactProfile)
