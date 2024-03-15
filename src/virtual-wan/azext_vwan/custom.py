@@ -356,8 +356,8 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
     hub = client.get(resource_group_name, virtual_hub_name)
     try:
         hub.route_table.routes.pop(index - 1)
-    except IndexError:
-        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(hub.route_table.routes)}")
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(hub.route_table.routes)}") from exc
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, virtual_hub_name, hub)
     try:
