@@ -7,6 +7,7 @@ import re
 from typing import Tuple
 
 from azext_aks_preview.azurecontainerstorage._consts import (
+    CONST_ACSTOR_ALL,
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
     CONST_ACSTOR_K8S_EXTENSION_NAME,
     CONST_EXT_INSTALLATION_NAME,
@@ -345,8 +346,7 @@ def get_desired_resource_value_args(
         is_disable_ephemeral_nvme = (
             storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
             (storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME or
-                (storage_pool_option == CONST_ACSTOR_ALL and is_ephemeralDisk_nvme_enabled)
-            )
+                (storage_pool_option == CONST_ACSTOR_ALL and is_ephemeralDisk_nvme_enabled))
         )
         if is_disabled_type_smaller_than_active_types:
             updated_core_value = current_core_value
