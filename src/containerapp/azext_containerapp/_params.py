@@ -67,17 +67,20 @@ def load_arguments(self, _):
 
     # Telemetry 
     with self.argument_context('containerapp env telemetry data-dog set') as c:
+        c.argument('name', id_part=None)
         c.argument('site', help='Specify the data dog site')
         c.argument('key', help='Specify the data dog api key')
         c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry traces')
         c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry metrics')
 
     with self.argument_context('containerapp env telemetry app-insights set') as c:
+        c.argument('name', id_part=None)
         c.argument('connection_string', help='Application Insights connection string used by container apps environment')
         c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry traces')
         c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry logs')
 
     with self.argument_context('containerapp env telemetry otlp') as c:
+        c.argument('name', id_part=None)
         c.argument('otlp_name', help='The name of the otlp entry')
         c.argument('endpoint', options_list=['--endpoint', '-e'], help='The endpoint of the otlp entry')
         c.argument('insecure', arg_type=get_three_state_flag(), help='Boolean indicating whether the otlp is insecure or not')

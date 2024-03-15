@@ -113,7 +113,7 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE,
-                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, DEFAULT_CONFIGURED_STR)
+                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA)
 
 
 logger = get_logger(__name__)
@@ -2401,7 +2401,7 @@ def show_environment_telemetry_data_dog(cmd,
     r = {}
 
     if "key" in safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"):
-        safe_set(r, "key", value=DEFAULT_CONFIGURED_STR)
+        safe_set(r, "key", value=None)
 
     safe_set(r, "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
 
@@ -2495,7 +2495,7 @@ def show_environment_telemetry_app_insights(cmd,
     r = {}
 
     if "connectionString" in safe_get(containerapp_env_def, "properties", "appInsightsConfiguration"):
-        safe_set(r, "connectionString", value=DEFAULT_CONFIGURED_STR)
+        safe_set(r, "connectionString", value=None)
 
     enable_open_telemetry_traces = False
     existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
@@ -2651,7 +2651,7 @@ def show_environment_telemetry_otlp(cmd,
             existing_headers = otlp[0]["headers"]
             for header in existing_headers:
                 if "value" in header:
-                    header["value"] = DEFAULT_CONFIGURED_STR
+                    header["value"] = None
 
         r = otlp[0]
 
@@ -2660,21 +2660,21 @@ def show_environment_telemetry_otlp(cmd,
         if existing_traces and otlp_name in existing_traces:
             enable_open_telemetry_traces = True
         
-        safe_set(r, "otlpConfiguration", "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+        safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
 
         enable_open_telemetry_logs = False
         existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
         if existing_logs and otlp_name in existing_logs:
             enable_open_telemetry_logs = True
         
-        safe_set(r, "otlpConfiguration", "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
+        safe_set(r, "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
 
         enable_open_telemetry_metrics = False
         existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
         if existing_metrics and otlp_name in existing_metrics:
             enable_open_telemetry_metrics = True
         
-        safe_set(r, "otlpConfiguration", "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
+        safe_set(r, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
 
         return r
 
@@ -2712,7 +2712,7 @@ def list_environment_telemetry_otlp(cmd,
                 dict = otlp["headers"]
                 for header in dict:
                     if "value" in header:
-                        header["value"] = DEFAULT_CONFIGURED_STR
+                        header["value"] = None
                     enable_open_telemetry_traces = False
 
             otlp_name = safe_get(otlp, "name")

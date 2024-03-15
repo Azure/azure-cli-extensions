@@ -12,7 +12,6 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
 from .common import TEST_LOCATION
-from ..._constants import DEFAULT_CONFIGURED_STR
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -57,7 +56,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         self.cmd('containerapp env telemetry data-dog show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('"enable-open-telemetry-metrics"', True),
             JMESPathCheck('"enable-open-telemetry-traces"', True),
-            JMESPathCheck('key', DEFAULT_CONFIGURED_STR),
+            JMESPathCheck('key', None),
             JMESPathCheck('site', data_dog_site),
         ])
 
@@ -79,7 +78,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         self.cmd('containerapp env telemetry data-dog show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('"enable-open-telemetry-metrics"', False),
             JMESPathCheck('"enable-open-telemetry-traces"', True),
-            JMESPathCheck('key', DEFAULT_CONFIGURED_STR),
+            JMESPathCheck('key', None),
             JMESPathCheck('site', data_dog_site),
         ])
 
@@ -140,7 +139,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         self.cmd('containerapp env telemetry app-insights show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('"enable-open-telemetry-logs"', True),
             JMESPathCheck('"enable-open-telemetry-traces"', True),
-            JMESPathCheck('connectionString', DEFAULT_CONFIGURED_STR),
+            JMESPathCheck('connectionString', None),
         ])
         
         self.cmd(f'containerapp env telemetry app-insights set -g {resource_group} -n {env_name} --enable-open-telemetry-traces false')
@@ -160,7 +159,7 @@ class ContainerappEnvTelemetryScenarioTest(ScenarioTest):
         self.cmd('containerapp env telemetry app-insights show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('"enable-open-telemetry-logs"', True),
             JMESPathCheck('"enable-open-telemetry-traces"', False),
-            JMESPathCheck('connectionString', DEFAULT_CONFIGURED_STR),
+            JMESPathCheck('connectionString', None),
         ])
 
         self.cmd(f'containerapp env telemetry app-insights delete -g {resource_group} -n {env_name} --yes')

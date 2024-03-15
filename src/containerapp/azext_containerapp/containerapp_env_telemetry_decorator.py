@@ -10,7 +10,6 @@ from azure.cli.core.azclierror import ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.core.commands import AzCliCommand
 from typing import Any, Dict
-from ._constants import DEFAULT_CONFIGURED_STR
 
 DATA_DOG_DEST = 'dataDog'
 APP_INSIGHTS_DEST = 'appInsights'
@@ -89,24 +88,25 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
             
             r = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration")
 
-            if "key" in safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"):
-                safe_set(r, "key", value=DEFAULT_CONFIGURED_STR)
+            if r is not None:
+                if "key" in safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"):
+                    safe_set(r, "key", value=None)
 
-            safe_set(r, "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
+                safe_set(r, "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
 
-            enable_open_telemetry_traces = False
-            existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-            if existing_traces and DATA_DOG_DEST in existing_traces:
-                enable_open_telemetry_traces = True
-                
-            safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+                enable_open_telemetry_traces = False
+                existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
+                if existing_traces and DATA_DOG_DEST in existing_traces:
+                    enable_open_telemetry_traces = True
+                    
+                safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
 
-            enable_open_telemetry_metrics = False
-            existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
-            if existing_metrics and DATA_DOG_DEST in existing_metrics:
-                enable_open_telemetry_metrics = True
-                
-            safe_set(r, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
+                enable_open_telemetry_metrics = False
+                existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
+                if existing_metrics and DATA_DOG_DEST in existing_metrics:
+                    enable_open_telemetry_metrics = True
+                    
+                safe_set(r, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
 
             return r
         except Exception as e:
@@ -177,22 +177,23 @@ class ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(BaseResource):
             
             r = {}
 
-            if "connectionString" in safe_get(containerapp_env_def, "properties", "appInsightsConfiguration"):
-                safe_set(r, "connectionString", value=DEFAULT_CONFIGURED_STR)
+            if safe_get(containerapp_env_def, "properties", "appInsightsConfiguration") is not None:
+                if "connectionString" in safe_get(containerapp_env_def, "properties", "appInsightsConfiguration"):
+                    safe_set(r, "connectionString", value=None)
 
-            enable_open_telemetry_traces = False
-            existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-            if existing_traces and APP_INSIGHTS_DEST in existing_traces:
-                enable_open_telemetry_traces = True
-                
-            safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+                enable_open_telemetry_traces = False
+                existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
+                if existing_traces and APP_INSIGHTS_DEST in existing_traces:
+                    enable_open_telemetry_traces = True
+                    
+                safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
 
-            enable_open_telemetry_logs = False
-            existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
-            if existing_logs and APP_INSIGHTS_DEST in existing_logs:
-                enable_open_telemetry_logs = True
-                
-            safe_set(r, "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
+                enable_open_telemetry_logs = False
+                existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
+                if existing_logs and APP_INSIGHTS_DEST in existing_logs:
+                    enable_open_telemetry_logs = True
+                    
+                safe_set(r, "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
 
             return r
         except Exception as e:
@@ -375,7 +376,7 @@ class ContainerappEnvTelemetryOtlpPreviewSetDecorator(BaseResource):
                         dict = otlp["headers"]
                         for header in dict:
                             if "value" in header:
-                                header["value"] = DEFAULT_CONFIGURED_STR
+                                header["value"] = None
                             enable_open_telemetry_traces = False
 
                     otlp_name = safe_get(otlp, "name")
