@@ -36,6 +36,7 @@ jobs:
         env:
           bash_sha: ${{ github.event.pull_request.base.sha }}
           base_branch: ${{ github.event.pull_request.base.ref }}
+          base_branch_pre: "upstream"
           diff_sha: ${{ github.event.pull_request.head.sha }}
           diff_branch: ${{ github.event.pull_request.head.ref }}
           repo_full_name: ${{ github.event.pull_request.head.repo.full_name }}
@@ -44,12 +45,12 @@ jobs:
             git --version
             git log --oneline | head -n 30
             git branch -a
-            git fetch https://github.com/Azure/azure-cli-extensions.git ${{ env.base_branch }}:${{ env.base_branch }}
-            git checkout ${{ env.base_branch }}
+            git fetch https://github.com/Azure/azure-cli-extensions.git ${{ env.base_branch }}:${{ env.base_branch_pre }}/${{ env.base_branch }}
+            git checkout ${{ env.base_branch_pre }}/${{ env.base_branch }}
             git log --oneline | head -n 30
             git checkout ${{ env.diff_branch }}
             git log --oneline | head -n 30
-            git --no-pager diff --name-only --diff-filter=ACMRT ${{ env.base_branch }}...${{ env.diff_branch }} > changed_files
+            git --no-pager diff --name-only --diff-filter=ACMRT ${{ env.base_branch_pre }}/${{ env.base_branch }}...${{ env.diff_branch }} > changed_files
             cat changed_files
             cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq > changed_modules
             echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
@@ -92,6 +93,7 @@ jobs:
         env:
           pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
           base_branch: ${{ github.event.pull_request.base.ref }}
+          base_branch_pre: "upstream"
           diff_branch: ${{ github.event.pull_request.head.ref }}
           base_meta_path: "./base_meta/"
           diff_meta_path: "./diff_meta/"
@@ -100,7 +102,7 @@ jobs:
            chmod +x env/bin/activate
            source ./env/bin/activate
            set -ev
-           git checkout ${{ env.base_branch }}
+           git checkout ${{ env.base_branch_pre }}/${{ env.base_branch }}
            mkdir ${{ env.base_meta_path }}
            for mod in ${{ env.changed_module_list }}
            do
@@ -116,7 +118,7 @@ jobs:
            done
            ls ./${{ env.base_meta_path }}/
            ls ./${{ env.diff_meta_path }}/
-           git checkout ${{ env.base_branch }}
+           git checkout ${{ env.base_branch_pre }}/${{ env.base_branch }}
            python scripts/ci/release_version_cal.py
            # echo "commit_message=$(cat ${{ env.output_file }})" >> $GITHUB_ENV
       - name: Comment on the pull request
