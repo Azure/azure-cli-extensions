@@ -104,7 +104,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.api_server_authorized_ip_ranges = AAZListArg(
-            options=["--api-server-authorized-ip-ranges"],
+            options=["--api-server-ip-ranges", "--api-server-authorized-ip-ranges"],
             arg_group="NetworkProfile",
             help="IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with private AKS clusters. So you cannot set enablePrivateApiServer to true and apiServerAuthorizedIpRanges at the same time.",
             nullable=True,

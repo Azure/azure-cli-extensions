@@ -117,12 +117,12 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.api_server_authorized_ip_ranges = AAZListArg(
-            options=["--api-server-authorized-ip-ranges"],
+            options=["--api-server-ip-ranges", "--api-server-authorized-ip-ranges"],
             arg_group="NetworkProfile",
             help="IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with private AKS clusters. So you cannot set enablePrivateApiServer to true and apiServerAuthorizedIpRanges at the same time.",
         )
         _args_schema.enable_private_api_server = AAZBoolArg(
-            options=["--enable-private-api-server"],
+            options=["--enable-private", "--enable-private-api-server"],
             arg_group="NetworkProfile",
             help="ClusterPool is based on AKS cluster. AKS cluster exposes the API server to public internet by default. If you set this property to true, a private AKS cluster will be created, and it will use private apiserver, which is not exposed to public internet.",
         )
