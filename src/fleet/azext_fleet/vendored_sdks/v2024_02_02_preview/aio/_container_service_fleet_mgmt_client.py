@@ -9,8 +9,10 @@
 from copy import deepcopy
 from typing import Any, Awaitable, TYPE_CHECKING
 
+from azure.core.pipeline import policies
 from azure.core.rest import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core import AsyncARMPipelineClient
+from azure.mgmt.core.policies import AsyncARMAutoResourceProviderRegistrationPolicy
 
 from .. import models as _models
 from ..._serialization import Deserializer, Serializer
@@ -33,26 +35,26 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=client-accepts-api-ver
 
     :ivar operations: Operations operations
     :vartype operations:
-     azure.mgmt.containerservicefleet.v2023_08_15_preview.aio.operations.Operations
+     azure.mgmt.containerservicefleet.v2024_02_02_preview.aio.operations.Operations
     :ivar fleets: FleetsOperations operations
     :vartype fleets:
-     azure.mgmt.containerservicefleet.v2023_08_15_preview.aio.operations.FleetsOperations
+     azure.mgmt.containerservicefleet.v2024_02_02_preview.aio.operations.FleetsOperations
     :ivar fleet_members: FleetMembersOperations operations
     :vartype fleet_members:
-     azure.mgmt.containerservicefleet.v2023_08_15_preview.aio.operations.FleetMembersOperations
+     azure.mgmt.containerservicefleet.v2024_02_02_preview.aio.operations.FleetMembersOperations
     :ivar update_runs: UpdateRunsOperations operations
     :vartype update_runs:
-     azure.mgmt.containerservicefleet.v2023_08_15_preview.aio.operations.UpdateRunsOperations
+     azure.mgmt.containerservicefleet.v2024_02_02_preview.aio.operations.UpdateRunsOperations
     :ivar fleet_update_strategies: FleetUpdateStrategiesOperations operations
     :vartype fleet_update_strategies:
-     azure.mgmt.containerservicefleet.v2023_08_15_preview.aio.operations.FleetUpdateStrategiesOperations
+     azure.mgmt.containerservicefleet.v2024_02_02_preview.aio.operations.FleetUpdateStrategiesOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription. Required.
     :type subscription_id: str
     :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2023-08-15-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2024-02-02-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -69,29 +71,49 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=client-accepts-api-ver
         self._config = ContainerServiceFleetMgmtClientConfiguration(
             credential=credential, subscription_id=subscription_id, **kwargs
         )
-        self._client: AsyncARMPipelineClient = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        _policies = kwargs.pop("policies", None)
+        if _policies is None:
+            _policies = [
+                policies.RequestIdPolicy(**kwargs),
+                self._config.headers_policy,
+                self._config.user_agent_policy,
+                self._config.proxy_policy,
+                policies.ContentDecodePolicy(**kwargs),
+                AsyncARMAutoResourceProviderRegistrationPolicy(),
+                self._config.redirect_policy,
+                self._config.retry_policy,
+                self._config.authentication_policy,
+                self._config.custom_hook_policy,
+                self._config.logging_policy,
+                policies.DistributedTracingPolicy(**kwargs),
+                policies.SensitiveHeaderCleanupPolicy(**kwargs) if self._config.redirect_policy else None,
+                self._config.http_logging_policy,
+            ]
+        self._client: AsyncARMPipelineClient = AsyncARMPipelineClient(base_url=base_url, policies=_policies, **kwargs)
 
         client_models = {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
         self.operations = Operations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-08-15-preview"
+            self._client, self._config, self._serialize, self._deserialize, "2024-02-02-preview"
         )
         self.fleets = FleetsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-08-15-preview"
+            self._client, self._config, self._serialize, self._deserialize, "2024-02-02-preview"
         )
         self.fleet_members = FleetMembersOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-08-15-preview"
+            self._client, self._config, self._serialize, self._deserialize, "2024-02-02-preview"
         )
         self.update_runs = UpdateRunsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-08-15-preview"
+            self._client, self._config, self._serialize, self._deserialize, "2024-02-02-preview"
         )
         self.fleet_update_strategies = FleetUpdateStrategiesOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-08-15-preview"
+            self._client, self._config, self._serialize, self._deserialize, "2024-02-02-preview"
         )
 
-    def _send_request(self, request: HttpRequest, **kwargs: Any) -> Awaitable[AsyncHttpResponse]:
+    def _send_request(
+        self, request: HttpRequest, *, stream: bool = False, **kwargs: Any
+    ) -> Awaitable[AsyncHttpResponse]:
         """Runs the network request through the client's chained policies.
 
         >>> from azure.core.rest import HttpRequest
@@ -111,7 +133,7 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=client-accepts-api-ver
 
         request_copy = deepcopy(request)
         request_copy.url = self._client.format_url(request_copy.url)
-        return self._client.send_request(request_copy, **kwargs)
+        return self._client.send_request(request_copy, stream=stream, **kwargs)  # type: ignore
 
     async def close(self) -> None:
         await self._client.close()
