@@ -10643,53 +10643,56 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-    # live only due to downloading k8s-extension extension
-    # @live_only()
-    # Introduce this test back once v1.0.3-preview version of Azure container storage is released
-    # @AllowLargeResponse(8192)
-    # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    # def test_aks_update_with_azurecontainerstorage(self, resource_group, resource_group_location):
-    #     aks_name = self.create_random_name('cliakstest', 16)
-    #     node_vm_size = 'standard_d4s_v3'
-    #     self.kwargs.update({
-    #         'resource_group': resource_group,
-    #         'name': aks_name,
-    #         'location': resource_group_location,
-    #         'ssh_key_value': self.generate_ssh_keys(),
-    #         'node_vm_size': node_vm_size,
-    #     })
+    @live_only()
+    @AllowLargeResponse(8192)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_azurecontainerstorage(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_d4s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
 
-    #     # add k8s-extension extension for azurecontainerstorage operations.
-    #     self.cmd('extension add --name k8s-extension')
+        # add k8s-extension extension for azurecontainerstorage operations.
+        self.cmd('extension add --name k8s-extension')
 
-    #     # create: without enable-azure-container-storage
-    #     create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
-    #     self.cmd(create_cmd, checks=[
-    #         self.check('provisioningState', 'Succeeded'),
-    #     ])
+        # create: without enable-azure-container-storage
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
-    #     # enabling or disabling azurecontainerstorage will not affect any field in the cluster.
-    #     # the only check we should perform is to verify that the cluster is provisioned successfully.
+        # enabling or disabling azurecontainerstorage will not affect any field in the cluster.
+        # the only check we should perform is to verify that the cluster is provisioned successfully.
 
-    #     # update: enable-azure-container-storage
-    #     update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-    #                  '--enable-azure-container-storage azureDisk'
-    #     self.cmd(update_cmd, checks=[
-    #         self.check('provisioningState', 'Succeeded'),
-    #     ])
+        # update: enable-azure-container-storage
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+                     '--enable-azure-container-storage azureDisk'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
-    #     # update: disable-azure-container-storage
-    #     update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-    #                  '--disable-azure-container-storage'
-    #     self.cmd(update_cmd, checks=[
-    #         self.check('provisioningState', 'Succeeded'),
-    #     ])
+        # Sleep for 5 mins before next operation,
+        # since azure container storage operations take
+        # some time to post process.
+        time.sleep(5 * 60)
 
-    #     # delete
-    #     cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
-    #     self.cmd(cmd, checks=[
-    #         self.is_empty(),
-    #     ])
+        # update: disable-azure-container-storage
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+                     '--disable-azure-container-storage all'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
 
     # live only due to workspace is not mocked correctly
     @AllowLargeResponse()
