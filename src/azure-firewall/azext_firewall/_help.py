@@ -244,7 +244,12 @@ helps['network firewall application-rule list'] = """
 
 helps['network firewall application-rule show'] = """
     type: command
-    short-summary: Get the details of an Azure Firewall application rule.
+    short-summary: Get222 the details of an Azure Firewall application rule.
+"""
+
+helps['network firewall application-rule test'] = """
+    type: command
+    short-summary: testestest Get the details of an Azure Firewall application rule.
 """
 
 helps['network firewall application-rule collection'] = """
@@ -271,7 +276,7 @@ helps['network firewall application-rule collection show'] = """
 
 helps['network firewall policy intrusion-detection'] = """
     type: group
-    short-summary: Manage intrusion signature rules and bypass rules
+    short-summary: Manage intrusion signature rules and bypass rules222
 """
 
 helps['network firewall policy rule-collection-group collection rule'] = """
