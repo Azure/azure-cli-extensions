@@ -81,7 +81,7 @@ def execute_flexible_server_postgres(cmd, server_name, administrator_login, admi
 def connect_to_server_helper(server_type, endpoint, default_db_name, server_name, administrator_login,
                              administrator_login_password, database_name, query_command=None,
                              interactive=None, file_path=None):
-    host = '{}{}'.format(server_name, endpoint)
+    host = f'{server_name}{endpoint}'
     json_data = None
 
     # setup or validate passed in params:
@@ -155,13 +155,12 @@ def _connect_interactive(server_type, host, server_name, database_name, login_us
         set_environment_paths(EXTENSIONS_DIR)
 
         if server_type == "postgres":
-            cmd = "pgcli -h {0} -u {1} -W {2}".format(host, login_username, database_name)
+            cmd = f"pgcli -h {host} -u {login_username} -W {database_name}"
         else:
-            cmd = "mycli -h {0} -u {1} {2} --ssl-verify-server-cert".format(host, login_username,
-                                                                            database_name)
+            cmd = f"mycli -h {host} -u {login_username} {database_name} --ssl-verify-server-cert"
         os.system(cmd)
     except Exception as e:
-        raise AzureConnectionError("Unable to open interactive mode to {0}. Error: {1}".format(server_name, e))
+        raise AzureConnectionError(f"Unable to open interactive mode to {server_name}. Error: {e}")
 
 
 def _connect_execute_query(server_type, host, server_name, database_name, login_username, login_pw, query=None):
@@ -189,7 +188,7 @@ def _connect_execute_query(server_type, host, server_name, database_name, login_
     except Exception as e:
         logger.warning("Failed connection to %s. Check error and validate firewall and public access "
                        "or virtual network settings.", server_name)
-        raise AzureConnectionError("Unable to connect to flexible server: {}".format(e))
+        raise AzureConnectionError(f"Unable to connect to flexible server: {e}")
 
     if query is not None:
         try:
@@ -207,7 +206,7 @@ def _connect_execute_query(server_type, host, server_name, database_name, login_
                 for rv in result:
                     json_data.append(dict(zip(row_headers, rv)))
         except Exception as e:
-            raise CLIError("Unable to execute query '{0}': {1}".format(query, e))
+            raise CLIError(f"Unable to execute query '{query}': {e}")
         finally:
             try:
                 cursor.close()
@@ -244,7 +243,7 @@ def _connect_execute_file(server_type, host, server_name, database_name, login_u
     except Exception as e:
         logger.warning("Failed connection to %s. Check error and validate firewall and public access "
                        "or virtual network settings.", server_name)
-        raise AzureConnectionError("Unable to connect to flexible server: {}".format(e))
+        raise AzureConnectionError(f"Unable to connect to flexible server: {e}")
 
     # Execute the file
     fail_flag = False
