@@ -274,7 +274,33 @@ helps['fleet updaterun stop'] = """
     examples:
         - name: Stop an update run.
           text: az fleet updaterun stop -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun
+"""
 
+helps['fleet updaterun skip'] = """
+    type: command
+    short-summary: Applies provided skip properties to an update run.
+    parameters:
+        - name: --skip-properties
+          type: string
+          short-summary: Path to a JSON file that defines skip properties for the update run.
+    examples:
+        - name: Apply skip properties to an update run.
+          text: |
+            az fleet updaterun skip -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun --skip-properties ./test/skipProperties.json
+
+            The following JSON structure represents example contents of the parameter '--skip-properties ./test/skipProperties.json'.
+            {
+              "targets": [
+                  {
+                      "type": "Member",
+                      "name": "member-one"
+                  },
+                  {
+                      "type": "AfterStageWait",
+                      "name": "stage1"
+                  }
+              ]
+            }
 """
 
 helps['fleet updaterun wait'] = """
