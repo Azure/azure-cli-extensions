@@ -113,11 +113,14 @@ def main():
     for mod in changed_module_list:
         base_meta_file = os.path.join(cli_ext_path, base_meta_path, "az_" + mod + "_meta.json")
         diff_meta_file = os.path.join(cli_ext_path, diff_meta_path, "az_" + mod + "_meta.json")
-        if not os.path.exists(base_meta_file):
+        if not os.path.exists(base_meta_file) and not os.path.exists(diff_meta_file):
+            print("no base and diff meta file found for {0}".format(mod))
+            continue
+        elif not os.path.exists(base_meta_file) and os.path.exists(diff_meta_file):
             print("no base meta file found for {0}".format(mod))
             gen_comment_message(mod, {"version": INIT_RELEASE_VERSION}, comment_message)
             continue
-        if not os.path.exists(diff_meta_file):
+        elif not os.path.exists(diff_meta_file):
             print("no diff meta file found for {0}".format(mod))
             continue
 
