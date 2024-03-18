@@ -2709,11 +2709,12 @@ def list_environment_telemetry_otlp(cmd,
     if existing_otlps is not None:
         for otlp in existing_otlps:
             if "headers" in otlp:
-                dict = otlp["headers"]
-                for header in dict:
-                    if "value" in header:
-                        header["value"] = None
-                    enable_open_telemetry_traces = False
+                headers = otlp["headers"]
+                if headers:
+                    for header in headers:
+                        if "value" in header:
+                            header["value"] = None
+                        enable_open_telemetry_traces = False
 
             otlp_name = safe_get(otlp, "name")
 
