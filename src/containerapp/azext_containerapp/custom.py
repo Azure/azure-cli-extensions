@@ -2649,9 +2649,10 @@ def show_environment_telemetry_otlp(cmd,
 
         if "headers" in otlp[0]:
             existing_headers = otlp[0]["headers"]
-            for header in existing_headers:
-                if "value" in header:
-                    header["value"] = None
+            if existing_headers:
+                for header in existing_headers:
+                    if "value" in header:
+                        header["value"] = None
 
         r = otlp[0]
 
