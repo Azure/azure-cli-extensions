@@ -193,6 +193,9 @@ def connect_function(cmd, client, resource_group_name, application, app_service)
 
     settings = [f"APPINSIGHTS_INSTRUMENTATIONKEY={app_insights.instrumentation_key}"]
 
+    if app_insights.connection_string is not None:
+        settings.append(f"APPINSIGHTS_CONNECTIONSTRING={app_insights.connection_string}")
+
     if is_valid_resource_id(app_service):
         resource_id = parse_resource_id(app_service)
         app_service = resource_id['name']
