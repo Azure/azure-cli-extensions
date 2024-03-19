@@ -126,8 +126,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('name', '{updaterun}')
         ])
 
-        self.cmd('fleet updaterun skip -g {rg} -n {updaterun} -f {fleet_name} --skip-properties {skip_properties_file}', checks=[])
-        self.cmd('fleet updaterun show -g {rg} -n {updaterun} -f {fleet_name}', checks=[
+        self.cmd('fleet updaterun skip -g {rg} -n {updaterun} -f {fleet_name} --target-type group --target-name group2', checks=[
             self.check('status.stages[0].groups[1].status.state', 'Skipped')
         ])
 

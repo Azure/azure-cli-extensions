@@ -433,9 +433,24 @@ def skip_update_run(cmd,  # pylint: disable=unused-argument
                     resource_group_name,
                     fleet_name,
                     name,
-                    skip_properties,
+                    target_type,
+                    target_name,
                     no_wait=False):
-    skip_properties = get_update_run_skip_properties(cmd, "update_runs", skip_properties)
+
+    update_run_skip_properties_model = cmd.get_models(
+        "SkipProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="update_runs"
+    )
+
+    update_run_skip_target_model = cmd.get_models(
+        "SkipTarget",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="update_runs"
+    )
+
+    skip_target = update_run_skip_target_model(type=target_type, name=target_name)
+    skip_properties = update_run_skip_properties_model(targets=[skip_target])
     return sdk_no_wait(no_wait, client.begin_skip, resource_group_name, fleet_name, name, skip_properties)
 
 
@@ -475,37 +490,6 @@ def get_update_run_strategy(cmd, operation_group, stages):
             after_stage_wait_in_seconds=sec))
 
     return update_run_strategy_model(stages=update_stages)
-
-
-def get_update_run_skip_properties(cmd, operation_group, targets):
-    if targets is None:
-        return None
-
-    with open(targets, 'r', encoding='utf-8') as fp:
-        data = json.load(fp)
-        fp.close()
-
-    update_run_skip_properties_model = cmd.get_models(
-        "SkipProperties",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group=operation_group
-    )
-
-    update_run_skip_target_model = cmd.get_models(
-        "SkipTarget",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group=operation_group
-    )
-
-    skip_targets = []
-    for target in data["targets"]:
-        t = target.get("type")
-        n = target.get("name")
-        skip_targets.append(update_run_skip_target_model(
-            type=t,
-            name=n))
-
-    return update_run_skip_properties_model(targets=skip_targets)
 
 
 def create_fleet_update_strategy(cmd,

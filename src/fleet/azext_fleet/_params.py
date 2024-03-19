@@ -65,8 +65,9 @@ def load_arguments(self, _):
         c.argument('stages', type=file_type, completer=FilesCompleter(), help='Path to a json file that defines stages to upgrade a fleet. See examples for further reference.')
         c.argument('update_strategy_name', validator=validate_update_strategy_name, help='The name of the update strategy to use for this update run. If not specified, the default update strategy will be used.')
 
-    with self.argument_context('fleet updaterun skip') as c:
-        c.argument('skip_properties', type=file_type, completer=FilesCompleter(), help='Path to a JSON file that defines skip properties for the update run.', is_preview=True)
+    with self.argument_context('fleet updaterun skip', is_preview=True) as c:
+        c.argument('target_type', arg_type=get_enum_type(['Member', 'Group', 'Stage', 'AfterStageWait']), help='The type of the target being skipped.', is_preview=True)
+        c.argument('target_name', help='The name of the target being skipped.', is_preview=True)
 
     with self.argument_context('fleet updatestrategy') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the fleet update strategy.')
