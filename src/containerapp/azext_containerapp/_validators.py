@@ -180,7 +180,7 @@ def validate_otlp_headers(cmd, namespace):
 
     for pair in headers:
         key_val = pair.split('=', 1)
-        if len(key_val) <= 1:
+        if len(key_val) != 2:
             raise ValidationError("Otlp headers must be in the format \"<key>=<value>\".")
         if key_val[0] in header_pairs:
             raise ValidationError(
