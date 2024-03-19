@@ -53,7 +53,8 @@ class FleetHublessScenarioTest(ScenarioTest):
             'updaterun': self.create_random_name(prefix='uprn-', length=9),
             'updateStrategy_name': self.create_random_name(prefix='upstr-', length=10),
             'ssh_key_value': self.generate_ssh_keys(),
-            'stages_file': _get_test_data_file('stages.json')
+            'stages_file': _get_test_data_file('stages.json'),
+            'skip_properties_file': _get_test_data_file('skip_properties.json')
         })
 
         self.cmd('fleet create -g {rg} -n {fleet_name}', checks=[
@@ -124,6 +125,11 @@ class FleetHublessScenarioTest(ScenarioTest):
         self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --stages {stages_file}', checks=[
             self.check('name', '{updaterun}')
         ])
+
+        self.cmd('fleet updaterun skip -g {rg} -n {updaterun} -f {fleet_name} --skip-properties {skip_properties_file}', checks=[])
+        self.cmd('fleet updaterun show -g {rg} -n {updaterun} -f {fleet_name}', checks=[
+            self.check('status.stages[0].groups[1].status.state', 'Skipped')
+            ])
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
 
