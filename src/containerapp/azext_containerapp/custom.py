@@ -2616,6 +2616,7 @@ def remove_environment_telemetry_otlp(cmd,
     
     return r
 
+
 def show_environment_telemetry_otlp(cmd,
                                     name,
                                     resource_group_name,
@@ -2678,6 +2679,7 @@ def show_environment_telemetry_otlp(cmd,
         safe_set(r, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
 
         return r
+
 
 def list_environment_telemetry_otlp(cmd,
                                     name,
