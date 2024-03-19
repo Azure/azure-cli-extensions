@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.26.0'
+VERSION = '0.27.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -44,8 +44,8 @@ setup(
     name='cosmosdb-preview',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Cosmosdb-preview Extension',
-    author='Kalyan khandrika',
-    author_email='kakhandr@microsoft.com',
+    author='Praful Johari',
+    author_email='pjohari@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/cosmosdb-preview',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
