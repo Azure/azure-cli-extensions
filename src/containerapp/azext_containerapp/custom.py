@@ -96,7 +96,7 @@ from ._models import (
     RegistryInfo as RegistryInfoModel,
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
-    ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
+    ContainerAppConnectedEnvironmentCertificateEnvelope as ContainerAppConnectedEnvironmentCertificateEnvelopeModel,
     AzureFileProperties as AzureFilePropertiesModel
 )
 
@@ -1893,7 +1893,7 @@ def connected_env_upload_certificate(cmd, name, resource_group_name, certificate
         elif not check_result["nameAvailable"] and (check_result["reason"] == NAME_INVALID):
             raise ValidationError(check_result["message"])
 
-    certificate = ContainerAppCertificateEnvelopeModel
+    certificate = ContainerAppConnectedEnvironmentCertificateEnvelopeModel
     certificate["properties"]["password"] = certificate_password
     certificate["properties"]["value"] = blob
     certificate["location"] = location

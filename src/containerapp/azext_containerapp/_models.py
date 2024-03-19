@@ -388,6 +388,14 @@ ContainerAppCertificateEnvelope = {
     }
 }
 
+ContainerAppConnectedEnvironmentCertificateEnvelope = {
+    "location": None,
+    "properties": {
+        "password": None,
+        "value": None,
+    }
+}
+
 DaprComponent = {
     "properties": {
         "componentType": None,  # str

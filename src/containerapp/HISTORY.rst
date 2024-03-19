@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp connected-env certificate upload': Fix unknown properties certificateKeyVaultProperties
 
 0.3.49
 ++++++
