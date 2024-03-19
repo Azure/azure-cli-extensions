@@ -185,7 +185,7 @@ class BaseInputProcessor(ABC):
         # Loop through each property in the schema.
         for subschema_name, subschema in schema["properties"].items():
 
-            if "type" not in subschema:
+            if isinstance(subschema, dict) and "type" not in subschema:
                 if ["oneOf", "anyOf"] in subschema:
                     raise InvalidArgumentValueError(
                         f"The subschema '{subschema_name}' does not contain a type.\n"
