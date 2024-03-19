@@ -87,8 +87,8 @@ def _update_application_insights_asc_create(cmd,
 def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                   disable_app_insights=None, sku=None, tags=None, build_pool_size=None,
                   enable_log_stream_public_endpoint=None, enable_dataplane_public_endpoint=None,
-                  private_dns_zone=None, ingress_read_timeout=None, enable_planned_maintenance=False,
-                  planned_maintenance_day=None, planned_maintenance_start_hour=None, no_wait=False):
+                  ingress_read_timeout=None, enable_planned_maintenance=False, planned_maintenance_day=None,
+                  planned_maintenance_start_hour=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
@@ -120,11 +120,6 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
     else:
         updated_resource_properties.vnet_addons = None
 
-    if private_dns_zone is not None:
-        if updated_resource_properties.vnet_addons is None:
-            updated_resource_properties.vnet_addons = models.ServiceVNetAddons()
-        updated_resource_properties.vnet_addons.private_dns_zone_id = private_dns_zone
-
     _update_application_insights_asc_update(cmd, resource_group, name, location,
                                             app_insights_key, app_insights, disable_app_insights, no_wait)
 
@@ -147,7 +142,7 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
         update_service_tags = True
 
     if update_service_tags is False and update_service_sku is False and update_dataplane_public_endpoint is False \
-            and update_planned_maintenance is False and ingress_read_timeout is None and private_dns_zone is None:
+            and update_planned_maintenance is False and ingress_read_timeout is None:
         return resource
 
     updated_resource.properties = updated_resource_properties

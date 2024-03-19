@@ -253,7 +253,6 @@ def load_arguments(self, _):
                    validator=validate_dataplane_public_endpoint,
                    options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
                    help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
-        c.argument('private_dns_zone', help='The resource ID of the private DNS zone to use for the private endpoint in the vnet injection instance.')
         c.argument('enable_planned_maintenance',
                    arg_group='Planned Maintenance',
                    action='store_true',
@@ -289,11 +288,11 @@ def load_arguments(self, _):
 
     with self.argument_context('spring private-dns-zone add') as c:
         c.argument('service', service_name_type)
-        c.argument('zone_id', type=str)
+        c.argument('zone_id', type=str, help='The resource id of the private DNS zone which you would like to configure with the service instance.')
 
     with self.argument_context('spring private-dns-zone update') as c:
         c.argument('service', service_name_type)
-        c.argument('zone_id', type=str)
+        c.argument('zone_id', type=str, help='The resource id of the private DNS zone which you would like to configure with the service instance.')
     
     with self.argument_context('spring private-dns-zone clean') as c:
         c.argument('service', service_name_type)
