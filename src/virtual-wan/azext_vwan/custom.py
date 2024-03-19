@@ -2,27 +2,29 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long, too-many-lines, unused-argument, protected-access
 
 import os
 import re
 import hashlib
 
 from OpenSSL import crypto
-from knack.util import CLIError
 from knack.log import get_logger
 
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.aaz import has_value
 from azure.cli.core.aaz.utils import assign_aaz_list_arg
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
 from .aaz.latest.network.vhub.connection import Create as _VHubConnectionCreate, Update as _VHubConnectionUpdate
+from .aaz.latest.network.vpn_gateway.nat_rule import Create as _VPNGatewayNatRuleCreate, \
+    Show as _VPNGatewayNatRuleShow, List as _VPNGatewayNatRuleList, Update as _VPNGatewayNatRuleUpdate
 from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections
 from ._util import _get_property
 
 logger = get_logger(__name__)
 
 
-class UpdateContext(object):
+class UpdateContext:
 
     def __init__(self, instance):
         self.instance = instance
@@ -62,7 +64,7 @@ def _generic_list(cli_ctx, operation_name, resource_group_name):
 def _get_property(items, name):
     result = next((x for x in items if x.name.lower() == name.lower()), None)
     if not result:
-        raise CLIError("Property '{}' does not exist".format(name))
+        raise InvalidArgumentValueError(f"Property '{name}' does not exist")
     return result
 
 
@@ -73,8 +75,8 @@ def _upsert(parent, collection_name, obj_to_add, key_name, warn=True):
 
     value = getattr(obj_to_add, key_name)
     if value is None:
-        raise CLIError(
-            "Unable to resolve a value for key '{}' with which to match.".format(key_name))
+        raise InvalidArgumentValueError(
+            f"Unable to resolve a value for key '{key_name}' with which to match.")
     match = next((x for x in collection if getattr(x, key_name, None) == value), None)
     if match:
         if warn:
@@ -96,7 +98,7 @@ def _find_item_at_path(instance, path):
             # property
             curr_item = getattr(curr_item, comp, None)
         if not curr_item:
-            raise CLIError("not found: '{}' not found at path '{}'".format(comp, '.'.join(path_comps[:i])))
+            raise InvalidArgumentValueError(f"not found: '{comp}' not found at path '{'.'.join(path_comps[:i])}'")
     return curr_item
 
 
@@ -249,7 +251,7 @@ class VHubConnectionCreate(_VHubConnectionCreate):
 class VHubConnectionUpdate(_VHubConnectionUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZResourceIdArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.propagated_route_tables = AAZListArg(
             options=["--propagated-route-tables", "--propagated"],
@@ -354,8 +356,8 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
     hub = client.get(resource_group_name, virtual_hub_name)
     try:
         hub.route_table.routes.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(hub.route_table.routes)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(hub.route_table.routes)}") from exc
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, virtual_hub_name, hub)
     try:
@@ -424,7 +426,7 @@ def add_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_t
                              destinations, next_hop_type, next_hop=None, route_name=None, no_wait=False):
     route_table = get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name)
     if next_hop is None or route_name is None:
-        raise CLIError(
+        raise ArgumentUsageError(
             'Usage error: --next-hop and --route-name must be provided as you are adding route to v3 route table.')
 
     client = _v3_route_table_client(cmd.cli_ctx)
@@ -454,8 +456,8 @@ def remove_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, rout
     route_table = get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name)
     try:
         route_table.routes.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(route_table.routes)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(route_table.routes)}") from exc
 
     client = _route_table_client(cmd.cli_ctx, route_table)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
@@ -571,7 +573,7 @@ def add_vpn_gateway_connection_ipsec_policy(cmd, resource_group_name, gateway_na
     IpsecPolicy = cmd.get_models('IpsecPolicy')
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     gateway = client.get(resource_group_name, gateway_name)
-    conn = _find_item_at_path(gateway, 'connections.{}'.format(connection_name))
+    conn = _find_item_at_path(gateway, f"connections.{connection_name}")
 
     if conn.ipsec_policies is None:
         conn.ipsec_policies = []
@@ -600,7 +602,7 @@ def add_vpn_gateway_connection_ipsec_policy(cmd, resource_group_name, gateway_na
 def list_vpn_conn_ipsec_policies(cmd, resource_group_name, gateway_name, connection_name):
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     gateway = client.get(resource_group_name, gateway_name)
-    conn = _find_item_at_path(gateway, 'connections.{}'.format(connection_name))
+    conn = _find_item_at_path(gateway, f"connections.{connection_name}")
     return conn.ipsec_policies
 
 
@@ -608,11 +610,11 @@ def list_vpn_conn_ipsec_policies(cmd, resource_group_name, gateway_name, connect
 def remove_vpn_conn_ipsec_policy(cmd, resource_group_name, gateway_name, connection_name, index, no_wait=False):
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     gateway = client.get(resource_group_name, gateway_name)
-    conn = _find_item_at_path(gateway, 'connections.{}'.format(connection_name))
+    conn = _find_item_at_path(gateway, f"connections.{connection_name}")
     try:
         conn.ipsec_policies.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(conn.ipsec_policies)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}") from exc
     _upsert(gateway, 'connections', conn, 'name', warn=False)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, gateway)
@@ -663,8 +665,8 @@ def remove_vpn_gateway_connection_vpn_site_link_conn(cmd, resource_group_name, g
     conn = client.get(resource_group_name, gateway_name, connection_name)
     try:
         conn.vpn_link_connections.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(conn.vpn_link_connections)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.vpn_link_connections)}") from exc
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, gateway_name, connection_name, conn)
 
@@ -677,7 +679,7 @@ def add_vpn_gateway_connection_link_ipsec_policy(cmd, resource_group_name, gatew
     IpsecPolicy = cmd.get_models('IpsecPolicy')
     client = network_client_factory(cmd.cli_ctx).vpn_connections
     vpn_conn = client.get(resource_group_name, gateway_name, connection_name)
-    conn = _find_item_at_path(vpn_conn, 'vpn_link_connections.{}'.format(vpn_site_link_conn_name))
+    conn = _find_item_at_path(vpn_conn, f"vpn_link_connections.{vpn_site_link_conn_name}")
 
     if conn.ipsec_policies is None:
         conn.ipsec_policies = []
@@ -706,7 +708,7 @@ def add_vpn_gateway_connection_link_ipsec_policy(cmd, resource_group_name, gatew
 def list_vpn_conn_link_ipsec_policies(cmd, resource_group_name, gateway_name, connection_name, vpn_site_link_conn_name):
     client = network_client_factory(cmd.cli_ctx).vpn_connections
     vpn_conn = client.get(resource_group_name, gateway_name, connection_name)
-    conn = _find_item_at_path(vpn_conn, 'vpn_link_connections.{}'.format(vpn_site_link_conn_name))
+    conn = _find_item_at_path(vpn_conn, f"vpn_link_connections.{vpn_site_link_conn_name}")
     return conn.ipsec_policies
 
 
@@ -714,12 +716,12 @@ def list_vpn_conn_link_ipsec_policies(cmd, resource_group_name, gateway_name, co
 def remove_vpn_conn_link_ipsec_policy(cmd, resource_group_name, gateway_name, connection_name, vpn_site_link_conn_name, index, no_wait=False):
     client = network_client_factory(cmd.cli_ctx).vpn_connections
     vpn_conn = client.get(resource_group_name, gateway_name, connection_name)
-    conn = _find_item_at_path(vpn_conn, 'vpn_link_connections.{}'.format(vpn_site_link_conn_name))
+    conn = _find_item_at_path(vpn_conn, f"vpn_link_connections.{vpn_site_link_conn_name}")
 
     try:
         conn.ipsec_policies.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(conn.ipsec_policies)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}") from exc
     _upsert(vpn_conn, 'vpn_link_connections', conn, 'name', warn=False)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, connection_name, vpn_conn)
@@ -852,8 +854,8 @@ def remove_vpn_site_link(cmd, resource_group_name, vpn_site_name, index, no_wait
     vpn_site = client.get(resource_group_name, vpn_site_name)
     try:
         vpn_site.vpn_site_links.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(vpn_site.vpn_site_links)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(vpn_site.vpn_site_links)}") from exc
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, vpn_site_name, vpn_site)
 
@@ -986,8 +988,8 @@ def remove_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_c
     vpn_server_config = client.get(resource_group_name, vpn_server_configuration_name)
     try:
         vpn_server_config.vpn_client_ipsec_policies.pop(index)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 0 to {}'.format(index, len(vpn_server_config.vpn_client_ipsec_policies) - 1))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 0 to {len(vpn_server_config.vpn_client_ipsec_policies)}") from exc
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, vpn_server_configuration_name, vpn_server_config)
     if no_wait:
@@ -1134,4 +1136,54 @@ def _load_certificates_and_build_name_and_public_cert_data(model, file_paths_lis
         kwargs['public_cert_data'] = match.group('public').strip()
         certificates.append(model(**kwargs))
     return certificates
+
+
+class VPNGatewayNatRuleCreate(_VPNGatewayNatRuleCreate):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rule = self.ctx.vars.instance.to_serialized_data()
+            if 'type' in nat_rule:
+                nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance = nat_rule
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+
+class VPNGatewayNatRuleShow(_VPNGatewayNatRuleShow):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rule = self.ctx.vars.instance.to_serialized_data()
+            if 'type' in nat_rule:
+                nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance = nat_rule
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+
+class VPNGatewayNatRuleList(_VPNGatewayNatRuleList):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rules = self.ctx.vars.instance.value.to_serialized_data()
+            for nat_rule in nat_rules:
+                if 'type' in nat_rule:
+                    nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance.value = nat_rules
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
+
+
+class VPNGatewayNatRuleUpdate(_VPNGatewayNatRuleUpdate):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rule = self.ctx.vars.instance.to_serialized_data()
+            if 'type' in nat_rule:
+                nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance = nat_rule
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 # endregion

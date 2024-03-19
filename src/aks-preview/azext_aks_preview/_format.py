@@ -52,13 +52,19 @@ def aks_machine_list_table_format(results):
 
 def aks_machine_show_table_format(result):
     def parser(entry):
-        ip_addresses = ""
+        ipv4_addresses = ""
+        ipv6_addresses = ""
         for k in entry["properties"]["network"]["ipAddresses"]:
-            ip_addresses += "ip:" + k["ip"] + "," + "family:" + k["family"] + ";"
-        entry["ip"] = ip_addresses
+            if k["family"].lower() == "ipv4":
+                ipv4_addresses += k["ip"] + ";"
+            elif k["family"].lower() == "ipv6":
+                ipv6_addresses += k["ip"] + ";"
+        entry["ipv4"] = ipv4_addresses
+        entry["ipv6"] = ipv6_addresses
         parsed = compile_jmes("""{
                 name: name,
-                ip: ip
+                ipv4: ipv4,
+                ipv6: ipv6
             }""")
         return parsed.search(entry, Options(dict_cls=OrderedDict))
     return parser(result)

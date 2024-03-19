@@ -36,6 +36,9 @@ aks create:
     enable_vpa:
       rule_exclusions:
         - option_length_too_long
+    enable_addon_autoscaling:
+      rule_exclusions:
+        - option_length_too_long
     enable_cilium_dataplane:
       rule_exclusions:
         - option_length_too_long
@@ -55,6 +58,15 @@ aks create:
       rule_exclusions:
       - option_length_too_long
     enable_azure_container_storage:
+      rule_exclusions:
+        - option_length_too_long
+    enable_ai_toolchain_operator:
+      rule_exclusions:
+        - option_length_too_long
+    enable_secure_boot:
+      rule_exclusions:
+        - option_length_too_long
+    enable_vtpm:
       rule_exclusions:
         - option_length_too_long
 aks update:
@@ -119,6 +131,12 @@ aks update:
     disable_vpa:
       rule_exclusions:
         - option_length_too_long
+    enable_addon_autoscaling:
+      rule_exclusions:
+        - option_length_too_long
+    disable_addon_autoscaling:
+      rule_exclusions:
+        - option_length_too_long
     data_collection_settings:
       rule_exclusions:
       - option_length_too_long
@@ -141,6 +159,12 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     azure_container_storage_nodepools:
+      rule_exclusions:
+        - option_length_too_long
+    enable_ai_toolchain_operator:
+      rule_exclusions:
+        - option_length_too_long
+    disable_ai_toolchain_operator:
       rule_exclusions:
         - option_length_too_long
 aks delete:
@@ -213,9 +237,30 @@ aks nodepool add:
     enable_artifact_streaming:
       rule_exclusions:
         - option_length_too_long
+    skip_gpu_driver_install:
+      rule_exclusions:
+        - option_length_too_long
+    enable_secure_boot:
+      rule_exclusions:
+        - option_length_too_long
+    enable_vtpm:
+      rule_exclusions:
+        - option_length_too_long
 aks nodepool update:
   parameters:
     enable_artifact_streaming:
+      rule_exclusions:
+        - option_length_too_long
+    enable_secure_boot:
+      rule_exclusions:
+        - option_length_too_long
+    disable_secure_boot:
+      rule_exclusions:
+        - option_length_too_long
+    enable_vtpm:
+      rule_exclusions:
+        - option_length_too_long
+    disable_vtpm:
       rule_exclusions:
         - option_length_too_long
 aks nodepool delete:

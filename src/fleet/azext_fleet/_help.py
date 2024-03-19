@@ -86,6 +86,14 @@ helps['fleet get-credentials'] = """
           text: az fleet get-credentials -g MyFleetResourceGroup -n MyFleetName -f ~/mykubeconfigfile.txt
 """
 
+helps['fleet reconcile'] = """
+    type: command
+    short-summary: Reconciles a fleet.
+    examples:
+        - name: Reconcile a fleet.
+          text: az fleet reconcile -g MyFleetResourceGroup -n MyFleetName
+"""
+
 helps['fleet wait'] = """
 type: command
 short-summary: Wait for a fleet resource to reach a desired state.
@@ -148,6 +156,14 @@ helps['fleet member delete'] = """
           text: az fleet member delete -g MyFleetResourceGroup -f MyFleetName -n NameOfMember
 """
 
+helps['fleet member reconcile'] = """
+    type: command
+    short-summary: Reconciles a member.
+    examples:
+        - name: Reconcile a member.
+          text: az fleet member reconcile -g MyFleetResourceGroup -f MyFleetName -n NameOfMember
+"""
+
 helps['fleet member wait'] = """
     type: command
     short-summary: Wait for a member resource to reach a desired state.
@@ -165,10 +181,10 @@ helps['fleet updaterun create'] = """
     parameters:
         - name: --upgrade-type
           type: string
-          short-summary: Specify the upgrade type of members. Acceptable values are 'Full' and 'NodeImageOnly'.
+          short-summary: Specify the upgrade type of members. Acceptable values are 'Full', 'ControlPlaneOnly', and 'NodeImageOnly'.
         - name: --kubernetes-version
           type: string
-          short-summary: Specify the kubernetes version to upgrade member(s) to, when --upgrade-type is set to 'Full'. Acceptable format is x.x.x (eg. 1.2.3).
+          short-summary: Specify the kubernetes version to upgrade member(s) to, when --upgrade-type is set to 'Full' or 'ControlPlaneOnly'. Acceptable format is x.x.x (eg. 1.2.3).
         - name: --stages
           type: string
           short-summary: Path to a JSON file that defines stages to upgrade a fleet. See examples for reference.

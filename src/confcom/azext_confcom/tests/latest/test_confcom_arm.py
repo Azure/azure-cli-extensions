@@ -277,7 +277,7 @@ class PolicyGeneratingArm(unittest.TestCase):
             )
         )
         # check default pause container
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_CONTAINERS[0], regular_image_json[1], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_CONTAINERS[0], regular_image_json[1], ignore_order=True), {})
 
 
 class PolicyGeneratingArmIncorrect(unittest.TestCase):
@@ -3578,8 +3578,8 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
         env_var = regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]
 
         # see if the remote image and the local one produce the same output
-        self.assertEquals(env_var, "PORT=parameters('abc')")
-        self.assertEquals(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "alpine:3.16")
+        self.assertEqual(env_var, "PORT=parameters('abc')")
+        self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "alpine:3.16")
 
 
 class PolicyGeneratingSecurityContext(unittest.TestCase):
@@ -4221,13 +4221,13 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         self.assertEqual(deepdiff.DeepDiff(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER], expected_user_json, ignore_order=True), {})
         self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_SECCOMP_PROFILE_SHA256], "")
         # check all the default unprivileged capabilities are present
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING], ignore_order=True), {})
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE], ignore_order=True), {})
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_PERMITTED], ignore_order=True), {})
-        self.assertEquals([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
-        self.assertEquals([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE])
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_PERMITTED], ignore_order=True), {})
+        self.assertEqual([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
+        self.assertEqual([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE])
         # check default pause container
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_CONTAINERS[0], regular_image_json[1], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_CONTAINERS[0], regular_image_json[1], ignore_order=True), {})
 
     def test_arm_template_security_context_allow_privilege_escalation(self):
         regular_image_json = json.loads(
@@ -4282,8 +4282,8 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
             )
         )
         # ambient & inheritable should still be empty
-        self.assertEquals([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
-        self.assertEquals([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE])
+        self.assertEqual([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
+        self.assertEqual([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE])
         for cap in attempted_new_capabilities:
             self.assertIn(cap, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING])
             self.assertIn(cap, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE])
@@ -4302,11 +4302,11 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         )
 
         # check all the default unprivileged capabilities are present
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING], ignore_order=True), {})
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE], ignore_order=True), {})
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_PERMITTED], ignore_order=True), {})
-        self.assertEquals([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_PERMITTED], ignore_order=True), {})
+        self.assertEqual([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE], ignore_order=True), {})
 
 
 class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):

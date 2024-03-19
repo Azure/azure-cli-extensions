@@ -25,7 +25,9 @@ def cf_connectedk8s(cli_ctx, *_):
     if os.getenv(consts.Azure_Access_Token_Variable):
         validate_custom_token()
         credential = AccessTokenCredential(access_token=os.getenv(consts.Azure_Access_Token_Variable))
-        return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'), credential=credential)
+        return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient,
+                                       subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
+                                       credential=credential)
     return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
 
 
@@ -38,7 +40,9 @@ def cf_connectedk8s_prev_2022_10_01(cli_ctx, *_):
     if os.getenv(consts.Azure_Access_Token_Variable):
         validate_custom_token()
         credential = AccessTokenCredential(access_token=os.getenv(consts.Azure_Access_Token_Variable))
-        return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'), credential=credential)
+        return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient,
+                                       subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
+                                       credential=credential)
     return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
 
 
@@ -51,7 +55,9 @@ def cf_connectedk8s_prev_2023_11_01(cli_ctx, *_):
     if os.getenv(consts.Azure_Access_Token_Variable):
         validate_custom_token()
         credential = AccessTokenCredential(access_token=os.getenv(consts.Azure_Access_Token_Variable))
-        return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'), credential=credential)
+        return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient,
+                                       subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
+                                       credential=credential)
     return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
 
 
@@ -63,8 +69,11 @@ def cf_connectedmachine(cli_ctx, subscription_id):
     from azure.mgmt.hybridcompute import HybridComputeManagementClient
     if os.getenv(consts.Azure_Access_Token_Variable):
         credential = AccessTokenCredential(access_token=os.getenv(consts.Azure_Access_Token_Variable))
-        return get_mgmt_service_client(cli_ctx, HybridComputeManagementClient, subscription_id=subscription_id, credential=credential).private_link_scopes
-    return get_mgmt_service_client(cli_ctx, HybridComputeManagementClient, subscription_id=subscription_id).private_link_scopes
+        return get_mgmt_service_client(cli_ctx, HybridComputeManagementClient,
+                                       subscription_id=subscription_id,
+                                       credential=credential).private_link_scopes
+    return get_mgmt_service_client(cli_ctx, HybridComputeManagementClient,
+                                   subscription_id=subscription_id).private_link_scopes
 
 
 def cf_resource_groups(cli_ctx, subscription_id=None):
@@ -75,8 +84,10 @@ def _resource_client_factory(cli_ctx, subscription_id=None):
     from azure.mgmt.resource import ResourceManagementClient
     if os.getenv(consts.Azure_Access_Token_Variable):
         credential = AccessTokenCredential(access_token=os.getenv(consts.Azure_Access_Token_Variable))
-        return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id, credential=credential)
-    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id)
+        return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+                                       subscription_id=subscription_id, credential=credential)
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+                                   subscription_id=subscription_id)
 
 
 def resource_providers_client(cli_ctx, subscription_id=None):
@@ -84,26 +95,8 @@ def resource_providers_client(cli_ctx, subscription_id=None):
 
     # Alternate: This should also work
     # subscription_id = get_subscription_id(cli_ctx)
-    # return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
-
-
-def _graph_client_factory(cli_ctx, **_):
-    if os.getenv(consts.Azure_Access_Token_Variable):
-        credential = AccessTokenCredential(access_token=os.getenv(consts.Azure_Access_Token_Variable))
-        client = GraphRbacManagementClient(credential, os.getenv('AZURE_TENANT_ID'),
-                                           base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    else:
-        profile = Profile(cli_ctx=cli_ctx)
-        cred, _, tenant_id = profile.get_login_credentials(
-            resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-        client = GraphRbacManagementClient(cred, tenant_id,
-                                           base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    configure_common_settings(cli_ctx, client)
-    return client
-
-
-def get_graph_client_service_principals(cli_ctx):
-    return _graph_client_factory(cli_ctx).service_principals
+    # return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+    # subscription_id=subscription_id).providers
 
 
 class AccessTokenCredential:
@@ -127,6 +120,8 @@ class AccessTokenCredential:
 
 def validate_custom_token():
     if os.getenv('AZURE_SUBSCRIPTION_ID') is None:
-        telemetry.set_exception(exception='Required environment variables and parameters are not set', fault_type=consts.Custom_Token_Environments_Fault_Type,
+        telemetry.set_exception(exception='Required environment variables and parameters are not set',
+                                fault_type=consts.Custom_Token_Environments_Fault_Type,
                                 summary='Required environment variables and parameters are not set')
-        raise ValidationError("Environment variable 'AZURE_SUBSCRIPTION_ID' should be set when custom access token is enabled.")
+        raise ValidationError("Environment variable 'AZURE_SUBSCRIPTION_ID' should be set when custom access token \
+            is enabled.")

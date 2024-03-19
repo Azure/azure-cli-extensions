@@ -45,6 +45,12 @@ knack_logger = knack.log.get_logger(__name__)
 _targets_with_allowed_failure_output = {"microsoft.dft"}
 
 
+def _show_warning(msg):
+    import colorama
+    colorama.init()
+    print(f"\033[1m{colorama.Fore.YELLOW}{msg}{colorama.Style.RESET_ALL}")
+
+
 def list(cmd, resource_group_name, workspace_name, location):
     """
     Get the list of jobs in a Quantum Workspace.
@@ -264,7 +270,7 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
             raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
 
     # An entry point is required on QIR jobs
-    if job_type == QIR_JOB:
+    if job_type == QIR_JOB:  # pylint: disable=too-many-nested-blocks
         # An entry point is required for a QIR job, but there are four ways to specify it in a CLI command:
         #   -  Use the --entry-point parameter
         #   -  Include it in --job-params as entryPoint=MyEntryPoint
@@ -376,9 +382,9 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if storage is None:
         from .workspace import get as ws_get
         ws = ws_get(cmd)
-        if ws.storage_account is None:
+        if ws.properties.storage_account is None:
             raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
-        storage = ws.storage_account.split('/')[-1]
+        storage = ws.properties.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
     container_name = "quantum-job-" + job_id
     connection_string_dict = show_storage_account_connection_string(cmd, resource_group_name, storage)
@@ -408,8 +414,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if shots is not None:
         try:
             job_params["shots"] = int(shots)
-        except:
-            raise InvalidArgumentValueError("Invalid --shots value.  Shots must be an integer.")
+        except Exception as exc:
+            raise InvalidArgumentValueError("Invalid --shots value.  Shots must be an integer.") from exc
     if target_capability is not None:
         job_params["targetCapability"] = target_capability
     if entry_point is not None:
@@ -419,8 +425,8 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     if "count" in job_params.keys():
         try:
             job_params["count"] = int(job_params["count"])
-        except:
-            raise InvalidArgumentValueError("Invalid count value.  Count must be an integer.")
+        except Exception as exc:
+            raise InvalidArgumentValueError("Invalid count value.  Count must be an integer.") from exc
 
     # Convert all other numeric parameter values from string to int or float
     _convert_numeric_params(job_params)
@@ -464,7 +470,7 @@ def _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, locat
     """
     Submit a Q# project to run on Azure Quantum.
     """
-
+    _show_warning('The direct submission of Q# project folders will soon be fully deprecated. Instead, you can submit QIR bitcode or human-readable LLVM code. Modern QDK can be used to generate human-readable LLVM code from Q#.')
     # We first build and then call run.
     # Can't call run directly because it fails to understand the
     # `ExecutionTarget` property when passed in the command line
@@ -658,7 +664,7 @@ def _get_job_output(cmd, job, item=None):
 
         blob_service.get_blob_to_path(containerName, blobName, path)
 
-    with open(path) as json_file:
+    with open(path, encoding="utf-8") as json_file:
         lines = [line.strip() for line in json_file.readlines()]
 
         # Receiving an empty response is valid.

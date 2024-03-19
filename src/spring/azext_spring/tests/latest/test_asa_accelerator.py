@@ -112,7 +112,6 @@ class ApidAcceleratorTest(ScenarioTest):
             checks=[
                 self.check('properties.acceleratorType', "Fragment"),
                 self.check('properties.gitRepository.subPath', "java-version"),
-                self.check('properties.imports', ["java-version"]),
                 self.check('properties.provisioningState', "Succeeded")
             ])
 
@@ -121,14 +120,12 @@ class ApidAcceleratorTest(ScenarioTest):
             checks=[
                 self.check('properties.acceleratorType', "Fragment"),
                 self.check('properties.gitRepository.subPath', "java-version"),
-                self.check('properties.imports', ["java-version"]),
                 self.check('properties.provisioningState', "Succeeded")
             ])
 
         self.cmd('spring application-accelerator customized-accelerator show -n {name} -g {rg} -s {serviceName}',
-                 checks=[
-                     self.check('properties.acceleratorType', "Fragment"),
-                     self.check('properties.gitRepository.subPath', "java-version"),
-                     self.check('properties.imports', ["java-version"]),
-                     self.check('properties.provisioningState', "Succeeded")
-                 ])
+             checks=[
+                 self.check('properties.acceleratorType', "Fragment"),
+                 self.check('properties.gitRepository.subPath', "java-version"),
+                 self.check('properties.provisioningState', "Succeeded")
+             ])

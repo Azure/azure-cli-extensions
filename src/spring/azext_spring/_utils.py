@@ -22,7 +22,7 @@ from azure.cli.core.profiles import ResourceType
 from knack.util import CLIError, todict
 from knack.log import get_logger
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
-from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 
@@ -71,7 +71,7 @@ def _is_java(runtime_version):
 
 
 def _java_runtime_in_number():
-    return [8, 11, 17]
+    return [8, 11, 17, 21]
 
 
 def _pack_source_code(source_location, tar_file_path):

@@ -319,16 +319,6 @@ batch pool create:
     target_low_priority_nodes:
       rule_exclusions:
       - option_length_too_long
-blockchain member create:
-  parameters:
-    consortium_management_account_password:
-      rule_exclusions:
-      - option_length_too_long
-blockchain member update:
-  parameters:
-    consortium_management_account_password:
-      rule_exclusions:
-      - option_length_too_long
 blueprint assignment create:
   parameters:
     user_assigned_identity:
@@ -1344,6 +1334,22 @@ iot edge deployment update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot ops asset create:
+  parameters:
+    cluster_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    custom_location_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot ops asset endpoint create:
+  parameters:
+    cluster_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    custom_location_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 k8sconfiguration create:
   parameters:
     helm_operator_version:

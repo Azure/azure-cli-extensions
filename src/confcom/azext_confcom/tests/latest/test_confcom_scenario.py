@@ -350,7 +350,7 @@ class PolicyGenerating(unittest.TestCase):
         self.assertEqual(image.base, "mcr.microsoft.com/aci/msi-atlas-adapter")
         self.assertIsNotNone(image)
 
-        self.assertEquals(image._command, command)
+        self.assertEqual(image._command, command)
         for env_var in env_vars:
             env_names = map(lambda x: x['pattern'], image._environmentRules + image._extraEnvironmentRules)
             self.assertIn(env_var['name'] + "=" + env_var['value'], env_names)

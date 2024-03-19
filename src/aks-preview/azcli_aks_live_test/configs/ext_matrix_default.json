@@ -26,12 +26,11 @@
         "overlay migration, missing toggle": [
             "test_aks_azure_cni_overlay_migration"
         ],
+        "pod ip allocation mode static block, missing feature registration": [
+            "test_aks_create_with_pod_ip_allocation_mode_static_block"
+        ],
         "slb to nat gateway": [
             "test_aks_update_outbound_from_slb_to_natgateway"
-        ],
-        "trusted access role, waiting GA": [
-            "test_get_trustedaccess_roles",
-            "test_aks_trustedaccess_rolebinding"
         ],
         "v2 monitoring addon, missing namespace registration": [
             "test_aks_create_with_azuremonitormetrics",
@@ -43,6 +42,17 @@
         "artifact streaming, missing feature registration & toggle": [
             "test_aks_nodepool_add_with_artifact_streaming",
             "test_aks_nodepool_update_with_artifact_streaming"
+        ],
+        "service mesh, missing feature registration for new resource type": [
+            "test_aks_azure_service_mesh_get_revisions"
+        ],
+        "ai toolchain operator, enabled in staging only": [
+            "test_aks_create_with_enable_ai_toolchain_operator",
+            "test_aks_update_with_enable_ai_toolchain_operator"
+        ],
+        "trusted launch, missing feature registration & toggle": [
+            "test_aks_create_update_secure_boot_flow",
+            "test_aks_create_update_vtpm_flow"
         ]
     }
 }
