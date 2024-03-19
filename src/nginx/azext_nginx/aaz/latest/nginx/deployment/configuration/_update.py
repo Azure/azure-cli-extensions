@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "nginx deployment certificate update",
+    "nginx deployment configuration update",
 )
 class Update(AAZCommand):
-    """Update an NGINX deployment certificate
+    """Update an NGINX configuration
 
-    :example: Update the certificate virtual path, key virtual path and certificate
-        az nginx deployment certificate update --certificate-name myCertificate --deployment-name myDeployment --resource-group myResourceGroup --certificate-path /etc/nginx/testupdated.cert --key-path /etc/nginx/testupdated.key --key-vault-secret-id newKeyVaultSecretId
+    :example: Update content of the first file in a configuration
+        az nginx deployment configuration update --name default --deployment-name myDeployment --resource-group myResourceGroup --files [0].content="aHR0cCB7CiAgICB1cHN0cmVhbSBhcHAgewogICAgICAgIHpvbmUgYXBwIDY0azsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciAxMC4wLjEuNDo4MDAwOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwogICAgICAgIHNlcnZlcl9uYW1lICouZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1SZWFsLUlQICRyZW1vdGVfYWRkcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVByb3h5LUFwcCBhcHA7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgR2l0aHViLVJ1bi1JZCAwMDAwMDA7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcmluZyBvbjsKICAgICAgICAgICAgcHJveHlfYnVmZmVyX3NpemUgNGs7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcnMgOCA4azsKICAgICAgICAgICAgcHJveHlfcmVhZF90aW1lb3V0IDYwczsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYXBwOwogICAgICAgICAgICBoZWFsdGhfY2hlY2s7CiAgICAgICAgfQogICAgICAgIAogICAgfQp9"
     """
 
     _aaz_info = {
         "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/certificates/{}", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -47,9 +47,9 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.certificate_name = AAZStrArg(
-            options=["-n", "--name", "--certificate-name"],
-            help="The name of certificate",
+        _args_schema.configuration_name = AAZStrArg(
+            options=["-n", "--name", "--configuration-name"],
+            help="The name of configuration, only 'default' is supported value due to the singleton of Nginx conf",
             required=True,
             id_part="child_name_1",
         )
@@ -80,34 +80,59 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.certificate_path = AAZStrArg(
-            options=["--certificate-path"],
+        _args_schema.files = AAZListArg(
+            options=["--files"],
             arg_group="Properties",
-            help={"short-summary": "Certificate path in Nginx configuration structure", "long-summary": "This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"},
+            help={"short-summary": "This is an array of files required for the config set-up. Cannot be used with packages", "long-summary": "One of the files virtual-path should match the root file. For a multi-file config set-up, the root file needs to have references to the other file(s) in an include directive.\nUsage: --files [{\"content\":\"<Base64 content of config file>\",\"virtual-path\":\"<path>\"}]."},
             nullable=True,
         )
-        _args_schema.key_vault_secret_id = AAZStrArg(
-            options=["--key-vault-secret-id"],
+        _args_schema.root_file = AAZStrArg(
+            options=["--root-file"],
             arg_group="Properties",
-            help="The secret ID for your certificate from Azure Key Vault",
             nullable=True,
         )
-        _args_schema.key_path = AAZStrArg(
-            options=["--key-path"],
-            arg_group="Properties",
-            help={"short-summary": "Key path in Nginx configuration structure", "long-summary": "This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"},
+
+        files = cls._args_schema.files
+        files.Element = AAZObjectArg(
             nullable=True,
         )
+        cls._build_args_nginx_configuration_file_update(files.Element)
         return cls._args_schema
+
+    _args_nginx_configuration_file_update = None
+
+    @classmethod
+    def _build_args_nginx_configuration_file_update(cls, _schema):
+        if cls._args_nginx_configuration_file_update is not None:
+            _schema.content = cls._args_nginx_configuration_file_update.content
+            _schema.virtual_path = cls._args_nginx_configuration_file_update.virtual_path
+            return
+
+        cls._args_nginx_configuration_file_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        nginx_configuration_file_update = cls._args_nginx_configuration_file_update
+        nginx_configuration_file_update.content = AAZStrArg(
+            options=["content"],
+            nullable=True,
+        )
+        nginx_configuration_file_update.virtual_path = AAZStrArg(
+            options=["virtual-path"],
+            nullable=True,
+        )
+
+        _schema.content = cls._args_nginx_configuration_file_update.content
+        _schema.virtual_path = cls._args_nginx_configuration_file_update.virtual_path
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CertificatesGet(ctx=self.ctx)()
+        self.ConfigurationsGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.CertificatesCreateOrUpdate(ctx=self.ctx)()
+        yield self.ConfigurationsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -130,7 +155,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CertificatesGet(AAZHttpOperation):
+    class ConfigurationsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -144,7 +169,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/certificates/{certificateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/configurations/{configurationName}",
                 **self.url_parameters
             )
 
@@ -160,7 +185,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "certificateName", self.ctx.args.certificate_name,
+                    "configurationName", self.ctx.args.configuration_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -213,11 +238,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_nginx_certificate_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_nginx_configuration_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class CertificatesCreateOrUpdate(AAZHttpOperation):
+    class ConfigurationsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -247,7 +272,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/certificates/{certificateName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Nginx.NginxPlus/nginxDeployments/{deploymentName}/configurations/{configurationName}",
                 **self.url_parameters
             )
 
@@ -263,7 +288,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "certificateName", self.ctx.args.certificate_name,
+                    "configurationName", self.ctx.args.configuration_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -328,7 +353,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_nginx_certificate_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_nginx_configuration_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -348,9 +373,12 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("certificateVirtualPath", AAZStrType, ".certificate_path")
-                properties.set_prop("keyVaultSecretId", AAZStrType, ".key_vault_secret_id")
-                properties.set_prop("keyVirtualPath", AAZStrType, ".key_path")
+                properties.set_prop("files", AAZListType, ".files")
+                properties.set_prop("rootFile", AAZStrType, ".root_file")
+
+            files = _builder.get(".properties.files")
+            if files is not None:
+                _UpdateHelper._build_schema_nginx_configuration_file_update(files.set_elements(AAZObjectType, "."))
 
             return _instance_value
 
@@ -366,73 +394,97 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_nginx_certificate_read = None
+    @classmethod
+    def _build_schema_nginx_configuration_file_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("content", AAZStrType, ".content")
+        _builder.set_prop("virtualPath", AAZStrType, ".virtual_path")
+
+    _schema_nginx_configuration_file_read = None
 
     @classmethod
-    def _build_schema_nginx_certificate_read(cls, _schema):
-        if cls._schema_nginx_certificate_read is not None:
-            _schema.id = cls._schema_nginx_certificate_read.id
-            _schema.location = cls._schema_nginx_certificate_read.location
-            _schema.name = cls._schema_nginx_certificate_read.name
-            _schema.properties = cls._schema_nginx_certificate_read.properties
-            _schema.system_data = cls._schema_nginx_certificate_read.system_data
-            _schema.type = cls._schema_nginx_certificate_read.type
+    def _build_schema_nginx_configuration_file_read(cls, _schema):
+        if cls._schema_nginx_configuration_file_read is not None:
+            _schema.content = cls._schema_nginx_configuration_file_read.content
+            _schema.virtual_path = cls._schema_nginx_configuration_file_read.virtual_path
             return
 
-        cls._schema_nginx_certificate_read = _schema_nginx_certificate_read = AAZObjectType()
+        cls._schema_nginx_configuration_file_read = _schema_nginx_configuration_file_read = AAZObjectType()
 
-        nginx_certificate_read = _schema_nginx_certificate_read
-        nginx_certificate_read.id = AAZStrType(
+        nginx_configuration_file_read = _schema_nginx_configuration_file_read
+        nginx_configuration_file_read.content = AAZStrType()
+        nginx_configuration_file_read.virtual_path = AAZStrType(
+            serialized_name="virtualPath",
+        )
+
+        _schema.content = cls._schema_nginx_configuration_file_read.content
+        _schema.virtual_path = cls._schema_nginx_configuration_file_read.virtual_path
+
+    _schema_nginx_configuration_read = None
+
+    @classmethod
+    def _build_schema_nginx_configuration_read(cls, _schema):
+        if cls._schema_nginx_configuration_read is not None:
+            _schema.id = cls._schema_nginx_configuration_read.id
+            _schema.location = cls._schema_nginx_configuration_read.location
+            _schema.name = cls._schema_nginx_configuration_read.name
+            _schema.properties = cls._schema_nginx_configuration_read.properties
+            _schema.system_data = cls._schema_nginx_configuration_read.system_data
+            _schema.type = cls._schema_nginx_configuration_read.type
+            return
+
+        cls._schema_nginx_configuration_read = _schema_nginx_configuration_read = AAZObjectType()
+
+        nginx_configuration_read = _schema_nginx_configuration_read
+        nginx_configuration_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        nginx_certificate_read.location = AAZStrType()
-        nginx_certificate_read.name = AAZStrType(
+        nginx_configuration_read.location = AAZStrType()
+        nginx_configuration_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        nginx_certificate_read.properties = AAZObjectType()
-        nginx_certificate_read.system_data = AAZObjectType(
+        nginx_configuration_read.properties = AAZObjectType()
+        nginx_configuration_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        nginx_certificate_read.type = AAZStrType(
+        nginx_configuration_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_nginx_certificate_read.properties
-        properties.certificate_error = AAZObjectType(
-            serialized_name="certificateError",
-        )
-        properties.certificate_virtual_path = AAZStrType(
-            serialized_name="certificateVirtualPath",
-        )
-        properties.key_vault_secret_created = AAZStrType(
-            serialized_name="keyVaultSecretCreated",
-            flags={"read_only": True},
-        )
-        properties.key_vault_secret_id = AAZStrType(
-            serialized_name="keyVaultSecretId",
-        )
-        properties.key_vault_secret_version = AAZStrType(
-            serialized_name="keyVaultSecretVersion",
-            flags={"read_only": True},
-        )
-        properties.key_virtual_path = AAZStrType(
-            serialized_name="keyVirtualPath",
+        properties = _schema_nginx_configuration_read.properties
+        properties.files = AAZListType()
+        properties.package = AAZObjectType()
+        properties.protected_files = AAZListType(
+            serialized_name="protectedFiles",
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.sha1_thumbprint = AAZStrType(
-            serialized_name="sha1Thumbprint",
-            flags={"read_only": True},
+        properties.root_file = AAZStrType(
+            serialized_name="rootFile",
         )
 
-        certificate_error = _schema_nginx_certificate_read.properties.certificate_error
-        certificate_error.code = AAZStrType()
-        certificate_error.message = AAZStrType()
+        files = _schema_nginx_configuration_read.properties.files
+        files.Element = AAZObjectType()
+        cls._build_schema_nginx_configuration_file_read(files.Element)
 
-        system_data = _schema_nginx_certificate_read.system_data
+        package = _schema_nginx_configuration_read.properties.package
+        package.data = AAZStrType()
+        package.protected_files = AAZListType(
+            serialized_name="protectedFiles",
+        )
+
+        protected_files = _schema_nginx_configuration_read.properties.package.protected_files
+        protected_files.Element = AAZStrType()
+
+        protected_files = _schema_nginx_configuration_read.properties.protected_files
+        protected_files.Element = AAZObjectType()
+        cls._build_schema_nginx_configuration_file_read(protected_files.Element)
+
+        system_data = _schema_nginx_configuration_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -452,12 +504,12 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.id = cls._schema_nginx_certificate_read.id
-        _schema.location = cls._schema_nginx_certificate_read.location
-        _schema.name = cls._schema_nginx_certificate_read.name
-        _schema.properties = cls._schema_nginx_certificate_read.properties
-        _schema.system_data = cls._schema_nginx_certificate_read.system_data
-        _schema.type = cls._schema_nginx_certificate_read.type
+        _schema.id = cls._schema_nginx_configuration_read.id
+        _schema.location = cls._schema_nginx_configuration_read.location
+        _schema.name = cls._schema_nginx_configuration_read.name
+        _schema.properties = cls._schema_nginx_configuration_read.properties
+        _schema.system_data = cls._schema_nginx_configuration_read.system_data
+        _schema.type = cls._schema_nginx_configuration_read.type
 
 
 __all__ = ["Update"]
