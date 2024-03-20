@@ -83,32 +83,8 @@ class ContainerappEnvTelemetryDataDogPreviewSetDecorator(BaseResource):
 
     def update(self):
         try:
-            containerapp_env_def = self.client.update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+            return self.client.update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                       name=self.get_argument_name(), managed_environment_envelope=self.managed_env_def, no_wait=self.get_argument_no_wait())
-            
-            r = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration")
-
-            if r is not None:
-                if "key" in safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"):
-                    safe_set(r, "key", value=None)
-
-                safe_set(r, "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
-
-                enable_open_telemetry_traces = False
-                existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-                if existing_traces and DATA_DOG_DEST in existing_traces:
-                    enable_open_telemetry_traces = True
-                    
-                safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
-
-                enable_open_telemetry_metrics = False
-                existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
-                if existing_metrics and DATA_DOG_DEST in existing_metrics:
-                    enable_open_telemetry_metrics = True
-                    
-                safe_set(r, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
-
-            return r
         except Exception as e:
             handle_raw_exception(e)
 
@@ -172,30 +148,8 @@ class ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(BaseResource):
 
     def update(self):
         try:
-            containerapp_env_def = self.client.update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+            return self.client.update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                       name=self.get_argument_name(), managed_environment_envelope=self.managed_env_def, no_wait=self.get_argument_no_wait())
-            
-            r = {}
-
-            if safe_get(containerapp_env_def, "properties", "appInsightsConfiguration") is not None:
-                if "connectionString" in safe_get(containerapp_env_def, "properties", "appInsightsConfiguration"):
-                    safe_set(r, "connectionString", value=None)
-
-                enable_open_telemetry_traces = False
-                existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-                if existing_traces and APP_INSIGHTS_DEST in existing_traces:
-                    enable_open_telemetry_traces = True
-                    
-                safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
-
-                enable_open_telemetry_logs = False
-                existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
-                if existing_logs and APP_INSIGHTS_DEST in existing_logs:
-                    enable_open_telemetry_logs = True
-                    
-                safe_set(r, "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
-
-            return r
         except Exception as e:
             handle_raw_exception(e)
 
@@ -362,46 +316,8 @@ class ContainerappEnvTelemetryOtlpPreviewSetDecorator(BaseResource):
 
     def update(self):
         try:
-            containerapp_env_def = self.client.update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+            return self.client.update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                       name=self.get_argument_name(), managed_environment_envelope=self.managed_env_def, no_wait=self.get_argument_no_wait())
-
-            existing_otlps = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
-            existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-            existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
-            existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
-
-            if existing_otlps is not None:
-                for otlp in existing_otlps:
-                    if "headers" in otlp:
-                        dict = otlp["headers"]
-                        if dict:
-                            for header in dict:
-                                if "value" in header:
-                                    header["value"] = None
-                                enable_open_telemetry_traces = False
-
-                    otlp_name = safe_get(otlp, "name")
-
-                    enable_open_telemetry_traces = False
-                    if existing_traces and otlp_name in existing_traces:
-                        enable_open_telemetry_traces = True
-                    
-                    safe_set(otlp, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
-
-                    enable_open_telemetry_logs = False
-                    if existing_logs and otlp_name in existing_logs:
-                        enable_open_telemetry_logs = True
-                    
-                    safe_set(otlp, "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
-
-                    enable_open_telemetry_metrics = False
-                    if existing_metrics and otlp_name in existing_metrics:
-                        enable_open_telemetry_metrics = True
-                
-                    safe_set(otlp, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
-
-                return existing_otlps
-
         except Exception as e:
             handle_raw_exception(e)
 

@@ -2391,35 +2391,11 @@ def show_environment_telemetry_data_dog(cmd,
     except Exception as e:
         handle_non_404_status_code_exception(e)
 
-    if not containerapp_env_def:
-        raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
-
     r = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration")
     if r is None:
-        raise ValidationError("The containerapp environment '{}' does not have data dog enabled.".format(name)) from e
-        
-    r = {}
+        raise ValidationError("The containerapp environment '{}' does not have data dog enabled.".format(name))
 
-    if "key" in safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration"):
-        safe_set(r, "key", value=None)
-
-    safe_set(r, "site", value=safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration", "site"))
-
-    enable_open_telemetry_traces = False
-    existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-    if existing_traces and DATA_DOG_DEST in existing_traces:
-        enable_open_telemetry_traces = True
-        
-    safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
-
-    enable_open_telemetry_metrics = False
-    existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
-    if existing_metrics and DATA_DOG_DEST in existing_metrics:
-        enable_open_telemetry_metrics = True
-        
-    safe_set(r, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
-
-    return r
+    return containerapp_env_def
 
 
 def set_environment_telemetry_app_insights(cmd,
@@ -2484,34 +2460,15 @@ def show_environment_telemetry_app_insights(cmd,
     except Exception as e:
         handle_non_404_status_code_exception(e)
 
-    if not containerapp_env_def:
-        raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
-
     r = safe_get(containerapp_env_def, "properties", "appInsightsConfiguration")
 
     if r is None:
         raise ValidationError("The containerapp environment '{}' does not have app insights enabled.".format(name))
-        
-    r = {}
 
-    if "connectionString" in safe_get(containerapp_env_def, "properties", "appInsightsConfiguration"):
-        safe_set(r, "connectionString", value=None)
+    if not containerapp_env_def:
+        raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
 
-    enable_open_telemetry_traces = False
-    existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-    if existing_traces and APP_INSIGHTS_DEST in existing_traces:
-        enable_open_telemetry_traces = True
-        
-    safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
-
-    enable_open_telemetry_logs = False
-    existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
-    if existing_logs and APP_INSIGHTS_DEST in existing_logs:
-        enable_open_telemetry_logs = True
-        
-    safe_set(r, "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
-
-    return r
+    return containerapp_env_def
 
 
 def add_environment_telemetry_otlp(cmd,
@@ -2644,41 +2601,12 @@ def show_environment_telemetry_otlp(cmd,
         otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
 
         if not otlp:
-            raise ValidationError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
-                
-        r = {}
-
-        if "headers" in otlp[0]:
-            existing_headers = otlp[0]["headers"]
-            if existing_headers:
-                for header in existing_headers:
-                    if "value" in header:
-                        header["value"] = None
-
-        r = otlp[0]
-
-        enable_open_telemetry_traces = False
-        existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-        if existing_traces and otlp_name in existing_traces:
-            enable_open_telemetry_traces = True
+            raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
         
-        safe_set(r, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
+        existing_otlps = otlp
+        safe_set(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
 
-        enable_open_telemetry_logs = False
-        existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
-        if existing_logs and otlp_name in existing_logs:
-            enable_open_telemetry_logs = True
-        
-        safe_set(r, "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
-
-        enable_open_telemetry_metrics = False
-        existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
-        if existing_metrics and otlp_name in existing_metrics:
-            enable_open_telemetry_metrics = True
-        
-        safe_set(r, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
-
-        return r
+    return containerapp_env_def
 
 
 def list_environment_telemetry_otlp(cmd,
@@ -2699,45 +2627,5 @@ def list_environment_telemetry_otlp(cmd,
     except Exception as e:
         handle_non_404_status_code_exception(e)
 
-    if not containerapp_env_def:
-        raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
-
-    existing_otlps = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
-    existing_traces = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "tracesConfiguration", "destinations")
-    existing_logs = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "logsConfiguration", "destinations")
-    existing_metrics = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "metricsConfiguration", "destinations")
-
-    r = existing_otlps
-
-    if existing_otlps is not None:
-        for otlp in existing_otlps:
-            if "headers" in otlp:
-                headers = otlp["headers"]
-                if headers:
-                    for header in headers:
-                        if "value" in header:
-                            header["value"] = None
-                        enable_open_telemetry_traces = False
-
-            otlp_name = safe_get(otlp, "name")
-
-            enable_open_telemetry_traces = False
-            if existing_traces and otlp_name in existing_traces:
-                enable_open_telemetry_traces = True
-            
-            safe_set(otlp, "enable-open-telemetry-traces", value=enable_open_telemetry_traces)
-
-            enable_open_telemetry_logs = False
-            if existing_logs and otlp_name in existing_logs:
-                enable_open_telemetry_logs = True
-            
-            safe_set(otlp, "enable-open-telemetry-logs", value=enable_open_telemetry_logs)
-
-            enable_open_telemetry_metrics = False
-            if existing_metrics and otlp_name in existing_metrics:
-                enable_open_telemetry_metrics = True
-        
-            safe_set(otlp, "enable-open-telemetry-metrics", value=enable_open_telemetry_metrics)
-
-    return r
+    return containerapp_env_def
 
