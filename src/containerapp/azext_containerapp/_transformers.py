@@ -154,7 +154,9 @@ def transform_telemetry_otlp_values_by_name_wrapper(args):
             else:
                 raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
             safe_set(response_json, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
-            return transform_telemetry_otlp_values(response_json)
+            existing_otlps = transform_telemetry_otlp_values(response_json)
+            if existing_otlps:
+                return existing_otlps[0]
         
         raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
 
