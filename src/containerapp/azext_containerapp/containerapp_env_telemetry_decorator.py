@@ -6,7 +6,7 @@ from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 from knack.log import get_logger
 from knack.util import CLIError
 from ._client_factory import handle_raw_exception
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, ResourceNotFoundError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.core.commands import AzCliCommand
 from typing import Any, Dict
@@ -211,9 +211,9 @@ class ContainerappEnvTelemetryOtlpPreviewSetDecorator(BaseResource):
                 existing_otlps.remove(otlp_to_remove)
                 safe_set(self.managed_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
             else:
-                raise ValidationError(f"No otlp entry with --otlp-name {otlp_name} found")
+                raise ResourceNotFoundError(f"No otlp entry with --otlp-name {otlp_name} found")
         else:
-            raise ValidationError(f"No otlp entry with --otlp-name {otlp_name} found")
+            raise ResourceNotFoundError(f"No otlp entry with --otlp-name {otlp_name} found")
         
         self.set_up_enable_open_telemetry_traces()
         self.set_up_enable_open_telemetry_logs()
