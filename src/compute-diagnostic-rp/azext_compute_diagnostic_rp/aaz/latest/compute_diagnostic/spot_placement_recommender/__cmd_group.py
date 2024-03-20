@@ -8,4 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "compute-diagnostic spot-placement-recommender",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage spot vm placement score info
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

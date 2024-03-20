@@ -6,20 +6,20 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_spot_placement_recommender._help import helps  # pylint: disable=unused-import
+from azext_compute_diagnostic_rp._help import helps  # pylint: disable=unused-import
 
 
-class SpotPlacementRecommenderCommandsLoader(AzCommandsLoader):
+class ComputeDiagnosticRpCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_spot_placement_recommender.custom#{}')
+            operations_tmpl='azext_compute_diagnostic_rp.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
-        from azext_spot_placement_recommender.commands import load_command_table
+        from azext_compute_diagnostic_rp.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -35,8 +35,8 @@ class SpotPlacementRecommenderCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_spot_placement_recommender._params import load_arguments
+        from azext_compute_diagnostic_rp._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = SpotPlacementRecommenderCommandsLoader
+COMMAND_LOADER_CLS = ComputeDiagnosticRpCommandsLoader

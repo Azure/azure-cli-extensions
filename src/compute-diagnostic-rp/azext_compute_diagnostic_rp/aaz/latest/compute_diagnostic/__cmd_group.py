@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "compute",
+    "compute-diagnostic",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Mange azure compute vm config
+    """Mange vm sku recommender info
     """
     pass
 

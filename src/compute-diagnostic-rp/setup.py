@@ -34,16 +34,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='spot-placement-recommender',
+    name='compute-diagnostic-rp',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools SpotPlacementRecommender Extension.',
+    description='Microsoft Azure Command-Line Tools ComputeDiagnosticRp Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/spot-placement-recommender',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/compute-diagnostic-rp',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_spot_placement_recommender': ['azext_metadata.json']},
+    package_data={'azext_compute_diagnostic_rp': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
