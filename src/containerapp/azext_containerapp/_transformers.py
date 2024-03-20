@@ -6,6 +6,7 @@
 from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 from .containerapp_env_telemetry_decorator import DATA_DOG_DEST, APP_INSIGHTS_DEST
 from knack.log import get_logger
+from azure.cli.core.azclierror import ResourceNotFoundError
 
 logger = get_logger(__name__)
 
@@ -140,8 +141,23 @@ def transform_telemetry_otlp_values(response_json):
     return existing_otlps
 
 
-def transform_telemetry_otlp_values_by_name(response_json):
-    existing_otlps = transform_telemetry_otlp_values(response_json)
+def transform_telemetry_otlp_values_by_name_wrapper(args):
+    def transform_telemetry_otlp_values_by_name(response_json):
+        if '--otlp-name' in args:
+            otlp_name = args[args.index("--otlp-name") + 1]
+            if not otlp_name:
+                raise ResourceNotFoundError(f"Otlp entry does not exist, please retry with different name")
+            existing_otlps = safe_get(response_json, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
+            otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
+            if otlp:
+                existing_otlps = otlp
+            else:
+                raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
+            safe_set(response_json, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
+            return transform_telemetry_otlp_values(response_json)
+        
+        raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
 
-    return existing_otlps[0]
+    return transform_telemetry_otlp_values_by_name
+
 

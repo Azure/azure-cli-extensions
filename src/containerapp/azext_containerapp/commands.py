@@ -13,10 +13,10 @@ from ._transformers import (transform_usages_output,
                             transform_telemetry_data_dog_values,
                             transform_telemetry_app_insights_values,
                             transform_telemetry_otlp_values,
-                            transform_telemetry_otlp_values_by_name)
+                            transform_telemetry_otlp_values_by_name_wrapper)
 
 
-def load_command_table(self, _):
+def load_command_table(self, args):
     with self.command_group('containerapp') as g:
         g.custom_show_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
         g.custom_command('list', 'list_containerapp', table_transformer=transform_containerapp_list_output)
@@ -127,7 +127,7 @@ def load_command_table(self, _):
         g.custom_command('add', 'add_environment_telemetry_otlp', supports_no_wait=True, exception_handler=ex_handler_factory(), transform=transform_telemetry_otlp_values)
         g.custom_command('update', 'update_environment_telemetry_otlp', supports_no_wait=True, exception_handler=ex_handler_factory(), transform=transform_telemetry_otlp_values)
         g.custom_command('remove', 'remove_environment_telemetry_otlp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory(), transform=transform_telemetry_otlp_values)
-        g.custom_show_command('show', 'show_environment_telemetry_otlp', transform=transform_telemetry_otlp_values_by_name)
+        g.custom_show_command('show', 'show_environment_telemetry_otlp', transform=transform_telemetry_otlp_values_by_name_wrapper(args))
         g.custom_show_command('list', 'list_environment_telemetry_otlp', transform=transform_telemetry_otlp_values)
 
     with self.command_group('containerapp github-action') as g:
