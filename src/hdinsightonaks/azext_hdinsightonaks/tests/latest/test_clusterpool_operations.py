@@ -8,6 +8,7 @@
 from azure.cli.testsdk import *
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
+
 class HdinsightonaksClusterPoolScenario(ScenarioTest):
     location = 'westus3'
 
@@ -16,7 +17,8 @@ class HdinsightonaksClusterPoolScenario(ScenarioTest):
             'loc': self.location
         })
         # List a list of available cluster pool versions.
-        cluster_pool_version_list = self.cmd('az hdinsight-on-aks list-available-cluster-pool-version -l {loc}').get_output_in_json()
+        cluster_pool_version_list = self.cmd(
+            'az hdinsight-on-aks list-available-cluster-pool-version -l {loc}').get_output_in_json()
         assert len(cluster_pool_version_list) > 0
 
     # Uses 'rg' kwarg
