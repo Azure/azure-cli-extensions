@@ -72,7 +72,7 @@ def transform_telemetry_data_dog_values(response_json):
 
     return r
 
-    
+
 def transform_telemetry_app_insights_values(response_json):
     containerapp_env_def = response_json
 
@@ -97,6 +97,7 @@ def transform_telemetry_app_insights_values(response_json):
         safe_set(r, "enableOpenTelemetryLogs", value=enable_open_telemetry_logs)
 
     return r
+
 
 def transform_telemetry_otlp_values(response_json):
     containerapp_env_def = response_json
@@ -138,7 +139,9 @@ def transform_telemetry_otlp_values(response_json):
 
     return existing_otlps
 
+
 def transform_telemetry_otlp_values_by_name(response_json):
     existing_otlps = transform_telemetry_otlp_values(response_json)
 
     return existing_otlps[0]
+
