@@ -57,6 +57,9 @@ def load_command_table(self, _):
         g.custom_command('list', 'cli_cosmosdb_managed_cassandra_cluster_list')
         g.show_command('show', 'get')
         g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)
+        g.custom_command('async-dba-command invoke', 'cli_cosmosdb_managed_cassandra_cluster_invoke_command_async', supports_no_wait=True)
+        g.custom_command('async-dba-command get', 'cli_cosmosdb_managed_cassandra_cluster_get_command_async', supports_no_wait=True)
+        g.custom_command('async-dba-command list', 'cli_cosmosdb_managed_cassandra_cluster_list_commands_async', supports_no_wait=True)
         g.custom_command('deallocate', 'cli_cosmosdb_managed_cassandra_cluster_deallocate', supports_no_wait=True, confirmation=True)
 
     with self.command_group('managed-cassandra datacenter', cosmosdb_managed_cassandra_datacenter_sdk, client_factory=cf_cassandra_data_center) as g:

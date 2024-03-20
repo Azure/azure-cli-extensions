@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.1.0
+* Add support for Asynchronous DBA command for Managed Instance of Apache Cassandra.
+
 1.0.0
 * Add support for Per-Region Per-Partition Autoscale. '--enable-prpp-autoscale' parameter can be used during account create/update.
 * Add support for Restore with Time-To-Live Disabled. '--disable-ttl' parameter can be used during restore.

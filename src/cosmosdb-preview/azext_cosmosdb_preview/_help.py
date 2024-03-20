@@ -235,6 +235,38 @@ type: group
 short-summary: Azure Managed Cassandra cluster Backup.
 """
 
+helps['managed-cassandra cluster async-dba-command'] = """
+type: group
+short-summary: Asynchronous command in Azure Managed Cassandra Cluster host.
+"""
+
+helps['managed-cassandra cluster async-dba-command invoke'] = """
+type: command
+short-summary: Invoke an asynchronous command in Azure Managed Cassandra Cluster. Use returned command id to retrive result.
+examples:
+  - name: This command invokes an asynchronous command in a host node.
+    text: |
+      az managed-cassandra cluster async-dba-command invoke --resource-group MyResourceGroup --cluster-name MyCluster --host "10.0.1.12" --command-name "nodetool" --arguments arg1="value1" arg2="value2" arg3="value3"
+"""
+
+helps['managed-cassandra cluster async-dba-command get'] = """
+type: command
+short-summary: Get result for async dba command using command id.
+examples:
+  - name: This command get command result of a previous invoked async dba command.
+    text: |
+      az managed-cassandra cluster async-dba-command get --resource-group MyResourceGroup --cluster-name MyCluster --command-id 123
+"""
+
+helps['managed-cassandra cluster async-dba-command list'] = """
+type: command
+short-summary: Get a list of previously ran async dba command.
+examples:
+  - name: This command get list of command results of a previous invoked async dba command.
+    text: |
+      az managed-cassandra cluster async-dba-command list --resource-group MyResourceGroup --cluster-name MyCluster
+"""
+
 helps['managed-cassandra cluster invoke-command'] = """
 type: command
 short-summary: Invoke a command like nodetool for cassandra maintenance.

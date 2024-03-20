@@ -41,7 +41,7 @@ from azure.mgmt.cosmosdb.models import (
     DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, NetworkAclBypass, BackupPolicyType, AnalyticalStorageSchemaType, BackupStorageRedundancy)
 
 from azure.cli.command_modules.cosmosdb.actions import (
-    CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
+    CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction, InvokeCommandArgumentsAddAction)
 
 from azure.cli.command_modules.cosmosdb._validators import (
     validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter,
@@ -111,7 +111,10 @@ def load_arguments(self, _):
             'managed-cassandra cluster delete',
             'managed-cassandra cluster deallocate',
             'managed-cassandra cluster backup list',
-            'managed-cassandra cluster backup show']:
+            'managed-cassandra cluster backup show',
+            'managed-cassandra cluster async-dba-command invoke',
+            'managed-cassandra cluster async-dba-command get',
+            'managed-cassandra cluster async-dba-command list']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
@@ -149,6 +152,18 @@ def load_arguments(self, _):
     for scope in ['managed-cassandra cluster backup show']:
         with self.argument_context(scope) as c:
             c.argument('backup_id', options_list=['--backup-id'], help="The resource id of the backup", required=True)
+
+    for scope in ['managed-cassandra cluster async-dba-command invoke']:
+        with self.argument_context(scope) as c:
+            c.argument('command_name', options_list=['--command-name'], help="The command which should be run", required=True)
+            c.argument('host', options_list=['--host'], help="IP address of the cassandra host to run the command on", required=True)
+            c.argument('arguments', options_list=['--arguments'], action=InvokeCommandArgumentsAddAction, nargs='+', help="The key=\"value\" of arguments for the command.")
+            c.argument('cassandra_stop_start', options_list=['--cassandra-stop-start'], arg_type=get_three_state_flag(), help="If true, stops cassandra before executing the command and then start it again.")
+            c.argument('readwrite', options_list=['--readwrite'], arg_type=get_three_state_flag(), help="If true, allows the command to *write* to the cassandra directory, otherwise read-only.")
+
+    for scope in ['managed-cassandra cluster async-dba-command get']:
+        with self.argument_context(scope) as c:
+            c.argument('command_id', options_list=['--command-id'], help="The command id", required=True)
 
     # Managed Cassandra Datacenter
     for scope in [
