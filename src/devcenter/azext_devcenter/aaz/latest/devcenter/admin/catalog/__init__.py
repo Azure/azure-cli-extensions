@@ -11,6 +11,7 @@
 from .__cmd_group import *
 from ._create import *
 from ._delete import *
+from ._get_sync_error_detail import *
 from ._list import *
 from ._show import *
 from ._sync import *

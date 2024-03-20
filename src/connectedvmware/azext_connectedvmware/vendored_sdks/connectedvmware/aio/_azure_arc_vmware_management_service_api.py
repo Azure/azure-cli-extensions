@@ -16,19 +16,17 @@ from azure.mgmt.core import AsyncARMPipelineClient
 
 from .. import models
 from ._configuration import AzureArcVMwareManagementServiceAPIConfiguration
-from .operations import AzureArcVMwareManagementServiceAPIOperationsMixin, ClustersOperations, DatastoresOperations, GuestAgentsOperations, HostsOperations, HybridIdentityMetadataOperations, InventoryItemsOperations, MachineExtensionsOperations, Operations, ResourcePoolsOperations, VCentersOperations, VMInstanceGuestAgentsOperations, VirtualMachineInstancesOperations, VirtualMachineTemplatesOperations, VirtualMachinesOperations, VirtualNetworksOperations, VmInstanceHybridIdentityMetadataOperations
+from .operations import ClustersOperations, DatastoresOperations, HostsOperations, InventoryItemsOperations, Operations, ResourcePoolsOperations, VCentersOperations, VMInstanceGuestAgentsOperations, VirtualMachineInstancesOperations, VirtualMachineTemplatesOperations, VirtualNetworksOperations, VmInstanceHybridIdentityMetadataOperations
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-class AzureArcVMwareManagementServiceAPI(AzureArcVMwareManagementServiceAPIOperationsMixin):    # pylint: disable=too-many-instance-attributes
+class AzureArcVMwareManagementServiceAPI:    # pylint: disable=too-many-instance-attributes
     """Self service experience for VMware.
 
     :ivar operations: Operations operations
     :vartype operations: azure.mgmt.connectedvmware.aio.operations.Operations
-    :ivar virtual_machines: VirtualMachinesOperations operations
-    :vartype virtual_machines: azure.mgmt.connectedvmware.aio.operations.VirtualMachinesOperations
     :ivar resource_pools: ResourcePoolsOperations operations
     :vartype resource_pools: azure.mgmt.connectedvmware.aio.operations.ResourcePoolsOperations
     :ivar clusters: ClustersOperations operations
@@ -46,14 +44,6 @@ class AzureArcVMwareManagementServiceAPI(AzureArcVMwareManagementServiceAPIOpera
     :vartype virtual_networks: azure.mgmt.connectedvmware.aio.operations.VirtualNetworksOperations
     :ivar inventory_items: InventoryItemsOperations operations
     :vartype inventory_items: azure.mgmt.connectedvmware.aio.operations.InventoryItemsOperations
-    :ivar hybrid_identity_metadata: HybridIdentityMetadataOperations operations
-    :vartype hybrid_identity_metadata:
-     azure.mgmt.connectedvmware.aio.operations.HybridIdentityMetadataOperations
-    :ivar machine_extensions: MachineExtensionsOperations operations
-    :vartype machine_extensions:
-     azure.mgmt.connectedvmware.aio.operations.MachineExtensionsOperations
-    :ivar guest_agents: GuestAgentsOperations operations
-    :vartype guest_agents: azure.mgmt.connectedvmware.aio.operations.GuestAgentsOperations
     :ivar virtual_machine_instances: VirtualMachineInstancesOperations operations
     :vartype virtual_machine_instances:
      azure.mgmt.connectedvmware.aio.operations.VirtualMachineInstancesOperations
@@ -70,8 +60,8 @@ class AzureArcVMwareManagementServiceAPI(AzureArcVMwareManagementServiceAPIOpera
     :type subscription_id: str
     :param base_url: Service URL. Default value is 'https://management.azure.com'.
     :type base_url: str
-    :keyword api_version: Api Version. The default value is "2023-03-01-preview". Note that
-     overriding this default value may result in unsupported behavior.
+    :keyword api_version: Api Version. The default value is "2023-10-01". Note that overriding this
+     default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
      Retry-After header is present.
@@ -92,7 +82,6 @@ class AzureArcVMwareManagementServiceAPI(AzureArcVMwareManagementServiceAPIOpera
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
         self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
-        self.virtual_machines = VirtualMachinesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.resource_pools = ResourcePoolsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.clusters = ClustersOperations(self._client, self._config, self._serialize, self._deserialize)
         self.hosts = HostsOperations(self._client, self._config, self._serialize, self._deserialize)
@@ -101,9 +90,6 @@ class AzureArcVMwareManagementServiceAPI(AzureArcVMwareManagementServiceAPIOpera
         self.virtual_machine_templates = VirtualMachineTemplatesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.virtual_networks = VirtualNetworksOperations(self._client, self._config, self._serialize, self._deserialize)
         self.inventory_items = InventoryItemsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.hybrid_identity_metadata = HybridIdentityMetadataOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.machine_extensions = MachineExtensionsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.guest_agents = GuestAgentsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.virtual_machine_instances = VirtualMachineInstancesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.vm_instance_hybrid_identity_metadata = VmInstanceHybridIdentityMetadataOperations(self._client, self._config, self._serialize, self._deserialize)
         self.vm_instance_guest_agents = VMInstanceGuestAgentsOperations(self._client, self._config, self._serialize, self._deserialize)

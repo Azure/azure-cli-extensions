@@ -9,7 +9,7 @@
 BMCKeySet tests scenarios
 """
 
-from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
+from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
 

@@ -5,7 +5,6 @@
 
 import os
 import unittest
-import pytest
 import json
 import deepdiff
 import docker
@@ -20,8 +19,6 @@ import azext_confcom.config as config
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=1)
 class PolicyGeneratingImage(unittest.TestCase):
     custom_json = """
         {
@@ -40,6 +37,7 @@ class PolicyGeneratingImage(unittest.TestCase):
             ]
         }
         """
+
     @classmethod
     def setUpClass(cls):
         with load_policy_from_image_name("python:3.6.14-slim-buster") as aci_policy:
@@ -54,8 +52,6 @@ class PolicyGeneratingImage(unittest.TestCase):
         self.assertEqual(self.aci_policy.get_serialized_output(), self.custom_policy.get_serialized_output())
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=2)
 class PolicyGeneratingImageSidecar(unittest.TestCase):
     custom_json = """
         {
@@ -90,8 +86,6 @@ class PolicyGeneratingImageSidecar(unittest.TestCase):
         self.assertEqual(self.aci_policy.get_serialized_output(), self.custom_policy.get_serialized_output())
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=3)
 class PolicyGeneratingImageInvalid(unittest.TestCase):
     def test_invalid_image_policy(self):
 
@@ -103,8 +97,6 @@ class PolicyGeneratingImageInvalid(unittest.TestCase):
         self.assertEqual(exc_info.exception.code, 1)
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=4)
 class PolicyGeneratingImageCleanRoom(unittest.TestCase):
     def test_clean_room_policy(self):
         client = docker.from_env()

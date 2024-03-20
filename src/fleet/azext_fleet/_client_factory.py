@@ -29,6 +29,10 @@ def cf_update_runs(cli_ctx, *_):
     return get_container_service_client(cli_ctx).update_runs
 
 
+def cf_fleet_update_strategies(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).fleet_update_strategies
+
+
 def get_resource_groups_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(
         cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).resource_groups

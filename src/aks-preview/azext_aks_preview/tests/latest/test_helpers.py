@@ -8,10 +8,16 @@ from unittest.mock import Mock, patch
 
 from azext_aks_preview._helpers import (
     _fuzzy_match,
+    check_is_private_link_cluster,
     get_cluster_snapshot,
     get_cluster_snapshot_by_snapshot_id,
     get_nodepool_snapshot,
     get_nodepool_snapshot_by_snapshot_id,
+)
+from azext_aks_preview.__init__ import register_aks_preview_resource_type
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+from azext_aks_preview.managed_cluster_decorator import (
+    AKSPreviewManagedClusterModels,
 )
 from azure.cli.core.azclierror import (
     BadRequestError,
@@ -19,6 +25,7 @@ from azure.cli.core.azclierror import (
     ResourceNotFoundError,
 )
 from azure.core.exceptions import AzureError, HttpResponseError
+from azext_aks_preview.tests.latest.mocks import MockCLI, MockCmd
 
 
 class TestFuzzyMatch(unittest.TestCase):
@@ -109,6 +116,32 @@ class GetManagedClusterSnapShotTestCase(unittest.TestCase):
             "azext_aks_preview._helpers.get_mc_snapshots_client", return_value=mock_snapshot_operations_3
         ), self.assertRaises(BadRequestError):
             get_cluster_snapshot("mock_cli_ctx", "test_sub", "mock_rg", "mock_snapshot_name")
+
+
+class CheckManagedClusterTestCase(unittest.TestCase):
+    def setUp(self):
+        # manually register CUSTOM_MGMT_AKS_PREVIEW
+        register_aks_preview_resource_type()
+        self.cli_ctx = MockCLI()
+        self.cmd = MockCmd(self.cli_ctx)
+        # store all the models used by nat gateway
+        self.models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
+
+    def test_check_is_private_link_cluster(self):
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(check_is_private_link_cluster(mc_1), False)
+
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
+        api_server_access_profile.enable_private_cluster = True
+        api_server_access_profile.enable_vnet_integration = True
+        self.assertEqual(check_is_private_link_cluster(mc_2), False)
+
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
+        api_server_access_profile.enable_private_cluster = True
+        mc_3.api_server_access_profile = api_server_access_profile
+        self.assertEqual(check_is_private_link_cluster(mc_3), True)
 
 
 if __name__ == "__main__":

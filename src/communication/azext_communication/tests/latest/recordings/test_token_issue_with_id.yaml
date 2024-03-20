@@ -13,45 +13,45 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - azsdk-python-communication-identity/1.3.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - azsdk-python-communication-identity/1.4.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
       - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
       x-ms-date:
-      - Mon, 10 Jul 2023 21:10:44 GMT
+      - Fri, 15 Dec 2023 10:42:22 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/identities?api-version=2022-10-01
+    uri: https://sanitized.communication.azure.com/identities?api-version=2023-10-01
   response:
     body:
       string: '{"identity": {"id": "sanitized"}}'
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
-        2021-11-01, 2022-06-01, 2022-10-01, 2023-08-01
+        2021-11-01, 2022-06-01, 2022-10-01, 2023-10-01
       content-length:
       - '33'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jul 2023 21:10:43 GMT
+      - Fri, 15 Dec 2023 10:42:22 GMT
       ms-cv:
-      - skDcwaAlAUGAJcY+J+tsXQ.0
+      - r650arAU4Eev149tCyxS4g.2.0
       request-context:
       - appId=
       strict-transport-security:
       - max-age=2592000
       x-azure-ref:
-      - 003OsZAAAAABD28CoTKgtSbkr/0EIqbh1WVZSMzExMDAwMTE1MDExADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0ji18ZQAAAADkP9Eyp0fUSLVajm9w0EvaRE9IMzBFREdFMDExOQA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 105ms
+      - 88ms
     status:
       code: 201
       message: Created
 - request:
-    body: '{"scopes": ["chat"], "expiresInMinutes": null}'
+    body: '{"scopes": ["chat"]}'
     headers:
       Accept:
       - application/json
@@ -60,45 +60,44 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '46'
+      - '20'
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.7.0b1 azsdk-python-communication-identity/1.3.1 Python/3.10.11
-        (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.8.1 azsdk-python-communication-identity/1.4.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
-      - nhFAfqVNNvGtmqZXLZeMFVwYcIW0NuuEF0d+D1dlKIY=
+      - sZHRO4JkAmw3HcI1PyxrC5twHvkHIWjyMLVIkauXKRA=
       x-ms-date:
-      - Mon, 10 Jul 2023 21:10:44 GMT
+      - Fri, 15 Dec 2023 10:42:23 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/identities/sanitized/:issueAccessToken?api-version=2022-10-01
+    uri: https://sanitized.communication.azure.com/identities/sanitized/:issueAccessToken?api-version=2023-10-01
   response:
     body:
-      string: '{"token": "sanitized", "expiresOn": "2023-07-11T21:10:44.2179445+00:00"}'
+      string: '{"token": "sanitized", "expiresOn": "2023-12-16T10:42:23.8124303+00:00"}'
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
-        2021-11-01, 2022-06-01, 2022-10-01, 2023-08-01
+        2021-11-01, 2022-06-01, 2022-10-01, 2023-10-01
       content-length:
       - '72'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jul 2023 21:10:44 GMT
+      - Fri, 15 Dec 2023 10:42:23 GMT
       ms-cv:
-      - 8TfxCXp4j0q5uBsSVIEycA.0
+      - H1aTLBglJ0Cn4LN8920vHQ.2.0
       request-context:
       - appId=
       strict-transport-security:
       - max-age=2592000
       x-azure-ref:
-      - 01HOsZAAAAABRLKfowZCSTZXVrAXMTejTWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0jy18ZQAAAACv3tKCk3gDSrcxkiYQVBHsSFlEMzBFREdFMDQxNQA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 168ms
+      - 23ms
     status:
       code: 200
       message: OK

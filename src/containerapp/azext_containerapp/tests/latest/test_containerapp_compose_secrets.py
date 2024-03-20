@@ -13,7 +13,7 @@ from azext_containerapp.tests.latest.common import (
     clean_up_test_file,
     TEST_DIR, TEST_LOCATION)
 
-from .utils import create_containerapp_env
+from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerappComposePreviewSecretsScenarioTest(ContainerappComposePreviewScenarioTest):
@@ -21,8 +21,7 @@ class ContainerappComposePreviewSecretsScenarioTest(ContainerappComposePreviewSc
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        compose_text = """
+        compose_text = f"""
 services:
   foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
@@ -45,14 +44,11 @@ secrets:
         secrets_text = "Lorem Ipsum\n"
         write_test_file(secrets_file_name, secrets_text)
 
-        env_name = self.create_random_name(prefix='containerapp-compose', length=24)
-
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
         self.kwargs.update({
-            'environment': env_name,
+            'environment': env_id,
             'compose': compose_file_name,
         })
-
-        create_containerapp_env(self, env_name, resource_group)
 
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
@@ -60,10 +56,11 @@ secrets:
         command_string += ' --environment {environment}'
 
         self.cmd(command_string, checks=[
-            self.check('[?name==`foo`].properties.configuration.secrets[0].name', ["redis-secret"]),
-            self.check('[?name==`foo`].properties.template.containers[0].env[0].name', ["redis-secret"]),
-            self.check('[?name==`foo`].properties.template.containers[0].env[0].secretRef', ["redis-secret"])  # pylint: disable=C0301
+            self.check(f'[?name==`foo`].properties.configuration.secrets[0].name', ["redis-secret"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[0].name', ["redis-secret"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[0].secretRef', ["redis-secret"])  # pylint: disable=C0301
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
         clean_up_test_file(secrets_file_name)
@@ -72,8 +69,7 @@ secrets:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets_and_existing_environment(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        compose_text = """
+        compose_text = f"""
 services:
   foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
@@ -102,14 +98,11 @@ secrets:
         secrets_text = "Lorem Ipsum\n"
         write_test_file(secrets_file_name, secrets_text)
 
-        env_name = self.create_random_name(prefix='containerapp-compose', length=24)
-
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
         self.kwargs.update({
-            'environment': env_name,
+            'environment': env_id,
             'compose': compose_file_name,
         })
-
-        create_containerapp_env(self, env_name, resource_group)
 
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
@@ -117,8 +110,9 @@ secrets:
         command_string += ' --environment {environment}'
 
         self.cmd(command_string, checks=[
-            self.check('length([?name==`foo`].properties.template.containers[0].env[].name)', 6),
+            self.check(f'length([?name==`foo`].properties.template.containers[0].env[].name)', 6),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
         clean_up_test_file(secrets_file_name)
@@ -127,8 +121,7 @@ secrets:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets_and_existing_environment_conflict(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        compose_text = """
+        compose_text = f"""
 services:
   foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
@@ -147,14 +140,11 @@ secrets:
         secrets_text = "Lorem Ipsum\n"
         write_test_file(secrets_file_name, secrets_text)
 
-        env_name = self.create_random_name(prefix='containerapp-compose', length=24)
-
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
         self.kwargs.update({
-            'environment': env_name,
+            'environment': env_id,
             'compose': compose_file_name,
         })
-
-        create_containerapp_env(self, env_name, resource_group)
         
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
@@ -163,6 +153,7 @@ secrets:
 
         # This test fails with duplicate environment variable names
         self.cmd(command_string, expect_failure=True)
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
         clean_up_test_file(secrets_file_name)

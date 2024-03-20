@@ -1,0 +1,20 @@
+{
+    "publisher_name": "automated-cli-tests-nginx-publisher",
+    "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+    "nf_name": "nginx",
+    "version": "1.0.0",
+    "acr_artifact_store_name": "nginx-acr",
+    "location": "uaenorth",
+    "images":{
+        "source_registry": "not-used-in-test-but-cannot-be-blank",
+        "source_registry_namespace": ""
+    },
+    "helm_packages": [
+        {
+            "name": "nginxdemo",
+            "path_to_chart": "{{path_to_chart}}",
+            "path_to_mappings": "",
+            "depends_on": []
+        }
+    ]
+}

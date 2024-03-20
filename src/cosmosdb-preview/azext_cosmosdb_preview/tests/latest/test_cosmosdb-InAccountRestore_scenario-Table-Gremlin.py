@@ -13,6 +13,7 @@ import datetime
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
 
     @AllowLargeResponse()
@@ -49,7 +50,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}', checks=[
             self.check('length(@)', 0)
         ]).get_output_in_json()
-
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_graph')
@@ -108,7 +108,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
             self.check('length(@)', 0)
         ]).get_output_in_json()
 
-
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_gremlin_database_graph_restore')
     def test_cosmosdb_gremlin_database_graph_restore(self, resource_group):
@@ -147,7 +146,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
             self.check('resource.indexingPolicy.excludedPaths[0].path', "/headquarters/employees/?")
         ]).get_output_in_json()
 
-        #restore time
+        # restore time
         restore_ts_string = datetime.datetime.utcnow().isoformat()
         self.kwargs.update({
             'rts': restore_ts_string
@@ -166,7 +165,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
 
         assert self.cmd('az cosmosdb gremlin graph exists -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
 
-        #delete graph
+        # delete graph
         self.cmd('az cosmosdb gremlin graph delete -g {rg} -a {acc} -d {db_name} -n {gp_name} --yes')
 
         time.sleep(500)
@@ -184,7 +183,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
             self.check('length(@)', 1)
         ]).get_output_in_json()
 
-        #delete database
+        # delete database
         self.cmd('az cosmosdb gremlin database delete -g {rg} -a {acc} -n {db_name} --yes')
 
         self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}', checks=[
@@ -212,7 +211,6 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}', checks=[
             self.check('length(@)', 0)
         ]).get_output_in_json()
-
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_restore')
@@ -252,7 +250,7 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         time.sleep(500)
 
         self.cmd('az cosmosdb table delete -g {rg} -a {acc} -n {table_name} --yes')
-        
+
         self.cmd('az cosmosdb table list -g {rg} -a {acc}', checks=[
             self.check('length(@)', 0)
         ]).get_output_in_json()

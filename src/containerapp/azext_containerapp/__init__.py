@@ -37,6 +37,8 @@ class ContainerappCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, command):
         from azext_containerapp._params import load_arguments
+        from azure.cli.command_modules.containerapp._params import load_arguments as load_arguments_from_core
+        load_arguments_from_core(self, command)
         load_arguments(self, command)
 
 

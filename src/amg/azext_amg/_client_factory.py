@@ -7,5 +7,5 @@
 def cf_amg(cli_ctx, subscription, *_):
     # pylint: disable=unused-argument
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_amg.vendored_sdks import DashboardManagementClient
+    from azure.mgmt.dashboard import DashboardManagementClient
     return get_mgmt_service_client(cli_ctx, DashboardManagementClient, subscription_id=subscription)

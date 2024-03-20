@@ -5,7 +5,6 @@
 
 import os
 import unittest
-import pytest
 import json
 import deepdiff
 import docker
@@ -18,13 +17,11 @@ from azext_confcom.security_policy import (
 )
 import azext_confcom.config as config
 from azext_confcom.custom import acipolicygen_confcom
-from azext_confcom.template_util import case_insensitive_dict_get, extract_confidential_properties, extract_containers_from_text
+from azext_confcom.template_util import case_insensitive_dict_get, extract_confidential_properties, extract_containers_from_text, DockerClient
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=1)
 class PolicyGeneratingArm(unittest.TestCase):
     custom_json = """
         {
@@ -280,10 +277,9 @@ class PolicyGeneratingArm(unittest.TestCase):
             )
         )
         # check default pause container
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_CONTAINERS[0], regular_image_json[1], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_CONTAINERS[0], regular_image_json[1], ignore_order=True), {})
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=2)
+
 class PolicyGeneratingArmIncorrect(unittest.TestCase):
     def test_arm_template_missing_image_name(self):
         custom_arm_json_missing_image_name = """
@@ -615,8 +611,7 @@ class PolicyGeneratingArmIncorrect(unittest.TestCase):
             load_policy_from_arm_template_str(custom_arm_json_missing_containers, "")
         self.assertEqual(exc_info.exception.code, 1)
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=3)
+
 class PolicyGeneratingArmParametersIncorrect(unittest.TestCase):
     def test_arm_template_missing_definition(self):
         custom_arm_json_missing_definition = """
@@ -743,8 +738,7 @@ class PolicyGeneratingArmParametersIncorrect(unittest.TestCase):
             )
         self.assertEqual(exc_info.exception.code, 1)
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=4)
+
 class PolicyGeneratingArmParameters(unittest.TestCase):
 
     parameter_file = """
@@ -790,7 +784,7 @@ class PolicyGeneratingArmParameters(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the image"
                 },
-                "defaultValue": "mcr.microsoft.com/azure-functions/node:4"
+                "defaultValue": "python:3.6.14-slim-buster"
             },
 
             "port": {
@@ -891,8 +885,7 @@ class PolicyGeneratingArmParameters(unittest.TestCase):
                 python_flag = True
         self.assertTrue(python_flag)
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=5)
+
 class PolicyGeneratingArmParameters2(unittest.TestCase):
 
     parameter_file = """
@@ -931,7 +924,7 @@ class PolicyGeneratingArmParameters2(unittest.TestCase):
             "metadata": {
                 "description": "Name for the container group"
             },
-            "defaultValue":"mcr.microsoft.com/azure-functions/node:4"
+            "defaultValue":"python:3.6.14-slim-buster"
             },
              "imagebase": {
             "type": "string",
@@ -1061,8 +1054,7 @@ class PolicyGeneratingArmParameters2(unittest.TestCase):
                 python_flag = True
         self.assertTrue(python_flag)
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=6)
+
 class PolicyGeneratingArmContainerConfig(unittest.TestCase):
 
     parameter_file = """
@@ -1101,7 +1093,7 @@ class PolicyGeneratingArmContainerConfig(unittest.TestCase):
             "metadata": {
                 "description": "Name for the container group"
             },
-            "defaultValue":"mcr.microsoft.com/azure-functions/node:4"
+            "defaultValue":"python:3.6.14-slim-buster"
             },
              "imagebase": {
             "type": "string",
@@ -1254,8 +1246,7 @@ class PolicyGeneratingArmContainerConfig(unittest.TestCase):
         for value in output_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_COMMANDS]:
             self.assertTrue(value in expected)
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=7)
+
 class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
 
     parameter_file = """
@@ -1289,7 +1280,7 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/azure-functions/node:4"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",
@@ -1393,31 +1384,32 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
         }
     }
     """
-        client = docker.from_env()
-        original_image = "mcr.microsoft.com/azure-functions/node:4"
-        try:
-            client.images.remove(original_image)
-        except:
-            # do nothing
-            pass
-        regular_image = load_policy_from_arm_template_str(
-            custom_arm_json_default_value, ""
-        )
-        regular_image[0].populate_policy_content_for_all_images()
-        # create and tag same image to the new name to see if docker will error out that the image is not in a remote repo
-        new_repo = "fakerepo.microsoft.com"
-        new_image_name = "azure-functions"
-        new_tag = "fake-tag"
+        with DockerClient() as client:
+            # client = docker.from_env()
+            original_image = "alpine:3.16"
+            try:
+                client.images.remove(original_image)
+            except:
+                # do nothing
+                pass
+            regular_image = load_policy_from_arm_template_str(
+                custom_arm_json_default_value, ""
+            )
+            regular_image[0].populate_policy_content_for_all_images()
+            # create and tag same image to the new name to see if docker will error out that the image is not in a remote repo
+            new_repo = "fakerepo.microsoft.com"
+            new_image_name = "azure-functions"
+            new_tag = "fake-tag"
 
-        image = client.images.get(original_image)
-        try:
-            client.images.remove(new_repo + "/" + new_image_name + ":" + new_tag)
-        except:
-            # do nothing
-            pass
-        image.tag(new_repo + "/" + new_image_name, tag=new_tag)
+            image = client.images.get(original_image)
+            try:
+                client.images.remove(new_repo + "/" + new_image_name + ":" + new_tag)
+            except:
+                # do nothing
+                pass
+            image.tag(new_repo + "/" + new_image_name, tag=new_tag)
 
-        client.close()
+            # client.close()
 
         clean_room = load_policy_from_arm_template_str(
             custom_arm_json_default_value, self.parameter_file
@@ -1441,8 +1433,7 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
             {},
         )
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=8)
+
 class PolicyDiff(unittest.TestCase):
     custom_json = """
       {
@@ -1450,7 +1441,7 @@ class PolicyDiff(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "rust:1.52.1"
+        "container1image": "alpine:3.16"
     },
     "resources": [
         {
@@ -1529,7 +1520,7 @@ class PolicyDiff(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "rust:1.52.1"
+        "container1image": "alpine:3.16"
     },
     "resources": [
         {
@@ -1635,7 +1626,7 @@ class PolicyDiff(unittest.TestCase):
         is_valid, diff = self.aci_policy2.validate_cce_policy()
         self.assertFalse(is_valid)
         expected_diff = {
-            "rust:1.52.1": {
+            "alpine:3.16": {
                 "values_changed": {
                     "mounts": [
                         {
@@ -1654,8 +1645,7 @@ class PolicyDiff(unittest.TestCase):
 
         self.assertEqual(diff, expected_diff)
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=9)
+
 class PolicyGeneratingArmInfrastructureSvn(unittest.TestCase):
     custom_arm_json = """
     {
@@ -1822,8 +1812,7 @@ class PolicyGeneratingArmInfrastructureSvn(unittest.TestCase):
                 return
         self.fail("aci-cc-infra-fragment not found")
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=10)
+
 class MultiplePolicyTemplate(unittest.TestCase):
     custom_json = """
 {
@@ -1831,7 +1820,7 @@ class MultiplePolicyTemplate(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "rust:1.52.1",
+        "container1image": "alpine:3.16",
         "container2name": "aci-test2",
         "container2image": "python:3.6.14-slim-buster"
     },
@@ -1998,11 +1987,10 @@ class MultiplePolicyTemplate(unittest.TestCase):
         is_valid, diff = self.aci_policy.validate_cce_policy()
         self.assertFalse(is_valid)
         # just check to make sure the containers in both policies are different
-        expected_diff = {"rust:1.52.1":"rust:1.52.1 not found in policy"}
+        expected_diff = {"alpine:3.16": "alpine:3.16 not found in policy"}
         self.assertEqual(diff, expected_diff)
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=11)
+
 class PolicyGeneratingArmInitContainer(unittest.TestCase):
 
     custom_arm_json_default_value = """
@@ -2024,7 +2012,7 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"rust:1.52.1"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",
@@ -2187,8 +2175,7 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
         # see if the remote image and the local one produce the same output
         self.assertTrue("python" in python_image_name)
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=12)
+
 class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
 
     custom_arm_json_default_value = """
@@ -2210,7 +2197,7 @@ class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"rust:1.52.1"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",
@@ -2334,8 +2321,7 @@ class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
         # see if the remote image and the local one produce the same output
         self.assertFalse(stdio_access)
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=13)
+
 class PolicyGeneratingAllowElevated(unittest.TestCase):
 
     custom_arm_json_default_value = """
@@ -2357,7 +2343,7 @@ class PolicyGeneratingAllowElevated(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"rust:1.52.1"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",
@@ -2485,10 +2471,7 @@ class PolicyGeneratingAllowElevated(unittest.TestCase):
         self.assertFalse(allow_elevated)
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=14)
 class PrintExistingPolicy(unittest.TestCase):
-
     def test_printing_existing_policy(self):
         template = """
         {
@@ -2786,8 +2769,7 @@ class PrintExistingPolicy(unittest.TestCase):
             os.remove("test_template.json")
             os.remove("test_template2.json")
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=15)
+
 class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
     custom_json = """
         {
@@ -3387,7 +3369,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
 
         normalized_aci_arm_policy = json.loads(
             self.aci_arm_policy.get_serialized_output(
-                output_type=OutputType.RAW,rego_boilerplate=False
+                output_type=OutputType.RAW, rego_boilerplate=False
             )
         )
 
@@ -3410,15 +3392,17 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         )
 
         self.assertEqual(
-            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
-                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY],
-            "re2"
+            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY
+            ],
+            "re2",
         )
 
         self.assertEqual(
-            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
-                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE],
-            "TEST_WILDCARD_ENV=.*"
+            normalized_aci_arm_policy[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
+            ],
+            "TEST_WILDCARD_ENV=.*",
         )
 
         normalized_aci_arm_policy2 = json.loads(
@@ -3432,9 +3416,10 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         )
 
         self.assertEqual(
-            normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
-                ][1][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE],
-            "TEST_WILDCARD_ENV=.*"
+            normalized_aci_arm_policy2[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][1][
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
+            ],
+            "TEST_WILDCARD_ENV=.*",
         )
 
     def test_wildcard_env_var_invalid(self):
@@ -3449,8 +3434,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
 
         self.assertEqual(wrapped_exit.exception.code, 1)
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=16)
+
 class PolicyGeneratingEdgeCases(unittest.TestCase):
 
     custom_arm_json_default_value = """
@@ -3472,7 +3456,7 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"rust:1.52.1"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",
@@ -3594,11 +3578,10 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
         env_var = regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS][0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE]
 
         # see if the remote image and the local one produce the same output
-        self.assertEquals(env_var, "PORT=parameters('abc')")
-        self.assertEquals(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "rust:1.52.1")
+        self.assertEqual(env_var, "PORT=parameters('abc')")
+        self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "alpine:3.16")
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=16)
+
 class PolicyGeneratingSecurityContext(unittest.TestCase):
     custom_arm_json = """
     {
@@ -3891,7 +3874,6 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         }
     }
     """
-
 
     custom_arm_json3 = """
     {
@@ -4213,7 +4195,6 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         ]
         cls.aci_arm_policy4.populate_policy_content_for_all_images()
 
-
     def test_arm_template_security_context_defaults(self):
         expected_user_json = json.loads("""{
             "user_idname":
@@ -4240,13 +4221,13 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         self.assertEqual(deepdiff.DeepDiff(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER], expected_user_json, ignore_order=True), {})
         self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_SECCOMP_PROFILE_SHA256], "")
         # check all the default unprivileged capabilities are present
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING], ignore_order=True), {})
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE], ignore_order=True), {})
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_PERMITTED], ignore_order=True), {})
-        self.assertEquals([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
-        self.assertEquals([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE])
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_UNPRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_PERMITTED], ignore_order=True), {})
+        self.assertEqual([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
+        self.assertEqual([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE])
         # check default pause container
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_CONTAINERS[0], regular_image_json[1], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_CONTAINERS[0], regular_image_json[1], ignore_order=True), {})
 
     def test_arm_template_security_context_allow_privilege_escalation(self):
         regular_image_json = json.loads(
@@ -4301,8 +4282,8 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
             )
         )
         # ambient & inheritable should still be empty
-        self.assertEquals([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
-        self.assertEquals([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE])
+        self.assertEqual([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
+        self.assertEqual([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE])
         for cap in attempted_new_capabilities:
             self.assertIn(cap, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING])
             self.assertIn(cap, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE])
@@ -4321,14 +4302,13 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         )
 
         # check all the default unprivileged capabilities are present
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING], ignore_order=True), {})
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE], ignore_order=True), {})
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_PERMITTED], ignore_order=True), {})
-        self.assertEquals([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
-        self.assertEquals(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE], ignore_order=True), {})
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_PERMITTED], ignore_order=True), {})
+        self.assertEqual([], regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT])
+        self.assertEqual(deepdiff.DeepDiff(config.DEFAULT_PRIVILEGED_CAPABILITIES, regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES][config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE], ignore_order=True), {})
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=17)
+
 class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
     custom_arm_json = """
     {
@@ -4779,7 +4759,6 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
     }
     """
 
-
     @classmethod
     def setUpClass(cls):
         cls.aci_arm_policy = load_policy_from_arm_template_str(cls.custom_arm_json, "")[
@@ -4805,6 +4784,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        cls.client.containers.prune()
         cls.client.close()
 
     def test_arm_template_security_context_no_run_as_group(self):
@@ -5086,8 +5066,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
 
         self.client.images.remove(image[0].attrs.get("Id"))
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=18)
+
 class PolicyGeneratingSecurityContextSeccompProfileEdgeCases(unittest.TestCase):
     custom_arm_json = """
     {
@@ -5305,8 +5284,6 @@ class PolicyGeneratingSecurityContextSeccompProfileEdgeCases(unittest.TestCase):
         self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_SECCOMP_PROFILE_SHA256], expected_seccomp_profile_sha256)
 
 
-# @unittest.skip("not in use")
-@pytest.mark.run(order=18)
 class PolicyStopSignal(unittest.TestCase):
     custom_arm_json = """
     {

@@ -121,3 +121,41 @@ def load_arguments(self, _):
             required=False,
             help="Print the generated policy in the terminal",
         )
+
+    with self.argument_context("confcom katapolicygen") as c:
+        c.argument(
+            "yaml_path",
+            options_list=("--yaml", "-y"),
+            required=True,
+            help="Input YAML config file",
+        )
+        c.argument(
+            "outraw",
+            options_list=("--outraw"),
+            required=False,
+            help="Print the generated policy in the terminal in Rego format",
+        )
+        c.argument(
+            "print_policy",
+            options_list=("--print-policy"),
+            required=False,
+            help="Print the generated policy in the terminal in base64",
+        )
+        c.argument(
+            "config_map_file",
+            options_list=("--config-map-file", "-c"),
+            required=False,
+            help="Config map file",
+        )
+        c.argument(
+            "use_cached_files",
+            options_list=("--use-cached-files", "-u"),
+            required=False,
+            help="Use cached files",
+        )
+        c.argument(
+            "settings_file_name",
+            options_list=("--settings-file-name", "-j"),
+            required=False,
+            help="Path for custom settings file",
+        )

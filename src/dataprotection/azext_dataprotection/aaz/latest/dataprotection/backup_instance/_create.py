@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-11-01"],
         ]
     }
 
@@ -55,7 +55,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
+            options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
         )
@@ -80,6 +80,7 @@ class Create(AAZCommand):
             options=["object-type"],
             help="Type of the specific object - used for deserializing",
             required=True,
+            enum={"DefaultResourceProperties": "DefaultResourceProperties"},
         )
 
         _schema.object_type = cls._args_base_resource_properties_create.object_type
@@ -169,7 +170,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }

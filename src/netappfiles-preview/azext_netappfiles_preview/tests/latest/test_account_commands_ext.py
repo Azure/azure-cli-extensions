@@ -2,14 +2,15 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import unittest
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 # No tidy up of tests required. The resource group is automatically removed
 
 
 class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
-    @ResourceGroupPreparer(name_prefix='cli_tests_rg_')
+    @unittest.skip('This command is available from main module now')
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg_')    
     def test_ext_create_delete_account(self):
         account_name = self.create_random_name(prefix='cli', length=24)
         tags = 'Tag1=Value1 Tag2=Value2'
@@ -45,6 +46,7 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
         account_list = self.cmd("netappfiles account list --resource-group {rg}").get_output_in_json()
         assert len(account_list) == 0
 
+    @unittest.skip('This command is available from main module now')
     @ResourceGroupPreparer(name_prefix='cli_tests_rg_')
     def test_ext_list_accounts_ext(self):
         accounts = [self.create_random_name(prefix='cli', length=24), self.create_random_name(prefix='cli', length=24)]
@@ -61,6 +63,7 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
         account_list = self.cmd("netappfiles account list --resource-group {rg}").get_output_in_json()
         assert len(account_list) == 0
 
+    @unittest.skip('This command is available from main module now')
     @ResourceGroupPreparer(name_prefix='cli_tests_rg_')
     def test_ext_get_account_by_name_ext(self):
         account_name = self.create_random_name(prefix='cli', length=24)
@@ -70,6 +73,7 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
         account_from_id = self.cmd("az netappfiles account show --ids %s" % account['id']).get_output_in_json()
         assert account_from_id['name'] == account_name
 
+    @unittest.skip('This command is available from main module now')
     @ResourceGroupPreparer(name_prefix='cli_tests_rg_')
     def test_ext_set_account_ext(self):
         # only tags are checked here due to complications of active directory in automated test
@@ -82,6 +86,7 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
         assert account['tags']['Tag1'] == 'Value1'
         assert account['activeDirectories'] is None
 
+    @unittest.skip('This command is available from main module now')
     @ResourceGroupPreparer(name_prefix='cli_tests_rg_')
     def test_ext_update_account_ext(self):
         # only tags are checked here due to complications of active directory in automated test

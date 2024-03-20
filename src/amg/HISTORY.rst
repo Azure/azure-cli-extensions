@@ -32,7 +32,23 @@ Release History
 * `az grafana update`: support email through new SMTP configuration arguments
 
 1.2
-+++++
+++++++
 * `az grafana backup`: backup a grafana workspace
 * `az grafana restore`: restore a grafana workspace
 * `az grafana dashboard sync`: sync dashboard between 2 grafana workspaces
+
+1.2.8
+++++++
+* `az grafana create`: support deterministic outbound IP argument
+
+1.2.10
+++++++
+* `az grafana backup`: exclude provisioned dashboards during backup
+
+1.3.0
+++++++
+* `az grafana update`: support Grafana major version argument
+
+1.3.1
+++++++
+* `az grafana delete`: bump azure-mgmt-authorization package version

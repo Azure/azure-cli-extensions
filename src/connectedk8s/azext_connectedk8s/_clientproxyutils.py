@@ -70,9 +70,11 @@ def fetch_pop_publickey_kid(api_server_port, clientproxy_process):
     f = open(os.devnull, 'w')
     sys.stderr = f
 
-    get_publickey_response = make_api_call_with_retries(poppublickey_uri, requestbody, "get", False, consts.Get_PublicKey_Info_Fault_Type,
+    get_publickey_response = make_api_call_with_retries(poppublickey_uri, requestbody, "get", False,
+                                                        consts.Get_PublicKey_Info_Fault_Type,
                                                         'Failed to fetch public key info from clientproxy',
-                                                        "Failed to fetch public key info from client proxy", clientproxy_process)
+                                                        "Failed to fetch public key info from client proxy",
+                                                        clientproxy_process)
 
     sys.stderr = original_stderr
     publickey_info = json.loads(get_publickey_response.text)
@@ -81,7 +83,7 @@ def fetch_pop_publickey_kid(api_server_port, clientproxy_process):
     return kid
 
 
-def fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process):
+def fetch_and_post_at_to_csp(cmd, api_server_port, tenant_id, kid, clientproxy_process):
     req_cnfJSON = {"kid": kid, "xms_ksl": "sw"}
     req_cnf = base64.urlsafe_b64encode(json.dumps(req_cnfJSON).encode('utf-8')).decode('utf-8')
 
@@ -92,21 +94,27 @@ def fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_pr
     token_data = {"token_type": "pop", "key_id": kid, "req_cnf": req_cnf}
     profile = Profile(cli_ctx=cmd.cli_ctx)
     try:
-        credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"], resource=consts.KAP_1P_Server_App_Scope)
+        credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"],
+                                                         resource=consts.KAP_1P_Server_App_Scope)
         accessToken = credential.get_token(consts.KAP_1P_Server_App_Scope, data=token_data)
         jwtToken = accessToken.token
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
                                 summary='Failed to fetch access token using the PoP public key sent by client proxy')
-        close_subprocess_and_raise_cli_error(clientproxy_process, 'Failed to post access token to client proxy' + str(e))
+        close_subprocess_and_raise_cli_error(clientproxy_process,
+                                             'Failed to post access token to client proxy' + str(e))
 
-    jwtTokenData = {"accessToken": jwtToken, "serverId": consts.KAP_1P_Server_AppId, "tenantID": tenantId, "kid": kid}
+    jwtTokenData = {"accessToken": jwtToken, "serverId": consts.KAP_1P_Server_AppId, "tenantID": tenant_id, "kid": kid}
     post_at_uri = f'https://localhost:{api_server_port}/identity/at'
     # Needed to prevent skip tls warning from printing to the console
     original_stderr = sys.stderr
     f = open(os.devnull, 'w')
     sys.stderr = f
-    post_at_response = make_api_call_with_retries(post_at_uri, jwtTokenData, "post", False, consts.PublicKey_Export_Fault_Type, 'Failed to post access token to client proxy', "Failed to post access token to client proxy", clientproxy_process)
+    post_at_response = make_api_call_with_retries(post_at_uri, jwtTokenData, "post", False,
+                                                  consts.PublicKey_Export_Fault_Type,
+                                                  'Failed to post access token to client proxy',
+                                                  "Failed to post access token to client proxy",
+                                                  clientproxy_process)
 
     sys.stderr = original_stderr
     return post_at_response

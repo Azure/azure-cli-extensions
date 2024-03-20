@@ -3,7 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=protected-access
+# pylint: disable=protected-access, raise-missing-from, consider-using-f-string
 
 import argparse
 from collections import defaultdict
@@ -13,9 +13,9 @@ from azure.cli.core.azclierror import ValidationError
 class AddDataFlows(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddDataFlows, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -37,9 +37,9 @@ class AddDataFlows(argparse._AppendAction):
 class AddDestinationsLogAnalytics(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddDestinationsLogAnalytics, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -63,7 +63,7 @@ class AddDestinationsAzureMonitorMetrics(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.destinations_azure_monitor_metrics = action
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -83,9 +83,9 @@ class AddDestinationsAzureMonitorMetrics(argparse.Action):
 class AddDataSourcesPerformanceCounters(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddDataSourcesPerformanceCounters, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -114,9 +114,9 @@ class AddDataSourcesPerformanceCounters(argparse._AppendAction):
 class AddDataSourcesWindowsEventLogs(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddDataSourcesWindowsEventLogs, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):
@@ -140,9 +140,9 @@ class AddDataSourcesWindowsEventLogs(argparse._AppendAction):
 class AddDataSourcesSyslog(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddDataSourcesSyslog, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):

@@ -1,0 +1,113 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - AzureCli/1.8.1 azsdk-python-communication-identity/1.4.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-content-sha256:
+      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+      x-ms-date:
+      - Fri, 15 Dec 2023 10:28:15 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/identities?api-version=2023-10-01
+  response:
+    body:
+      string: '{"identity": {"id": "sanitized"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
+        2021-11-01, 2022-06-01, 2022-10-01, 2023-10-01
+      content-length:
+      - '33'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Dec 2023 10:28:16 GMT
+      ms-cv:
+      - +ebUyj/6M0aD6jEHFU5Dwg.2.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0Pyp8ZQAAAAAVadEMSgN6QZD6yfYUqG2nRE9IMzBFREdFMDExOAA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 81ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"validFrom": null, "validUntil": null, "pstnDialOutEnabled": true, "participants":
+      {"8:acs:022b1cdc-9f13-4d09-aade-58549a930bf8_0000001d-0ce6-aee7-7bfa-553a0d0089df":
+      {"role": "Presenter"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '191'
+      Content-Type:
+      - application/json
+      Repeatability-First-Sent:
+      - Fri, 15 Dec 2023 10:28:16 GMT
+      Repeatability-Request-Id:
+      - a8c94988-9b34-11ee-91bc-a497b10aa3d0
+      User-Agent:
+      - AzureCli/1.8.1 azsdk-python-communication-rooms/1.1.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-content-sha256:
+      - RVx0+o4Nz8TpnlTfE6iEDoJ14rW0uqnv+c78lbJ5Cn4=
+      x-ms-date:
+      - Fri, 15 Dec 2023 10:28:16 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-10-30-preview
+  response:
+    body:
+      string: '{"id": "sanitized", "createdAt": "2023-12-15T10:28:17.6202505+00:00",
+        "validFrom": "2023-12-15T10:28:17.2769341+00:00", "validUntil": "2024-06-12T10:28:17.2769341+00:00",
+        "pstnDialOutEnabled": true}'
+    headers:
+      api-deprecated-versions:
+      - 2021-04-07, 2022-02-01
+      api-supported-versions:
+      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Dec 2023 10:28:17 GMT
+      location:
+      - '99498810410952089'
+      ms-cv:
+      - TEgkO1UWE0Km8+lIUh1cEw.0
+      repeatability-result:
+      - accepted
+      request-context:
+      - appId=
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0QCp8ZQAAAADCqDWc0s53RJBksSOw4jsmSFlEMzBFREdFMDQyMgA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 201
+      message: Created
+version: 1

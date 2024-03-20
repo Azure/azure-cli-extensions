@@ -1,0 +1,20 @@
+{
+    "location": "uaenorth",
+    "publisher_name": "automated-cli-tests-ubuntu-publisher",
+    "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+    "acr_artifact_store_name": "ubuntu-acr",
+    "network_functions": [
+        {
+            "name": "ubuntu-vm-nfdg",
+            "version": "1.0.0",
+            "publisher_offering_location": "uaenorth",
+            "type": "vnf",
+            "multiple_instances": false,
+            "publisher": "automated-cli-tests-ubuntu-publisher",
+            "publisher_resource_group": "{{publisher_resource_group_name}}"
+        }
+    ],
+    "nsd_name": "ubuntu",
+    "nsd_version": "1.0.0",
+    "nsdv_description": "Plain ubuntu VM"
+}

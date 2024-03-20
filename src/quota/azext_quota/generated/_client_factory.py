@@ -17,14 +17,6 @@ def cf_quota_cl(cli_ctx, *_):
                                    subscription_bound=False)
 
 
-def cf_usage(cli_ctx, *_):
-    return cf_quota_cl(cli_ctx).usages
-
-
-def cf_quota(cli_ctx, *_):
-    return cf_quota_cl(cli_ctx).quota
-
-
 def cf_quotarequeststatus(cli_ctx, *_):
     return cf_quota_cl(cli_ctx).quotarequeststatus
 

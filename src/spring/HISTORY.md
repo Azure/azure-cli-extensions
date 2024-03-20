@@ -1,5 +1,46 @@
 Release History
 ===============
+1.20.0
+---
+* Change default Application Configuration Service generation value to Gen2.
+
+1.19.4
+---
+* Enhance managed component log streaming when `-i/--instance` and `--all-instances` parameters are not specified.
+
+1.19.3
+---
+* Add arguments `--refresh-interval` in `spring application-configuration-service create` and `spring application-configuration-service update`.
+
+1.19.2
+---
+* Add runtime version `Java_21`.
+
+1.19.1
+---
+* Create workspace-based Application Insights instead, since classic Application Insights will be retired on 29 February 2024.
+
+1.19.0
+---
+* Add new commands for managed component log streaming `az spring component list`, `az spring component instance list` and `az spring component logs`.
+
+1.18.0
+---
+* Add arguments `--bind-service-registry` in `spring app create`.
+* Add arguments `--bind-application-configuration-service` in `spring app create`.
+
+1.17.0
+---
+* Add arguments `--enable-api-try-out` in `spring api-portal update`
+
+1.16.0
+---
+* Add arguments `--enable-planned-maintenance`, `--planned-maintenance-day` and `--planned-maintenance-start-hour` in `az spring update` to support configuring Planned Maintenance.
+
+1.15.1
+---
+* Add arguments `--apms` for Spring Cloud Gateway.
+
 1.15.0
 ---
 * Add arguments `--type` and `--git-sub-path` in `spring application-accelerator customized-accelerator create` and `spring application-accelerator customized-accelerator update` for accelerator fragment support.
@@ -7,6 +48,7 @@ Release History
 * Add argument `--enable-auto-sync` in `az spring certificate add`.
 * Add new command `az spring certificate update` to update a certificate.
 * Add new command `az spring list-support-server-versions` to list all supported server versions.
+* Fix `list-marketplace-plan` command.
 
 1.14.3
 ---

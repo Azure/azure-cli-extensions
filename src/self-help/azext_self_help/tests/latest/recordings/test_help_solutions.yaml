@@ -1,0 +1,418 @@
+interactions:
+- request:
+    body: '{"properties": {"parameters": {}, "triggerCriteria": [{"name": "SolutionId",
+      "value": "Demo2InsightV2"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help solution create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '106'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --solution-name --trigger-criteria --parameters --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
+        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d941b006-8445-4ecd-8d7d-53f2ccbcc9f2?api-version=2023-09-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '541'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 15:56:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d941b006-8445-4ecd-8d7d-53f2ccbcc9f2?api-version=2023-09-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help solution create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --solution-name --trigger-criteria --parameters --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d941b006-8445-4ecd-8d7d-53f2ccbcc9f2?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d941b006-8445-4ecd-8d7d-53f2ccbcc9f2","name":"d941b006-8445-4ecd-8d7d-53f2ccbcc9f2","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '231'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 15:56:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help solution create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --solution-name --trigger-criteria --parameters --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
+        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '541'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 15:56:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '498'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help solution show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --solution-name --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
+        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '541'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 15:56:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help solution update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --solution-name --trigger-criteria --parameters --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
+        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '541'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 15:56:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"content": "<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n",
+      "parameters": {"SearchText": "CanNotRDP", "SymptomId": "KeyVaultVaultNotFoundInsight"},
+      "provisioningState": "Succeeded", "replacementMaps": {"diagnostics": [], "webResults":
+      [{"replacementKey": "<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}]}, "solutionId":
+      "ApolloAzureKBResult_", "title": "Recommended Article(s)", "triggerCriteria":
+      [{"name": "ReplacementKey", "value": "<!--56ee7509-92e1-4b9e-97c2-dda53065294c-->"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help solution update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '499'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --solution-name --trigger-criteria --parameters --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
+        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}],"metricsBasedCharts":[]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/7c79a808-1811-4203-b49a-49764b5027c2?api-version=2023-09-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '565'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 15:56:24 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/7c79a808-1811-4203-b49a-49764b5027c2?api-version=2023-09-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '498'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help solution update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --solution-name --trigger-criteria --parameters --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/7c79a808-1811-4203-b49a-49764b5027c2?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/7c79a808-1811-4203-b49a-49764b5027c2","name":"7c79a808-1811-4203-b49a-49764b5027c2","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '231'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 15:56:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help solution update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --solution-name --trigger-criteria --parameters --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
+        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}],"metricsBasedCharts":[]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '565'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 15:56:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '497'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

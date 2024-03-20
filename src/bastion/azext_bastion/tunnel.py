@@ -19,21 +19,21 @@ import logging as logs
 from contextlib import closing
 from datetime import datetime
 from threading import Thread
+import requests
+import urllib3
 
 import websocket
 from websocket import create_connection, WebSocket
 
 from msrestazure.azure_exceptions import CloudError
-from .BastionServiceConstants import BastionSku
-
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import should_disable_connection_verify
 
-import requests
-import urllib3
-
 from knack.util import CLIError
 from knack.log import get_logger
+
+from .BastionServiceConstants import BastionSku
+
 logger = get_logger(__name__)
 
 
@@ -96,7 +96,7 @@ class TunnelServer:
         logger.debug("Content: %s", str(content))
         web_address = f"https://{self.bastion_endpoint}/api/tokens"
         response = requests.post(web_address, data=content, headers=custom_header,
-                                 verify=(not should_disable_connection_verify()))
+                                 verify=not should_disable_connection_verify())
         response_json = None
 
         if response.content is not None:
@@ -121,7 +121,8 @@ class TunnelServer:
             self.client, _address = self.sock.accept()
 
             auth_token = self._get_auth_token()
-            if self.bastion['sku']['name'] == BastionSku.QuickConnect.name or self.bastion['sku']['name'] == BastionSku.Developer.name:
+            if self.bastion['sku']['name'] == BastionSku.QuickConnect.name or \
+               self.bastion['sku']['name'] == BastionSku.Developer.name:
                 host = f"wss://{self.bastion_endpoint}/omni/webtunnel/{auth_token}"
             else:
                 host = f"wss://{self.bastion_endpoint}/webtunnelv2/{auth_token}?X-Node-Id={self.node_id}"
@@ -204,7 +205,7 @@ class TunnelServer:
 
             web_address = f"https://{self.bastion_endpoint}/api/tokens/{self.last_token}"
             response = requests.delete(web_address, headers=custom_header,
-                                       verify=(not should_disable_connection_verify()))
+                                       verify=not should_disable_connection_verify())
             if response.status_code == 404:
                 logger.info('Session already deleted')
             elif response.status_code not in [200, 204]:

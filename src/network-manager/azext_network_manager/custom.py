@@ -9,8 +9,14 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
+# pylint: disable=protected-access
 from knack.util import CLIError
 from .aaz.latest.network.manager.group.static_member import Create as _GroupStaticMemberCreate
+from .aaz.latest.network.manager.scope_connection import Create as _ScopeConnectionCreate
+from .aaz.latest.network.manager.connection.management_group import Create as _ConnectionManagementGroupCreate
+from .aaz.latest.network.manager.connection.subscription import Create as _ConnectionSubscriptionCreate
+from .aaz.latest.network.manager.connect_config import Create as _ConnectConfigCreate
+from .aaz.latest.network.manager.connect_config import Update as _ConnectConfigUpdate
 
 
 def network_manager_create(cmd,
@@ -75,7 +81,6 @@ def network_manager_connect_config_create(cmd,
                                           delete_existing_peering=None):
     if connectivity_topology == 'HubAndSpoke' and hub is None:
         raise CLIError("if 'HubAndSpoke' is the topolopy seleted,'--hub' is required")
-    from .aaz.latest.network.manager.connect_config import Create as _ConnectConfigCreate
     connectivity_configuration = {}
     connectivity_configuration['resource_group'] = resource_group_name
     connectivity_configuration['network_manager_name'] = network_manager_name
@@ -88,7 +93,7 @@ def network_manager_connect_config_create(cmd,
     connectivity_configuration['applies_to_groups'] = applies_to_groups
     if delete_existing_peering is not None:
         connectivity_configuration['delete_existing_peering'] = 'True' if delete_existing_peering else 'False'
-    return _ConnectConfigCreate(cli_ctx=cmd.cli_ctx)(command_args=connectivity_configuration)
+    return ConnectConfigCreate(cli_ctx=cmd.cli_ctx)(command_args=connectivity_configuration)
 
 
 def network_manager_connect_config_update(cmd,
@@ -100,7 +105,6 @@ def network_manager_connect_config_update(cmd,
                                           is_global=None,
                                           applies_to_groups=None,
                                           delete_existing_peering=None):
-    from .aaz.latest.network.manager.connect_config import Update as _ConnectConfigUpdate
     connectivity_configuration = {}
     connectivity_configuration['resource_group'] = resource_group_name
     connectivity_configuration['network_manager_name'] = network_manager_name
@@ -115,7 +119,7 @@ def network_manager_connect_config_update(cmd,
         connectivity_configuration['applies_to_groups'] = applies_to_groups
     if delete_existing_peering is not None:
         connectivity_configuration['delete_existing_peering'] = 'True' if delete_existing_peering else 'False'
-    return _ConnectConfigUpdate(cli_ctx=cmd.cli_ctx)(command_args=connectivity_configuration)
+    return ConnectConfigUpdate(cli_ctx=cmd.cli_ctx)(command_args=connectivity_configuration)
 
 
 def network_manager_admin_rule_collection_create(cmd,
@@ -180,10 +184,10 @@ def network_manager_admin_rule_create(cmd,
     rule['configuration_name'] = configuration_name
     rule['rule_collection_name'] = rule_collection_name
     rule['rule_name'] = rule_name
-    if kind == "Default":
+    if kind == "Default" or flag is not None:
         rule['default'] = {}
         rule['default']['flag'] = flag
-    elif kind == "Custom":
+    else:
         rule['custom'] = {}
         rule['custom']['description'] = description
         rule['custom']['protocol'] = protocol
@@ -221,11 +225,11 @@ def network_manager_admin_rule_update(cmd,
     rule['configuration_name'] = configuration_name
     rule['rule_collection_name'] = rule_collection_name
     rule['rule_name'] = rule_name
-    if kind == "Default":
+    if kind == "Default" or flag is not None:
         rule['default'] = {}
         if flag is not None:
             rule['default']['flag'] = flag
-    elif kind == "Custom":
+    else:
         rule['custom'] = {}
         if description is not None:
             rule['custom']['description'] = description
@@ -254,6 +258,57 @@ class GroupStaticMemberCreate(_GroupStaticMemberCreate):
         from azure.cli.core.aaz import AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.resource_id._fmt = AAZResourceIdArgFormat(
-            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}",
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/"
+                     "virtualNetworks/{}",
+        )
+        args_schema.resource_id._required = True
+        return args_schema
+
+
+class ScopeConnectionCreate(_ScopeConnectionCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.resource_id._required = True
+        args_schema.tenant_id._required = True
+        return args_schema
+
+
+class ConnectionSubscriptionCreate(_ConnectionSubscriptionCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.network_manager_id._required = True
+        return args_schema
+
+
+class ConnectionManagementGroupCreate(_ConnectionManagementGroupCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.network_manager_id._required = True
+        return args_schema
+
+
+class ConnectConfigCreate(_ConnectConfigCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.hubs._element.resource_id._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/"
+                     "virtualNetworks/{}",
+        )
+        return args_schema
+
+
+class ConnectConfigUpdate(_ConnectConfigUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.hubs._element.resource_id._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/"
+                     "virtualNetworks/{}",
         )
         return args_schema

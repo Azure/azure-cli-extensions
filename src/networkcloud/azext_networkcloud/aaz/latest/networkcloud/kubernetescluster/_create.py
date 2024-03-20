@@ -13,18 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new Kubernetes cluster or update the properties of the existing one.
 
     :example: Create or update Kubernetes cluster
-        az networkcloud kubernetescluster create --name "kubernetesClusterName" --resource-group "resourceGroupName" --location "location" --kubernetes-version "1.25.4" --extended-location name="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type=CustomLocation --aad-configuration admin-group-object-ids=["f110271b-XXXX-4163-9b99-214d91660f0e"] --admin-username "azureuser" --ssh-key-values "ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm" --initial-agent-pool-configurations "[{count:1,mode:'System',name:'systemPool-1',vmSkuName:'NC_G2_v1',agentOptions:{hugepagesCount:96,hugepagesSize:1G},upgradeSettings:{maxSurge:'10%'},adminUsername:'azureuser',ssh-key-values:['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']}]" --control-plane-node-configuration count=1 vmSkuName='NC_G2_v1' adminUsername='azureuser' ssh-key-values="['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']" --network-configuration cloud-services-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cloudServicesNetworkName" cni-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName" pod-cidrs=["10.244.0.0/16"] service-cidrs=["10.96.0.0/16"] dns-service-ip="10.96.0.10" attached-network-configuration.l2-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l2Networks/l2NetworkName',pluginType:'DPDK'}]" attached-network-configuration.l3-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName',pluginType:'SRIOV',ipamEnabled:'False'}]" attached-network-configuration.trunked-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/trunkedNetworks/trunkedNetworkName',pluginType:'MACVLAN'}]" bgp-service-load-balancer-configuration.bgp-advertisements="[{advertiseToFabric:'True',communities:['64512:100'],ipAddressPools:['pool1'],peers:['peer1']}]" bgp-service-load-balancer-configuration.fabric-peering-enabled="True" bgp-service-load-balancer-configuration.bgp-peers="[{bfdEnabled:'False',bgpMultiHop:'False',holdTime:'P300s',keepAliveTime:'P300s',myAsn:64512,name:'peer1',peerAddress:'203.0.113.254',peerAsn:64497,peerPort:179}]" bgp-service-load-balancer-configuration.ip-address-pools="[{addresses:['198.51.102.0/24'],autoAssign:'True',name:'pool1',onlyUseHostIps:'True'}]"
+        az networkcloud kubernetescluster create --name "kubernetesClusterName" --resource-group "resourceGroupName" --location "location" --kubernetes-version "1.XX.Y" --extended-location name="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type=CustomLocation --aad-configuration admin-group-object-ids=["f110271b-XXXX-4163-9b99-214d91660f0e"] --admin-username "azureuser" --ssh-key-values "ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm" --initial-agent-pool-configurations "[{count:1,mode:'System',name:'systemPool-1',vmSkuName:'NC-XXXXX',agentOptions:{hugepagesCount:96,hugepagesSize:1G},upgradeSettings:{maxSurge:'10%'},adminUsername:'azureuser',ssh-key-values:['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']}]" --control-plane-node-configuration count=1 vmSkuName='NC-YYYYY' adminUsername='azureuser' ssh-key-values="['ssh-rsa AAAAB3NzaC1yc2EAAAADAQAt5SjWU= admin@vm']" --network-configuration cloud-services-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/cloudServicesNetworks/cloudServicesNetworkName" cni-network-id="/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName" pod-cidrs=["10.244.0.0/16"] service-cidrs=["10.96.0.0/16"] dns-service-ip="10.96.0.10" attached-network-configuration.l2-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l2Networks/l2NetworkName',pluginType:'DPDK'}]" attached-network-configuration.l3-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName',pluginType:'SRIOV',ipamEnabled:'False'}]" attached-network-configuration.trunked-networks="[{networkId:'/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/trunkedNetworks/trunkedNetworkName',pluginType:'MACVLAN'}]" bgp-service-load-balancer-configuration.bgp-advertisements="[{advertiseToFabric:'True',communities:['64512:100'],ipAddressPools:['pool1'],peers:['peer1']}]" bgp-service-load-balancer-configuration.fabric-peering-enabled="True" bgp-service-load-balancer-configuration.bgp-peers="[{bfdEnabled:'False',bgpMultiHop:'False',holdTime:'P300s',keepAliveTime:'P300s',myAsn:64512,name:'peer1',peerAddress:'203.0.113.254',peerAsn:64497,peerPort:179}]" bgp-service-load-balancer-configuration.ip-address-pools="[{addresses:['198.51.102.0/24'],autoAssign:'True',name:'pool1',onlyUseHostIps:'True'}]"
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -339,12 +340,12 @@ class Create(AAZCommand):
             options=["bgp-service-load-balancer-configuration"],
             help="The configuration of the BGP service load balancer for this Kubernetes cluster.",
         )
-        network_configuration.cloud_services_network_id = AAZStrArg(
+        network_configuration.cloud_services_network_id = AAZResourceIdArg(
             options=["cloud-services-network-id"],
             help="The resource ID of the associated Cloud Services network.",
             required=True,
         )
-        network_configuration.cni_network_id = AAZStrArg(
+        network_configuration.cni_network_id = AAZResourceIdArg(
             options=["cni-network-id"],
             help="The resource ID of the Layer 3 network that is used for creation of the Container Networking Interface network.",
             required=True,
@@ -587,7 +588,7 @@ class Create(AAZCommand):
         cls._args_l2_network_attachment_configuration_create = AAZObjectArg()
 
         l2_network_attachment_configuration_create = cls._args_l2_network_attachment_configuration_create
-        l2_network_attachment_configuration_create.network_id = AAZStrArg(
+        l2_network_attachment_configuration_create.network_id = AAZResourceIdArg(
             options=["network-id"],
             help="The resource ID of the network that is being configured for attachment.",
             required=True,
@@ -621,7 +622,7 @@ class Create(AAZCommand):
             default="False",
             enum={"False": "False", "True": "True"},
         )
-        l3_network_attachment_configuration_create.network_id = AAZStrArg(
+        l3_network_attachment_configuration_create.network_id = AAZResourceIdArg(
             options=["network-id"],
             help="The resource ID of the network that is being configured for attachment.",
             required=True,
@@ -671,7 +672,7 @@ class Create(AAZCommand):
         cls._args_trunked_network_attachment_configuration_create = AAZObjectArg()
 
         trunked_network_attachment_configuration_create = cls._args_trunked_network_attachment_configuration_create
-        trunked_network_attachment_configuration_create.network_id = AAZStrArg(
+        trunked_network_attachment_configuration_create.network_id = AAZResourceIdArg(
             options=["network-id"],
             help="The resource ID of the network that is being configured for attachment.",
             required=True,
@@ -767,7 +768,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

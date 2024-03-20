@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a new network manager connectivity configuration
 
     :example: Create/Update Azure Virtual Network Manager Connectivity Configuration
-        az network manager connect-config create --configuration-name "myTestConnectivityConfig" --description "Sample Configuration" --applies-to-groups group-connectivity="None" is- global=false network-group-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/pr oviders/Microsoft.Network/networkManagers/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub resource-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Micr osoft.Network/virtualNetworks/myTestConnectivityConfig" resource- type="Microsoft.Network/virtualNetworks" --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
+        az network manager connect-config create --configuration-name "myTestConnectivityConfig" --description "Sample Configuration" --applies-to-groups group-connectivity="None" is-global=false network-group-id="/subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManagers/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub resource-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Micr osoft.Network/virtualNetworks/myTestConnectivityConfig" resource- type="Microsoft.Network/virtualNetworks" --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
     """
 
     _aaz_info = {
@@ -101,13 +101,13 @@ class Create(AAZCommand):
         _element = cls._args_schema.applies_to_groups.Element
         _element.group_connectivity = AAZStrArg(
             options=["group-connectivity"],
-            help="Group connectivity type.",
+            help="Group connectivity type. Only required if topology is Hub and Spoke.",
             required=True,
             enum={"DirectlyConnected": "DirectlyConnected", "None": "None"},
         )
         _element.is_global = AAZStrArg(
             options=["is-global"],
-            help="Flag if global is supported.",
+            help="Flag if global is supported. Only required if topology is Hub and Spoke.",
             enum={"False": "False", "True": "True"},
         )
         _element.network_group_id = AAZStrArg(
@@ -117,7 +117,7 @@ class Create(AAZCommand):
         )
         _element.use_hub_gateway = AAZStrArg(
             options=["use-hub-gateway"],
-            help="Flag if need to use hub gateway.",
+            help="Flag if need to use hub gateway. Only required if topology is Hub and Spoke.",
             enum={"False": "False", "True": "True"},
         )
 
@@ -131,7 +131,7 @@ class Create(AAZCommand):
         )
         _element.resource_type = AAZStrArg(
             options=["resource-type"],
-            help="Resource Type.",
+            help="Resource Type, suggested value(s): 'Microsoft.Network/virtualNetworks'",
         )
         return cls._args_schema
 

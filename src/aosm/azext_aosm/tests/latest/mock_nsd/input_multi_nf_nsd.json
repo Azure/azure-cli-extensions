@@ -1,0 +1,29 @@
+{
+    "publisher_name": "jamie-publisher",
+    "publisher_resource_group_name": "Jamie-multi-NF",
+    "acr_artifact_store_name": "acr",
+    "location": "eastus",
+    "network_functions": [
+        {
+            "publisher": "reference-publisher",
+            "publisher_resource_group": "Reference-publisher",
+            "name": "nginx-nfdg",
+            "version": "1.0.0",
+            "publisher_offering_location": "eastus",
+            "type": "cnf",
+            "multiple_instances": "False"
+        },
+        {
+            "publisher": "reference-publisher",
+            "publisher_resource_group": "Reference-publisher",
+            "name": "ubuntu-nfdg",
+            "version": "1.0.0",
+            "publisher_offering_location": "eastus",
+            "type": "vnf",
+            "multiple_instances": false
+        }
+    ],
+    "nsd_name": "multinf",
+    "nsd_version": "1.0.1",
+    "nsdv_description": "Test deploying multiple NFs"
+}

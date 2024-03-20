@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a monitor resource.
 
     :example: Create monitor
-        az elastic monitor create -n monitor-name -g rg --user-info "{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:alice@microsoft.com}" --sku "{name:ess-monthly-consumption_Monthly}"
+        az elastic monitor create -n monitor-name -g rg --user-info "{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:alice@microsoft.com}" --sku "{name:ess-consumption-2024_Monthly}"
     """
 
     _aaz_info = {
@@ -67,7 +67,8 @@ class Create(AAZCommand):
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
             arg_group="Body",
-            help="SKU of the monitor resource.",
+            help={"short-summary": "SKU of the monitor resource.", "long-summary": "The SKU depends on the Elasticsearch Plans available for your account and is a combination of PlanID_Term.\nEx: If the plan ID is \"planXYZ\" and term is \"Yearly\", the SKU will be \"planXYZ_Yearly\".\nYou may find your eligible plans at https://portal.azure.com/#view/Microsoft_Azure_Marketplace/GalleryItemDetailsBladeNopdl/id/elastic.ec-azure-pp or in the online documentation at https://azuremarketplace.microsoft.com/en-us/marketplace/apps/elastic.ec-azure-pp?tab=PlansAndPrice for more details or in case of any issues with the SKU."},
+            is_experimental=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],

@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from datetime import datetime
 import locale
 import re
 from azure.cli.core.azclierror import (
@@ -34,7 +35,33 @@ or GitHub source control definition (--git-hub) should be set."""
         raise RequiredArgumentMissingError(error_message)
 
 
+def validate_pool_create(
+    virtual_network_type, network_connection_name, managed_virtual_network_regions
+):
+    if (
+        not has_value(managed_virtual_network_regions)
+        and virtual_network_type == "Managed"
+    ):
+        error_message = """When virtual-network-type is set to "Managed", \
+managed virtual network regions (--managed-virtual-network-regions) should be set."""
+        raise RequiredArgumentMissingError(error_message)
+    if not has_value(network_connection_name) and (
+        virtual_network_type == "Unmanaged" or not has_value(virtual_network_type)
+    ):
+        error_message = """When virtual-network-type is not used or set to "Unmanaged", \
+a network connection name (--network-connection) should be set."""
+        raise RequiredArgumentMissingError(error_message)
+    if has_value(managed_virtual_network_regions) and (
+        virtual_network_type == "Unmanaged" or not has_value(virtual_network_type)
+    ):
+        error_message = """When virtual-network-type is not used or set to "Unmanaged", \
+managed virtual network regions (--managed-virtual-network-regions) should not be set."""
+        raise RequiredArgumentMissingError(error_message)
+
+
 # Data plane
+
+
 def validate_dev_box_list(namespace):
     if namespace.project_name is not None and namespace.user_id is None:
         raise RequiredArgumentMissingError(
@@ -82,3 +109,15 @@ def validate_env_name_already_exists(env_iterator, name, user_id, project):
             error_message = f"""An environment with the name '{name}' \
 already exists for the user-id '{user_id}' in this project '{project}'."""
             raise InvalidArgumentValueError(error_message)
+
+
+def is_iso8601(namespace):
+    if namespace.expiration_date is None:
+        return
+    try:
+        datetime.fromisoformat(namespace.expiration_date)
+        return
+    except ValueError as exception:
+        error_message = f"""The expiration date is invalid '{namespace.expiration_date}' \
+it must be in ISO 8601 format. For example: 2023-12-30T22:35:00+00:00"""
+        raise InvalidArgumentValueError(error_message) from exception

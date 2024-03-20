@@ -2,6 +2,15 @@
 
 Release History
 ===============
+1.8.0b2
+++++++
+* Add Email communication resource CRUD operations
+* Add Domain resource CRUD operations
+* Add Sender username CRUD operations
+
+1.8.0b1
+++++++
+* Update ACS Rooms to use 1.1.0b1 version
 
 1.7.2b1
 ++++++

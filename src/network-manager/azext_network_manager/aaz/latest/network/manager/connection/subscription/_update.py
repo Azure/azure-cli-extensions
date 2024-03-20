@@ -62,12 +62,6 @@ class Update(AAZCommand):
             help="A description of the network manager connection.",
             nullable=True,
         )
-        _args_schema.network_manager_id = AAZStrArg(
-            options=["--network-manager", "--network-manager-id"],
-            arg_group="Properties",
-            help="Network Manager Id.",
-            nullable=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -286,7 +280,6 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("networkManagerId", AAZStrType, ".network_manager_id")
 
             return _instance_value
 

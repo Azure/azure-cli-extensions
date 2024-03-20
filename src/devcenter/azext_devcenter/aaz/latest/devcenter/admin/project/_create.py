@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -49,6 +49,11 @@ class Create(AAZCommand):
             options=["-n", "--name"],
             help="The name of the project.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -86,6 +91,11 @@ class Create(AAZCommand):
             options=["--dev-center-id"],
             arg_group="Properties",
             help="Resource ID of an associated dev center.",
+        )
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="The display name of the project.",
         )
         _args_schema.max_dev_boxes_per_user = AAZIntArg(
             options=["--max-dev-boxes-per-user"],
@@ -178,7 +188,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -211,6 +221,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("devCenterId", AAZStrType, ".dev_center_id")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("maxDevBoxesPerUser", AAZIntType, ".max_dev_boxes_per_user")
 
             tags = _builder.get(".tags")
@@ -266,6 +277,9 @@ class Create(AAZCommand):
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
             )
             properties.max_dev_boxes_per_user = AAZIntType(
                 serialized_name="maxDevBoxesPerUser",

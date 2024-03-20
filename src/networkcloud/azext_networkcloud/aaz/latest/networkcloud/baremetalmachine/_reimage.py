@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine reimage",
+    is_preview=True,
 )
 class Reimage(AAZCommand):
     """Reimage the provided bare metal machine.
@@ -22,9 +23,9 @@ class Reimage(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/reimage", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/reimage", "2023-10-01-preview"],
         ]
     }
 
@@ -91,15 +92,6 @@ class Reimage(AAZCommand):
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
@@ -149,7 +141,7 @@ class Reimage(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -163,9 +155,6 @@ class Reimage(AAZCommand):
                 ),
             }
             return parameters
-
-        def on_204(self, session):
-            pass
 
         def on_200_201(self, session):
             data = self.deserialize_http_content(session)

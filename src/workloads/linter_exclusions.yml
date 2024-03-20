@@ -26,3 +26,16 @@ workloads sap-application-server-instance stop:
     soft_stop_timeout_seconds:
       rule_exclusions:
       - option_length_too_long
+workloads sap-virtual-instance create:
+  parameters:
+    managed_resources_network_access_type:
+      rule_exclusions:
+      - option_length_too_long
+workloads sap-virtual-instance update:
+  parameters:
+    managed_resources_network_access_type:
+      rule_exclusions:
+      - option_length_too_long
+    managed_resource_group_configuration:
+      rule_exclusions:
+      - option_length_too_long

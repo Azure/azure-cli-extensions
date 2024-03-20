@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* `az network firewall policy create/update`: Add parameter `--explicit-proxy`
+
 1.0.0
 ++++++
 * [Fix] `az network firewall threat-intel-allowlist create/update/delete`: Remove the argument `--ids` as sub command should not support it.

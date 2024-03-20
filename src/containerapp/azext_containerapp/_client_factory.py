@@ -93,7 +93,7 @@ def handle_non_404_exception(e):
 def handle_non_404_status_code_exception(e):
     import json
 
-    if hasattr(e, 'status_code') and e.status_code == 404:
+    if (hasattr(e, 'status_code') and e.status_code == 404) or (hasattr(e, 'response') and hasattr(e.response, 'status_code') and e.response.status_code == 404):
         return e
 
     string_err = str(e)
@@ -143,7 +143,14 @@ def custom_location_client_factory(cli_ctx, api_version=None, subscription_id=No
 
 
 def k8s_extension_client_factory(cli_ctx, subscription_id=None):
-    from azext_containerapp.vendored_sdks.kubernetesconfiguration import SourceControlConfigurationClient
+    from .vendored_sdks.kubernetesconfiguration import SourceControlConfigurationClient
 
     r = get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient, subscription_id=subscription_id)
     return r.extensions
+
+
+def connected_k8s_client_factory(cli_ctx, subscription_id=None):
+    from .vendored_sdks.hybridkubernetes import ConnectedKubernetesClient
+
+    r = get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=subscription_id)
+    return r.connected_cluster

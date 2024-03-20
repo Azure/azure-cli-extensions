@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import unittest
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 POOL_DEFAULT = "--service-level 'Premium' --size 4398046511104"
@@ -11,6 +12,7 @@ POOL_DEFAULT = "--service-level 'Premium' --size 4398046511104"
 
 
 class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
+    @unittest.skip('This command is available from main module now')
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_create_delete_pool(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)
@@ -40,6 +42,7 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
         pool_list = self.cmd("netappfiles pool list --resource-group {rg} -a %s" % account_name).get_output_in_json()
         assert len(pool_list) == 0
 
+    @unittest.skip('This command is available from main module now')
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_list_pools(self):
         account_name = self.create_random_name(prefix='cli', length=24)
@@ -57,6 +60,7 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
         pool_list = self.cmd("netappfiles pool list --resource-group {rg} -a '%s'" % account_name).get_output_in_json()
         assert len(pool_list) == 0
 
+    @unittest.skip('This command is available from main module now')
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_get_pool_by_name(self):
         account_name = self.create_random_name(prefix='cli', length=24)
@@ -69,6 +73,7 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
         pool_from_id = self.cmd("az netappfiles pool show --ids %s" % pool['id']).get_output_in_json()
         assert pool_from_id['name'] == account_name + '/' + pool_name
 
+    @unittest.skip('This command is available from main module now')
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_update_pool(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)

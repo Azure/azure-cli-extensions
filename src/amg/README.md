@@ -1,5 +1,5 @@
 # Microsoft Azure CLI 'amg' Extension
-This is an extension to manage Azure Manaaged Grafana instances
+This is an extension to manage Azure Managed Grafana instances
 
 ## How to use ##
 Install this extension using the below CLI command

@@ -34,8 +34,8 @@ class VmwareAddonScenarioTest(ScenarioTest):
         # Create a VR addon
         self.cmd('az vmware addon vr create -g {rg} -c {privatecloud} --vrs-count 1')
 
-        # # Update a VR addon
-        # self.cmd('az vmware addon vr update -g {rg} -c {privatecloud} --vrs-count 1')
+        # Update a VR addon
+        self.cmd('az vmware addon vr update -g {rg} -c {privatecloud} --vrs-count 1')
 
         # List all existing addon
         count = len(self.cmd('vmware addon list -g {rg} -c {privatecloud}').get_output_in_json())
@@ -54,8 +54,8 @@ class VmwareAddonScenarioTest(ScenarioTest):
         # Create a SRM addon
         self.cmd('az vmware addon srm create -g {rg} -c {privatecloud} --license-key "41915-178A8-FF4A4-DB683-6D735"')
 
-        # # Update a SRM addon
-        # self.cmd('az vmware addon srm update -g {rg} -c {privatecloud} --license-key "41915-178A8-FF4A4-DB683-6D735"')
+        # Update a SRM addon
+        self.cmd('az vmware addon srm update -g {rg} -c {privatecloud} --license-key "41915-178A8-FF4A4-DB683-6D735"')
 
         # List all existing addon
         count = len(self.cmd('vmware addon list -g {rg} -c {privatecloud}').get_output_in_json())
@@ -82,8 +82,8 @@ class VmwareAddonScenarioTest(ScenarioTest):
         # Create an Arc addon
         self.cmd('az vmware addon arc create -g {rg} -c {privatecloud} --vcenter vcenterId')
 
-        # # Update an Arc addon
-        # self.cmd('az vmware addon arc update -g {rg} -c {privatecloud} --vcenter vcenterId')
+        # Update an Arc addon
+        self.cmd('az vmware addon arc update -g {rg} -c {privatecloud} --vcenter vcenterId')
 
         # Show a Arc addon
         self.cmd('az vmware addon arc show -g {rg} -c {privatecloud}')
@@ -122,5 +122,5 @@ class VmwareAddonScenarioTest(ScenarioTest):
 
         # List all existing addon
         self.cmd('vmware addon list -g {rg} -c {privatecloud}', checks=[
-            self.check('length(@)', 0)
+            self.check('length(@)', 1)
         ])

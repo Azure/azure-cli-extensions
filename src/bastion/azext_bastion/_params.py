@@ -38,6 +38,8 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument("configure", help="Flag to configure RDP session.", action="store_true")
         c.argument("disable_gateway", help="Flag to disable access through RD gateway.",
                    arg_type=get_three_state_flag())
+        c.argument("auth_type", help="Auth type to use for RDP connections.", required=False,
+                   options_list=["--auth-type"])
         c.argument('enable_mfa', help='Enable RDS auth for MFA if supported by the target machine.',
                    arg_type=get_three_state_flag())
     with self.argument_context("network bastion tunnel") as c:

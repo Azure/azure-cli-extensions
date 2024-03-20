@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided virtual machine.
@@ -22,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -123,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -386,7 +387,7 @@ class Show(AAZCommand):
 
             vm_image_repository_credentials = cls._schema_on_200.properties.vm_image_repository_credentials
             vm_image_repository_credentials.password = AAZStrType(
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             vm_image_repository_credentials.registry_url = AAZStrType(
                 serialized_name="registryUrl",

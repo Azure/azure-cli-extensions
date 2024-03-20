@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2022-05-01", "properties.identitySources[]"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-03-01", "properties.identitySources[]"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Update(AAZCommand):
             options=["-c", "--private-cloud"],
             help="Name of the private cloud",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -215,7 +218,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -314,7 +317,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -489,6 +492,9 @@ class _UpdateHelper:
         cls._build_schema_circuit_read(properties.circuit)
         properties.encryption = AAZObjectType()
         properties.endpoints = AAZObjectType()
+        properties.extended_network_blocks = AAZListType(
+            serialized_name="extendedNetworkBlocks",
+        )
         properties.external_cloud_links = AAZListType(
             serialized_name="externalCloudLinks",
             flags={"read_only": True},
@@ -594,6 +600,9 @@ class _UpdateHelper:
         endpoints.vcsa = AAZStrType(
             flags={"read_only": True},
         )
+
+        extended_network_blocks = _schema_private_cloud_read.properties.extended_network_blocks
+        extended_network_blocks.Element = AAZStrType()
 
         external_cloud_links = _schema_private_cloud_read.properties.external_cloud_links
         external_cloud_links.Element = AAZStrType()

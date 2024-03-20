@@ -13,7 +13,7 @@ from azext_containerapp.tests.latest.common import (
     clean_up_test_file,
     TEST_DIR, TEST_LOCATION)
 
-from .utils import create_containerapp_env
+from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerappComposePreviewResourceSettingsScenarioTest(ContainerappComposePreviewScenarioTest):
@@ -21,33 +21,32 @@ class ContainerappComposePreviewResourceSettingsScenarioTest(ContainerappCompose
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_resources_from_service_cpus(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        compose_text = """
+        compose_text = f"""
 services:
   foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     cpus: 1.25
+    mem_reservation: 2.5g
     expose:
       - "3000"
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
-        env_name = self.create_random_name(prefix='containerapp-compose', length=24)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.kwargs.update({
-            'environment': env_name,
+            'environment': env,
             'compose': compose_file_name,
         })
-
-        create_containerapp_env(self, env_name, resource_group)
 
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check('[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -55,8 +54,8 @@ services:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_resources_from_deploy_cpu(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        compose_text = """
+        app = self.create_random_name(prefix='composewithres', length=24)
+        compose_text = f"""
 services:
   foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
@@ -64,27 +63,27 @@ services:
       resources:
         reservations:
           cpus: 1.25
+          memory: 2.5g
     expose:
       - "3000"
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
-        env_name = self.create_random_name(prefix='containerapp-compose', length=24)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.kwargs.update({
-            'environment': env_name,
+            'environment': env,
             'compose': compose_file_name,
         })
-
-        create_containerapp_env(self, env_name, resource_group)
 
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check('[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -92,8 +91,7 @@ services:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_resources_from_both_cpus_and_deploy_cpu(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        compose_text = """
+        compose_text = f"""
 services:
   foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
@@ -102,26 +100,26 @@ services:
       resources:
         reservations:
           cpus: 1.25
+          memory: 2.5g
     expose:
       - "3000"
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
-        env_name = self.create_random_name(prefix='containerapp-compose', length=24)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.kwargs.update({
-            'environment': env_name,
+            'environment': env,
             'compose': compose_file_name,
         })
-
-        create_containerapp_env(self, env_name, resource_group)
         
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check('[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)

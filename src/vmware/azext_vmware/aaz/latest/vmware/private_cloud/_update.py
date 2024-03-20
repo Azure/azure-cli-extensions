@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-03-01"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Update(AAZCommand):
             help="Name of the private cloud",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -99,6 +102,12 @@ class Update(AAZCommand):
             options=["--encryption"],
             arg_group="Properties",
             help="Customer managed key encryption, can be enabled or disabled",
+            nullable=True,
+        )
+        _args_schema.extended_network_blocks = AAZListArg(
+            options=["--ext-nw-blocks", "--extended-network-blocks"],
+            arg_group="Properties",
+            help="Array of additional networks noncontiguous with networkBlock. Networks must be unique and non-overlapping across VNet in your subscription, on-premise, and this privateCloud networkBlock attribute. Make sure the CIDR format conforms to (A.B.C.D/X).",
             nullable=True,
         )
         _args_schema.identity_sources = AAZListArg(
@@ -160,6 +169,11 @@ class Update(AAZCommand):
         key_vault_properties.key_version = AAZStrArg(
             options=["key-version"],
             help="The version of the key.",
+            nullable=True,
+        )
+
+        extended_network_blocks = cls._args_schema.extended_network_blocks
+        extended_network_blocks.Element = AAZStrArg(
             nullable=True,
         )
 
@@ -294,7 +308,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -393,7 +407,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -463,6 +477,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("encryption", AAZObjectType, ".encryption")
+                properties.set_prop("extendedNetworkBlocks", AAZListType, ".extended_network_blocks")
                 properties.set_prop("identitySources", AAZListType, ".identity_sources")
                 properties.set_prop("internet", AAZStrType, ".internet")
                 properties.set_prop("managementCluster", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
@@ -479,6 +494,10 @@ class Update(AAZCommand):
                 key_vault_properties.set_prop("keyName", AAZStrType, ".key_name")
                 key_vault_properties.set_prop("keyVaultUrl", AAZStrType, ".key_vault_url")
                 key_vault_properties.set_prop("keyVersion", AAZStrType, ".key_version")
+
+            extended_network_blocks = _builder.get(".properties.extendedNetworkBlocks")
+            if extended_network_blocks is not None:
+                extended_network_blocks.set_elements(AAZStrType, ".")
 
             identity_sources = _builder.get(".properties.identitySources")
             if identity_sources is not None:
@@ -611,6 +630,9 @@ class _UpdateHelper:
         cls._build_schema_circuit_read(properties.circuit)
         properties.encryption = AAZObjectType()
         properties.endpoints = AAZObjectType()
+        properties.extended_network_blocks = AAZListType(
+            serialized_name="extendedNetworkBlocks",
+        )
         properties.external_cloud_links = AAZListType(
             serialized_name="externalCloudLinks",
             flags={"read_only": True},
@@ -716,6 +738,9 @@ class _UpdateHelper:
         endpoints.vcsa = AAZStrType(
             flags={"read_only": True},
         )
+
+        extended_network_blocks = _schema_private_cloud_read.properties.extended_network_blocks
+        extended_network_blocks.Element = AAZStrType()
 
         external_cloud_links = _schema_private_cloud_read.properties.external_cloud_links
         external_cloud_links.Element = AAZStrType()

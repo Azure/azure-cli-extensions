@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new virtual machine or update the properties of the existing virtual machine.
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -157,7 +158,7 @@ class Create(AAZCommand):
         )
 
         cloud_services_network_attachment = cls._args_schema.cloud_services_network_attachment
-        cloud_services_network_attachment.attached_network_id = AAZStrArg(
+        cloud_services_network_attachment.attached_network_id = AAZResourceIdArg(
             options=["attached-network-id"],
             help="The resource ID of the associated network attached to the virtual machine. It can be one of cloudServicesNetwork, l3Network, l2Network or trunkedNetwork resources.",
             required=True,
@@ -193,7 +194,7 @@ class Create(AAZCommand):
         network_attachments.Element = AAZObjectArg()
 
         _element = cls._args_schema.network_attachments.Element
-        _element.attached_network_id = AAZStrArg(
+        _element.attached_network_id = AAZResourceIdArg(
             options=["attached-network-id"],
             help="The resource ID of the associated network attached to the virtual machine. It can be one of cloudServicesNetwork, l3Network, l2Network or trunkedNetwork resources.",
             required=True,
@@ -235,13 +236,10 @@ class Create(AAZCommand):
             required=True,
             enum={"Affinity": "Affinity", "AntiAffinity": "AntiAffinity"},
         )
-        _element.resource_id = AAZStrArg(
+        _element.resource_id = AAZResourceIdArg(
             options=["resource-id"],
             help="The resource ID of the target object that the placement hints will be checked against, e.g., the bare metal node to host the virtual machine.",
             required=True,
-            fmt=AAZStrArgFormat(
-                min_length=1,
-            ),
         )
         _element.scheduling_execution = AAZStrArg(
             options=["scheduling-execution"],
@@ -438,7 +436,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -548,7 +546,7 @@ class Create(AAZCommand):
 
             vm_image_repository_credentials = _builder.get(".properties.vmImageRepositoryCredentials")
             if vm_image_repository_credentials is not None:
-                vm_image_repository_credentials.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
+                vm_image_repository_credentials.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
                 vm_image_repository_credentials.set_prop("registryUrl", AAZStrType, ".registry_url", typ_kwargs={"flags": {"required": True}})
                 vm_image_repository_credentials.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
 
@@ -806,7 +804,7 @@ class Create(AAZCommand):
 
             vm_image_repository_credentials = cls._schema_on_200_201.properties.vm_image_repository_credentials
             vm_image_repository_credentials.password = AAZStrType(
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             vm_image_repository_credentials.registry_url = AAZStrType(
                 serialized_name="registryUrl",

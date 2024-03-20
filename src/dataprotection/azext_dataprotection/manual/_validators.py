@@ -32,8 +32,8 @@ def schedule_days_type(string):
 def namespaced_name_resource_type(list_of_dict):
     try:
         list_of_dict = validate_file_or_dict(list_of_dict)
-        for dict in list_of_dict:
-            if not (len(dict) == 2 and 'name' in dict and 'namespace' in dict):
+        for dictionary in list_of_dict:
+            if not (len(dictionary) == 2 and 'name' in dictionary and 'namespace' in dictionary):
                 raise ValueError(f"Input {list_of_dict} is not valid. Keys should be 'name' and 'namespace'.")
         return list_of_dict
     except ValueError:

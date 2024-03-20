@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/simgroups/{}/sims/{}", "2022-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/simgroups/{}/sims/{}", "2023-09-01"],
         ]
     }
 
@@ -264,7 +264,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -293,11 +293,11 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("authenticationKey", AAZStrType, ".authentication_key")
+                properties.set_prop("authenticationKey", AAZStrType, ".authentication_key", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("deviceType", AAZStrType, ".device_type")
                 properties.set_prop("integratedCircuitCardIdentifier", AAZStrType, ".icc_id")
                 properties.set_prop("internationalMobileSubscriberIdentity", AAZStrType, ".international_msi", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("operatorKeyCode", AAZStrType, ".operator_key_code")
+                properties.set_prop("operatorKeyCode", AAZStrType, ".operator_key_code", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("simPolicy", AAZObjectType, ".sim_policy")
                 properties.set_prop("staticIpConfiguration", AAZListType, ".static_ip_config")
 

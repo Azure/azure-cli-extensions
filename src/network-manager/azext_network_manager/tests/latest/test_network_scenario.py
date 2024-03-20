@@ -42,7 +42,7 @@ class NetworkScenarioTest(ScenarioTest):
                  'subscriptions={sub} '
                  '-l eastus2 '
                  '--resource-group {rg}')
-        
+
         self.cmd('network manager show --resource-group {rg} --name {name}')
 
         # Update is not allowed for NM.
@@ -192,7 +192,6 @@ class NetworkScenarioTest(ScenarioTest):
             'name': 'TestStaticMember'
         })
 
-
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
                  '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
@@ -213,12 +212,21 @@ class NetworkScenarioTest(ScenarioTest):
                  '--rule-collection-name {collection_name} --description {description} '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 
-
         self.cmd('network manager security-admin-config rule-collection rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
-                 '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"')
+                 '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"',
+                 checks=[self.check('access', 'Allow'),
+                         self.check('direction', 'Inbound'),
+                         self.check('kind', 'Custom'),
+                         self.check('priority', '32'),
+                         self.check('protocol', 'Tcp')])
         self.cmd('network manager security-admin-config rule-collection rule show -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name}')
         self.cmd('network manager security-admin-config rule-collection rule update -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} '
-                 '--access "Deny"')
+                 '--access "Deny"',
+                 checks=[self.check('access', 'Deny'),
+                         self.check('direction', 'Inbound'),
+                         self.check('kind', 'Custom'),
+                         self.check('priority', '32'),
+                         self.check('protocol', 'Tcp')])
         self.cmd('network manager security-admin-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --force --yes')
 
@@ -261,7 +269,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
-        
+
         self.cmd('network manager security-admin-config rule-collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
 
         self.cmd('network manager security-admin-config rule-collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
@@ -340,7 +348,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
                  ' --member-type "Microsoft.Network/virtualNetworks" -g {rg} ')
-        
+
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
@@ -350,7 +358,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-user-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
-        
+
         self.cmd('network manager security-user-config rule-collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-user-config rule-collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-user-config rule-collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
@@ -381,7 +389,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
                  ' -g {rg} ')
-        
+
         self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
@@ -403,7 +411,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config list --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
- 
+
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 

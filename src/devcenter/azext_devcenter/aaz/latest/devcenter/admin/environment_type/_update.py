@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/environmenttypes/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/environmenttypes/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -51,12 +51,22 @@ class Update(AAZCommand):
             help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
         )
         _args_schema.environment_type_name = AAZStrArg(
             options=["-n", "--name", "--environment-type-name"],
             help="The name of the environment type.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -74,6 +84,16 @@ class Update(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="The display name of the environment type.",
             nullable=True,
         )
         return cls._args_schema
@@ -160,7 +180,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -247,7 +267,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -305,7 +325,12 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("displayName", AAZStrType, ".display_name")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -360,6 +385,9 @@ class _UpdateHelper:
         )
 
         properties = _schema_environment_type_read.properties
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},

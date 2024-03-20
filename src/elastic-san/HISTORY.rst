@@ -3,6 +3,17 @@
 Release History
 ===============
 
+1.0.0
+++++++
+* GA with 2023-01-01 api-version
+* Add connect/disconnect scripts
+
+1.0.0b2
+++++++
+* Support 2023-01-01 api-version as preview
+* Add `az elastic-san volume-group snapshot` command group
+* Support CMK for volume-group
+
 1.0.0b1
 ++++++
 * Support private endpoint

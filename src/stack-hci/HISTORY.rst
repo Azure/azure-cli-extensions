@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.0
+++++++
+* Upgrade api-version to 2023-08-01
+* `az stack-hci arc-setting create/update`: Add new properties `serviceConfigurations` for `--connectivity-properties` to support setting service configurations
+
 1.0.0
 ++++++
 * `az stack-hci extension create`: change `--settings/--protected-settings` as custom properties

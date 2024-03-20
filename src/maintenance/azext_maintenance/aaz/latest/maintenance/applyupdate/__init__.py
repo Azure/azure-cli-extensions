@@ -10,7 +10,9 @@
 
 from .__cmd_group import *
 from ._create import *
+from ._create_or_update import *
 from ._create_or_update_parent import *
 from ._list import *
 from ._show import *
 from ._show_parent import *
+from ._update import *

@@ -1,0 +1,247 @@
+interactions:
+- request:
+    body: '{"properties": {"parameters": {"ResourceUri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002"},
+      "solutionId": "e104dbdf-9e14-4c9f-bc78-21ac90382231"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help troubleshooter create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '238'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --troubleshooter-name --solution-id --parameters --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/troubleshooters/f81d4fae-7dec-11d0-a765-00a0c91e6bf5?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/troubleshooters/f81d4fae-7dec-11d0-a765-00a0c91e6bf5","name":"f81d4fae-7dec-11d0-a765-00a0c91e6bf5","type":"troubleshooters","properties":{"provisioningState":"AutoContinue","solutionId":"e104dbdf-9e14-4c9f-bc78-21ac90382231","steps":[{"id":"02ddfeb3-7d1b-4449-b78a-c1cd9bba1a97","title":"Intro
+        Step","type":"Decision","executionStatus":"Success","isLastStep":false,"inputs":[{"questionId":"0","questionType":"MultiLineInfoBox","questionContent":"{\"title\":\"Connectivity
+        Guided Troubleshooter\",\"content\":\"This guided troubleshooter will enable
+        you to self-troubleshoot your Virtual Machine (VM) SSH issues by checking
+        VM health state, network settings, CPU and memory usage, etc. It typically
+        takes between 3 to 5 minutes to complete the flow.\"}","questionContentType":"Text"}]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '954'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Oct 2023 17:32:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help troubleshooter show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --troubleshooter-name --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/troubleshooters/f81d4fae-7dec-11d0-a765-00a0c91e6bf5?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/troubleshooters/f81d4fae-7dec-11d0-a765-00a0c91e6bf5","name":"f81d4fae-7dec-11d0-a765-00a0c91e6bf5","type":"troubleshooters","properties":{"provisioningState":"AutoContinue","solutionId":"e104dbdf-9e14-4c9f-bc78-21ac90382231","steps":[{"id":"02ddfeb3-7d1b-4449-b78a-c1cd9bba1a97","title":"Intro
+        Step","type":"Decision","executionStatus":"Success","isLastStep":false,"inputs":[{"questionId":"0","questionType":"MultiLineInfoBox","questionContent":"{\"title\":\"Connectivity
+        Guided Troubleshooter\",\"content\":\"This guided troubleshooter will enable
+        you to self-troubleshoot your Virtual Machine (VM) SSH issues by checking
+        VM health state, network settings, CPU and memory usage, etc. It typically
+        takes between 3 to 5 minutes to complete the flow.\"}","questionContentType":"Text"}]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '954'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Oct 2023 17:32:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help troubleshooter end
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --troubleshooter-name --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/troubleshooters/f81d4fae-7dec-11d0-a765-00a0c91e6bf5/end?api-version=2023-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Fri, 13 Oct 2023 17:32:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help troubleshooter restart
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --troubleshooter-name --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/troubleshooters/f81d4fae-7dec-11d0-a765-00a0c91e6bf5/restart?api-version=2023-09-01-preview
+  response:
+    body:
+      string: '{"troubleshooterResourceName":"0deff0ed-3194-4538-906b-62c9b487cfc6"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '69'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Oct 2023 17:32:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"responses": [], "stepId": "02ddfeb3-7d1b-4449-b78a-c1cd9bba1a97"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help troubleshooter continue
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '67'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --troubleshooter-name --step-id --responses --scope
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/troubleshooters/f81d4fae-7dec-11d0-a765-00a0c91e6bf5/continue?api-version=2023-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Fri, 13 Oct 2023 17:32:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 204
+      message: No Content
+version: 1

@@ -43,8 +43,8 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('sku', arg_type=get_enum_type(['Enterprise_E10', 'Enterprise_E20', 'Enterprise_E50',
-                                                  'Enterprise_E100', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700',
+        c.argument('sku', arg_type=get_enum_type(['Enterprise_E5', 'Enterprise_E10', 'Enterprise_E20', 'Enterprise_E50',
+                                                  'Enterprise_E100', 'Enterprise_E200', 'Enterprise_E400', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700',
                                                   'EnterpriseFlash_F1500']), help='The type of RedisEnterprise cluster '
                    'to deploy. Possible values: (Enterprise_E10, EnterpriseFlash_F300 etc.)')
         c.argument('capacity', type=int, help='The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending '
@@ -102,8 +102,8 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
                    'RedisEnterprise cluster.', id_part='name')
-        c.argument('sku', arg_type=get_enum_type(['Enterprise_E10', 'Enterprise_E20', 'Enterprise_E50',
-                                                  'Enterprise_E100', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700',
+        c.argument('sku', arg_type=get_enum_type(['Enterprise_E5', 'Enterprise_E10', 'Enterprise_E20', 'Enterprise_E50',
+                                                  'Enterprise_E100', 'Enterprise_E200', 'Enterprise_E400', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700',
                                                   'EnterpriseFlash_F1500']), help='The type of RedisEnterprise cluster '
                    'to deploy. Possible values: (Enterprise_E10, EnterpriseFlash_F300 etc.)')
         c.argument('capacity', type=int, help='The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending '

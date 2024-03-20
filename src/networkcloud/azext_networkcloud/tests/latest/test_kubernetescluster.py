@@ -38,6 +38,24 @@ def call_scenario1(test):
     cleanup_scenario1(test)
 
 
+def setup_scenario2(test):
+    """Env setup_scenario1"""
+    pass
+
+
+def cleanup_scenario2(test):
+    """Env cleanup_scenario1"""
+    pass
+
+
+def call_scenario2(test):
+    """# Testcase: scenario2"""
+    setup_scenario2(test)
+    step_update_admin_cred(test)
+    step_update_control_plane_ssh_key(test)
+    cleanup_scenario2(test)
+
+
 def step_create(test, checks=None):
     """Kubernetescluster create operation"""
     if checks is None:
@@ -109,6 +127,24 @@ def step_delete(test, checks=None):
     )
 
 
+def step_update_admin_cred(test, checks=None):
+    """Kubernetescluster update admin credentials operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud kubernetescluster update --name {nameUpdate} --resource-group {rgUpdate} --ssh-key-values {sshKeyUpdate}"
+    )
+
+
+def step_update_control_plane_ssh_key(test, checks=None):
+    """Kubernetescluster update control plane admin credentials operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud kubernetescluster update --name {nameUpdate} --resource-group {rgUpdate} --control-plane-node-configuration ssh-key-values={cpSshKeyListUpdate}"
+    )
+
+
 class KubernetesClusterScenarioTest(ScenarioTest):
     """Kubernetescluster scenario tests"""
 
@@ -154,6 +190,15 @@ class KubernetesClusterScenarioTest(ScenarioTest):
                     "KUBERNETESCLUSTER_NODE", "kubernetes_cluster_name"
                 ),
                 "resourceGroup": CONFIG.get("KUBERNETESCLUSTER_NODE", "resource_group"),
+                # scenario 2: update variables
+                "rgUpdate": CONFIG.get("KUBERNETESCLUSTER", "rg_update"),
+                "nameUpdate": CONFIG.get("KUBERNETESCLUSTER", "name_update"),
+                "sshKeyUpdate": CONFIG.get(
+                    "KUBERNETESCLUSTER", "ssh_key_values_update"
+                ),
+                "cpSshKeyListUpdate": CONFIG.get(
+                    "KUBERNETESCLUSTER", "cp_ssh_key_list_update"
+                ),
             }
         )
 
@@ -162,3 +207,8 @@ class KubernetesClusterScenarioTest(ScenarioTest):
     def test_kubernetescluster_scenario(self):
         """test scenario for kubernetes cluster CRUD operations"""
         call_scenario1(self)
+
+    @AllowLargeResponse()
+    def test_kubernetescluster_scenario2(self):
+        """test scenario for kubernetes cluster administrator credentials update operations"""
+        call_scenario2(self)

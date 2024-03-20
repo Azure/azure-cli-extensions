@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a network manager connection on this management group.
 
     :example: Create network manager connection management-group
-        az network manager connection management-group create --management-group-id "testManagementGroupId" --connection-name "testNetworkManagerConnection" --network-manager "testNetworkManagerId" --description "A sample policy"
+        az network manager connection management-group create --management-group-id "testManagementGroupId" --connection-name "testNetworkManagerConnection" --network-manager "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testGroup/providers/Microsoft.Network/networkManagers/testNm" --description "A sample connection."
     """
 
     _aaz_info = {

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/diagnostics/{}", "2023-01-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/diagnostics/{}", "2023-09-01-preview"],
         ]
     }
 
@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.diagnostic_name = AAZStrArg(
             options=["--diagnostic-name"],
-            help="unique resource name for diagnostic proxy resources",
+            help="Unique resource name for insight resources",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9-+@()_]+$",
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01-preview",
+                    "api-version", "2023-09-01-preview",
                     required=True,
                 ),
             }

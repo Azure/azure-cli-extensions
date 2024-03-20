@@ -8,31 +8,39 @@ import os
 import time
 import unittest
 
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.command_modules.containerapp._utils import format_location
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from msrestazure.tools import parse_resource_id
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
-from .common import TEST_LOCATION
-from .utils import create_containerapp_env
+from .common import TEST_LOCATION, STAGE_LOCATION
+from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class ContainerappIdentityTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_identity_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
 
-        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env))
 
         self.cmd('containerapp identity assign --system-assigned -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('type', 'SystemAssigned'),
@@ -63,11 +71,16 @@ class ContainerappIdentityTests(ScenarioTest):
         self.cmd('containerapp identity show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('type', 'None'),
         ])
+        self.cmd('containerapp delete  -g {} -n {} --yes'.format(resource_group, ca_name), expect_failure=False)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="canadacentral")
     def test_containerapp_identity_system(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -105,16 +118,19 @@ class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_identity_user(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name1 = self.create_random_name(prefix='containerapp-user1', length=24)
         user_identity_name2 = self.create_random_name(prefix='containerapp-user2', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
 
-        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env))
 
         self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name1))
 
@@ -152,43 +168,46 @@ class ContainerappIdentityTests(ScenarioTest):
             JMESPathCheck('type', 'None'),
         ])
 
+
 class ContainerappIngressTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_ingress_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --allow-insecure'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --allow-insecure'.format(resource_group, ca_name, env))
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 80),
             JMESPathCheck('allowInsecure', True),
         ])
 
-        self.cmd('containerapp ingress disable -g {} -n {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp ingress disable -g {} -n {}'.format(resource_group, ca_name))
 
         containerapp_def = self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name)).get_output_in_json()
 
         self.assertEqual("fqdn" in containerapp_def["properties"]["configuration"], False)
 
-        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --allow-insecure --transport http2'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --allow-insecure --transport http2'.format(resource_group, ca_name))
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', False),
             JMESPathCheck('targetPort', 81),
             JMESPathCheck('allowInsecure', True),
             JMESPathCheck('transport', "Http2"),
         ])
 
-        self.cmd('containerapp ingress update -g {} -n {} --type external --allow-insecure=False'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp ingress update -g {} -n {} --type external --allow-insecure=False'.format(resource_group, ca_name))
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 81),
             JMESPathCheck('allowInsecure', False),
@@ -200,12 +219,11 @@ class ContainerappIngressTests(ScenarioTest):
     def test_containerapp_ingress_traffic_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --revisions-mode multiple'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --revisions-mode multiple'.format(resource_group, ca_name, env))
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
@@ -241,10 +259,272 @@ class ContainerappIngressTests(ScenarioTest):
             self.assertEqual(revision["properties"]["trafficWeight"], 50)
 
     @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live) and vnet command error in cli pipeline
+    def test_containerapp_tcp_ingress(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='env', length=24)
+        logs = self.create_random_name(prefix='logs', length=24)
+        vnet = self.create_random_name(prefix='name', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+
+        logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs} -l eastus").get_output_in_json()["customerId"]
+        logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key} --internal-only -s {sub_id}')
+
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env_name}').get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env_name}').get_output_in_json()
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.vnetConfiguration.internal', True),
+        ])
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --transport tcp --target-port 80 --exposed-port 3000'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', True),
+            JMESPathCheck('targetPort', 80),
+            JMESPathCheck('exposedPort', 3000),
+            JMESPathCheck('transport', "Tcp"),
+        ])
+
+        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --allow-insecure --transport http2'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', False),
+            JMESPathCheck('targetPort', 81),
+            JMESPathCheck('allowInsecure', True),
+            JMESPathCheck('transport', "Http2"),
+        ])
+
+        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --transport tcp --exposed-port 3020'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+            JMESPathCheck('external', False),
+            JMESPathCheck('targetPort', 81),
+            JMESPathCheck('transport', "Tcp"),
+            JMESPathCheck('exposedPort', 3020),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_ip_restrictions(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env))
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name --ip-address 192.168.1.1/32 --description "Description here." --action Allow'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name2 --ip-address 192.168.1.1/8 --description "Description here 2." --action Allow'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Allow"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Allow"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name2'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_ip_restrictions_deny(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env))
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name --ip-address 192.168.1.1/32 --description "Description here." --action Deny'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name2 --ip-address 192.168.1.1/8 --description "Description here 2." --action Deny'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
+            JMESPathCheck('[0].description', "Description here."),
+            JMESPathCheck('[0].action', "Deny"),
+            JMESPathCheck('[1].name', "name2"),
+            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[1].description', "Description here 2."),
+            JMESPathCheck('[1].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('[0].name', "name2"),
+            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
+            JMESPathCheck('[0].description', "Description here 2."),
+            JMESPathCheck('[0].action', "Deny"),
+        ])
+
+        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name2'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_cors_policy(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env))
+
+        self.cmd('containerapp ingress cors enable -g {} -n {} --allowed-origins "http://www.contoso.com" "https://www.contoso.com" --allowed-methods "GET" "POST" --allowed-headers "header1" "header2" --expose-headers "header3" "header4" --allow-credentials true --max-age 100'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(allowedOrigins)', 2),
+            JMESPathCheck('allowedOrigins[0]', "http://www.contoso.com"),
+            JMESPathCheck('allowedOrigins[1]', "https://www.contoso.com"),
+            JMESPathCheck('length(allowedMethods)', 2),
+            JMESPathCheck('allowedMethods[0]', "GET"),
+            JMESPathCheck('allowedMethods[1]', "POST"),
+            JMESPathCheck('length(allowedHeaders)', 2),
+            JMESPathCheck('allowedHeaders[0]', "header1"),
+            JMESPathCheck('allowedHeaders[1]', "header2"),
+            JMESPathCheck('length(exposeHeaders)', 2),
+            JMESPathCheck('exposeHeaders[0]', "header3"),
+            JMESPathCheck('exposeHeaders[1]', "header4"),
+            JMESPathCheck('allowCredentials', True),
+            JMESPathCheck('maxAge', 100),
+        ])
+
+        self.cmd('containerapp ingress cors update -g {} -n {} --allowed-origins "*" --allowed-methods "GET" --allowed-headers "header1" --expose-headers --allow-credentials false --max-age 0'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(allowedOrigins)', 1),
+            JMESPathCheck('allowedOrigins[0]', "*"),
+            JMESPathCheck('length(allowedMethods)', 1),
+            JMESPathCheck('allowedMethods[0]', "GET"),
+            JMESPathCheck('length(allowedHeaders)', 1),
+            JMESPathCheck('allowedHeaders[0]', "header1"),
+            JMESPathCheck('exposeHeaders', None),
+            JMESPathCheck('allowCredentials', False),
+            JMESPathCheck('maxAge', 0),
+        ])
+
+        self.cmd('containerapp ingress cors show -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(allowedOrigins)', 1),
+            JMESPathCheck('allowedOrigins[0]', "*"),
+            JMESPathCheck('length(allowedMethods)', 1),
+            JMESPathCheck('allowedMethods[0]', "GET"),
+            JMESPathCheck('length(allowedHeaders)', 1),
+            JMESPathCheck('allowedHeaders[0]', "header1"),
+            JMESPathCheck('exposeHeaders', None),
+            JMESPathCheck('allowCredentials', False),
+            JMESPathCheck('maxAge', 0),
+        ])
+
+        self.cmd('containerapp ingress cors disable -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('corsPolicy', None),
+        ])
+
+
+class ContainerappCustomDomainTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
+    @AllowLargeResponse(8192)
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_custom_domains_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -360,275 +640,21 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ]).get_output_in_json()
 
-    @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="northeurope")
-    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live) and vnet command error in cli pipeline
-    def test_containerapp_tcp_ingress(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        env_name = self.create_random_name(prefix='env', length=24)
-        logs = self.create_random_name(prefix='logs', length=24)
-        vnet = self.create_random_name(prefix='name', length=24)
-        ca_name = self.create_random_name(prefix='containerapp', length=24)
-
-        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
-        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
-
-        logs_id = self.cmd(f"monitor log-analytics workspace create -g {resource_group} -n {logs} -l eastus").get_output_in_json()["customerId"]
-        logs_key = self.cmd(f'monitor log-analytics workspace get-shared-keys -g {resource_group} -n {logs}').get_output_in_json()["primarySharedKey"]
-
-        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_id} --logs-workspace-key {logs_key} --internal-only -s {sub_id}')
-
-        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env_name}').get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
-            time.sleep(5)
-            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env_name}').get_output_in_json()
-
-        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
-            JMESPathCheck('name', env_name),
-            JMESPathCheck('properties.vnetConfiguration.internal', True),
-        ])
-
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --transport tcp --target-port 80 --exposed-port 3000'.format(resource_group, ca_name, env_name))
-
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
-            JMESPathCheck('external', True),
-            JMESPathCheck('targetPort', 80),
-            JMESPathCheck('exposedPort', 3000),
-            JMESPathCheck('transport', "Tcp"),
-        ])
-
-        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --allow-insecure --transport http2'.format(resource_group, ca_name, env_name))
-
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
-            JMESPathCheck('external', False),
-            JMESPathCheck('targetPort', 81),
-            JMESPathCheck('allowInsecure', True),
-            JMESPathCheck('transport', "Http2"),
-        ])
-
-        self.cmd('containerapp ingress enable -g {} -n {} --type internal --target-port 81 --transport tcp --exposed-port 3020'.format(resource_group, ca_name, env_name))
-
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
-            JMESPathCheck('external', False),
-            JMESPathCheck('targetPort', 81),
-            JMESPathCheck('transport', "Tcp"),
-            JMESPathCheck('exposedPort', 3020),
-        ])
-
-    @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="northeurope")
-    def test_containerapp_ip_restrictions(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
-        ca_name = self.create_random_name(prefix='containerapp', length=24)
-
-        create_containerapp_env(self, env_name, resource_group)
-
-        # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
-
-        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name --ip-address 192.168.1.1/32 --description "Description here." --action Allow'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
-            JMESPathCheck('[0].description', "Description here."),
-            JMESPathCheck('[0].action', "Allow"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
-            JMESPathCheck('[0].description', "Description here."),
-            JMESPathCheck('[0].action', "Allow"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name2 --ip-address 192.168.1.1/8 --description "Description here 2." --action Allow'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
-            JMESPathCheck('[0].description', "Description here."),
-            JMESPathCheck('[0].action', "Allow"),
-            JMESPathCheck('[1].name', "name2"),
-            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
-            JMESPathCheck('[1].description', "Description here 2."),
-            JMESPathCheck('[1].action', "Allow"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
-            JMESPathCheck('[0].description', "Description here."),
-            JMESPathCheck('[0].action', "Allow"),
-            JMESPathCheck('[1].name', "name2"),
-            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
-            JMESPathCheck('[1].description', "Description here 2."),
-            JMESPathCheck('[1].action', "Allow"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name2"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
-            JMESPathCheck('[0].description', "Description here 2."),
-            JMESPathCheck('[0].action', "Allow"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name2"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
-            JMESPathCheck('[0].description', "Description here 2."),
-            JMESPathCheck('[0].action', "Allow"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name2'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('length(@)', 0),
-        ])
-
-        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('length(@)', 0),
-        ])
-
-    @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="northeurope")
-    def test_containerapp_ip_restrictions_deny(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
-        ca_name = self.create_random_name(prefix='containerapp', length=24)
-
-        create_containerapp_env(self, env_name, resource_group)
-
-        # self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
-
-        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name --ip-address 192.168.1.1/32 --description "Description here." --action Deny'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
-            JMESPathCheck('[0].description', "Description here."),
-            JMESPathCheck('[0].action', "Deny"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
-            JMESPathCheck('[0].description', "Description here."),
-            JMESPathCheck('[0].action', "Deny"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction set -g {} -n {} --rule-name name2 --ip-address 192.168.1.1/8 --description "Description here 2." --action Deny'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
-            JMESPathCheck('[0].description', "Description here."),
-            JMESPathCheck('[0].action', "Deny"),
-            JMESPathCheck('[1].name', "name2"),
-            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
-            JMESPathCheck('[1].description', "Description here 2."),
-            JMESPathCheck('[1].action', "Deny"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/32"),
-            JMESPathCheck('[0].description', "Description here."),
-            JMESPathCheck('[0].action', "Deny"),
-            JMESPathCheck('[1].name', "name2"),
-            JMESPathCheck('[1].ipAddressRange', "192.168.1.1/8"),
-            JMESPathCheck('[1].description', "Description here 2."),
-            JMESPathCheck('[1].action', "Deny"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name2"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
-            JMESPathCheck('[0].description', "Description here 2."),
-            JMESPathCheck('[0].action', "Deny"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('[0].name', "name2"),
-            JMESPathCheck('[0].ipAddressRange', "192.168.1.1/8"),
-            JMESPathCheck('[0].description', "Description here 2."),
-            JMESPathCheck('[0].action', "Deny"),
-        ])
-
-        self.cmd('containerapp ingress access-restriction remove -g {} -n {} --rule-name name2'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('length(@)', 0),
-        ])
-
-        self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('length(@)', 0),
-        ])
-
-    @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="northeurope")
-    def test_containerapp_cors_policy(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
-        ca_name = self.create_random_name(prefix='containerapp', length=24)
-
-        create_containerapp_env(self, env_name, resource_group)
-
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
-
-        self.cmd('containerapp ingress cors enable -g {} -n {} --allowed-origins "http://www.contoso.com" "https://www.contoso.com" --allowed-methods "GET" "POST" --allowed-headers "header1" "header2" --expose-headers "header3" "header4" --allow-credentials true --max-age 100'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('length(allowedOrigins)', 2),
-            JMESPathCheck('allowedOrigins[0]', "http://www.contoso.com"),
-            JMESPathCheck('allowedOrigins[1]', "https://www.contoso.com"),
-            JMESPathCheck('length(allowedMethods)', 2),
-            JMESPathCheck('allowedMethods[0]', "GET"),
-            JMESPathCheck('allowedMethods[1]', "POST"),
-            JMESPathCheck('length(allowedHeaders)', 2),
-            JMESPathCheck('allowedHeaders[0]', "header1"),
-            JMESPathCheck('allowedHeaders[1]', "header2"),
-            JMESPathCheck('length(exposeHeaders)', 2),
-            JMESPathCheck('exposeHeaders[0]', "header3"),
-            JMESPathCheck('exposeHeaders[1]', "header4"),
-            JMESPathCheck('allowCredentials', True),
-            JMESPathCheck('maxAge', 100),
-        ])
-
-        self.cmd('containerapp ingress cors update -g {} -n {} --allowed-origins "*" --allowed-methods "GET" --allowed-headers "header1" --expose-headers --allow-credentials false --max-age 0'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('length(allowedOrigins)', 1),
-            JMESPathCheck('allowedOrigins[0]', "*"),
-            JMESPathCheck('length(allowedMethods)', 1),
-            JMESPathCheck('allowedMethods[0]', "GET"),
-            JMESPathCheck('length(allowedHeaders)', 1),
-            JMESPathCheck('allowedHeaders[0]', "header1"),
-            JMESPathCheck('exposeHeaders', None),
-            JMESPathCheck('allowCredentials', False),
-            JMESPathCheck('maxAge', 0),
-        ])
-
-        self.cmd('containerapp ingress cors show -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('length(allowedOrigins)', 1),
-            JMESPathCheck('allowedOrigins[0]', "*"),
-            JMESPathCheck('length(allowedMethods)', 1),
-            JMESPathCheck('allowedMethods[0]', "GET"),
-            JMESPathCheck('length(allowedHeaders)', 1),
-            JMESPathCheck('allowedHeaders[0]', "header1"),
-            JMESPathCheck('exposeHeaders', None),
-            JMESPathCheck('allowCredentials', False),
-            JMESPathCheck('maxAge', 0),
-        ])
-
-        self.cmd('containerapp ingress cors disable -g {} -n {}'.format(resource_group, ca_name), checks=[
-            JMESPathCheck('corsPolicy', None),
-        ])
-
 
 class ContainerappDaprTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_dapr_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --dapr-app-id containerapp --dapr-app-port 800 --dapr-app-protocol grpc --dhmrs 4 --dhrbs 50 --dapr-log-level debug --enable-dapr'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp create -g {} -n {} --environment {} --dapr-app-id containerapp --dapr-app-port 800 --dapr-app-protocol grpc --dhmrs 4 --dhrbs 50 --dapr-log-level debug --enable-dapr'.format(resource_group, ca_name, env), checks=[
             JMESPathCheck('properties.configuration.dapr.appId', "containerapp"),
             JMESPathCheck('properties.configuration.dapr.appPort', 800),
             JMESPathCheck('properties.configuration.dapr.appProtocol', "grpc"),
@@ -639,7 +665,7 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('properties.configuration.dapr.enableApiLogging', False),
         ])
 
-        self.cmd('containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 --dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 --dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(resource_group, ca_name, env), checks=[
             JMESPathCheck('appId', "containerapp1"),
             JMESPathCheck('appPort', 80),
             JMESPathCheck('appProtocol', "http"),
@@ -661,7 +687,7 @@ class ContainerappDaprTests(ScenarioTest):
             JMESPathCheck('properties.configuration.dapr.enableApiLogging', True),
         ])
 
-        self.cmd('containerapp dapr disable -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp dapr disable -g {} -n {}'.format(resource_group, ca_name, env), checks=[
             JMESPathCheck('appId', "containerapp1"),
             JMESPathCheck('appPort', 80),
             JMESPathCheck('appProtocol', "http"),
@@ -690,29 +716,322 @@ class ContainerappDaprTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         image = 'mcr.microsoft.com/azuredocs/aks-helloworld:v1'
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(
             'containerapp up -g {} -n {} --environment {} --image {}'.format(
-                resource_group, ca_name, env_name, image))
+                resource_group, ca_name, env, image))
 
         self.cmd(
             'containerapp dapr enable -g {} -n {} --dapr-app-id containerapp1 --dapr-app-port 80 '
             '--dapr-app-protocol http --dal --dhmrs 6 --dhrbs 60 --dapr-log-level warn'.format(
-                resource_group, ca_name, env_name), checks=[
+                resource_group, ca_name), checks=[
                 JMESPathCheck('appId', "containerapp1"),
                 JMESPathCheck('enabled', True)
             ])
 
 
 class ContainerappServiceBindingTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
-    def test_containerapp_dev_service_binding_e2e(self, resource_group):
+    def test_containerapp_dev_add_on_binding_none_client_type(self, resource_group):
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+        ca_name = self.create_random_name(prefix='containerapp1', length=24)
+        redis_ca_name = 'redis'
+        postgres_ca_name = 'postgres'
+        kafka_ca_name = 'kafka'
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+
+        self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ])
+        self.cmd('containerapp add-on kafka create -g {} -n {} --environment {}'.format(env_rg, kafka_ca_name, env_name), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ])
+
+        self.cmd(
+            'containerapp create -n {} -g {} --environment {} --bind {},clientType=dotnet,resourcegroup={} {},clientType=none,resourcegroup={}'.format(
+                ca_name, resource_group, env_id, redis_ca_name, env_rg, postgres_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', postgres_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+            ])
+
+        # test clean clientType
+        self.cmd(
+            'containerapp update -n {} -g {} --bind {},clientType=none,resourcegroup={}'.format(
+                ca_name, resource_group, redis_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', postgres_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+            ])
+
+        self.cmd(
+            'containerapp create -n {} -g {} --environment {} --bind {},resourcegroup={}'.format(
+                ca_name, resource_group, env_id, kafka_ca_name, env_rg), expect_failure=False,
+            checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 1),
+                JMESPathCheck('properties.template.serviceBinds[0].name', kafka_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+            ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_dev_add_on_binding_customized_keys_yaml_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        ca_name = self.create_random_name(prefix='containerapp1', length=24)
+        redis_ca_name = 'redis-yaml2'
+        postgres_ca_name = 'postgres-yaml'
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+
+        redis_resource_id = self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ]).get_output_in_json()["id"]
+
+        postgres_resource_id = self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name)).get_output_in_json()["id"]
+        # test create
+        containerapp_yaml_text = f"""
+                                location: {TEST_LOCATION}
+                                type: Microsoft.App/containerApps
+                                properties:
+                                  managedEnvironmentId: {env_id}
+                                  configuration:
+                                    activeRevisionsMode: single
+                                  template:
+                                    containers:
+                                      - image: mcr.microsoft.com/k8se/quickstart:latest
+                                        name: {ca_name}
+                                    serviceBinds:
+                                      - serviceId: {redis_resource_id}
+                                        name: redis
+                                        clientType: dotnet
+                                        customizedKeys:
+                                         CACHE_1_ENDPOINT: REDIS_HOST
+                                         CACHE_1_PASSWORD: REDIS_PASSWORD
+                                      - serviceId: {postgres_resource_id}
+                                        name: postgres
+                                        clientType: none
+                                        customizedKeys:
+                                          DB_ENDPOINT: POSTGRES_HOST
+                                          DB_PASSWORD: POSTGRES_PASSWORD
+                                """
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(
+            f'containerapp create -n {ca_name} -g {resource_group} --environment {env_id} --yaml {containerapp_file_name}', checks=[
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_PASSWORD', "REDIS_PASSWORD"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', "postgres"),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_ENDPOINT', "POSTGRES_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_PASSWORD', "POSTGRES_PASSWORD")
+            ])
+        # test update customizedKeys without clientType
+        self.cmd(
+            'containerapp update -n {} -g  {} --bind {}:redis,resourcegroup={} --customized-keys CACHE_2_ENDPOINT=REDIS_HOST CACHE_2_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_2_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_2_PASSWORD', "REDIS_PASSWORD"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', "postgres"),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_ENDPOINT', "POSTGRES_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_PASSWORD', "POSTGRES_PASSWORD")
+            ])
+
+        # test update customizedKeys with yaml
+        containerapp_yaml_text = f"""
+                                        properties:
+                                          template:
+                                            serviceBinds:
+                                              - serviceId: {redis_resource_id}
+                                                name: redis
+                                                customizedKeys:
+                                                 CACHE_3_ENDPOINT: REDIS_HOST
+                                                 CACHE_3_PASSWORD: REDIS_PASSWORD
+                                              - serviceId: {postgres_resource_id}
+                                                name: postgres
+                                                customizedKeys:
+                                                  DB_2_ENDPOINT: POSTGRES_HOST
+                                                  DB_2_PASSWORD: POSTGRES_PASSWORD
+                                        """
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(
+            f'containerapp update -n {ca_name} -g {resource_group} --yaml {containerapp_file_name}',
+            checks=[
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_3_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_3_PASSWORD', "REDIS_PASSWORD"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', "postgres"),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_2_ENDPOINT', "POSTGRES_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys.DB_2_PASSWORD', "POSTGRES_PASSWORD")
+            ])
+
+        # test update with yaml to clean customizedKeys
+        containerapp_yaml_text = f"""
+                                                properties:
+                                                  template:
+                                                    serviceBinds:
+                                                      - serviceId: {redis_resource_id}
+                                                        name: redis
+                                                      - serviceId: {postgres_resource_id}
+                                                        name: postgres
+                                                """
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(
+            f'containerapp update -n {ca_name} -g {resource_group} --yaml {containerapp_file_name}',
+            checks=[
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys', None),
+                JMESPathCheck('properties.template.serviceBinds[1].name', "postgres"),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys', None),
+            ])
+
+        self.cmd('containerapp add-on redis delete -g {} -n {} --yes'.format(env_rg, redis_ca_name), expect_failure=False)
+        self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(env_rg, postgres_ca_name), expect_failure=False)
+        self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name, resource_group), expect_failure=False)
+        clean_up_test_file(containerapp_file_name)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_dev_add_on_binding_customized_keys_e2e(self, resource_group):
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+        ca_name = self.create_random_name(prefix='containerapp1', length=24)
+        redis_ca_name = 'redis'
+        postgres_ca_name = 'postgres'
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+
+        redis_resource_id = self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(env_rg, redis_ca_name, env_name), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ]).get_output_in_json()["id"]
+
+        self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(env_rg, postgres_ca_name, env_name))
+        self.cmd(
+            'containerapp create -n {} -g  {} --environment {} --bind {},clientType=dotnet,resourcegroup={} {},clientType=none,resourcegroup={}'.format(
+                ca_name, resource_group, env_id, redis_ca_name, env_rg, postgres_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', postgres_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+            ])
+        # For multi-bind with --customized-keys throw error out
+        ca_name2 = self.create_random_name(prefix='containerapp2', length=24)
+        err_msg = None
+        try:
+            self.cmd(
+                'containerapp create -n {} -g  {} --environment {} --bind {},clientType=dotnet {} --customized-keys CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
+                    ca_name2, resource_group, env_id, redis_ca_name, postgres_ca_name))
+        except Exception as e:
+            err_msg = e.error_msg
+        self.assertIsNotNone(err_msg)
+        self.assertTrue(err_msg.__contains__(
+            '--bind have multiple values, but --customized-keys only can be set when --bind is single'))
+        err_msg = None
+        try:
+            self.cmd(
+            'containerapp update -n {} -g  {} --bind {},clientType=dotnet {} --customized-keys CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name, postgres_ca_name))
+        except Exception as e:
+            err_msg = e.error_msg
+        self.assertIsNotNone(err_msg)
+        self.assertTrue(err_msg.__contains__(
+            '--bind have multiple values, but --customized-keys only can be set when --bind is single'))
+
+        # For single-bind with --customized-keys
+        self.cmd(
+            'containerapp update -n {} -g  {} --bind {},clientType=dotnet,resourcegroup={} --customized-keys CACHE_1_ENDPOINT=REDIS_HOST CACHE_1_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name, resource_group, redis_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 2),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_1_PASSWORD', "REDIS_PASSWORD"),
+                JMESPathCheck('properties.template.serviceBinds[1].name', postgres_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[1].clientType', "none"),
+                JMESPathCheck('properties.template.serviceBinds[1].customizedKeys', None),
+            ])
+        self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name, resource_group), expect_failure=False)
+
+        self.cmd(
+            'containerapp create -n {} -g  {} --environment {} --bind {},clientType=dotnet,resourcegroup={} --customized-keys CACHE_2_ENDPOINT=REDIS_HOST CACHE_2_PASSWORD=REDIS_PASSWORD'.format(
+                ca_name2, resource_group, env_id, redis_ca_name, env_rg), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('length(properties.template.serviceBinds)', 1),
+                JMESPathCheck('properties.template.serviceBinds[0].name', redis_ca_name),
+                JMESPathCheck('properties.template.serviceBinds[0].clientType', "dotnet"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_2_ENDPOINT', "REDIS_HOST"),
+                JMESPathCheck('properties.template.serviceBinds[0].customizedKeys.CACHE_2_PASSWORD', "REDIS_PASSWORD")
+            ])
+        self.cmd('containerapp update -n {} -g {} --unbind {}'.format(
+            ca_name2, resource_group, redis_ca_name), checks=[
+            JMESPathCheck('properties.template.serviceBinds', None),
+        ])
+        self.cmd('containerapp add-on redis delete -g {} -n {} --yes'.format(env_rg, redis_ca_name))
+        self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(env_rg, postgres_ca_name))
+        self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name2, resource_group), expect_failure=False)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_dev_add_on_binding_e2e(self, resource_group):
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
@@ -725,19 +1044,19 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(
+        self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(
             resource_group, redis_ca_name, env_name))
 
-        self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(
+        self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(
             resource_group, postgres_ca_name, env_name))
 
-        self.cmd('containerapp service kafka create -g {} -n {} --environment {}'.format(
+        self.cmd('containerapp add-on kafka create -g {} -n {} --environment {}'.format(
             resource_group, kafka_ca_name, env_name))
 
-        self.cmd('containerapp service mariadb create -g {} -n {} --environment {}'.format(
+        self.cmd('containerapp add-on mariadb create -g {} -n {} --environment {}'.format(
             resource_group, mariadb_ca_name, env_name))
-        
-        self.cmd('containerapp service qdrant create -g {} -n {} --environment {}'.format(
+
+        self.cmd('containerapp add-on qdrant create -g {} -n {} --environment {}'.format(
             resource_group, qdrant_ca_name, env_name))
 
         self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
@@ -760,24 +1079,24 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
         ])
 
-        self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
+        self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(
             resource_group, postgres_ca_name, env_name))
 
-        self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(
+        self.cmd('containerapp add-on redis delete -g {} -n {} --yes'.format(
             resource_group, redis_ca_name, env_name))
 
-        self.cmd('containerapp service kafka delete -g {} -n {} --yes'.format(
+        self.cmd('containerapp add-on kafka delete -g {} -n {} --yes'.format(
             resource_group, kafka_ca_name, env_name))
 
-        self.cmd('containerapp service mariadb delete -g {} -n {} --yes'.format(
+        self.cmd('containerapp add-on mariadb delete -g {} -n {} --yes'.format(
             resource_group, mariadb_ca_name, env_name))
-    
-        self.cmd('containerapp service qdrant delete -g {} -n {} --yes'.format(
+
+        self.cmd('containerapp add-on qdrant delete -g {} -n {} --yes'.format(
             resource_group, qdrant_ca_name, env_name))
 
-        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes') 
+        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes')
 
-        self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
+        self.cmd('containerapp add-on list -g {} --environment {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
 
@@ -789,21 +1108,130 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_addon_binding_e2e(self, resource_group):
+        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "francecentral"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        redis_ca_name = 'redis'
+        postgres_ca_name = 'postgres'
+        kafka_ca_name = 'kafka'
+        mariadb_ca_name = 'mariadb'
+        qdrant_ca_name = "qdrant"
+        weaviate_ca_name = "weaviate"
+        milvus_ca_name = "milvus"
+        ADDON_LIST = ["redis", "postgres", "kafka", "mariadb", "qdrant", "weaviate", "milvus"]
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+
+        self.cmd('containerapp add-on redis create -g {} -n {} --environment {}'.format(
+            env_rg, redis_ca_name, env_name))
+
+        self.cmd('containerapp add-on postgres create -g {} -n {} --environment {}'.format(
+            env_rg, postgres_ca_name, env_name))
+
+        self.cmd('containerapp add-on kafka create -g {} -n {} --environment {}'.format(
+            env_rg, kafka_ca_name, env_name))
+
+        self.cmd('containerapp add-on mariadb create -g {} -n {} --environment {}'.format(
+            env_rg, mariadb_ca_name, env_name))
+
+        self.cmd('containerapp add-on qdrant create -g {} -n {} --environment {}'.format(
+            env_rg, qdrant_ca_name, env_name))
+
+        self.cmd('containerapp add-on weaviate create -g {} -n {} --environment {}'.format(
+            env_rg, weaviate_ca_name, env_name))
+        
+        self.cmd('containerapp add-on milvus create -g {} -n {} --environment {}'.format(
+            env_rg, milvus_ca_name, env_name))
+
+        for addon in ADDON_LIST:
+            self.cmd(f'containerapp show -g {env_rg} -n {addon}', checks=[
+                JMESPathCheck("properties.provisioningState", "Succeeded")])
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+            env_rg, ca_name, env_name, image), checks=[
+            JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
+            env_rg, ca_name, image), checks=[
+            JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant weaviate milvus'.format(
+            env_rg, ca_name, image), checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
+            JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
+            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant"),
+            JMESPathCheck('properties.template.serviceBinds[5].name', "weaviate"),
+            JMESPathCheck('properties.template.serviceBinds[6].name', "milvus")
+        ])
+
+        self.cmd('containerapp add-on postgres delete -g {} -n {} --yes'.format(
+            env_rg, postgres_ca_name, env_name))
+
+        self.cmd('containerapp add-on redis delete -g {} -n {} --yes'.format(
+            env_rg, redis_ca_name, env_name))
+
+        self.cmd('containerapp add-on kafka delete -g {} -n {} --yes'.format(
+            env_rg, kafka_ca_name, env_name))
+
+        self.cmd('containerapp add-on mariadb delete -g {} -n {} --yes'.format(
+            env_rg, mariadb_ca_name, env_name))
+
+        self.cmd('containerapp add-on qdrant delete -g {} -n {} --yes'.format(
+            env_rg, qdrant_ca_name, env_name))
+
+        self.cmd('containerapp add-on weaviate delete -g {} -n {} --yes'.format(
+            env_rg, weaviate_ca_name, env_name))
+        
+        self.cmd('containerapp add-on milvus delete -g {} -n {} --yes'.format(
+            env_rg, milvus_ca_name, env_name))
+
+        self.cmd(f'containerapp delete -g {env_rg} -n {ca_name} --yes')
+
+        self.cmd('containerapp add-on list -g {} --environment {}'.format(env_rg, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd('containerapp list -g {} --environment {}'.format(env_rg, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd(f'containerapp env delete -g {env_rg} -n {env_name} --yes')
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_managed_service_binding_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # `mysql flexible-server create`: type 'locations/checkNameAvailability' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         mysqlserver = "mysqlflexsb"
         postgresqlserver = "postgresqlflexsb"
-        
+
         mysqlflex_json= self.cmd('mysql flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, mysqlserver, "None")).output
         postgresqlflex_json= self.cmd('postgres flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, postgresqlserver, "None")).output
         mysqlflex_dict = json.loads(mysqlflex_json)
 
         mysqlusername = mysqlflex_dict['username']
         mysqlpassword = mysqlflex_dict['password']
-        
+
         mysqldb = mysqlflex_dict['databaseName']
         flex_binding="mysqlflex_binding"
         postgresqlflex_dict = json.loads(postgresqlflex_json)
@@ -827,6 +1255,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
 
 class ContainerappEnvStorageTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @live_only()  # Passes locally but fails in CI
     @ResourceGroupPreparer(location="eastus")
@@ -838,8 +1269,10 @@ class ContainerappEnvStorageTests(ScenarioTest):
         shares_name = self.create_random_name(prefix='share', length=24)
 
         create_containerapp_env(self, env_name, resource_group)
-
-        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share'.format(resource_group, storage_name))
+        storage_account_location = TEST_LOCATION
+        if storage_account_location == STAGE_LOCATION:
+            storage_account_location = "eastus"
+        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --location {}'.format(resource_group, storage_name, storage_account_location))
         self.cmd('storage share-rm create -g {} -n {} --storage-account {} --access-tier "TransactionOptimized" --quota 1024'.format(resource_group, shares_name, storage_name))
 
         storage_keys = self.cmd('az storage account keys list -g {} -n {}'.format(resource_group, storage_name)).get_output_in_json()[0]
@@ -864,26 +1297,28 @@ class ContainerappEnvStorageTests(ScenarioTest):
 
 
 class ContainerappRevisionTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_revision_label_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, ca_name, env))
 
-        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
+        self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 80),
         ])
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --image nginx'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --image nginx'.format(resource_group, ca_name, env))
 
-        self.cmd('containerapp revision set-mode -g {} -n {} --mode multiple'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp revision set-mode -g {} -n {} --mode multiple'.format(resource_group, ca_name, env))
 
         revision_names = self.cmd(f"containerapp revision list -g {resource_group} -n {ca_name} --all --query '[].name'").get_output_in_json()
 
@@ -931,16 +1366,18 @@ class ContainerappRevisionTests(ScenarioTest):
 
 
 class ContainerappAnonymousRegistryTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_anonymous_registry(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         image = "mcr.microsoft.com/k8se/quickstart:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env}')
 
@@ -948,20 +1385,26 @@ class ContainerappAnonymousRegistryTests(ScenarioTest):
 
 
 class ContainerappRegistryIdentityTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_registry_identity_user(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         identity = self.create_random_name(prefix='id', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
 
         identity_rid = self.cmd(f'identity create -g {resource_group} -n {identity}').get_output_in_json()["id"]
 
@@ -985,15 +1428,18 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_registry_identity_system(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
 
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
         self.cmd(f'acr import -n {acr} --source {image_source}')
@@ -1015,15 +1461,16 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_private_registry_port(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io:443/k8se/quickstart:latest"
 
-        create_containerapp_env(self, env, resource_group)
-
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+        acr_location = TEST_LOCATION
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
+            acr_location = "eastus"
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled -l {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
         password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
 
@@ -1052,15 +1499,17 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_registry_acr_look_up_credentical(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        acr_location = TEST_LOCATION
+        if format_location(acr_location) == format_location(STAGE_LOCATION):
+            acr_location = "eastus"
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled --location {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
 
         self.cmd(f'containerapp create -g {resource_group} -n {app}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
@@ -1074,19 +1523,20 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         ])
 
 
-
 class ContainerappScaleTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_scale_create(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value')
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value', checks=[JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "")])
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
@@ -1094,9 +1544,10 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
             JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
             JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
         ])
 
-        self.cmd(f'containerapp create -g {resource_group} -n {app}2 --image nginx --environment {env} --scale-rule-name my-datadog-rule --scale-rule-type datadog --scale-rule-metadata "queryValue=7" "age=120" "metricUnavailableValue=0" --scale-rule-auth "apiKey=api-key" "appKey=app-key"')
+        self.cmd(f'containerapp create -g {resource_group} -n {app}2 --image nginx --environment {env} --scale-rule-name my-datadog-rule --scale-rule-type datadog --scale-rule-metadata "queryValue=7" "age=120" "metricUnavailableValue=0" --scale-rule-auth "apiKey=api-key" "appKey=app-key"', checks=[JMESPathCheck("properties.template.scale.rules[0].custom.metadata.queryValue", "")])
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}2', checks=[
             JMESPathCheck("properties.template.scale.rules[0].name", "my-datadog-rule"),
@@ -1108,6 +1559,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].secretRef", "api-key"),
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].triggerParameter", "appKey"),
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.queryValue", "7"),
 
         ])
 
@@ -1116,10 +1568,9 @@ class ContainerappScaleTests(ScenarioTest):
     def test_containerapp_scale_update(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value')
 
@@ -1160,16 +1611,67 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_scale_update_azure_queue(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        app = self.create_random_name(prefix='aca', length=24)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value', checks=[JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "")])
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+        ])
+        queue_name = self.create_random_name(prefix='queue', length=24)
+        containerapp_yaml_text = f"""
+properties:
+    template:
+        containers:
+        -   image: nginx
+            name: azure-equeue-container
+            resources:
+              cpu: 0.5
+              memory: 1Gi
+              ephemeralStorage: 2Gi
+        scale:
+            minReplicas: 0
+            maxReplicas: 1
+            rules:
+            - name: azure-queue-scale-rule
+              azureQueue:
+                queueName: {queue_name}
+                queueLength: 1
+                auth:
+                - secretRef: azure-storage
+                  triggerParameter: connection
+"""
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.scale.rules[0].name", "azure-queue-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.queueName", queue_name),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.queueLength", 1),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata", None),
+        ])
+        clean_up_test_file(containerapp_file_name)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_scale_revision_copy(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'containerapp create -g {resource_group} -n {app} --image nginx --ingress external --target-port 80 --environment {env} --scale-rule-name http-scale-rule --scale-rule-http-concurrency 50 --scale-rule-auth trigger=secretref --scale-rule-metadata key=value')
 
@@ -1198,15 +1700,47 @@ class ContainerappScaleTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
-    def test_containerapp_preview_create_with_yaml(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+    def test_containerapp_replica_commands(self, resource_group):
+        self.cmd(f'configure --defaults location={TEST_LOCATION}')
 
-        env = self.create_random_name(prefix='env', length=24)
+        app_name = self.create_random_name(prefix='aca', length=24)
+        replica_count = 3
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app_name} --environment {env} --ingress external --target-port 80 --min-replicas {replica_count}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.scale.minReplicas", 3)
+        ]).get_output_in_json()
+
+        count = self.cmd(f"containerapp replica count -g {resource_group} -n {app_name}").output
+        self.assertEqual(int(count), replica_count)
+
+        self.cmd(f'containerapp replica list -g {resource_group} -n {app_name}', checks=[
+            JMESPathCheck('length(@)', replica_count),
+        ])
+        self.cmd(f'containerapp update -g {resource_group} -n {app_name} --min-replicas 0', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.scale.minReplicas", 0)
+        ])
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {app_name} --yes')
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_preview_create_with_yaml(self, resource_group):
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+
         app = self.create_random_name(prefix='yaml', length=24)
 
-        create_containerapp_env(self, env, resource_group)
-        containerapp_env = self.cmd(
-            'containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
 
         user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
         user_identity = self.cmd(
@@ -1215,7 +1749,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         # test managedEnvironmentId
         containerapp_yaml_text = f"""
-                                location: {TEST_LOCATION}
+                                location: {location}
                                 type: Microsoft.App/containerApps
                                 tags:
                                     tagname: value
@@ -1277,7 +1811,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         write_test_file(containerapp_file_name, containerapp_yaml_text)
         self.cmd(
-            f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
+            f'containerapp create -n {app} -g {resource_group} --environment {env_id} --yaml {containerapp_file_name}')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
@@ -1335,13 +1869,18 @@ class ContainerappScaleTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_create_with_yaml(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='yaml', length=24)
 
-        create_containerapp_env(self, env, resource_group)
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
 
         user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
         user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
@@ -1349,7 +1888,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         # test managedEnvironmentId
         containerapp_yaml_text = f"""
-            location: {TEST_LOCATION}
+            location: {location}
             type: Microsoft.App/containerApps
             tags:
                 tagname: value
@@ -1360,6 +1899,7 @@ class ContainerappScaleTests(ScenarioTest):
                 - name: secret1
                   value: 1
                 activeRevisionsMode: Multiple
+                maxInactiveRevisions: 10
                 ingress:
                   external: true
                   allowInsecure: false
@@ -1407,7 +1947,7 @@ class ContainerappScaleTests(ScenarioTest):
         containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
 
         write_test_file(containerapp_file_name, containerapp_yaml_text)
-        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
+        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env_id} --yaml {containerapp_file_name}')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
@@ -1415,6 +1955,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("properties.configuration.maxInactiveRevisions", "10"),
             JMESPathCheck("length(properties.configuration.secrets)", 1),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
@@ -1431,7 +1972,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         # test environmentId
         containerapp_yaml_text = f"""
-                    location: {TEST_LOCATION}
+                    location: {location}
                     type: Microsoft.App/containerApps
                     tags:
                         tagname: value
@@ -1535,13 +2076,17 @@ class ContainerappScaleTests(ScenarioTest):
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_create_with_vnet_yaml(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env = self.create_random_name(prefix='env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)
 
         self.cmd(f"network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
-        sub_id = self.cmd(f"network vnet subnet create --address-prefixes '14.0.0.0/23' -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+        sub_id = self.cmd(f"network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
 
         self.cmd(f'containerapp env create -g {resource_group} -n {env} --internal-only -s {sub_id}')
         containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
@@ -1558,7 +2103,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         # test create containerapp transport: Tcp, with exposedPort
         containerapp_yaml_text = f"""
-        location: {TEST_LOCATION}
+        location: {location}
         type: Microsoft.App/containerApps
         tags:
             tagname: value
@@ -1615,7 +2160,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         # test update containerapp transport: Tcp, with exposedPort
         containerapp_yaml_text = f"""
-                location: {TEST_LOCATION}
+                location: {location}
                 type: Microsoft.App/containerApps
                 tags:
                     tagname: value
@@ -1667,7 +2212,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         # test create containerapp transport: http, with CORS policy
         containerapp_yaml_text = f"""
-                        location: {TEST_LOCATION}
+                        location: {location}
                         type: Microsoft.App/containerApps
                         tags:
                             tagname: value
@@ -1740,6 +2285,9 @@ class ContainerappScaleTests(ScenarioTest):
 
 
 class ContainerappOtherPropertyTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westus")
     def test_containerapp_get_customdomainverificationid_e2e(self, resource_group):
@@ -1796,12 +2344,37 @@ class ContainerappOtherPropertyTests(ScenarioTest):
     def test_containerapp_termination_grace_period_seconds(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         image = "mcr.microsoft.com/k8se/quickstart:latest"
         terminationGracePeriodSeconds = 90
-        create_containerapp_env(self, env, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env} --termination-grace-period {terminationGracePeriodSeconds}')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.template.terminationGracePeriodSeconds", terminationGracePeriodSeconds)])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_max_inactive_revisions(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        app = self.create_random_name(prefix='aca', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+        
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env} --cpu 0.5 --memory 1Gi')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.configuration.maxInactiveRevisions", 100)])
+
+        maxInactiveRevisions = 99
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env} --max-inactive-revisions {maxInactiveRevisions}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.configuration.maxInactiveRevisions", maxInactiveRevisions)])
+
+        maxInactiveRevisions = 50
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.5 --memory 1Gi --max-inactive-revisions {maxInactiveRevisions}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.configuration.maxInactiveRevisions", maxInactiveRevisions)])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.25 --memory 0.5Gi')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.configuration.maxInactiveRevisions", maxInactiveRevisions)])
+
+        

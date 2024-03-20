@@ -8,7 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
-# pylint: disable=too-many-locals option_length_too_long
+# pylint: disable=too-many-locals
 
 
 def load_command_table(self, _):
@@ -18,6 +18,9 @@ def load_command_table(self, _):
         g.custom_command('update', 'network_manager_update')
 
     with self.command_group('network manager connect-config') as g:
+        from .custom import ConnectConfigCreate, ConnectConfigUpdate
+        self.command_table["network manager connect-config create"] = ConnectConfigCreate(loader=self)
+        self.command_table["network manager connect-config update"] = ConnectConfigUpdate(loader=self)
         g.custom_command('create', 'network_manager_connect_config_create')
         g.custom_command('update', 'network_manager_connect_config_update')
 
@@ -29,6 +32,19 @@ def load_command_table(self, _):
         g.custom_command('create', 'network_manager_admin_rule_collection_create')
         g.custom_command('update', 'network_manager_admin_rule_collection_update')
 
-    with self.command_group("network manager group static-member") as g:
+    with self.command_group("network manager group static-member"):
         from .custom import GroupStaticMemberCreate
         self.command_table["network manager group static-member create"] = GroupStaticMemberCreate(loader=self)
+
+    with self.command_group("network manager scope-connection"):
+        from .custom import ScopeConnectionCreate
+        self.command_table["network manager scope-connection create"] = ScopeConnectionCreate(loader=self)
+
+    with self.command_group("network manager connection subscription"):
+        from .custom import ConnectionSubscriptionCreate
+        self.command_table["network manager connection subscription create"] = ConnectionSubscriptionCreate(loader=self)
+
+    with self.command_group("network manager connection management-group"):
+        from .custom import ConnectionManagementGroupCreate
+        self.command_table["network manager connection management-group create"] = \
+            ConnectionManagementGroupCreate(loader=self)

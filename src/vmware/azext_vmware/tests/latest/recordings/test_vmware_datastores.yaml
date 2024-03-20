@@ -1,7 +1,7 @@
 interactions:
 - request:
-    body: '{"properties": {"diskPoolVolume": {"targetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target",
-      "lunName": "lun0", "mountOption": "MOUNT"}}}'
+    body: '{"properties": {"diskPoolVolume": {"lunName": "lun0", "mountOption": "MOUNT",
+      "targetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"}}}'
     headers:
       Accept:
       - application/json
@@ -18,9 +18,9 @@ interactions:
       ParameterSetName:
       - --name --resource-group --private-cloud --cluster --target-id --lun-name
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2023-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}}'
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:27 GMT
+      - Wed, 20 Sep 2023 15:27:59 GMT
       server:
       - Rocket
     status:
@@ -50,9 +50,9 @@ interactions:
       ParameterSetName:
       - --name --resource-group --private-cloud --cluster
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2023-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}}'
@@ -62,7 +62,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:29 GMT
+      - Wed, 20 Sep 2023 15:28:04 GMT
       server:
       - Rocket
     status:
@@ -82,9 +82,9 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --cluster
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores?api-version=2023-03-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore2","name":"datastore2","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","diskPoolVolume":{"targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.StoragePool/diskPools/DiskPool1/targets/Target1","lunName":"lun0","mountOption":"MOUNT","path":"/vmfs/devices/disks/naa.6001405f75f6bdf7f6f49db8b4b21723"},"status":"Accessible"}}]}'
@@ -94,7 +94,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:31 GMT
+      - Wed, 20 Sep 2023 15:28:09 GMT
       server:
       - Rocket
     status:
@@ -118,9 +118,9 @@ interactions:
       ParameterSetName:
       - --name --resource-group --private-cloud --cluster --volume-id
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/ANFDatastore1?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/ANFDatastore1?api-version=2023-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}}'
@@ -130,7 +130,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:34 GMT
+      - Wed, 20 Sep 2023 15:28:14 GMT
       server:
       - Rocket
     status:
@@ -150,9 +150,9 @@ interactions:
       ParameterSetName:
       - --name --resource-group --private-cloud --cluster
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/ANFDatastore1?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/ANFDatastore1?api-version=2023-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}}'
@@ -162,7 +162,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:36 GMT
+      - Wed, 20 Sep 2023 15:28:19 GMT
       server:
       - Rocket
     status:
@@ -172,7 +172,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -184,9 +184,9 @@ interactions:
       ParameterSetName:
       - --name --resource-group --private-cloud --cluster --yes
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2023-03-01
   response:
     body:
       string: ''
@@ -194,15 +194,15 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 17 Oct 2022 15:53:38 GMT
+      - Wed, 20 Sep 2023 15:28:24 GMT
       server:
       - Rocket
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"diskPoolVolume": {"targetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target",
-      "lunName": "lun0", "mountOption": "ATTACH"}}}'
+    body: '{"properties": {"diskPoolVolume": {"lunName": "lun0", "mountOption": "ATTACH",
+      "targetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-df-rg/providers/Microsoft.StoragePool/diskPools/rasivagu-df-diskpool/iscsiTargets/rasivagu-df-target"}}}'
     headers:
       Accept:
       - application/json
@@ -219,9 +219,9 @@ interactions:
       ParameterSetName:
       - --name --resource-group --private-cloud --cluster --target-id --lun-name --mount-option
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rasivagu-sddc-rg/providers/Microsoft.AVS/privateClouds/rasivagu-mock-sddc/clusters/Cluster-1/datastores/iSCSIDatastore1?api-version=2023-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/datastores/datastore1","name":"datastore1","type":"Microsoft.AVS/privateClouds/clusters/datastores","properties":{"provisioningState":"Succeeded","netAppVolume":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1"},"status":"Accessible"}}'
@@ -231,7 +231,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:40 GMT
+      - Wed, 20 Sep 2023 15:28:29 GMT
       server:
       - Rocket
     status:

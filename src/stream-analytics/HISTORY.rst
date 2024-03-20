@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0
++++++++++++++++
+* Make extension as GA.
+
 0.1.2
 +++++++++++++++
 * Support clusters and private endpoints.

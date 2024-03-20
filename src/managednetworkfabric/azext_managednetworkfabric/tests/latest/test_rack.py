@@ -12,13 +12,16 @@ Rack tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -28,6 +31,7 @@ def call_scenario1(test):
     step_list_subscription(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_show(test, checks=None):
     '''Rack show operation'''
     if checks is None:
@@ -35,17 +39,20 @@ def step_show(test, checks=None):
     test.cmd(
         'az networkfabric rack show --resource-name {name} --resource-group {rg}')
 
+
 def step_list_resource_group(test, checks=None):
     '''Rack list by resource group operation'''
     if checks is None:
         checks = []
     test.cmd('az networkfabric rack list --resource-group {rg}')
 
+
 def step_list_subscription(test, checks=None):
     '''Rack list by subscription'''
     if checks is None:
         checks = []
     test.cmd('az networkfabric rack list')
+
 
 class GA_RackScenarioTest1(ScenarioTest):
     ''' RackScenario test'''

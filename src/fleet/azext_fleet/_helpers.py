@@ -88,7 +88,7 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
 
     # check that ~/.kube/config is only read- and writable by its owner
     if platform.system() != "Windows" and not os.path.islink(existing_file):
-        existing_file_perms = "{:o}".format(stat.S_IMODE(os.lstat(existing_file).st_mode))
+        existing_file_perms = f"{stat.S_IMODE(os.lstat(existing_file).st_mode):o}"
         if not existing_file_perms.endswith("600"):
             logger.warning(
                 '%s has permissions "%s".\nIt should be readable and writable only by its owner.',
@@ -96,7 +96,7 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
                 existing_file_perms,
             )
 
-    with open(existing_file, 'w+') as stream:
+    with open(existing_file, 'w+', encoding='utf-8') as stream:
         yaml.safe_dump(existing, stream, default_flow_style=False)
 
     current_context = addition.get('current-context', 'UNKNOWN')
@@ -133,10 +133,11 @@ def _handle_merge(existing, addition, key, replace):
 
 def _load_kubernetes_configuration(filename):
     try:
-        with open(filename) as stream:
+        with open(filename, encoding='utf-8') as stream:
             return yaml.safe_load(stream)
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
-            raise CLIError(f'{filename} does not exist')
+            raise CLIError(f'{filename} does not exist') from ex
+        raise
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
-        raise CLIError(f'Error parsing {filename} ({str(ex)})')
+        raise CLIError(f'Error parsing {filename} ({str(ex)})') from ex

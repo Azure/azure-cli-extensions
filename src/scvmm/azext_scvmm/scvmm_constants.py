@@ -8,9 +8,13 @@ from enum import Enum
 SCVMM_NAMESPACE = "Microsoft.ScVmm"
 VMMSERVER_RESOURCE_TYPE = "vmmservers"
 CLOUD_RESOURCE_TYPE = "clouds"
+VMMSERVER_RESOURCE_TYPE = "vmmservers"
 VMTEMPLATE_RESOURCE_TYPE = "virtualmachinetemplates"
 VIRTUALNETWORK_RESOURCE_TYPE = "virtualnetworks"
 AVAILABILITYSET_RESOURCE_TYPE = "availabilitysets"
+EXTENSIONS_RESOURCE_TYPE = "extensions"
+
+MACHINE_KIND_SCVMM = "scvmm"
 
 DEFAULT_VMMSERVER_PORT = 8100
 
@@ -21,6 +25,11 @@ EXTENDED_LOCATION_TYPE = "customLocation"
 INVENTORY_ITEM_TYPE = "InventoryItems"
 
 NAME_PARAMETER = "name"
+
+HCRP_NAMESPACE = "Microsoft.HybridCompute"
+MACHINES_RESOURCE_TYPE = "machines"
+VM_SYSTEM_ASSIGNED_INDENTITY_TYPE = "SystemAssigned"
+GUEST_AGENT_PROVISIONING_ACTION_INSTALL = "install"
 
 # NIC parameters.
 NETWORK = "network"

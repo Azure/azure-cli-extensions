@@ -25,16 +25,13 @@ def sanitize_resource_id(resource_id):
 def post_request(cmd, subscription_id, rp_name, headers):
     from azure.cli.core.util import send_raw_request
     armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
-    customUrl = "{0}/subscriptions/{1}/providers/{2}/register?api-version={3}".format(
-        armendpoint,
-        subscription_id,
-        rp_name,
-        RP_API,
+    customUrl = (
+        f"{armendpoint}/subscriptions/{subscription_id}/providers/{rp_name}/register?api-version={RP_API}"
     )
     try:
         send_raw_request(cmd.cli_ctx, "POST", customUrl, headers=headers)
     except CLIError as e:
-        raise CLIError(e)
+        raise CLIError(e)  # pylint: disable=raise-missing-from
 
 
 def rp_registrations(cmd, subscription_id):
@@ -43,14 +40,13 @@ def rp_registrations(cmd, subscription_id):
     try:
         headers = ['User-Agent=azuremonitormetrics.get_mac_sub_list']
         armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
-        customUrl = "{0}/subscriptions/{1}/providers?api-version={2}&$select=namespace,registrationstate".format(
-            armendpoint,
-            subscription_id,
-            RP_API
+        customUrl = (
+            f"{armendpoint}/subscriptions/{subscription_id}/providers?"
+            f"api-version={RP_API}&$select=namespace,registrationstate"
         )
         r = send_raw_request(cmd.cli_ctx, "GET", customUrl, headers=headers)
     except CLIError as e:
-        raise CLIError(e)
+        raise CLIError(e)  # pylint: disable=raise-missing-from
     isInsightsRpRegistered = False
     isAlertsManagementRpRegistered = False
     isMoniotrRpRegistered = False
@@ -58,13 +54,25 @@ def rp_registrations(cmd, subscription_id):
     json_response = json.loads(r.text)
     values_array = json_response["value"]
     for value in values_array:
-        if value["namespace"].lower() == "microsoft.insights" and value["registrationState"].lower() == "registered":
+        if (
+            value["namespace"].lower() == "microsoft.insights" and
+            value["registrationState"].lower() == "registered"
+        ):
             isInsightsRpRegistered = True
-        if value["namespace"].lower() == "microsoft.alertsmanagement" and value["registrationState"].lower() == "registered":
+        if (
+            value["namespace"].lower() == "microsoft.alertsmanagement" and
+            value["registrationState"].lower() == "registered"
+        ):
             isAlertsManagementRpRegistered = True
-        if value["namespace"].lower() == "microsoft.monitor" and value["registrationState"].lower() == "registered":
+        if (
+            value["namespace"].lower() == "microsoft.monitor" and
+            value["registrationState"].lower() == "registered"
+        ):
             isAlertsManagementRpRegistered = True
-        if value["namespace"].lower() == "microsoft.dashboard" and value["registrationState"].lower() == "registered":
+        if (
+            value["namespace"].lower() == "microsoft.dashboard" and
+            value["registrationState"].lower() == "registered"
+        ):
             isAlertsManagementRpRegistered = True
     if not isInsightsRpRegistered:
         headers = ['User-Agent=azuremonitormetrics.register_insights_rp']
@@ -83,16 +91,23 @@ def rp_registrations(cmd, subscription_id):
 def check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resource_group_name, cluster_name):
     from azure.cli.core.util import send_raw_request
     armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
-    feature_check_url = f"{armendpoint}/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}?api-version={AKS_CLUSTER_API}"
+    feature_check_url = (
+        f"{armendpoint}/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/"
+        f"Microsoft.ContainerService/managedClusters/{cluster_name}?api-version={AKS_CLUSTER_API}"
+    )
     try:
         headers = ['User-Agent=azuremonitormetrics.check_azuremonitormetrics_profile']
         r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url,
                              body={}, headers=headers)
     except CLIError as e:
-        raise UnknownError(e)
+        raise UnknownError(e)  # pylint: disable=raise-missing-from
     json_response = json.loads(r.text)
     values_array = json_response["properties"]
     if "azureMonitorProfile" in values_array:
         if "metrics" in values_array["azureMonitorProfile"]:
             if values_array["azureMonitorProfile"]["metrics"]["enabled"] is True:
-                raise CLIError(f"Azure Monitor Metrics is already enabled for this cluster. Please use `az aks update --disable-azuremonitormetrics -g {cluster_resource_group_name} -n {cluster_name}` and then try enabling.")
+                raise CLIError(
+                    "Azure Monitor Metrics is already enabled for this cluster. Please use "
+                    f"`az aks update --disable-azuremonitormetrics -g {cluster_resource_group_name} -n {cluster_name}` "
+                    "and then try enabling."
+                )

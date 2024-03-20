@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud clustermanager create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new cluster manager or update properties of the cluster manager if it exists.
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -80,12 +81,12 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.analytics_workspace_id = AAZStrArg(
+        _args_schema.analytics_workspace_id = AAZResourceIdArg(
             options=["--analytics-workspace-id"],
             arg_group="Properties",
             help="The resource ID of the Log Analytics workspace that is used for the logs collection.",
         )
-        _args_schema.fabric_controller_id = AAZStrArg(
+        _args_schema.fabric_controller_id = AAZResourceIdArg(
             options=["--fabric-controller-id"],
             arg_group="Properties",
             help="The resource ID of the fabric controller that has one to one mapping with the cluster manager.",
@@ -192,7 +193,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

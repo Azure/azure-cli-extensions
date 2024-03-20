@@ -17,20 +17,8 @@ def cf_k8s_extension_operation(cli_ctx, *_):
     return cf_k8s_extension(cli_ctx).extensions
 
 
-def cf_k8s_cluster_extension_types_operation(cli_ctx, *_):
-    return cf_k8s_extension(cli_ctx, api_version=consts.EXTENSION_TYPE_API_VERSION).cluster_extension_types
-
-
-def cf_k8s_cluster_extension_type_operation(cli_ctx, *_):
-    return cf_k8s_extension(cli_ctx, api_version=consts.EXTENSION_TYPE_API_VERSION).cluster_extension_type
-
-
-def cf_k8s_location_extension_types_operation(cli_ctx, *_):
-    return cf_k8s_extension(cli_ctx, api_version=consts.EXTENSION_TYPE_API_VERSION).location_extension_types
-
-
-def cf_k8s_extension_type_versions_operation(cli_ctx, *_):
-    return cf_k8s_extension(cli_ctx, api_version=consts.EXTENSION_TYPE_API_VERSION).extension_type_versions
+def cf_k8s_extension_types(cli_ctx, *_):
+    return cf_k8s_extension(cli_ctx, api_version=consts.EXTENSION_TYPE_API_VERSION).extension_types
 
 
 def cf_resource_groups(cli_ctx, subscription_id=None):

@@ -4,6 +4,96 @@ Release History
 ===============
 upcoming
 ++++++
+
+0.3.49
+++++++
+* 'az containerapp env telemetry data-dog set': Support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry data-dog delete': Support delete environment data dog configuration
+* 'az containerapp env telemetry app-insights set': Support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
+* 'az containerapp env telemetry app-insights delete': Support delete environment app insights configuration
+* 'az containerapp update/up': Explicitly set container name to container app name for source to cloud builds.
+* 'az containerapp env create/update': Add support for environment custom domain from azure key vault using managed identity
+* 'az containerapp env certificate upload': Add support for environment certificate from azure key vault using managed identity
+
+0.3.48
+++++++
+* 'az containerapp service': Remove deprecated command group altogether, only keep 'az containerapp add-on' for add-ons
+* 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
+* 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
+* 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
+* 'az containerapp up': Fix registry not found error in subscription when registry server parameters are provided for ACR from another subscription
+* 'az containerapp env java-component': Support list Java components
+* 'az containerapp env java-component spring-cloud-config': Support create/update/show/delete Spring Cloud Config
+* 'az containerapp env java-component spring-cloud-eureka': Support create/update/show/delete Spring Cloud Eureka
+* 'az containerapp create/update': Support bind Java component with --bind
+* 'az containerapp create/update/up': Fix issue with logs when the Cloud Build project to use generates UTF-8 logs.
+* 'az containerapp update/up': Fix bug for multiple containers provisioned for source to cloud build
+
+0.3.47
+++++++
+* 'az containerapp add-on' : support for add-on milvus create and delete commands
+* [Breaking Change] 'az containerapp service': deprecate command from Azure CLI version 2.59.0
+* 'az containerapp add-on' : support for add-on weaviate create and delete commands
+* Upgrade api-version to 2023-11-02-preview
+* 'az containerapp create/update/up': support --build-env-vars to set environment variables for build
+* 'az containerapp create/update': support --max-inactive-revisions
+* 'az containerapp env create': support --mi-system-assigned and --mi-user-assigned for environment create commands
+* 'az containerapp env identity': support for container app environment assign/remove/show commands
+* 'az containerapp env storage set': Support create or update managed environment storage with NFS Azure File.
+* 'az containerapp up': Update the Docker error string used to identify unauthorized push.
+
+0.3.46
+++++++
+* 'az containerapp create': Fix BadRequest Error about the clientType with --bind
+* 'az containerapp update': Fix bug for --min-replicas is not set when the value is 0
+
+0.3.45
+++++++
+* 'az containerapp up': Cloud Build Bugfix - 500 Internal Server Error (Wrong env selected to create builder)
+* 'az containerapp up': support to create or update a containerapp on connected environment as well as any associated resources (extension on connected cluster, custom location) with --custom-location or --connected-cluster-id
+
+0.3.44
+++++++
+* 'az containerapp env workload-profile set': deprecate command
+* 'az containerapp add-on': support for az containerapp add-on commands; deprecation of az containerapp service commands
+* 'az containerapp env dapr-component resiliency': Add Dapr Component Resiliency commands
+* 'az containerapp resiliency': Add Container App Resiliency commands
+* 'az containerapp env create': Support --enable-dedicated-gpu
+* 'az containerapp job create': fix problem of parsing parameters minExecutions and maxExecutions from --yaml
+* 'az containerapp env dapr-component init': support initializing Dapr components and dev services for an environment
+* 'az containerapp patch apply': support image patching for java application
+* Upgrade api-version to 2023-08-01-preview
+* 'az containerapp env create/update': Support --logs-dynamic-json-columns/-j to configure whether to parse json string log into dynamic json columns
+* 'az containerapp create/update/up': Remove the region check for the Cloud Build feature
+* 'az containerapp create/update/up': Improve logs on the local buildpack source to cloud flow
+* 'az containerapp create/update': Support --customized-keys and clientType in --bind for dev service
+
+0.3.43
+++++++
+* Update azure cli dependency version >= "2.53.0"
+* Remove GA commands which exists in azure-cli of version 2.53.0
+* 'az containerapp create/update': fix an issue for transforming sensitive values when the scale rules metadata not exists
+* 'az containerapp up': update builder image used when --source is provided with no Dockerfile to support building applications targeting a wider range of platform versions
+* Add Cloud Build support (build without Dockerfile or Docker) in Stage/Canary regions to the 'az containerapp up'/'az containerapp create' and 'az containerapp update' commands
+
+0.3.42
+++++++
+* 'az containerapp job create': Fix AttributeError when --trigger-type is None
+* 'az containerapp update': fix bug for mounting secret volumes using --secret-volume-mount
+* 'az containerapp compose create': fixed an issue where the environment's resource group was not resolved from --environment when the input value was a resource id.
+* 'az containerapp replica count', returns the replica count of a container app
+* [Breaking Change] 'az containerapp job create': add default values for container app job properties --replica-completion-count, --replica-retry-limit, --replica-timeout, --parallelism, --min-executions, --max-executions, --polling-interval
+* 'az containerapp create/update': hide environment variables, scale rules metadata
+* 'az containerapp job create/update': hide environment variables, scale rules metadata, eventTriggerConfig for job
+* [Breaking Change] 'az containerapp env create': update the default value of --enable-workload-profiles to `True`
+* 'az containerapp compose create': fix containerapp invalid memory resource
+
+0.3.41
+++++++
+* 'az containerapp up/create': enable support for no Dockerfile cases with --repo
+
+0.3.40
+++++++
 * 'az containerapp service': add support for creation and deletion of Qdrant vector database as a container app dev service
 * Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
 * 'az containerapp create': support --source and --repo properties

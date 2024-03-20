@@ -62,12 +62,16 @@ def upload_source_code(cmd, client,
     return relative_path
 
 
+def archive_source_code(tar_file_path, source_location):
+    _pack_source_code(source_location, tar_file_path, "", None)
+
+
 def _pack_source_code(source_location, tar_file_path, docker_file_path, docker_file_in_tar):
     logger.info("Packing source code into tar to upload...")
 
     original_docker_file_name = os.path.basename(docker_file_path.replace("\\", os.sep))
     ignore_list, ignore_list_size = _load_dockerignore_file(source_location, original_docker_file_name)
-    common_vcs_ignore_list = {'.git', '.gitignore', '.bzr', 'bzrignore', '.hg', '.hgignore', '.svn'}
+    common_vcs_ignore_list = {'.git', '.gitignore', '.bzr', 'bzrignore', '.hg', '.hgignore', '.svn', 'mvnw'}
 
     def _ignore_check(tarinfo, parent_ignored, parent_matching_rule_index):
         # ignore common vcs dir or file
@@ -182,6 +186,10 @@ def _load_dockerignore_file(source_location, original_docker_file_name):
 
 
 def _archive_file_recursively(tar, name, arcname, parent_ignored, parent_matching_rule_index, ignore_check):
+    if os.path.isfile(name) and (arcname == "" or arcname is None):
+        # If the file is in the root dir, use its name as the arcname
+        arcname = os.path.basename(name)
+
     # create a TarInfo object from the file
     tarinfo = tar.gettarinfo(name, arcname)
 

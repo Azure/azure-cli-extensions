@@ -71,18 +71,6 @@ class Update(AAZCommand):
             help="A description of the scope connection.",
             nullable=True,
         )
-        _args_schema.resource_id = AAZStrArg(
-            options=["--resource-id"],
-            arg_group="Properties",
-            help="Resource ID.",
-            nullable=True,
-        )
-        _args_schema.tenant_id = AAZStrArg(
-            options=["--tenant-id"],
-            arg_group="Properties",
-            help="Tenant ID.",
-            nullable=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -317,8 +305,6 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("resourceId", AAZStrType, ".resource_id")
-                properties.set_prop("tenantId", AAZStrType, ".tenant_id")
 
             return _instance_value
 

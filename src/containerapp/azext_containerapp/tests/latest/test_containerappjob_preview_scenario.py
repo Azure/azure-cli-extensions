@@ -4,19 +4,24 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
+
+from msrestazure.tools import parse_resource_id
+
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 from azure.cli.testsdk.decorators import serial_test
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .common import TEST_LOCATION
 from .custom_preparers import ConnectedClusterPreparer
-from .utils import create_containerapp_env, create_extension_and_custom_location
+from .utils import create_extension_and_custom_location, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappJobPreviewScenarioTest(ScenarioTest):
     @serial_test()
-    @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerappjob_preview_environment_type(self, resource_group, infra_cluster, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -78,15 +83,16 @@ class ContainerappJobPreviewScenarioTest(ScenarioTest):
     def test_containerappjob_preview_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
 
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
 
         self.cmd(
-            f"az containerapp job create --name {ca_name} --resource-group {resource_group} --environment {env_name} --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --parallelism 1 --replica-completion-count 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi' --environment-type managed",
+            f"az containerapp job create --name {ca_name} --resource-group {resource_group} --environment {env_id} --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --parallelism 1 --replica-completion-count 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi' --environment-type managed",
             checks=[
                 JMESPathCheck('properties.environmentId', containerapp_env['id']),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),

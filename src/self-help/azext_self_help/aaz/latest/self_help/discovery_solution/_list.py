@@ -16,18 +16,20 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """list the existing available solutions for the problemClassificationId or the resourceUri for the Azure resource.
+    """List the relevant Azure diagnostics and solutions using problemClassificationId API AND resourceUri or resourceType.
 
     :example: List DiscoverySolution results for a resource
-        az self-help discovery-solution list --scope {scope}
+        az self-help discovery-solution list --filter "ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'" --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {
-        "version": "2023-01-01-preview",
+        "version": "2023-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/discoverysolutions", "2023-01-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/discoverysolutions", "2023-09-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -51,11 +53,11 @@ class List(AAZCommand):
         )
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
-            help="Can be used to filter solutionIds by 'ProblemClassificationId'. The filter supports only 'and' and 'eq' operators. Example: $filter=ProblemClassificationId eq '1ddda5b4-cf6c-4d4f-91ad-bc38ab0e811e' and ProblemClassificationId eq '0a9673c2-7af6-4e19-90d3-4ee2461076d9'.",
+            help="'ProblemClassificationId' or 'Id' is a mandatory filter to get solutions ids. It also supports optional 'ResourceType' and 'SolutionType' filters. The filter supports only 'and', 'or' and 'eq' operators. Example: $filter=ProblemClassificationId eq '1ddda5b4-cf6c-4d4f-91ad-bc38ab0e811e'",
         )
         _args_schema.skiptoken = AAZStrArg(
             options=["--skiptoken"],
-            help="Skiptoken is only used if a previous operation returned a partial result. If a previous response contains a nextLink element, the value of the nextLink element will include a skiptoken parameter that specifies a starting point to use for subsequent calls.",
+            help="Skiptoken is only used if a previous operation returned a partial result.",
         )
         return cls._args_schema
 
@@ -124,7 +126,7 @@ class List(AAZCommand):
                     "$skiptoken", self.ctx.args.skiptoken,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01-preview",
+                    "api-version", "2023-09-01-preview",
                     required=True,
                 ),
             }
@@ -184,22 +186,29 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.description = AAZStrType()
-            properties.required_parameter_sets = AAZListType(
-                serialized_name="requiredParameterSets",
+            properties.solutions = AAZListType()
+
+            solutions = cls._schema_on_200.value.Element.properties.solutions
+            solutions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.solutions.Element
+            _element.description = AAZStrType(
+                flags={"read_only": True},
             )
-            properties.solution_id = AAZStrType(
+            _element.required_inputs = AAZListType(
+                serialized_name="requiredInputs",
+                flags={"read_only": True},
+            )
+            _element.solution_id = AAZStrType(
                 serialized_name="solutionId",
             )
-            properties.solution_type = AAZStrType(
+            _element.solution_type = AAZStrType(
                 serialized_name="solutionType",
+                flags={"read_only": True},
             )
 
-            required_parameter_sets = cls._schema_on_200.value.Element.properties.required_parameter_sets
-            required_parameter_sets.Element = AAZListType()
-
-            _element = cls._schema_on_200.value.Element.properties.required_parameter_sets.Element
-            _element.Element = AAZStrType()
+            required_inputs = cls._schema_on_200.value.Element.properties.solutions.Element.required_inputs
+            required_inputs.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

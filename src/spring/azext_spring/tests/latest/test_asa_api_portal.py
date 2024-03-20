@@ -13,8 +13,9 @@ from azure.cli.testsdk.preparers import (
 )
 from .custom_preparers import SpringPreparer, SpringResourceGroupPreparer, SpringSubResourceWrapper
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
-from ...vendored_sdks.appplatform.v2023_09_01_preview import models
+from ...vendored_sdks.appplatform.v2024_01_01_preview import models
 from ...api_portal import (api_portal_custom_domain_update, api_portal_custom_domain_unbind)
+
 try:
     import unittest.mock as mock
 except ImportError:
@@ -24,8 +25,8 @@ from azure.cli.core.mock import DummyCli
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.commands import AzCliCommand
 
-
 free_mock_client = mock.MagicMock()
+
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
@@ -42,10 +43,12 @@ class ApiPortalWrapper(SpringSubResourceWrapper):
     def create_resource(self, *_, **kwargs):
         self.resource_group = self._get_resource_group(**kwargs)
         self.spring = self._get_spring(**kwargs)
-    
+
     def remove_resource(self, *_, **__):
-        self.live_only_execute(self.cli_ctx, 'spring api-portal delete -g {}  -s {} --yes'.format(self.resource_group, self.spring))
-        self.live_only_execute(self.cli_ctx, 'spring api-portal create -g {}  -s {}'.format(self.resource_group, self.spring))
+        self.live_only_execute(self.cli_ctx,
+                               'spring api-portal delete -g {}  -s {} --yes'.format(self.resource_group, self.spring))
+        self.live_only_execute(self.cli_ctx,
+                               'spring api-portal create -g {}  -s {}'.format(self.resource_group, self.spring))
 
 
 @record_only()
@@ -56,7 +59,6 @@ class ApiPortalTest(ScenarioTest):
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
     @ApiPortalWrapper()
     def test_api_portal(self, resource_group, spring, sp_name, sp_password):
-        
         self.kwargs.update({
             'serviceName': spring,
             'rg': resource_group,
@@ -66,16 +68,18 @@ class ApiPortalTest(ScenarioTest):
 
         self.cmd('spring api-portal update -g {rg} -s {serviceName} '
                  '--assign-endpoint true --https-only true --instance-count 1 '
-                 '--client-id {clientId} --client-secret {secret} --issuer-uri https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0 --scope "openid,profile,email"', checks=[
-            self.check('properties.public', True),
-            self.check('properties.httpsOnly', True),
-            self.check('sku.capacity', 1),
-            self.check('properties.ssoProperties.clientId', "*"),
-            self.check('properties.ssoProperties.clientSecret', "*"),
-            self.check('properties.ssoProperties.issuerUri', "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"),
-            self.check('properties.ssoProperties.scope', ["openid", "profile", "email"]),
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+                 '--client-id {clientId} --client-secret {secret} --issuer-uri https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0 --scope "openid,profile,email"',
+                 checks=[
+                     self.check('properties.public', True),
+                     self.check('properties.httpsOnly', True),
+                     self.check('sku.capacity', 1),
+                     self.check('properties.ssoProperties.clientId', "*"),
+                     self.check('properties.ssoProperties.clientSecret', "*"),
+                     self.check('properties.ssoProperties.issuerUri',
+                                "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"),
+                     self.check('properties.ssoProperties.scope', ["openid", "profile", "email"]),
+                     self.check('properties.provisioningState', "Succeeded")
+                 ])
 
         self.cmd('spring api-portal show -g {rg} -s {serviceName}', checks=[
             self.check('properties.public', True),
@@ -125,12 +129,11 @@ class ApiPortalUnitTest(unittest.TestCase):
                                         'asa',
                                         'my-domain.microsoft.com')
         args = client.api_portal_custom_domains.begin_create_or_update.call_args_list
-        self.assertEqual(1, len(args)) # one call
-        self.assertEqual(5, len(args[0][0])) # 5 parameters
+        self.assertEqual(1, len(args))  # one call
+        self.assertEqual(5, len(args[0][0]))  # 5 parameters
         self.assertEqual(('rg', 'asa', 'default', 'my-domain.microsoft.com'), args[0][0][0:4])
         resource = args[0][0][4]
         self.assertIsNone(resource.properties.thumbprint)
-
 
     def test_custom_domain_with_cert(self):
         def _get_cert(*_, **__):
@@ -149,8 +152,8 @@ class ApiPortalUnitTest(unittest.TestCase):
                                         'my-domain.microsoft.com',
                                         'my-cert')
         args = client.api_portal_custom_domains.begin_create_or_update.call_args_list
-        self.assertEqual(1, len(args)) # one call
-        self.assertEqual(5, len(args[0][0])) # 5 parameters
+        self.assertEqual(1, len(args))  # one call
+        self.assertEqual(5, len(args[0][0]))  # 5 parameters
         self.assertEqual(('rg', 'asa', 'default', 'my-domain.microsoft.com'), args[0][0][0:4])
         resource = args[0][0][4]
         self.assertEqual('my-thumbprint', resource.properties.thumbprint)
@@ -169,7 +172,7 @@ class ApiPortalUnitTest(unittest.TestCase):
                           'asa',
                           'my-domain.microsoft.com',
                           'my-cert')
-    
+
     def test_custom_domain_unbind(self):
         client = _get_basic_mock_client()
         api_portal_custom_domain_unbind(_get_test_cmd(),
@@ -178,6 +181,6 @@ class ApiPortalUnitTest(unittest.TestCase):
                                         'asa',
                                         'my-domain.microsoft.com')
         args = client.api_portal_custom_domains.begin_delete.call_args_list
-        self.assertEqual(1, len(args)) # one call
-        self.assertEqual(4, len(args[0][0])) # 5 parameters
+        self.assertEqual(1, len(args))  # one call
+        self.assertEqual(4, len(args[0][0]))  # 5 parameters
         self.assertEqual(('rg', 'asa', 'default', 'my-domain.microsoft.com'), args[0][0])

@@ -29,6 +29,9 @@ class DockerClient:
     def __init__(self) -> None:
         self._client = None
 
+    def __enter__(self) -> docker.DockerClient:
+        return self.get_client()
+
     def get_client(self) -> docker.DockerClient:
         if not self._client:
             self._client = docker.from_env()

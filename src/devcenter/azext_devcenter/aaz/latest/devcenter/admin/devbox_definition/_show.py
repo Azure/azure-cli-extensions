@@ -25,10 +25,10 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-06-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/devboxdefinitions/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -144,7 +144,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -227,10 +227,6 @@ class Show(AAZCommand):
             properties.sku = AAZObjectType(
                 flags={"required": True},
             )
-            properties.validation_error_details = AAZListType(
-                serialized_name="validationErrorDetails",
-                flags={"read_only": True},
-            )
             properties.validation_status = AAZStrType(
                 serialized_name="validationStatus",
             )
@@ -247,13 +243,6 @@ class Show(AAZCommand):
             )
             sku.size = AAZStrType()
             sku.tier = AAZStrType()
-
-            validation_error_details = cls._schema_on_200.properties.validation_error_details
-            validation_error_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.validation_error_details.Element
-            _element.code = AAZStrType()
-            _element.message = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -332,7 +321,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -415,10 +404,6 @@ class Show(AAZCommand):
             properties.sku = AAZObjectType(
                 flags={"required": True},
             )
-            properties.validation_error_details = AAZListType(
-                serialized_name="validationErrorDetails",
-                flags={"read_only": True},
-            )
             properties.validation_status = AAZStrType(
                 serialized_name="validationStatus",
             )
@@ -435,13 +420,6 @@ class Show(AAZCommand):
             )
             sku.size = AAZStrType()
             sku.tier = AAZStrType()
-
-            validation_error_details = cls._schema_on_200.properties.validation_error_details
-            validation_error_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.validation_error_details.Element
-            _element.code = AAZStrType()
-            _element.message = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

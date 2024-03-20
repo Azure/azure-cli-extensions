@@ -45,13 +45,13 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
         ])
 
         self.cmd('az connectedmachine list -g {rg}', checks=[
-            self.check('length(@)', 1)
+            self.check('length(@)', 2)
         ])
 
         self.cmd('az connectedmachine extension create '
                 '--name "{customScriptName}" '
                 '--location "{location}" '
-                '--enable-auto-upgrade true '
+                '--enable-automatic-upgrade true '
                 '--type "CustomScriptExtension" '
                 '--publisher "Microsoft.Compute" '
                 '--type-handler-version "1.10.10" '
@@ -123,7 +123,7 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
 
         self.cmd('az connectedmachine extension update '
                 '--name "{customScriptName}" '
-                '--enable-auto-upgrade false '
+                '--enable-automatic-upgrade false '
                 '--settings "{{\\"commandToExecute\\":\\"dir\\"}}" '
                 '--machine-name "{machine}" '
                 '--resource-group "{rg}"',

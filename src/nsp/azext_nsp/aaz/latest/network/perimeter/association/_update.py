@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "network perimeter association update",
 )
 class Update(AAZCommand):
-    """Creates or updates a NSP resource association.
+    """Updates a NSP resource association.
 
     :example: Update NSP Association
         az network perimeter association update --name MyAssociation --perimeter-name MyPerimeter --resource-group MyResourceGroup --access-mode Enforced --private-link-resource id="<PaaSArmID> --profile id="ProfileArmID"
     """
 
     _aaz_info = {
-        "version": "2021-02-01-preview",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/resourceassociations/{}", "2021-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/resourceassociations/{}", "2023-07-01-preview"],
         ]
     }
 
@@ -214,7 +214,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-02-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -301,7 +301,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-02-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }

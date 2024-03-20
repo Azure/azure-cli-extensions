@@ -103,6 +103,42 @@ def call_scenario4(test):
     cleanup_scenario4(test)
 
 
+def setup_scenario5(test):
+    """Env setup_scenario5"""
+    pass
+
+
+def cleanup_scenario5(test):
+    """Env cleanup_scenario5"""
+    pass
+
+
+def call_scenario5(test):
+    """# Testcase: scenario5 temporary split of cluster scan runtime operation to work with the already created and deployed simulator"""
+    setup_scenario5(test)
+    step_scan_runtime(test, checks=[])
+    cleanup_scenario5(test)
+
+
+def setup_scenario6(test):
+    """Env setup_scenario6"""
+    pass
+
+
+def cleanup_scenario6(test):
+    """Env cleanup_scenario6"""
+    pass
+
+
+def call_scenario6(test):
+    """# Testcase: scenario6 temporary split of cluster update operation for runtime protection configuration, secret-archive, strategy to work with the already created and deployed simulator"""
+    setup_scenario6(test)
+    step_update_runtime_protection(test, checks=[])
+    step_update_secret_archive(test, checks=[])
+    step_update_strategy(test, checks=[])
+    cleanup_scenario6(test)
+
+
 def step_create(test, checks=None):
     """cluster create operation"""
     if checks is None:
@@ -214,6 +250,42 @@ def step_update_version_sim(test, checks=None):
     )
 
 
+def step_update_runtime_protection(test, checks=None):
+    """cluster update for runtime-protection-configuration operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --runtime-protection enforcement-level={enforcementLevel} "
+    )
+
+
+def step_update_secret_archive(test, checks=None):
+    """cluster update secret-archive operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --secret-archive use-key-vault={enabled} key-vault-id={keyVaultId} "
+    )
+
+
+def step_update_strategy(test, checks=None):
+    """cluster update strategy operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --update-strategy strategy-type={strategyType} threshold-type={strategyThresholdType} threshold-value={strategyThresholdValue} max-unavailable={maxUnavailable} wait-time-minutes={waitTimeMinutes}"
+    )
+
+
+def step_scan_runtime(test, checks=None):
+    """cluster scan-runtime operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster scan-runtime --name {nameScanActivity} --resource-group {rgScanActivity} --scan-activity {scanActivity}"
+    )
+
+
 class ClusterScenarioTest(ScenarioTest):
     """Cluster scenario test"""
 
@@ -266,6 +338,25 @@ class ClusterScenarioTest(ScenarioTest):
                 "skipValidationForMachines": CONFIG.get(
                     "CLUSTER", "skip_validations_for_machines"
                 ),
+                "nameClusterUpdate": CONFIG.get("CLUSTER", "name_cluster_update"),
+                "rgClusterUpdate": CONFIG.get("CLUSTER", "rg_cluster_update"),
+                "enforcementLevel": CONFIG.get("CLUSTER", "enforcement_level_update"),
+                "keyVaultId": CONFIG.get("CLUSTER", "key_vault_id_update"),
+                "enabled": CONFIG.get("CLUSTER", "enabled_update"),
+                "strategyType": CONFIG.get("CLUSTER", "strategy_type_update"),
+                "strategyThresholdType": CONFIG.get(
+                    "CLUSTER", "strategy_threshold_type_update"
+                ),
+                "strategyThresholdValue": CONFIG.get(
+                    "CLUSTER", "strategy_threshold_value_update"
+                ),
+                "maxUnavailable": CONFIG.get(
+                    "CLUSTER", "strategy_max_unavailable_update"
+                ),
+                "waitTimeMinutes": CONFIG.get("CLUSTER", "wait_time_minutes_update"),
+                "nameScanActivity": CONFIG.get("CLUSTER", "name_scan"),
+                "scanActivity": CONFIG.get("CLUSTER", "scan_activity"),
+                "rgScanActivity": CONFIG.get("CLUSTER", "rg_scan_activity"),
             }
         )
 
@@ -294,3 +385,11 @@ class ClusterScenarioTest(ScenarioTest):
     def test_cluster_scenario4(self):
         """test scenario for Cluster version update operation"""
         call_scenario4(self)
+
+    def test_cluster_scenario5(self):
+        """test scenario for Cluster Scan Runtime operation"""
+        call_scenario5(self)
+
+    def test_cluster_scenario6(self):
+        """test scenario for Cluster update for runtime protection configuration, secret-archive, strategy operation"""
+        call_scenario6(self)

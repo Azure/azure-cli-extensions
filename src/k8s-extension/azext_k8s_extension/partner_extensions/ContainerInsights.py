@@ -673,37 +673,23 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
     for region_data in json_response["value"]:
         region_names_to_id[region_data["displayName"]] = region_data["name"]
 
-    # check if region supports DCR and DCR-A
-    for _ in range(3):
-        try:
-            feature_check_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"/subscriptions/{subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01"
-            r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url)
-            error = None
-            break
-        except AzCLIError as e:
-            error = e
-        else:
-            raise error
-
-    json_response = json.loads(r.text)
-    for resource in json_response["resourceTypes"]:
-        if (resource["resourceType"].lower() == "datacollectionrules"):
-            region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # dcr supported regions
-            if (workspace_region not in region_ids):
-                raise ClientRequestError(f"Data Collection Rules are not supported for LA workspace region {workspace_region}")
-        if (resource["resourceType"].lower() == "datacollectionruleassociations"):
-            region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # dcr-a supported regions
-            if (cluster_region not in region_ids):
-                raise ClientRequestError(f"Data Collection Rule Associations are not supported for cluster region {cluster_region}")
-
     dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version={DCR_API_VERSION}"
     # get existing tags on the container insights extension DCR if the customer added any
     existing_tags = get_existing_container_insights_extension_dcr_tags(cmd, dcr_url)
     streams = ["Microsoft-ContainerInsights-Group-Default"]
-    if extensionSettings is not None and 'dataCollectionSettings' in extensionSettings.keys():
+    if extensionSettings is None:
+        extensionSettings = {}
+    if 'dataCollectionSettings' in extensionSettings.keys():
         dataCollectionSettings = extensionSettings["dataCollectionSettings"]
+        dataCollectionSettings.setdefault("enableContainerLogV2", True)
         if dataCollectionSettings is not None and 'streams' in dataCollectionSettings.keys():
             streams = dataCollectionSettings["streams"]
+    else:
+        # If data_collection_settings is None, set default dataCollectionSettings
+        dataCollectionSettings = {
+            "enableContainerLogV2": True
+        }
+    extensionSettings["dataCollectionSettings"] = dataCollectionSettings
 
     # create the DCR
     dcr_creation_body = json.dumps(
