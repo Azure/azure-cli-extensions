@@ -1583,3 +1583,32 @@ helps['spring component instance list'] = """
         - name: List instances for spring-cloud-gateway-operator of Spring Cloud Gateway
           text: az spring component instance list --component spring-cloud-gateway-operator --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
 """
+
+helps['spring private-dns-zone'] = """
+    type: group
+    short-summary: Commands to configure constumer private DNS zone with Azure Spring Apps.
+"""
+
+helps['spring private-dns-zone add'] = """
+    type: command
+    short-summary: Commands to add a constumer private DNS zone with Azure Spring Apps.
+    examples:
+        - name: Add a private DNS zone to Azure Spring Apps.
+          text: az spring private-dns-zone add --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --zone-id MyPrivateDNSZoneId
+"""
+
+helps['spring private-dns-zone update'] = """
+    type: command
+    short-summary: Commands to update constumer private DNS zone in Azure Spring Apps.
+    examples:
+        - name: Update a private DNS zone in Azure Spring Apps.
+          text: az spring private-dns-zone update --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --zone-id MyPrivateDNSZoneId
+"""
+
+helps['spring private-dns-zone clean'] = """
+    type: command
+    short-summary: Commands to clean up constumer private DNS zone in Azure Spring Apps.
+    examples:
+        - name: Clean up private DNS zone with Azure Spring Apps.
+          text: az spring private-dns-zone clean --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
+"""
