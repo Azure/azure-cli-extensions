@@ -298,7 +298,6 @@ def load_arguments(self, _):
     with self.argument_context('spring private-dns-zone clean') as c:
         c.argument('service', service_name_type)
 
-
     with self.argument_context('spring app') as c:
         c.argument('service', service_name_type)
         c.argument('name', name_type, help='The name of app running in the specified Azure Spring Apps instance.')
