@@ -172,6 +172,12 @@ def load_command_table(self, _):
         g.custom_command('repo remove', 'config_repo_delete')
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
+    
+    with self.command_group('spring private-dns-zone', custom_command_type=spring_routing_util,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('add', 'spring_private_dns_zone_add', supports_no_wait=True)
+        g.custom_command('update', 'spring_private_dns_zone_update', supports_no_wait=True)
+        g.custom_command('clean', 'spring_private_dns_zone_clean', supports_no_wait=True)
 
     with self.command_group('spring app', custom_command_type=app_command,
                             exception_handler=handle_asc_exception) as g:
