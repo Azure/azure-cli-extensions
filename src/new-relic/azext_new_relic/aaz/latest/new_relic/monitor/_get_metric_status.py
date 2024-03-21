@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor vm-host-payload",
+    "new-relic monitor get-metric-status",
 )
-class VmHostPayload(AAZCommand):
-    """Returns the payload that needs to be passed in the request body for installing NewRelic agent on a VM.
+class GetMetricStatus(AAZCommand):
+    """Get metric status
 
-    :example: Get MonitorsVmHostPayload.
-        az monitor vm-host-payload --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup
+    :example: Get metric status.
+        az new-relic monitor get-metric-status --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com --azure-resource-ids MyAzureResourceIds
     """
 
     _aaz_info = {
         "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/vmhostpayloads", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/getmetricstatus", "2024-01-01"],
         ]
     }
 
@@ -55,11 +55,32 @@ class VmHostPayload(AAZCommand):
             help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
+
+        # define Arg Group "Request"
+
+        _args_schema = cls._args_schema
+        _args_schema.azure_resource_ids = AAZListArg(
+            options=["--azure-resource-ids"],
+            arg_group="Request",
+            help="Azure resource IDs Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
+        )
+        _args_schema.user_email = AAZStrArg(
+            options=["--user-email"],
+            arg_group="Request",
+            help="User Email",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+            ),
+        )
+
+        azure_resource_ids = cls._args_schema.azure_resource_ids
+        azure_resource_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsVmHostPayload(ctx=self.ctx)()
+        self.MonitorsGetMetricStatus(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,7 +95,7 @@ class VmHostPayload(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MonitorsVmHostPayload(AAZHttpOperation):
+    class MonitorsGetMetricStatus(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +109,7 @@ class VmHostPayload(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/vmHostPayloads",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/getMetricStatus",
                 **self.url_parameters
             )
 
@@ -132,10 +153,29 @@ class VmHostPayload(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("azureResourceIds", AAZListType, ".azure_resource_ids")
+            _builder.set_prop("userEmail", AAZStrType, ".user_email", typ_kwargs={"flags": {"required": True}})
+
+            azure_resource_ids = _builder.get(".azureResourceIds")
+            if azure_resource_ids is not None:
+                azure_resource_ids.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -155,15 +195,18 @@ class VmHostPayload(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.ingestion_key = AAZStrType(
-                serialized_name="ingestionKey",
+            _schema_on_200.azure_resource_ids = AAZListType(
+                serialized_name="azureResourceIds",
             )
+
+            azure_resource_ids = cls._schema_on_200.azure_resource_ids
+            azure_resource_ids.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _VmHostPayloadHelper:
-    """Helper class for VmHostPayload"""
+class _GetMetricStatusHelper:
+    """Helper class for GetMetricStatus"""
 
 
-__all__ = ["VmHostPayload"]
+__all__ = ["GetMetricStatus"]

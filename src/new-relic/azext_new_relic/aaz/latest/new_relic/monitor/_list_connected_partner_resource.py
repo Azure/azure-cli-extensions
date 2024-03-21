@@ -12,26 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor get-metric-statu",
+    "new-relic monitor list-connected-partner-resource",
 )
-class GetMetricStatu(AAZCommand):
-    """Get metric status
+class ListConnectedPartnerResource(AAZCommand):
+    """List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
 
-    :example: Get metric status.
-        az new-relic monitor get-metric-statu --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com --azure-resource-ids MyAzureResourceIds
+    :example: List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
+        az new-relic monitor list-connected-partner-resource --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --body UserEmail@123.com
     """
 
     _aaz_info = {
-        "version": "2022-07-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/getmetricstatus", "2022-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/listconnectedpartnerresources", "2024-01-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,40 +46,30 @@ class GetMetricStatu(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["-n", "--name", "--monitor-name"],
-            help="Name of the Monitors resource",
+            options=["--monitor-name"],
+            help="Name of the Monitoring resource",
             required=True,
-            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["--resource-group"],
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
-
-        # define Arg Group "Request"
-
-        _args_schema = cls._args_schema
-        _args_schema.azure_resource_ids = AAZListArg(
-            options=["--azure-resource-ids"],
-            arg_group="Request",
-            help="Azure resource IDs",
-        )
-        _args_schema.user_email = AAZStrArg(
-            options=["--user-email"],
-            arg_group="Request",
-            help="User Email",
-            required=True,
+        _args_schema.body = AAZStrArg(
+            options=["--body"],
+            help="Reusable representation of an email address",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
             ),
         )
-
-        azure_resource_ids = cls._args_schema.azure_resource_ids
-        azure_resource_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsGetMetricStatus(ctx=self.ctx)()
+        self.ConnectedPartnerResourcesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,10 +81,11 @@ class GetMetricStatu(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class MonitorsGetMetricStatus(AAZHttpOperation):
+    class ConnectedPartnerResourcesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -107,7 +99,7 @@ class GetMetricStatu(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/getMetricStatus",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/listConnectedPartnerResources",
                 **self.url_parameters
             )
 
@@ -141,7 +133,7 @@ class GetMetricStatu(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }
@@ -162,16 +154,9 @@ class GetMetricStatu(AAZCommand):
         @property
         def content(self):
             _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                self.ctx.args.body,
+                typ=AAZStrType,
             )
-            _builder.set_prop("azureResourceIds", AAZListType, ".azure_resource_ids")
-            _builder.set_prop("userEmail", AAZStrType, ".user_email", typ_kwargs={"flags": {"required": True}})
-
-            azure_resource_ids = _builder.get(".azureResourceIds")
-            if azure_resource_ids is not None:
-                azure_resource_ids.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -193,18 +178,34 @@ class GetMetricStatu(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.azure_resource_ids = AAZListType(
-                serialized_name="azureResourceIds",
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
+            _schema_on_200.value = AAZListType()
 
-            azure_resource_ids = cls._schema_on_200.azure_resource_ids
-            azure_resource_ids.Element = AAZStrType()
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.account_id = AAZStrType(
+                serialized_name="accountId",
+            )
+            properties.account_name = AAZStrType(
+                serialized_name="accountName",
+            )
+            properties.azure_resource_id = AAZStrType(
+                serialized_name="azureResourceId",
+            )
+            properties.location = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _GetMetricStatuHelper:
-    """Helper class for GetMetricStatu"""
+class _ListConnectedPartnerResourceHelper:
+    """Helper class for ListConnectedPartnerResource"""
 
 
-__all__ = ["GetMetricStatu"]
+__all__ = ["ListConnectedPartnerResource"]

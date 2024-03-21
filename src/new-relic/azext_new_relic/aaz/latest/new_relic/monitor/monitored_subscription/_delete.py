@@ -12,26 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor vm-host-payload",
+    "new-relic monitor monitored-subscription delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class VmHostPayload(AAZCommand):
-    """Returns the payload that needs to be passed in the request body for installing NewRelic agent on a VM.
+class Delete(AAZCommand):
+    """Delete the subscriptions that are being monitored by the NewRelic monitor resource
 
-    :example: Get MonitorsVmHostPayload.
-        az monitor vm-host-payload --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup
+    :example: Delete the subscriptions that are being monitored by the NewRelic monitor resource
+        az new-relic monitor monitored-subscription delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default
     """
 
     _aaz_info = {
         "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/vmhostpayloads", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/monitoredsubscriptions/{}", "2024-01-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -44,11 +46,25 @@ class VmHostPayload(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.configuration_name = AAZStrArg(
+            options=["--configuration-name"],
+            help="The configuration name. Only 'default' value is supported.",
+            required=True,
+            id_part="child_name_1",
+            default="default",
+            enum={"default": "default"},
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
+        )
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
             help="Name of the Monitoring resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["--resource-group"],
@@ -59,7 +75,7 @@ class VmHostPayload(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsVmHostPayload(ctx=self.ctx)()
+        yield self.MonitoredSubscriptionsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,31 +86,43 @@ class VmHostPayload(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class MonitorsVmHostPayload(AAZHttpOperation):
+    class MonitoredSubscriptionsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    None,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [204]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/vmHostPayloads",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/monitoredSubscriptions/{configurationName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -103,6 +131,10 @@ class VmHostPayload(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "configurationName", self.ctx.args.configuration_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
@@ -128,42 +160,12 @@ class VmHostPayload(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.ingestion_key = AAZStrType(
-                serialized_name="ingestionKey",
-            )
-
-            return cls._schema_on_200
+        def on_204(self, session):
+            pass
 
 
-class _VmHostPayloadHelper:
-    """Helper class for VmHostPayload"""
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["VmHostPayload"]
+__all__ = ["Delete"]

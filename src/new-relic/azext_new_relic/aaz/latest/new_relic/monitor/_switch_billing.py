@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class SwitchBilling(AAZCommand):
     """Switches the billing for NewRelic monitor resource.
+
+    :example: Switches the billing for NewRelic monitor resource.
+        az new-relic monitor switch-billing --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup --azure-resource-id resourceId --organization-id organizationId --user-email="UserEmail@123.com" --plan-data billing-cycle="MONTHLY" effective-date='2022-10-25T15:14:33+02:00' plan-details="newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg" usage-type="PAYG"
     """
 
     _aaz_info = {
-        "version": "2022-07-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/switchbilling", "2022-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/switchbilling", "2024-01-01"],
         ]
     }
 
@@ -43,11 +46,13 @@ class SwitchBilling(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
-            help="Name of the Monitors resource",
+            help="Name of the Monitoring resource",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["--resource-group"],
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
 
@@ -67,7 +72,7 @@ class SwitchBilling(AAZCommand):
         _args_schema.plan_data = AAZObjectArg(
             options=["--plan-data"],
             arg_group="Request",
-            help="Plan details",
+            help="Plan details Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
         )
         _args_schema.user_email = AAZStrArg(
             options=["--user-email"],
@@ -169,7 +174,7 @@ class SwitchBilling(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }
@@ -309,6 +314,12 @@ class SwitchBilling(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+            )
+            properties.saa_s_azure_subscription_status = AAZStrType(
+                serialized_name="saaSAzureSubscriptionStatus",
+            )
+            properties.subscription_state = AAZStrType(
+                serialized_name="subscriptionState",
             )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",

@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor vm-host-payload",
+    "new-relic monitor get-billing-info",
 )
-class VmHostPayload(AAZCommand):
-    """Returns the payload that needs to be passed in the request body for installing NewRelic agent on a VM.
+class GetBillingInfo(AAZCommand):
+    """Get marketplace info mapped to the given monitor.
 
-    :example: Get MonitorsVmHostPayload.
-        az monitor vm-host-payload --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup
+    :example: Get marketplace info mapped to the given monitor.
+        az new-relic monitor get-billing-info --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup
     """
 
     _aaz_info = {
         "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/vmhostpayloads", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/getbillinginfo", "2024-01-01"],
         ]
     }
 
@@ -49,6 +49,9 @@ class VmHostPayload(AAZCommand):
             help="Name of the Monitoring resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["--resource-group"],
@@ -59,7 +62,7 @@ class VmHostPayload(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsVmHostPayload(ctx=self.ctx)()
+        self.BillingInfoGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,7 +77,7 @@ class VmHostPayload(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MonitorsVmHostPayload(AAZHttpOperation):
+    class BillingInfoGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +91,7 @@ class VmHostPayload(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/vmHostPayloads",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/getBillingInfo",
                 **self.url_parameters
             )
 
@@ -155,15 +158,43 @@ class VmHostPayload(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.ingestion_key = AAZStrType(
-                serialized_name="ingestionKey",
+            _schema_on_200.marketplace_saas_info = AAZObjectType(
+                serialized_name="marketplaceSaasInfo",
+            )
+            _schema_on_200.partner_billing_entity = AAZObjectType(
+                serialized_name="partnerBillingEntity",
+            )
+
+            marketplace_saas_info = cls._schema_on_200.marketplace_saas_info
+            marketplace_saas_info.billed_azure_subscription_id = AAZStrType(
+                serialized_name="billedAzureSubscriptionId",
+            )
+            marketplace_saas_info.marketplace_resource_id = AAZStrType(
+                serialized_name="marketplaceResourceId",
+            )
+            marketplace_saas_info.marketplace_status = AAZStrType(
+                serialized_name="marketplaceStatus",
+            )
+            marketplace_saas_info.marketplace_subscription_id = AAZStrType(
+                serialized_name="marketplaceSubscriptionId",
+            )
+            marketplace_saas_info.marketplace_subscription_name = AAZStrType(
+                serialized_name="marketplaceSubscriptionName",
+            )
+
+            partner_billing_entity = cls._schema_on_200.partner_billing_entity
+            partner_billing_entity.organization_id = AAZStrType(
+                serialized_name="organizationId",
+            )
+            partner_billing_entity.organization_name = AAZStrType(
+                serialized_name="organizationName",
             )
 
             return cls._schema_on_200
 
 
-class _VmHostPayloadHelper:
-    """Helper class for VmHostPayload"""
+class _GetBillingInfoHelper:
+    """Helper class for GetBillingInfo"""
 
 
-__all__ = ["VmHostPayload"]
+__all__ = ["GetBillingInfo"]
