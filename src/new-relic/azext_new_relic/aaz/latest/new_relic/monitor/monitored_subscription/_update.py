@@ -16,9 +16,11 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the subscriptions that should be monitored by the NewRelic monitor resource.
-
+    
     :example: Update the subscriptions that should be monitored by the NewRelic monitor resource.
-        az new-relic monitor monitored-subscription update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default --patch-operation Active --monitored-subscription-list=[{"subscription-id":"subscription-id", "status":"Active","error":"error","tag-rules":"log-rules=[{"send-aad-logs"="Enabled","send-subscription-logs"="Enabled","send-activity-logs"="Enabled",filtering-tags=[]}]","metric-rules"=[{"user-email"="UserEmail@123.com",filtering-tags=[{"name":"Environment","value":"Prod","action":"Include"}]}]
+    Please run below commands in the mentioned order
+    1) az new-relic monitor monitored-subscription update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default --patch-operation AddBegin --monitored-subscription-list "[{status:'InProgress',subscription-id:'subscription-id'}]"
+    2) az new-relic monitor monitored-subscription update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default --patch-operation AddComplete --monitored-subscription-list "[{status:'Active',subscription-id:'subscription-id'}]"
     """
 
     _aaz_info = {
