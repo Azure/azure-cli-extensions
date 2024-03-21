@@ -282,7 +282,7 @@ def spring_private_dns_zone_add(cmd, client, resource_group, service, zone_id):
     if resource.properties.vnet_addons is None:
         updated_resource.properties.vnet_addons = models.ServiceVNetAddons()
     else:
-        updated_resource.properties.vnet_addons= resource.properties.vnet_addons
+        updated_resource.properties.vnet_addons = resource.properties.vnet_addons
     updated_resource.properties.vnet_addons.private_dns_zone_id = zone_id
     return sdk_no_wait(False, client.services.begin_update,
                        resource_group_name=resource_group, service_name=service, resource=updated_resource)
@@ -299,7 +299,7 @@ def spring_private_dns_zone_update(cmd, client, resource_group, service, zone_id
     if resource.properties.vnet_addons is None:
         updated_resource.properties.vnet_addons = models.ServiceVNetAddons()
     else:
-        updated_resource.properties.vnet_addons= resource.properties.vnet_addons
+        updated_resource.properties.vnet_addons = resource.properties.vnet_addons
     updated_resource.properties.vnet_addons.private_dns_zone_id = zone_id
     return sdk_no_wait(False, client.services.begin_update,
                        resource_group_name=resource_group, service_name=service, resource=updated_resource)

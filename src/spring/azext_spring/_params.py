@@ -289,7 +289,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring list-support-server-versions') as c:
         c.argument('service', service_name_type, validator=not_support_enterprise)
-    
+
     with self.argument_context('spring private-dns-zone add') as c:
         c.argument('service', service_name_type)
         c.argument('zone_id', type=str, help='The resource id of the private DNS zone which you would like to configure with the service instance.')
