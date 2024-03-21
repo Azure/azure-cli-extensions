@@ -278,17 +278,14 @@ helps['fleet updaterun stop'] = """
 
 helps['fleet updaterun skip'] = """
     type: command
-    short-summary: Set a target to be skipped within an update run.
+    short-summary: Sets targets to be skipped within an UpdateRun.
     parameters:
-        - name: --target-type
+        - name: --targets
           type: string
-          short-summary: The type of the target being skipped.
-        - name: --target-name
-          type: string
-          short-summary: The name of the target being skipped.
+          short-summary: Space-separated list of targets to skip. Targets must be of the form `targetType:targetName` such as Group:MyGroup. Valid target types are: [`Member`, `Group`, `Stage`, `AfterStageWait`]. The target type is case-sensitive.
     examples:
-        - name: Skip a target in an update run.
-          text: az fleet updaterun skip -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun --target-type "Group" --target-name "MyGroup"
+        - name: Set two targets to be skipped.
+          text: az fleet updaterun skip -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun --targets Group:my-group-name Stage:my-stage-name
 """
 
 helps['fleet updaterun wait'] = """

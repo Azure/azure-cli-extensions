@@ -13,7 +13,7 @@ from azure.cli.core.commands.parameters import (
     get_three_state_flag
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_fleet._validators import validate_member_cluster_id, validate_kubernetes_version, validate_apiserver_subnet_id, validate_agent_subnet_id, validate_assign_identity, validate_update_strategy_name, validate_vm_size
+from azext_fleet._validators import validate_member_cluster_id, validate_kubernetes_version, validate_apiserver_subnet_id, validate_agent_subnet_id, validate_assign_identity, validate_update_strategy_name, validate_vm_size, validate_targets
 
 
 def load_arguments(self, _):
@@ -66,8 +66,7 @@ def load_arguments(self, _):
         c.argument('update_strategy_name', validator=validate_update_strategy_name, help='The name of the update strategy to use for this update run. If not specified, the default update strategy will be used.')
 
     with self.argument_context('fleet updaterun skip', is_preview=True) as c:
-        c.argument('target_type', arg_type=get_enum_type(['Member', 'Group', 'Stage', 'AfterStageWait']), help='The type of the target being skipped.', is_preview=True)
-        c.argument('target_name', help='The name of the target being skipped.', is_preview=True)
+        c.argument('targets', options_list=['--targets', '-t'], nargs="+", validator=validate_targets, help='Space-separated list of targets to skip. Targets must be of the form `targetType:targetName` such as Group:MyGroup. Valid target types are: [`Member`, `Group`, `Stage`, `AfterStageWait`]. The target type is case-sensitive.', is_preview=True)
 
     with self.argument_context('fleet updatestrategy') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the fleet update strategy.')

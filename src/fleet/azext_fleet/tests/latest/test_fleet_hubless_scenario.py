@@ -53,8 +53,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             'updaterun': self.create_random_name(prefix='uprn-', length=9),
             'updateStrategy_name': self.create_random_name(prefix='upstr-', length=10),
             'ssh_key_value': self.generate_ssh_keys(),
-            'stages_file': _get_test_data_file('stages.json'),
-            'skip_properties_file': _get_test_data_file('skip_properties.json')
+            'stages_file': _get_test_data_file('stages.json')
         })
 
         self.cmd('fleet create -g {rg} -n {fleet_name}', checks=[
@@ -126,7 +125,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('name', '{updaterun}')
         ])
 
-        self.cmd('fleet updaterun skip -g {rg} -n {updaterun} -f {fleet_name} --target-type group --target-name group2', checks=[
+        self.cmd('fleet updaterun skip -g {rg} -n {updaterun} -f {fleet_name} --targets Group:group2', checks=[
             self.check('status.stages[0].groups[1].status.state', 'Skipped')
         ])
 

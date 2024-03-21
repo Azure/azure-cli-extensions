@@ -433,8 +433,7 @@ def skip_update_run(cmd,  # pylint: disable=unused-argument
                     resource_group_name,
                     fleet_name,
                     name,
-                    target_type,
-                    target_name,
+                    targets=None,
                     no_wait=False):
 
     update_run_skip_properties_model = cmd.get_models(
@@ -449,8 +448,15 @@ def skip_update_run(cmd,  # pylint: disable=unused-argument
         operation_group="update_runs"
     )
 
-    skip_target = update_run_skip_target_model(type=target_type, name=target_name)
-    skip_properties = update_run_skip_properties_model(targets=[skip_target])
+    skipTargets = []
+    for target in targets:
+        key, value = target.split(':')
+        skipTargets.append(update_run_skip_target_model(
+            type=key,
+            name=value
+        ))
+
+    skip_properties = update_run_skip_properties_model(targets=skipTargets)
     return sdk_no_wait(no_wait, client.begin_skip, resource_group_name, fleet_name, name, skip_properties)
 
 
