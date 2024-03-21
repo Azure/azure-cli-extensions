@@ -1,5 +1,9 @@
 Release History
 ===============
+1.20.1
+---
+* Add command to show the configurations pulled by Application Configuration Service from upstream Git repositories. `az spring application-configuration-service config show`.
+
 1.20.0
 ---
 * Change default Application Configuration Service generation value to Gen2.

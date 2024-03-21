@@ -329,6 +329,18 @@ def _validate_patterns(patterns):
         raise InvalidArgumentValueError("Patterns should be the collection of patterns separated by comma, each pattern in the format of 'application' or 'application/profile'")
 
 
+def validate_pattern_for_show_acs_configs(namespace):
+    if namespace.config_file_pattern:
+        if not _is_valid_pattern(namespace.config_file_pattern):
+            raise InvalidArgumentValueError("Pattern should be in the format of 'application' or 'application/profile'")
+        if _is_valid_app_and_profile_name(namespace.config_file_pattern):
+            parts = namespace.config_file_pattern.split('/')
+            if parts[1] == '*':
+                namespace.config_file_pattern = f"{parts[0]}/default"
+        elif _is_valid_app_name(namespace.config_file_pattern):
+            namespace.config_file_pattern = f"{namespace.config_file_pattern}/default"
+
+
 def _is_valid_pattern(pattern):
     return _is_valid_app_name(pattern) or _is_valid_app_and_profile_name(pattern)
 
