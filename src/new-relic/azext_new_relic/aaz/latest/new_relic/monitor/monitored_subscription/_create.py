@@ -88,10 +88,6 @@ class Create(AAZCommand):
         monitored_subscription_list.Element = AAZObjectArg()
 
         _element = cls._args_schema.monitored_subscription_list.Element
-        _element.error = AAZStrArg(
-            options=["error"],
-            help="The reason of not monitoring the subscription.",
-        )
         _element.status = AAZStrArg(
             options=["status"],
             help="The state of monitoring.",
@@ -101,67 +97,6 @@ class Create(AAZCommand):
             options=["subscription-id"],
             help="The subscriptionId to be monitored.",
         )
-        _element.tag_rules = AAZObjectArg(
-            options=["tag-rules"],
-            help="The resource-specific properties for this resource.",
-        )
-
-        tag_rules = cls._args_schema.monitored_subscription_list.Element.tag_rules
-        tag_rules.log_rules = AAZObjectArg(
-            options=["log-rules"],
-            help="Set of rules for sending logs for the Monitor resource.",
-        )
-        tag_rules.metric_rules = AAZObjectArg(
-            options=["metric-rules"],
-            help="Set of rules for sending metrics for the Monitor resource.",
-        )
-
-        log_rules = cls._args_schema.monitored_subscription_list.Element.tag_rules.log_rules
-        log_rules.filtering_tags = AAZListArg(
-            options=["filtering-tags"],
-            help="List of filtering tags to be used for capturing logs. This only takes effect if SendActivityLogs flag is enabled. If empty, all resources will be captured. If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
-        )
-        log_rules.send_aad_logs = AAZStrArg(
-            options=["send-aad-logs"],
-            help="Flag specifying if AAD logs should be sent for the Monitor resource.",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        log_rules.send_activity_logs = AAZStrArg(
-            options=["send-activity-logs"],
-            help="Flag specifying if activity logs from Azure resources should be sent for the Monitor resource.",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        log_rules.send_subscription_logs = AAZStrArg(
-            options=["send-subscription-logs"],
-            help="Flag specifying if subscription logs should be sent for the Monitor resource.",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-
-        filtering_tags = cls._args_schema.monitored_subscription_list.Element.tag_rules.log_rules.filtering_tags
-        filtering_tags.Element = AAZObjectArg()
-        cls._build_args_filtering_tag_create(filtering_tags.Element)
-
-        metric_rules = cls._args_schema.monitored_subscription_list.Element.tag_rules.metric_rules
-        metric_rules.filtering_tags = AAZListArg(
-            options=["filtering-tags"],
-            help="List of filtering tags to be used for capturing metrics.",
-        )
-        metric_rules.send_metrics = AAZStrArg(
-            options=["send-metrics"],
-            help="Flag specifying if metrics should be sent for the Monitor resource.",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        metric_rules.user_email = AAZStrArg(
-            options=["user-email"],
-            help="User Email",
-            fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
-            ),
-        )
-
-        filtering_tags = cls._args_schema.monitored_subscription_list.Element.tag_rules.metric_rules.filtering_tags
-        filtering_tags.Element = AAZObjectArg()
-        cls._build_args_filtering_tag_create(filtering_tags.Element)
         return cls._args_schema
 
     _args_filtering_tag_create = None
