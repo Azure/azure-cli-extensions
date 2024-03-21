@@ -1,5 +1,10 @@
 Release History
 ===============
+1.19.5
+---
+* Add command group `az spring private-dns-zone` to configure constumer private DNS zone with Azure Spring Apps.
+* Add new command `az spring private-dns-zone add`,  `az spring private-dns-zone update` and `az spring private-dns-zone clean`
+
 1.19.4
 ---
 * Enhance managed component log streaming when `-i/--instance` and `--all-instances` parameters are not specified.
