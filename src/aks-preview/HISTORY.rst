@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Support reset default value for loadbalancer profile and natgateway profile
 
 2.0.0b6
 +++++++

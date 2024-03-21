@@ -6932,7 +6932,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # update cluster
-        update_cmd = "aks update -g {resource_group} -n {name} --load-balancer-outbound-ips {update_pip_id}"
+        update_cmd = "aks update -g {resource_group} -n {name} --load-balancer-outbound-ips {update_pip_id} --load-balancer-outbound-ports 200"
 
         self.cmd(
             update_cmd,
@@ -6943,12 +6943,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                     1,
                 ),
                 self.check(
-                    "networkProfile.loadBalancerProfile.effectiveOutboundIPs[0].id",
-                    update_pip_id,
+                    "networkProfile.loadBalancerProfile.allocatedOutboundPorts",
+                    200,
                 ),
             ],
         )
 
+        update_cmd = "aks update -g {resource_group} -n {name} --load-balancer-outbound-ips {update_pip_id} --load-balancer-outbound-ports 0"
+
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "networkProfile.loadBalancerProfile.effectiveOutboundIPs[] | length(@)",
+                    1,
+                ),
+                self.check(
+                    "networkProfile.loadBalancerProfile.allocatedOutboundPorts",
+                    0,
+                ),
+            ],
+        )
         # delete
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
