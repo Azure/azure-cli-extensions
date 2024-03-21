@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from datetime import datetime
-from json import loads
+import json
+from applicationinsights import TelemetryClient
 from re import match, search, findall
 from knack.log import get_logger
 from knack.util import CLIError
@@ -14,21 +15,32 @@ from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from opencensus.ext.azure.log_exporter import AzureLogHandler
 
 from .encryption_types import Encryption
 from .exceptions import AzCommandError
 from .repair_utils import (
     _call_az_command,
     _get_repair_resource_tag,
+    _get_current_vmrepair_version,
     _fetch_encryption_settings,
     _resolve_api_version,
     check_extension_version,
     _check_existing_rg
 )
+# For test releases and testing
+TEST_KEY = 'a6bdff92-33b5-426f-9123-33875d0ae98b'
+PROD_KEY = '3e7130f2-759b-41d4-afb8-f1405d1d7ed9'
+
+tc = TelemetryClient(PROD_KEY)
+tc.context.application.ver = _get_current_vmrepair_version()
 
 # pylint: disable=line-too-long, broad-except
 
 logger = get_logger(__name__)
+logger.addHandler(AzureLogHandler(
+    connection_string='InstrumentationKey='+PROD_KEY)
+)
 EXTENSION_NAME = 'vm-repair'
 
 
@@ -181,7 +193,7 @@ def validate_reset_nic(cmd, namespace):
         # setting subscription Id
         try:
             set_sub_command = 'az account set --subscription {sid}'.format(sid=namespace._subscription)
-            logger.info('Setting the subscription...\n')
+            logger.info('Setting the subscription in test mode...\n')
             _call_az_command(set_sub_command)
         except AzCommandError as azCommandError:
             logger.error(azCommandError)
@@ -308,7 +320,7 @@ def fetch_repair_vm(namespace):
     try:
         find_repair_command = 'az resource list --tag {tag} --query "[?type==\'microsoft.compute/virtualmachines\' || type==\'Microsoft.Compute/virtualMachines\']" -o json' \
                               .format(tag=tag)
-        logger.info('Searching for repair-vm within subscription...')
+        logger.info('Searching for repair-vm within subscription and test locally...')
         output = _call_az_command(find_repair_command)
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
