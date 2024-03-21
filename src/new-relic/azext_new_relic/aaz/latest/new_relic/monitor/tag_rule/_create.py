@@ -55,11 +55,10 @@ class Create(AAZCommand):
             help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["--name"],
+        _args_schema.rule_set_name = AAZStrArg(
+            options=["-n", "--name", "--rule-set-name"],
             help="Name of the TagRule",
             required=True,
-            default="default",
         )
 
         # define Arg Group "Properties"
@@ -226,7 +225,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "ruleSetName", self.ctx.args.name,
+                    "ruleSetName", self.ctx.args.rule_set_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

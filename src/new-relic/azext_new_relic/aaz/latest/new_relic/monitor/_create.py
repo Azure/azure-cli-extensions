@@ -45,9 +45,9 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name"],
-            help="Name of the Monitoring resource",
+        _args_schema.monitor_name = AAZStrArg(
+            options=["-n", "--name", "--monitor-name"],
+            help="Name of the Monitors resource",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -60,7 +60,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.account_creation_source = AAZStrArg(
-            options=["--account-creation-source"],
+            options=["--account-source", "--account-creation-source"],
             arg_group="Properties",
             help="Source of account creation",
             enum={"LIFTR": "LIFTR", "NEWRELIC": "NEWRELIC"},
@@ -309,7 +309,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "monitorName", self.ctx.args.name,
+                    "monitorName", self.ctx.args.monitor_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

@@ -46,7 +46,7 @@ class MonitoredResource(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Name of the Monitoring resource",
             required=True,
         )
