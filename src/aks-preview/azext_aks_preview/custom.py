@@ -620,6 +620,9 @@ def aks_create(
     storage_pool_option=None,
     node_provisioning_mode=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
+    # trusted launch
+    enable_secure_boot=False,
+    enable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -802,7 +805,7 @@ def aks_update(
     disable_ai_toolchain_operator=False,
     # azure container storage
     enable_azure_container_storage=None,
-    disable_azure_container_storage=False,
+    disable_azure_container_storage=None,
     storage_pool_name=None,
     storage_pool_size=None,
     storage_pool_sku=None,
@@ -1190,6 +1193,9 @@ def aks_agentpool_add(
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
+    # trusted launch
+    enable_secure_boot=False,
+    enable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1245,6 +1251,11 @@ def aks_agentpool_update(
     os_sku=None,
     ssh_access=None,
     yes=False,
+    # trusted launch
+    enable_secure_boot=False,
+    disable_secure_boot=False,
+    enable_vtpm=False,
+    disable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

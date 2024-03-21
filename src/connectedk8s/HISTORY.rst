@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.7
+++++++
+* Improve Error logs during Arc Onboarding scenarios, Style fixes.
+
 1.6.6
 ++++++
 * Fix proxy live test.

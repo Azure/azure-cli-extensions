@@ -19,15 +19,17 @@ class List(AAZCommand):
     """List the SAP Application Server Instance resources for a given Virtual Instance for SAP solutions resource.
 
     :example: Get an overview of The App Server Instances in a Virtual instance for SAP solutions (VIS)
-        az workloads sap-application-server-instance list -g <Resource-group-name> --sap-virtual-instance-name <VIS name>
+        az workloads sap-application-server-instance list -g <resource-group-name> --sap-virtual-instance-name <vis-name>
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances", "2023-10-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -51,6 +53,9 @@ class List(AAZCommand):
             options=["--vis-name", "--sap-virtual-instance-name"],
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
         return cls._args_schema
 
@@ -120,7 +125,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -184,6 +189,10 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.dispatcher_status = AAZStrType(
+                serialized_name="dispatcherStatus",
+                flags={"read_only": True},
+            )
             properties.errors = AAZObjectType()
             properties.gateway_port = AAZIntType(
                 serialized_name="gatewayPort",
