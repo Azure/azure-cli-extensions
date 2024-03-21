@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a new Domains resource under the parent EmailService resource or update an existing Domains resource.
-
-    :example: Update a domain with tags
-        az communication email domain update --domain-name DomainName  --email-service-name ResourceName -g ResourceGroup --tags "{tag:tag}" --user-engmnt-tracking Enabled/Disabled
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}", "2023-04-01"],
         ]
     }
 
@@ -96,8 +93,8 @@ class Update(AAZCommand):
             help="Describes how a Domains resource is being managed.",
             enum={"AzureManaged": "AzureManaged", "CustomerManaged": "CustomerManaged", "CustomerManagedInExchangeOnline": "CustomerManagedInExchangeOnline"},
         )
-        _args_schema.user_engmnt_tracking = AAZStrArg(
-            options=["--user-engmnt-tracking"],
+        _args_schema.user_engagement_tracking = AAZStrArg(
+            options=["--user-engagement-tracking"],
             arg_group="Properties",
             help="Describes whether user engagement tracking is enabled or disabled.",
             nullable=True,
@@ -187,7 +184,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -290,7 +287,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -354,7 +351,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("domainManagement", AAZStrType, ".domain_management", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("userEngagementTracking", AAZStrType, ".user_engmnt_tracking")
+                properties.set_prop("userEngagementTracking", AAZStrType, ".user_engagement_tracking")
 
             tags = _builder.get(".tags")
             if tags is not None:
