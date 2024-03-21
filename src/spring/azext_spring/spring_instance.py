@@ -277,12 +277,12 @@ def spring_private_dns_zone_add(cmd, client, resource_group, service, zone_id):
     if zone_id is None:
         raise InvalidArgumentValueError("A private DNS zone ID must be provided. The value cannot be None.")
     updated_resource = models.ServiceResource()
+    updated_resource.properties = models.ClusterResourceProperties()
     if resource.properties.vnet_addons is None:
-        updated_resource.vnet_addons = models.ServiceVNetAddons()
+        updated_resource.properties.vnet_addons = models.ServiceVNetAddons()
     else:
-        updated_resource.vnet_addons= models.ServiceVNetAddons()
-    updated_resource_properties.vnet_addons.private_dns_zone_id = zone_id
-    updated_resource.properties = updated_resource_properties
+        updated_resource.properties.vnet_addons= resource.properties.vnet_addons
+    updated_resource.properties.vnet_addons.private_dns_zone_id = zone_id
     return sdk_no_wait(False, client.services.begin_update,
                        resource_group_name=resource_group, service_name=service, resource=updated_resource)
     
@@ -293,18 +293,18 @@ def spring_private_dns_zone_update(cmd, client, resource_group, service, zone_id
     if zone_id is None:
         raise InvalidArgumentValueError("A private DNS zone ID must be provided. The value cannot be None.")
     updated_resource = models.ServiceResource()
+    updated_resource.properties = models.ClusterResourceProperties()
     if resource.properties.vnet_addons is None:
-        updated_resource.vnet_addons = models.ServiceVNetAddons()
+        updated_resource.properties.vnet_addons = models.ServiceVNetAddons()
     else:
-        updated_resource.vnet_addons= models.ServiceVNetAddons()
-    updated_resource_properties.vnet_addons.private_dns_zone_id = zone_id
-    updated_resource.properties = updated_resource_properties
+        updated_resource.properties.vnet_addons= resource.properties.vnet_addons
+    updated_resource.properties.vnet_addons.private_dns_zone_id = zone_id
     return sdk_no_wait(False, client.services.begin_update,
                        resource_group_name=resource_group, service_name=service, resource=updated_resource)
 
 def spring_private_dns_zone_clean(cmd, client, resource_group, service):
     resource = client.services.get(resource_group, service)
-    if resource.properties.vnet_addons.private_dns_zone_id is None or resource.properties.vnet_addons.private_dns_zone_id is None:
+    if resource.properties.vnet_addons is None or resource.properties.vnet_addons.private_dns_zone_id is None:
         raise ClientRequestError("The service instance does not have a Private DNS Zone configured. No action is required.")
     resource.properties.vnet_addons.private_dns_zone_id = None
     updated_resource = models.ServiceResource(location=resource.location, sku=resource.sku, properties=resource.properties, tags=resource.tags)

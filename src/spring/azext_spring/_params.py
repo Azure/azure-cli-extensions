@@ -253,6 +253,7 @@ def load_arguments(self, _):
                    validator=validate_dataplane_public_endpoint,
                    options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
                    help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
+                   
         c.argument('enable_planned_maintenance',
                    arg_group='Planned Maintenance',
                    action='store_true',
