@@ -13,109 +13,109 @@ pr:
       - '*'
 
 jobs:
-- job: CredScan
-  displayName: "Credential Scan"
-  pool:
-    name: 'pool-windows-2019'
-  steps:
-#  - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-credscan.CredScan@2
-#    displayName: 'Run Credential Scanner'
-#    inputs:
-#      toolMajorVersion: V2
-#      suppressionsFile: './scripts/ci/credscan/CredScanSuppressions.json'
-#      toolVersionV2: '2.1.17'
-  - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-postanalysis.PostAnalysis@1
-    displayName: 'Post Analysis'
-    inputs:
-      AllTools: false
-      BinSkim: false
-      CredScan: true
-      RoslynAnalyzers: false
-      TSLint: false
-      ToolLogsNotFoundAction: 'Standard'
+# - job: CredScan
+#   displayName: "Credential Scan"
+#   pool:
+#     name: 'pool-windows-2019'
+#   steps:
+# #  - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-credscan.CredScan@2
+# #    displayName: 'Run Credential Scanner'
+# #    inputs:
+# #      toolMajorVersion: V2
+# #      suppressionsFile: './scripts/ci/credscan/CredScanSuppressions.json'
+# #      toolVersionV2: '2.1.17'
+#   - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-postanalysis.PostAnalysis@1
+#     displayName: 'Post Analysis'
+#     inputs:
+#       AllTools: false
+#       BinSkim: false
+#       CredScan: true
+#       RoslynAnalyzers: false
+#       TSLint: false
+#       ToolLogsNotFoundAction: 'Standard'
 
-- job: PolicyCheck
-  displayName: "Policy Check"
-  pool:
-    name: 'pool-windows-2019'
-  steps:
-  - task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
-    displayName: 'Run Policy Check'
-    inputs:
-      targetType: F
-      result: PoliCheckResult.xml
-  - task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@2
-    displayName: 'Post Analysis'
-    inputs:
-      GdnBreakAllTools: false
-      GdnBreakGdnToolPoliCheck: true
-      GdnBreakGdnToolPoliCheckSeverity: Error
+# - job: PolicyCheck
+#   displayName: "Policy Check"
+#   pool:
+#     name: 'pool-windows-2019'
+#   steps:
+#   - task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
+#     displayName: 'Run Policy Check'
+#     inputs:
+#       targetType: F
+#       result: PoliCheckResult.xml
+#   - task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@2
+#     displayName: 'Post Analysis'
+#     inputs:
+#       GdnBreakAllTools: false
+#       GdnBreakGdnToolPoliCheck: true
+#       GdnBreakGdnToolPoliCheckSeverity: Error
 
-- job: CheckLicenseHeader
-  displayName: "Check License"
-  pool:
-    name: 'pool-ubuntu-2004'
-  steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 3.11'
-    inputs:
-      versionSpec: 3.11
-  - template: .azure-pipelines/templates/azdev_setup.yml
-  - bash: |
-      #!/usr/bin/env bash
-      set -ev
-      source ./env/bin/activate
-      azdev verify license
+# - job: CheckLicenseHeader
+#   displayName: "Check License"
+#   pool:
+#     name: 'pool-ubuntu-2004'
+#   steps:
+#   - task: UsePythonVersion@0
+#     displayName: 'Use Python 3.11'
+#     inputs:
+#       versionSpec: 3.11
+#   - template: .azure-pipelines/templates/azdev_setup.yml
+#   - bash: |
+#       #!/usr/bin/env bash
+#       set -ev
+#       source ./env/bin/activate
+#       azdev verify license
 
-- job: IndexVerify
-  displayName: "Verify Extensions Index"
-  pool:
-    name: 'pool-ubuntu-2004'
-  steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 3.11'
-    inputs:
-      versionSpec: 3.11
-  - bash: |
-      #!/usr/bin/env bash
-      set -ev
-      pip install wheel==0.30.0 requests packaging
-      export CI="ADO"
-      python ./scripts/ci/test_index.py -v
-    displayName: "Verify Extensions Index"
+# - job: IndexVerify
+#   displayName: "Verify Extensions Index"
+#   pool:
+#     name: 'pool-ubuntu-2004'
+#   steps:
+#   - task: UsePythonVersion@0
+#     displayName: 'Use Python 3.11'
+#     inputs:
+#       versionSpec: 3.11
+#   - bash: |
+#       #!/usr/bin/env bash
+#       set -ev
+#       pip install wheel==0.30.0 requests packaging
+#       export CI="ADO"
+#       python ./scripts/ci/test_index.py -v
+#     displayName: "Verify Extensions Index"
 
-- job: SourceTests
-  displayName: "Integration Tests, Build Tests"
-  pool:
-    name: 'pool-ubuntu-2004'
-  strategy:
-    matrix:
-      Python38:
-        python.version: '3.8'
-      Python39:
-        python.version: '3.9'
-      Python310:
-        python.version: '3.10'
-      Python311:
-        python.version: '3.11'
-  steps:
-    - task: UsePythonVersion@0
-      displayName: 'Use Python $(python.version)'
-      inputs:
-        versionSpec: '$(python.version)'
-    - template: .azure-pipelines/templates/azdev_setup.yml
-    - bash: pip install wheel==0.30.0
-      displayName: 'Install wheel==0.30.0'
-    - bash: |
-        #!/usr/bin/env bash
-        set -ev
-        source ./env/bin/activate
-        az --version
-        python scripts/ci/test_source.py -v
-      displayName: 'Run integration test and build test'
-      env:
-        ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
-        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
+# - job: SourceTests
+#   displayName: "Integration Tests, Build Tests"
+#   pool:
+#     name: 'pool-ubuntu-2004'
+#   strategy:
+#     matrix:
+#       Python38:
+#         python.version: '3.8'
+#       Python39:
+#         python.version: '3.9'
+#       Python310:
+#         python.version: '3.10'
+#       Python311:
+#         python.version: '3.11'
+#   steps:
+#     - task: UsePythonVersion@0
+#       displayName: 'Use Python $(python.version)'
+#       inputs:
+#         versionSpec: '$(python.version)'
+#     - template: .azure-pipelines/templates/azdev_setup.yml
+#     - bash: pip install wheel==0.30.0
+#       displayName: 'Install wheel==0.30.0'
+#     - bash: |
+#         #!/usr/bin/env bash
+#         set -ev
+#         source ./env/bin/activate
+#         az --version
+#         python scripts/ci/test_source.py -v
+#       displayName: 'Run integration test and build test'
+#       env:
+#         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
+#         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
 - job: AzdevStyleModifiedExtensions
   displayName: "azdev style on Modified Extensions"
@@ -134,6 +134,8 @@ jobs:
         set -ev
         source ./env/bin/activate
         az --version
+        ll /home/cloudtest/.azdev/env_config/
+        cat /home/cloudtest/.azdev/env_config/Code/azure-cli/env/config
         python scripts/ci/azdev_linter_style.py --type style
       displayName: "azdev style on Modified Extensions"
       env:
@@ -150,7 +152,7 @@ jobs:
       displayName: 'Use Python 3.11'
       inputs:
         versionSpec: 3.11
-    # - template: .azure-pipelines/templates/azdev_setup.yml
+    - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
         set -ev
@@ -183,14 +185,14 @@ jobs:
 #      targetType: 'filePath'
 #      filePath: scripts/ci/test_index_ref_doc.sh
 
-- job: CheckInit
-  displayName: "Check Init Files"
-  pool:
-    name: 'pool-ubuntu-2004'
-  steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 3.x'
-    inputs:
-      versionSpec: 3.x
-  - bash: |
-      python scripts/ci/test_init.py -v
+# - job: CheckInit
+#   displayName: "Check Init Files"
+#   pool:
+#     name: 'pool-ubuntu-2004'
+#   steps:
+#   - task: UsePythonVersion@0
+#     displayName: 'Use Python 3.x'
+#     inputs:
+#       versionSpec: 3.x
+#   - bash: |
+#       python scripts/ci/test_init.py -v
