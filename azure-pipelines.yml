@@ -133,11 +133,10 @@ jobs:
         #!/usr/bin/env bash
         set -ev
         source ./env/bin/activate
-        azdev setup -c ../azure-cli -r ./ --debug
         # overwrite the default AZURE_EXTENSION_DIR set by ADO
         AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
 
-        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/azdev_linter_style.py --type style
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions VIRTUAL_ENV=~/.azure/cliextensions/env python scripts/ci/azdev_linter_style.py --type style
       displayName: "azdev style on Modified Extensions"
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
@@ -158,12 +157,11 @@ jobs:
         #!/usr/bin/env bash
         set -ev
         source ./env/bin/activate
-        azdev setup -c ../azure-cli -r ./ --debug
         # overwrite the default AZURE_EXTENSION_DIR set by ADO
         AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
         
         # TODO: remove --type linter once all extensions are fixed
-        AZURE_EXTENSION_DIR=~/.azure/cliextensions python scripts/ci/azdev_linter_style.py --type linter
+        AZURE_EXTENSION_DIR=~/.azure/cliextensions VIRTUAL_ENV=~/.azure/cliextensions/env python scripts/ci/azdev_linter_style.py --type linter
       displayName: "azdev linter on Modified Extensions"
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
