@@ -87,7 +87,7 @@ class AzdevExtensionHelper:
         self._cmd('azdev linter --include-whl-extensions {}'.format(self.extension_name))
 
     def style(self):
-        self._cmd('azdev style {}'.format(self.extension_name))
+        self._cmd('azdev style {} --debug'.format(self.extension_name))
 
     def build(self):
         self._cmd('azdev extension build {}'.format(self.extension_name))
