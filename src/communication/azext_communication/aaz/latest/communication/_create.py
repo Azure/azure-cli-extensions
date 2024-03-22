@@ -103,6 +103,7 @@ class Create(AAZCommand):
         _args_schema.data_location = AAZStrArg(
             options=["--data-location"],
             arg_group="Properties",
+            required=True,
             help="The location where the communication service stores its data at rest.",
         )
         _args_schema.linked_domains = AAZListArg(
