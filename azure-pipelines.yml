@@ -134,7 +134,8 @@ jobs:
         set -ev
         source ./env/bin/activate
         az --version
-        ll /home/cloudtest/.azdev/env_config/
+        ls /home/cloudtest/.azdev/env_config/
+        tree /home/cloudtest/.azdev/env_config/
         cat /home/cloudtest/.azdev/env_config/Code/azure-cli/env/config
         python scripts/ci/azdev_linter_style.py --type style
       displayName: "azdev style on Modified Extensions"
