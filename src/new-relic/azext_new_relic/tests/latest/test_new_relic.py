@@ -16,16 +16,16 @@ class NewRelicScenario(ScenarioTest):
     def test_new_relic_monitor(self, resource_group):
         self.kwargs.update({
             'new_relic_monitor_name': 'test-new-relic-monitor',
-            'user_email': 'v-taoxuzeng@microsoft.com',
-            'loc': 'eastus2euap'
+            'user_email': 'dipeshbhakat@microsoft.com',
+            'loc': 'centraluseuap'
         })
 
         self.cmd('az new-relic monitor create '
                  '--resource-group {rg} '
                  '--name {new_relic_monitor_name} '
                  '--location {loc} '
-                 '--user-info {{"first-name":"vdftzcggiref","last-name":"bcsztgqovdlmzf","email-address":{user_email},"phone-number":"123456"}} '
-                 '--plan-data {{"billing-cycle":"MONTHLY","effective-date":"\'2022-10-25T15:14:33+02:00\'","plan-details":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","usage-type":"PAYG"}} '
+                 '--user-info {{"first-name":"Dipesh","last-name":"Bhakat","email-address":{user_email},"phone-number":"123456"}} '
+                 '--plan-data {{"billing-cycle":"MONTHLY","effective-date":"\'2023-10-25T15:14:33+02:00\'","plan-details":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","usage-type":"PAYG"}} '
                  '--account-creation-source "LIFTR" '
                  '--org-creation-source "LIFTR" '
                  '--tags {{"key6976":"oaxfhf"}}',
@@ -34,12 +34,12 @@ class NewRelicScenario(ScenarioTest):
                          self.check('orgCreationSource', 'LIFTR'),
                          self.check('location', '{loc}'),
                          self.check('planData.billingCycle', 'MONTHLY'),
-                         self.check('planData.effectiveDate', '2022-10-25T13:14:33Z'),
+                         self.check('planData.effectiveDate', '2023-10-25T13:14:33Z'),
                          self.check('planData.planDetails', 'newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg'),
                          self.check('planData.usageType', 'PAYG'),
                          self.check('userInfo.emailAddress', '{user_email}'),
-                         self.check('userInfo.firstName', 'vdftzcggiref'),
-                         self.check('userInfo.lastName', 'bcsztgqovdlmzf'),
+                         self.check('userInfo.firstName', 'Dipesh'),
+                         self.check('userInfo.lastName', 'Bhakat'),
                          self.check('userInfo.phoneNumber', '123456'),
                          self.check('tags.key6976', 'oaxfhf')])
 
@@ -65,7 +65,7 @@ class NewRelicScenario(ScenarioTest):
         self.cmd('az new-relic monitor get-metric-rule --monitor-name {new_relic_monitor_name} --resource-group {rg} --user-email {user_email}',
                  checks=[self.check('length(filteringTags)', 0),
                          self.check('sendMetrics', 'Disabled')])
-        self.cmd('az new-relic monitor get-metric-statu --resource-group {rg} --monitor-name {new_relic_monitor_name} --user-email {user_email} --azure-resource-ids abcdefg',
+        self.cmd('az new-relic monitor get-metric-status --resource-group {rg} --monitor-name {new_relic_monitor_name} --user-email {user_email} --azure-resource-ids abcdefg',
                  self.check('length(azureResourceIds)', 0))
         self.cmd('az new-relic monitor list', self.check('type(@)', 'array'))
         self.cmd('az new-relic monitor list-app-service --resource-group {rg} --monitor-name {new_relic_monitor_name} --user-email {user_email} --azure-resource-ids abcdefg',
