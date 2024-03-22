@@ -133,6 +133,7 @@ jobs:
         #!/usr/bin/env bash
         set -ev
         source ./env/bin/activate
+        azdev setup -c ../azure-cli -r ./ --debug
         # overwrite the default AZURE_EXTENSION_DIR set by ADO
         AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
 
@@ -157,6 +158,7 @@ jobs:
         #!/usr/bin/env bash
         set -ev
         source ./env/bin/activate
+        azdev setup -c ../azure-cli -r ./ --debug
         # overwrite the default AZURE_EXTENSION_DIR set by ADO
         AZURE_EXTENSION_DIR=~/.azure/cliextensions az --version
         
