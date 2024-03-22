@@ -133,7 +133,6 @@ jobs:
         #!/usr/bin/env bash
         set -ev
         source ./env/bin/activate
-        # overwrite the default AZURE_EXTENSION_DIR set by ADO
         az --version
 
         VIRTUAL_ENV=~/.azure/cliextensions/env python scripts/ci/azdev_linter_style.py --type style
@@ -157,7 +156,6 @@ jobs:
         #!/usr/bin/env bash
         set -ev
         source ./env/bin/activate
-        # overwrite the default AZURE_EXTENSION_DIR set by ADO
         az --version
         
         # TODO: remove --type linter once all extensions are fixed
