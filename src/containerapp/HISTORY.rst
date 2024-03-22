@@ -11,6 +11,7 @@ upcoming
 * 'az containerapp env telemetry otlp remove': Support remove environment otlp configuration with --otlp-name
 * 'az containerapp env telemetry otlp show': Support show environment otlp configuration with --otlp-name
 * 'az containerapp env telemetry otlp list': Support show environment otlp configurations
+* 'az containerapp up/create/update': Update Cloud Build code to use the simplified ARM calling pattern
 
 0.3.49
 ++++++
