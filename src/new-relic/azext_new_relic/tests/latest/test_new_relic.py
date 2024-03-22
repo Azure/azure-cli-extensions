@@ -92,6 +92,5 @@ class NewRelicScenario(ScenarioTest):
                  self.check('type(@)', 'array'))
         self.cmd('az new-relic plan list --account-id test-account --organization-id test-organization',
                  self.check('type(@)', 'array'))
-               
         self.cmd('az new-relic monitor tag-rule delete --resource-group {rg} --monitor-name {new_relic_monitor_name} --name default')
         self.cmd('az new-relic monitor delete --resource-group {rg} --monitor-name {new_relic_monitor_name} --user-email {user_email}')
