@@ -88,14 +88,12 @@ class AzdevExtensionHelper:
 
     def style(self):
         from azdev.operations.style import _config_file_path
-        from azdev.utilities.path import get_cli_repo_path, get_ext_repo_paths
-        cli_pylint, ext_pylint = _config_file_path("pylint")
-        print(cli_pylint, ext_pylint)
-        cli_flake8, ext_flake8 = _config_file_path("flake8")
-        print(cli_flake8, ext_flake8)
-        print(get_cli_repo_path())
-        print(get_ext_repo_paths())
-        # replace pylint and flake8 config
+        from azdev.utilities.path import get_ext_repo_paths
+        _, ext_pylint = _config_file_path("pylint")
+        _, ext_flake8 = _config_file_path("flake8")
+        ext_repo_path = get_ext_repo_paths()[0]
+        shutil.copy(os.path.join(ext_repo_path, 'pylintrc'), ext_pylint)
+        shutil.copy(os.path.join(ext_repo_path, '.flake8'), ext_flake8)
         self._cmd('azdev style {} --debug'.format(self.extension_name))
 
     def build(self):
