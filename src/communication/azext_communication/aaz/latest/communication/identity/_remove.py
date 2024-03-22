@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "communication identity remove",
-    is_preview=True,
 )
 class Remove(AAZCommand):
     """Remove a managed identity from the communication resource.

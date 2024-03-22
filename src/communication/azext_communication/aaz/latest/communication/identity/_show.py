@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "communication identity show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Show the Communication Resource's managed identities.

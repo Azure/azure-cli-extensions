@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "communication identity assign",
-    is_preview=True,
 )
 class Assign(AAZCommand):
     """Assign a managed identity to the Communication Resource.
