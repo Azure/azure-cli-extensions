@@ -22,6 +22,5 @@ from ._list_linked_resource import *
 from ._monitored_resource import *
 from ._show import *
 from ._switch_billing import *
-from ._update import *
 from ._vm_host_payload import *
 from ._wait import *
