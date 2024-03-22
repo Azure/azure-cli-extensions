@@ -150,15 +150,16 @@ jobs:
       displayName: 'Use Python 3.11'
       inputs:
         versionSpec: 3.11
-    - template: .azure-pipelines/templates/azdev_setup.yml
+    # - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
         set -ev
-        source ./env/bin/activate
-        azdev setup -c ../azure-cli -r ./ --debug
+        # source ./env/bin/activate
+        # azdev setup -c ../azure-cli -r ./ --debug
         az --version
+        azdev --version
         # TODO: remove --type linter once all extensions are fixed
-        VIRTUAL_ENV=~/.azure/cliextensions/env python scripts/ci/azdev_linter_style.py --type linter
+        python scripts/ci/azdev_linter_style.py --type linter
       displayName: "azdev linter on Modified Extensions"
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
