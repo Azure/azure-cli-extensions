@@ -19,8 +19,8 @@ class Update(AAZCommand):
     
     :example: Update the subscriptions that should be monitored by the NewRelic monitor resource.
     Please run below commands in the mentioned order
-    1) az new-relic monitor monitored-subscription update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default --patch-operation AddBegin --monitored-subscription-list "[{status:'InProgress',subscription-id:'subscription-id'}]"
-    2) az new-relic monitor monitored-subscription update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default --patch-operation AddComplete --monitored-subscription-list "[{status:'Active',subscription-id:'subscription-id'}]"
+    1) az new-relic monitor monitored-subscription update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default --patch-operation AddBegin --subscriptions "[{status:'InProgress',subscription-id:'subscription-id'}]"
+    2) az new-relic monitor monitored-subscription update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default --patch-operation AddComplete --subscriptions "[{status:'Active',subscription-id:'subscription-id'}]" 
     """
 
     _aaz_info = {
@@ -79,7 +79,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitored_subscription_list = AAZListArg(
-            options=["--monitored-subscription-list"],
+            options=["-n", "--subscriptions", "--monitored-subscription-list"],
             arg_group="Properties",
             help="List of subscriptions and the state of the monitoring.",
             nullable=True,
