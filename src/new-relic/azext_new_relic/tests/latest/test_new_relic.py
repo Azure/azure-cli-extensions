@@ -65,18 +65,8 @@ class NewRelicScenario(ScenarioTest):
         self.cmd('az new-relic monitor get-metric-rule --monitor-name {new_relic_monitor_name} --resource-group {rg} --user-email {user_email}',
                  checks=[self.check('length(filteringTags)', 0),
                          self.check('sendMetrics', 'Disabled')])
-        #self.cmd('az new-relic monitor monitored-subscription create --resource-group {rg} --monitor-name {new_relic_monitor_name} --configuration-name default --patch-operation AddBegin --subscriptions [{subscription-id:"8503bb5b-d6ad-4293-bf3d-c996bf639d9b",status:"InProgress"}]')
-        #self.cmd('az new-relic monitor monitored-subscription create --resource-group {rg} --monitor-name {new_relic_monitor_name} --configuration-name default --patch-operation AddComplete --subscriptions "[{status:\'Active\',subscription-id:\'8503bb5b-d6ad-4293-bf3d-c996bf639d9b\'}]"',
-        #         checks=[self.check('name', 'default'),
-        #                 self.check('monitoredSubscriptionList.subscriptionId', '8503bb5b-d6ad-4293-bf3d-c996bf639d9b'),
-        #                 self.check('monitoredSubscriptionList.status', 'Active')])
         self.cmd('az new-relic monitor monitored-subscription show --resource-group {rg} --monitor-name {new_relic_monitor_name} --configuration-name default',
                  self.check('name', 'default'))
-        #self.cmd('az new-relic monitor monitored-subscription update --resource-group {rg} --monitor-name {new_relic_monitor_name} --configuration-name default --patch-operation AddBegin --subscriptions "[{status:\'InProgress\',subscription-id:\'8503bb5b-d6ad-4293-bf3d-c996bf639d9b\'}]"')
-        #self.cmd('az new-relic monitor monitored-subscription update --resource-group {rg} --monitor-name {new_relic_monitor_name} --configuration-name default --patch-operation AddComplete --subscriptions "[{status:\'Active\',subscription-id:\'8503bb5b-d6ad-4293-bf3d-c996bf639d9b\'}]"',
-        #         checks=[self.check('name', 'default'),
-        #                 self.check('monitoredSubscriptionList.subscriptionId', '8503bb5b-d6ad-4293-bf3d-c996bf639d9b'),
-        #                 self.check('monitoredSubscriptionList.status', 'Active')])
         self.cmd('az new-relic monitor get-metric-status --resource-group {rg} --monitor-name {new_relic_monitor_name} --user-email {user_email} --azure-resource-ids abcdefg',
                  self.check('length(azureResourceIds)', 0))
         self.cmd('az new-relic monitor list', self.check('type(@)', 'array'))
@@ -102,7 +92,6 @@ class NewRelicScenario(ScenarioTest):
                  self.check('type(@)', 'array'))
         self.cmd('az new-relic plan list --account-id test-account --organization-id test-organization',
                  self.check('type(@)', 'array'))
-        
-        #self.cmd('az new-relic monitor monitored-subscription delete --resource-group {rg} --monitor-name {new_relic_monitor_name} --configuration-name default')
+               
         self.cmd('az new-relic monitor tag-rule delete --resource-group {rg} --monitor-name {new_relic_monitor_name} --name default')
         self.cmd('az new-relic monitor delete --resource-group {rg} --monitor-name {new_relic_monitor_name} --user-email {user_email}')
