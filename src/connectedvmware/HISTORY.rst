@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Fix bug in `az connectedvmware create` command when RG of machine is different from RG of vCenter.
+* Update help command for vm create to remove non-required parameters.
+
 1.0.0
 ++++++
 * Add command `az connectedvmware create-from-machines`.
