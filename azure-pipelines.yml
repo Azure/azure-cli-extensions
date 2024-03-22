@@ -133,8 +133,8 @@ jobs:
         #!/usr/bin/env bash
         set -ev
         source ./env/bin/activate
+        azdev setup -c ../azure-cli -r ./ --debug
         az --version
-
         VIRTUAL_ENV=~/.azure/cliextensions/env python scripts/ci/azdev_linter_style.py --type style
       displayName: "azdev style on Modified Extensions"
       env:
@@ -156,8 +156,8 @@ jobs:
         #!/usr/bin/env bash
         set -ev
         source ./env/bin/activate
+        azdev setup -c ../azure-cli -r ./ --debug
         az --version
-        
         # TODO: remove --type linter once all extensions are fixed
         VIRTUAL_ENV=~/.azure/cliextensions/env python scripts/ci/azdev_linter_style.py --type linter
       displayName: "azdev linter on Modified Extensions"
