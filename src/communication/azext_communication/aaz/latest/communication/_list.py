@@ -26,7 +26,7 @@ class List(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
+    AZ_SUPPORT_PAGINATION = False
 
     def _handler(self, command_args):
         super()._handler(command_args)
