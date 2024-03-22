@@ -51,7 +51,6 @@ class Create(AAZCommand):
             options=["--configuration-name"],
             help="The configuration name. Only 'default' value is supported.",
             required=True,
-            default="default",
             enum={"default": "default"},
             fmt=AAZStrArgFormat(
                 pattern="^.*$",

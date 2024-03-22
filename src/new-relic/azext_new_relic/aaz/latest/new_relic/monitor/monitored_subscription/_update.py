@@ -54,7 +54,6 @@ class Update(AAZCommand):
             help="The configuration name. Only 'default' value is supported.",
             required=True,
             id_part="child_name_1",
-            default="default",
             enum={"default": "default"},
             fmt=AAZStrArgFormat(
                 pattern="^.*$",
