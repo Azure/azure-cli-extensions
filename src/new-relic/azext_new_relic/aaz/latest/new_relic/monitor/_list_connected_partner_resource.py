@@ -18,7 +18,7 @@ class ListConnectedPartnerResource(AAZCommand):
     """List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
 
     :example: List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
-        az new-relic monitor list-connected-partner-resource --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --body UserEmail@123.com
+        az new-relic monitor list-connected-partner-resource --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor
     """
 
     _aaz_info = {

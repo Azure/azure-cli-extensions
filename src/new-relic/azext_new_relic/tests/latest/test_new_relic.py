@@ -74,6 +74,12 @@ class NewRelicScenario(ScenarioTest):
                  self.check('type(@)', 'array'))
         self.cmd('az new-relic monitor monitored-resource --monitor-name {new_relic_monitor_name} --resource-group {rg}',
                  self.check('type(@)', 'array'))
+        self.cmd('az new-relic monitor list-linked-resource --monitor-name {new_relic_monitor_name} --resource-group {rg}',
+                 self.check('type(@)', 'array'))
+        self.cmd('az new-relic monitor list-connected-partner-resource --monitor-name {new_relic_monitor_name} --resource-group {rg}',
+                 self.check('type(@)', 'array'))
+        self.cmd('az new-relic monitor get-billing-info --monitor-name {new_relic_monitor_name} --resource-group {rg}',
+                 self.check('length(@)', 1))
         self.cmd('az new-relic monitor show --resource-group {rg} --monitor-name {new_relic_monitor_name}',
                  self.check('name', '{new_relic_monitor_name}'))
         self.cmd('az new-relic monitor vm-host-payload --monitor-name {new_relic_monitor_name} --resource-group {rg}',
