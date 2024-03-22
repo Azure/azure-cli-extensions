@@ -93,8 +93,8 @@ class Update(AAZCommand):
             help="Describes how a Domains resource is being managed.",
             enum={"AzureManaged": "AzureManaged", "CustomerManaged": "CustomerManaged", "CustomerManagedInExchangeOnline": "CustomerManagedInExchangeOnline"},
         )
-        _args_schema.user_engagement_tracking = AAZStrArg(
-            options=["--user-engagement-tracking"],
+        _args_schema.user_engmnt_tracking = AAZStrArg(
+            options=["--user-engmnt-tracking"],
             arg_group="Properties",
             help="Describes whether user engagement tracking is enabled or disabled.",
             nullable=True,
@@ -351,7 +351,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("domainManagement", AAZStrType, ".domain_management", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("userEngagementTracking", AAZStrType, ".user_engagement_tracking")
+                properties.set_prop("userEngagementTracking", AAZStrType, ".user_engmnt_tracking")
 
             tags = _builder.get(".tags")
             if tags is not None:
