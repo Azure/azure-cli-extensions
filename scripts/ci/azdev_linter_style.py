@@ -97,6 +97,26 @@ class AzdevExtensionHelper:
         shutil.copy(os.path.join(ext_repo_path, '.flake8'), ext_flake8)
         print(get_azdev_config().get("ext", "repo_paths").split())
         print(get_azdev_config().get('ext', 'repo_paths').split(','))
+
+        ext_repo_path = filter(
+            lambda x: "azure-cli-extension" in x,
+            get_azdev_config().get("ext", "repo_paths").split(),
+        )
+        try:
+            ext_repo_path = next(ext_repo_path)
+        except StopIteration:
+            ext_repo_path = []
+        print('new1', ext_repo_path)
+
+        ext_repo_path = filter(
+            lambda x: "azure-cli-extension" in x,
+            get_azdev_config().get("ext", "repo_paths").split(','),
+        )
+        try:
+            ext_repo_path = next(ext_repo_path)
+        except StopIteration:
+            ext_repo_path = []
+        print('new2', ext_repo_path)
         self._cmd('azdev style {} --debug'.format(self.extension_name))
 
     def build(self):
