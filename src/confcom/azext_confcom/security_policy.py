@@ -412,7 +412,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                         image.set_command(command)
 
                     # merge envs for user container image
-                    envs = image_info.get("Env")
+                    envs = image_info.get("Env") or []
                     env_names = [
                         env_var[
                             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
