@@ -5,6 +5,7 @@ Release History
 
 Unreleased
 ++++++++
+* Changed configurationType for NF Resources from Secret to Open
 
 1.0.0b10
 ++++++++

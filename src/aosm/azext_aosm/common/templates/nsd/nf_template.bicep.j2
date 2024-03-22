@@ -36,7 +36,7 @@ resource nfResource 'Microsoft.HybridNetwork/networkFunctions@2023-09-01' = [for
     nfviType: '{{nfvi_type}}'
     nfviId: (configObject.customLocationId == '') ? resourceGroupId : configObject.customLocationId
     allowSoftwareUpdate: true
-    configurationType: 'Secret'
-    secretDeploymentValues: string(values)
+    configurationType: 'Open'
+    deploymentValues: string(values)
   }
 }]
