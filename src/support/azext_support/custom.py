@@ -111,7 +111,7 @@ def create_support_tickets(cmd, client,
     logger.warning("Parameters 'quota-change-regions' and ''quota-change-payload' will be replaced by" +
                    " 'quota-change-requests[].region' and 'quota-change-requests[].payload'")
     service_name = parse_support_area_path(problem_classification)["service_name"]
-    service = "/providers/Microsoft.Support/services/{0}".format(service_name)
+    service = f"/providers/Microsoft.Support/services/{service_name}"
 
     contactBody = {}
     contactBody["first_name"] = contact_first_name
