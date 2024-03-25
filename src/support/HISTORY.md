@@ -3,7 +3,7 @@ Release History
 
 1.0.4
 -----
-* Deprecated commands list before new upcoming version
+* Add deprecated message for commands before new upcoming version
 
 1.0.3
 -----
