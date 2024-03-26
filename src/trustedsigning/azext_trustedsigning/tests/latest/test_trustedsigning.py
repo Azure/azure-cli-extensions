@@ -42,6 +42,12 @@ class TrustedsigningScenario(ScenarioTest):
                         self.check('tags.op', 'create'),
                         self.check('provisioningState', 'Succeeded')
         ])
+        
+        self.cmd('trustedsigning check-name-availability '
+                 '-n {name}', 
+                 checks=[
+                        self.check('nameAvailable', 'false')
+        ])
 
         self.cmd('trustedsigning update '
                  '-g {rg} '
@@ -71,48 +77,48 @@ class TrustedsigningScenario(ScenarioTest):
                         self.check('provisioningState', 'Succeeded')
         ])
         
-        # self.cmd('trustedsigning certificate-profile create ' 
-        #          '-g {rg} ' 
-        #          '--account-name {name} '
-        #          '-n {public_profile_name} '
-        #          '--profile-type {publictrust_profile_type} '
-        #          '--id {public_identity_validation_id} '
-        #          '--include-street true '
-        #          '--include-postal-code true',
-        #          checks=[
-        #                 self.check('name', '{public_profile_name}'),
-        #                 self.check('resourceGroup', '{rg}'),
-        #                 self.check('profileType', '{publictrust_profile_type}'),
-        #                 self.check('identityValidationId', '{public_identity_validation_id}'),
-        #                 self.check('provisioningState', 'Succeeded')
-        # ])
+        self.cmd('trustedsigning certificate-profile create ' 
+                 '-g {rg} ' 
+                 '--account-name {name} '
+                 '-n {public_profile_name} '
+                 '--profile-type {publictrust_profile_type} '
+                 '--id {public_identity_validation_id} '
+                 '--include-street true '
+                 '--include-postal-code true',
+                 checks=[
+                        self.check('name', '{public_profile_name}'),
+                        self.check('resourceGroup', '{rg}'),
+                        self.check('profileType', '{publictrust_profile_type}'),
+                        self.check('identityValidationId', '{public_identity_validation_id}'),
+                        self.check('provisioningState', 'Succeeded')
+        ])
 
-        # self.cmd('trustedsigning certificate-profile create ' 
-        #          '-g {rg} ' 
-        #          '--account-name {name} '
-        #          '-n {private_profile_name} '
-        #          '--profile-type {privatetrust_profile_type} '
-        #          '--id {private_identity_validation_id} '
-        #          '--include-street true '
-        #          '--include-postal-code true',
-        #          checks=[
-        #                 self.check('name', '{private_profile_name}'),
-        #                 self.check('resourceGroup', '{rg}'),
-        #                 self.check('profileType', '{privatetrust_profile_type}'),
-        #                 self.check('identityValidationId', '{private_identity_validation_id}'),
-        #                 self.check('provisioningState', 'Succeeded')
-        # ])
+        self.cmd('trustedsigning certificate-profile create ' 
+                 '-g {rg} ' 
+                 '--account-name {name} '
+                 '-n {private_profile_name} '
+                 '--profile-type {privatetrust_profile_type} '
+                 '--id {private_identity_validation_id} '
+                 '--include-street true '
+                 '--include-postal-code true',
+                 checks=[
+                        self.check('name', '{private_profile_name}'),
+                        self.check('resourceGroup', '{rg}'),
+                        self.check('profileType', '{privatetrust_profile_type}'),
+                        self.check('identityValidationId', '{private_identity_validation_id}'),
+                        self.check('provisioningState', 'Succeeded')
+        ])
         
-        # # self.cmd('trustedsigning certificate-profile delete ' 
-        # #          '-g {rg} ' 
-        # #          '--account-name {name} '
-        # #          '-n {private_profile_name} -y')
+        self.cmd('trustedsigning certificate-profile delete ' 
+                 '-g {rg} ' 
+                 '--account-name {name} '
+                 '-n {private_profile_name} -y')
         
-        # profilesList = self.cmd('trustedsigning certificate-profile list '
-        #                         '-g {rg} '
-        #                         '--account-name {name}').get_output_in_json()
+        profilesList = self.cmd('trustedsigning certificate-profile list '
+                                '-g {rg} '
+                                '--account-name {name}').get_output_in_json()
         
-        # assert len(profilesList) == 2 
+        assert len(profilesList) == 1 
 
-        # # self.cmd('trustedsigning delete -g {rg} -n {name} -y').get_outputin_json()
-        # # assert len(deleteResponse) == 0
+        self.cmd('trustedsigning delete -g {rg} -n {name} -y').get_outputin_json()
+        assert len(deleteResponse) == 0
