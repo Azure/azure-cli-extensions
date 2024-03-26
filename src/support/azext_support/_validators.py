@@ -25,7 +25,7 @@ def datetime_type(string):
             return datetime.strptime(string, form)
         except ValueError:
             continue
-    raise ValueError("Input '{0}' not valid. Valid example: 2017-02-11T23:59:59Z".format(string))
+    raise ValueError(f"Input '{string}' not valid. Valid example: 2017-02-11T23:59:59Z")
 
 
 def validate_tickets_create(cmd, namespace):
@@ -67,18 +67,18 @@ def _validate_resource_name(cmd, resource_id):
     if resource_id is None:
         return
 
-    base_error_msg = "Technical resource argument {0} is invalid.".format(resource_id)
+    base_error_msg = f"Technical resource argument {resource_id} is invalid."
     if not is_valid_resource_id(resource_id):
         raise CLIError(base_error_msg)
 
     parsed_resource = parse_resource_id(resource_id)
     subid = parsed_resource["subscription"]
     if not _is_guid(subid):
-        raise CLIError(base_error_msg + "Subscription id {0} is invalid.".format(subid))
+        raise CLIError(f"{base_error_msg} Subscription id {subid} is invalid.")
 
     session_subid = get_subscription_id(cmd.cli_ctx)
     if subid != session_subid:
-        raise CLIError("{0} {1} does not match with {2}".format(base_error_msg, subid, session_subid))
+        raise CLIError(f"{base_error_msg} {subid} does not match with {session_subid}")
 
 
 def _is_guid(guid):
