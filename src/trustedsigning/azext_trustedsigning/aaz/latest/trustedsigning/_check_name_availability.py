@@ -48,10 +48,15 @@ class CheckNameAvailability(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
-            options=["--name"],
+            options=["-n", "--name"],
             arg_group="Body",
             help="Trusted signing account name.",
             required=True,
+        )
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
+            arg_group="Body",
+            help="The resource type.",
         )
         return cls._args_schema
 
@@ -137,7 +142,8 @@ class CheckNameAvailability(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("name", AAZStrType, ".name")
+            _builder.set_prop("type", AAZStrType, ".type")
 
             return self.serialize_content(_content_value)
 
