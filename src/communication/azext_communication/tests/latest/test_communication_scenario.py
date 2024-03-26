@@ -42,6 +42,9 @@ def setup_scenario(test, rg_2, rg):
 def cleanup_scenario(test, rg_2, rg):
     pass
 
+def get_resource_count_by_resource_group(self):
+   count = self.cmd('az communication list --resource-group "{rg}" --query "[].id | length(@)"').output.strip()
+   return int(count)
 
 # Testcase: Scenario
 @try_manual
@@ -57,11 +60,16 @@ def call_scenario(test, rg_2, rg):
         test.check("location", "Global", case_sensitive=False),
         test.check("dataLocation", "United States", case_sensitive=False),
     ])
+
+    expected_count = 1
+    if test.kwargs['existingResourceCountByResourceGroup'] is not None:
+        expected_count = test.kwargs['existingResourceCountByResourceGroup'] + 1
+
     step_list(test, rg_2, rg, checks=[
-        test.check('length(@)', 1),
+        test.check('length(@)', expected_count),
     ])
     step_list2(test, rg_2, rg, checks=[
-        test.check('length(@)', 1),
+        test.check('length(@)', expected_count),
     ])
     step_update(test, rg_2, rg, checks=[
         test.check("name", "{myCommunicationService}", case_sensitive=False),
@@ -86,11 +94,14 @@ class CommunicationScenarioTest(ScenarioTest):
         ], *args, **kwargs)
 
         self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
+            'subscription_id': self.get_subscription_id(),
         })
 
         self.kwargs.update({
             'myCommunicationService': self.create_random_name(prefix='MyCommunicationResource'[:11], length=23),
+        })
+        self.kwargs.update({
+            'existingResourceCountByResourceGroup': 0,
         })
 
     @AllowLargeResponse()
@@ -98,6 +109,8 @@ class CommunicationScenarioTest(ScenarioTest):
                            parameter_name='rg_2')
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     def test_communication_scenario(self, rg_2, rg):
+        self.kwargs['existingResourceCountByResourceGroup'] = get_resource_count_by_resource_group(self)
+        print("first print is -- ",self.kwargs['existingResourceCountByResourceGroup'])
         call_scenario(self, rg_2, rg)
         calc_coverage(__file__)
         raise_if()
