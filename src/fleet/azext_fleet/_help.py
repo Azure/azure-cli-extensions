@@ -282,7 +282,7 @@ helps['fleet updaterun skip'] = """
     parameters:
         - name: --targets
           type: string
-          short-summary: Space-separated list of targets to skip. Targets must be of the form `targetType:targetName` such as Group:MyGroup. Valid target types are: [`Member`, `Group`, `Stage`, `AfterStageWait`]. The target type is case-sensitive.
+          short-summary: Space-separated list of targets to skip.  Targets must be of the form 'targetType:targetName' such as Group:MyGroup. Valid target types are ('Member', 'Group', 'Stage', 'AfterStageWait'). The target type is case-sensitive.
     examples:
         - name: Set two targets to be skipped.
           text: az fleet updaterun skip -g MyFleetResourceGroup -f MyFleetName -n NameofUpdateRun --targets Group:my-group-name Stage:my-stage-name
