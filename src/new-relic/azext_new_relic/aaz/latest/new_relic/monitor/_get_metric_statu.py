@@ -14,7 +14,7 @@ from azure.cli.core.aaz import *
 @register_command(
     "new-relic monitor get-metric-statu",
 )
-class GetMetricStatus(AAZCommand):
+class GetMetricStatu(AAZCommand):
     """Get metric status
 
     :example: Get metric status.
@@ -204,8 +204,8 @@ class GetMetricStatus(AAZCommand):
             return cls._schema_on_200
 
 
-class _GetMetricStatusHelper:
-    """Helper class for GetMetricStatus"""
+class _GetMetricStatuHelper:
+    """Helper class for GetMetricStatu"""
 
 
-__all__ = ["GetMetricStatus"]
+__all__ = ["GetMetricStatu"]
