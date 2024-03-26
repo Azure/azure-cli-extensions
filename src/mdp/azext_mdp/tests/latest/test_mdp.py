@@ -26,6 +26,7 @@ class MdpScenario(ScenarioTest):
         self.kwargs.update(
             {
                 "poolName": self.create_random_name(prefix="cli", length=24),
+                "poolName2": self.create_random_name(prefix="cli", length=24),
                 "identityResourceId": "/subscriptions/a2e95d27-c161-4b61-bda4-11512c14c2c2/resourceGroups/ajaykn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ajaykn-msi",
                 "devcenterProjectResourceId": "/subscriptions/21af6cf1-77ad-42cd-ad19-e193de033071/resourceGroups/ajaykn-wus/providers/Microsoft.DevCenter/projects/ajaykn-p1",
                 "azureDevOpsOrgUrl": "https://dev.azure.com/managed-org-demo",
@@ -35,7 +36,7 @@ class MdpScenario(ScenarioTest):
 
         # List pools
         self.cmd(
-            "az mdp pool list " '--resource-group "{rg}" ',
+            "az mdp pool list --resource-group \"{rg}\" ",
             checks=[
                 self.check("length(@)", 0),
             ],
@@ -66,7 +67,7 @@ class MdpScenario(ScenarioTest):
 
         # List pools
         self.cmd(
-            "az mdp pool list " '--resource-group "{rg}" ',
+            "az mdp pool list --resource-group \"{rg}\" ",
             checks=[
                 self.check("length(@)", 1),
                 self.check("[0].name", "{poolName}")
@@ -115,12 +116,59 @@ class MdpScenario(ScenarioTest):
 
         # List pools
         self.cmd(
-            "az mdp pool list " '--resource-group "{rg}" ',
+            "az mdp pool list --resource-group \"{rg}\" ",
             checks=[
                 self.check("length(@)", 1),
                 self.check("[0].name", "{poolName}")
             ],
-        )    
+        )
+
+        # Create another pool
+        self.cmd(
+            "az mdp pool create \
+            --name \"{poolName2}\" \
+            --location \"{location}\" \
+            --resource-group \"{rg}\" \
+            --maximum-concurrency 1 \
+            --identity \"type=userAssigned\" \"user-assigned-identities={{'{identityResourceId}':{{}}}}\" \
+            --devcenter-project-resource-id \"{devcenterProjectResourceId}\" \
+            --agent-profile \"stateless={{}}\" \
+            --organization-profile \"azure-dev-ops={{organizations:[{{url:'{azureDevOpsOrgUrl}',parallelism:2}}],permissionProfile:{{kind:'CreatorOnly'}}}}\" \
+            --fabric-profile \"vmss={{sku:{{name:Standard_D2ads_v5}},storageProfile:{{osDiskStorageAccountType:Standard}},images:[{{resourceId:'{imageResourceId}',buffer:*}}],osProfile:{{secretsManagementSettings:{{observedCertificates:[],keyExportable:false}},logonType:Service}}}}\" \
+            ",
+            checks=[
+                self.check("identity.type", "UserAssigned"),
+                self.check("name", "{poolName2}"),
+                self.check("location", "{location}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("maximumConcurrency", 1)
+            ]
+        )
+
+        # List pools
+        self.cmd(
+            "az mdp pool list --resource-group \"{rg}\" ",
+            checks=[
+                self.check("length(@)", 2),
+            ],
+        )
+
+        # Delete first pool
+        self.cmd(
+            "az mdp pool delete --yes \
+            --name \"{poolName}\" \
+            --resource-group \"{rg}\" "
+        )
+
+        # List pools
+        self.cmd(
+            "az mdp pool list --resource-group \"{rg}\" ",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{poolName2}")
+            ],
+        )
 
     @ResourceGroupPreparer(
         name_prefix="clitest_mdp", key="rg", parameter_name="rg"
