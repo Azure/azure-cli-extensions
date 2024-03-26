@@ -67,7 +67,7 @@ class NewRelicScenario(ScenarioTest):
                          self.check('sendMetrics', 'Disabled')])
         self.cmd('az new-relic monitor monitored-subscription show --resource-group {rg} --monitor-name {new_relic_monitor_name} --configuration-name default',
                  self.check('name', 'default'))
-        self.cmd('az new-relic monitor get-metric-status --resource-group {rg} --monitor-name {new_relic_monitor_name} --user-email {user_email} --azure-resource-ids abcdefg',
+        self.cmd('az new-relic monitor get-metric-statu --resource-group {rg} --monitor-name {new_relic_monitor_name} --user-email {user_email} --azure-resource-ids abcdefg',
                  self.check('length(azureResourceIds)', 0))
         self.cmd('az new-relic monitor list', self.check('type(@)', 'array'))
         self.cmd('az new-relic monitor list-app-service --resource-group {rg} --monitor-name {new_relic_monitor_name} --user-email {user_email} --azure-resource-ids abcdefg',

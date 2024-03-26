@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor get-metric-status",
+    "new-relic monitor get-metric-statu",
 )
 class GetMetricStatus(AAZCommand):
     """Get metric status
 
     :example: Get metric status.
-        az new-relic monitor get-metric-status --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com --azure-resource-ids MyAzureResourceIds
+        az new-relic monitor get-metric-statu --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com --azure-resource-ids MyAzureResourceIds
     """
 
     _aaz_info = {

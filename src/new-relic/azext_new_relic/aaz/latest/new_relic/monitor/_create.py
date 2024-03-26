@@ -210,7 +210,6 @@ class Create(AAZCommand):
             help="The managed service identities assigned to this resource. Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
         )
         _args_schema.location = AAZResourceLocationArg(
-            options=["--location"],
             arg_group="Resource",
             help="The geo-location where the resource lives When not specified, the location of the resource group will be used.",
             required=True,
