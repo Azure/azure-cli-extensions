@@ -17,6 +17,10 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Pool
+
+    :example: Create
+        az devcenter admin pool create --location "eastus" --tags CostCode="12345" --name "Contoso" --resource-group "rg1"
+        az devcenter admin pool create --identity-type "UserAssigned" --user-assigned-identities "{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{}}" --location "eastus" --tags CostCode="12345" --name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
@@ -64,7 +68,7 @@ class Create(AAZCommand):
             help="Defines how the machine will be handled once it executed a job.",
         )
         _args_schema.dev_center_project_resource_id = AAZStrArg(
-            options=["--dev-center-project-resource-id"],
+            options=["--devcenter-project-resource-id", "--devcenter-project-id"],
             arg_group="Properties",
             help="The resource id of the DevCenter Project the pool belongs to.",
         )

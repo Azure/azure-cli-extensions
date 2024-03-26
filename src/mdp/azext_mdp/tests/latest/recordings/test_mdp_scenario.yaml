@@ -1,0 +1,123 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools?api-version=2023-12-13-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 25 Mar 2024 16:57:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 256f4bb2-9a50-4d9d-97a3-5a05baa41aeb
+      - c46f7b1a-c8b2-4be4-aa78-8d5d00eafadf
+      - 0c4244c5-8a82-4c08-8f2f-e4b6bec3c4ee
+      - d353fcd2-bce3-4425-ac12-a2cb7c976b49
+      - d784d9da-7dec-43e1-a545-08113c1d8a80
+      - 8c96a877-7821-4041-b962-1865bca7b5c4
+      - 68b183be-2610-4823-9a9c-1b7df297bdb4
+      - d8addf00-c559-46fa-b55c-47eddaa69c7e
+      - dffbd56b-a2f7-40f2-b973-24321a6e8549
+      - 53d1c4ff-61b9-48e9-9e68-3c86a037fe33
+      - c29efe6b-5cc8-4543-b7f1-4b8c5b7917d7
+      - 98b1b71e-ded2-4715-a8bc-3d202586fe6b
+      - 7309c603-e648-4178-b748-bea08138556d
+      - e880ef02-6622-4969-bf3b-70d608ae0b7b
+      - 17b5aa19-aced-4d95-bc40-c3079808bde0
+      - 167be9b9-d5ae-4bf2-bb32-a764de56e71c
+      - b1d0697a-06c1-46c1-a408-4f6d30ae9734
+      - 94543e20-6c24-4256-8e28-bdd9098652ac
+      - 25cdc22b-fa4e-4e28-8519-00438b5fb1ad
+      x-msedge-ref:
+      - 'Ref A: 37280772A2874ECF9FCE1C59CFE25A9A Ref B: MAA201060514035 Ref C: 2024-03-25T16:57:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "tags": {"CostCode": "12345"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '54'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002?api-version=2023-12-13-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceCreationValidateFailed","message":"The resource
+        validation failed."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '95'
+      content-type:
+      - application/json
+      date:
+      - Mon, 25 Mar 2024 16:57:54 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - e4436abb-c753-4394-a86b-ee55e1bfa950
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 0DEF4750D58942949E489DE0388E2A1E Ref B: MAA201060513053 Ref C: 2024-03-25T16:57:52Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
