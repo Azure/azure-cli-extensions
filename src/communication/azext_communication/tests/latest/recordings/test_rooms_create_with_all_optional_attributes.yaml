@@ -13,15 +13,15 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.8.1 azsdk-python-communication-identity/1.4.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.9.0 azsdk-python-communication-identity/1.5.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
       - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
       x-ms-date:
-      - Fri, 15 Dec 2023 10:29:04 GMT
+      - Tue, 26 Mar 2024 20:37:43 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/identities?api-version=2023-10-01
+    uri: https://sanitized.unitedstates.communication.azure.com/identities?api-version=2023-10-01
   response:
     body:
       string: '{"identity": {"id": "sanitized"}}'
@@ -34,25 +34,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:29:05 GMT
+      - Tue, 26 Mar 2024 20:37:43 GMT
       ms-cv:
-      - stXmC073x0+5uOToeY9OIA.2.0
+      - mIv1DbTyzEm+FWAHGM3W8g.0
       request-context:
       - appId=
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 0cSp8ZQAAAADU9R0axwZWRZBVcxBhBYh1SFlEMzBFREdFMDYxMgA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0GDIDZgAAAABhKcCjjYE3S7kn3lb1Ggu2V1NURURHRTA4MDkAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 17ms
+      - 13ms
     status:
       code: 201
       message: Created
 - request:
-    body: '{"validFrom": "2023-12-15T11:29:04.820270", "validUntil": "2023-12-15T12:29:04.820270",
-      "pstnDialOutEnabled": true, "participants": {"8:acs:006dd2c0-d2bc-41fd-90fe-e7a85d92d0c1_0000001d-0ce7-715f-1000-343a0d0004a5":
+    body: '{"validFrom": "2024-03-26T21:37:43.674456", "validUntil": "2024-03-26T22:37:43.674456",
+      "pstnDialOutEnabled": true, "participants": {"8:acs:e9b97946-5295-4768-82c1-a8bd612e88c1_0000001f-1c5d-53f9-e3c7-593a0d009f96":
       {"role": "Presenter"}}}'
     headers:
       Accept:
@@ -66,45 +66,47 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Fri, 15 Dec 2023 10:29:06 GMT
+      - Tue, 26 Mar 2024 20:37:44 GMT
       Repeatability-Request-Id:
-      - c6669cb8-9b34-11ee-b7f9-a497b10aa3d0
+      - b2f13164-ebb0-11ee-91a1-70cf49b3e948
       User-Agent:
-      - AzureCli/1.8.1 azsdk-python-communication-rooms/1.1.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.9.0 azsdk-python-communication-rooms/1.1.0b1 Python/3.10.11 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
-      - 6hKlhJ6cT5JNTDLYG0uv1O4rAQQ2S79KykqyNeIMccw=
+      - FWn/hO+J+j7qY9wQLm3EcqqsPZvoSHsfJV9Kz1TYUvc=
       x-ms-date:
-      - Fri, 15 Dec 2023 10:29:06 GMT
+      - Tue, 26 Mar 2024 20:37:44 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-10-30-preview
+    uri: https://sanitized.unitedstates.communication.azure.com/rooms?api-version=2023-10-30-preview
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2023-12-15T10:29:07.3082387+00:00",
-        "validFrom": "2023-12-15T11:29:04.82027+00:00", "validUntil": "2023-12-15T12:29:04.82027+00:00",
+      string: '{"id": "sanitized", "createdAt": "2024-03-26T20:37:45.428339+00:00",
+        "validFrom": "2024-03-26T21:37:43.674456+00:00", "validUntil": "2024-03-26T22:37:43.674456+00:00",
         "pstnDialOutEnabled": true}'
     headers:
       api-deprecated-versions:
       - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview
+      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview, 2024-04-15
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:29:06 GMT
+      - Tue, 26 Mar 2024 20:37:45 GMT
       location:
-      - '99463836077726369'
+      - '9942853535909606'
       ms-cv:
-      - +xFVFf3qpkCDwTbP1MD6+A.0
+      - ajoDpVtUnEONcHCm007zlA.0
       repeatability-result:
       - accepted
       request-context:
       - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0cip8ZQAAAAAw+EsfrrMwT4jtCBLZaWdBRE9IMzBFREdFMDEyMAA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0GTIDZgAAAAC7Mnleor1pQbXuJYFsOajYV1NURURHRTA4MTEAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
     status:
