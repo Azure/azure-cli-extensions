@@ -13,7 +13,7 @@ from ._create import *
 from ._delete import *
 from ._get_billing_info import *
 from ._get_metric_rule import *
-from ._get_metric_status import *
+from ._get_metric_statu import *
 from ._list import *
 from ._list_app_service import *
 from ._list_connected_partner_resource import *
