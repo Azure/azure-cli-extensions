@@ -4,6 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import requests
+import shutil
+import tarfile
+import tempfile
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
@@ -14,6 +18,36 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerAppCreateTest(ScenarioTest):
+    @staticmethod
+    def setUp():
+        response = requests.get("https://api.github.com/repos/Azure/java-buildpack-e2e-test/releases/tags/v1.0.6")
+        response.raise_for_status()
+        data = response.json()
+        if data['assets']:
+            for asset in data['assets']:
+                if asset['name'] == 'java-source-spring.tar.gz':
+                    source_url = asset['browser_download_url']
+                    response = requests.get(source_url, stream=True)
+                    response.raise_for_status()
+
+                    with tempfile.NamedTemporaryFile(suffix=".tar.gz", delete=False) as temp_file:
+                        for chunk in response.iter_content(chunk_size=8192):
+                            if chunk:
+                                temp_file.write(chunk)
+
+                    source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_buildpack_java"))
+                    if os.path.exists(source_path):
+                        shutil.rmtree(source_path)
+
+                    with tarfile.open(temp_file.name, 'r:gz') as tar:
+                        tar.extractall(path=source_path)
+
+                    os.remove(temp_file.name)
+
+    @staticmethod
+    def tearDown():
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_buildpack_java"))
+        shutil.rmtree(source_path)
 
     # We have to use @live_only() here as cloud builder and build resource name is generated randomly
     # and no matched request could be found for all builder/build ARM requests.
