@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 25 Mar 2024 16:57:52 GMT
+      - Tue, 26 Mar 2024 08:41:55 GMT
       expires:
       - '-1'
       pragma:
@@ -39,32 +39,40 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 256f4bb2-9a50-4d9d-97a3-5a05baa41aeb
-      - c46f7b1a-c8b2-4be4-aa78-8d5d00eafadf
-      - 0c4244c5-8a82-4c08-8f2f-e4b6bec3c4ee
-      - d353fcd2-bce3-4425-ac12-a2cb7c976b49
-      - d784d9da-7dec-43e1-a545-08113c1d8a80
-      - 8c96a877-7821-4041-b962-1865bca7b5c4
-      - 68b183be-2610-4823-9a9c-1b7df297bdb4
-      - d8addf00-c559-46fa-b55c-47eddaa69c7e
-      - dffbd56b-a2f7-40f2-b973-24321a6e8549
-      - 53d1c4ff-61b9-48e9-9e68-3c86a037fe33
-      - c29efe6b-5cc8-4543-b7f1-4b8c5b7917d7
-      - 98b1b71e-ded2-4715-a8bc-3d202586fe6b
-      - 7309c603-e648-4178-b748-bea08138556d
-      - e880ef02-6622-4969-bf3b-70d608ae0b7b
-      - 17b5aa19-aced-4d95-bc40-c3079808bde0
-      - 167be9b9-d5ae-4bf2-bb32-a764de56e71c
-      - b1d0697a-06c1-46c1-a408-4f6d30ae9734
-      - 94543e20-6c24-4256-8e28-bdd9098652ac
-      - 25cdc22b-fa4e-4e28-8519-00438b5fb1ad
+      - 8974848c-476d-4819-b97d-821b8039d652
+      - 23f52698-5e15-41d2-98fa-ede3332d0a22
+      - a5ed1e45-a423-47dd-b5bd-df938a76b3ff
+      - 81bafba0-2dd0-4d8d-af44-1d8a2f7642eb
+      - 12c219b4-6a52-4790-89f3-39b5ec8175b7
+      - 1d9950a1-f8fb-4fa2-95fc-9ec070214350
+      - 66abefe6-96d3-4752-9fef-ac257f0f5531
+      - 2431c565-eafe-4746-85d2-1680853c904f
+      - a5275c59-7006-4749-bbf3-3bae9e7af1cd
+      - 543e5113-6275-4d14-8373-f926465c0864
+      - f9016548-d654-4633-9ef5-9bb5b05b5358
+      - bb4666ca-9231-423a-9cf6-f159e9a003bc
+      - bddcd51b-529c-4f19-86b1-202403ba1a4c
+      - 86ad7b3a-cca7-4e3e-a1e4-f9af8a1860fe
+      - 143bd8be-05e3-45f0-9dee-2ac12bddfb45
+      - 9de6dead-0121-460b-b67c-f8228b307e0b
+      - cb0e5d36-637a-4683-9a1f-ba1fe6335e5d
+      - 48503d87-f8c5-41a7-9ca2-a4f6ce0bd61a
+      - ba7c4ff7-f12c-47d6-88b0-00e12a3a90f9
       x-msedge-ref:
-      - 'Ref A: 37280772A2874ECF9FCE1C59CFE25A9A Ref B: MAA201060514035 Ref C: 2024-03-25T16:57:45Z'
+      - 'Ref A: 56D987A2BB9543778BCB08EE41C645F8 Ref B: MAA201060515037 Ref C: 2024-03-26T08:41:49Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus2", "tags": {"CostCode": "12345"}}'
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ajaykn-msi":
+      {}}}, "location": "eastus2", "properties": {"agentProfile": {"kind": "Stateless"},
+      "devCenterProjectResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn-wus/providers/Microsoft.DevCenter/projects/ajaykn-p1",
+      "fabricProfile": {"kind": "Vmss", "images": [{"buffer": "*", "resourceId": "/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest"}],
+      "osProfile": {"logonType": "Service", "secretsManagementSettings": {"keyExportable":
+      false, "observedCertificates": []}}, "sku": {"name": "Standard_D2ads_v5"}, "storageProfile":
+      {"osDiskStorageAccountType": "Standard"}}, "maximumConcurrency": 3, "organizationProfile":
+      {"kind": "AzureDevOps", "organizations": [{"parallelism": 2, "url": "https://dev.azure.com/managed-org-demo"}],
+      "permissionProfile": {"kind": "CreatorOnly"}}}}'
     headers:
       Accept:
       - application/json
@@ -75,32 +83,38 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '54'
+      - '1176'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --location --tags --name --resource-group
+      - --name --location --resource-group --maximum-concurrency --identity --devcenter-project-resource-id
+        --agent-profile --organization-profile --fabric-profile
       User-Agent:
       - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002?api-version=2023-12-13-preview
   response:
     body:
-      string: '{"error":{"code":"ResourceCreationValidateFailed","message":"The resource
-        validation failed."}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","name":"cli000002","type":"microsoft.devopsinfrastructure/pools","location":"eastus2","systemData":{"createdBy":"ajaykn@microsoft.com","createdByType":"User","createdAt":"2024-03-26T08:41:57.1328344Z","lastModifiedBy":"ajaykn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-26T08:41:57.1328344Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ajaykn-msi":{"principalId":"4ed0cae7-4d55-46bb-bfbf-12f5517ffa38","clientId":"ffd9f42c-8dd9-4608-a290-29b7c9de9134"}}},"properties":{"provisioningState":"Accepted","organizationProfile":{"organizations":[{"url":"https://dev.azure.com/managed-org-demo","projects":[],"parallelism":2}],"permissionProfile":{"kind":"CreatorOnly"},"kind":"AzureDevOps"},"devCenterProjectResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn-wus/providers/Microsoft.DevCenter/projects/ajaykn-p1","maximumConcurrency":3,"agentProfile":{"kind":"Stateless"},"fabricProfile":{"sku":{"name":"Standard_D2ads_v5"},"images":[{"resourceId":"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest","buffer":"*"}],"osProfile":{"secretsManagementSettings":{"observedCertificates":[],"keyExportable":false},"logonType":"Service"},"storageProfile":{"osDiskStorageAccountType":"Standard"},"kind":"Vmss"}}}'
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevOpsInfrastructure/locations/EASTUS2/operationStatuses/a77548c1-ac2e-43b3-a3c9-a1207ec1cc69*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9?api-version=2023-12-13-preview&t=638470393192578185&c=MIIHHjCCBgagAwIBAgITfwKWMg6goKCq4WwU2AAEApYyDjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMTMwMTAzMDI3WhcNMjUwMTI0MTAzMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALMk1pBZQQoNY8tos8XBaEjHjcdWubRHrQk5CqKcX3tpFfukMI0_PVZK-Kr7xkZFQTYp_ItaM2RPRDXx-0W9-mmrUBKvdcQ0rdjcSXDek7GvWS29F5sDHojD1v3e9k2jJa4cVSWwdIguvXmdUa57t1EHxqtDzTL4WmjXitzY8QOIHLMRLyXUNg3Gqfxch40cmQeBoN4rVMlP31LizDfdwRyT1qghK7vgvworA3D9rE00aM0n7TcBH9I0mu-96JE0gSX1FWXctlEcmdwQmXj_U0sZCu11_Yr6Oa34bmUQHGc3hDvO226L1Au-QsLuRWFLbKJ-0wmSV5b3CbU1kweD5LUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQuoVkxdNhVmd-S8fHDZYn-1n9OaDAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG6_wraDi57hTBBW8zI9n7Dnd66DCf9ok7v4gM1-qxp2gZjb_eEnriIZQcCD3jLvW4q5_59OicwRN13rP_GY33E9HLUgw245zqSCIGd6gYnaCyxPNdhEa-W6-ZBBw1iWX8l-RJqDOUYwkrI7Lw-iea9CuiTbLjw_BJ5NGmd8D5GOVxFRnhJ7RBRrwa6p2_UqZqvdg8kneiyymbidRJCOZ_xkZ8OwL-ini_ge44CIEB7rvqwdf7DfwOjoDr7JU88gM0QgcE7kzx7cVUZpaJAXXhxLvOcb0MBuRiEyexrV6HrbOTafc9naJB26ejIXNHLsuIhpMMa5NEK60hGauLEMNlY&s=ERKtgUP8FerSxeV2FofdOxRoUwOM0CpxLIvBFHlj4EyyVfy-37Eo273HMROfeH69nbi-Vn5TYG35jzNqF7PEUK2zjvVogsgOxwGk_suSpyWVAzdIARvx01UM1veEP2xeWMoYep709ju9zTBB-VDd-NEN52Zr_L_yFioLxqVw50_A_tQ9h8BvYW1A_n3ULLvj4Lk8Tf1RgVmGMtd9_4LGyJ4mAzb60pNzoAGNI76Kpr4vUTJaONhDXFy5AlCw20yi-hc6ZkYtHtBknzdEbdOWMT_gk6jAuDliLYVI5WJr7wmKWBO1RPRqkjQHFUrcNDeXYWux86kO5g3OwYvFJjfXuQ&h=e_C5B0x2inRUXGOI1Jy5viojP0QGCBD1Q9Vk4POf9EM
       cache-control:
       - no-cache
       content-length:
-      - '95'
+      - '1721'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Mon, 25 Mar 2024 16:57:54 GMT
+      - Tue, 26 Mar 2024 08:41:58 GMT
+      etag:
+      - '"ad00353c-0000-0200-0000-66028a560000"'
       expires:
       - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.CloudTest/locations/eastus/operations/1786c83b-f73c-4db4-9063-1aa79f7faaca?api-version=2023-12-13-preview
       mise-correlation-id:
-      - e4436abb-c753-4394-a86b-ee55e1bfa950
+      - aaf87277-71a4-4c23-b307-2017ef5e7362
       pragma:
       - no-cache
       strict-transport-security:
@@ -109,15 +123,548 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - service
+      x-ms-devops-request-id:
+      - 1786c83b-f73c-4db4-9063-1aa79f7faaca
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: 0DEF4750D58942949E489DE0388E2A1E Ref B: MAA201060513053 Ref C: 2024-03-25T16:57:52Z'
+      - 'Ref A: B591701631A94A5BBA02919BE27A309E Ref B: MAA201060515009 Ref C: 2024-03-26T08:41:56Z'
     status:
-      code: 400
-      message: Bad Request
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --maximum-concurrency --identity --devcenter-project-resource-id
+        --agent-profile --organization-profile --fabric-profile
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevOpsInfrastructure/locations/EASTUS2/operationStatuses/a77548c1-ac2e-43b3-a3c9-a1207ec1cc69*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9?api-version=2023-12-13-preview&t=638470393192578185&c=MIIHHjCCBgagAwIBAgITfwKWMg6goKCq4WwU2AAEApYyDjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMTMwMTAzMDI3WhcNMjUwMTI0MTAzMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALMk1pBZQQoNY8tos8XBaEjHjcdWubRHrQk5CqKcX3tpFfukMI0_PVZK-Kr7xkZFQTYp_ItaM2RPRDXx-0W9-mmrUBKvdcQ0rdjcSXDek7GvWS29F5sDHojD1v3e9k2jJa4cVSWwdIguvXmdUa57t1EHxqtDzTL4WmjXitzY8QOIHLMRLyXUNg3Gqfxch40cmQeBoN4rVMlP31LizDfdwRyT1qghK7vgvworA3D9rE00aM0n7TcBH9I0mu-96JE0gSX1FWXctlEcmdwQmXj_U0sZCu11_Yr6Oa34bmUQHGc3hDvO226L1Au-QsLuRWFLbKJ-0wmSV5b3CbU1kweD5LUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQuoVkxdNhVmd-S8fHDZYn-1n9OaDAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG6_wraDi57hTBBW8zI9n7Dnd66DCf9ok7v4gM1-qxp2gZjb_eEnriIZQcCD3jLvW4q5_59OicwRN13rP_GY33E9HLUgw245zqSCIGd6gYnaCyxPNdhEa-W6-ZBBw1iWX8l-RJqDOUYwkrI7Lw-iea9CuiTbLjw_BJ5NGmd8D5GOVxFRnhJ7RBRrwa6p2_UqZqvdg8kneiyymbidRJCOZ_xkZ8OwL-ini_ge44CIEB7rvqwdf7DfwOjoDr7JU88gM0QgcE7kzx7cVUZpaJAXXhxLvOcb0MBuRiEyexrV6HrbOTafc9naJB26ejIXNHLsuIhpMMa5NEK60hGauLEMNlY&s=ERKtgUP8FerSxeV2FofdOxRoUwOM0CpxLIvBFHlj4EyyVfy-37Eo273HMROfeH69nbi-Vn5TYG35jzNqF7PEUK2zjvVogsgOxwGk_suSpyWVAzdIARvx01UM1veEP2xeWMoYep709ju9zTBB-VDd-NEN52Zr_L_yFioLxqVw50_A_tQ9h8BvYW1A_n3ULLvj4Lk8Tf1RgVmGMtd9_4LGyJ4mAzb60pNzoAGNI76Kpr4vUTJaONhDXFy5AlCw20yi-hc6ZkYtHtBknzdEbdOWMT_gk6jAuDliLYVI5WJr7wmKWBO1RPRqkjQHFUrcNDeXYWux86kO5g3OwYvFJjfXuQ&h=e_C5B0x2inRUXGOI1Jy5viojP0QGCBD1Q9Vk4POf9EM
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevOpsInfrastructure/locations/EASTUS2/operationStatuses/a77548c1-ac2e-43b3-a3c9-a1207ec1cc69*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9","name":"a77548c1-ac2e-43b3-a3c9-a1207ec1cc69*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","status":"Accepted","startTime":"2024-03-26T08:41:58.5516688Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '570'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Mar 2024 08:41:58 GMT
+      etag:
+      - '"6e01042d-0000-0200-0000-66028a560000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1E89FE0EB4F048DF98C827858E4D3932 Ref B: MAA201060515009 Ref C: 2024-03-26T08:41:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --maximum-concurrency --identity --devcenter-project-resource-id
+        --agent-profile --organization-profile --fabric-profile
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevOpsInfrastructure/locations/EASTUS2/operationStatuses/a77548c1-ac2e-43b3-a3c9-a1207ec1cc69*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9?api-version=2023-12-13-preview&t=638470393192578185&c=MIIHHjCCBgagAwIBAgITfwKWMg6goKCq4WwU2AAEApYyDjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMTMwMTAzMDI3WhcNMjUwMTI0MTAzMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALMk1pBZQQoNY8tos8XBaEjHjcdWubRHrQk5CqKcX3tpFfukMI0_PVZK-Kr7xkZFQTYp_ItaM2RPRDXx-0W9-mmrUBKvdcQ0rdjcSXDek7GvWS29F5sDHojD1v3e9k2jJa4cVSWwdIguvXmdUa57t1EHxqtDzTL4WmjXitzY8QOIHLMRLyXUNg3Gqfxch40cmQeBoN4rVMlP31LizDfdwRyT1qghK7vgvworA3D9rE00aM0n7TcBH9I0mu-96JE0gSX1FWXctlEcmdwQmXj_U0sZCu11_Yr6Oa34bmUQHGc3hDvO226L1Au-QsLuRWFLbKJ-0wmSV5b3CbU1kweD5LUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQuoVkxdNhVmd-S8fHDZYn-1n9OaDAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG6_wraDi57hTBBW8zI9n7Dnd66DCf9ok7v4gM1-qxp2gZjb_eEnriIZQcCD3jLvW4q5_59OicwRN13rP_GY33E9HLUgw245zqSCIGd6gYnaCyxPNdhEa-W6-ZBBw1iWX8l-RJqDOUYwkrI7Lw-iea9CuiTbLjw_BJ5NGmd8D5GOVxFRnhJ7RBRrwa6p2_UqZqvdg8kneiyymbidRJCOZ_xkZ8OwL-ini_ge44CIEB7rvqwdf7DfwOjoDr7JU88gM0QgcE7kzx7cVUZpaJAXXhxLvOcb0MBuRiEyexrV6HrbOTafc9naJB26ejIXNHLsuIhpMMa5NEK60hGauLEMNlY&s=ERKtgUP8FerSxeV2FofdOxRoUwOM0CpxLIvBFHlj4EyyVfy-37Eo273HMROfeH69nbi-Vn5TYG35jzNqF7PEUK2zjvVogsgOxwGk_suSpyWVAzdIARvx01UM1veEP2xeWMoYep709ju9zTBB-VDd-NEN52Zr_L_yFioLxqVw50_A_tQ9h8BvYW1A_n3ULLvj4Lk8Tf1RgVmGMtd9_4LGyJ4mAzb60pNzoAGNI76Kpr4vUTJaONhDXFy5AlCw20yi-hc6ZkYtHtBknzdEbdOWMT_gk6jAuDliLYVI5WJr7wmKWBO1RPRqkjQHFUrcNDeXYWux86kO5g3OwYvFJjfXuQ&h=e_C5B0x2inRUXGOI1Jy5viojP0QGCBD1Q9Vk4POf9EM
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevOpsInfrastructure/locations/EASTUS2/operationStatuses/a77548c1-ac2e-43b3-a3c9-a1207ec1cc69*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9","name":"a77548c1-ac2e-43b3-a3c9-a1207ec1cc69*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","status":"Succeeded","startTime":"2024-03-26T08:41:58.5516688Z","endTime":"2024-03-26T08:42:14.0021009Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '630'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Mar 2024 08:42:29 GMT
+      etag:
+      - '"6e011731-0000-0200-0000-66028a650000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: D4DAB744CB0E46ED9CB0A0941B058E92 Ref B: MAA201060515009 Ref C: 2024-03-26T08:42:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --maximum-concurrency --identity --devcenter-project-resource-id
+        --agent-profile --organization-profile --fabric-profile
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002?api-version=2023-12-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","name":"cli000002","type":"microsoft.devopsinfrastructure/pools","location":"eastus2","systemData":{"createdBy":"ajaykn@microsoft.com","createdByType":"User","createdAt":"2024-03-26T08:41:57.1328344Z","lastModifiedBy":"ajaykn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-26T08:41:57.1328344Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ajaykn-msi":{"principalId":"4ed0cae7-4d55-46bb-bfbf-12f5517ffa38","clientId":"ffd9f42c-8dd9-4608-a290-29b7c9de9134"}}},"properties":{"provisioningState":"Succeeded","organizationProfile":{"organizations":[{"url":"https://dev.azure.com/managed-org-demo","projects":[],"parallelism":2}],"permissionProfile":{"kind":"CreatorOnly"},"kind":"AzureDevOps"},"devCenterProjectResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn-wus/providers/Microsoft.DevCenter/projects/ajaykn-p1","maximumConcurrency":3,"agentProfile":{"kind":"Stateless"},"fabricProfile":{"sku":{"name":"Standard_D2ads_v5"},"images":[{"resourceId":"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest","buffer":"*"}],"osProfile":{"secretsManagementSettings":{"observedCertificates":[],"keyExportable":false},"logonType":"Service"},"storageProfile":{"osDiskStorageAccountType":"Standard"},"kind":"Vmss"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1722'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Mar 2024 08:42:30 GMT
+      etag:
+      - '"ad003d3c-0000-0200-0000-66028a660000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 040CE9E6051F49E59D4FD0466324E03A Ref B: MAA201060515009 Ref C: 2024-03-26T08:42:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools?api-version=2023-12-13-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","name":"cli000002","type":"microsoft.devopsinfrastructure/pools","location":"eastus2","systemData":{"createdBy":"ajaykn@microsoft.com","createdByType":"User","createdAt":"2024-03-26T08:41:57.1328344Z","lastModifiedBy":"ajaykn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-26T08:41:57.1328344Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ajaykn-msi":{"principalId":"4ed0cae7-4d55-46bb-bfbf-12f5517ffa38","clientId":"ffd9f42c-8dd9-4608-a290-29b7c9de9134"}}},"properties":{"provisioningState":"Succeeded","organizationProfile":{"organizations":[{"url":"https://dev.azure.com/managed-org-demo","projects":[],"parallelism":2}],"permissionProfile":{"kind":"CreatorOnly"},"kind":"AzureDevOps"},"devCenterProjectResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn-wus/providers/Microsoft.DevCenter/projects/ajaykn-p1","maximumConcurrency":3,"agentProfile":{"kind":"Stateless"},"fabricProfile":{"sku":{"name":"Standard_D2ads_v5"},"images":[{"resourceId":"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest","buffer":"*"}],"osProfile":{"secretsManagementSettings":{"observedCertificates":[],"keyExportable":false},"logonType":"Service"},"storageProfile":{"osDiskStorageAccountType":"Standard"},"kind":"Vmss"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1734'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Mar 2024 08:42:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 47aca4bb-d174-49de-9968-f3b15f6342e4
+      - 7826a7bb-24e0-4320-aabb-c545e8e15fe7
+      - 9f33cdd3-67b5-4bf8-9cbb-d58186296d9d
+      - 8204a3d8-5cd9-40b4-be5f-2e4406ab32f9
+      - 0d88f1e3-a5b3-4b2a-81d2-f36cde4c89f2
+      - 34bcedcd-91d4-463f-80db-94a0186bf1ed
+      - db9e678d-ae51-4f50-853b-94fd197174c9
+      - 0547f81c-785d-4b28-ad52-b5bce3c3f602
+      - bf7fdc24-ad83-435c-b00d-51bf9f0e47a5
+      - 1df1e7e8-a7ac-4bdf-b457-fa8de8813c56
+      - b5e43f12-fc0c-4ee7-aefc-695bf9e97e25
+      - be104c75-9ae8-41ba-b0d0-2062ec919145
+      - bbc656a6-39b4-4cd4-ba4b-ad4360f70aeb
+      - a6cbb601-697c-476d-ad47-db711b570b6f
+      - ee7d545c-babf-488c-90ae-0315df954d68
+      - 6e4d3812-617c-44ef-873f-326a274d931b
+      - 88f11a10-45b3-4955-aebb-cecb5d54a1b4
+      - 8d0437ec-e99e-468b-bcd5-ed5033d865fb
+      - 3c44e79e-e32d-4499-b8b3-cfcc616d6255
+      x-msedge-ref:
+      - 'Ref A: F406658C94DB4EAC8FC0656329AB2609 Ref B: MAA201060516017 Ref C: 2024-03-26T08:42:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002?api-version=2023-12-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","name":"cli000002","type":"microsoft.devopsinfrastructure/pools","location":"eastus2","systemData":{"createdBy":"ajaykn@microsoft.com","createdByType":"User","createdAt":"2024-03-26T08:41:57.1328344Z","lastModifiedBy":"ajaykn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-26T08:41:57.1328344Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ajaykn-msi":{"principalId":"4ed0cae7-4d55-46bb-bfbf-12f5517ffa38","clientId":"ffd9f42c-8dd9-4608-a290-29b7c9de9134"}}},"properties":{"provisioningState":"Succeeded","organizationProfile":{"organizations":[{"url":"https://dev.azure.com/managed-org-demo","projects":[],"parallelism":2}],"permissionProfile":{"kind":"CreatorOnly"},"kind":"AzureDevOps"},"devCenterProjectResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn-wus/providers/Microsoft.DevCenter/projects/ajaykn-p1","maximumConcurrency":3,"agentProfile":{"kind":"Stateless"},"fabricProfile":{"sku":{"name":"Standard_D2ads_v5"},"images":[{"resourceId":"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest","buffer":"*"}],"osProfile":{"secretsManagementSettings":{"observedCertificates":[],"keyExportable":false},"logonType":"Service"},"storageProfile":{"osDiskStorageAccountType":"Standard"},"kind":"Vmss"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1722'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Mar 2024 08:42:35 GMT
+      etag:
+      - '"ad003d3c-0000-0200-0000-66028a660000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 783AA936F0774CDBB169438C128D9FFE Ref B: MAA201060516033 Ref C: 2024-03-26T08:42:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ajaykn-msi":
+      {}}}, "location": "eastus2", "properties": {"agentProfile": {"kind": "Stateless"},
+      "devCenterProjectResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn-wus/providers/Microsoft.DevCenter/projects/ajaykn-p1",
+      "fabricProfile": {"kind": "Vmss", "images": [{"buffer": "*", "resourceId": "/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest"}],
+      "osProfile": {"logonType": "Service", "secretsManagementSettings": {"keyExportable":
+      false, "observedCertificates": []}}, "sku": {"name": "Standard_D2ads_v5"}, "storageProfile":
+      {"osDiskStorageAccountType": "Standard"}}, "maximumConcurrency": 1, "organizationProfile":
+      {"kind": "AzureDevOps", "organizations": [{"parallelism": 2, "url": "https://dev.azure.com/managed-org-demo"}],
+      "permissionProfile": {"kind": "CreatorOnly"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1176'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --resource-group --maximum-concurrency --identity --devcenter-project-resource-id
+        --agent-profile --organization-profile --fabric-profile
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002?api-version=2023-12-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","name":"cli000002","type":"microsoft.devopsinfrastructure/pools","location":"eastus2","systemData":{"createdBy":"ajaykn@microsoft.com","createdByType":"User","createdAt":"2024-03-26T08:41:57.1328344Z","lastModifiedBy":"ajaykn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-26T08:42:36.3110961Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ajaykn-msi":{"principalId":"4ed0cae7-4d55-46bb-bfbf-12f5517ffa38","clientId":"ffd9f42c-8dd9-4608-a290-29b7c9de9134"}}},"properties":{"provisioningState":"Accepted","organizationProfile":{"organizations":[{"url":"https://dev.azure.com/managed-org-demo","projects":[],"parallelism":2}],"permissionProfile":{"kind":"CreatorOnly"},"kind":"AzureDevOps"},"devCenterProjectResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn-wus/providers/Microsoft.DevCenter/projects/ajaykn-p1","maximumConcurrency":1,"agentProfile":{"kind":"Stateless"},"fabricProfile":{"sku":{"name":"Standard_D2ads_v5"},"images":[{"resourceId":"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest","buffer":"*"}],"osProfile":{"secretsManagementSettings":{"observedCertificates":[],"keyExportable":false},"logonType":"Service"},"storageProfile":{"osDiskStorageAccountType":"Standard"},"kind":"Vmss"}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevOpsInfrastructure/locations/EASTUS2/operationStatuses/46d882db-9384-4624-9bca-931c4d99bdc5*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9?api-version=2023-12-13-preview&t=638470393581236178&c=MIIHHjCCBgagAwIBAgITfwKWMg6goKCq4WwU2AAEApYyDjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMTMwMTAzMDI3WhcNMjUwMTI0MTAzMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALMk1pBZQQoNY8tos8XBaEjHjcdWubRHrQk5CqKcX3tpFfukMI0_PVZK-Kr7xkZFQTYp_ItaM2RPRDXx-0W9-mmrUBKvdcQ0rdjcSXDek7GvWS29F5sDHojD1v3e9k2jJa4cVSWwdIguvXmdUa57t1EHxqtDzTL4WmjXitzY8QOIHLMRLyXUNg3Gqfxch40cmQeBoN4rVMlP31LizDfdwRyT1qghK7vgvworA3D9rE00aM0n7TcBH9I0mu-96JE0gSX1FWXctlEcmdwQmXj_U0sZCu11_Yr6Oa34bmUQHGc3hDvO226L1Au-QsLuRWFLbKJ-0wmSV5b3CbU1kweD5LUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQuoVkxdNhVmd-S8fHDZYn-1n9OaDAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG6_wraDi57hTBBW8zI9n7Dnd66DCf9ok7v4gM1-qxp2gZjb_eEnriIZQcCD3jLvW4q5_59OicwRN13rP_GY33E9HLUgw245zqSCIGd6gYnaCyxPNdhEa-W6-ZBBw1iWX8l-RJqDOUYwkrI7Lw-iea9CuiTbLjw_BJ5NGmd8D5GOVxFRnhJ7RBRrwa6p2_UqZqvdg8kneiyymbidRJCOZ_xkZ8OwL-ini_ge44CIEB7rvqwdf7DfwOjoDr7JU88gM0QgcE7kzx7cVUZpaJAXXhxLvOcb0MBuRiEyexrV6HrbOTafc9naJB26ejIXNHLsuIhpMMa5NEK60hGauLEMNlY&s=MVcNA62ZS0WVhfi-J8pTIEWsQhYN5RmDCAKFgJKxPR7TF3y09hAIWQ1LgZ-BjYe8u4caQeeowrAskmqjoPckbAOJT3FaTEPK97wIrZPqBFZksEsw8HcZsY8qxWTJitUvRRWFuNRrQHYMTO_ubp8MgzenWXzCLOc596D8VFNjGgN5-2WWx4Wcc7Pn2LJknT8VZ0o6Enpbj3IVk3B4yz21HI_4bJ4__zd1zICjqwTWQqrdCmTF5sJsk7U-pD9-lPVuIV5rDf_Yn2jNkhMeTGFrRnN8OctwNCO9tT2lvbJLuH2RlvWQTZh_ia7GUWuh0g2lIUBAHtwCVHVWsxflLje4Iw&h=4Bu7Z8JfFJbOkHqZeUxsjecYsli0AOu4AIUWlheIM6Q
+      cache-control:
+      - no-cache
+      content-length:
+      - '1721'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Mar 2024 08:42:37 GMT
+      etag:
+      - '"ad00413c-0000-0200-0000-66028a7d0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.CloudTest/locations/eastus/operations/1a7ef7b1-7a11-43a0-86ed-e272f0b1f895?api-version=2023-12-13-preview
+      mise-correlation-id:
+      - 3dcca24f-47a6-4434-9b35-61f191414658
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-devops-request-id:
+      - 1a7ef7b1-7a11-43a0-86ed-e272f0b1f895
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: C3E6D0CF9C7C4874B26C15CA4820696D Ref B: MAA201060515053 Ref C: 2024-03-26T08:42:35Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --maximum-concurrency --identity --devcenter-project-resource-id
+        --agent-profile --organization-profile --fabric-profile
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevOpsInfrastructure/locations/EASTUS2/operationStatuses/46d882db-9384-4624-9bca-931c4d99bdc5*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9?api-version=2023-12-13-preview&t=638470393581236178&c=MIIHHjCCBgagAwIBAgITfwKWMg6goKCq4WwU2AAEApYyDjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMTMwMTAzMDI3WhcNMjUwMTI0MTAzMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALMk1pBZQQoNY8tos8XBaEjHjcdWubRHrQk5CqKcX3tpFfukMI0_PVZK-Kr7xkZFQTYp_ItaM2RPRDXx-0W9-mmrUBKvdcQ0rdjcSXDek7GvWS29F5sDHojD1v3e9k2jJa4cVSWwdIguvXmdUa57t1EHxqtDzTL4WmjXitzY8QOIHLMRLyXUNg3Gqfxch40cmQeBoN4rVMlP31LizDfdwRyT1qghK7vgvworA3D9rE00aM0n7TcBH9I0mu-96JE0gSX1FWXctlEcmdwQmXj_U0sZCu11_Yr6Oa34bmUQHGc3hDvO226L1Au-QsLuRWFLbKJ-0wmSV5b3CbU1kweD5LUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQuoVkxdNhVmd-S8fHDZYn-1n9OaDAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG6_wraDi57hTBBW8zI9n7Dnd66DCf9ok7v4gM1-qxp2gZjb_eEnriIZQcCD3jLvW4q5_59OicwRN13rP_GY33E9HLUgw245zqSCIGd6gYnaCyxPNdhEa-W6-ZBBw1iWX8l-RJqDOUYwkrI7Lw-iea9CuiTbLjw_BJ5NGmd8D5GOVxFRnhJ7RBRrwa6p2_UqZqvdg8kneiyymbidRJCOZ_xkZ8OwL-ini_ge44CIEB7rvqwdf7DfwOjoDr7JU88gM0QgcE7kzx7cVUZpaJAXXhxLvOcb0MBuRiEyexrV6HrbOTafc9naJB26ejIXNHLsuIhpMMa5NEK60hGauLEMNlY&s=MVcNA62ZS0WVhfi-J8pTIEWsQhYN5RmDCAKFgJKxPR7TF3y09hAIWQ1LgZ-BjYe8u4caQeeowrAskmqjoPckbAOJT3FaTEPK97wIrZPqBFZksEsw8HcZsY8qxWTJitUvRRWFuNRrQHYMTO_ubp8MgzenWXzCLOc596D8VFNjGgN5-2WWx4Wcc7Pn2LJknT8VZ0o6Enpbj3IVk3B4yz21HI_4bJ4__zd1zICjqwTWQqrdCmTF5sJsk7U-pD9-lPVuIV5rDf_Yn2jNkhMeTGFrRnN8OctwNCO9tT2lvbJLuH2RlvWQTZh_ia7GUWuh0g2lIUBAHtwCVHVWsxflLje4Iw&h=4Bu7Z8JfFJbOkHqZeUxsjecYsli0AOu4AIUWlheIM6Q
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevOpsInfrastructure/locations/EASTUS2/operationStatuses/46d882db-9384-4624-9bca-931c4d99bdc5*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9","name":"46d882db-9384-4624-9bca-931c4d99bdc5*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","status":"Provisioning","startTime":"2024-03-26T08:42:37.4138455Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '574'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Mar 2024 08:42:37 GMT
+      etag:
+      - '"6e012538-0000-0200-0000-66028a7e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1881F12F38DC460695B4238591922500 Ref B: MAA201060515053 Ref C: 2024-03-26T08:42:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --maximum-concurrency --identity --devcenter-project-resource-id
+        --agent-profile --organization-profile --fabric-profile
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevOpsInfrastructure/locations/EASTUS2/operationStatuses/46d882db-9384-4624-9bca-931c4d99bdc5*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9?api-version=2023-12-13-preview&t=638470393581236178&c=MIIHHjCCBgagAwIBAgITfwKWMg6goKCq4WwU2AAEApYyDjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMTMwMTAzMDI3WhcNMjUwMTI0MTAzMDI3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALMk1pBZQQoNY8tos8XBaEjHjcdWubRHrQk5CqKcX3tpFfukMI0_PVZK-Kr7xkZFQTYp_ItaM2RPRDXx-0W9-mmrUBKvdcQ0rdjcSXDek7GvWS29F5sDHojD1v3e9k2jJa4cVSWwdIguvXmdUa57t1EHxqtDzTL4WmjXitzY8QOIHLMRLyXUNg3Gqfxch40cmQeBoN4rVMlP31LizDfdwRyT1qghK7vgvworA3D9rE00aM0n7TcBH9I0mu-96JE0gSX1FWXctlEcmdwQmXj_U0sZCu11_Yr6Oa34bmUQHGc3hDvO226L1Au-QsLuRWFLbKJ-0wmSV5b3CbU1kweD5LUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQuoVkxdNhVmd-S8fHDZYn-1n9OaDAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAG6_wraDi57hTBBW8zI9n7Dnd66DCf9ok7v4gM1-qxp2gZjb_eEnriIZQcCD3jLvW4q5_59OicwRN13rP_GY33E9HLUgw245zqSCIGd6gYnaCyxPNdhEa-W6-ZBBw1iWX8l-RJqDOUYwkrI7Lw-iea9CuiTbLjw_BJ5NGmd8D5GOVxFRnhJ7RBRrwa6p2_UqZqvdg8kneiyymbidRJCOZ_xkZ8OwL-ini_ge44CIEB7rvqwdf7DfwOjoDr7JU88gM0QgcE7kzx7cVUZpaJAXXhxLvOcb0MBuRiEyexrV6HrbOTafc9naJB26ejIXNHLsuIhpMMa5NEK60hGauLEMNlY&s=MVcNA62ZS0WVhfi-J8pTIEWsQhYN5RmDCAKFgJKxPR7TF3y09hAIWQ1LgZ-BjYe8u4caQeeowrAskmqjoPckbAOJT3FaTEPK97wIrZPqBFZksEsw8HcZsY8qxWTJitUvRRWFuNRrQHYMTO_ubp8MgzenWXzCLOc596D8VFNjGgN5-2WWx4Wcc7Pn2LJknT8VZ0o6Enpbj3IVk3B4yz21HI_4bJ4__zd1zICjqwTWQqrdCmTF5sJsk7U-pD9-lPVuIV5rDf_Yn2jNkhMeTGFrRnN8OctwNCO9tT2lvbJLuH2RlvWQTZh_ia7GUWuh0g2lIUBAHtwCVHVWsxflLje4Iw&h=4Bu7Z8JfFJbOkHqZeUxsjecYsli0AOu4AIUWlheIM6Q
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevOpsInfrastructure/locations/EASTUS2/operationStatuses/46d882db-9384-4624-9bca-931c4d99bdc5*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9","name":"46d882db-9384-4624-9bca-931c4d99bdc5*7A950D4EC3F91B3D97B1FC3BCA700A501CB0984D5959440857DCE6D4CB67FFF9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","status":"Succeeded","startTime":"2024-03-26T08:42:37.4138455Z","endTime":"2024-03-26T08:42:43.3337032Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '630'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Mar 2024 08:43:08 GMT
+      etag:
+      - '"6e010239-0000-0200-0000-66028a830000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: AFB7503E3348415FA86BAB865D19A1A0 Ref B: MAA201060515053 Ref C: 2024-03-26T08:43:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --maximum-concurrency --identity --devcenter-project-resource-id
+        --agent-profile --organization-profile --fabric-profile
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002?api-version=2023-12-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","name":"cli000002","type":"microsoft.devopsinfrastructure/pools","location":"eastus2","systemData":{"createdBy":"ajaykn@microsoft.com","createdByType":"User","createdAt":"2024-03-26T08:41:57.1328344Z","lastModifiedBy":"ajaykn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-26T08:42:36.3110961Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ajaykn-msi":{"principalId":"4ed0cae7-4d55-46bb-bfbf-12f5517ffa38","clientId":"ffd9f42c-8dd9-4608-a290-29b7c9de9134"}}},"properties":{"provisioningState":"Succeeded","organizationProfile":{"organizations":[{"url":"https://dev.azure.com/managed-org-demo","projects":[],"parallelism":2}],"permissionProfile":{"kind":"CreatorOnly"},"kind":"AzureDevOps"},"devCenterProjectResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn-wus/providers/Microsoft.DevCenter/projects/ajaykn-p1","maximumConcurrency":1,"agentProfile":{"kind":"Stateless"},"fabricProfile":{"sku":{"name":"Standard_D2ads_v5"},"images":[{"resourceId":"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest","buffer":"*"}],"osProfile":{"secretsManagementSettings":{"observedCertificates":[],"keyExportable":false},"logonType":"Service"},"storageProfile":{"osDiskStorageAccountType":"Standard"},"kind":"Vmss"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1722'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Mar 2024 08:43:08 GMT
+      etag:
+      - '"ad00433c-0000-0200-0000-66028a830000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: EC45230D7CA54590ADD5A3B5986AD5A0 Ref B: MAA201060515053 Ref C: 2024-03-26T08:43:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools?api-version=2023-12-13-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002","name":"cli000002","type":"microsoft.devopsinfrastructure/pools","location":"eastus2","systemData":{"createdBy":"ajaykn@microsoft.com","createdByType":"User","createdAt":"2024-03-26T08:41:57.1328344Z","lastModifiedBy":"ajaykn@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-26T08:42:36.3110961Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ajaykn-msi":{"principalId":"4ed0cae7-4d55-46bb-bfbf-12f5517ffa38","clientId":"ffd9f42c-8dd9-4608-a290-29b7c9de9134"}}},"properties":{"provisioningState":"Succeeded","organizationProfile":{"organizations":[{"url":"https://dev.azure.com/managed-org-demo","projects":[],"parallelism":2}],"permissionProfile":{"kind":"CreatorOnly"},"kind":"AzureDevOps"},"devCenterProjectResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ajaykn-wus/providers/Microsoft.DevCenter/projects/ajaykn-p1","maximumConcurrency":1,"agentProfile":{"kind":"Stateless"},"fabricProfile":{"sku":{"name":"Standard_D2ads_v5"},"images":[{"resourceId":"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest","buffer":"*"}],"osProfile":{"secretsManagementSettings":{"observedCertificates":[],"keyExportable":false},"logonType":"Service"},"storageProfile":{"osDiskStorageAccountType":"Standard"},"kind":"Vmss"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1734'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 26 Mar 2024 08:43:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - c9f4e2aa-6132-4bfa-9317-7529cca74857
+      - 39fe1cef-b61e-4eb8-aba9-89c2686d773d
+      - e3f6c58e-db10-411a-9914-851d7082df5f
+      - 440a5bb6-8405-42a6-8929-e4d0ce7dd07a
+      - 247915c8-293c-457d-8bd9-b2afbcb0186c
+      - 2bf0c95e-1bdf-413f-858c-bd3624f797d4
+      - 404a40b2-86ac-4eea-83ca-f30ff35c7f0e
+      - 8760c394-9294-4948-8b3d-66b50554a045
+      - 405bef5c-97bd-45df-90fd-332eb50c576b
+      - 7ef4fb2b-3854-4b78-ae36-7fcc54813e2e
+      - 196a5bd1-725b-4ced-a0bc-b34718778633
+      - 525d9028-bbb3-4ee5-8244-872bd9e96e5c
+      - 27fe34d4-96fb-4f26-a74e-387ec171600b
+      - fd195296-3b4f-4978-beaa-2a6213409d59
+      - 21cc147c-fd2a-45f1-8863-e2f026faf81c
+      - 07285fb5-95a2-4257-adbc-9d7510a8d5e7
+      - e0b1bad2-49ba-46e4-8721-d9a33d876591
+      - b2f0e7f3-383b-4e2c-a687-c7730b7958cb
+      - 99e80977-4b9f-4b29-8301-fd020c991742
+      x-msedge-ref:
+      - 'Ref A: DEF798AAD3044C3685AFCFD24AB357A0 Ref B: MAA201060513051 Ref C: 2024-03-26T08:43:10Z'
+    status:
+      code: 200
+      message: OK
 version: 1

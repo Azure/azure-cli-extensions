@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Pool
+
+    :example: Get
+        az mdp pool show --name "cli-contoso-pool" --resource-group "rg1"
     """
 
     _aaz_info = {

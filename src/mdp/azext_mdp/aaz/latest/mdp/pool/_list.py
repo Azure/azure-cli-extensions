@@ -16,7 +16,13 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List Pool resources by subscription ID
+    """List all Pool resources
+
+    :example: List by resource group
+        az mdp pool list --resource-group "rg1"
+
+    :example: List by subscription
+        az mdp pool list
     """
 
     _aaz_info = {

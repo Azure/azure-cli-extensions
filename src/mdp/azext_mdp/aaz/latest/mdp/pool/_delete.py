@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Pool
+
+    :example: Delete
+        az mdp pool delete --name "cli-contoso-pool" --resource-group "rg1"
     """
 
     _aaz_info = {

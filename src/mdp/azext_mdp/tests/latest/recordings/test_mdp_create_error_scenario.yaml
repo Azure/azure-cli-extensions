@@ -1,50 +1,6 @@
 interactions:
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - mdp pool create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --resource-group
-      User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_mdp000001?api-version=2022-09-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001","name":"clitest_mdp000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_mdp_create_error_scenario","date":"2024-03-25T17:08:13Z","module":"azure-cli-extensions"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '384'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 25 Mar 2024 17:08:22 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-msedge-ref:
-      - 'Ref A: 9CC27F62A1B743AC8CB7FAA3CD9FD0E3 Ref B: MAA201060515023 Ref C: 2024-03-25T17:08:22Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "westus"}'
+    body: '{"location": "eastus2"}'
     headers:
       Accept:
       - application/json
@@ -55,11 +11,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '22'
+      - '23'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --resource-group
+      - --name --location --resource-group
       User-Agent:
       - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
     method: PUT
@@ -76,11 +32,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 25 Mar 2024 17:08:27 GMT
+      - Tue, 26 Mar 2024 08:41:49 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 0f75385f-acce-46da-80c6-4ecad096396d
+      - 82732d96-47d6-4dec-9811-45e91ab6a829
       pragma:
       - no-cache
       strict-transport-security:
@@ -96,7 +52,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: D4231D71DDC94836951FB8AFF7634FF4 Ref B: MAA201060514019 Ref C: 2024-03-25T17:08:22Z'
+      - 'Ref A: A842EE5601634F75B2F458868890B187 Ref B: MAA201060516053 Ref C: 2024-03-26T08:41:47Z'
     status:
       code: 400
       message: Bad Request

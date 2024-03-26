@@ -19,8 +19,13 @@ class Create(AAZCommand):
     """Create a Pool
 
     :example: Create
-        az devcenter admin pool create --location "eastus" --tags CostCode="12345" --name "Contoso" --resource-group "rg1"
-        az devcenter admin pool create --identity-type "UserAssigned" --user-assigned-identities "{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{}}" --location "eastus" --tags CostCode="12345" --name "Contoso" --resource-group "rg1"
+        az mdp pool create --location "eastus" --name "cli-contoso-pool" --resource-group "rg1" 
+        --identity "type=userAssigned" "user-assigned-identities={'/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-msi':{}}"
+        --maximum-concurrency 3 
+        --agent-profile "Stateless={}" 
+        --organization-profile "azure-dev-ops={organizations:[{url:'https://dev.azure.com/test-org',parallelism:2}],permissionProfile:{kind:'CreatorOnly'}}" 
+        --devcenter-project-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example/providers/Microsoft.DevCenter/projects/contoso-proj"
+        --fabric-profile "vmss={sku:{name:Standard_D2ads_v5},storageProfile:{osDiskStorageAccountType:Standard},images:[{resourceId:'/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest',buffer:*}],osProfile:{secretsManagementSettings:{observedCertificates:[],keyExportable:false},logonType:Service}}"
     """
 
     _aaz_info = {
