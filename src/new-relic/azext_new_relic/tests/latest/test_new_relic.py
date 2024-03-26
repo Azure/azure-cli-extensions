@@ -98,7 +98,7 @@ class NewRelicScenario(ScenarioTest):
                  self.check('name', '{new_relic_monitor_name}'))
         self.cmd('az new-relic monitor vm-host-payload --monitor-name {new_relic_monitor_name} --resource-group {rg}',
                  self.check('length(@)', 1))
-        self.cmd('az new-relic account list --location {loc} --user-email {user_email}',
+        self.cmd('az new-relic account list --location {loc} --user-email rheahooda@microsoft.com',
                  self.check('type(@)', 'array'))
         self.cmd('az new-relic organization list --location {loc} --user-email rheahooda@microsoft.com',
                  self.check('type(@)', 'array'))
