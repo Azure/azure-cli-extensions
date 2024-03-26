@@ -63,6 +63,7 @@ def load_command_table(self, _):
         g.custom_command("delete", "delete_update_run", supports_no_wait=True, confirmation=True)
         g.custom_command("start", "start_update_run", supports_no_wait=True)
         g.custom_command("stop", "stop_update_run", supports_no_wait=True)
+        g.custom_command("skip", "skip_update_run", supports_no_wait=True)
         g.wait_command("wait")
 
     # fleet update strategies command group

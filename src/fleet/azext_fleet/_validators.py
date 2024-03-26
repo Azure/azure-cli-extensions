@@ -61,3 +61,32 @@ def validate_assign_identity(namespace):
         if not is_valid_resource_id(namespace.assign_identity):
             raise CLIError(
                 "--assign-identity is not a valid Azure resource ID.")
+
+
+def validate_targets(namespace):
+    ts = namespace.targets
+    if not ts:
+        raise InvalidArgumentValueError("The target list cannot be None or empty.")
+
+    for t in ts:
+        _validate_target(t)
+
+
+def _validate_target(target):
+    if not target:
+        raise InvalidArgumentValueError("The target cannot be None or empty.")
+
+    parts = target.split(':')
+
+    # Validate that there is exactly one colon and two non-empty parts
+    if len(parts) != 2 or not all(parts):
+        raise InvalidArgumentValueError(
+            f"The target '{target}' is not in the correct format 'targetType:targetName'. "
+            "It must contain exactly one colon and both parts must be non-empty."
+            "See help for details."
+        )
+
+    valid_keys = {'AfterStageWait', 'Group', 'Member', 'Stage'}
+    if parts[0] not in valid_keys:
+        raise InvalidArgumentValueError("Invalid target type, valid types are the following case-sensitive values:"
+                                        "'AfterStageWait', 'Group', 'Member', or 'Stage'.")

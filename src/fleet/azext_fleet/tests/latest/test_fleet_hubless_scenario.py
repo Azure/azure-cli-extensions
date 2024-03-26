@@ -125,6 +125,10 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('name', '{updaterun}')
         ])
 
+        self.cmd('fleet updaterun skip -g {rg} -n {updaterun} -f {fleet_name} --targets Group:group2', checks=[
+            self.check('status.stages[0].groups[1].status.state', 'Skipped')
+        ])
+
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
 
         update_strategy_name = self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name} --stages {stages_file}', checks=[
