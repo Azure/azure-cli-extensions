@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "new-relic monitor monitored-subscription delete",
-    confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete the subscriptions that are being monitored by the NewRelic monitor resource
@@ -67,7 +66,7 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
+            options=["--resource-group","--g"],
             help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
@@ -96,7 +95,16 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -160,6 +168,8 @@ class Delete(AAZCommand):
             }
             return parameters
 
+        def on_200(self, session):
+            pass
         def on_204(self, session):
             pass
 

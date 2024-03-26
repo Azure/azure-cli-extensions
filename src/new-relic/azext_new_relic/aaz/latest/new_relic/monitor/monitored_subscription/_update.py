@@ -69,7 +69,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            options=["--resource-group"],
+            options=["--resource-group","--g"],
             help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
