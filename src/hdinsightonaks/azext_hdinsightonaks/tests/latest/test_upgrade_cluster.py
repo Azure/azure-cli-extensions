@@ -52,7 +52,7 @@ class TestUpdateCluster(ScenarioTest):
 
         # Test upgrade a clusterpool.
         self.cmd(
-            'az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {rg} --aks-patch-upgrade target-aks-version=1.27.9 upgrade-all-cluster-nodes=false upgrade-cluster-pool=true')
+            'az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {rg} --upgrade-profile target-aks-version=1.27.9 upgrade-all-clusters=false upgrade-cluster-pool=true')
 
         # Test upgrade a cluster.
         # self.cmd('az hdinsight-on-aks cluster upgrade run --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName} --hotfix-upgrade component-name=' + upgrades[0]["componentName"] + ' target-build-number='+upgrades[0]["targetBuildNumber"] +' target-cluster-version='+upgrades[0]["targetClusterVersion"] +' target-oss-version='+ upgrades[0]["targetOssVersion"])
