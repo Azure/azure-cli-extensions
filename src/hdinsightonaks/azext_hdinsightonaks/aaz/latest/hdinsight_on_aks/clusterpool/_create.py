@@ -121,8 +121,8 @@ class Create(AAZCommand):
             arg_group="NetworkProfile",
             help="IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with private AKS clusters. So you cannot set enablePrivateApiServer to true and apiServerAuthorizedIpRanges at the same time.",
         )
-        _args_schema.enable_private_api_server = AAZBoolArg(
-            options=["--enable-private", "--enable-private-api-server"],
+        _args_schema.private_server_enabled = AAZBoolArg(
+            options=["--private-server-enabled"],
             arg_group="NetworkProfile",
             help="ClusterPool is based on AKS cluster. AKS cluster exposes the API server to public internet by default. If you set this property to true, a private AKS cluster will be created, and it will use private apiserver, which is not exposed to public internet.",
         )
@@ -289,7 +289,7 @@ class Create(AAZCommand):
             network_profile = _builder.get(".properties.networkProfile")
             if network_profile is not None:
                 network_profile.set_prop("apiServerAuthorizedIpRanges", AAZListType, ".api_server_authorized_ip_ranges")
-                network_profile.set_prop("enablePrivateApiServer", AAZBoolType, ".enable_private_api_server")
+                network_profile.set_prop("enablePrivateApiServer", AAZBoolType, ".private_server_enabled")
                 network_profile.set_prop("outboundType", AAZStrType, ".outbound_type")
                 network_profile.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
 

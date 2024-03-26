@@ -19,7 +19,7 @@ class Run(AAZCommand):
     """Upgrade a cluster pool.
 
     :example: Upgrade a cluster pool.
-        az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {RG} --aks-patch-upgrade {target-aks-version=1.27.9 upgrade-all-cluster-nodes=false upgrade-cluster-pool=true}
+        az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {RG} --upgrade-profile {target-aks-version=1.27.9 upgrade-clusters=false upgrade-cluster-pool=true}
     """
 
     _aaz_info = {
@@ -60,22 +60,23 @@ class Run(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.aks_patch_upgrade = AAZObjectArg(
-            options=["--aks-patch-upgrade"],
+        _args_schema.upgrade_profile = AAZObjectArg(
+            options=["--upgrade-profile"],
             arg_group="Properties",
+            help="Define upgrade properties.",
         )
 
-        aks_patch_upgrade = cls._args_schema.aks_patch_upgrade
-        aks_patch_upgrade.target_aks_version = AAZStrArg(
+        upgrade_profile = cls._args_schema.upgrade_profile
+        upgrade_profile.target_aks_version = AAZStrArg(
             options=["target-aks-version"],
             help="Target AKS version. When it's not set, latest version will be used. When upgradeClusterPool is true and upgradeAllClusterNodes is false, target version should be greater or equal to current version. When upgradeClusterPool is false and upgradeAllClusterNodes is true, target version should be equal to AKS version of cluster pool.",
         )
-        aks_patch_upgrade.upgrade_all_cluster_nodes = AAZBoolArg(
-            options=["upgrade-all-cluster-nodes"],
+        upgrade_profile.upgrade_clusters = AAZBoolArg(
+            options=["upgrade-clusters"],
             help="whether upgrade all clusters' nodes. If it's true, upgradeClusterPool should be false.",
             default=False,
         )
-        aks_patch_upgrade.upgrade_cluster_pool = AAZBoolArg(
+        upgrade_profile.upgrade_cluster_pool = AAZBoolArg(
             options=["upgrade-cluster-pool"],
             help="whether upgrade cluster pool or not. If it's true, upgradeAllClusterNodes should be false.",
             default=False,
@@ -192,14 +193,14 @@ class Run(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_const("upgradeType", "AKSPatchUpgrade", AAZStrType, ".aks_patch_upgrade", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("upgradeType", "AKSPatchUpgrade", AAZStrType, ".upgrade_profile", typ_kwargs={"flags": {"required": True}})
                 properties.discriminate_by("upgradeType", "AKSPatchUpgrade")
 
             disc_aks_patch_upgrade = _builder.get(".properties{upgradeType:AKSPatchUpgrade}")
             if disc_aks_patch_upgrade is not None:
-                disc_aks_patch_upgrade.set_prop("targetAksVersion", AAZStrType, ".aks_patch_upgrade.target_aks_version")
-                disc_aks_patch_upgrade.set_prop("upgradeAllClusterNodes", AAZBoolType, ".aks_patch_upgrade.upgrade_all_cluster_nodes")
-                disc_aks_patch_upgrade.set_prop("upgradeClusterPool", AAZBoolType, ".aks_patch_upgrade.upgrade_cluster_pool")
+                disc_aks_patch_upgrade.set_prop("targetAksVersion", AAZStrType, ".upgrade_profile.target_aks_version")
+                disc_aks_patch_upgrade.set_prop("upgradeAllClusterNodes", AAZBoolType, ".upgrade_profile.upgrade_clusters")
+                disc_aks_patch_upgrade.set_prop("upgradeClusterPool", AAZBoolType, ".upgrade_profile.upgrade_cluster_pool")
 
             return self.serialize_content(_content_value)
 
