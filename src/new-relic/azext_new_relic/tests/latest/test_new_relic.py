@@ -17,7 +17,7 @@ class NewRelicScenario(ScenarioTest):
         self.kwargs.update({
             'new_relic_monitor_name': 'test-new-relic-monitor',
             'user_email': 'dipeshbhakat@microsoft.com',
-            'loc': 'centraluseuap'
+            'loc': 'eastus'
         })
 
         self.cmd('az new-relic monitor create '
