@@ -10,23 +10,28 @@ from typing import List, Tuple
 from knack.log import get_logger
 
 from azext_aosm.build_processors.base_processor import BaseInputProcessor
-from azext_aosm.common.artifact import (BaseArtifact,
-                                        RemoteACRArtifact)
+from azext_aosm.common.artifact import BaseArtifact, RemoteACRArtifact
 from azext_aosm.definition_folder.builder.local_file_builder import LocalFileBuilder
 from azext_aosm.inputs.nexus_image_input import NexusImageFileInput
 from azext_aosm.vendored_sdks.models import (
     AzureOperatorNexusNetworkFunctionImageApplication,
     AzureOperatorNexusImageArtifactProfile,
     AzureOperatorNexusImageDeployMappingRuleProfile,
-    ImageArtifactProfile, ImageMappingRuleProfile,
-    ApplicationEnablement, ArtifactType,
+    ImageArtifactProfile,
+    ImageMappingRuleProfile,
+    ApplicationEnablement,
+    ArtifactType,
     DependsOnProfile,
-    ManifestArtifactFormat, ReferencedResource, ResourceElementTemplate,
+    ManifestArtifactFormat,
+    ReferencedResource,
+    ResourceElementTemplate,
 )
+from azext_aosm.common.registry import AzureContainerRegistry
 from azext_aosm.common.constants import (
     VNF_OUTPUT_FOLDER_FILENAME,
     NF_DEFINITION_FOLDER_NAME,
-    NEXUS_IMAGE_PARAMETERS_FILENAME)
+    NEXUS_IMAGE_PARAMETERS_FILENAME,
+)
 
 logger = get_logger(__name__)
 
@@ -74,19 +79,25 @@ class NexusImageProcessor(BaseInputProcessor):
         artifacts: List[BaseArtifact] = []
         file_builders: List[LocalFileBuilder] = []
 
-        # We only support remote ACR artifacts for container images
+        # We only support remote ACR artifacts for nexus container images
+        source_registry = AzureContainerRegistry(
+            self.input_artifact.source_acr_registry
+        )
+
         artifacts.append(
             RemoteACRArtifact(
                 artifact_name=self.input_artifact.artifact_name,
                 artifact_type=ArtifactType.IMAGE_FILE.value,
                 artifact_version=self.input_artifact.artifact_version,
-                source_registry=self.input_artifact.source_acr_registry,
-                source_registry_namespace="",
+                source_registry=source_registry,
+                registry_namespace="",
             )
         )
         return artifacts, file_builders
 
-    def generate_nf_application(self) -> AzureOperatorNexusNetworkFunctionImageApplication:
+    def generate_nf_application(
+        self,
+    ) -> AzureOperatorNexusNetworkFunctionImageApplication:
         """
         Generate the NF application.
 
@@ -97,8 +108,9 @@ class NexusImageProcessor(BaseInputProcessor):
 
         return AzureOperatorNexusNetworkFunctionImageApplication(
             name=self.name,
-            depends_on_profile=DependsOnProfile(install_depends_on=[],
-                                                uninstall_depends_on=[], update_depends_on=[]),
+            depends_on_profile=DependsOnProfile(
+                install_depends_on=[], uninstall_depends_on=[], update_depends_on=[]
+            ),
             artifact_profile=self._generate_artifact_profile(),
             deploy_parameters_mapping_rule_profile=self._generate_mapping_rule_profile(),
         )
@@ -109,8 +121,10 @@ class NexusImageProcessor(BaseInputProcessor):
 
         :raises NotImplementedError: NSDs do not support deployment of Nexus images.
         """
-        raise NotImplementedError("NSDs do not support deployment of Nexus images directly, "
-                                  "they must be provided in the NF.")
+        raise NotImplementedError(
+            "NSDs do not support deployment of Nexus images directly, "
+            "they must be provided in the NF."
+        )
 
     def _generate_artifact_profile(self) -> AzureOperatorNexusImageArtifactProfile:
         """
@@ -154,27 +168,25 @@ class NexusImageProcessor(BaseInputProcessor):
         )
 
     def generate_parameters_file(self) -> LocalFileBuilder:
-        """ Generate parameters file. """
+        """Generate parameters file."""
         mapping_rule_profile = self._generate_mapping_rule_profile()
         if (
             mapping_rule_profile.image_mapping_rule_profile
             and mapping_rule_profile.image_mapping_rule_profile.user_configuration
         ):
-            params = (
-                mapping_rule_profile.image_mapping_rule_profile.user_configuration
-            )
-            logger.info(
-                "Created parameters file for Nexus image."
-            )
+            params = mapping_rule_profile.image_mapping_rule_profile.user_configuration
+            logger.info("Created parameters file for Nexus image.")
         # We still want to create an empty params file,
         # otherwise the nf definition bicep will refer to files that don't exist
         else:
-            params = '{}'
+            params = "{}"
         return LocalFileBuilder(
             Path(
                 VNF_OUTPUT_FOLDER_FILENAME,
                 NF_DEFINITION_FOLDER_NAME,
-                self.input_artifact.artifact_name + '-' + NEXUS_IMAGE_PARAMETERS_FILENAME,
+                self.input_artifact.artifact_name
+                + "-"
+                + NEXUS_IMAGE_PARAMETERS_FILENAME,
             ),
             json.dumps(json.loads(params), indent=4),
         )

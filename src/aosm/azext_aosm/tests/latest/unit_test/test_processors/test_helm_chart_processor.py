@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 from unittest import TestCase
 from unittest.mock import Mock
 
@@ -17,8 +16,7 @@ class TestHelmChartProcessor(TestCase):
         self.helm_chart_processor = HelmChartProcessor(
             name="test-nf-agent-cnf",
             input_artifact=Mock(),
-            source_registry="",
-            source_registry_namespace="",
+            registry_handler=None,
         )
 
     def test_find_chart_images(self):
