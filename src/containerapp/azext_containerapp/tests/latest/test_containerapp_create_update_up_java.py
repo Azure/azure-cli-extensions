@@ -18,8 +18,9 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerAppCreateTest(ScenarioTest):
-    @staticmethod
-    def setUp():
+    @classmethod
+    def setUpClass(cls):
+        super(ContainerAppCreateTest, cls).setUpClass()
         response = requests.get("https://api.github.com/repos/Azure/java-buildpack-e2e-test/releases/tags/v1.0.6")
         response.raise_for_status()
         data = response.json()
@@ -44,8 +45,9 @@ class ContainerAppCreateTest(ScenarioTest):
 
                     os.remove(temp_file.name)
 
-    @staticmethod
-    def tearDown():
+    @classmethod
+    def tearDownClass(cls):
+        super(ContainerAppCreateTest, cls).tearDownClass()
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_buildpack_java"))
         shutil.rmtree(source_path)
 
