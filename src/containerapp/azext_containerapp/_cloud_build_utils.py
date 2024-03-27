@@ -226,7 +226,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         for line in response_log_streaming_lines:
             log_line = remove_ansi_characters(line.decode("utf-8"))
             current_phase_logs += f"{log_line}\n{substatus_indentation}"
-            if "----- Cloud Build failed with exit code" in log_line or "Exiting with failure status due to previous errors" in log_line:
+            if "----- Cloud Build failed with exit code" in log_line or "Exiting with failure status due to previous errors" in log_line or "===== Build Dockerfile failed =====" in log_line:
                 raise CloudBuildError(current_phase_logs)
 
             log_execution_phase_match = re.search(log_execution_phase_pattern, log_line)

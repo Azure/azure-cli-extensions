@@ -6,6 +6,7 @@
 import os
 import unittest
 
+from azext_containerapp.tests.latest.common import TEST_LOCATION
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_up, create_and_verify_containerapp_up_with_multiple_environments, create_and_verify_containerapp_up_for_default_registry_image
@@ -21,20 +22,20 @@ class ContainerAppUpImageTest(ScenarioTest):
         create_and_verify_containerapp_up(self, resource_group=resource_group, image=image)
 
     @live_only()
-    @ResourceGroupPreparer(location="eastus2")
+    @ResourceGroupPreparer(location=TEST_LOCATION)
     def test_containerapp_up_source_with_bullseye_buildpack_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_bullseye_buildpack_net7"))
         ingress = 'external'
         target_port = '8080'
-        create_and_verify_containerapp_up(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
+        create_and_verify_containerapp_up(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port, location=TEST_LOCATION, env_name="stage-environment")
 
     @live_only()
-    @ResourceGroupPreparer(location="eastus2")
+    @ResourceGroupPreparer(location=TEST_LOCATION)
     def test_containerapp_up_source_with_bookworm_buildpack_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_bookworm_buildpack_net8"))
         ingress = 'external'
         target_port = '8080'
-        create_and_verify_containerapp_up(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
+        create_and_verify_containerapp_up(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port, location=TEST_LOCATION, env_name="stage-environment")
 
     @live_only()
     @ResourceGroupPreparer(location="eastus2")

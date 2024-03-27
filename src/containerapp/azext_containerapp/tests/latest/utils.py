@@ -110,6 +110,11 @@ def create_and_verify_containerapp_up(
             registry_pass = acr_credentials["passwords"][0]["value"]
             up_cmd += f" --registry-server {registry_server} --registry-username {registry_user} --registry-password {registry_pass}"
 
+        # Re-run the 'az containerapp up' command with the location parameter if provided
+        if location:
+            up_cmd += f" -l {location.upper()}"
+            test_cls.cmd(up_cmd)
+
         # Execute the 'az containerapp up' command
         test_cls.cmd(up_cmd)
 
@@ -119,11 +124,6 @@ def create_and_verify_containerapp_up(
         url = url if url.startswith("http") else f"http://{url}"
         resp = requests.get(url)
         test_cls.assertTrue(resp.ok)
-
-        # Re-run the 'az containerapp up' command with the location parameter if provided
-        if location:
-            up_cmd += f" -l {location.upper()}"
-            test_cls.cmd(up_cmd)
 
 
 def create_and_verify_containerapp_up_with_multiple_environments(
