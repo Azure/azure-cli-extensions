@@ -35,9 +35,10 @@ class ArtifactDefinitionElementBuilder(BaseDefinitionElementBuilder):
         self.path.mkdir(exist_ok=True)
         artifacts_list = []
         for artifact in self.artifacts:
+            artifact_dict = artifact.to_dict()
             logger.debug(
-                "Writing artifact %s as: %s", artifact.artifact_name, artifact.to_dict()
+                "Writing artifact %s as: %s", artifact.artifact_name, artifact_dict
             )
-            artifacts_list.append(artifact.to_dict())
+            artifacts_list.append(artifact_dict)
         (self.path / "artifacts.json").write_text(json.dumps(artifacts_list, indent=4))
         self._write_supporting_files()

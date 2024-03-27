@@ -2,20 +2,17 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import json
 import re
 import os
-import tarfile
-from typing import Tuple
-from pathlib import Path
-from jinja2 import StrictUndefined, Template
-import json
 import shutil
 import subprocess
-from time import sleep
 import tarfile
 import tempfile
+from typing import Tuple
+from time import sleep
 from pathlib import Path
-from typing import Union
+from jinja2 import StrictUndefined, Template
 
 from knack.log import get_logger
 from knack.util import CLIError

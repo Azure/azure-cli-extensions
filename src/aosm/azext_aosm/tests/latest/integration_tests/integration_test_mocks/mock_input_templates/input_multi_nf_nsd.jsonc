@@ -1,0 +1,52 @@
+{
+  "location": "uksouth",
+  "publisher_name": "automated-cli-tests-ubuntu-publisher",
+  "publisher_resource_group_name": "cli_test_nsd",
+  "acr_artifact_store_name": "ubuntu-acr",
+  "resource_element_templates": [
+    {
+      "resource_element_type": "NF",
+      "properties": {
+        // The name of the existing publisher for the NSD.
+        "publisher": "automated-cli-tests-ubuntu-publisher",
+        // The resource group that the publisher is hosted in.
+        "publisher_resource_group": "cli_test_nsd",
+        // The name of the existing Network Function Definition Group to deploy using this NSD.
+        "name": "ubuntu-vm",
+        // The version of the existing Network Function Definition to base this NSD on.
+        // This NSD will be able to deploy any NFDV with deployment parameters compatible with this version.
+        "version": "1.0.0",
+        // The region that the NFDV is published to.
+        "publisher_offering_location": "uksouth",
+        // Type of Network Function. Valid values are 'cnf' or 'vnf'.
+        "type": "vnf",
+        // Set to true or false. Whether the NSD should allow arbitrary numbers of this type of NF. If false only a single instance will be allowed. Only supported on VNFs, must be set to false on CNFs.
+        "multiple_instances": "false"
+      }
+    },
+    {
+      "resource_element_type": "NF",
+      "properties": {
+        // The name of the existing publisher for the NSD.
+        "publisher": "automated-cli-tests-ubuntu-publisher",
+        // The resource group that the publisher is hosted in.
+        "publisher_resource_group": "cli_test_nsd",
+        // The name of the existing Network Function Definition Group to deploy using this NSD.
+        "name": "nginx",
+        // The version of the existing Network Function Definition to base this NSD on.
+        // This NSD will be able to deploy any NFDV with deployment parameters compatible with this version.
+        "version": "1.0.0",
+        // The region that the NFDV is published to.
+        "publisher_offering_location": "uksouth",
+        // Type of Network Function. Valid values are 'cnf' or 'vnf'.
+        "type": "cnf",
+        // Set to true or false. Whether the NSD should allow arbitrary numbers of this type of NF. If false only a single instance will be allowed. Only supported on VNFs, must be set to false on CNFs.
+        "multiple_instances": "false"
+      }
+    }
+  ],
+  "nfvi_type": "AzureCore",
+  "nsd_name": "multi-nf",
+  "nsd_version": "1.0.0",
+  "nsdv_description": "Plain ubuntu VM"
+}

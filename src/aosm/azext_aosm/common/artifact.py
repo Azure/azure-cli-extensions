@@ -18,6 +18,7 @@ from azext_aosm.common.utils import (
     clean_registry_name,
     push_image_from_local_registry_to_acr,
     call_subprocess_raise_output,
+    check_tool_installed,
 )
 from azext_aosm.configuration_models.common_parameters_config import (
     BaseCommonParametersConfig,
@@ -31,8 +32,6 @@ from azext_aosm.vendored_sdks.azure_storagev2.blob.v2022_11_02 import (
 from azext_aosm.common.registry import ContainerRegistry, AzureContainerRegistry
 from azext_aosm.vendored_sdks.models import ArtifactType
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
-from azext_aosm.common.command_context import CommandContext
-from azext_aosm.common.utils import check_tool_installed, convert_bicep_to_arm
 from knack.util import CLIError
 from knack.log import get_logger
 from oras.client import OrasClient

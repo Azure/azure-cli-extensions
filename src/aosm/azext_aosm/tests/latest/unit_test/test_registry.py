@@ -110,53 +110,47 @@ class TestUniversalRegistry(TestCase):
         with patch(
             "azext_aosm.common.registry.call_subprocess_raise_output",
             mocked_call_subprocess_raise_output,
-        ), self.assertRaises(ClientRequestError):
-            self.registry.find_image(image, version)
+        ):
+            result = self.registry.find_image(image, version)
+        self.assertEqual(result, (None, None))
 
 
 class TestAzureContainerRegistry(TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.INFO, stream=sys.stdout)
         self.registry = AzureContainerRegistry(registry_name="registry.azurecr.io")
+        self.registry.add_namespace("")
 
-    def test_get_images_in_registry(self):
+    def test_find_image_existing_image(self):
+        image = "myimage"
+        version = "1.0.0"
+
         # Mock the call_subprocess_raise_output function
-        mocked_output_repositories = json.dumps(
-            ["repository1", "repository2/image", "repository3/sample/image2"]
-        )
-        mocked_output_versions = json.dumps(["version1", "version2"])
-        mocked_call_subprocess_raise_output = Mock(
-            side_effect=[
-                mocked_output_repositories,
-                mocked_output_versions,
-                mocked_output_versions,
-                mocked_output_versions,
-            ]
-        )
+        mocked_output = "some output"
+        mocked_call_subprocess_raise_output = Mock(return_value=mocked_output)
 
         with patch(
             "azext_aosm.common.registry.call_subprocess_raise_output",
             mocked_call_subprocess_raise_output,
         ):
-            images = self.registry.get_images_in_registry()
+            result = self.registry.find_image(image, version)
 
-        self.assertEqual(len(images), 6)
-        self.assertIn(("repository1", "version1"), images)
-        self.assertIn(("repository1", "version2"), images)
-        self.assertIn(("image", "version1"), images)
-        self.assertIn(("image", "version2"), images)
-        self.assertIn(("image2", "version1"), images)
-        self.assertIn(("image2", "version2"), images)
-        self.assertEqual(images[("repository1", "version1")], (self.registry, ""))
-        self.assertEqual(images[("repository1", "version2")], (self.registry, ""))
-        self.assertEqual(images[("image", "version1")], (self.registry, "repository2/"))
-        self.assertEqual(images[("image", "version2")], (self.registry, "repository2/"))
-        self.assertEqual(
-            images[("image2", "version1")], (self.registry, "repository3/sample/")
-        )
-        self.assertEqual(
-            images[("image2", "version2")], (self.registry, "repository3/sample/")
-        )
+        self.assertEqual(result, (self.registry, ""))
+
+    def test_find_image_cli_error(self):
+        image = "myimage"
+        version = "1.0.0"
+
+        # Mock the call_subprocess_raise_output function to raise a CLIError
+        mocked_error = CLIError()
+        mocked_call_subprocess_raise_output = Mock(side_effect=mocked_error)
+
+        with patch(
+            "azext_aosm.common.registry.call_subprocess_raise_output",
+            mocked_call_subprocess_raise_output,
+        ):
+            result = self.registry.find_image(image, version)
+        self.assertEqual(result, (None, None))
 
 
 class TestRegistryHandler(TestCase):
@@ -167,20 +161,13 @@ class TestRegistryHandler(TestCase):
         self.registry_name_2 = "registry.example.com/sample"
         self.registry_name_3 = "registry.example.com"
 
-        with patch.object(
-            ContainerRegistryHandler,
-            "_get_registries_for_images",
-            return_value={
-                ("image1", "1.0.0"): (AzureContainerRegistry(self.registry_name_1), "")
-            },
-        ):
-            self.registry_handler = ContainerRegistryHandler(
-                image_sources=[
-                    self.registry_name_1,
-                    self.registry_name_2,
-                    self.registry_name_3,
-                ]
-            )
+        self.registry_handler = ContainerRegistryHandler(
+            image_sources=[
+                self.registry_name_1,
+                self.registry_name_2,
+                self.registry_name_3,
+            ]
+        )
 
     def test_create_registry_list(self):
         registry_list = self.registry_handler.registry_list
@@ -205,21 +192,31 @@ class TestRegistryHandler(TestCase):
         self.assertEqual(acr_registry_count, 1)
 
     def test_find_registry_for_image(self):
-
-        registry_1, namespace = self.registry_handler.find_registry_for_image(
-            "image1", "1.0.0"
-        )
-
-        self.assertEqual(registry_1.registry_name, self.registry_name_1)
-
         # Create a mock object to replace the find_image method
-        mock_find_image = Mock()
-        mock_find_image.return_value = (
+        mock_find_image_ACR = Mock()
+        mock_find_image_ACR.return_value = (
+            AzureContainerRegistry(self.registry_name_1),
+            "",
+        )
+        mock_find_image_universal_registry = Mock()
+        mock_find_image_universal_registry.return_value = (
             UniversalRegistry(self.registry_name_2),
             "sample",
         )
         with patch(
-            "azext_aosm.common.registry.UniversalRegistry.find_image", mock_find_image
+            "azext_aosm.common.registry.AzureContainerRegistry.find_image",
+            mock_find_image_ACR,
+        ):
+            registry_1, namespace = self.registry_handler.find_registry_for_image(
+                "image1", "1.0.0"
+            )
+
+        self.assertEqual(registry_1.registry_name, self.registry_name_1)
+        self.assertEqual(namespace, "")
+
+        with patch(
+            "azext_aosm.common.registry.UniversalRegistry.find_image",
+            mock_find_image_universal_registry,
         ):
 
             registry_2, namespace = self.registry_handler.find_registry_for_image(

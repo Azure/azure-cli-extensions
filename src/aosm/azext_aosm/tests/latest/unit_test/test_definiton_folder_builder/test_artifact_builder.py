@@ -7,7 +7,9 @@ from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from azext_aosm.definition_folder.builder.artifact_builder import ArtifactDefinitionElementBuilder
+from azext_aosm.definition_folder.builder.artifact_builder import (
+    ArtifactDefinitionElementBuilder,
+)
 
 
 class TestArtifactDefinitionElementBuilder(TestCase):
@@ -26,8 +28,7 @@ class TestArtifactDefinitionElementBuilder(TestCase):
 
         # Create a Artifact definition element builder.
         artifact_definition_element_builder = ArtifactDefinitionElementBuilder(
-            Path("/some/folder"),
-            [artifact_1, artifact_2]
+            Path("/some/folder"), [artifact_1, artifact_2]
         )
 
         # Write the definition element to disk.
@@ -37,6 +38,5 @@ class TestArtifactDefinitionElementBuilder(TestCase):
         mock_mkdir.assert_called_once()
         artifact_1.to_dict.assert_called_once()
         artifact_2.to_dict.assert_called_once()
-        expected_params = [{"abc":"def"},
-                           {"ghi":"jkl"}]
+        expected_params = [{"abc": "def"}, {"ghi": "jkl"}]
         mock_write_text.assert_called_once_with(json.dumps(expected_params, indent=4))
