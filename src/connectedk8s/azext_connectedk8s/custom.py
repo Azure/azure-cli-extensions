@@ -2587,6 +2587,27 @@ def install_kubectl_client():
         telemetry.set_exception(exception=e, fault_type=consts.Download_And_Install_Kubectl_Fault_Type, summary="Failed to download and install kubectl")
         raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
 
+def get_issuer_url():
+    # Load the kubeconfig
+    config.load_kube_config()
+
+    # Create an instance of the Kubernetes API client
+    api_instance = kube_client.CustomObjectsApi()
+
+    # Define the required parameters for the API call
+    group = "clusterconfig.azure.com"
+    version = "v1beta1"
+    namespace = "azure-arc"
+    plural = "signingkeys"
+    name = "signingkey"
+
+    # Get the signing key custom resource
+    signing_key_cr = api_instance.get_namespaced_custom_object(group, version, namespace, plural, name)
+
+    # Get the Issuer URL from the CR
+    issuer_url = signing_key_cr.get('status', {}).get('clusterIssuerUrl', '')
+
+    return issuer_url
 
 def crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context):
     timeout_for_crd_deletion = "20s"
