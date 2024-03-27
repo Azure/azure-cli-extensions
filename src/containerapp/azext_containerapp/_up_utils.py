@@ -531,7 +531,13 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         try:
             resource_group_name = self.resource_group.name
-            return run_cloud_build(self.cmd, source, build_env_vars, location, resource_group_name, self.env.name, run_full_id, logs_file, logs_file_path)
+            container_app_name = self.name
+            if not self.exists:
+                # Make sure that a container app exists before triggering the cloud build
+                logger.warning("Creating the base container app required to build")
+                self.image = "mcr.microsoft.com/k8se/quickstart:latest"
+                self.create(no_registry=True)
+            return run_cloud_build(self.cmd, source, build_env_vars, location, resource_group_name, self.env.name, container_app_name, run_full_id, logs_file, logs_file_path)
         except Exception as exception:
             logs_file.close()
             raise exception
