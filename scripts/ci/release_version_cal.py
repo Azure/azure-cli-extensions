@@ -21,7 +21,7 @@ output_file = os.environ.get('output_file', None)
 
 changed_module_list = os.environ.get('changed_module_list', "").split()
 pr_label_list = os.environ.get('pr_label_list', "").split()
-pr_label_list = [name.lower() for name in pr_label_list]
+pr_label_list = [name.lower().strip().strip('"').strip("'") for name in pr_label_list]
 
 DEFAULT_VERSION = "0.0.0"
 INIT_RELEASE_VERSION = "1.0.0b1"
