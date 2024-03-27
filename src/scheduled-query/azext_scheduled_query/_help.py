@@ -47,9 +47,6 @@ type: command
 short-summary: Update a scheduled query.
 parameters:
   - name: --action-groups
-    short-summary: Action Group resource Ids to invoke when the alert fires.
-    long-summary: |
-        Usage:   --action-groups ACTION_GROUP_NAME_OR_ID [NAME_OR_ID,...]
   - name: --custom-properties
     short-summary: The properties of an alert payload.
     long-summary: |
