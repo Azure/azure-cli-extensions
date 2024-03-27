@@ -14,7 +14,7 @@ class NginxScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus2euap')
     def test_deployment_cert_config(self, resource_group):
         self.kwargs.update({
-            'deployment_name': 'azclitest-deployment17',
+            'deployment_name': 'azclitest-deployment',
             'location': 'eastus2euap',
             'rg': resource_group,
             'sku': 'preview_Monthly_gmz7xq9ge3py',
@@ -100,7 +100,7 @@ class NginxScenarioTest(ScenarioTest):
         assert len(config_list) > 0
 
         self.cmd('nginx deployment configuration delete --name default --deployment-name {deployment_name} --resource-group {rg} --yes')
-        self.cmd('nginx deployment configuration analyze --name default --deployment-name {deployment_name} --resource-group {rg} --root-file nginx2.conf --package {compressed_file}', checks=[
+        self.cmd('nginx deployment configuration analyze --name default --deployment-name {deployment_name} --resource-group {rg} --root-file nginx.conf --package {compressed_file}', checks=[
             self.check('status', 'SUCCEEDED'),
         ])
 
