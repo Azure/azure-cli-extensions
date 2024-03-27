@@ -120,7 +120,7 @@ class Create(AAZCommand):
         _args_schema.auto_upgrade_profile = AAZObjectArg(
             options=["--auto-upgrade-profile"],
             arg_group="Properties",
-            help="Autoupgrade settings of a deployment.",
+            help="Autoupgrade settings of a deployment. can be stable or preview",
         )
         _args_schema.enable_diagnostics = AAZBoolArg(
             options=["--enable-diagnostics"],

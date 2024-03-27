@@ -11,11 +11,11 @@ import json
 class NginxScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus')
+    @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus2euap')
     def test_deployment_cert_config(self, resource_group):
         self.kwargs.update({
-            'deployment_name': 'azclitest-deployment',
-            'location': 'eastus',
+            'deployment_name': 'azclitest-deployment17',
+            'location': 'eastus2euap',
             'rg': resource_group,
             'sku': 'preview_Monthly_gmz7xq9ge3py',
             'public_ip_name': 'azclitest-public-ip',
@@ -25,6 +25,7 @@ class NginxScenarioTest(ScenarioTest):
             'kv_name': self.create_random_name(prefix='cli', length=20),
             'cert_name': 'azclitestcert',
             'managed_identity': 'azclitestmi',
+            'autoscale_settings': '[{name:default,capacity:{min:10,max:30}}]',
             'config_files': '[{"content":"aHR0cCB7DQogICAgdXBzdHJlYW0gYXBwIHsNCiAgICAgICAgc2VydmVyIDE3Mi4yNy4wLjQ6ODA7DQogICAgfQ0KICAgIHNlcnZlciB7DQogICAgICAgIGxpc3RlbiA4MDsNCiAgICAgICAgbG9jYXRpb24gLyB7DQogICAgICAgICAgICBkZWZhdWx0X3R5cGUgdGV4dC9odG1sOw0KICAgICAgICAgICAgcmV0dXJuIDIwMCAnPCFET0NUWVBFIGh0bWw+PGgxIHN0eWxlPSJmb250LXNpemU6MzBweDsiPkhlbGxvIGZyb20gTmdpbnggV2ViIFNlcnZlciE8L2gxPlxuJzsNCiAgICAgICAgfQ0KICAgICAgICBsb2NhdGlvbiAvYXBwLyB7DQogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9hcHAuYmxvYi5jb3JlLndpbmRvd3MubmV0LzsNCiAgICAgICAgICAgIHByb3h5X2h0dHBfdmVyc2lvbiAxLjE7DQogICAgICAgICAgICBwcm94eV9yZWFkX3RpbWVvdXQgNjAwOw0KCSAgICAgICAgcHJveHlfY29ubmVjdF90aW1lb3V0IDYwMDsNCgkgICAgICAgIHByb3h5X3NlbmRfdGltZW91dCA2MDA7DQogICAgICAgIH0NCiAgICB9DQp9","virtual-path":"/etc/nginx/nginx.conf"}]',
             'compressed_file': '{data:H4sIAAAAAAAAA+3VbWvbMBAHcL/Op7hCoTCIbckPCU0olG3QvVoog21QMCK+1qGyJGRlpBv57pPXbsla1wkdZS3c70UMdxfxP2wn6mqhVuFcq8vg2cTeKMt+Xb37V56zLGBpwvOYpVkyCmLGspwHED9fpI1l44QFCKzWrm9uV/+Vqpwz8GMA3tI0zqKoQRgzZHfF1net8K6Yp9eTP3WJonGFf3bUptag/YYWWBzGIQvT47G/wb1d1tvlt931w4C8KyB/UsCkt5v2drNHAyZdAZMnBcx7u6Pe7vh3wMHWwCaZXDQOFYwf3KRCiRrhTYgrURuJ/iei3sqt58IttIJo66hWiZdiKV3hbgyCw5WLKlfLyV8zFt3SKuBxDEfTg3cf3376OnsP7dzJtOInZyilhs/ayvJgGvnChTraHLDuyHD/eW0Zq1c3RYOuqFCUfuUz3Tg4rPznpH/wy/AchRx+mMGhxVo7LERZ2p1fmrWl4akxt29K17wRTQPtC3ccRR1D/ijpqmJe4fx698L8ZS3M91mY/8vCyctaONln4WT/hdeD9eB//xkQQgghhBBCCCGEEEIIIYQQQggh5FX6CfCArk8AKAAA}'
         })
@@ -39,14 +40,14 @@ class NginxScenarioTest(ScenarioTest):
         managed_identity = self.cmd('identity create --name {managed_identity} --resource-group {rg}').get_output_in_json()
         self.kwargs['identities'] = "{\"type\":\"UserAssigned\",\"userAssignedIdentities\":{\"" + managed_identity['id'] + "\":{}}}"
 
-        self.cmd('nginx deployment create --name {deployment_name} --resource-group {rg} --location {location} --sku name={sku} --enable-diagnostics true --network-profile front-end-ip-configuration="{public_ip_addresses}" network-interface-configuration="{subnet_id}" --identity {identities}', checks=[
+        self.cmd('nginx deployment create --name {deployment_name} --resource-group {rg} --location {location} --sku name={sku} --enable-diagnostics true --network-profile front-end-ip-configuration="{public_ip_addresses}" network-interface-configuration="{subnet_id}" --identity {identities} --scaling-properties capacity=10 --auto-upgrade-profile upgrade-channel=preview', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['deployment_name'])
         ])
 
         deployment_list = self.cmd('nginx deployment list --resource-group {rg}',).get_output_in_json()
         assert len(deployment_list) > 0
-        self.cmd('nginx deployment update --name {deployment_name} --resource-group {rg} --location {location} --tags {tags} --enable-diagnostics false', checks=[
+        self.cmd('nginx deployment update --name {deployment_name} --resource-group {rg} --location {location} --tags {tags} --enable-diagnostics false --scaling-properties profiles={autoscale_settings}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['deployment_name'])
         ])
@@ -99,7 +100,7 @@ class NginxScenarioTest(ScenarioTest):
         assert len(config_list) > 0
 
         self.cmd('nginx deployment configuration delete --name default --deployment-name {deployment_name} --resource-group {rg} --yes')
-        self.cmd('nginx deployment configuration analyze --name default --deployment-name {deployment_name} --resource-group {rg} --config root-file=nginx.conf package={compressed_file}', checks=[
+        self.cmd('nginx deployment configuration analyze --name default --deployment-name {deployment_name} --resource-group {rg} --root-file nginx2.conf --package {compressed_file}', checks=[
             self.check('status', 'SUCCEEDED'),
         ])
 
