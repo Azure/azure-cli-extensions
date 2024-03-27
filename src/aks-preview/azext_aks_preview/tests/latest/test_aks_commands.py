@@ -17,6 +17,7 @@ from azext_aks_preview.tests.latest.custom_preparers import (
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
 from azure.cli.core.azclierror import ClientRequestError
+from azure.core.exceptions import (HttpResponseError)
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
@@ -4193,6 +4194,148 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_create_update_secure_boot_flow(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_pool_name = self.create_random_name("c", 6)
+        node_pool_name_second = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "dns_name_prefix": self.create_random_name("cliaksdns", 16),
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "node_pool_name": node_pool_name,
+                "node_pool_name_second": node_pool_name_second,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # 1. create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--nodepool-name {node_pool_name} -c 1 --enable-managed-identity "
+            "--ssh-key-value={ssh_key_value} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
+            "--enable-secure-boot"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].securityProfile.enableSecureBoot", True),
+            ],
+        )
+
+        # 2. add nodepool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name_second} "
+            "--os-type Linux "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
+            "--enable-secure-boot",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.enableSecureBoot", True),
+            ],
+        )
+
+        # update to disable
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
+            "--disable-secure-boot",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.enableSecureBoot", False),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_create_update_vtpm_flow(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_pool_name = self.create_random_name("c", 6)
+        node_pool_name_second = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "dns_name_prefix": self.create_random_name("cliaksdns", 16),
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "node_pool_name": node_pool_name,
+                "node_pool_name_second": node_pool_name_second,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # 1. create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--nodepool-name {node_pool_name} -c 1 --enable-managed-identity "
+            "--ssh-key-value={ssh_key_value} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
+            "--enable-vtpm"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].securityProfile.enableVtpm", True),
+            ],
+        )
+
+        # 2. add nodepool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name_second} "
+            "--os-type Linux "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
+            "--enable-vtpm",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.enableVtpm", True),
+            ],
+        )
+
+        # update to disable
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/TrustedLaunchPreview '
+            "--disable-vtpm",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.enableVtpm", False),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_create_with_ahub(self, resource_group, resource_group_location):
@@ -6789,7 +6932,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # update cluster
-        update_cmd = "aks update -g {resource_group} -n {name} --load-balancer-outbound-ips {update_pip_id}"
+        update_cmd = "aks update -g {resource_group} -n {name} --load-balancer-outbound-ips {update_pip_id} --load-balancer-outbound-ports 200"
 
         self.cmd(
             update_cmd,
@@ -6800,12 +6943,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                     1,
                 ),
                 self.check(
-                    "networkProfile.loadBalancerProfile.effectiveOutboundIPs[0].id",
-                    update_pip_id,
+                    "networkProfile.loadBalancerProfile.allocatedOutboundPorts",
+                    200,
                 ),
             ],
         )
 
+        update_cmd = "aks update -g {resource_group} -n {name} --load-balancer-outbound-ips {update_pip_id} --load-balancer-outbound-ports 0"
+
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "networkProfile.loadBalancerProfile.effectiveOutboundIPs[] | length(@)",
+                    1,
+                ),
+                self.check(
+                    "networkProfile.loadBalancerProfile.allocatedOutboundPorts",
+                    0,
+                ),
+            ],
+        )
         # delete
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
@@ -10500,53 +10659,56 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-    # live only due to downloading k8s-extension extension
-    # @live_only()
-    # Introduce this test back once v1.0.3-preview version of Azure container storage is released
-    # @AllowLargeResponse(8192)
-    # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    # def test_aks_update_with_azurecontainerstorage(self, resource_group, resource_group_location):
-    #     aks_name = self.create_random_name('cliakstest', 16)
-    #     node_vm_size = 'standard_d4s_v3'
-    #     self.kwargs.update({
-    #         'resource_group': resource_group,
-    #         'name': aks_name,
-    #         'location': resource_group_location,
-    #         'ssh_key_value': self.generate_ssh_keys(),
-    #         'node_vm_size': node_vm_size,
-    #     })
+    @live_only()
+    @AllowLargeResponse(8192)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_azurecontainerstorage(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_d4s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
 
-    #     # add k8s-extension extension for azurecontainerstorage operations.
-    #     self.cmd('extension add --name k8s-extension')
+        # add k8s-extension extension for azurecontainerstorage operations.
+        self.cmd('extension add --name k8s-extension')
 
-    #     # create: without enable-azure-container-storage
-    #     create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
-    #     self.cmd(create_cmd, checks=[
-    #         self.check('provisioningState', 'Succeeded'),
-    #     ])
+        # create: without enable-azure-container-storage
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
-    #     # enabling or disabling azurecontainerstorage will not affect any field in the cluster.
-    #     # the only check we should perform is to verify that the cluster is provisioned successfully.
+        # enabling or disabling azurecontainerstorage will not affect any field in the cluster.
+        # the only check we should perform is to verify that the cluster is provisioned successfully.
 
-    #     # update: enable-azure-container-storage
-    #     update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-    #                  '--enable-azure-container-storage azureDisk'
-    #     self.cmd(update_cmd, checks=[
-    #         self.check('provisioningState', 'Succeeded'),
-    #     ])
+        # update: enable-azure-container-storage
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+                     '--enable-azure-container-storage azureDisk'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
-    #     # update: disable-azure-container-storage
-    #     update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-    #                  '--disable-azure-container-storage'
-    #     self.cmd(update_cmd, checks=[
-    #         self.check('provisioningState', 'Succeeded'),
-    #     ])
+        # Sleep for 5 mins before next operation,
+        # since azure container storage operations take
+        # some time to post process.
+        time.sleep(5 * 60)
 
-    #     # delete
-    #     cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
-    #     self.cmd(cmd, checks=[
-    #         self.is_empty(),
-    #     ])
+        # update: disable-azure-container-storage
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+                     '--disable-azure-container-storage all'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
 
     # live only due to workspace is not mocked correctly
     @AllowLargeResponse()
@@ -11588,57 +11750,69 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
             "--egress-gateway-nodeselector istio=egress"
         )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("serviceMeshProfile.mode", "Istio"),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
-                    "egress",
-                ),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                    True,
-                ),
-            ],
-        )
+        try:
+            self.cmd(
+                update_cmd,
+                checks=[
+                    self.check("serviceMeshProfile.mode", "Istio"),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
+                        "egress",
+                    ),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                        True,
+                    ),
+                ],
+            )
+        except HttpResponseError as e:
+            # fails because egress gateway has been disabled
+            self.assertTrue(e.status_code == 400)
 
-        # remove egress gateway nodeselector
-        update_cmd = (
-            "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
-            "--egress-gateway-nodeselector "
-        )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("serviceMeshProfile.mode", "Istio"),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
-                    None,
-                ),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                    True,
-                ),
-            ],
-        )
+        try:
+            # remove egress gateway nodeselector
+            update_cmd = (
+                "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
+                "--egress-gateway-nodeselector "
+            )
+            self.cmd(
+                update_cmd,
+                checks=[
+                    self.check("serviceMeshProfile.mode", "Istio"),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio",
+                        None,
+                    ),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                        True,
+                    ),
+                ],
+            )
+        except HttpResponseError as e:
+            # fails because egress gateway has been disabled
+            self.assertTrue(e.status_code == 400)
 
         # disable egress gateway
-        update_cmd = "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} --yes"
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("serviceMeshProfile.mode", "Istio"),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                    None,
-                ),
-                self.check(
-                    "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector",
-                    None,
-                ),
-            ],
-        )
+        try:
+            update_cmd = "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} --yes"
+            self.cmd(
+                update_cmd,
+                checks=[
+                    self.check("serviceMeshProfile.mode", "Istio"),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
+                        None,
+                    ),
+                    self.check(
+                        "serviceMeshProfile.istio.components.egressGateways[0].nodeSelector",
+                        None,
+                    ),
+                ],
+            )
+        except HttpResponseError as e:
+            # fails because egress gateway has been disabled
+            self.assertTrue(e.status_code == 400)
 
         # delete the cluster
         delete_cmd = (

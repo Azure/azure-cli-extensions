@@ -1,0 +1,62 @@
+interactions:
+- request:
+    body: '{"subscriptions": ["38304e13-357e-405e-9e9a-220351dcce8c"], "query": "resources
+      | where type =~ ''microsoft.dataprotection/backupvaults'' | where id in~ (''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete'')",
+      "options": {"$top": 1000, "$skip": 0, "resultFormat": "objectArray", "allowPartialScopes":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-vault list-from-resourcegraph
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '429'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --vault-id
+      User-Agent:
+      - AZURECLI/2.57.0 (PIP) azsdk-python-mgmt-resourcegraph/8.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-persistent-bi-donotdelete","name":"clitest-bkp-vault-persistent-bi-donotdelete","type":"microsoft.dataprotection/backupvaults","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","kind":"","location":"centraluseuap","resourceGroup":"clitest-dpp-rg","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","managedBy":"","sku":null,"plan":null,"properties":{"provisioningState":"Succeeded","securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0}},"secureScore":"None","isVaultProtectedByResourceGuard":false,"replicatedRegions":[],"storageSettings":[{"type":"LocallyRedundant","datastoreType":"VaultStore"}]},"tags":{"Purpose":"Testing","Owner":"vpatel","MABUsed":"yes"},"identity":{"principalId":"9d390201-843e-44d8-ab2c-fef15f3de22d","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"zones":null,"extendedLocation":null}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Feb 2024 06:01:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.2424619'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+    status:
+      code: 200
+      message: OK
+version: 1

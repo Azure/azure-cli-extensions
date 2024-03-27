@@ -37,8 +37,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
         self.cmd('containerapp env java-component spring-cloud-config create -g {} -n {} --environment {}'.format(resource_group, config_name, env_name), checks=[
             JMESPathCheck('name', config_name),
             JMESPathCheck('properties.componentType', "SpringCloudConfig"),
-            JMESPathCheck('properties.provisioningState', "Succeeded"),
-            JMESPathCheck('length(properties.configurations)', 0)
+            JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
         self.cmd(
             'containerapp env java-component spring-cloud-eureka create -g {} -n {} --environment {} --configuration eureka.server.renewal-percent-threshold=0.85 eureka.server.enable-self-preservation=false'.format(
@@ -65,8 +64,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
         self.cmd('containerapp env java-component spring-cloud-eureka update -g {} -n {} --environment {} --configuration'.format(resource_group, eureka_name, env_name), checks=[
                 JMESPathCheck('name', eureka_name),
                 JMESPathCheck('properties.componentType', "SpringCloudEureka"),
-                JMESPathCheck('properties.provisioningState', "Succeeded"),
-                JMESPathCheck('length(properties.configurations)', 0)
+                JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
 
         # Show Config & Eureka
@@ -79,9 +77,11 @@ class ContainerappJavaComponentTests(ScenarioTest):
         self.cmd('containerapp env java-component spring-cloud-eureka show -g {} -n {} --environment {}'.format(resource_group, eureka_name, env_name), checks=[
             JMESPathCheck('name', eureka_name),
             JMESPathCheck('properties.componentType', "SpringCloudEureka"),
-            JMESPathCheck('properties.provisioningState', "Succeeded"),
-            JMESPathCheck('length(properties.configurations)', 0)
+            JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
+
+        # Create App with wrong binding name
+        self.cmd('containerapp create -n {} -g {} --environment {} --bind {}:my-config'.format(ca_name, resource_group, env_name, config_name), expect_failure=True)
 
         # Create App with bind
         self.cmd('containerapp create -n {} -g {} --environment {} --bind {} {}'.format(ca_name, resource_group, env_name, config_name, eureka_name), expect_failure=False, checks=[

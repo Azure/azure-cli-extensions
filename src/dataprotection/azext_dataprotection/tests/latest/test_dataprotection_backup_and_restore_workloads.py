@@ -9,7 +9,8 @@
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from datetime import datetime
-from ..utils import track_job_to_completion , wait_for_job_exclusivity_on_datasource
+from ..utils import track_job_to_completion, wait_for_job_exclusivity_on_datasource
+
 
 def backup_instance_validate_create(test):
     # Adding backup-instance delete as the cleanup command, will always run even if test fails.
@@ -37,7 +38,7 @@ def backup_instance_validate_create(test):
 
     # Waiting for backup-instance configuration to complete. Adjust timeout if this fails for no other reason.
     test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 120 '
-            '--custom "properties.protectionStatus.status==\'ProtectionConfigured\'"')
+             '--custom "properties.protectionStatus.status==\'ProtectionConfigured\'"')
 
 
 class BackupAndRestoreScenarioTest(ScenarioTest):
@@ -61,7 +62,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
             'ossDbId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/databases/postgres',
             'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/osspolicy',
             'secretStoreUri': 'https://oss-clitest-keyvault.vault.azure.net/secrets/oss-clitest-secret',
-            'keyVaultId':  '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.KeyVault/vaults/oss-clitest-keyvault',
+            'keyVaultId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.KeyVault/vaults/oss-clitest-keyvault',
             'policyRuleName': 'BackupWeekly',
             "targetBlobContainerUrl": "https://ossclitestsa.blob.core.windows.net/oss-clitest-blob-container",
         })
@@ -91,7 +92,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
         # Trigger ad-hoc backup and track to completion
         adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
-                                 '-n {backupInstanceName} -g {rg} --vault-name {vaultName} --rule-name "{policyRuleName}"').get_output_in_json()
+                                         '-n {backupInstanceName} -g {rg} --vault-name {vaultName} --rule-name "{policyRuleName}"').get_output_in_json()
         test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
         track_job_to_completion(test)
 
@@ -180,13 +181,13 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
             "backupConfig": backup_config_json
         })
         backup_instance_json = test.cmd('az dataprotection backup-instance initialize '
-                                    '--datasource-id "{aksClusterId}" '
-                                    '--datasource-location "{location}" '
-                                    '--datasource-type "{dataSourceType}" '
-                                    '--policy-id "{policyId}" '
-                                    '--backup-configuration "{backupConfig}" '
-                                    '--friendly-name "{friendlyName}" '
-                                    '--snapshot-resource-group-name "{rg}"').get_output_in_json()
+                                        '--datasource-id "{aksClusterId}" '
+                                        '--datasource-location "{location}" '
+                                        '--datasource-type "{dataSourceType}" '
+                                        '--policy-id "{policyId}" '
+                                        '--backup-configuration "{backupConfig}" '
+                                        '--friendly-name "{friendlyName}" '
+                                        '--snapshot-resource-group-name "{rg}"').get_output_in_json()
         test.kwargs.update({
             "backupInstance": backup_instance_json,
         })
@@ -211,7 +212,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
         # Trigger ad-hoc backup and track to completion
         adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
-                                 '-n {backupInstanceName} -g {rg} --vault-name {vaultName} --rule-name "{policyRuleName}"').get_output_in_json()
+                                         '-n {backupInstanceName} -g {rg} --vault-name {vaultName} --rule-name "{policyRuleName}"').get_output_in_json()
         test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
         track_job_to_completion(test)
 

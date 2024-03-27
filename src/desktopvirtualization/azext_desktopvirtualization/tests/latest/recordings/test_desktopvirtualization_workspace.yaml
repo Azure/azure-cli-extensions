@@ -1,0 +1,484 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --friendly-name
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_workspace_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_workspace_000001",
+        "name": "test_desktopvirtualization_workspace_000001", "type": "Microsoft.Resources/resourceGroups",
+        "location": "centralus", "tags": {"product": "azurecli", "cause": "automation",
+        "test": "test_desktopvirtualization_workspace", "date": "2024-03-01T02:51:04Z",
+        "module": "desktopvirtualization"}, "properties": {"provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '467'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 02:51:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 9DBCABC9E3604FF7A867368FC8D67423 Ref B: TYO201100115047 Ref C: 2024-03-01T02:51:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centralus", "properties": {"friendlyName": "friendly"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --friendly-name
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002?api-version=2021-07-12
+  response:
+    body:
+      string: '{"name": "workspace_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002",
+        "type": "Microsoft.DesktopVirtualization/workspaces", "location": "centralus",
+        "tags": null, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T02:51:09.11Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T02:51:09.11Z"}, "properties": {"description": null, "friendlyName":
+        "friendly", "applicationGroupReferences": [], "cloudPcResource": false, "objectId":
+        "eab13b18-d69e-47be-98b2-d214a3567afc"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '749'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 02:51:09 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=b34b3aa3b73c20633be4db36b45b4eabb1f2f2707b98216dd9e344acdede2909;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=b34b3aa3b73c20633be4db36b45b4eabb1f2f2707b98216dd9e344acdede2909;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - e22cc552-d4e9-4de9-881a-72cb7450badf
+      x-ms-lamport-ts:
+      - '5614186238'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX3dvcmtzcGFjZV9ydnU3ZHMzdHFnbWx2aGpyaDNjcnRsdDZhaHl4aWtiZGN0eHNrdi9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi93b3Jrc3BhY2VzL3dvcmtzcGFjZV9neGNpaA==
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+      x-msedge-ref:
+      - 'Ref A: DE5513896FAB4D92B2B86F36474BC2BD Ref B: TYO201100113023 Ref C: 2024-03-01T02:51:08Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization workspace update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002?api-version=2021-07-12
+  response:
+    body:
+      string: '{"name": "workspace_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002",
+        "type": "Microsoft.DesktopVirtualization/workspaces", "location": "centralus",
+        "tags": null, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T02:51:09.11Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T02:51:09.11Z"}, "properties": {"description": null, "friendlyName":
+        "friendly", "applicationGroupReferences": [], "cloudPcResource": false, "objectId":
+        "eab13b18-d69e-47be-98b2-d214a3567afc"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '749'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 02:51:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=171233ed02bc6bc6d9f6a1e68fe312a742cdbf4a141973a357f9d9f07ff6c89a;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=171233ed02bc6bc6d9f6a1e68fe312a742cdbf4a141973a357f9d9f07ff6c89a;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - 33d8b59c-f651-473d-a51b-8bc96c85a3ef
+      x-ms-lamport-ts:
+      - '5614186232'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX3dvcmtzcGFjZV9ydnU3ZHMzdHFnbWx2aGpyaDNjcnRsdDZhaHl4aWtiZGN0eHNrdi9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi93b3Jrc3BhY2VzL3dvcmtzcGFjZV9neGNpaA==
+      x-msedge-ref:
+      - 'Ref A: 8D0C93F40739494EA29C1F77FC9B187D Ref B: TYO201100116037 Ref C: 2024-03-01T02:51:10Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centralus", "properties": {"applicationGroupReferences":
+      [], "friendlyName": "friendly"}, "tags": {"tag": "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization workspace update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '128'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002?api-version=2021-07-12
+  response:
+    body:
+      string: '{"name": "workspace_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002",
+        "type": "Microsoft.DesktopVirtualization/workspaces", "location": "centralus",
+        "tags": {"tag": "test"}, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T02:51:09.11Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T02:51:11.86Z"}, "properties": {"description": null, "friendlyName":
+        "friendly", "applicationGroupReferences": [], "cloudPcResource": false, "objectId":
+        "eab13b18-d69e-47be-98b2-d214a3567afc"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '760'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 02:51:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=3f1534e0112c1392eb84f7c0e4028513a1245721c23b8a0853e115a5a59342c9;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=3f1534e0112c1392eb84f7c0e4028513a1245721c23b8a0853e115a5a59342c9;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - 578267ca-0c5f-43ac-9fe4-59da6f863eb2
+      x-ms-lamport-ts:
+      - '5614185353'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX3dvcmtzcGFjZV9ydnU3ZHMzdHFnbWx2aGpyaDNjcnRsdDZhaHl4aWtiZGN0eHNrdi9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi93b3Jrc3BhY2VzL3dvcmtzcGFjZV9neGNpaA==
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: E9F5BC4F6EDF4244A1560C47143E5904 Ref B: TYO201100116037 Ref C: 2024-03-01T02:51:11Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization workspace show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002?api-version=2021-07-12
+  response:
+    body:
+      string: '{"name": "workspace_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002",
+        "type": "Microsoft.DesktopVirtualization/workspaces", "location": "centralus",
+        "tags": {"tag": "test"}, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T02:51:09.11Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T02:51:11.86Z"}, "properties": {"description": null, "friendlyName":
+        "friendly", "applicationGroupReferences": [], "cloudPcResource": false, "objectId":
+        "eab13b18-d69e-47be-98b2-d214a3567afc"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '760'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 02:51:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=0b91d554c77a2e6cae448ed7a2f5e5d19cf3ae21b0eeb9d677ca3780c44c75ae;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=0b91d554c77a2e6cae448ed7a2f5e5d19cf3ae21b0eeb9d677ca3780c44c75ae;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - ece0b3cd-a2f6-4668-8e73-92e46711a352
+      x-ms-lamport-ts:
+      - '5614181396'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX3dvcmtzcGFjZV9ydnU3ZHMzdHFnbWx2aGpyaDNjcnRsdDZhaHl4aWtiZGN0eHNrdi9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi93b3Jrc3BhY2VzL3dvcmtzcGFjZV9neGNpaA==
+      x-msedge-ref:
+      - 'Ref A: 992037902D2048F490F01A12355A63D5 Ref B: TYO201100114023 Ref C: 2024-03-01T02:51:14Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization workspace list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces?api-version=2021-07-12
+  response:
+    body:
+      string: '{"value": [{"name": "workspace_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002",
+        "type": "Microsoft.DesktopVirtualization/workspaces", "location": "centralus",
+        "tags": {"tag": "test"}, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T02:51:09.11Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T02:51:11.86Z"}, "properties": {"description": null, "friendlyName":
+        "friendly", "applicationGroupReferences": [], "cloudPcResource": false, "objectId":
+        "eab13b18-d69e-47be-98b2-d214a3567afc"}}], "nextLink": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '791'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 02:51:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=4c87a3fd2d13fe8deabf01a0da1890a3564e836c7c9f153e312617237a9297d0;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=4c87a3fd2d13fe8deabf01a0da1890a3564e836c7c9f153e312617237a9297d0;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - bbd3dc9c-a986-4e8b-b2dc-1ee2fff591d9
+      x-ms-lamport-ts:
+      - '5614183354'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX3dvcmtzcGFjZV9ydnU3ZHMzdHFnbWx2aGpyaDNjcnRsdDZhaHl4aWtiZGN0eHNrdg==
+      x-msedge-ref:
+      - 'Ref A: 4EEBA19B9B0F41AB83A94DF4A85F4935 Ref B: TYO201100114011 Ref C: 2024-03-01T02:51:15Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization workspace delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002?api-version=2021-07-12
+  response:
+    body:
+      string: '{"name": "workspace_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_workspace_000001/providers/Microsoft.DesktopVirtualization/workspaces/workspace_000002",
+        "type": "Microsoft.DesktopVirtualization/workspaces", "location": "centralus",
+        "tags": {"tag": "test"}, "kind": null, "systemData": null, "properties": {"description":
+        null, "friendlyName": "friendly", "applicationGroupReferences": [], "cloudPcResource":
+        false, "objectId": "eab13b18-d69e-47be-98b2-d214a3567afc"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 02:51:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=25cc4b4586ede118c310f31c65c0e1c74b3280b9c5b1007cd54b39f9ae36d767;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=25cc4b4586ede118c310f31c65c0e1c74b3280b9c5b1007cd54b39f9ae36d767;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - f190e664-8e10-418c-9b16-ff1f26cafe30
+      x-ms-lamport-ts:
+      - '5614186453'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX3dvcmtzcGFjZV9ydnU3ZHMzdHFnbWx2aGpyaDNjcnRsdDZhaHl4aWtiZGN0eHNrdi9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi93b3Jrc3BhY2VzL3dvcmtzcGFjZV9neGNpaA==
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: DA74B0115E00497A8CB4EE01A7C31D1B Ref B: TYO201100114039 Ref C: 2024-03-01T02:51:17Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1

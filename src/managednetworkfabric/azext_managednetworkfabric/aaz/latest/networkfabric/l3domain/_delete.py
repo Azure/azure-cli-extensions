@@ -22,9 +22,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-15",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -52,7 +52,6 @@ class Delete(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
         return cls._args_schema
@@ -143,7 +142,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-15",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }

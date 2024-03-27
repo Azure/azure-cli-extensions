@@ -53,7 +53,7 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file)
-from ._utils import parse_service_bindings, check_unique_bindings, is_valid_java_component_resource_id
+from ._utils import parse_service_bindings, check_unique_bindings
 from ._validators import validate_create
 
 from ._constants import (HELLO_WORLD_IMAGE,
@@ -1187,20 +1187,11 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 new_template["serviceBinds"] = existing_template.get("serviceBinds", [])
 
             service_bindings_dict = {}
-            java_component_name_set = {}
             if new_template["serviceBinds"]:
                 service_bindings_dict = {service_binding["name"]: index for index, service_binding in
                                          enumerate(new_template.get("serviceBinds", []))}
-                java_component_name_set = {binding["name"].replace('_', '-') for binding in new_template["serviceBinds"]
-                                           if is_valid_java_component_resource_id(binding["serviceId"])}
 
             for item in self.get_argument_unbind_service_bindings():
-
-                # If resource is Java component, will automatically change the '-' in binding name to '_'
-                if item in java_component_name_set and '-' in item:
-                    logger.info("automatically change the '-' in binding name of Java component to '_'.")
-                    item = item.replace('-', '_')
-
                 if item in service_bindings_dict:
                     new_template["serviceBinds"] = [binding for binding in new_template["serviceBinds"] if
                                                     binding["name"] != item]
@@ -1213,10 +1204,17 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
     def set_up_existing_container_update(self):
         if self.get_argument_force_single_container_updates():
+            containers = safe_get(self.new_containerapp, "properties", "template", "containers", default=[])
+            if len(containers) == 0:
+                raise ValidationError(
+                    "Cloud build image update failed. The container app '{}' does not have any containers.".format(self.get_argument_name()))
             # Remove n-1 containers where n is the number of containers in the containerapp and replace remaining container with the new container
             # Fails if all containers are removed
-            while (len(self.new_containerapp["properties"]["template"]["containers"]) > 1):
+            while len(self.new_containerapp["properties"]["template"]["containers"]) > 1:
                 self.new_containerapp["properties"]["template"]["containers"].pop()
+            # Set the container name to the container app name if force_single_container_updates is set
+            self.set_argument_container_name(self.get_argument_name())
+            safe_set(self.new_containerapp, "properties", "template", "containers", 0, "name", value=self.get_argument_container_name())
         return super().set_up_existing_container_update()
 
     def should_update_existing_container(self, c):
