@@ -21,7 +21,7 @@ from .example_steps import step_link_notification_hub
 from .example_steps import step_list_key
 from .example_steps import step_regenerate_key
 from .example_steps import step_delete
-from .recording_processors import BodyReplacerProcessor
+from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer
 from .. import (
     try_manual,
     raise_if,
@@ -90,7 +90,8 @@ class CommunicationScenarioTest(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
         super(CommunicationScenarioTest, self).__init__(recording_processors=[
-            BodyReplacerProcessor(keys=["createdBy", "lastModifiedBy"])
+            URIIdentityReplacer(),
+            BodyReplacerProcessor(keys=["createdBy", "lastModifiedBy", "identity", "dataLocation", "immutableResourceId", "hostname"])
         ], *args, **kwargs)
 
         self.kwargs.update({
@@ -110,7 +111,6 @@ class CommunicationScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     def test_communication_scenario(self, rg_2, rg):
         self.kwargs['existingResourceCountByResourceGroup'] = get_resource_count_by_resource_group(self)
-        print("first print is -- ",self.kwargs['existingResourceCountByResourceGroup'])
         call_scenario(self, rg_2, rg)
         calc_coverage(__file__)
         raise_if()

@@ -7,6 +7,7 @@
 # pylint: disable=too-many-lines
 
 import json
+from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer
 
 from azure.cli.testsdk import (
     ResourceGroupPreparer,
@@ -15,6 +16,13 @@ from azure.cli.testsdk import (
 
 
 class CommunicationClientTest(ScenarioTest):
+    
+    def __init__(self, *args, **kwargs):
+        super(CommunicationClientTest, self).__init__(recording_processors=[
+            URIIdentityReplacer(),
+            BodyReplacerProcessor(keys=["createdBy", "lastModifiedBy", "identity", "dataLocation"])
+        ], *args, **kwargs)
+    
     @ResourceGroupPreparer(name_prefix='cli_test_communication', location='eastus')
     def test_communication_identity(self):
         self.kwargs.update({
