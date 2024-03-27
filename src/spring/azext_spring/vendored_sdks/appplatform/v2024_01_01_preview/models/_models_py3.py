@@ -9692,15 +9692,24 @@ class ServiceVNetAddons(_serialization.Model):
     :ivar data_plane_public_endpoint: Indicates whether the data plane components(log stream, app
      connect, remote debugging) in vnet injection instance could be accessed from internet.
     :vartype data_plane_public_endpoint: bool
+    :ivar private_dns_zone_id: Fully qualified resource Id of the Private DNS zone to link with the
+     customer virtual network.
+    :vartype private_dns_zone_id: str
     """
 
     _attribute_map = {
         "log_stream_public_endpoint": {"key": "logStreamPublicEndpoint", "type": "bool"},
         "data_plane_public_endpoint": {"key": "dataPlanePublicEndpoint", "type": "bool"},
+        "private_dns_zone_id": {"key": "privateDnsZoneId", "type": "str"},
     }
 
     def __init__(
-        self, *, log_stream_public_endpoint: bool = False, data_plane_public_endpoint: bool = False, **kwargs: Any
+        self,
+        *,
+        log_stream_public_endpoint: bool = False,
+        data_plane_public_endpoint: bool = False,
+        private_dns_zone_id: Optional[str] = None,
+        **kwargs: Any
     ) -> None:
         """
         :keyword log_stream_public_endpoint: Indicates whether the log stream in vnet injection
@@ -9709,10 +9718,14 @@ class ServiceVNetAddons(_serialization.Model):
         :keyword data_plane_public_endpoint: Indicates whether the data plane components(log stream,
          app connect, remote debugging) in vnet injection instance could be accessed from internet.
         :paramtype data_plane_public_endpoint: bool
+        :keyword private_dns_zone_id: Fully qualified resource Id of the Private DNS zone to link with
+         the customer virtual network.
+        :paramtype private_dns_zone_id: str
         """
         super().__init__(**kwargs)
         self.log_stream_public_endpoint = log_stream_public_endpoint
         self.data_plane_public_endpoint = data_plane_public_endpoint
+        self.private_dns_zone_id = private_dns_zone_id
 
 
 class Sku(_serialization.Model):
