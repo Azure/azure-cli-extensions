@@ -14,23 +14,6 @@ helps[
 """
 
 helps[
-    "k8s-configuration create"
-] = """
-    type: command
-    short-summary: Create a Flux v1 Kubernetes configuration (This command is for Flux v1, to use the newer Flux v2, run "az k8s-configuration flux create").
-    examples:
-      - name: Create a Flux v1 Kubernetes configuration
-        text: |-
-            az k8s-configuration create --resource-group MyResourceGroup --cluster-name MyClusterName \\
-            --cluster-type connectedClusters --name MyGitConfig --operator-instance-name OperatorInst01 \\
-            --operator-namespace OperatorNamespace01 --operator-type flux --operator-params "'--git-readonly'" \\
-            --repository-url git://github.com/fluxHowTo/flux-get-started --enable-helm-operator  \\
-            --helm-operator-chart-version 1.4.0 --scope namespace --helm-operator-params '--set helm.versions=v3' \\
-            --ssh-private-key '' --ssh-private-key-file '' --https-user '' --https-key '' \\
-            --ssh-known-hosts '' --ssh-known-hosts-file ''
-"""
-
-helps[
     "k8s-configuration list"
 ] = """
     type: command
