@@ -15,15 +15,69 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 26 Mar 2024 20:43:07 GMT
+      - Wed, 27 Mar 2024 00:36:58 GMT
       User-Agent:
       - AzureCli/1.9.0 azsdk-python-communication-sms/1.0.1 Python/3.10.11 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
-      - B8LwFcfDgduefC398/dgjMufaf5je5C5HNYLE9Fz7Ak=
+      - EPlP6ng087ET4TNp6U/kdK9p9H+fqtO+HFsRTg1Lv18=
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.unitedstates.communication.azure.com/sms?api-version=2021-03-07
+    uri: https://sanitized.communication.azure.com/sms?api-version=2021-03-07
+  response:
+    body:
+      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
+        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
+        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
+        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
+        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
+        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
+        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
+        }</style><title>Service unavailable</title></head><body><div id=''content''><div
+        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
+        working to restore all services as soon as possible. Please check back soon.</p></div><div
+        id=''errorref''><span>0KmoDZgAAAAB90KC6iutUSK0oPaaqEzJJV1NURURHRTA4MjAAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx</span></div></div></body></html>'
+    headers:
+      cache-control:
+      - no-store
+      content-length:
+      - '994'
+      content-type:
+      - text/html
+      date:
+      - Wed, 27 Mar 2024 00:36:58 GMT
+      x-azure-externalerror:
+      - 0x80072f7d,OriginSecureChannelFailure
+      x-azure-ref:
+      - 0KmoDZgAAAAB90KC6iutUSK0oPaaqEzJJV1NURURHRTA4MjAAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: '{"from": "sanitized", "smsRecipients": [{"to": "sanitized", "repeatabilityRequestId":
+      "sanitized", "repeatabilityFirstSent": "sanitized"}], "message": "Hello there!!",
+      "smsSendOptions": {"enableDeliveryReport": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '218'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 27 Mar 2024 00:36:58 GMT
+      User-Agent:
+      - AzureCli/1.9.0 azsdk-python-communication-sms/1.0.1 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      x-ms-content-sha256:
+      - EPlP6ng087ET4TNp6U/kdK9p9H+fqtO+HFsRTg1Lv18=
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/sms?api-version=2021-03-07
   response:
     body:
       string: '{"value": [{"to": "sanitized", "messageId": "sanitized", "httpStatusCode":
@@ -35,19 +89,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 26 Mar 2024 20:43:07 GMT
+      - Wed, 27 Mar 2024 00:36:59 GMT
       ms-cv:
-      - o4aO+rL35ky/QcknEJkjRw.0
+      - fZJkW3Jr2UiawbozctwAog.0
       strict-transport-security:
       - max-age=31536000;includeSubDomains
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0XDMDZgAAAADFmC8KvGqqSZPcvRG4lnYVV1NURURHRTA4MTYAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 0K2oDZgAAAAC97+9o3nn9Q4yLG43PR9M6V1NURURHRTA4MjAAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 110ms
+      - 104ms
     status:
       code: 202
       message: Accepted
