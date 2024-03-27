@@ -11,7 +11,8 @@ from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer
 
 from azure.cli.testsdk import (
     ResourceGroupPreparer,
-    ScenarioTest
+    ScenarioTest,
+    live_only
 )
 
 
@@ -22,7 +23,8 @@ class CommunicationClientTest(ScenarioTest):
             URIIdentityReplacer(),
             BodyReplacerProcessor(keys=["createdBy", "lastModifiedBy", "identity", "dataLocation"])
         ], *args, **kwargs)
-    
+        
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_communication', location='eastus')
     def test_communication_identity(self):
         self.kwargs.update({
