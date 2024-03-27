@@ -462,6 +462,13 @@ def cli_cosmosdb_managed_cassandra_cluster_show_backup(client,
     """Get Azure Managed Cassandra Backup"""
     return client.get_backup(resource_group_name, cluster_name, backup_id)
 
+def cli_cosmosdb_managed_cassandra_cluster_restore_backup(client,
+                                                       resource_group_name,
+                                                       cluster_name,
+                                                       backup_id):
+    """Get Azure Managed Cassandra Backup"""
+    return client.restore_backup(resource_group_name, cluster_name, backup_id)
+
 
 def cli_cosmosdb_managed_cassandra_datacenter_create(client,
                                                      resource_group_name,
