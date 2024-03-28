@@ -12,7 +12,7 @@ class NginxScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='centraluseuap')
-    def test_deployment_cert_config(self, resource_group):
+    def test_nginx(self, resource_group):
         self.kwargs.update({
             'deployment_name': 'azclitest-deployment',
             'location': 'centraluseuap',
