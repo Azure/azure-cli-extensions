@@ -206,6 +206,15 @@ class Create(AAZCommand):
             enum={"Friday": "Friday", "Monday": "Monday", "Saturday": "Saturday", "Sunday": "Sunday", "Thursday": "Thursday", "Tuesday": "Tuesday", "Wednesday": "Wednesday"},
         )
 
+        # define Arg Group "ClusterAccessProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.internal_ingress_enabled = AAZBoolArg(
+            options=["--internal-ingress-enabled"],
+            arg_group="ClusterAccessProfile",
+            help="Whether to create cluster using private IP instead of public IP. This property must be set at create time.",
+        )
+
         # define Arg Group "ClusterProfile"
 
         _args_schema = cls._args_schema
@@ -234,11 +243,6 @@ class Create(AAZCommand):
             options=["--decommission-time", "--autoscale-profile-graceful-decommission-timeout"],
             arg_group="ClusterProfile",
             help="This property is for graceful decommission timeout; It has a default setting of 3600 seconds before forced shutdown takes place. This is the maximal time to wait for running containers and applications to complete before transition a DECOMMISSIONING node into DECOMMISSIONED. The default value is 3600 seconds. Negative value (like -1) is handled as infinite timeout.",
-        )
-        _args_schema.cluster_access_profile = AAZObjectArg(
-            options=["--cluster-access-profile"],
-            arg_group="ClusterProfile",
-            help="Cluster access profile.",
         )
         _args_schema.cluster_version = AAZStrArg(
             options=["--cluster-version"],
@@ -318,13 +322,6 @@ class Create(AAZCommand):
 
         authorization_user_id = cls._args_schema.authorization_user_id
         authorization_user_id.Element = AAZStrArg()
-
-        cluster_access_profile = cls._args_schema.cluster_access_profile
-        cluster_access_profile.enable_internal_ingress = AAZBoolArg(
-            options=["enable-internal-ingress"],
-            help="Whether to create cluster using private IP instead of public IP. This property must be set at create time.",
-            required=True,
-        )
 
         kafka_profile = cls._args_schema.kafka_profile
         kafka_profile.disk_storage = AAZObjectArg(
@@ -615,21 +612,25 @@ class Create(AAZCommand):
             options=["--enable-coord-ha", "--coordinator-high-availability-enabled"],
             arg_group="Coordinator",
             help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: false.",
+            default=False,
         )
         _args_schema.coordinator_debug_port = AAZIntArg(
             options=["--coord-debug-port", "--coordinator-debug-port"],
             arg_group="Coordinator",
             help="The flag that if enable debug or not. Default: 8008.",
+            default=8008,
         )
         _args_schema.coordinator_debug_suspend = AAZBoolArg(
             options=["--coord-debug-suspend", "--coordinator-debug-suspend"],
             arg_group="Coordinator",
             help="The flag that if suspend debug or not. Default: false.",
+            default=False,
         )
         _args_schema.coordinator_debug_enabled = AAZBoolArg(
             options=["--enable-coord-debug", "--coordinator-debug-enabled"],
             arg_group="Coordinator",
             help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: false.",
+            default=True,
         )
 
         # define Arg Group "FlinkProfile"
@@ -639,6 +640,7 @@ class Create(AAZCommand):
             options=["--flink-db-auth-mode", "--metastore-db-connection-authentication-mode"],
             arg_group="FlinkProfile",
             help="The authentication mode to connect to your Hive metastore database. More details: https://learn.microsoft.com/en-us/azure/azure-sql/database/logins-create-manage?view=azuresql#authentication-and-authorization",
+            default="IdentityAuth",
             enum={"IdentityAuth": "IdentityAuth", "SqlAuth": "SqlAuth"},
         )
         _args_schema.flink_hive_catalog_db_connection_password_secret = AAZStrArg(
@@ -784,6 +786,7 @@ class Create(AAZCommand):
             options=["--enable-prometheu"],
             arg_group="PrometheusProfile",
             help="Enable Prometheus for cluster or not.",
+            default=False,
         )
 
         # define Arg Group "Properties"
@@ -852,6 +855,7 @@ class Create(AAZCommand):
             options=["--spark-db-auth-mode", "--db-connection-authentication-mode"],
             arg_group="SparkProfile",
             help="The authentication mode to connect to your Hive metastore database. More details: https://learn.microsoft.com/en-us/azure/azure-sql/database/logins-create-manage?view=azuresql#authentication-and-authorization",
+            default="IdentityAuth",
             enum={"IdentityAuth": "IdentityAuth", "SqlAuth": "SqlAuth"},
         )
         _args_schema.spark_hive_catalog_db_name = AAZStrArg(
@@ -930,16 +934,19 @@ class Create(AAZCommand):
             options=["--enable-worker-debug"],
             arg_group="TrinoClusterWorker",
             help="The flag that if trino cluster enable debug or not. Default: false.",
+            default=False,
         )
         _args_schema.worker_debug_port = AAZIntArg(
             options=["--worker-debug-port"],
             arg_group="TrinoClusterWorker",
             help="The debug port. Default: 8008.",
+            default=8008,
         )
         _args_schema.worker_debug_suspend = AAZBoolArg(
             options=["--worker-debug-suspend"],
             arg_group="TrinoClusterWorker",
             help="The flag that if trino cluster suspend debug or not. Default: false.",
+            default=False,
         )
 
         # define Arg Group "TrinoHiveCatalog"
@@ -1189,7 +1196,7 @@ class Create(AAZCommand):
             if cluster_profile is not None:
                 cluster_profile.set_prop("authorizationProfile", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 cluster_profile.set_prop("autoscaleProfile", AAZObjectType)
-                cluster_profile.set_prop("clusterAccessProfile", AAZObjectType, ".cluster_access_profile")
+                cluster_profile.set_prop("clusterAccessProfile", AAZObjectType)
                 cluster_profile.set_prop("clusterVersion", AAZStrType, ".cluster_version", typ_kwargs={"flags": {"required": True}})
                 cluster_profile.set_prop("flinkProfile", AAZObjectType)
                 cluster_profile.set_prop("identityProfile", AAZObjectType)
@@ -1276,7 +1283,7 @@ class Create(AAZCommand):
 
             cluster_access_profile = _builder.get(".properties.clusterProfile.clusterAccessProfile")
             if cluster_access_profile is not None:
-                cluster_access_profile.set_prop("enableInternalIngress", AAZBoolType, ".enable_internal_ingress", typ_kwargs={"flags": {"required": True}})
+                cluster_access_profile.set_prop("enableInternalIngress", AAZBoolType, ".internal_ingress_enabled", typ_kwargs={"flags": {"required": True}})
 
             flink_profile = _builder.get(".properties.clusterProfile.flinkProfile")
             if flink_profile is not None:
