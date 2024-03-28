@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+0.3.50
+++++++
 * 'az containerapp env telemetry data-dog show': Support show environment data dog configuration
 * 'az containerapp env telemetry app-insights show': Support show environment app insights configuration
 * 'az containerapp env telemetry otlp add': Support add environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
