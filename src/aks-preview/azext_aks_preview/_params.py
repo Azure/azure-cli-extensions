@@ -117,6 +117,8 @@ from azext_aks_preview._consts import (
     CONST_SSH_ACCESS_DISABLED,
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
+    CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_ARTIFACT_SOURCE_CACHE,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -180,6 +182,7 @@ from azext_aks_preview._validators import (
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
     validate_custom_endpoints,
+    validate_bootstrap_container_registry_resource_id,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -367,6 +370,11 @@ ssh_accesses = [
 health_probe_modes = [
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
+]
+
+bootstrap_artifact_source_types = [
+    CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_ARTIFACT_SOURCE_CACHE,
 ]
 
 
@@ -577,6 +585,17 @@ def load_arguments(self, _):
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
         )
         c.argument("http_proxy_config")
+        c.argument(
+            "bootstrap_artifact_source",
+            arg_type=get_enum_type(bootstrap_artifact_source_types),
+            default=CONST_ARTIFACT_SOURCE_DIRECT,
+            is_preview=True,
+        )
+        c.argument(
+            "bootstrap_container_registry_resource_id",
+            validator=validate_bootstrap_container_registry_resource_id,
+            is_preview=True,
+        )
         # addons
         c.argument(
             "enable_addons",

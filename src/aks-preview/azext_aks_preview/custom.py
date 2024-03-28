@@ -59,6 +59,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_AVAILABILITY_SET,
     CONST_MIN_NODE_IMAGE_VERSION,
+    CONST_ARTIFACT_SOURCE_DIRECT,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
@@ -524,6 +525,8 @@ def aks_create(
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
     http_proxy_config=None,
+    bootstrap_artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
+    bootstrap_container_registry_resource_id=None,
     # addons
     enable_addons=None,  # pylint: disable=redefined-outer-name
     workspace_resource_id=None,

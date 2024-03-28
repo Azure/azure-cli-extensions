@@ -54,6 +54,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
     CONST_SSH_ACCESS_LOCALUSER,
+    CONST_ARTIFACT_SOURCE_DIRECT,
 )
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolContext
 from azext_aks_preview.managed_cluster_decorator import (
@@ -4988,6 +4989,79 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
+    def test_set_up_bootstrap_profile(self):
+        acr_id = (
+            "/subscriptions/86a571c4-f67a-4e9d-a38d-0e7bdf981a57/resourceGroups/orpmM/providers/Microsoft.ContainerRegistry/registries/network-isolated-cache-acr-01"
+        )
+
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_bootstrap_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "bootstrap_artifact_source": "Cache",
+                "bootstrap_container_registry_resource_id": acr_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_bootstrap_profile(mc_2)
+        ground_truth_bootstrap_profile_2 = self.models.ManagedClusterBootstrapProfile(
+            artifact_source="Cache",
+            container_registry_id=acr_id,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            bootstrap_profile=ground_truth_bootstrap_profile_2,
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "bootstrap_artifact_source": "Direct",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_bootstrap_profile(mc_3)
+        ground_truth_bootstrap_profile_3 = self.models.ManagedClusterBootstrapProfile(
+            artifact_source="Direct",
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            bootstrap_profile=ground_truth_bootstrap_profile_3,
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        dec_4 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "bootstrap_artifact_source": "Direct",
+                "bootstrap_container_registry_resource_id": acr_id,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_mc_4 = dec_4.set_up_bootstrap_profile(mc_4)
+
     def test_construct_mc_profile_preview(self):
         import inspect
 
@@ -5079,6 +5153,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             snapshot_controller=None,
         )
         baseSKU = self.models.ManagedClusterSKU(name="Base", tier="Free")
+        bootstrap_profile_1 = self.models.ManagedClusterBootstrapProfile(
+            artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
+        )
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             dns_prefix="testname-testrgname-1234-5",
@@ -5094,6 +5171,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             storage_profile=storage_profile_1,
             sku=baseSKU,
             kind="Base",
+            bootstrap_profile=bootstrap_profile_1,
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 

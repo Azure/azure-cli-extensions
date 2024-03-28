@@ -34,6 +34,7 @@ from azext_aks_preview._consts import (
     CONST_SECRET_ROTATION_ENABLED,
     CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE,
     CONST_DNS_ZONE_CONTRIBUTOR_ROLE,
+    CONST_ARTIFACT_SOURCE_CACHE,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -2679,6 +2680,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("ssh_access")
 
+    def get_bootstrap_artifact_source(self) -> Union[str, None]:
+        """Obtain the value of bootstrap_artifact_source.
+        """
+        return self.raw_param.get("bootstrap_artifact_source")
+
+    def get_bootstrap_container_registry_resource_id(self) -> Union[str, None]:
+        """Obtain the value of bootstrap_container_registry_resource_id.
+        """
+        return self.raw_param.get("bootstrap_container_registry_resource_id")
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -3301,6 +3312,24 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 agent_pool_profile.security_profile.ssh_access = ssh_access
         return mc
 
+    def set_up_bootstrap_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        bootstrap_artifact_source = self.context.get_bootstrap_artifact_source()
+        bootstrap_container_registry_resource_id = self.context.get_bootstrap_container_registry_resource_id()
+        if bootstrap_artifact_source is not None:
+            if bootstrap_artifact_source != CONST_ARTIFACT_SOURCE_CACHE and bootstrap_container_registry_resource_id:
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --bootstrap-container-registry-resource-id when "
+                    "--bootstrap-artifact-source is not Cache."
+                )
+            if mc.bootstrap_profile is None:
+                mc.bootstrap_profile = self.models.ManagedClusterBootstrapProfile()  # pylint: disable=no-member
+            mc.bootstrap_profile.artifact_source = bootstrap_artifact_source
+            mc.bootstrap_profile.container_registry_id = bootstrap_container_registry_resource_id
+
+        return mc
+
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -3361,6 +3390,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_node_provisioning_profile(mc)
         # set up agentpool profile ssh access
         mc = self.set_up_agentpool_profile_ssh_access(mc)
+        # set up bootstrap profile
+        mc = self.set_up_bootstrap_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
