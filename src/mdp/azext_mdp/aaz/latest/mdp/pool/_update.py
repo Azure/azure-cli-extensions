@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Pool
+
+    :example: Update
+        az mdp pool update --name "cli-contoso-pool" --resource-group "rg1" --tags CostCode="12345"
     """
 
     _aaz_info = {

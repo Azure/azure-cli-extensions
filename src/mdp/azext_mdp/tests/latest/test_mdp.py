@@ -97,6 +97,7 @@ class MdpScenario(ScenarioTest):
             --name \"{poolName}\" \
             --location \"{location}\" \
             --resource-group \"{rg}\" \
+            --tags CostCode=123 \
             --maximum-concurrency 1 \
             --identity \"type=userAssigned\" \"user-assigned-identities={{'{identityResourceId}':{{}}}}\" \
             --devcenter-project-resource-id \"{devcenterProjectResourceId}\" \
@@ -110,7 +111,8 @@ class MdpScenario(ScenarioTest):
                 self.check("location", "{location}"),
                 self.check("resourceGroup", "{rg}"),
                 self.check("provisioningState", "Succeeded"),
-                self.check("maximumConcurrency", 1)
+                self.check("maximumConcurrency", 1),
+                self.check("tags.CostCode", "123")
             ]
         )
 
@@ -120,6 +122,20 @@ class MdpScenario(ScenarioTest):
             checks=[
                 self.check("length(@)", 1),
                 self.check("[0].name", "{poolName}")
+            ],
+        )
+
+        # Update the pool
+        self.cmd(
+            "az mdp pool update \
+            --name \"{poolName}\" \
+            --resource-group \"{rg}\" \
+            --tags CostCode=234 \
+            ",
+            checks=[
+                self.check("name", "{poolName}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("tags.CostCode", "234")
             ],
         )
 
