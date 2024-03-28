@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.0b1
+2.0.0b1
 ++++++
 * added autoupgrade and autoscale for nginx deployment. Configuration update added. Flatten Configuration analyze
 
