@@ -644,6 +644,8 @@ def aks_create(
     enable_secure_boot=False,
     enable_vtpm=False,
     cluster_service_load_balancer_health_probe_mode=None,
+    # Static Egress Gateway
+    enable_static_egress_gateway=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -842,6 +844,9 @@ def aks_update(
     node_provisioning_mode=None,
     ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
+    # Static Egress Gateway
+    enable_static_egress_gateway=False,
+    disable_static_egress_gateway=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1287,6 +1292,8 @@ def aks_agentpool_add(
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    # static egress gateway - gateway-mode pool
+    gateway_prefix_size=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
