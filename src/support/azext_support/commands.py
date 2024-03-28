@@ -40,14 +40,16 @@ def load_command_table(self, _):
         g.show_command('show', getter_name='get')
 
     with self.command_group('support tickets', support_tickets,
-                            client_factory=cf_support_tickets) as g:
+                            client_factory=cf_support_tickets,
+                            deprecate_info=self.deprecate()) as g:
         g.custom_command('list', 'list_support_tickets')
         g.custom_show_command('show', 'get_support_tickets')
         g.custom_command('create', 'create_support_tickets', supports_no_wait=False, validator=validate_tickets_create)
         g.custom_command('update', 'update_support_tickets')
 
     with self.command_group('support tickets communications', support_communications,
-                            client_factory=cf_communications) as g:
+                            client_factory=cf_communications,
+                            deprecate_info=self.deprecate()) as g:
         g.custom_command('list', 'list_support_tickets_communications')
         g.custom_show_command('show', 'get_support_tickets_communications')
         g.custom_command('create', 'create_support_tickets_communications', supports_no_wait=False)

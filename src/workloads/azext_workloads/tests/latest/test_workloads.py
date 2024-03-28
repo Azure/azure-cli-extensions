@@ -8,7 +8,7 @@
 import os
 import unittest
 
-from azure.cli.testsdk import *
+from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -103,15 +103,76 @@ class WorkloadsScenario(ScenarioTest):
             'csservername': 'c36ascsvm-0',
             'dbservername': 'C36'
         })
-        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername}', checks=[
-            self.check('status', 'Succeeded')
-        ])
 
         self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername}', checks=[
             self.check('status', 'Succeeded')
         ])
 
+        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername}', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
         self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername}', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+    def test_workloads_svi_childinstances_soft_stop(self):
+        self.kwargs.update({
+            'name': 'C36',
+            'appservername': 'c36appvm0-0',
+            'csservername': 'c36ascsvm-0',
+            'dbservername': 'C36'
+        })
+
+        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername} --soft-stop-timeout-seconds 300', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername}', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+        self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername} --soft-stop-timeout-seconds 300', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+    def test_workloads_svi_childinstances_stop_with_infra(self):
+        self.kwargs.update({
+            'name': 'C36',
+            'appservername': 'c36appvm0-0',
+            'csservername': 'c36ascsvm-0',
+            'dbservername': 'C36'
+        })
+
+        self.cmd('workloads sap-application-server-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername} --deallocate-vm', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+        self.cmd('workloads sap-central-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername} --deallocate-vm', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+        self.cmd('workloads sap-database-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername} --deallocate-vm', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+    def test_workloads_svi_childinstances_start_with_infra(self):
+        self.kwargs.update({
+            'name': 'C36',
+            'appservername': 'c36appvm0-0',
+            'csservername': 'c36ascsvm-0',
+            'dbservername': 'C36'
+        })
+
+        self.cmd('workloads sap-database-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername} --start-vm', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+        self.cmd('workloads sap-central-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername} --start-vm', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+        self.cmd('workloads sap-application-server-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername} --start-vm', checks=[
             self.check('status', 'Succeeded')
         ])
 
@@ -122,15 +183,16 @@ class WorkloadsScenario(ScenarioTest):
             'csservername': 'c36ascsvm-0',
             'dbservername': 'C36'
         })
+
+        self.cmd('workloads sap-database-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername}', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
         self.cmd('workloads sap-central-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --central-instance-name {csservername}', checks=[
             self.check('status', 'Succeeded')
         ])
 
         self.cmd('workloads sap-application-server-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --application-instance-name {appservername}', checks=[
-            self.check('status', 'Succeeded')
-        ])
-
-        self.cmd('workloads sap-database-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --database-instance-name {dbservername}', checks=[
             self.check('status', 'Succeeded')
         ])
 
@@ -146,40 +208,64 @@ class WorkloadsScenario(ScenarioTest):
             self.check('status', 'Succeeded')
         ])
 
+    def test_workloads_svi_soft_stop(self):
+        self.kwargs.update({
+            'name': 'C36',
+        })
+        self.cmd('workloads sap-virtual-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --soft-stop-timeout-seconds 300', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+    def test_workloads_svi_stop_with_infra(self):
+        self.kwargs.update({
+            'name': 'C36',
+        })
+        self.cmd('workloads sap-virtual-instance stop --sap-virtual-instance-name {name} -g CLI-TESTING --deallocate-vm', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
+    def test_workloads_svi_start_with_infra(self):
+        self.kwargs.update({
+            'name': 'C36',
+        })
+        self.cmd('workloads sap-virtual-instance start --sap-virtual-instance-name {name} -g CLI-TESTING --start-vm', checks=[
+            self.check('status', 'Succeeded')
+        ])
+
     def test_workloads_svi_update_tags(self):
         self.kwargs.update({
-            'name': 'U77',
-            'appservername': 'u77appzavm0-0',
-            'csservername': 'u77scs00cl1-0',
-            'dbservername': 'U77'
+            'name': 'C36',
+            'appservername': 'app0',
+            'csservername': 'cs0',
+            'dbservername': 'db0'
         })
-        self.cmd('workloads sap-virtual-instance update -g U77-rg -n {name} --tags tag=test tag2=test2', checks=[
+        self.cmd('workloads sap-virtual-instance update -g CLI-TESTING -n {name} --tags tag=test tag2=test2', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', 'U77-rg'),
+            self.check('resourceGroup', 'CLI-TESTING'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test'),
             self.check('tags.tag2', 'test2')
         ])
 
-        self.cmd('workloads sap-central-instance update --sap-virtual-instance-name {name} -g U77-rg -n {csservername} --tags tag=test3 tag2=test4', checks=[
+        self.cmd('workloads sap-central-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {csservername} --tags tag=test3 tag2=test4', checks=[
             self.check('name', '{csservername}'),
-            self.check('resourceGroup', 'U77-rg'),
+            self.check('resourceGroup', 'CLI-TESTING'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test3'),
             self.check('tags.tag2', 'test4')
         ])
 
-        self.cmd('workloads sap-application-server-instance update --sap-virtual-instance-name {name} -g U77-rg -n {appservername} --tags tag=test5 tag2=test6', checks=[
+        self.cmd('workloads sap-application-server-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {appservername} --tags tag=test5 tag2=test6', checks=[
             self.check('name', '{appservername}'),
-            self.check('resourceGroup', 'U77-rg'),
+            self.check('resourceGroup', 'CLI-TESTING'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test5'),
             self.check('tags.tag2', 'test6')
         ])
 
-        self.cmd('workloads sap-database-instance update --sap-virtual-instance-name {name} -g U77-rg -n {dbservername} --tags tag=test7 tag2=test8', checks=[
+        self.cmd('workloads sap-database-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {dbservername} --tags tag=test7 tag2=test8', checks=[
             self.check('name', '{dbservername}'),
-            self.check('resourceGroup', 'U77-rg'),
+            self.check('resourceGroup', 'CLI-TESTING'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test7'),
             self.check('tags.tag2', 'test8')
@@ -190,10 +276,10 @@ class WorkloadsScenario(ScenarioTest):
         self.kwargs.update({
             'name': 'C36',
             'msi': os.path.join(TEST_DIR, 'MSI.json'),
-            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/CLI-TestRG/providers/Microsoft.Compute/virtualMachines/c36ascsvm'
+            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/CLI-TESTING/providers/Microsoft.Compute/virtualMachines/c36ascsvm'
         })
 
-        self.cmd('workloads sap-virtual-instance create -g CLI-TESTING -n {name} --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}"', checks=[
+        self.cmd('workloads sap-virtual-instance create -g CLI-TESTING -n {name} --location eastus2euap --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}"', checks=[
             self.check('name', '{name}'),
             self.check('resourceGroup', 'CLI-TESTING'),
             self.check('sapProduct', 'S4HANA'),
@@ -223,6 +309,3 @@ class WorkloadsScenario(ScenarioTest):
         })
 
         self.cmd('workloads sap-virtual-instance delete -g CLI-TESTING -n {name} --yes')
-
-
-

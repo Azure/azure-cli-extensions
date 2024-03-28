@@ -1063,6 +1063,16 @@ helps['spring application-configuration-service unbind'] = """
           text: az spring application-configuration-service unbind --app MyApp -s MyService -g MyResourceGroup
 """
 
+helps['spring application-configuration-service config'] = """
+    type: group
+    short-summary: Commands to manage the configurations pulled by Application Configuration Service from upstream Git repositories.
+"""
+
+helps['spring application-configuration-service config show'] = """
+    type: command
+    short-summary: Command to show the configurations pulled by Application Configuration Service from upstream Git repositories.
+"""
+
 helps['spring gateway'] = """
     type: group
     short-summary: (Enterprise Tier Only) Commands to manage gateway in Azure Spring Apps.

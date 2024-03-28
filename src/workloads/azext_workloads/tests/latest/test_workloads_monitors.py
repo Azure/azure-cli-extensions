@@ -7,7 +7,7 @@
 import os
 import unittest
 
-from azure.cli.testsdk import *
+from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 

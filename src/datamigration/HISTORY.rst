@@ -4,6 +4,10 @@ Release History
 ===============
 
 =======
+1.0.0b1
+++++++
+* Added support for version update in command `az datamigration login-migration`.
+
 0.6.1
 ++++++
 * Added parameter to help gather telemetry in command `az datamigration tde-migration`.

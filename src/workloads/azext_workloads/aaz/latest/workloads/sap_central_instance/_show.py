@@ -19,13 +19,13 @@ class Show(AAZCommand):
     """Show the SAP Central Services Instance resource.
 
     :example: Get an overview of a Central service Instance using the Azure resource ID of the instance
-        az workloads sap-central-instance show --id <ResourceID>
+        az workloads sap-central-instance show --id <resource-id>
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/centralinstances/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/centralinstances/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -50,6 +50,9 @@ class Show(AAZCommand):
             help="Central Services Instance resource name string modeled as parameter for auto generation to work correctly.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.*",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -59,6 +62,9 @@ class Show(AAZCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
         return cls._args_schema
 
@@ -131,7 +137,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

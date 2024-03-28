@@ -23,7 +23,7 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
         # Assumption: There exists a cosmosTest rg with the account adrutest2. This test only creates the database and collection
         self.kwargs.update({
-            'rg' : 'cosmosTest',
+            'rg': 'cosmosTest',
             'acc': 'adrutest2',
             'db_name': db_name,
             'col': col,
@@ -33,7 +33,7 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         })
 
         # Create database
-        self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')       
+        self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
 
         # Create container
         self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk --throughput 18000').get_output_in_json()
@@ -56,7 +56,6 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         # make throughput equal for all partitions
         all_equal_throughput = self.cmd('az cosmosdb sql container redistribute-partition-throughput --resource-group {rg} --account-name {acc} --database-name {db_name} --name {col} --evenly-distribute ').get_output_in_json()
         print(all_equal_throughput)
-        
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_adaptiveru', location='australiaeast')
     def test_cosmosdb_mongodb_collection_adaptiveru(self, resource_group):
@@ -64,7 +63,7 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
-            'rg':'cosmosTest',
+            'rg': 'cosmosTest',
             'acc': 'adrutest3',
             'db_name': db_name,
             'col': col,
@@ -76,12 +75,12 @@ class Cosmosdb_previewAdaptiveRUScenarioTest(ScenarioTest):
         })
 
         # Create database
-        self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')       
+        self.cmd('az cosmosdb mongodb database create -g {rg} -a {acc} -n {db_name}')
 
         # Create collection
         self.cmd('az cosmosdb mongodb collection create -g {rg} -a {acc} -d {db_name} -n {col} --shard {shard_key} --throughput {throughput}')
 
-        #Lower the throughput
+        # Lower the throughput
         self.cmd('az cosmosdb mongodb collection throughput update -g {rg} -a {acc} -d {db_name} -n {col} --throughput 3000')
 
         # retrieve throughput for all partitions

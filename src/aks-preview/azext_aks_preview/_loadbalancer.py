@@ -111,8 +111,8 @@ def configure_load_balancer_profile(
     """configure a load balancer with customer supplied values"""
     if any(
         [
-            managed_outbound_ip_count,
-            managed_outbound_ipv6_count,
+            managed_outbound_ip_count is not None,
+            managed_outbound_ipv6_count is not None,
             outbound_ips,
             outbound_ip_prefixes,
         ]
@@ -152,7 +152,7 @@ def configure_load_balancer_profile(
             )
         else:
             profile.outbound_ip_prefixes = None
-        if managed_outbound_ip_count or managed_outbound_ipv6_count:
+        if managed_outbound_ip_count is not None or managed_outbound_ipv6_count is not None:
             if profile.managed_outbound_i_ps is None:
                 if isinstance(models, SimpleNamespace):
                     ManagedClusterLoadBalancerProfileManagedOutboundIPs = (
@@ -165,14 +165,14 @@ def configure_load_balancer_profile(
                 profile.managed_outbound_i_ps = (
                     ManagedClusterLoadBalancerProfileManagedOutboundIPs()
                 )
-            if managed_outbound_ip_count:
+            if managed_outbound_ip_count is not None:
                 profile.managed_outbound_i_ps.count = managed_outbound_ip_count
-            if managed_outbound_ipv6_count:
+            if managed_outbound_ipv6_count is not None:
                 profile.managed_outbound_i_ps.count_ipv6 = managed_outbound_ipv6_count
         else:
             profile.managed_outbound_i_ps = None
 
-    if outbound_ports:
+    if outbound_ports is not None:
         profile.allocated_outbound_ports = outbound_ports
     if idle_timeout:
         profile.idle_timeout_in_minutes = idle_timeout
@@ -191,11 +191,11 @@ def is_load_balancer_profile_provided(
 ):
     return any(
         [
-            managed_outbound_ip_count,
-            managed_outbound_ipv6_count,
+            managed_outbound_ip_count is not None,
+            managed_outbound_ipv6_count is not None,
             outbound_ips,
             ip_prefixes,
-            outbound_ports,
+            outbound_ports is not None,
             idle_timeout,
         ]
     )

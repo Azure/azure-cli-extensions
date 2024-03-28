@@ -113,6 +113,7 @@ class SupportScenarioTest(ScenarioTest):
         rsp = self.cmd(cmd, expect_failure=True)
         self._validate_failure_rsp(rsp, 1)
 
+    @AllowLargeResponse(size_kb=9999)
     def test_support_tickets(self):
         random_guid = "12345678-1234-1234-1234-123412341234"
         test_ticket_name = self.create_random_name(prefix='test_ticket_from_cli_', length=30)

@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all valid sender usernames for a domains resource.
-
-    :example: Get all sender usernames from a domain resource
-        az communication email domain sender-username list --domain-name DomainName --email-service-name ResourceName -g ResourceGroup
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}/senderusernames", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}/senderusernames", "2023-04-01"],
         ]
     }
 
@@ -139,7 +136,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

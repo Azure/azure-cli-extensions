@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the Domains resource and its properties.
-
-    :example: Get all domains from a email resource
-        az communication email domain show --domain-name DomainName --email-service-name ResourceName -g ResourceGroup
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}", "2023-04-01"],
         ]
     }
 
@@ -139,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

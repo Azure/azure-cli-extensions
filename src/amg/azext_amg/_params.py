@@ -11,7 +11,7 @@ def load_arguments(self, _):
     from azure.cli.core.commands.parameters import tags_type, get_three_state_flag, get_enum_type
     from azure.cli.core.commands.validators import get_default_location_from_resource_group, validate_file_or_dict
     from ._validators import process_missing_resource_group_parameter
-    from azure.mgmt.dashboard.models import ZoneRedundancy
+    from azext_amg.vendored_sdks.models import ZoneRedundancy
     grafana_name_type = CLIArgumentType(options_list="--grafana-name",
                                         help="Name of the Azure Managed Grafana.",
                                         id_part="name")

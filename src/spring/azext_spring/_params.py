@@ -64,6 +64,9 @@ cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 250m
 memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi, 1536Mi, 2560Mi, 3584Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
 build_cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_build_cpu)
 build_memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_build_memory)
+acs_configs_export_path_type = CLIArgumentType(nargs='?',
+                                               const='.',
+                                               help='The path of directory to export the configuration files. Default to the current folder if no value provided.')
 
 
 # pylint: disable=too-many-statements
@@ -891,6 +894,13 @@ def load_arguments(self, _):
     for scope in ['add', 'update', 'remove']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('name', help="Required unique name to label each item of git configs.")
+
+    with self.argument_context('spring application-configuration-service config show') as c:
+        c.argument('config_file_pattern',
+                   options_list=['--config-file-pattern', '--pattern'],
+                   help='Case sensitive. Set the config file pattern in the formats like {application} or {application}/{profile} '
+                        'instead of {application}-{profile}.yml')
+        c.argument('export_path', arg_type=acs_configs_export_path_type)
 
     for scope in ['gateway create', 'api-portal create']:
         with self.argument_context('spring {}'.format(scope)) as c:

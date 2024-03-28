@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b5
++++++
+* Remove: All portal commands as it should not be exposed to customers.
+
 1.0.0b4
 +++++
 * Add: Support for Default Portal configuration and default hostname provisoning deprovisioning commands

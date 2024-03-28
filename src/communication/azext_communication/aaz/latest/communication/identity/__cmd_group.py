@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "communication identity",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage the Communication Resource's managed identities.

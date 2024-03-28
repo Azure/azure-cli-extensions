@@ -12,6 +12,20 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+2.0.0b7
++++++++
+* Support reset default value for loadbalancer profile and natgateway profile
+* Vendor new SDK and bump API version to 2024-02-02-preview.
+
+2.0.0b6
++++++++
+* Fix the resource allocated after disabling ephemeralDisk storagepool type for option `all` in azure container storage.
+
+2.0.0b5
++++++++
+* Add support to enable and disable a single type of storagepool using `--enable-azure-container-storage` and `--disable-azure-container-storage` respectively.
+* Add support to define the resource allocation to Azure Container Storage applications based on the type of node pools used and storagepools enabled.
+
 2.0.0b4
 +++++++
 * Add `--enable-vtpm` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.

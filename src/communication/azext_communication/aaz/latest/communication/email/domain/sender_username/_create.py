@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new SenderUsername resource under the parent Domains resource or update an existing SenderUsername resource.
-
-    :example: Create a sender username
-        az communication email domain sender-username create --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --sender-username SenderUsername --username Username --display-name DisplayName
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}/senderusernames/{}", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}/senderusernames/{}", "2023-04-01"],
         ]
     }
 
@@ -164,7 +161,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

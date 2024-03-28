@@ -16,7 +16,7 @@ class VirtualWanCommandsLoader(AzCommandsLoader):
         from .profiles import CUSTOM_VWAN
         register_resource_type('latest', CUSTOM_VWAN, '2022-07-01')
 
-        super(VirtualWanCommandsLoader, self).__init__(
+        super().__init__(
             cli_ctx=cli_ctx,
             custom_command_type=CliCommandType(operations_tmpl='azext_vwan.custom#{}'),
             resource_type=CUSTOM_VWAN

@@ -17,12 +17,17 @@ logger = get_logger(__name__)
 
 
 def list_support_tickets(cmd, client, filters=None):
+    logger.warning("Command group 'az support tickets' will be replaced by 'az support in-subscription tickets'" +
+                   " and 'az support no-subscription tickets'")
+    logger.warning("Parameter 'filters' argument will be replaced by 'filter'")
     if filters is None:
         filters = "CreatedDate ge " + str(date.today() - timedelta(days=7))
     return client.list(top=100, filter=filters)
 
 
 def get_support_tickets(cmd, client, ticket_name=None):
+    logger.warning("Command group 'az support tickets' will be replaced by 'az support in-subscription tickets'" +
+                   " and 'az support no-subscription tickets'")
     return client.get(support_ticket_name=ticket_name)
 
 
@@ -39,6 +44,8 @@ def update_support_tickets(cmd, client,
                            contact_timezone=None,
                            contact_country=None,
                            contact_language=None):
+    logger.warning("Command group 'az support tickets' will be replaced by 'az support in-subscription tickets'" +
+                   " and 'az support no-subscription tickets'")
     contactBody = {}
     contactBody["first_name"] = contact_first_name
     contactBody["last_name"] = contact_last_name
@@ -62,10 +69,17 @@ def update_support_tickets(cmd, client,
 
 
 def list_support_tickets_communications(cmd, client, ticket_name=None, filters=None):
+    logger.warning("Command group 'az support tickets communications' will be replaced by" +
+                   " 'az support in-subscription communication'" +
+                   " and 'az support no-subscription communication'")
+    logger.warning("'filters' argument will be replaced by 'filter'")
     return client.list(support_ticket_name=ticket_name, filter=filters)
 
 
 def get_support_tickets_communications(cmd, client, ticket_name=None, communication_name=None):
+    logger.warning("Command group 'az support tickets communications' will be replaced by" +
+                   " 'az support in-subscription communication'" +
+                   " and 'az support no-subscription communication'")
     return client.get(support_ticket_name=ticket_name, communication_name=communication_name)
 
 
@@ -92,8 +106,12 @@ def create_support_tickets(cmd, client,
                            quota_change_regions=None,
                            quota_change_payload=None,
                            partner_tenant_id=None):
+    logger.warning("Command group 'az support tickets' will be replaced by 'az support in-subscription tickets'" +
+                   " and 'az support no-subscription tickets'")
+    logger.warning("Parameters 'quota-change-regions' and ''quota-change-payload' will be replaced by" +
+                   " 'quota-change-requests[].region' and 'quota-change-requests[].payload'")
     service_name = parse_support_area_path(problem_classification)["service_name"]
-    service = "/providers/Microsoft.Support/services/{0}".format(service_name)
+    service = f"/providers/Microsoft.Support/services/{service_name}"
 
     contactBody = {}
     contactBody["first_name"] = contact_first_name
@@ -149,6 +167,9 @@ def create_support_tickets_communications(cmd, client,
                                           communication_body=None,
                                           communication_subject=None,
                                           communication_sender=None):
+    logger.warning("Command group 'az support tickets communications' will be replaced by" +
+                   " 'az support in-subscription communication'" +
+                   " and 'az support no-subscription communication'")
     body = {}
     body["sender"] = communication_sender
     body["subject"] = communication_subject

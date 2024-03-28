@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class ListKey(AAZCommand):
     """Get the access keys of the CommunicationService resource.
-
-    :example: Get resource access keys
-        az communication list-keys -n ResourceName -g ResourceGroup
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/communicationservices/{}/listkeys", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/communicationservices/{}/listkeys", "2023-04-01"],
         ]
     }
 
@@ -56,7 +53,6 @@ class ListKey(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
@@ -126,7 +122,7 @@ class ListKey(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

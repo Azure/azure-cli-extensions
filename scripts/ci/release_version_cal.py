@@ -21,9 +21,10 @@ output_file = os.environ.get('output_file', None)
 
 changed_module_list = os.environ.get('changed_module_list', "").split()
 pr_label_list = os.environ.get('pr_label_list', "").split()
-pr_label_list = [name.lower() for name in pr_label_list]
+pr_label_list = [name.lower().strip().strip('"').strip("'") for name in pr_label_list]
 
 DEFAULT_VERSION = "0.0.0"
+INIT_RELEASE_VERSION = "1.0.0b1"
 
 
 def get_module_metadata_of_max_version(mod):
@@ -70,7 +71,7 @@ def gen_comment_message(mod, next_version, comment_message):
     comment_message.append("### Module: {0}".format(mod))
     comment_message.append(" - Update version to `{0}` in setup.py".format(next_version.get("version", "-")))
     if next_version.get("has_preview_tag", False):
-        comment_message.append(' - Set `azext.isPreview` to `true` in azext_{0}/azext_metadata.json'.format(mod))
+        comment_message.append(' - Set `azext.isPreview` to `true` in azext_{0}/azext_metadata.json if not exists'.format(mod))
 
 
 def add_label_hint_message(comment_message):
@@ -112,10 +113,14 @@ def main():
     for mod in changed_module_list:
         base_meta_file = os.path.join(cli_ext_path, base_meta_path, "az_" + mod + "_meta.json")
         diff_meta_file = os.path.join(cli_ext_path, diff_meta_path, "az_" + mod + "_meta.json")
-        if not os.path.exists(base_meta_file):
-            print("no base meta file found for {0}".format(mod))
+        if not os.path.exists(base_meta_file) and not os.path.exists(diff_meta_file):
+            print("no base and diff meta file found for {0}".format(mod))
             continue
-        if not os.path.exists(diff_meta_file):
+        elif not os.path.exists(base_meta_file) and os.path.exists(diff_meta_file):
+            print("no base meta file found for {0}".format(mod))
+            gen_comment_message(mod, {"version": INIT_RELEASE_VERSION}, comment_message)
+            continue
+        elif not os.path.exists(diff_meta_file):
             print("no diff meta file found for {0}".format(mod))
             continue
 

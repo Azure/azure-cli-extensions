@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------
 
 import os
-from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, live_only
 from azure.core.exceptions import HttpResponseError
 from datetime import timezone
 from .preparers import CommunicationResourcePreparer
@@ -238,6 +238,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
 
         assert room['id'] == get_room['id']
 
+    @live_only()
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_rooms_get_with_nonexisting_roomId(self, communication_resource_info):
@@ -425,6 +426,7 @@ class CommunicationRoomsScenarios(ScenarioTest):
         assert room['pstnDialOutEnabled'] is False
         assert updated_room['pstnDialOutEnabled'] is True
 
+    @live_only()
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_rooms_list(self, communication_resource_info):

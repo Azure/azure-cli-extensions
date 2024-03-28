@@ -203,7 +203,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
 
     if not all(param is None for param in (smtp, host, user, password, start_tls_policy, from_address, from_name,
                                            skip_verify)):
-        from azure.mgmt.dashboard.models import GrafanaConfigurations, Smtp
+        from azext_amg.vendored_sdks.models import GrafanaConfigurations, Smtp
         resourceProperties["grafanaConfigurations"] = GrafanaConfigurations()
 
         if not instance.properties.grafana_configurations.smtp:

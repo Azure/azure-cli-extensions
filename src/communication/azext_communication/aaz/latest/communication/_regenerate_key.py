@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class RegenerateKey(AAZCommand):
     """Regenerate CommunicationService access key. PrimaryKey and SecondaryKey cannot be regenerated at the same time.
-
-    :example: Regenerate secondary key for a resource
-        az communication regenrate-key -n ResourceName -g ResourceGroup --key-type secondary
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/communicationservices/{}/regeneratekey", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/communicationservices/{}/regeneratekey", "2023-04-01"],
         ]
     }
 
@@ -56,7 +53,6 @@ class RegenerateKey(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -136,7 +132,7 @@ class RegenerateKey(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

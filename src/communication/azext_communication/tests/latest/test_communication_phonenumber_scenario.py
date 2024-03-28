@@ -33,7 +33,7 @@ class CommunicationPhonenumberScenarios(ScenarioTest):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
         phonenumber_list = self.cmd(
-            'az communication phonenumbers list-phonenumbers').get_output_in_json()
+            'az communication phonenumber list').get_output_in_json()
         assert len(phonenumber_list) > 0
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -47,7 +47,7 @@ class CommunicationPhonenumberScenarios(ScenarioTest):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
         phonenumber_info = self.cmd(
-            'az communication phonenumbers show-phonenumber --phonenumber \"{phonenumber}\"').get_output_in_json()
+            'az communication phonenumber show --phonenumber \"{phonenumber}\"').get_output_in_json()
         self.assertIsNotNone(phonenumber_info['id'])
         self.assertIsNotNone(phonenumber_info['assignmentType'])
         self.assertIsNotNone(phonenumber_info['capabilities'])

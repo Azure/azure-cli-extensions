@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "communication email domain sender-username",
 )
 class __CMDGroup(AAZCommandGroup):
-    """communication email domain sender-username
+    """Manage Communication Email Domain Sender-Username
     """
     pass
 

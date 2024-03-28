@@ -34,7 +34,7 @@ def is_technical_ticket(service_name):
 def parse_support_area_path(problem_classification_id):
     service_id_prefix = "/providers/Microsoft.Support/services/".lower()
     guid_regex = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-    sap_regex = re.compile('^{0}({1})/problemclassifications/({1})$'.format(service_id_prefix, guid_regex))
+    sap_regex = re.compile(f'^{service_id_prefix}({guid_regex})/problemclassifications/({guid_regex})$')
     match = sap_regex.search(problem_classification_id.lower())
 
     if match is not None and len(match.groups()) == 2:
@@ -50,7 +50,7 @@ def get_bearer_token(cmd, tenant_id):
         logger.debug("Retrieving access token for tenant %s", tenant_id)
         creds, _, _ = client.get_raw_token(tenant=tenant_id)
     except CLIError as unauthorized_error:
-        raise UnauthorizedError("Can't find authorization for {0}. ".format(tenant_id) +
+        raise UnauthorizedError(f"Can't find authorization for {tenant_id}. " +
                                 "Run \'az login -t <tenant_name> --allow-no-subscriptions\' and try again.") from \
             unauthorized_error
 
