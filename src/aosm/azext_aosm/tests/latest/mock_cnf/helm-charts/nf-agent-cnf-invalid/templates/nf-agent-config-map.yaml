@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nfagent-config
+data:
+  config.yaml: |
+    # Example NF Agent config file.
+    # Config is read from /etc/nf-agent/config.yaml.
+    log_level: debug
+    service_bus:
+      # Using a namespace and Managed Identity (specified by client ID) for auth.
+      namespace: {{ .Values.nfagent.namespace }}
+      # Helm uses sprig for templating, so we can use sprig functions to find just the UID from the full Managed Identity ID path.
+      identity: {{ (splitList "/" .Values.nfagent.identity) | last }}
+      # Alternatively can use a connstring instead of namespace + managed identity:
+      # connstring: "Endpoint=sb://contoso.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=TopSecretSASTokenGoesHere="
+      subscriptions:
+        - topic: {{ .Values.nfagent.topic }}
+          subscription: {{ .Values.nfagent.topic }}-subscription
+    # Handler-specific config
+    handler_config:
+      simpl:
+        # The endpoint is constructed from the namespace and service name of the receiving thing. 
+        # We couldn't get AOSM to install the service to listen on anything but port 80
+        # Doh - that was because we changed values.yaml in the chart but didn't change values.mappings.yaml in the NFDV
+        # Changing values.mappings.yaml should make this work on port 5222 as expected.
+        endpoint: http://nfconfigchart.nfconfigchart.svc.cluster.local:80 # DevSkim: ignore DS162092

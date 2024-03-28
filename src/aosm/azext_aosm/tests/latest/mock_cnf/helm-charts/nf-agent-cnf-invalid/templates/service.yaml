@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nf-agent-cnf.fullname" . }}
+  labels:
+    {{- include "nf-agent-cnf.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "nf-agent-cnf.selectorLabels" . | nindent 4 }}
