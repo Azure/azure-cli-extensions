@@ -81,9 +81,14 @@ def get_image_info(progress, message_queue, tar_mapping, image):
         if tar_location:
             with tarfile.open(tar_location) as tar:
                 # get all the info out of the tarfile
-                image_info = os_util.map_image_from_tar(
-                    image_name, tar, tar_location
-                )
+                try:
+                    image_info = os_util.map_image_from_tar_backwards_compatibility(
+                        image_name, tar, tar_location
+                    )
+                except IndexError:
+                    image_info = os_util.map_image_from_tar(
+                        image_name, tar, tar_location
+                    )
                 if image_info is not None:
                     tar = True
                     message_queue.append(f"{image_name} read from local tar file")

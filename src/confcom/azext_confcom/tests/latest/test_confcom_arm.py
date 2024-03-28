@@ -1976,8 +1976,8 @@ class MultiplePolicyTemplate(unittest.TestCase):
         temp_policies = load_policy_from_arm_template_str(cls.custom_json, "")
         cls.aci_policy = temp_policies[0]
         cls.aci_policy2 = temp_policies[1]
-        cls.aci_policy.populate_policy_content_for_all_images()
-        cls.aci_policy2.populate_policy_content_for_all_images()
+        cls.aci_policy.populate_policy_content_for_all_images(faster_hashing=True)
+        cls.aci_policy2.populate_policy_content_for_all_images(faster_hashing=True)
 
     def test_multiple_policies(self):
         container_start = "containers := "

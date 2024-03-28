@@ -81,6 +81,10 @@ helps[
           type: boolean
           short-summary: 'When enabled, the generated security policy is printed to the command line instead of injected into the input ARM Template'
 
+        - name: --faster-hashing
+          type: boolean
+          short-summary: 'When enabled, the hashing algorithm used to generate the policy is faster but less memory efficient'
+
     examples:
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
           text: az confcom acipolicygen --template-file "./template.json"
