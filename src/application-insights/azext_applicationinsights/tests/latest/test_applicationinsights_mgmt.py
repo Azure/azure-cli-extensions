@@ -94,7 +94,10 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
-        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
+        app_config = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()
+
+        app_insights_instrumentation_key = app_config['instrumentationKey']
+        app_insights_connection_string = app_config['connectionString']
 
         # Create web app.
         webapp_name = self.create_random_name('clitestwebapp', 24)
@@ -117,7 +120,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         self.cmd('az webapp config appsettings list -g {resource_group} -n {webapp_name}', checks=[
             self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
             self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
-            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key),
+            self.check("[?name=='APPINSIGHTS_CONNECTIONSTRING']|[0].value", app_insights_connection_string)
         ])
 
     @ResourceGroupPreparer(name_prefix="webapp_cross_rg", parameter_name="resource_group", parameter_name_for_location="location")
@@ -193,7 +197,10 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
-        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
+        app_config = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()
+
+        app_insights_instrumentation_key = app_config['instrumentationKey']
+        app_insights_conenction_string = app_config["connectionString"]
 
         # Create Azure function.
         function_name = self.create_random_name('clitestfunction', 24)
@@ -204,7 +211,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         })
 
         self.cmd('az appservice plan create -g {resource_group} -n {plan}')
-        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa} --functions-version 3 --runtime node', checks=[
+        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa} --functions-version 4 --runtime node', checks=[
             self.check('state', 'Running'),
             self.check('name', function_name)
         ])
@@ -214,7 +221,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         # Check if the settings are updated correctly.
         self.cmd('az webapp config appsettings list -g {resource_group} -n {function_name}', checks=[
-            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key),
+            self.check("[?name=='APPINSIGHTS_CONNECTIONSTRING']|[0].value", app_insights_conenction_string)
         ])
 
     @ResourceGroupPreparer(name_prefix="connect_function_cross_rg", parameter_name="resource_group", parameter_name_for_location="location")
@@ -252,7 +260,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         })
 
         self.cmd('az appservice plan create -g {resource_group2} -n {plan}')
-        self.kwargs['functionapp_id'] = self.cmd('az functionapp create -g {resource_group2} -n {function_name} --plan {plan} -s {sa} --functions-version 3 --runtime node', checks=[
+        self.kwargs['functionapp_id'] = self.cmd('az functionapp create -g {resource_group2} -n {function_name} --plan {plan} -s {sa} --functions-version 4 --runtime node', checks=[
             self.check('state', 'Running'),
             self.check('name', function_name)
         ]).get_output_in_json()['id']

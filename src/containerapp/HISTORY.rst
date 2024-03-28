@@ -4,6 +4,20 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp up/create/update': Wait longer time for logstream of Cloud Build to make sure the container start
+
+0.3.50
+++++++
+* 'az containerapp env telemetry data-dog show': Support show environment data dog configuration
+* 'az containerapp env telemetry app-insights show': Support show environment app insights configuration
+* 'az containerapp env telemetry otlp add': Support add environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry otlp update': Support update environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry otlp remove': Support remove environment otlp configuration with --otlp-name
+* 'az containerapp env telemetry otlp show': Support show environment otlp configuration with --otlp-name
+* 'az containerapp env telemetry otlp list': Support show environment otlp configurations
+
+0.3.49
+++++++
 * 'az containerapp env telemetry data-dog set': Support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
 * 'az containerapp env telemetry data-dog delete': Support delete environment data dog configuration
 * 'az containerapp env telemetry app-insights set': Support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs

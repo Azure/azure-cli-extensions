@@ -18,7 +18,7 @@ from azure.cli.core.util import should_disable_connection_verify
 from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
 
 from ._client_factory import cf_amg
-from .utils import get_yes_or_no_option
+from .utils import get_yes_or_no_option, MGMT_SERVICE_CLIENT_API_VERSION
 
 logger = get_logger(__name__)
 
@@ -115,7 +115,7 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
     import time
     from azure.core.exceptions import ResourceExistsError
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version="2022-04-01").role_assignments
+                                                 api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
     RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
                                              operation_group='role_assignments')
@@ -147,9 +147,9 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
 
 def _delete_role_assignment(cli_ctx, principal_id):
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version="2020-04-01-preview").role_assignments
+                                                 api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
     f = f"principalId eq '{principal_id}'"
-    assignments = list(assignments_client.list(filter=f))
+    assignments = list(assignments_client.list_for_subscription(filter=f))
     for a in assignments or []:
         assignments_client.delete_by_id(a.id)
 
@@ -203,7 +203,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
 
     if not all(param is None for param in (smtp, host, user, password, start_tls_policy, from_address, from_name,
                                            skip_verify)):
-        from azure.mgmt.dashboard.models import GrafanaConfigurations, Smtp
+        from azext_amg.vendored_sdks.models import GrafanaConfigurations, Smtp
         resourceProperties["grafanaConfigurations"] = GrafanaConfigurations()
 
         if not instance.properties.grafana_configurations.smtp:
@@ -249,7 +249,7 @@ def delete_grafana(cmd, grafana_name, resource_group_name=None):
     LongRunningOperation(cmd.cli_ctx)(poller)
 
     # delete role assignment
-    logger.warning("Grafana instance of '%s' was delete. Now removing role assignments for associated with its "
+    logger.warning("Grafana instance of '%s' was deleted. Now removing role assignments for associated with its "
                    "managed identity", grafana_name)
     _delete_role_assignment(cmd.cli_ctx, grafana.identity.principal_id)
 
