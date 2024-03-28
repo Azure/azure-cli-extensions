@@ -21,6 +21,7 @@ logger = get_logger(__name__)
 ACR_REGISTRY_NAME_PATTERN = r"^([a-zA-Z0-9]+\.azurecr\.io)"
 
 
+# pylint: disable=too-few-public-methods
 class ContainerRegistry:
     """
     A class to represent a registry and handle all Registry operations.

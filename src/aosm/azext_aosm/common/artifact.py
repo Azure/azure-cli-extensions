@@ -32,7 +32,6 @@ from azext_aosm.vendored_sdks.azure_storagev2.blob.v2022_11_02 import (
 from azext_aosm.common.registry import ContainerRegistry, AzureContainerRegistry
 from azext_aosm.vendored_sdks.models import ArtifactType
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
-from knack.util import CLIError
 from knack.log import get_logger
 from oras.client import OrasClient
 
