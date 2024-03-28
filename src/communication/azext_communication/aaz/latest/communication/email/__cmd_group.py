@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "communication email",
 )
 class __CMDGroup(AAZCommandGroup):
-    """communication email
+    """Manage Communication Email
     """
     pass
 
