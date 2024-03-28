@@ -149,6 +149,9 @@ def load_arguments(self, _):
     for scope in ['managed-cassandra cluster backup show']:
         with self.argument_context(scope) as c:
             c.argument('backup_id', options_list=['--backup-id'], help="The resource id of the backup", required=True)
+    for scope in ['managed-cassandra cluster backup restore']:
+        with self.argument_context(scope) as c:
+            c.argument('backup_id', options_list=['--backup-id'], help="The resource id of the backup", required=True)
 
     # Managed Cassandra Datacenter
     for scope in [
