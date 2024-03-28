@@ -186,7 +186,7 @@ class BaseInputProcessor(ABC):
         for subschema_name, subschema in schema["properties"].items():
 
             if isinstance(subschema, dict) and "type" not in subschema:
-                if ["oneOf", "anyOf"] in subschema:
+                if "oneOf" in subschema or "anyOf" in subschema:
                     raise InvalidArgumentValueError(
                         f"The subschema '{subschema_name}' does not contain a type.\n"
                         "It contains 'anyOf' or 'oneOf' logic, which is not valid for AOSM.\n"
