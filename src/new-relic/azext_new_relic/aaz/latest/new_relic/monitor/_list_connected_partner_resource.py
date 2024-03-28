@@ -12,26 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor vm-host-payload",
+    "new-relic monitor list-connected-partner-resource",
 )
-class VmHostPayload(AAZCommand):
-    """Returns the payload that needs to be passed in the request body for installing NewRelic agent on a VM.
+class ListConnectedPartnerResource(AAZCommand):
+    """List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
 
-    :example: Get MonitorsVmHostPayload.
-        az monitor vm-host-payload --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup
+    :example: List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
+        az new-relic monitor list-connected-partner-resource --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor
     """
 
     _aaz_info = {
         "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/vmhostpayloads", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/listconnectedpartnerresources", "2024-01-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -48,17 +49,26 @@ class VmHostPayload(AAZCommand):
             options=["--monitor-name"],
             help="Name of the Monitoring resource",
             required=True,
-            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
+        _args_schema.body = AAZStrArg(
+            options=["--body"],
+            help="Reusable representation of an email address",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsVmHostPayload(ctx=self.ctx)()
+        self.ConnectedPartnerResourcesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,10 +80,11 @@ class VmHostPayload(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class MonitorsVmHostPayload(AAZHttpOperation):
+    class ConnectedPartnerResourcesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +98,7 @@ class VmHostPayload(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/vmHostPayloads",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/listConnectedPartnerResources",
                 **self.url_parameters
             )
 
@@ -131,10 +142,22 @@ class VmHostPayload(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args.body,
+                typ=AAZStrType,
+            )
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -154,15 +177,34 @@ class VmHostPayload(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.ingestion_key = AAZStrType(
-                serialized_name="ingestionKey",
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.account_id = AAZStrType(
+                serialized_name="accountId",
+            )
+            properties.account_name = AAZStrType(
+                serialized_name="accountName",
+            )
+            properties.azure_resource_id = AAZStrType(
+                serialized_name="azureResourceId",
+            )
+            properties.location = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _VmHostPayloadHelper:
-    """Helper class for VmHostPayload"""
+class _ListConnectedPartnerResourceHelper:
+    """Helper class for ListConnectedPartnerResource"""
 
 
-__all__ = ["VmHostPayload"]
+__all__ = ["ListConnectedPartnerResource"]

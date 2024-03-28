@@ -8,3 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "new-relic monitor monitored-subscription",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage list of subscriptions and the state of the monitoring.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

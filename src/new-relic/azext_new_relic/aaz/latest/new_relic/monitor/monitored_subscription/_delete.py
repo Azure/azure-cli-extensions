@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor tag-rule delete",
+    "new-relic monitor monitored-subscription delete",
 )
 class Delete(AAZCommand):
-    """Delete a TagRule
+    """Delete the subscriptions that are being monitored by the NewRelic monitor resource
 
-    :example: Delete a TagRule.
-        az new-relic monitor tag-rule delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default
+    :example: Delete the subscriptions that are being monitored by the NewRelic monitor resource
+        az new-relic monitor monitored-subscription delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default
     """
 
     _aaz_info = {
         "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/monitoredsubscriptions/{}", "2024-01-01"],
         ]
     }
 
@@ -45,27 +45,36 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.configuration_name = AAZStrArg(
+            options=["--configuration-name"],
+            help="The configuration name. Only 'default' value is supported.",
+            required=True,
+            id_part="child_name_1",
+            default="default",
+            enum={"default": "default"},
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
+        )
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
             help="Name of the Monitoring resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["--resource-group","--g"],
             help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
-        )
-        _args_schema.rule_set_name = AAZStrArg(
-            options=["-n", "--name", "--rule-set-name"],
-            help="Name of the TagRule",
-            required=True,
-            id_part="child_name_1",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TagRulesDelete(ctx=self.ctx)()
+        yield self.MonitoredSubscriptionsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +85,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class TagRulesDelete(AAZHttpOperation):
+    class MonitoredSubscriptionsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -115,7 +124,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/tagRules/{ruleSetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/monitoredSubscriptions/{configurationName}",
                 **self.url_parameters
             )
 
@@ -131,15 +140,15 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "configurationName", self.ctx.args.configuration_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "ruleSetName", self.ctx.args.rule_set_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -161,7 +170,6 @@ class Delete(AAZCommand):
 
         def on_200(self, session):
             pass
-
         def on_204(self, session):
             pass
 
