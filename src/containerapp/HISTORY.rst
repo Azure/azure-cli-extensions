@@ -5,6 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp up/create/update': Wait longer time for logstream of Cloud Build to make sure the container start
+* Upgrade api-version to 2023-11-02-preview
+* 'az containerapp create/update': Support enable or disable Java metrics with --runtime and --enable-java-metrics
 
 0.3.50
 ++++++
