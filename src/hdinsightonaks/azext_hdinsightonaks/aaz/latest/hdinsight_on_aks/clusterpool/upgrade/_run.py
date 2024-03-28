@@ -50,7 +50,6 @@ class Run(AAZCommand):
             options=["-n", "--name", "--cluster-pool-name"],
             help="The name of the cluster pool.",
             required=True,
-            is_preview=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -64,6 +63,11 @@ class Run(AAZCommand):
             options=["--upgrade-profile"],
             arg_group="Properties",
             help="Define upgrade properties.",
+        )
+        _args_schema.node_os_upgrade = AAZObjectArg(
+            options=["--node-os-upgrade"],
+            arg_group="Properties",
+            blank={},
         )
 
         upgrade_profile = cls._args_schema.upgrade_profile
@@ -194,7 +198,9 @@ class Run(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_const("upgradeType", "AKSPatchUpgrade", AAZStrType, ".upgrade_profile", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("upgradeType", "NodeOsUpgrade", AAZStrType, ".node_os_upgrade", typ_kwargs={"flags": {"required": True}})
                 properties.discriminate_by("upgradeType", "AKSPatchUpgrade")
+                properties.discriminate_by("upgradeType", "NodeOsUpgrade")
 
             disc_aks_patch_upgrade = _builder.get(".properties{upgradeType:AKSPatchUpgrade}")
             if disc_aks_patch_upgrade is not None:

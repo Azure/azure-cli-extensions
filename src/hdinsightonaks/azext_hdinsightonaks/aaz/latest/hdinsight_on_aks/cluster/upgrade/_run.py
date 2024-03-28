@@ -65,6 +65,11 @@ class Run(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.aks_patch_upgrade = AAZObjectArg(
+            options=["--aks-patch-upgrade"],
+            arg_group="Properties",
+            blank={},
+        )
         _args_schema.hotfix_upgrade = AAZObjectArg(
             options=["--hotfix-upgrade"],
             arg_group="Properties",
@@ -203,7 +208,9 @@ class Run(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_const("upgradeType", "AKSPatchUpgrade", AAZStrType, ".aks_patch_upgrade", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("upgradeType", "HotfixUpgrade", AAZStrType, ".hotfix_upgrade", typ_kwargs={"flags": {"required": True}})
+                properties.discriminate_by("upgradeType", "AKSPatchUpgrade")
                 properties.discriminate_by("upgradeType", "HotfixUpgrade")
 
             disc_hotfix_upgrade = _builder.get(".properties{upgradeType:HotfixUpgrade}")

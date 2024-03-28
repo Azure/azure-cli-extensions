@@ -50,7 +50,6 @@ class List(AAZCommand):
             options=["-n", "--name", "--cluster-pool-name"],
             help="The name of the cluster pool.",
             required=True,
-            is_preview=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
