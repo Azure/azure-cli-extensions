@@ -7,6 +7,7 @@ import re
 from typing import Tuple
 
 from azext_aks_preview.azurecontainerstorage._consts import (
+    CONST_ACSTOR_ALL,
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
     CONST_ACSTOR_K8S_EXTENSION_NAME,
     CONST_EXT_INSTALLATION_NAME,
@@ -342,14 +343,19 @@ def get_desired_resource_value_args(
                 storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and
                 (is_azureDisk_enabled or is_ephemeralDisk_nvme_enabled))
         )
+        is_ephemeral_nvme_disabled_azureDisk_active = (
+            storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
+            (storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and
+                (is_ephemeralDisk_localssd_enabled or is_azureDisk_enabled) or
+                (storage_pool_option == CONST_ACSTOR_ALL and is_azureDisk_enabled))
+        )
         if is_disabled_type_smaller_than_active_types:
             updated_core_value = current_core_value
             updated_memory_value = current_memory_value
             updated_hugepages_value = current_hugepages_value
             updated_hugepages_number = current_hugepages_number
-        elif (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
-                storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and
-                (is_ephemeralDisk_localssd_enabled or is_azureDisk_enabled)):
+
+        elif is_ephemeral_nvme_disabled_azureDisk_active:
             # If we are disabling Ephemeral NVMe storagepool but azureDisk is
             # still enabled, we will set the azureDisk storagepool type values.
             updated_core_value = 1

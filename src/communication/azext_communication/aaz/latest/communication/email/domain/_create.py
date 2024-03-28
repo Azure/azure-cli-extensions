@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new Domains resource under the parent EmailService resource or update an existing Domains resource.
-
-    :example: Create a domain with tags
-        az communication email domain create --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --location global --domain-management AzureManaged/CustomerManaged --tags "{tag:tag}" --user-engmnt-tracking Enabled/Disabled
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}", "2023-04-01"],
         ]
     }
 
@@ -190,7 +187,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

@@ -1365,6 +1365,15 @@ helps['containerapp env telemetry data-dog set'] = """
               --site dataDogSite --key dataDogKey --enable-open-telemetry-traces true --enable-open-telemetry-metrics true
 """
 
+helps['containerapp env telemetry data-dog show'] = """
+    type: command
+    short-summary: Show container apps environment telemetry data dog settings.
+    examples:
+    - name: Show container apps environment telemetry data dog settings.
+      text: |
+          az containerapp env telemetry data-dog show -n MyContainerappEnvironment -g MyResourceGroup 
+"""
+
 helps['containerapp env telemetry app-insights set'] = """
     type: command
     short-summary: Create or update container apps environment telemetry app insights settings.
@@ -1373,6 +1382,15 @@ helps['containerapp env telemetry app-insights set'] = """
       text: |
           az containerapp env telemetry app-insights set -n MyContainerappEnvironment -g MyResourceGroup \\
               --connection-string connectionString --enable-open-telemetry-traces true --enable-open-telemetry-logs true
+"""
+
+helps['containerapp env telemetry app-insights show'] = """
+    type: command
+    short-summary: Show container apps environment telemetry app insights settings.
+    examples:
+    - name: Show container apps environment telemetry app insights settings.
+      text: |
+          az containerapp env telemetry app-insights show -n MyContainerappEnvironment -g MyResourceGroup 
 """
 
 helps['containerapp env telemetry data-dog delete'] = """
@@ -1392,3 +1410,60 @@ helps['containerapp env telemetry app-insights delete'] = """
       text: |
           az containerapp env telemetry app-insights delete -n MyContainerappEnvironment -g MyResourceGroup
 """
+
+helps['containerapp env telemetry otlp'] = """
+    type: group
+    short-summary: Commands to manage otlp settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry otlp add'] = """
+    type: command
+    short-summary: Add container apps environment telemetry otlp settings.
+    examples:
+    - name: Add container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp add -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName --endpoint otlpEndpoint --insecure false --headers api-key=apiKey \\
+              --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true
+"""
+
+helps['containerapp env telemetry otlp update'] = """
+    type: command
+    short-summary: Update container apps environment telemetry otlp settings.
+    examples:
+    - name: Update container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp update -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName --endpoint otlpEndpoint --insecure false --headers api-key=apiKey \\
+              --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true
+"""
+
+helps['containerapp env telemetry otlp remove'] = """
+    type: command
+    short-summary: Remove container apps environment telemetry otlp settings.
+    examples:
+    - name: Remove container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp remove -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName
+"""
+
+helps['containerapp env telemetry otlp show'] = """
+    type: command
+    short-summary: Show container apps environment telemetry otlp settings.
+    examples:
+    - name: Show container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp show -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName
+"""
+
+helps['containerapp env telemetry otlp list'] = """
+    type: command
+    short-summary: List container apps environment telemetry otlp settings.
+    examples:
+    - name: List container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp list -n MyContainerappEnvironment -g MyResourceGroup
+"""
+
