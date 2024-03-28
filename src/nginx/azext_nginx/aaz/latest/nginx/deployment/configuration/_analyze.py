@@ -18,13 +18,13 @@ class Analyze(AAZCommand):
     """Analyze an NGINX configuration without applying it to the NGINXaaS deployment
 
     :example: Config package dry run
-        az nginx deployment configuration analyze --deployment-name myDeployment --resource-group myResourceGroup --configuration-name default --config root-file=<nginx.conf> package='{data:H4sIAAAAAAAAA+3VbWvbMBAHcL/Op7hCoTCIbckPCU0olG3QvVoog21QMCK+1qGyJGRlpBv57pPXbsla1wkdZS3c70UMdxfxP2wn6mqhVuFcq8vg2cTeKMt+Xb37V56zLGBpwvOYpVkyCmLGspwHED9fpI1l44QFCKzWrm9uV/+Vqpwz8GMA3tI0zqKoQRgzZHfF1net8K6Yp9eTP3WJonGFf3bUptag/YYWWBzGIQvT47G/wb1d1tvlt931w4C8KyB/UsCkt5v2drNHAyZdAZMnBcx7u6Pe7vh3wMHWwCaZXDQOFYwf3KRCiRrhTYgrURuJ/iei3sqt58IttIJo66hWiZdiKV3hbgyCw5WLKlfLyV8zFt3SKuBxDEfTg3cf3376OnsP7dzJtOInZyilhs/ayvJgGvnChTraHLDuyHD/eW0Zq1c3RYOuqFCUfuUz3Tg4rPznpH/wy/AchRx+mMGhxVo7LERZ2p1fmrWl4akxt29K17wRTQPtC3ccRR1D/ijpqmJe4fx698L8ZS3M91mY/8vCyctaONln4WT/hdeD9eB//xkQQgghhBBCCCGEEEIIIYQQQggh5FX6CfCArk8AKAAA}'
+        az nginx deployment configuration analyze --deployment-name myDeployment --resource-group myResourceGroup --configuration-name default --root-file <nginx.conf> --package '{data:H4sIAAAAAAAAA+3VbWvbMBAHcL/Op7hCoTCIbckPCU0olG3QvVoog21QMCK+1qGyJGRlpBv57pPXbsla1wkdZS3c70UMdxfxP2wn6mqhVuFcq8vg2cTeKMt+Xb37V56zLGBpwvOYpVkyCmLGspwHED9fpI1l44QFCKzWrm9uV/+Vqpwz8GMA3tI0zqKoQRgzZHfF1net8K6Yp9eTP3WJonGFf3bUptag/YYWWBzGIQvT47G/wb1d1tvlt931w4C8KyB/UsCkt5v2drNHAyZdAZMnBcx7u6Pe7vh3wMHWwCaZXDQOFYwf3KRCiRrhTYgrURuJ/iei3sqt58IttIJo66hWiZdiKV3hbgyCw5WLKlfLyV8zFt3SKuBxDEfTg3cf3376OnsP7dzJtOInZyilhs/ayvJgGvnChTraHLDuyHD/eW0Zq1c3RYOuqFCUfuUz3Tg4rPznpH/wy/AchRx+mMGhxVo7LERZ2p1fmrWl4akxt29K17wRTQPtC3ccRR1D/ijpqmJe4fx698L8ZS3M91mY/8vCyctaONln4WT/hdeD9eB//xkQQgghhBBCCCGEEEIIIYQQQggh5FX6CfCArk8AKAAA}'
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}/analyze", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}/analyze", "2024-01-01-preview"],
         ]
     }
 
@@ -66,38 +66,35 @@ class Analyze(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Body"
+        # define Arg Group "Config"
 
         _args_schema = cls._args_schema
-        _args_schema.config = AAZObjectArg(
-            options=["--config"],
-            arg_group="Body",
-            help={"short-summary": "Config details to analyze (package, files, and/or protected files)", "long-summary": "Usage: --config root-file=nginx.conf package='{data:<Base64 string>,protected-files:<Base64 string>}' |\n--config root-file=nginx.conf files='[{\"content\":\"<Base64 content of config file>\",\"virtual-path\":\"<path>\"}]'"},
-        )
-
-        config = cls._args_schema.config
-        config.files = AAZListArg(
-            options=["files"],
+        _args_schema.files = AAZListArg(
+            options=["--files"],
+            arg_group="Config",
             help="Config files. Cannot be used with package, only protected-files",
         )
-        config.package = AAZObjectArg(
-            options=["package"],
+        _args_schema.package = AAZObjectArg(
+            options=["--package"],
+            arg_group="Config",
             help="Compressed files. Cannot be used with files or protected-files",
         )
-        config.protected_files = AAZListArg(
-            options=["protected-files"],
+        _args_schema.protected_files = AAZListArg(
+            options=["--protected-files"],
+            arg_group="Config",
             help="Cannot be used with package, only files",
         )
-        config.root_file = AAZStrArg(
-            options=["root-file"],
+        _args_schema.root_file = AAZStrArg(
+            options=["--root-file"],
+            arg_group="Config",
             help="The root file of the NGINX config file(s). It must match one of the files' filepath.",
         )
 
-        files = cls._args_schema.config.files
+        files = cls._args_schema.files
         files.Element = AAZObjectArg()
         cls._build_args_nginx_configuration_file_create(files.Element)
 
-        package = cls._args_schema.config.package
+        package = cls._args_schema.package
         package.data = AAZStrArg(
             options=["data"],
         )
@@ -105,10 +102,10 @@ class Analyze(AAZCommand):
             options=["protected-files"],
         )
 
-        protected_files = cls._args_schema.config.package.protected_files
+        protected_files = cls._args_schema.package.protected_files
         protected_files.Element = AAZStrArg()
 
-        protected_files = cls._args_schema.config.protected_files
+        protected_files = cls._args_schema.protected_files
         protected_files.Element = AAZObjectArg()
         cls._build_args_nginx_configuration_file_create(protected_files.Element)
         return cls._args_schema
@@ -204,7 +201,7 @@ class Analyze(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -229,7 +226,7 @@ class Analyze(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("config", AAZObjectType, ".config", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("config", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             config = _builder.get(".config")
             if config is not None:

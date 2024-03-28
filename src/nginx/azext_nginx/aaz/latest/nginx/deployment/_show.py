@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -203,6 +203,9 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.auto_upgrade_profile = AAZObjectType(
+                serialized_name="autoUpgradeProfile",
+            )
             properties.enable_diagnostics_support = AAZBoolType(
                 serialized_name="enableDiagnosticsSupport",
             )
@@ -230,6 +233,12 @@ class Show(AAZCommand):
             )
             properties.user_profile = AAZObjectType(
                 serialized_name="userProfile",
+            )
+
+            auto_upgrade_profile = cls._schema_on_200.properties.auto_upgrade_profile
+            auto_upgrade_profile.upgrade_channel = AAZStrType(
+                serialized_name="upgradeChannel",
+                flags={"required": True},
             )
 
             logging = cls._schema_on_200.properties.logging
@@ -287,7 +296,35 @@ class Show(AAZCommand):
             )
 
             scaling_properties = cls._schema_on_200.properties.scaling_properties
+            scaling_properties.auto_scale_settings = AAZObjectType(
+                serialized_name="autoScaleSettings",
+                flags={"client_flatten": True},
+            )
             scaling_properties.capacity = AAZIntType()
+
+            auto_scale_settings = cls._schema_on_200.properties.scaling_properties.auto_scale_settings
+            auto_scale_settings.profiles = AAZListType(
+                flags={"required": True},
+            )
+
+            profiles = cls._schema_on_200.properties.scaling_properties.auto_scale_settings.profiles
+            profiles.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.scaling_properties.auto_scale_settings.profiles.Element
+            _element.capacity = AAZObjectType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            capacity = cls._schema_on_200.properties.scaling_properties.auto_scale_settings.profiles.Element.capacity
+            capacity.max = AAZIntType(
+                flags={"required": True},
+            )
+            capacity.min = AAZIntType(
+                flags={"required": True},
+            )
 
             user_profile = cls._schema_on_200.properties.user_profile
             user_profile.preferred_email = AAZStrType(
