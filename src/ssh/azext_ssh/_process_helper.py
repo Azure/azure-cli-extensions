@@ -8,6 +8,12 @@
 # pylint: disable=superfluous-parens
 
 import subprocess
+
+# check if running on Windows before importing Windows specific modules
+import platform
+
+if platform.system() != "Windows":
+    raise ImportError("This module is only supported on Windows.")
 from ctypes import WinDLL, c_int, c_size_t, Structure, WinError, sizeof, pointer
 from ctypes.wintypes import BOOL, DWORD, HANDLE, LPVOID, LPCWSTR, LPDWORD
 from knack.log import get_logger
@@ -58,14 +64,22 @@ JobObjectBasicProcessIdList = JOBOBJECTCLASS(3)
 
 
 class JOBOBJECT_BASIC_PROCESS_ID_LIST(Structure):
-    _fields_ = [('NumberOfAssignedProcess', DWORD),
-                ('NumberOfProcessIdsInList', DWORD),
-                ('ProcessIdList', c_size_t * 1)]
+    _fields_ = [
+        ("NumberOfAssignedProcess", DWORD),
+        ("NumberOfProcessIdsInList", DWORD),
+        ("ProcessIdList", c_size_t * 1),
+    ]
 
 
 kernel32.QueryInformationJobObject.errcheck = _errcheck()
 kernel32.QueryInformationJobObject.restype = BOOL
-kernel32.QueryInformationJobObject.argtypes = (HANDLE, JOBOBJECTCLASS, LPVOID, DWORD, LPDWORD)
+kernel32.QueryInformationJobObject.argtypes = (
+    HANDLE,
+    JOBOBJECTCLASS,
+    LPVOID,
+    DWORD,
+    LPDWORD,
+)
 
 
 def launch_and_wait(command):
@@ -94,7 +108,8 @@ def launch_and_wait(command):
                 JobObjectBasicProcessIdList,
                 pointer(job_info),
                 job_info_size,
-                pointer(job_info_size))
+                pointer(job_info_size),
+            )
 
             # Wait for the first running child under the job object
             if job_info.NumberOfProcessIdsInList > 0:
