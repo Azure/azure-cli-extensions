@@ -11,11 +11,11 @@ import time
 class NginxScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='centraluseuap')
+    @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus2euap')
     def test_nginx(self, resource_group):
         self.kwargs.update({
             'deployment_name': 'azclitest-deployment',
-            'location': 'centraluseuap',
+            'location': 'eastus2euap',
             'rg': resource_group,
             'sku': 'preview_Monthly_gmz7xq9ge3py',
             'public_ip_name': 'azclitest-public-ip',
@@ -93,13 +93,17 @@ class NginxScenarioTest(ScenarioTest):
         assert len(cert_list) == 0
 
         # Nginx for Azure configuration
-        self.cmd('nginx deployment configuration create --name default --deployment-name {deployment_name} --resource-group {rg}  --root-file nginx.conf --name default --package data=H4sIAAAAAAAAA+3VbWvbMBAHcL/Op7hCoTCIbckPCU0olG3QvVoog21QMCK+1qGyJGRlpBv57pPXbsla1wkdZS3c70UMdxfxP2wn6mqhVuFcq8vg2cTeKMt+Xb37V56zLGBpwvOYpVkyCmLGspwHED9fpI1l44QFCKzWrm9uV/+Vqpwz8GMA3tI0zqKoQRgzZHfF1net8K6Yp9eTP3WJonGFf3bUptag/YYWWBzGIQvT47G/wb1d1tvlt931w4C8KyB/UsCkt5v2drNHAyZdAZMnBcx7u6Pe7vh3wMHWwCaZXDQOFYwf3KRCiRrhTYgrURuJ/iei3sqt58IttIJo66hWiZdiKV3hbgyCw5WLKlfLyV8zFt3SKuBxDEfTg3cf3376OnsP7dzJtOInZyilhs/ayvJgGvnChTraHLDuyHD/eW0Zq1c3RYOuqFCUfuUz3Tg4rPznpH/wy/AchRx+mMGhxVo7LERZ2p1fmrWl4akxt29K17wRTQPtC3ccRR1D/ijpqmJe4fx698L8ZS3M91mY/8vCyctaONln4WT/hdeD9eB//xkQQgghhBBCCCGEEEIIIYQQQggh5FX6CfCArk8AKAAA', checks=[
+        self.cmd('nginx deployment configuration create --name default --deployment-name {deployment_name} --resource-group {rg}  --root-file nginx.conf --package data=H4sIAAAAAAAAA+3VbWvbMBAHcL/Op7hCoTCIbckPCU0olG3QvVoog21QMCK+1qGyJGRlpBv57pPXbsla1wkdZS3c70UMdxfxP2wn6mqhVuFcq8vg2cTeKMt+Xb37V56zLGBpwvOYpVkyCmLGspwHED9fpI1l44QFCKzWrm9uV/+Vqpwz8GMA3tI0zqKoQRgzZHfF1net8K6Yp9eTP3WJonGFf3bUptag/YYWWBzGIQvT47G/wb1d1tvlt931w4C8KyB/UsCkt5v2drNHAyZdAZMnBcx7u6Pe7vh3wMHWwCaZXDQOFYwf3KRCiRrhTYgrURuJ/iei3sqt58IttIJo66hWiZdiKV3hbgyCw5WLKlfLyV8zFt3SKuBxDEfTg3cf3376OnsP7dzJtOInZyilhs/ayvJgGvnChTraHLDuyHD/eW0Zq1c3RYOuqFCUfuUz3Tg4rPznpH/wy/AchRx+mMGhxVo7LERZ2p1fmrWl4akxt29K17wRTQPtC3ccRR1D/ijpqmJe4fx698L8ZS3M91mY/8vCyctaONln4WT/hdeD9eB//xkQQgghhBBCCCGEEEIIIYQQQggh5FX6CfCArk8AKAAA', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', 'default'),
         ])
         config_list = self.cmd('nginx deployment configuration list --deployment-name {deployment_name} --resource-group {rg}').get_output_in_json()
         assert len(config_list) > 0
 
+        self.cmd('nginx deployment configuration update --name default --deployment-name {deployment_name} --resource-group {rg}  --root-file nginx.conf --files [0].content="aHR0cCB7CiAgICB1cHN0cmVhbSBhcHAgewogICAgICAgIHpvbmUgYXBwIDY0azsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciAxMC4wLjEuNDo4MDAwOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwogICAgICAgIHNlcnZlcl9uYW1lICouZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1SZWFsLUlQICRyZW1vdGVfYWRkcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVByb3h5LUFwcCBhcHA7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgR2l0aHViLVJ1bi1JZCAwMDAwMDA7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcmluZyBvbjsKICAgICAgICAgICAgcHJveHlfYnVmZmVyX3NpemUgNGs7CiAgICAgICAgICAgIHByb3h5X2J1ZmZlcnMgOCA4azsKICAgICAgICAgICAgcHJveHlfcmVhZF90aW1lb3V0IDYwczsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYXBwOwogICAgICAgICAgICBoZWFsdGhfY2hlY2s7CiAgICAgICAgfQogICAgICAgIAogICAgfQp9"', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('name', 'default'),
+        ])
         self.cmd('nginx deployment configuration delete --name default --deployment-name {deployment_name} --resource-group {rg} --yes')
         self.cmd('nginx deployment configuration analyze --name default --deployment-name {deployment_name} --resource-group {rg} --root-file nginx.conf --package {compressed_file}', checks=[
             self.check('status', 'SUCCEEDED'),
