@@ -34,7 +34,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "oras[docker]~=0.1.19",
+    "oras~=0.1.19",
     "azure-storage-blob>=12.15.0",
     "jinja2>=3.1.2",
     "genson>=1.2.2",
