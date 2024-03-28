@@ -944,15 +944,21 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             return ManagedEnvironmentPreviewClient
 
     def set_up_runtime(self):
-        runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_metrics())
-        runtime_def = None
-        if runtime_option == RUNTIME_JAVA:
-            runtime_java_def = RuntimeJavaModel
-            runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics() or False
-            runtime_def = {
-                "java": runtime_java_def
-            }
-        safe_set(self.containerapp_def, "properties", "configuration", "runtime", value=runtime_def)
+        if self.get_argument_runtime() is not None or self.get_argument_enable_java_metrics() is not None:
+            runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_metrics())
+            runtime_def = None  # default value for runtime_option == RUNTIME_GENERIC, set None to erase runtime info
+            if runtime_option == RUNTIME_JAVA:
+                if self.get_argument_enable_java_metrics() is None:
+                    runtime_def = {
+                        "java": {}  # empty to keep or setup default java runtime
+                    }
+                else:
+                    runtime_java_def = RuntimeJavaModel
+                    runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics()
+                    runtime_def = {
+                        "java": runtime_java_def
+                    }
+            safe_set(self.containerapp_def, "properties", "configuration", "runtime", value=runtime_def)
 
     def get_argument_environment_type(self):
         return self.get_param("environment_type")
@@ -1253,17 +1259,21 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         return c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_force_single_container_updates()
 
     def set_up_runtime(self):
-        if self.get_argument_runtime() is None and self.get_argument_enable_java_metrics() is None:
-            return  # Skip when runtime and enable_java_metrics are not set
-        runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_metrics())
-        runtime_def = None
-        if runtime_option == RUNTIME_JAVA:
-            runtime_java_def = RuntimeJavaModel
-            runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics() or False
-            runtime_def = {
-                "java": runtime_java_def
-            }
-        safe_set(self.new_containerapp, "properties", "configuration", "runtime", value=runtime_def)
+        if self.get_argument_runtime() is not None or self.get_argument_enable_java_metrics() is not None:
+            runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_metrics())
+            runtime_def = None  # default value for runtime_option == RUNTIME_GENERIC, set None to erase runtime info
+            if runtime_option == RUNTIME_JAVA:
+                if self.get_argument_enable_java_metrics() is None:
+                    runtime_def = {
+                        "java": {}  # empty to keep or setup default java runtime
+                    }
+                else:
+                    runtime_java_def = RuntimeJavaModel
+                    runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics()
+                    runtime_def = {
+                        "java": runtime_java_def
+                    }
+            safe_set(self.new_containerapp, "properties", "configuration", "runtime", value=runtime_def)
 
 
 # decorator for preview list

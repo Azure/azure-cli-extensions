@@ -54,7 +54,7 @@ def validate_runtime(runtime, enable_java_metrics):
     if runtime and runtime.lower() not in SUPPORTED_RUNTIME_LIST:
         raise ValidationError(f"Runtime {runtime} is not supported. Supported runtimes are {', '.join(SUPPORTED_RUNTIME_LIST)}.")
     if runtime and runtime.lower() == RUNTIME_GENERIC and enable_java_metrics is not None:
-        raise ValidationError("Java metrics are not supported for generic runtime.")
+        raise ValidationError("Not support enable Java metrics with --enable-java-metrics for generic runtime with --runtime generic")
 
 
 def validate_env_name_or_id(cmd, namespace):

@@ -2385,7 +2385,6 @@ class ContainerappRuntimeTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_runtime_java_metrics_create(self, resource_group):
-        TEST_LOCATION = "northcentralusstage"
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         app = self.create_random_name(prefix='aca', length=24)
@@ -2393,54 +2392,59 @@ class ContainerappRuntimeTests(ScenarioTest):
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        # Create container app without enabling java metrics
-        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env}')
-        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+        def create_containerapp_with_runtime_java_metrics_args_and_check(args, expect_failure=False, checks=[]):
+            self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} {args}', expect_failure=expect_failure)
+            if not expect_failure:
+                self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=checks)
+
+                # Delete container app
+                self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+
+        # Create container app without runtime settings
+        create_containerapp_with_runtime_java_metrics_args_and_check('', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime", None)
             ])
 
-        # Delete container app
-        self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+        # Create container app with runtime=generic, it should not have runtime settings
+        create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=generic', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime", None)
+            ])
 
-        # Create container app with default java runtime settings
-        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} --runtime=java')
-        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+        # Create container app with runtime=java, it should have default java runtime settings
+        create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=java', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
             ])
 
-        # Delete container app
-        self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
-
-        # Create container app with enabling java metrics
-        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} --enable-java-metrics')
-        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+        # Create container app with runtime=java and enable java metrics
+        create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=java --enable-java-metrics', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
             ])
 
-        # Delete container app
-        self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
-
-        # Create container app with disabling java metrics
-        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} --enable-java-metrics=false')
-        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+        # Create container app with runtime=java and disable java metrics
+        create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=java --enable-java-metrics=false', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
             ])
 
-        # Delete container app
-        self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+        # Create container app with enable java metrics without setting runtime explicitly
+        create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=java --enable-java-metrics', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
+            ])
 
-        # Create container app failed with wrong runtime
-        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} --runtime=generic --enable-java-metrics',
-                 expect_failure=True)
+        # Unmatched runtime, runtime should be java when enable-java-metrics is set
+        create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=generic --enable-java-metrics', expect_failure=True)
 
-        # Create container app failed with unsupported runtime
-        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} --runtime=otherlanguage',
-                 expect_failure=True)
+        # Unsupported runtime, runtime should be java or generic
+        create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=otherlanguage', expect_failure=True)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_runtime_java_metrics_update(self, resource_group):
-        TEST_LOCATION = "northcentralusstage"
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         app = self.create_random_name(prefix='aca', length=24)
@@ -2451,27 +2455,68 @@ class ContainerappRuntimeTests(ScenarioTest):
         # Create container app without enabling java metrics
         self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env}')
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime", None)
             ])
 
-        # Update contaier app with default settings
-        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
-                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
+        # Update contaier app without runtime settings, it should keep the same runtime settings
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.5 --memory 1Gi', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime", None)
             ])
 
-        # Update container app to enable java metrics
         self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-metrics', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
             ])
 
-        # Update container app to disable java metrics
-        self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-metrics=false', checks=[
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.25 --memory 0.5Gi', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
+            ])
+
+        # Update container app with runtime=generic, it should erase runtime settings
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=generic', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime", None)
+            ])
+        
+        # Update container app with runtime=java, it should setup default java runtime settings if not set before
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
             ])
 
-        # Update container app to reset runtime configuration
-        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=generic', checks=[
-                JMESPathCheck("properties.configuration.runtime", None)
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java --enable-java-metrics', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
+            ])
+
+        # Update container app with runtime=java, it should keep the same runtime settings
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
+            ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java --enable-java-metrics=false', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
+            ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
+            ])
+
+        # It will imply runtime=java when enable-java-metrics is set
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-metrics', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
+            ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-metrics=false', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
             ])
 
         # Update container app failed with wrong runtime
