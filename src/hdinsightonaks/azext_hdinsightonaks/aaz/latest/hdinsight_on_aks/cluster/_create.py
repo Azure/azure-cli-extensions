@@ -210,7 +210,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.internal_ingress_enabled = AAZBoolArg(
-            options=["--internal-ingress-enabled"],
+            options=["--internal-ingress", "--internal-ingress-enabled"],
             arg_group="ClusterAccessProfile",
             help="Whether to create cluster using private IP instead of public IP. This property must be set at create time.",
         )
