@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `az aks check-network outbound` command.
 
 2.0.0b7
 +++++++
