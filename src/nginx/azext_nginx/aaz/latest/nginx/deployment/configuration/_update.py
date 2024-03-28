@@ -89,6 +89,7 @@ class Update(AAZCommand):
         _args_schema.root_file = AAZStrArg(
             options=["--root-file"],
             arg_group="Properties",
+            help="Required. The root file that should align with your Nginx configuration structure",
             nullable=True,
         )
 
