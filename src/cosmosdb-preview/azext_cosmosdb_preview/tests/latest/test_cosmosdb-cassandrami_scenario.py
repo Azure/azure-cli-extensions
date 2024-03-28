@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import time
 from unittest import mock
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
@@ -82,6 +83,60 @@ class ManagedCassandraScenarioTest(ScenarioTest):
             self.cmd('az managed-cassandra cluster delete -c {c} -g {rg} --yes')
         except Exception as e:
             print(e)
+
+
+    # pylint: disable=broad-except
+    @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
+    @AllowLargeResponse()
+    def test_managed_cassandra_async_dba_command(self, resource_group):
+
+        self.kwargs.update({
+            'c': self.create_random_name(prefix='cli', length=10),
+            'c1': self.create_random_name(prefix='cli', length=10),
+            'd': self.create_random_name(prefix='cli-dc', length=10),
+            'subnet_id': self.create_subnet(resource_group)
+        })
+
+        # Create Cluster
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id} -i password')
+        cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
+        assert cluster['properties']['provisioningState'] == 'Succeeded'
+
+        # Create Datacenter
+        self.cmd('az managed-cassandra datacenter create -c {c} -d {d} -l eastus2 -g {rg} -n 3 -s {subnet_id}')
+        datacenter = self.cmd('az managed-cassandra datacenter show -c {c} -d {d} -g {rg}').get_output_in_json()
+        assert datacenter['properties']['provisioningState'] == 'Succeeded'
+
+        host_ip = datacenter['properties']['seedNodes'][0]['ipAddress']
+        self.kwargs.update({
+            'host_ip': host_ip
+        })
+
+        invoke_res = self.cmd('az managed-cassandra cluster async-dba-command invoke -c {c} -g {rg} --host {host_ip} --command-name \"get-cassandra-yaml\"').get_output_in_json()
+
+        command_id = str(invoke_res['commandid'])
+        assert command_id != None
+        assert command_id != ""
+
+        self.kwargs.update({
+            'command_id': command_id
+        })
+
+        time.sleep(10)
+        tried = 5
+        while tried >= 0:
+            command_res = self.cmd('az managed-cassandra cluster async-dba-command get -c {c} -g {rg} --command-id {command_id}').get_output_in_json()
+            if command_res[0]['status'] == "Finished":
+                break
+            time.sleep(10)
+            tried -= 1
+
+        assert command_res[0]['commandid'] != None
+        assert command_res[0]['status'] == "Finished"
+        command_list = self.cmd('az managed-cassandra cluster async-dba-command list -c {c} -g {rg}').get_output_in_json()
+
+        assert len(command_list) >= 1
+
 
     # pylint: disable=line-too-long
     def create_subnet(self, resource_group):
