@@ -19,17 +19,17 @@ class List(AAZCommand):
     """List the list of Cluster Pools within a Subscription.
 
     :example: Lists the list of clusterpool in a resource group.
-        az hdinsight-on-aks clusterpool list -g RG
+        az hdinsight-on-aks clusterpool list -g {RG}
 
     :example: List the list of Cluster Pools within a Subscription.
         az hdinsightonaks clusterpool list
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hdinsight/clusterpools", "2023-06-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hdinsight/clusterpools", "2023-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools", "2023-11-01-preview"],
         ]
     }
 
@@ -120,7 +120,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }
@@ -271,10 +271,22 @@ class List(AAZCommand):
             )
 
             network_profile = cls._schema_on_200.value.Element.properties.network_profile
+            network_profile.api_server_authorized_ip_ranges = AAZListType(
+                serialized_name="apiServerAuthorizedIpRanges",
+            )
+            network_profile.enable_private_api_server = AAZBoolType(
+                serialized_name="enablePrivateApiServer",
+            )
+            network_profile.outbound_type = AAZStrType(
+                serialized_name="outboundType",
+            )
             network_profile.subnet_id = AAZStrType(
                 serialized_name="subnetId",
                 flags={"required": True},
             )
+
+            api_server_authorized_ip_ranges = cls._schema_on_200.value.Element.properties.network_profile.api_server_authorized_ip_ranges
+            api_server_authorized_ip_ranges.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -341,7 +353,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }
@@ -492,10 +504,22 @@ class List(AAZCommand):
             )
 
             network_profile = cls._schema_on_200.value.Element.properties.network_profile
+            network_profile.api_server_authorized_ip_ranges = AAZListType(
+                serialized_name="apiServerAuthorizedIpRanges",
+            )
+            network_profile.enable_private_api_server = AAZBoolType(
+                serialized_name="enablePrivateApiServer",
+            )
+            network_profile.outbound_type = AAZStrType(
+                serialized_name="outboundType",
+            )
             network_profile.subnet_id = AAZStrType(
                 serialized_name="subnetId",
                 flags={"required": True},
             )
+
+            api_server_authorized_ip_ranges = cls._schema_on_200.value.Element.properties.network_profile.api_server_authorized_ip_ranges
+            api_server_authorized_ip_ranges.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

@@ -15,6 +15,5 @@ from ._list import *
 from ._list_service_config import *
 from ._resize import *
 from ._show import *
-from ._show_instance_view import *
 from ._update import *
 from ._wait import *

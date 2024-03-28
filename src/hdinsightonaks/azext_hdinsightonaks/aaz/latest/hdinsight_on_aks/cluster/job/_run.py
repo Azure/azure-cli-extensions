@@ -19,13 +19,13 @@ class Run(AAZCommand):
     """Operations on jobs of HDInsight on AKS cluster.
 
     :example: Operations on jobs of HDInsight on AKS cluster.
-        az hdinsight-on-aks cluster job run --cluster-name testcluster --cluster-pool-name testpool -g RG--flink-job jobProperty
+        az hdinsight-on-aks cluster job run --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName} --flink-job job-name="test" job-jar-directory="abfs://demodfs@flinkdemo.dfs.core.windows.net/jars" jar-name="FlinkJobDemo-1.0-SNAPSHOT.jar" entry-class="org.example.SleepJob" action="NEW" flink-configuration="{parallelism:1}"
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/runjob", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/runjob", "2023-11-01-preview"],
         ]
     }
 
@@ -74,7 +74,7 @@ class Run(AAZCommand):
         flink_job.action = AAZStrArg(
             options=["action"],
             help="A string property that indicates the action to be performed on the Flink job. It can have one of the following enum values => NEW, UPDATE, STATELESS_UPDATE, STOP, START, CANCEL, SAVEPOINT, LIST_SAVEPOINT, or DELETE.",
-            enum={"CANCEL": "CANCEL", "DELETE": "DELETE", "LIST_SAVEPOINT": "LIST_SAVEPOINT", "NEW": "NEW", "SAVEPOINT": "SAVEPOINT", "START": "START", "STATELESS_UPDATE": "STATELESS_UPDATE", "STOP": "STOP", "UPDATE": "UPDATE"},
+            enum={"CANCEL": "CANCEL", "DELETE": "DELETE", "LAST_STATE_UPDATE": "LAST_STATE_UPDATE", "LIST_SAVEPOINT": "LIST_SAVEPOINT", "NEW": "NEW", "RE_LAUNCH": "RE_LAUNCH", "SAVEPOINT": "SAVEPOINT", "START": "START", "STATELESS_UPDATE": "STATELESS_UPDATE", "STOP": "STOP", "UPDATE": "UPDATE"},
         )
         flink_job.args = AAZStrArg(
             options=["args"],
@@ -96,14 +96,13 @@ class Run(AAZCommand):
             options=["job-jar-directory"],
             help="A string property that specifies the directory where the job JAR is located.",
         )
-        flink_job.type = AAZStrArg(
-            options=["type"],
-            help="A string property that run job type",
-        )
         flink_job.job_name = AAZStrArg(
             options=["job-name"],
             help="Name of job",
-            required=True,
+        )
+        flink_job.run_id = AAZStrArg(
+            options=["run-id"],
+            help="Run id of job",
         )
         flink_job.save_point_name = AAZStrArg(
             options=["save-point-name"],
@@ -199,7 +198,7 @@ class Run(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }
@@ -239,7 +238,8 @@ class Run(AAZCommand):
                 disc_flink_job.set_prop("flinkConfiguration", AAZDictType, ".flink_job.flink_configuration")
                 disc_flink_job.set_prop("jarName", AAZStrType, ".flink_job.jar_name")
                 disc_flink_job.set_prop("jobJarDirectory", AAZStrType, ".flink_job.job_jar_directory")
-                disc_flink_job.set_prop("jobName", AAZStrType, ".flink_job.job_name", typ_kwargs={"flags": {"required": True}})
+                disc_flink_job.set_prop("jobName", AAZStrType, ".flink_job.job_name")
+                disc_flink_job.set_prop("runId", AAZStrType, ".flink_job.run_id")
                 disc_flink_job.set_prop("savePointName", AAZStrType, ".flink_job.save_point_name")
 
             flink_configuration = _builder.get(".properties{jobType:FlinkJob}.flinkConfiguration")
@@ -314,7 +314,6 @@ class Run(AAZCommand):
             )
             disc_flink_job.job_name = AAZStrType(
                 serialized_name="jobName",
-                flags={"required": True},
             )
             disc_flink_job.job_output = AAZStrType(
                 serialized_name="jobOutput",
@@ -323,6 +322,9 @@ class Run(AAZCommand):
             disc_flink_job.last_save_point = AAZStrType(
                 serialized_name="lastSavePoint",
                 flags={"read_only": True},
+            )
+            disc_flink_job.run_id = AAZStrType(
+                serialized_name="runId",
             )
             disc_flink_job.save_point_name = AAZStrType(
                 serialized_name="savePointName",

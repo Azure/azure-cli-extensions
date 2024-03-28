@@ -1,0 +1,52 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks cluster job list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --cluster-pool-name -g
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/cluster2024311163924/jobs?api-version=2023-11-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/cluster2024311163924/jobs/job-9fe-4b53-bdd3-af47318a4507","properties":{"jobType":"FlinkJob","runId":"job-9fe-4b53-bdd3-af47318a4507","jobName":"test","jobJarDirectory":"abfs://demodfs@flinkdemo.dfs.core.windows.net/jars","jarName":"FlinkJobDemo-1.0-SNAPSHOT.jar","action":"NEW","entryClass":"org.example.SleepJob"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/cluster2024311163924/jobs/job-d30-488a-91fd-4093b8cc0430","properties":{"jobType":"FlinkJob","runId":"job-d30-488a-91fd-4093b8cc0430","jobName":"test","jobJarDirectory":"abfs://demodfs@flinkdemo.dfs.core.windows.net/jars","jarName":"FlinkJobDemo-1.0-SNAPSHOT.jar","action":"NEW","entryClass":"org.example.SleepJob","flinkConfiguration":{"parallelism":"1"},"status":"JOB_LAUNCH_FAILED","jobOutput":"Job
+        execution failed. \nFailed to download jar","actionResult":"FAILED"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/cluster2024311163924/jobs/testname","properties":{"jobType":"FlinkJob","runId":"testname","jobName":"testname","jobJarDirectory":"abfs://demodfs@flinkdemo.dfs.core.windows.net","jarName":"jars","action":"NEW","entryClass":"org.example.SleepJob","args":"","flinkConfiguration":{"parallelism":"2","savepoint.directory":""},"status":"JOB_LAUNCH_FAILED","jobOutput":"Job
+        execution failed. \nFailed to download jar","actionResult":"FAILED"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Mar 2024 06:42:16 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ca00852f-fafc-42f6-b70a-296ad882ee99
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: B286D28C1D5043E3B103C59CA5E5E60E Ref B: SIN221080713021 Ref C: 2024-03-13T06:42:14Z'
+    status:
+      code: 200
+      message: OK
+version: 1

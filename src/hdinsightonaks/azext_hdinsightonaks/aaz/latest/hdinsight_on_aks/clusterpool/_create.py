@@ -19,13 +19,13 @@ class Create(AAZCommand):
     """Create a cluster pool.
 
     :example: Create a cluster pool.
-        az hdinsight-on-aks clusterpool create -g RG -n poolName -l westus3 --workernode-size Standard_E4s_v3
+        az hdinsight-on-aks clusterpool create -g {RG} -n {poolName} -l {westus3} --workernode-size {Standard_E4s_v3} --version {1.1}
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2023-11-01-preview"],
         ]
     }
 
@@ -79,7 +79,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_pool_version = AAZStrArg(
-            options=["--cluster-pool-version"],
+            options=["--version", "--cluster-pool-version"],
             arg_group="ClusterPoolProfile",
             help="Cluster pool version is a 2-part version.",
             fmt=AAZStrArgFormat(
@@ -116,11 +116,30 @@ class Create(AAZCommand):
         # define Arg Group "NetworkProfile"
 
         _args_schema = cls._args_schema
+        _args_schema.api_server_authorized_ip_ranges = AAZListArg(
+            options=["--api-server-ip-ranges", "--api-server-authorized-ip-ranges"],
+            arg_group="NetworkProfile",
+            help="IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with private AKS clusters. So you cannot set enablePrivateApiServer to true and apiServerAuthorizedIpRanges at the same time.",
+        )
+        _args_schema.private_server_enabled = AAZBoolArg(
+            options=["--private-server-enabled"],
+            arg_group="NetworkProfile",
+            help="ClusterPool is based on AKS cluster. AKS cluster exposes the API server to public internet by default. If you set this property to true, a private AKS cluster will be created, and it will use private apiserver, which is not exposed to public internet.",
+        )
+        _args_schema.outbound_type = AAZStrArg(
+            options=["--outbound-type"],
+            arg_group="NetworkProfile",
+            help="This can only be set at cluster pool creation time and cannot be changed later.",
+            enum={"loadBalancer": "loadBalancer", "userDefinedRouting": "userDefinedRouting"},
+        )
         _args_schema.subnet_id = AAZResourceIdArg(
             options=["--subnet-id"],
             arg_group="NetworkProfile",
             help="Cluster pool subnet resource id.",
         )
+
+        api_server_authorized_ip_ranges = cls._args_schema.api_server_authorized_ip_ranges
+        api_server_authorized_ip_ranges.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -217,7 +236,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }
@@ -269,7 +288,14 @@ class Create(AAZCommand):
 
             network_profile = _builder.get(".properties.networkProfile")
             if network_profile is not None:
+                network_profile.set_prop("apiServerAuthorizedIpRanges", AAZListType, ".api_server_authorized_ip_ranges")
+                network_profile.set_prop("enablePrivateApiServer", AAZBoolType, ".private_server_enabled")
+                network_profile.set_prop("outboundType", AAZStrType, ".outbound_type")
                 network_profile.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
+
+            api_server_authorized_ip_ranges = _builder.get(".properties.networkProfile.apiServerAuthorizedIpRanges")
+            if api_server_authorized_ip_ranges is not None:
+                api_server_authorized_ip_ranges.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -403,10 +429,22 @@ class Create(AAZCommand):
             )
 
             network_profile = cls._schema_on_200_201.properties.network_profile
+            network_profile.api_server_authorized_ip_ranges = AAZListType(
+                serialized_name="apiServerAuthorizedIpRanges",
+            )
+            network_profile.enable_private_api_server = AAZBoolType(
+                serialized_name="enablePrivateApiServer",
+            )
+            network_profile.outbound_type = AAZStrType(
+                serialized_name="outboundType",
+            )
             network_profile.subnet_id = AAZStrType(
                 serialized_name="subnetId",
                 flags={"required": True},
             )
+
+            api_server_authorized_ip_ranges = cls._schema_on_200_201.properties.network_profile.api_server_authorized_ip_ranges
+            api_server_authorized_ip_ranges.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

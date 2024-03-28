@@ -19,13 +19,13 @@ class List(AAZCommand):
     """List jobs of HDInsight on AKS cluster.
 
     :example: Get jobs of HDInsight on AKS cluster.
-        az hdinsight-on-aks cluster job list --cluster-name testcluster --cluster-pool-name testpool -g RG
+        az hdinsight-on-aks cluster job list --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName}
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/jobs", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/jobs", "2023-11-01-preview"],
         ]
     }
 
@@ -58,6 +58,10 @@ class List(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.filter = AAZStrArg(
+            options=["--filter"],
+            help="The system query option to filter job returned in the response. Allowed value is 'jobName eq {jobName}' or 'jarName eq {jarName}'.",
         )
         return cls._args_schema
 
@@ -131,7 +135,10 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "$filter", self.ctx.args.filter,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }
@@ -223,7 +230,6 @@ class List(AAZCommand):
             )
             disc_flink_job.job_name = AAZStrType(
                 serialized_name="jobName",
-                flags={"required": True},
             )
             disc_flink_job.job_output = AAZStrType(
                 serialized_name="jobOutput",
@@ -232,6 +238,9 @@ class List(AAZCommand):
             disc_flink_job.last_save_point = AAZStrType(
                 serialized_name="lastSavePoint",
                 flags={"read_only": True},
+            )
+            disc_flink_job.run_id = AAZStrType(
+                serialized_name="runId",
             )
             disc_flink_job.save_point_name = AAZStrType(
                 serialized_name="savePointName",

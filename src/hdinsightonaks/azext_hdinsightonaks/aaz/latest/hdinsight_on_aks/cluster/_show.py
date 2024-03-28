@@ -19,13 +19,13 @@ class Show(AAZCommand):
     """Get a HDInsight cluster.
 
     :example: Get a cluster with cluster name.
-        az hdinsight-on-aks cluster show  -n testcluster --cluster-pool-name testpool -g RG
+        az hdinsight-on-aks cluster show  -n {clusterName} --cluster-pool-name {poolName} -g {RG}
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}", "2023-11-01-preview"],
         ]
     }
 
@@ -131,7 +131,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }
@@ -218,6 +218,9 @@ class Show(AAZCommand):
             cluster_profile.autoscale_profile = AAZObjectType(
                 serialized_name="autoscaleProfile",
             )
+            cluster_profile.cluster_access_profile = AAZObjectType(
+                serialized_name="clusterAccessProfile",
+            )
             cluster_profile.cluster_version = AAZStrType(
                 serialized_name="clusterVersion",
                 flags={"required": True},
@@ -234,9 +237,9 @@ class Show(AAZCommand):
             )
             cluster_profile.identity_profile = AAZObjectType(
                 serialized_name="identityProfile",
-                flags={"required": True},
             )
-            cluster_profile.kafka_profile = AAZFreeFormDictType(
+            _ShowHelper._build_schema_identity_profile_read(cluster_profile.identity_profile)
+            cluster_profile.kafka_profile = AAZObjectType(
                 serialized_name="kafkaProfile",
             )
             cluster_profile.llap_profile = AAZFreeFormDictType(
@@ -251,6 +254,12 @@ class Show(AAZCommand):
             )
             cluster_profile.prometheus_profile = AAZObjectType(
                 serialized_name="prometheusProfile",
+            )
+            cluster_profile.ranger_plugin_profile = AAZObjectType(
+                serialized_name="rangerPluginProfile",
+            )
+            cluster_profile.ranger_profile = AAZObjectType(
+                serialized_name="rangerProfile",
             )
             cluster_profile.script_action_profiles = AAZListType(
                 serialized_name="scriptActionProfiles",
@@ -389,6 +398,16 @@ class Show(AAZCommand):
             days = cls._schema_on_200.properties.cluster_profile.autoscale_profile.schedule_based_config.schedules.Element.days
             days.Element = AAZStrType()
 
+            cluster_access_profile = cls._schema_on_200.properties.cluster_profile.cluster_access_profile
+            cluster_access_profile.enable_internal_ingress = AAZBoolType(
+                serialized_name="enableInternalIngress",
+                flags={"required": True},
+            )
+            cluster_access_profile.private_link_service_id = AAZStrType(
+                serialized_name="privateLinkServiceId",
+                flags={"read_only": True},
+            )
+
             components = cls._schema_on_200.properties.cluster_profile.components
             components.Element = AAZObjectType()
 
@@ -409,15 +428,24 @@ class Show(AAZCommand):
             _element.endpoint = AAZStrType(
                 flags={"required": True},
             )
+            _element.private_ssh_endpoint = AAZStrType(
+                serialized_name="privateSshEndpoint",
+            )
 
             web = cls._schema_on_200.properties.cluster_profile.connectivity_profile.web
             web.fqdn = AAZStrType(
                 flags={"required": True},
             )
+            web.private_fqdn = AAZStrType(
+                serialized_name="privateFqdn",
+            )
 
             flink_profile = cls._schema_on_200.properties.cluster_profile.flink_profile
             flink_profile.catalog_options = AAZObjectType(
                 serialized_name="catalogOptions",
+            )
+            flink_profile.deployment_mode = AAZStrType(
+                serialized_name="deploymentMode",
             )
             flink_profile.history_server = AAZObjectType(
                 serialized_name="historyServer",
@@ -428,6 +456,9 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
             _ShowHelper._build_schema_compute_resource_definition_read(flink_profile.job_manager)
+            flink_profile.job_spec = AAZObjectType(
+                serialized_name="jobSpec",
+            )
             flink_profile.num_replicas = AAZIntType(
                 serialized_name="numReplicas",
             )
@@ -444,9 +475,11 @@ class Show(AAZCommand):
             catalog_options.hive = AAZObjectType()
 
             hive = cls._schema_on_200.properties.cluster_profile.flink_profile.catalog_options.hive
+            hive.metastore_db_connection_authentication_mode = AAZStrType(
+                serialized_name="metastoreDbConnectionAuthenticationMode",
+            )
             hive.metastore_db_connection_password_secret = AAZStrType(
                 serialized_name="metastoreDbConnectionPasswordSecret",
-                flags={"required": True},
             )
             hive.metastore_db_connection_url = AAZStrType(
                 serialized_name="metastoreDbConnectionURL",
@@ -454,6 +487,26 @@ class Show(AAZCommand):
             )
             hive.metastore_db_connection_user_name = AAZStrType(
                 serialized_name="metastoreDbConnectionUserName",
+            )
+
+            job_spec = cls._schema_on_200.properties.cluster_profile.flink_profile.job_spec
+            job_spec.args = AAZStrType()
+            job_spec.entry_class = AAZStrType(
+                serialized_name="entryClass",
+            )
+            job_spec.jar_name = AAZStrType(
+                serialized_name="jarName",
+                flags={"required": True},
+            )
+            job_spec.job_jar_directory = AAZStrType(
+                serialized_name="jobJarDirectory",
+                flags={"required": True},
+            )
+            job_spec.save_point_name = AAZStrType(
+                serialized_name="savePointName",
+            )
+            job_spec.upgrade_mode = AAZStrType(
+                serialized_name="upgradeMode",
                 flags={"required": True},
             )
 
@@ -466,17 +519,46 @@ class Show(AAZCommand):
                 flags={"secret": True},
             )
 
-            identity_profile = cls._schema_on_200.properties.cluster_profile.identity_profile
-            identity_profile.msi_client_id = AAZStrType(
-                serialized_name="msiClientId",
+            kafka_profile = cls._schema_on_200.properties.cluster_profile.kafka_profile
+            kafka_profile.cluster_identity = AAZObjectType(
+                serialized_name="clusterIdentity",
+            )
+            _ShowHelper._build_schema_identity_profile_read(kafka_profile.cluster_identity)
+            kafka_profile.connectivity_endpoints = AAZObjectType(
+                serialized_name="connectivityEndpoints",
+            )
+            kafka_profile.disk_storage = AAZObjectType(
+                serialized_name="diskStorage",
                 flags={"required": True},
             )
-            identity_profile.msi_object_id = AAZStrType(
-                serialized_name="msiObjectId",
+            kafka_profile.enable_k_raft = AAZBoolType(
+                serialized_name="enableKRaft",
+            )
+            kafka_profile.enable_public_endpoints = AAZBoolType(
+                serialized_name="enablePublicEndpoints",
+            )
+            kafka_profile.remote_storage_uri = AAZStrType(
+                serialized_name="remoteStorageUri",
+            )
+
+            connectivity_endpoints = cls._schema_on_200.properties.cluster_profile.kafka_profile.connectivity_endpoints
+            connectivity_endpoints.bootstrap_server_endpoint = AAZStrType(
+                serialized_name="bootstrapServerEndpoint",
+            )
+            connectivity_endpoints.broker_endpoints = AAZListType(
+                serialized_name="brokerEndpoints",
+            )
+
+            broker_endpoints = cls._schema_on_200.properties.cluster_profile.kafka_profile.connectivity_endpoints.broker_endpoints
+            broker_endpoints.Element = AAZStrType()
+
+            disk_storage = cls._schema_on_200.properties.cluster_profile.kafka_profile.disk_storage
+            disk_storage.data_disk_size = AAZIntType(
+                serialized_name="dataDiskSize",
                 flags={"required": True},
             )
-            identity_profile.msi_resource_id = AAZStrType(
-                serialized_name="msiResourceId",
+            disk_storage.data_disk_type = AAZStrType(
+                serialized_name="dataDiskType",
                 flags={"required": True},
             )
 
@@ -503,6 +585,67 @@ class Show(AAZCommand):
             prometheus_profile.enabled = AAZBoolType(
                 flags={"required": True},
             )
+
+            ranger_plugin_profile = cls._schema_on_200.properties.cluster_profile.ranger_plugin_profile
+            ranger_plugin_profile.enabled = AAZBoolType(
+                flags={"required": True},
+            )
+
+            ranger_profile = cls._schema_on_200.properties.cluster_profile.ranger_profile
+            ranger_profile.ranger_admin = AAZObjectType(
+                serialized_name="rangerAdmin",
+                flags={"required": True},
+            )
+            ranger_profile.ranger_audit = AAZObjectType(
+                serialized_name="rangerAudit",
+            )
+            ranger_profile.ranger_usersync = AAZObjectType(
+                serialized_name="rangerUsersync",
+                flags={"required": True},
+            )
+
+            ranger_admin = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_admin
+            ranger_admin.admins = AAZListType(
+                flags={"required": True},
+            )
+            ranger_admin.database = AAZObjectType(
+                flags={"required": True},
+            )
+
+            admins = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_admin.admins
+            admins.Element = AAZStrType()
+
+            database = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_admin.database
+            database.host = AAZStrType(
+                flags={"required": True},
+            )
+            database.name = AAZStrType(
+                flags={"required": True},
+            )
+            database.password_secret_ref = AAZStrType(
+                serialized_name="passwordSecretRef",
+            )
+            database.username = AAZStrType()
+
+            ranger_audit = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_audit
+            ranger_audit.storage_account = AAZStrType(
+                serialized_name="storageAccount",
+            )
+
+            ranger_usersync = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_usersync
+            ranger_usersync.enabled = AAZBoolType()
+            ranger_usersync.groups = AAZListType()
+            ranger_usersync.mode = AAZStrType()
+            ranger_usersync.user_mapping_location = AAZStrType(
+                serialized_name="userMappingLocation",
+            )
+            ranger_usersync.users = AAZListType()
+
+            groups = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_usersync.groups
+            groups.Element = AAZStrType()
+
+            users = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_usersync.users
+            users.Element = AAZStrType()
 
             script_action_profiles = cls._schema_on_200.properties.cluster_profile.script_action_profiles
             script_action_profiles.Element = AAZObjectType()
@@ -606,13 +749,15 @@ class Show(AAZCommand):
             )
 
             metastore_spec = cls._schema_on_200.properties.cluster_profile.spark_profile.metastore_spec
+            metastore_spec.db_connection_authentication_mode = AAZStrType(
+                serialized_name="dbConnectionAuthenticationMode",
+            )
             metastore_spec.db_name = AAZStrType(
                 serialized_name="dbName",
                 flags={"required": True},
             )
             metastore_spec.db_password_secret_name = AAZStrType(
                 serialized_name="dbPasswordSecretName",
-                flags={"required": True},
             )
             metastore_spec.db_server_host = AAZStrType(
                 serialized_name="dbServerHost",
@@ -620,11 +765,9 @@ class Show(AAZCommand):
             )
             metastore_spec.db_user_name = AAZStrType(
                 serialized_name="dbUserName",
-                flags={"required": True},
             )
             metastore_spec.key_vault_id = AAZStrType(
                 serialized_name="keyVaultId",
-                flags={"required": True},
             )
             metastore_spec.thrift_url = AAZStrType(
                 serialized_name="thriftUrl",
@@ -674,9 +817,11 @@ class Show(AAZCommand):
                 serialized_name="catalogName",
                 flags={"required": True},
             )
+            _element.metastore_db_connection_authentication_mode = AAZStrType(
+                serialized_name="metastoreDbConnectionAuthenticationMode",
+            )
             _element.metastore_db_connection_password_secret = AAZStrType(
                 serialized_name="metastoreDbConnectionPasswordSecret",
-                flags={"required": True},
             )
             _element.metastore_db_connection_url = AAZStrType(
                 serialized_name="metastoreDbConnectionURL",
@@ -684,7 +829,6 @@ class Show(AAZCommand):
             )
             _element.metastore_db_connection_user_name = AAZStrType(
                 serialized_name="metastoreDbConnectionUserName",
-                flags={"required": True},
             )
             _element.metastore_warehouse_dir = AAZStrType(
                 serialized_name="metastoreWarehouseDir",
@@ -802,6 +946,36 @@ class _ShowHelper:
 
         _schema.cpu = cls._schema_compute_resource_definition_read.cpu
         _schema.memory = cls._schema_compute_resource_definition_read.memory
+
+    _schema_identity_profile_read = None
+
+    @classmethod
+    def _build_schema_identity_profile_read(cls, _schema):
+        if cls._schema_identity_profile_read is not None:
+            _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
+            _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
+            _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
+            return
+
+        cls._schema_identity_profile_read = _schema_identity_profile_read = AAZObjectType()
+
+        identity_profile_read = _schema_identity_profile_read
+        identity_profile_read.msi_client_id = AAZStrType(
+            serialized_name="msiClientId",
+            flags={"required": True},
+        )
+        identity_profile_read.msi_object_id = AAZStrType(
+            serialized_name="msiObjectId",
+            flags={"required": True},
+        )
+        identity_profile_read.msi_resource_id = AAZStrType(
+            serialized_name="msiResourceId",
+            flags={"required": True},
+        )
+
+        _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
+        _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
+        _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
 
     _schema_trino_debug_config_read = None
 
