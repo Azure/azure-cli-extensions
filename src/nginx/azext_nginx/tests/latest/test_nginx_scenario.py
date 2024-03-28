@@ -13,6 +13,7 @@ class NginxScenarioTest(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus2euap')
     def test_nginx(self, resource_group):
+        self.cassette.allow_playback_repeats = True
         self.kwargs.update({
             'deployment_name': 'azclitest-deployment',
             'location': 'eastus2euap',
@@ -32,16 +33,13 @@ class NginxScenarioTest(ScenarioTest):
         # Nginx for Azure Deployment
         self.cmd('cloud set --name AzureCloud --profile latest')
 
-        public_ip = self.cmd('network public-ip create --resource-group {rg} --name {public_ip_name} --version IPv4 --sku Standard --zone 2')
-        print("1. ", public_ip)
-        print("2. ", public_ip.get_output_in_json())
-        public_ip_res = public_ip.get_output_in_json()
+        public_ip = self.cmd('network public-ip create --resource-group {rg} --name {public_ip_name} --version IPv4 --sku Standard --zone 2').get_output_in_json()
         time.sleep(15)
         vnet = self.cmd('network vnet create --resource-group {rg} --name {vnet_name} --address-prefixes 10.0.0.0/16 --subnet-name {subnet_name}').get_output_in_json()
         time.sleep(15)
         self.cmd('network vnet subnet update --resource-group {rg} --name {subnet_name} --vnet-name {vnet_name} --delegations NGINX.NGINXPLUS/nginxDeployments')
 
-        self.kwargs['public_ip_addresses'] = "{public-ip-addresses:[{id:" + public_ip_res['publicIp']['id'] + "}]}"
+        self.kwargs['public_ip_addresses'] = "{public-ip-addresses:[{id:" + public_ip['publicIp']['id'] + "}]}"
         self.kwargs['subnet_id'] = "{subnet-id:" + vnet['newVNet']['subnets'][0]['id'] + "}"
 
         managed_identity = self.cmd('identity create --name {managed_identity} --resource-group {rg}').get_output_in_json()
