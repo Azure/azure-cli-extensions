@@ -28,17 +28,10 @@ class TestUpdateCluster(ScenarioTest):
             "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4').get_output_in_json(),
         })
 
-        # Get spark cluster version and ossVersion.
+        # If there is no existing cluster to test, use the following code to create the cluster.
         # spark_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
-
-        # # Create a spark cluster.
         # create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --spark-storage-url abfs://testspark@yuchenhilostorage.dfs.core.windows.net/ --cluster-version ' + spark_versions[0]["clusterVersion"] + ' --oss-version ' + spark_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ authorization_info()
-
-        # self.cmd(create_command,checks=[
-        #     self.check("name", '{clusterName}'),
-        #     self.check("location", '{loc}'),
-        #     self.check("computeProfile.nodes[1].count", 5)
-        # ])
+        # self.cmd(create_command)
 
         # Test list a clusterpool's available upgrades.
         upgrades = self.cmd(
@@ -54,5 +47,5 @@ class TestUpdateCluster(ScenarioTest):
         self.cmd(
             'az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {rg} --upgrade-profile target-aks-version=1.27.9 upgrade-clusters=false upgrade-cluster-pool=true')
 
-        # Test upgrade a cluster.
+        # Test upgrade a cluster.(There is currently no upgradeable version, but need to test it later)
         # self.cmd('az hdinsight-on-aks cluster upgrade run --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName} --hotfix-upgrade component-name=' + upgrades[0]["componentName"] + ' target-build-number='+upgrades[0]["targetBuildNumber"] +' target-cluster-version='+upgrades[0]["targetClusterVersion"] +' target-oss-version='+ upgrades[0]["targetOssVersion"])

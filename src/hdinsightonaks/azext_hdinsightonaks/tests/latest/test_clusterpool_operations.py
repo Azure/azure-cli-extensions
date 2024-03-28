@@ -53,6 +53,3 @@ class HdinsightonaksClusterPoolScenario(ScenarioTest):
             self.check("location", '{loc}'),
             self.check("status", 'Running')
         ])
-
-        # Delete a Cluster Pool.
-        # self.cmd('az hdinsight-on-aks clusterpool delete -g {rg} -n {poolName} --yes')

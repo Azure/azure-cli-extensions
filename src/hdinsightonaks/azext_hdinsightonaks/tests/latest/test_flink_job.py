@@ -28,20 +28,16 @@ class TestRunFlinkJob(ScenarioTest):
             "storageUri": "abfs://testflinkjob@hiloclistorage.dfs.core.windows.net",
         })
 
-        # Create a Flink cluster.
+        # If there is no existing cluster to test, use the following code to create the cluster.
         # flink_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Flink\']"').get_output_in_json()
-
         # create_command = 'az hdinsight-on-aks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --cluster-version ' \
         #       + flink_versions[0]["clusterVersion"] + ' --oss-version ' + flink_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' \
         #         +' '+ authorization_info() + " " + flink_config_str() + ' --flink-storage-uri {storageUri}'
+        # self.cmd(create_command)
 
-        # self.cmd(create_command,checks=[
-        #     self.check("name", '{clusterName}'),
-        #     self.check("location", '{loc}'),
-        # ])
-
-        # Run a job on a Flink cluster.
-        # self.cmd('az hdinsight-on-aks cluster job run --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg} --flink-job job-name="test" action="DELETE"')
+        # Use bellow command manually add a job to the flink cluster.
+        # az hdinsight-on-aks cluster job run --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg} --flink-job job-name="test" job-jar-directory="abfs://flinkdemo125dfsuoi@flinkdemo125stuoi.dfs.core.windows.net/jars" jar-name="FlinkJobDemo-1.0-SNAPSHOT.jar" entry-class="org.example.SleepJob" action="NEW" flink-configuration="{parallelism:1}"
+       
         # List a cluster job list.
         self.cmd(
             'az hdinsight-on-aks cluster job list --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}')

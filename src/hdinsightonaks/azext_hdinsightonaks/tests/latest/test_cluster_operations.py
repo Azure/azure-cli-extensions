@@ -7,7 +7,7 @@
 
 import os
 from .testUtil import authorization_info
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -40,7 +40,6 @@ class HdinsightonaksClusterScenario(ScenarioTest):
             self.check("nameAvailable", True)
         ])
 
-    # @ResourceGroupPreparer(name_prefix='hilocli-', location=location, random_name_length=12)
     def test_create_cluster(self):
         self.kwargs.update({
             "loc": self.location,
@@ -91,6 +90,3 @@ class HdinsightonaksClusterScenario(ScenarioTest):
         self.cmd('az hdinsight-on-aks cluster instance-view show --cluster-name {clusterName} --cluster-pool-name {poolName} -g {rg}', checks=[
             self.check("status.ready", True)
         ])
-
-        # Delete a cluster.
-        # self.cmd('az hdinsight-on-aks cluster delete -n {clusterName} --cluster-pool-name {poolName} -g {rg} --yes')

@@ -612,25 +612,21 @@ class Create(AAZCommand):
             options=["--enable-coord-ha", "--coordinator-high-availability-enabled"],
             arg_group="Coordinator",
             help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: false.",
-            default=False,
         )
         _args_schema.coordinator_debug_port = AAZIntArg(
             options=["--coord-debug-port", "--coordinator-debug-port"],
             arg_group="Coordinator",
             help="The flag that if enable debug or not. Default: 8008.",
-            default=8008,
         )
         _args_schema.coordinator_debug_suspend = AAZBoolArg(
             options=["--coord-debug-suspend", "--coordinator-debug-suspend"],
             arg_group="Coordinator",
             help="The flag that if suspend debug or not. Default: false.",
-            default=False,
         )
         _args_schema.coordinator_debug_enabled = AAZBoolArg(
             options=["--enable-coord-debug", "--coordinator-debug-enabled"],
             arg_group="Coordinator",
             help="The flag that if enable coordinator HA, uses multiple coordinator replicas with auto failover, one per each head node. Default: false.",
-            default=True,
         )
 
         # define Arg Group "FlinkProfile"
@@ -640,7 +636,6 @@ class Create(AAZCommand):
             options=["--flink-db-auth-mode", "--metastore-db-connection-authentication-mode"],
             arg_group="FlinkProfile",
             help="The authentication mode to connect to your Hive metastore database. More details: https://learn.microsoft.com/en-us/azure/azure-sql/database/logins-create-manage?view=azuresql#authentication-and-authorization",
-            default="IdentityAuth",
             enum={"IdentityAuth": "IdentityAuth", "SqlAuth": "SqlAuth"},
         )
         _args_schema.flink_hive_catalog_db_connection_password_secret = AAZStrArg(
@@ -786,7 +781,6 @@ class Create(AAZCommand):
             options=["--enable-prometheu"],
             arg_group="PrometheusProfile",
             help="Enable Prometheus for cluster or not.",
-            default=False,
         )
 
         # define Arg Group "Properties"
@@ -855,7 +849,6 @@ class Create(AAZCommand):
             options=["--spark-db-auth-mode", "--db-connection-authentication-mode"],
             arg_group="SparkProfile",
             help="The authentication mode to connect to your Hive metastore database. More details: https://learn.microsoft.com/en-us/azure/azure-sql/database/logins-create-manage?view=azuresql#authentication-and-authorization",
-            default="IdentityAuth",
             enum={"IdentityAuth": "IdentityAuth", "SqlAuth": "SqlAuth"},
         )
         _args_schema.spark_hive_catalog_db_name = AAZStrArg(
@@ -934,19 +927,16 @@ class Create(AAZCommand):
             options=["--enable-worker-debug"],
             arg_group="TrinoClusterWorker",
             help="The flag that if trino cluster enable debug or not. Default: false.",
-            default=False,
         )
         _args_schema.worker_debug_port = AAZIntArg(
             options=["--worker-debug-port"],
             arg_group="TrinoClusterWorker",
             help="The debug port. Default: 8008.",
-            default=8008,
         )
         _args_schema.worker_debug_suspend = AAZBoolArg(
             options=["--worker-debug-suspend"],
             arg_group="TrinoClusterWorker",
             help="The flag that if trino cluster suspend debug or not. Default: false.",
-            default=False,
         )
 
         # define Arg Group "TrinoHiveCatalog"
