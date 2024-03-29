@@ -3257,10 +3257,9 @@ def _aks_run_command(
         vmss_name=None,
         instance_id=None,
         vm_name=None,
-        fqdn=None,
         custom_endpoints=None):
     try:
-        command = f"bash /opt/azure/containers/aks-check-network.sh {fqdn}"
+        command = "bash /opt/azure/containers/aks-check-network.sh"
         if custom_endpoints:
             endpoint_list = [endpoint.strip() for endpoint in custom_endpoints.split(",")]
             all_endpoints = ",".join(endpoint_list)
@@ -3435,15 +3434,9 @@ def aks_check_network_outbound(
         cluster_name,
         node_name=None,
         custom_endpoints=None):
-    fqdn = ""
     cluster = aks_show(cmd, client, resource_group_name, cluster_name, None)
     if not cluster:
         raise ValidationError("Can not get cluster information!")
-
-    fqdn = cluster.fqdn
-    if not fqdn:
-        raise ValidationError("Can not get cluster api server!")
-    print("Get cluster api server:", fqdn)
 
     vm_set_type = cluster.agent_pool_profiles[0].type
     if not vm_set_type:
@@ -3478,5 +3471,4 @@ def aks_check_network_outbound(
                             vmss_name,
                             instance_id,
                             vm_name,
-                            fqdn,
                             custom_endpoints)
