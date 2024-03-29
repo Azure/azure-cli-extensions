@@ -17,7 +17,7 @@ if ($init)
 		}
 		if($repo_branch -eq $null)
 		{
-			$repo_branch = 'master'
+			$repo_branch = 'main'
 		}
 		$url = "https://github.com/$repo_fork/repair-script-library/zipball/$repo_branch/"
 		(new-object net.webclient).DownloadFile($url, (Join-Path $pwd 'repair-script-library.zip'))
