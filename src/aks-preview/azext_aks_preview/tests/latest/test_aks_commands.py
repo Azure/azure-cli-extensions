@@ -64,6 +64,27 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 return version
         return ""
 
+    def _get_lts_version(self, location):
+        """Return the latest LTS version in the given location."""
+        data = self.cmd(
+            "az aks get-versions -l {}".format(
+                location
+            )
+        ).get_output_in_json()
+        lts_versions = []
+        for version_block in data.get("values", []):
+            caps = version_block.get("capabilities", {})
+            sps = caps.get("supportPlan", [])
+            for sp in sps:
+                if sp == "AKSLongTermSupport":
+                    lts_versions.append(version_block.get("version", ""))
+                    break
+        # remove empty strings
+        lts_versions = [x for x in lts_versions if x]
+        # sort by semantic version, from newest to oldest
+        lts_versions = sorted(lts_versions, key=lambda x: list(map(int, x.split("."))), reverse=True)
+        return lts_versions[0] if lts_versions else None
+
     def _get_asm_supported_revision(self, location):
         revisions_cmd = f"aks mesh get-revisions -l {location}"
         revisions = self.cmd(revisions_cmd).get_output_in_json()
@@ -12045,15 +12066,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
-        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
-        k8s_version, _ = self._get_versions(resource_group_location)
+        lst_version = self._get_lts_version(resource_group_location)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "location": resource_group_location,
-                "k8s_version": k8s_version,
+                "k8s_version": lst_version,
             }
         )
 
@@ -12086,8 +12106,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_update_with_premium_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
-        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
-        k8s_version, _ = self._get_versions(resource_group_location)
+        lst_version = self._get_lts_version(resource_group_location)
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
             {
@@ -12095,7 +12114,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "location": resource_group_location,
-                "k8s_version": k8s_version,
+                "k8s_version": lst_version,
             }
         )
 
