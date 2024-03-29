@@ -88,7 +88,7 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.custom_properties = AAZObjectArg(
+        _args_schema.custom_properties = AAZFreeFormDictArg(
             options=["--custom-properties"],
             arg_group="Properties",
             help="The custom metadata defined for API catalog entities.",
@@ -253,13 +253,17 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("customProperties", AAZObjectType, ".custom_properties")
+                properties.set_prop("customProperties", AAZFreeFormDictType, ".custom_properties")
                 properties.set_prop("definitionId", AAZStrType, ".definition_id")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("environmentId", AAZStrType, ".environment_id")
                 properties.set_prop("server", AAZObjectType, ".server")
                 properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("title", AAZStrType, ".title")
+
+            custom_properties = _builder.get(".properties.customProperties")
+            if custom_properties is not None:
+                custom_properties.set_anytype_elements(".")
 
             server = _builder.get(".properties.server")
             if server is not None:
@@ -307,7 +311,7 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.custom_properties = AAZObjectType(
+            properties.custom_properties = AAZFreeFormDictType(
                 serialized_name="customProperties",
             )
             properties.definition_id = AAZStrType(

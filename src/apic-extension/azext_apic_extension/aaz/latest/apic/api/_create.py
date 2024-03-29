@@ -84,7 +84,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The contact information for the API.",
         )
-        _args_schema.custom_properties = AAZObjectArg(
+        _args_schema.custom_properties = AAZFreeFormDictArg(
             options=["--custom-properties"],
             arg_group="Properties",
             help="The custom metadata defined for API catalog entities.",
@@ -107,6 +107,7 @@ class Create(AAZCommand):
             options=["--kind"],
             arg_group="Properties",
             help="Kind of API. For example, REST or GraphQL.",
+            required=True,
             enum={"graphql": "graphql", "grpc": "grpc", "rest": "rest", "soap": "soap", "webhook": "webhook", "websocket": "websocket"},
         )
         _args_schema.license = AAZObjectArg(
@@ -131,6 +132,7 @@ class Create(AAZCommand):
             options=["--title"],
             arg_group="Properties",
             help="API title.",
+            required=True,
             fmt=AAZStrArgFormat(
                 max_length=50,
                 min_length=1,
@@ -327,7 +329,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("contacts", AAZListType, ".contacts")
-                properties.set_prop("customProperties", AAZObjectType, ".custom_properties")
+                properties.set_prop("customProperties", AAZFreeFormDictType, ".custom_properties")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("externalDocumentation", AAZListType, ".external_documentation")
                 properties.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
@@ -345,6 +347,10 @@ class Create(AAZCommand):
                 _elements.set_prop("email", AAZStrType, ".email")
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("url", AAZStrType, ".url")
+
+            custom_properties = _builder.get(".properties.customProperties")
+            if custom_properties is not None:
+                custom_properties.set_anytype_elements(".")
 
             external_documentation = _builder.get(".properties.externalDocumentation")
             if external_documentation is not None:
@@ -405,7 +411,7 @@ class Create(AAZCommand):
 
             properties = cls._schema_on_200_201.properties
             properties.contacts = AAZListType()
-            properties.custom_properties = AAZObjectType(
+            properties.custom_properties = AAZFreeFormDictType(
                 serialized_name="customProperties",
             )
             properties.description = AAZStrType()

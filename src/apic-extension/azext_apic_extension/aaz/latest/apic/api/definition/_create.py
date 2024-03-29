@@ -106,6 +106,7 @@ class Create(AAZCommand):
             options=["--title"],
             arg_group="Properties",
             help="API version.",
+            required=True,
             fmt=AAZStrArgFormat(
                 max_length=50,
                 min_length=1,

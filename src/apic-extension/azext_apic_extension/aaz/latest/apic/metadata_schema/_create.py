@@ -77,6 +77,7 @@ class Create(AAZCommand):
             options=["--schema"],
             arg_group="Properties",
             help="JSON schema defining the type.",
+            required=True,
         )
 
         assigned_to = cls._args_schema.assigned_to

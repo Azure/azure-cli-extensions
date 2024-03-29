@@ -79,7 +79,7 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.custom_properties = AAZObjectArg(
+        _args_schema.custom_properties = AAZFreeFormDictArg(
             options=["--custom-properties"],
             arg_group="Properties",
             help="The custom metadata defined for API catalog entities.",
@@ -94,6 +94,7 @@ class Create(AAZCommand):
             options=["--kind"],
             arg_group="Properties",
             help="Environment kind.",
+            required=True,
             enum={"development": "development", "production": "production", "staging": "staging", "testing": "testing"},
         )
         _args_schema.onboarding = AAZObjectArg(
@@ -109,6 +110,7 @@ class Create(AAZCommand):
             options=["--title"],
             arg_group="Properties",
             help="Environment title.",
+            required=True,
             fmt=AAZStrArgFormat(
                 max_length=50,
                 min_length=1,
@@ -243,12 +245,16 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("customProperties", AAZObjectType, ".custom_properties")
+                properties.set_prop("customProperties", AAZFreeFormDictType, ".custom_properties")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("onboarding", AAZObjectType, ".onboarding")
                 properties.set_prop("server", AAZObjectType, ".server")
                 properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
+
+            custom_properties = _builder.get(".properties.customProperties")
+            if custom_properties is not None:
+                custom_properties.set_anytype_elements(".")
 
             onboarding = _builder.get(".properties.onboarding")
             if onboarding is not None:
@@ -306,7 +312,7 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.custom_properties = AAZObjectType(
+            properties.custom_properties = AAZFreeFormDictType(
                 serialized_name="customProperties",
             )
             properties.description = AAZStrType()

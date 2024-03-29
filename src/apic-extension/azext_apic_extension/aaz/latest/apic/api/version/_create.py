@@ -92,12 +92,14 @@ class Create(AAZCommand):
             options=["--lifecycle-stage"],
             arg_group="Properties",
             help="Current lifecycle stage of the API.",
+            required=True,
             enum={"deprecated": "deprecated", "design": "design", "development": "development", "preview": "preview", "production": "production", "retired": "retired", "testing": "testing"},
         )
         _args_schema.title = AAZStrArg(
             options=["--title"],
             arg_group="Properties",
             help="API version.",
+            required=True,
             fmt=AAZStrArgFormat(
                 max_length=50,
                 min_length=1,

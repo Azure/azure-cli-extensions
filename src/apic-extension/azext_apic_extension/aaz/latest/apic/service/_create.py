@@ -71,6 +71,7 @@ class Create(AAZCommand):
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Payload",
             help="The geo-location where the resource lives",
+            required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
