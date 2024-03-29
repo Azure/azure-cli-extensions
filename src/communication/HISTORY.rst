@@ -2,10 +2,6 @@
 
 Release History
 ===============
-1.8.0b3
-++++++
-* Add Email communication Domain resource Initiate and Cancel verification operations
-
 1.8.0b2
 ++++++
 * Add Email communication resource CRUD operations
