@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.8.0
+++++++
+* Adding managed identity support for stable api version 2023-04-01
+
 1.8.0b2
 ++++++
 * Add Email communication resource CRUD operations

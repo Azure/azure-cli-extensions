@@ -211,6 +211,7 @@ def load_command_table(self, _):
         g.command('pause', 'pause')
         g.command('resume', 'resume')
         g.command('cancel', 'cancel')
+        g.command('complete', 'complete')
 
     # Merge partitions for Sql containers
     cosmosdb_sql_sdk = CliCommandType(

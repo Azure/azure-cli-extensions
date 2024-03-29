@@ -77,3 +77,7 @@ Release History
 1.0.4
 ++++++
 * Added new --upgrade-type parameter "ControlPlaneOnly" for command `az fleet updaterun create --upgrade-type`.
+
+1.0.5
+++++++
+* Upgrade SDK version to 2024-02-02-preview

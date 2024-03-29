@@ -35,7 +35,7 @@ class DataProtectionKubernetes(DefaultExtension):
         self.blob_container = "blobContainer"
         self.storage_account = "storageAccount"
         self.storage_account_resource_group = "storageAccountResourceGroup"
-        self.storage_account_subsciption = "storageAccountSubscriptionId"
+        self.storage_account_subscription = "storageAccountSubscriptionId"
         self.cpu_limit = "cpuLimit"
         self.memory_limit = "memoryLimit"
         self.use_aad = "useAAD"
@@ -45,7 +45,7 @@ class DataProtectionKubernetes(DefaultExtension):
             self.blob_container.lower(): self.BACKUP_STORAGE_ACCOUNT_CONTAINER,
             self.storage_account.lower(): self.BACKUP_STORAGE_ACCOUNT_NAME,
             self.storage_account_resource_group.lower(): self.BACKUP_STORAGE_ACCOUNT_RESOURCE_GROUP,
-            self.storage_account_subsciption.lower(): self.BACKUP_STORAGE_ACCOUNT_SUBSCRIPTION,
+            self.storage_account_subscription.lower(): self.BACKUP_STORAGE_ACCOUNT_SUBSCRIPTION,
             self.cpu_limit.lower(): self.RESOURCE_LIMIT_CPU,
             self.memory_limit.lower(): self.RESOURCE_LIMIT_MEMORY,
             self.use_aad.lower(): self.BACKUP_STORAGE_ACCOUNT_USE_AAD,
@@ -56,7 +56,7 @@ class DataProtectionKubernetes(DefaultExtension):
             self.blob_container,
             self.storage_account,
             self.storage_account_resource_group,
-            self.storage_account_subsciption
+            self.storage_account_subscription
         ]
 
     def Create(
@@ -158,10 +158,11 @@ class DataProtectionKubernetes(DefaultExtension):
             logger.warning("storageAccountURI is not populated. Setting it to the storage account URI of provided storage account")
             if bsl_specified:
                 configuration_settings[self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI] = self.__get_storage_account_uri(cmd.cli_ctx, configuration_settings)
+                logger.warning(f"storageAccountURI: {configuration_settings[self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI]}")
             # SA details not provided in user input, SA Uri not provided in user input, and also not populated in the original extension, we populate it.
             elif not bsl_specified and original_extension.configuration_settings.get(self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI) is None:
                 configuration_settings[self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI] = self.__get_storage_account_uri(cmd.cli_ctx, original_extension.configuration_settings)
-            logger.warning(f"storageAccountURI: {configuration_settings[self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI]}")
+                logger.warning(f"storageAccountURI: {configuration_settings[self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI]}")
 
         return PatchExtension(
             auto_upgrade_minor_version=True,

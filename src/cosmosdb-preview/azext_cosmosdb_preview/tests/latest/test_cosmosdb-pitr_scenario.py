@@ -188,7 +188,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_command', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_command', location='westcentralus')
     @AllowLargeResponse(size_kb=9999)
     def test_cosmosdb_table_account_restore_command(self, resource_group):
         table = self.create_random_name(prefix='cli', length=15)
@@ -197,7 +197,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'table': table,
-            'loc': 'eastus2'
+            'loc': 'westcentralus'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
@@ -216,16 +216,18 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         time.sleep(240)
         restore_ts_string = restore_ts.isoformat()
         self.kwargs.update({
-            'rts': restore_ts_string
+            'rts': restore_ts_string,
+            'dt': True
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc}')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --disable-ttl {dt}')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
 
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
+        assert restored_account['restoreParameters']['restoreWithTtlDisabled'] is True
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_restorable_commands', location='eastus2')
     @AllowLargeResponse(size_kb=9999)
@@ -286,7 +288,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB')
-        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as database doesn't exist
         self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb sql retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
@@ -354,7 +356,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb mongodb retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind MongoDB')
-        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as database doesn't exist
         self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb mongodb retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
@@ -419,7 +421,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb gremlin retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -n {graph} -l {loc}'))
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --capabilities EnableGremlin')
-        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as database doesn't exist
         self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb gremlin retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -n {graph} -l {loc}'))
@@ -484,7 +486,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb table retrieve-latest-backup-time -g {rg} -a {acc} -n {table} -l {loc}'))
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --capabilities EnableTable')
-        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as collection doesn't exist
         self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb table retrieve-latest-backup-time -g {rg} -a {acc} -n {table} -l {loc}'))
@@ -695,8 +697,8 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'user1' : self.create_random_name(prefix='user1-', length = 10),
-            'user2' : self.create_random_name(prefix='user2-', length = 10)
+            'user1': self.create_random_name(prefix='user1-', length=10),
+            'user2': self.create_random_name(prefix='user2-', length=10)
         })
 
         # Create new User Identity 1
@@ -712,20 +714,20 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         default_id2 = 'UserAssignedIdentity=' + user_id_2
 
         # Keyvault and identity parameters
-        keyVaultName = self.create_random_name(prefix='clikeyvault-', length = 20)
-        keyName = self.create_random_name(prefix='clikey-', length = 12)
+        keyVaultName = self.create_random_name(prefix='clikeyvault-', length=20)
+        keyName = self.create_random_name(prefix='clikey-', length=12)
         keyVaultKeyUri = "https://{}.vault.azure.net/keys/{}".format(keyVaultName, keyName)
 
         self.kwargs.update({
-            'keyVaultName' : keyVaultName,
-            'keyName' : keyName,
-            'keyVaultKeyUri' : keyVaultKeyUri,
-            'user_id_1' : user_id_1,
-            'user_id_2' : user_id_2,
-            'user_principal_1' : user_principal_1,
-            'user_principal_2' : user_principal_2,
-            'default_id1' : default_id1,
-            'default_id2' : default_id2
+            'keyVaultName': keyVaultName,
+            'keyName': keyName,
+            'keyVaultKeyUri': keyVaultKeyUri,
+            'user_id_1': user_id_1,
+            'user_id_2': user_id_2,
+            'user_principal_1': user_principal_1,
+            'user_principal_2': user_principal_2,
+            'default_id1': default_id1,
+            'default_id2': default_id2
         })
 
         # Create new keyvault
@@ -733,7 +735,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
         # Enable purge protection for keyvault
         self.cmd('az keyvault update --subscription {subscriptionid} -g {rg} -n {keyVaultName} --enable-purge-protection true')
-        
+
         # Create new key inside keyvault
         self.cmd('az keyvault key create --vault-name {keyVaultName} -n {keyName} --kty RSA --size 3072')
 
@@ -742,7 +744,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.cmd('az keyvault set-policy --name {keyVaultName} --resource-group {rg} --object-id {user_principal_2} --key-permissions get unwrapKey wrapKey')
 
         print('Finished setting up new KeyVault')
-        
+
         # Create PITR account with User Identity 1
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --key-uri {keyVaultKeyUri} --assign-identity {user_id_1} --default-identity {default_id1}')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
@@ -803,11 +805,11 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.kwargs.update({
             'rts': restore_ts_string,
             'loc': 'eastus2',
-            'user_id_2' : user_id_2,
-            'default_id2' : default_id2
+            'user_id_2': user_id_2,
+            'default_id2': default_id2
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --assign-identity {user_id_2} --default-identity {default_id2} --enable-public-network False')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --assign-identity {user_id_2} --default-identity {default_id2} --public-network-access Disabled')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
@@ -823,7 +825,6 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
         public_network_access = restored_account['publicNetworkAccess']
         assert public_network_access == 'Disabled'
-    
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cross_region_restore', location='westcentralus')
@@ -890,7 +891,6 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
         assert restored_account['writeLocations'][0]['locationName'] == 'North Central US'
-
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cross_region_restore', location='westcentralus')
