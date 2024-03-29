@@ -165,6 +165,10 @@ helps['aks create'] = f"""
           type: string
           short-summary: Load balancer backend pool type.
           long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
+        - name: --cluster-service-load-balancer-health-probe-mode
+          type: string
+          short-summary: Set the cluster service health probe mode.
+          long-summary: Set the cluster service health probe mode. Valid values are "Shared" and "Servicenodeport". Default is "Servicenodeport".
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -791,6 +795,10 @@ helps['aks update'] = """
           type: string
           short-summary: Load balancer backend pool type.
           long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
+        - name: --cluster-service-load-balancer-health-probe-mode
+          type: string
+          short-summary: Set the cluster service health probe mode.
+          long-summary: Set the cluster service health probe mode. Valid values are "Shared" and "Servicenodeport". Default is "Servicenodeport".
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.

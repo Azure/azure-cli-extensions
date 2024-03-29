@@ -7323,6 +7323,45 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="centraluseuap",
+        preserve_default_location=True,
+    )
+    def test_aks_create_or_update_with_health_probe_mode(
+        self, resource_group, resource_group_location
+    ):
+        _, create_version = self._get_versions(resource_group_location)
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "k8s_version": create_version,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} "
+            "--kubernetes-version={k8s_version} "
+            "--cluster-service-load-balancer-health-probe-mode=Servicenodeport "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableSLBSharedHealthProbePreview"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check(
+                    "networkProfile.loadBalancerProfile.clusterServiceLoadBalancerHealthProbeMode", "Servicenodeport"
+                ),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="centraluseuap"
     )
     def test_aks_update_with_windows_gmsa(
