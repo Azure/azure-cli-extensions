@@ -2913,16 +2913,14 @@ def aks_mesh_enable_egress_gateway(
         cmd,
         client,
         resource_group_name,
-        name,
-        egx_gtw_nodeselector,
+        name
 ):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
-        enable_egress_gateway=True,
-        egx_gtw_nodeselector=egx_gtw_nodeselector)
+        enable_egress_gateway=True)
 
 
 def aks_mesh_disable_egress_gateway(
@@ -2936,8 +2934,7 @@ def aks_mesh_disable_egress_gateway(
         client,
         resource_group_name,
         name,
-        disable_egress_gateway=True,
-        egx_gtw_nodeselector=None)
+        disable_egress_gateway=True)
 
 
 def aks_mesh_get_revisions(
@@ -3047,7 +3044,6 @@ def _aks_mesh_update(
         disable_ingress_gateway=None,
         ingress_gateway_type=None,
         enable_egress_gateway=None,
-        egx_gtw_nodeselector=None,
         disable_egress_gateway=None,
         revision=None,
         mesh_upgrade_command=None,
