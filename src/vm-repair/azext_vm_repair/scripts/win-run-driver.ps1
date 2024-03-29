@@ -11,11 +11,11 @@ if ($init)
 		$logFileName = "logs-$curDate.txt"
 		Set-Content -Path "./$logFileName" -Value "[Log-Start $(Get-Date)]"
 		$logFile = (Resolve-Path "./$logFileName").Path
-		if($repo_fork -eq $null)
+		if ([string]::IsNullOrEmpty($repo_fork))
 		{
-			$repo_fork = 'Azure/repair-script-library'
+			$repo_fork = 'Azure'
 		}
-		if($repo_branch -eq $null)
+		if ([string]::IsNullOrEmpty($repo_branch))
 		{
 			$repo_branch = 'main'
 		}
