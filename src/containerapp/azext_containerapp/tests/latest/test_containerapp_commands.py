@@ -2377,4 +2377,121 @@ class ContainerappOtherPropertyTests(ScenarioTest):
         self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.25 --memory 0.5Gi')
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.configuration.maxInactiveRevisions", maxInactiveRevisions)])
 
-        
+class ContainerappRuntimeTests(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northcentralus")
+    def test_containerapp_runtime_java_diagnostic_create(self, resource_group):
+
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        app = self.create_random_name(prefix='aca', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        # Create container app without enabling java diagnostic
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.configuration.runtime", None)
+        ])
+
+        # Delete container app
+        self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+
+        # Create container app with default java runtime settings
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} --runtime=java')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", False)
+        ])
+
+        # Delete container app
+        self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+
+        # Create container app with enabling java diagnostic
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} --enable-java-diagnostic')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
+
+        # Delete container app
+        self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+
+        # Create container app with disabling java diagnostic
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} --enable-java-diagnostic=false')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", False)
+        ])
+
+        # Delete container app
+        self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+
+        # Create container app failed with unsupported runtime
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} --runtime=otherlanguage',
+                 expect_failure=True)
+
+        # Delete container app
+        self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+
+        # # Create container app with enabling java diagnostic and runtime with java
+        # self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} --runtime=java --enable-java-diagnostic')
+        # self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
+        #     JMESPathCheck("properties.configuration.runtime.java.enableDiagnostic", False)
+        # ])
+
+    # @AllowLargeResponse(8192)
+    # @ResourceGroupPreparer(location="northcentralus")
+    # def test_containerapp_runtime_java_diagnostic_update(self, resource_group):
+    #
+    #     location = TEST_LOCATION
+    #     if format_location(location) == format_location(STAGE_LOCATION):
+    #         location = "eastus"
+    #     self.cmd('configure --defaults location={}'.format(location))
+    #
+    #     app = self.create_random_name(prefix='aca', length=24)
+    #     image = "mcr.microsoft.com/k8se/quickstart:latest"
+    #
+    #     env = prepare_containerapp_env_for_app_e2e_tests(self)
+    #
+    #     # Create container app without enabling java diagnostic
+    #     self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env}')
+    #     self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+    #         JMESPathCheck("properties.configuration.runtime", None)
+    #     ])
+    #
+    #     # Update contaier app with default settings
+    #     self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
+    #         JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", False)
+    #     ])
+    #
+    #     # Update container app to enable java diagnostic
+    #     self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-diagnostic', checks=[
+    #         JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+    #     ])
+    #
+    #     # Update container app to disable java diagnostic
+    #     self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-diagnostic=false', checks=[
+    #         JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", False)
+    #     ])
+    #
+    #     # Update container app to reset runtime configuration
+    #     self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=generic', checks=[
+    #         JMESPathCheck("properties.configuration.runtime", None)
+    #     ])
+    #
+    #     # Update container app failed with wrong runtime
+    #     self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=generic --enable-java-diagnostic',
+    #              expect_failure=True)
+    #
+    #     # Update container app failed with unsupported runtime
+    #     self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=otherlanguage',
+    #              expect_failure=True)
+    #
+    #     # Delete container app
+    #     self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+

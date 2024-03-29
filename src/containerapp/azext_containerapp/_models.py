@@ -587,3 +587,10 @@ CustomDomainConfiguration = {
     "certificatePassword": None,
     "certificateKeyVaultProperties": None
 }
+
+JavaAgent = {
+    "javaAgent": {
+        "enabled": None,
+        "logLevelSettings": []
+    }
+}

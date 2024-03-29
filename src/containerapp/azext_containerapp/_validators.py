@@ -4,18 +4,19 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-import re
-from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError,
-                                       MutuallyExclusiveArgumentError, RequiredArgumentMissingError)
-from msrestazure.tools import is_valid_resource_id
-from knack.log import get_logger
+from urllib.parse import urlparse
 
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
+from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError, RequiredArgumentMissingError)
+from knack.log import get_logger
+from msrestazure.tools import is_valid_resource_id
+
 from ._constants import ACR_IMAGE_SUFFIX, \
     CONNECTED_ENVIRONMENT_TYPE, \
     EXTENDED_LOCATION_RP, CUSTOM_LOCATION_RESOURCE_TYPE, MAXIMUM_SECRET_LENGTH, CONTAINER_APPS_RP, \
-    CONNECTED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE
-from urllib.parse import urlparse
+    CONNECTED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE, \
+    RUNTIME_JAVA, RUNTIME_GENERIC, SUPPORTED_RUNTIME_LIST
 
 logger = get_logger(__name__)
 
@@ -48,6 +49,24 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
     if registry_identity and ACR_IMAGE_SUFFIX not in (registry_server or ""):
         raise InvalidArgumentValueError("--registry-identity: expected an ACR registry (*.azurecr.io) for --registry-server")
 
+
+def validate_runtime(runtime, enable_java_diagnostic):
+    if runtime and runtime.lower() not in SUPPORTED_RUNTIME_LIST:
+        raise ValidationError(f"Runtime {runtime} is not supported. Supported runtimes are {', '.join(SUPPORTED_RUNTIME_LIST)}.")
+    if runtime and runtime.lower() == RUNTIME_GENERIC and enable_java_diagnostic is not None:
+        raise ValidationError("Not support enable Java metrics with --enable-java-metrics for generic runtime with --runtime generic.")
+
+def validate_runtime_logLevelSettings(loglevelsettings):
+    logger.warn("loglevelsettings: " + str(loglevelsettings))
+    if loglevelsettings is None:
+        return
+    if isinstance(loglevelsettings, list):
+        if len(loglevelsettings) == 0:
+            raise ValidationError("Please set value for --java-log-levels. e.g. logger1=info logger2=debug")
+        for item in loglevelsettings:
+            comps = item.split('=', 1)
+            if comps[1].lower() not in ['info','debug','warn','error']:
+                raise ValidationError(f"Level {comps[1]} is not valid.")
 
 def validate_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id

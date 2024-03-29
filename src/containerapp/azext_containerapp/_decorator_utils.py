@@ -6,10 +6,12 @@
 import sys
 
 from azure.cli.core.azclierror import (ValidationError)
+from ._constants import (RUNTIME_JAVA, RUNTIME_GENERIC)
 
 from ._utils import safe_get
 
-
+from knack.log import get_logger
+logger = get_logger(__name__)
 def load_yaml_file(file_name):
     import yaml
     import errno
@@ -123,3 +125,21 @@ def process_dapr_component_resiliency_yaml(dapr_component_resiliency):
             del dapr_component_resiliency[nested_property]
 
     return dapr_component_resiliency
+
+def infer_runtime_option(runtime, enable_java_diagnostic):
+    if runtime:
+        return runtime
+    if enable_java_diagnostic is not None:
+        return RUNTIME_JAVA
+    return RUNTIME_GENERIC
+
+def convert_log_level_settings(loglevelsettings):
+    result = []
+    if loglevelsettings is None:
+        return result
+    for item in loglevelsettings:
+        comps = item.split('=', 1)
+        result.append({"logger": comps[0], "level": comps[1]})
+    logger.warn("result: " + str(result))
+    return result
+

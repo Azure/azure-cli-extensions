@@ -915,6 +915,16 @@ helps['containerapp create'] = """
           --environment MyContainerappEnv --registry-server MyRegistryServer \\
           --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
           --source .
+    - name: Create a Container App with java diagnostic enabled
+      text: |
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --enable-java-diagnostic=true   
+    - name: Create a Container App without java diagnostic enabled
+      text: |
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --enable-java-diagnostic=false                    
 """
 
 # containerapp update for preview
@@ -945,7 +955,15 @@ helps['containerapp update'] = """
               --scale-rule-auth triggerparam=secretref triggerparam=secretref
     - name: Update a Container App from the provided application source
       text: |
-          az containerapp update -n my-containerapp -g MyResourceGroup --source .
+          az containerapp update -n my-containerapp -g MyResourceGroup --source .    
+    - name: Update a Container App with java diagnostic enabled
+      text: |
+          az containerapp update -n my-containerapp -g MyResourceGroup \\
+              --enable-java-diagnostic=true
+    - name: Update a Container App without java diagnostic enabled
+      text: |
+          az containerapp update -n my-containerapp -g MyResourceGroup \\
+              --enable-java-diagnostic=false
 """
 
 # containerapp list for preview

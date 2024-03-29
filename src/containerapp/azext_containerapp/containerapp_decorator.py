@@ -48,19 +48,22 @@ from ._models import (
     ScaleRule as ScaleRuleModel,
     Service as ServiceModel,
     Volume as VolumeModel,
-    VolumeMount as VolumeMountModel)
+    VolumeMount as VolumeMountModel,
+    JavaAgent as JavaAgentModel,)
 
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
-                               load_yaml_file)
+                               load_yaml_file,
+                               infer_runtime_option,
+                               convert_log_level_settings)
 from ._utils import parse_service_bindings, check_unique_bindings
-from ._validators import validate_create
+from ._validators import validate_create, validate_runtime, validate_runtime_logLevelSettings
 
 from ._constants import (HELLO_WORLD_IMAGE,
                          CONNECTED_ENVIRONMENT_TYPE,
                          CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
                          MANAGED_ENVIRONMENT_TYPE,
-                         MANAGED_ENVIRONMENT_RESOURCE_TYPE, ACR_IMAGE_SUFFIX)
+                         MANAGED_ENVIRONMENT_RESOURCE_TYPE, ACR_IMAGE_SUFFIX, RUNTIME_JAVA)
 
 
 logger = get_logger(__name__)
@@ -624,13 +627,15 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_up_repo()
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.containerapp_def, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
-
+        self.set_up_runtime()
     def validate_arguments(self):
         super().validate_arguments()
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind is single.")
 
+        validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_diagnostic())
+        validate_runtime_logLevelSettings(self.get_argument_java_log_levels())
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
 
@@ -938,6 +943,21 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         else:
             return ManagedEnvironmentPreviewClient
 
+    def set_up_runtime(self):
+        if self.get_argument_runtime() is None and self.get_argument_enable_java_diagnostic() is None:
+            return
+        runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_diagnostic())
+        runtime_def = None
+        if runtime_option == RUNTIME_JAVA:
+            runtime_java_javaagent_def = JavaAgentModel
+            runtime_java_javaagent_def["javaAgent"]["enabled"] = self.get_argument_enable_java_diagnostic() or False
+            if self.get_argument_java_log_levels():
+                runtime_java_javaagent_def["javaAgent"]["logLevelSettings"] = convert_log_level_settings(self.get_argument_java_log_levels())
+            runtime_def = {
+                    "java": runtime_java_javaagent_def
+            }
+        logger.warning("Runtime definition: {}".format(runtime_def))
+        safe_set(self.containerapp_def, "properties", "configuration", "runtime", value=runtime_def)
     def get_argument_environment_type(self):
         return self.get_param("environment_type")
 
@@ -980,6 +1000,15 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_max_inactive_revisions(self):
         return self.get_param("max_inactive_revisions")
 
+    def get_argument_runtime(self):
+        return self.get_param("runtime")
+
+    def get_argument_enable_java_diagnostic(self):
+        return self.get_param("enable_java_diagnostic")
+
+    def get_argument_java_log_levels(self):
+        return self.get_param("java_log_levels")
+
 
 # decorator for preview update
 class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
@@ -1010,6 +1039,16 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_build_env_vars(self):
         return self.get_param("build_env_vars")
 
+    def get_argument_runtime(self):
+        return self.get_param("runtime")
+
+    def get_argument_enable_java_diagnostic(self):
+        return self.get_param("enable_java_diagnostic")
+
+    def get_argument_java_log_levels(self):
+        return self.get_param("java_log_levels")
+
+
     # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is
     def get_argument_force_single_container_updates(self):
         return self.get_param("force_single_container_updates")
@@ -1019,7 +1058,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError(
                 "--bind have multiple values, but --customized-keys only can be set when --bind is single.")
-
+        validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_diagnostic())
+        validate_runtime_logLevelSettings(self.get_argument_java_log_levels())
     def construct_payload(self):
         super().construct_payload()
         self.set_up_service_bindings()
@@ -1027,7 +1067,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.set_up_source()
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.new_containerapp, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
-
+        self.set_up_runtime()
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
 
@@ -1222,6 +1262,21 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         # force_single_container_updates argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
         return c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_force_single_container_updates()
 
+    def set_up_runtime(self):
+        if self.get_argument_runtime() is None and self.get_argument_enable_java_diagnostic() is None:
+            return
+        runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_diagnostic())
+        runtime_def = None
+        if runtime_option == RUNTIME_JAVA:
+            runtime_java_javaagent_def = JavaAgentModel
+            runtime_java_javaagent_def["javaAgent"]["enabled"] = self.get_argument_enable_java_diagnostic() or False
+            if self.get_argument_java_log_levels():
+                runtime_java_javaagent_def["javaAgent"]["logLevelSettings"] = convert_log_level_settings(self.get_argument_java_log_levels())
+            runtime_def = {
+                "java": runtime_java_javaagent_def
+            }
+        logger.warning("Runtime definition: {}".format(runtime_def))
+        safe_set(self.new_containerapp, "properties", "configuration", "runtime", value=runtime_def)
 
 # decorator for preview list
 class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):
