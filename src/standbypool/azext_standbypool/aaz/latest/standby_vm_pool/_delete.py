@@ -12,17 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-pool standby-container-group-pool delete",
+    "standby-vm-pool delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a StandbyContainerGroupPoolResource
+    """Delete a standby virtual machine pool
+
+    :example: Delete standby virtual machine pool
+        az standby-vm-pool delete --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
     """
 
     _aaz_info = {
         "version": "2023-12-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2023-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2023-12-01-preview"],
         ]
     }
 
@@ -44,11 +47,12 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group",
             required=True,
         )
-        _args_schema.standby_container_group_pool_name = AAZStrArg(
-            options=["-n", "--name", "--standby-container-group-pool-name"],
-            help="Name of the standby container group pool",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Name of the standby virtual machine pool",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -59,7 +63,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.StandbyContainerGroupPoolsDelete(ctx=self.ctx)()
+        yield self.StandbyVirtualMachinePoolsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,7 +74,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class StandbyContainerGroupPoolsDelete(AAZHttpOperation):
+    class StandbyVirtualMachinePoolsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -109,7 +113,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyContainerGroupPools/{standbyContainerGroupPoolName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyVirtualMachinePools/{standbyVirtualMachinePoolName}",
                 **self.url_parameters
             )
 
@@ -129,7 +133,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyContainerGroupPoolName", self.ctx.args.standby_container_group_pool_name,
+                    "standbyVirtualMachinePoolName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

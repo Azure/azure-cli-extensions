@@ -12,10 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-pool standby-container-group-pool create",
+    "standby-container-pool create",
 )
 class Create(AAZCommand):
-    """Create a StandbyContainerGroupPoolResource
+    """Create a standby container pool
+
+    :example: Create Standby Container Pool
+        az standby-container-pool create --resource-group myrg --name mypool --subscriptionId 461fa159-654a-415f-853a-40b801021944 --container-profile-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.ContainerInstance/containerGroupProfiles/mycg --revision 1 --subnet-ids [0].id=/subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/ru-cli-test-standbypool/providers/Microsoft.Network/virtualNetworks/ru-cli-test-standbypool-vnet/subnets/testSubnet --max-ready-capacity 1 --location eastus
+
+    :example: Create with subscription and resource group set with context
+        az standby-container-pool create --name mypool --container-profile-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.ContainerInstance/containerGroupProfiles/mycg --revision 1 --subnet-ids [0].id=/subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/ru-cli-test-standbypool/providers/Microsoft.Network/virtualNetworks/ru-cli-test-standbypool-vnet/subnets/testSubnet --max-ready-capacity 1 --location eastus
     """
 
     _aaz_info = {
@@ -43,11 +49,12 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group",
             required=True,
         )
-        _args_schema.standby_container_group_pool_name = AAZStrArg(
-            options=["-n", "--name", "--standby-container-group-pool-name"],
-            help="Name of the standby container group pool",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Name of the standby container pool",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
@@ -57,13 +64,13 @@ class Create(AAZCommand):
         # define Arg Group "ContainerGroupProfile"
 
         _args_schema = cls._args_schema
-        _args_schema.id = AAZResourceIdArg(
-            options=["--id"],
+        _args_schema.container_profile_id = AAZResourceIdArg(
+            options=["--container-profile-id"],
             arg_group="ContainerGroupProfile",
-            help="Specifies container group profile id of standby container groups.",
+            help="Specifies container group profile id of standby container pool.",
         )
-        _args_schema.revision = AAZIntArg(
-            options=["--revision"],
+        _args_schema.container_profile_revision = AAZIntArg(
+            options=["--container-profile-revision"],
             arg_group="ContainerGroupProfile",
             help="Specifies revision of container group profile.",
         )
@@ -74,7 +81,7 @@ class Create(AAZCommand):
         _args_schema.subnet_ids = AAZListArg(
             options=["--subnet-ids"],
             arg_group="ContainerGroupProperties",
-            help="Specifies subnet Ids for container group.",
+            help="Specifies subnet Ids for standby container pool.",
         )
 
         subnet_ids = cls._args_schema.subnet_ids
@@ -93,7 +100,7 @@ class Create(AAZCommand):
         _args_schema.max_ready_capacity = AAZIntArg(
             options=["--max-ready-capacity"],
             arg_group="ElasticityProfile",
-            help="Specifies maximum number of standby container groups in the standby pool.",
+            help="Specifies maximum number of standby containers in the standby pool.",
             fmt=AAZIntArgFormat(
                 maximum=2000,
                 minimum=0,
@@ -194,7 +201,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyContainerGroupPoolName", self.ctx.args.standby_container_group_pool_name,
+                    "standbyContainerGroupPoolName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -249,8 +256,8 @@ class Create(AAZCommand):
 
             container_group_profile = _builder.get(".properties.containerGroupProperties.containerGroupProfile")
             if container_group_profile is not None:
-                container_group_profile.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
-                container_group_profile.set_prop("revision", AAZIntType, ".revision")
+                container_group_profile.set_prop("id", AAZStrType, ".container_profile_id", typ_kwargs={"flags": {"required": True}})
+                container_group_profile.set_prop("revision", AAZIntType, ".container_profile_revision")
 
             subnet_ids = _builder.get(".properties.containerGroupProperties.subnetIds")
             if subnet_ids is not None:

@@ -8,6 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._list import *
-from ._show import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "standby-vm-pool",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Standby Virtual Machine Pool Operations
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

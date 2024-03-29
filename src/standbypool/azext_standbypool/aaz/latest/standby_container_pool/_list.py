@@ -12,10 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-pool standby-container-group-pool list",
+    "standby-container-pool list",
 )
 class List(AAZCommand):
-    """List StandbyContainerGroupPoolResource resources by subscription ID or by resource group
+    """List standby container pools by subscription or by resource group
+
+    :example: List by subscription id
+        az standby-container-pool list --subscription 461fa159-654a-415f-853a-40b801021944
+
+    :example: List by resource group
+        az standby-container-pool list --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg
     """
 
     _aaz_info = {
@@ -43,7 +49,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -198,8 +206,8 @@ class List(AAZCommand):
                 serialized_name="containerGroupProfile",
                 flags={"required": True},
             )
-            container_group_properties.subnet_ids = AAZListType(
-                serialized_name="subnetIds",
+            container_group_properties.subnet_id = AAZStrType(
+                serialized_name="subnetId",
             )
 
             container_group_profile = cls._schema_on_200.value.Element.properties.container_group_properties.container_group_profile
@@ -207,14 +215,6 @@ class List(AAZCommand):
                 flags={"required": True},
             )
             container_group_profile.revision = AAZIntType()
-
-            subnet_ids = cls._schema_on_200.value.Element.properties.container_group_properties.subnet_ids
-            subnet_ids.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.container_group_properties.subnet_ids.Element
-            _element.id = AAZStrType(
-                flags={"required": True},
-            )
 
             elasticity_profile = cls._schema_on_200.value.Element.properties.elasticity_profile
             elasticity_profile.max_ready_capacity = AAZIntType(
@@ -375,8 +375,8 @@ class List(AAZCommand):
                 serialized_name="containerGroupProfile",
                 flags={"required": True},
             )
-            container_group_properties.subnet_ids = AAZListType(
-                serialized_name="subnetIds",
+            container_group_properties.subnet_id = AAZStrType(
+                serialized_name="subnetId",
             )
 
             container_group_profile = cls._schema_on_200.value.Element.properties.container_group_properties.container_group_profile
@@ -384,14 +384,6 @@ class List(AAZCommand):
                 flags={"required": True},
             )
             container_group_profile.revision = AAZIntType()
-
-            subnet_ids = cls._schema_on_200.value.Element.properties.container_group_properties.subnet_ids
-            subnet_ids.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.container_group_properties.subnet_ids.Element
-            _element.id = AAZStrType(
-                flags={"required": True},
-            )
 
             elasticity_profile = cls._schema_on_200.value.Element.properties.elasticity_profile
             elasticity_profile.max_ready_capacity = AAZIntType(

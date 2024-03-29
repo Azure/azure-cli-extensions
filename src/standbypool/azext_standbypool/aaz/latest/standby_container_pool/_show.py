@@ -12,16 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-pool standby-virtual-machine-pool show",
+    "standby-container-pool show",
 )
 class Show(AAZCommand):
-    """Get a StandbyVirtualMachinePoolResource
+    """Get a standby container pool
+
+    :example: Show a standby container pool
+        az standby-container-pool show --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
     """
 
     _aaz_info = {
         "version": "2023-12-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2023-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2023-12-01-preview"],
         ]
     }
 
@@ -42,11 +45,12 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group",
             required=True,
         )
-        _args_schema.standby_virtual_machine_pool_name = AAZStrArg(
-            options=["-n", "--name", "--standby-virtual-machine-pool-name"],
-            help="Name of the standby virtual machine pool",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Name of the standby container group pool",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -57,7 +61,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.StandbyVirtualMachinePoolsGet(ctx=self.ctx)()
+        self.StandbyContainerGroupPoolsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +76,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class StandbyVirtualMachinePoolsGet(AAZHttpOperation):
+    class StandbyContainerGroupPoolsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +90,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyVirtualMachinePools/{standbyVirtualMachinePoolName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyContainerGroupPools/{standbyContainerGroupPoolName}",
                 **self.url_parameters
             )
 
@@ -106,7 +110,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyVirtualMachinePoolName", self.ctx.args.standby_virtual_machine_pool_name,
+                    "standbyContainerGroupPoolName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -175,25 +179,41 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.attached_virtual_machine_scale_set_id = AAZStrType(
-                serialized_name="attachedVirtualMachineScaleSetId",
+            properties.container_group_properties = AAZObjectType(
+                serialized_name="containerGroupProperties",
+                flags={"required": True},
             )
             properties.elasticity_profile = AAZObjectType(
                 serialized_name="elasticityProfile",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.virtual_machine_state = AAZStrType(
-                serialized_name="virtualMachineState",
+
+            container_group_properties = cls._schema_on_200.properties.container_group_properties
+            container_group_properties.container_group_profile = AAZObjectType(
+                serialized_name="containerGroupProfile",
                 flags={"required": True},
             )
+            container_group_properties.subnet_id = AAZStrType(
+                serialized_name="subnetId",
+            )
+
+            container_group_profile = cls._schema_on_200.properties.container_group_properties.container_group_profile
+            container_group_profile.id = AAZStrType(
+                flags={"required": True},
+            )
+            container_group_profile.revision = AAZIntType()
 
             elasticity_profile = cls._schema_on_200.properties.elasticity_profile
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
+            )
+            elasticity_profile.refill_policy = AAZStrType(
+                serialized_name="refillPolicy",
             )
 
             system_data = cls._schema_on_200.system_data

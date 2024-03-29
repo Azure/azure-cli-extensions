@@ -12,10 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-pool standby-virtual-machine-pool list",
+    "standby-vm-pool list",
 )
 class List(AAZCommand):
-    """List StandbyVirtualMachinePoolResource resources by subscription ID or by resource group
+    """List standby virtual machine pools by subscription or by resource group.
+
+    :example: List by subscription id
+        az standby-vm-pool list -- subscription 461fa159-654a-415f-853a-40b801021944
+
+    :example: List by resource group
+        az standby-vm-pool list --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg
     """
 
     _aaz_info = {
@@ -43,7 +49,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group",
+        )
         return cls._args_schema
 
     def _execute_operations(self):

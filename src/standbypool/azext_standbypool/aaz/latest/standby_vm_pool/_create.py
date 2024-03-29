@@ -12,10 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-pool standby-virtual-machine-pool create",
+    "standby-vm-pool create",
 )
 class Create(AAZCommand):
-    """Create a StandbyVirtualMachinePoolResource
+    """Create a standby virtual machine pool
+
+    :example: Create standby virtual machine pool
+        az standby-vm-pool create --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --max-ready-capacity 20 --vm-state Running --vmss-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.Compute/virtualMachineScaleSets/myvmss
+
+    :example: Create with subscription and resource group set with context
+        az standby-vm-pool create --name mypool --max-ready-capacity 20 --vm-state Running --vmss-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.Compute/virtualMachineScaleSets/myvmss
     """
 
     _aaz_info = {
@@ -43,10 +49,11 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group",
             required=True,
         )
-        _args_schema.standby_virtual_machine_pool_name = AAZStrArg(
-            options=["-n", "--name", "--standby-virtual-machine-pool-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the standby virtual machine pool",
             required=True,
             fmt=AAZStrArgFormat(
@@ -70,13 +77,13 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.attached_virtual_machine_scale_set_id = AAZResourceIdArg(
-            options=["--vmss-id", "--attached-virtual-machine-scale-set-id"],
+        _args_schema.vmss_id = AAZResourceIdArg(
+            options=["--vmss-id"],
             arg_group="Properties",
             help="Specifies the fully qualified resource ID of a virtual machine scale set the pool is attached to.",
         )
-        _args_schema.virtual_machine_state = AAZStrArg(
-            options=["--vm-state", "--virtual-machine-state"],
+        _args_schema.vm_state = AAZStrArg(
+            options=["--vm-state"],
             arg_group="Properties",
             help="Specifies the desired state of virtual machines in the pool.",
             enum={"Deallocated": "Deallocated", "Running": "Running"},
@@ -170,7 +177,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyVirtualMachinePoolName", self.ctx.args.standby_virtual_machine_pool_name,
+                    "standbyVirtualMachinePoolName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -215,9 +222,9 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("attachedVirtualMachineScaleSetId", AAZStrType, ".attached_virtual_machine_scale_set_id")
+                properties.set_prop("attachedVirtualMachineScaleSetId", AAZStrType, ".vmss_id")
                 properties.set_prop("elasticityProfile", AAZObjectType)
-                properties.set_prop("virtualMachineState", AAZStrType, ".virtual_machine_state", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("virtualMachineState", AAZStrType, ".vm_state", typ_kwargs={"flags": {"required": True}})
 
             elasticity_profile = _builder.get(".properties.elasticityProfile")
             if elasticity_profile is not None:

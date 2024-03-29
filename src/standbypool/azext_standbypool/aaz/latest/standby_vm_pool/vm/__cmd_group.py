@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "standby-pool standby-virtual-machine-pool standby-virtual-machine",
+    "standby-vm-pool vm",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Standby Virtual Machine from Standby Virtual Machine Pool
+    """Virtual machine in standby virtual machine pool
     """
     pass
 

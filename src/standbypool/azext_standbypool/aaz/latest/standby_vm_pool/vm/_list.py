@@ -12,10 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-pool standby-virtual-machine-pool standby-virtual-machine list",
+    "standby-vm-pool vm list",
 )
 class List(AAZCommand):
-    """List StandbyVirtualMachineResource resources by StandbyVirtualMachinePoolResource
+    """List virtual machines in standby virtual machine pool
+
+    :example: List virtual machines in standby virtual machine pool
+        az standby-vm-pool vm list --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
     """
 
     _aaz_info = {
@@ -43,10 +46,11 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group",
             required=True,
         )
-        _args_schema.standby_virtual_machine_pool_name = AAZStrArg(
-            options=["--standby-virtual-machine-pool-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the standby virtual machine pool",
             required=True,
             fmt=AAZStrArgFormat(
@@ -107,7 +111,7 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyVirtualMachinePoolName", self.ctx.args.standby_virtual_machine_pool_name,
+                    "standbyVirtualMachinePoolName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

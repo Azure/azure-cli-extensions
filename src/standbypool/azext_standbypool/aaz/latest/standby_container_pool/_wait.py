@@ -12,16 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-pool standby-virtual-machine-pool update",
+    "standby-container-pool wait",
 )
-class Update(AAZCommand):
-    """Update a StandbyVirtualMachinePoolResource
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2023-12-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2023-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2023-12-01-preview"],
         ]
     }
 
@@ -42,58 +41,23 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group",
             required=True,
         )
-        _args_schema.standby_virtual_machine_pool_name = AAZStrArg(
-            options=["-n", "--name", "--standby-virtual-machine-pool-name"],
-            help="Name of the standby virtual machine pool",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Name of the standby container group pool",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-
-        # define Arg Group "ElasticityProfile"
-
-        _args_schema = cls._args_schema
-        _args_schema.max_ready_capacity = AAZIntArg(
-            options=["--max-ready-capacity"],
-            arg_group="ElasticityProfile",
-            help="Specifies maximum number of virtual machines in the standby virtual machine pool.",
-            fmt=AAZIntArgFormat(
-                maximum=2000,
-                minimum=0,
-            ),
-        )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.attached_virtual_machine_scale_set_id = AAZResourceIdArg(
-            options=["--vmss-id", "--attached-virtual-machine-scale-set-id"],
-            arg_group="Properties",
-            help="Specifies the fully qualified resource ID of a virtual machine scale set the pool is attached to.",
-        )
-        _args_schema.virtual_machine_state = AAZStrArg(
-            options=["--vm-state", "--virtual-machine-state"],
-            arg_group="Properties",
-            help="Specifies the desired state of virtual machines in the pool.",
-            enum={"Deallocated": "Deallocated", "Running": "Running"},
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.StandbyVirtualMachinePoolsUpdate(ctx=self.ctx)()
+        self.StandbyContainerGroupPoolsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -105,10 +69,10 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class StandbyVirtualMachinePoolsUpdate(AAZHttpOperation):
+    class StandbyContainerGroupPoolsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -122,13 +86,13 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyVirtualMachinePools/{standbyVirtualMachinePoolName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyContainerGroupPools/{standbyContainerGroupPoolName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PATCH"
+            return "GET"
 
         @property
         def error_format(self):
@@ -142,7 +106,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyVirtualMachinePoolName", self.ctx.args.standby_virtual_machine_pool_name,
+                    "standbyContainerGroupPoolName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -166,39 +130,10 @@ class Update(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("attachedVirtualMachineScaleSetId", AAZStrType, ".attached_virtual_machine_scale_set_id")
-                properties.set_prop("elasticityProfile", AAZObjectType)
-                properties.set_prop("virtualMachineState", AAZStrType, ".virtual_machine_state")
-
-            elasticity_profile = _builder.get(".properties.elasticityProfile")
-            if elasticity_profile is not None:
-                elasticity_profile.set_prop("maxReadyCapacity", AAZIntType, ".max_ready_capacity")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -240,25 +175,41 @@ class Update(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.attached_virtual_machine_scale_set_id = AAZStrType(
-                serialized_name="attachedVirtualMachineScaleSetId",
+            properties.container_group_properties = AAZObjectType(
+                serialized_name="containerGroupProperties",
+                flags={"required": True},
             )
             properties.elasticity_profile = AAZObjectType(
                 serialized_name="elasticityProfile",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.virtual_machine_state = AAZStrType(
-                serialized_name="virtualMachineState",
+
+            container_group_properties = cls._schema_on_200.properties.container_group_properties
+            container_group_properties.container_group_profile = AAZObjectType(
+                serialized_name="containerGroupProfile",
                 flags={"required": True},
             )
+            container_group_properties.subnet_id = AAZStrType(
+                serialized_name="subnetId",
+            )
+
+            container_group_profile = cls._schema_on_200.properties.container_group_properties.container_group_profile
+            container_group_profile.id = AAZStrType(
+                flags={"required": True},
+            )
+            container_group_profile.revision = AAZIntType()
 
             elasticity_profile = cls._schema_on_200.properties.elasticity_profile
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
+            )
+            elasticity_profile.refill_policy = AAZStrType(
+                serialized_name="refillPolicy",
             )
 
             system_data = cls._schema_on_200.system_data
@@ -287,8 +238,8 @@ class Update(AAZCommand):
             return cls._schema_on_200
 
 
-class _UpdateHelper:
-    """Helper class for Update"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Update"]
+__all__ = ["Wait"]
