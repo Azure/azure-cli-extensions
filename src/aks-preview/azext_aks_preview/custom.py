@@ -2913,7 +2913,7 @@ def aks_mesh_enable_egress_gateway(
         cmd,
         client,
         resource_group_name,
-        name
+        name,
 ):
     return _aks_mesh_update(
         cmd,

@@ -11768,7 +11768,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # enable egress gateway
         update_cmd = (
-            "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} "
+            "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name}"
         )
         try:
             self.cmd(
