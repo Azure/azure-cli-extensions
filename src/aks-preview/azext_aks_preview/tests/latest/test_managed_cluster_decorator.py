@@ -7151,7 +7151,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_azure_service_mesh": True,
-                "enable_egress_gateway": True
+                "enable_egress_gateway": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
