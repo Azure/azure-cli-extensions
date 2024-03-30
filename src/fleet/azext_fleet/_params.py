@@ -66,7 +66,7 @@ def load_arguments(self, _):
         c.argument('update_strategy_name', validator=validate_update_strategy_name, help='The name of the update strategy to use for this update run. If not specified, the default update strategy will be used.')
 
     with self.argument_context('fleet updaterun skip', is_preview=True) as c:
-        c.argument('targets', options_list=['--targets', '-t'], nargs="+", validator=validate_targets, help='Space-separated list of targets to skip. Targets must be of the form `targetType:targetName` such as Group:MyGroup. Valid target types are: [`Member`, `Group`, `Stage`, `AfterStageWait`]. The target type is case-sensitive.', is_preview=True)
+        c.argument('targets', nargs="+", validator=validate_targets, help='Space-separated list of targets to skip. Targets must be of the form `targetType:targetName` such as Group:MyGroup. Valid target types are: [`Member`, `Group`, `Stage`, `AfterStageWait`]. The target type is case-sensitive.', is_preview=True)
 
     with self.argument_context('fleet updatestrategy') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the fleet update strategy.')

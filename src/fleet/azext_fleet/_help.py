@@ -281,7 +281,7 @@ helps['fleet updaterun skip'] = """
     short-summary: Sets targets to be skipped within an UpdateRun.
     parameters:
         - name: --targets
-          type: string
+          type: string array
           short-summary: Space-separated list of targets to skip.  Targets must be of the form 'targetType:targetName' such as Group:MyGroup. Valid target types are ('Member', 'Group', 'Stage', 'AfterStageWait'). The target type is case-sensitive.
     examples:
         - name: Set two targets to be skipped.
