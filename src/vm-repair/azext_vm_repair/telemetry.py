@@ -6,7 +6,6 @@
 # pylint: disable=line-too-long, import-error, broad-except
 import json
 from applicationinsights import TelemetryClient
-from opencensus.ext.azure.log_exporter import AzureLogHandler
 from .repair_utils import _get_current_vmrepair_version
 
 # For test releases and testing
@@ -33,8 +32,6 @@ def _track_command_telemetry(logger, command_name, parameters, status, message, 
         tc.track_event(command_name, properties, measurements)
         tc.flush()
     except Exception as exception:
-        logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey='+PROD_KEY)
-)
         logger.error('Unexpected error sending telemetry with exception: %s', str(exception))
 
 
