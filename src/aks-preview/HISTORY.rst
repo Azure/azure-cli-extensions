@@ -11,7 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Add `az aks check-network outbound` command.
+* Add `az aks check-network outbound` command to check outbound network from nodes. 
 
 2.0.0b7
 +++++++

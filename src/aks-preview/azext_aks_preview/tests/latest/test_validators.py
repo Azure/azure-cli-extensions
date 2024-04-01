@@ -1061,7 +1061,7 @@ class TestValidateCustomEndpoints(unittest.TestCase):
     def test_empty_custom_endpoints(self):
         namespace = SimpleNamespace(
             **{
-                "custom_endpoints": "",
+                "custom_endpoints": [],
             }
         )
         validators.validate_custom_endpoints(namespace)
@@ -1069,22 +1069,16 @@ class TestValidateCustomEndpoints(unittest.TestCase):
     def test_invalid_custom_endpoints(self):
         namespace = SimpleNamespace(
             **{
-                "custom_endpoints": "https://example.com",
+                "custom_endpoints": ["https://example.com"],
             }
         )
         with self.assertRaises(InvalidArgumentValueError):
             validators.validate_custom_endpoints(namespace)
 
     def test_valid_custom_endpoints(self):
-        endpoints = ",".join(
-            [
-                "example.com",
-                "microsoft.com",
-            ]
-        )
         namespace = SimpleNamespace(
             **{
-                "custom_endpoints": endpoints,
+                "custom_endpoints": ["example.com", "microsoft.com"],
             }
         )
         validators.validate_custom_endpoints(namespace)

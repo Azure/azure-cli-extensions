@@ -2100,7 +2100,8 @@ def load_arguments(self, _):
                    required=True, help='Name of the managed cluster.')
         c.argument('node_name', help='Name of the node to perform the connectivity check.')
         c.argument('custom_endpoints',
-                   help='Additional endpoint(s) to perform the connectivity check, separated by comma.',
+                   nargs="+",
+                   help='Space-separated additional endpoint(s) to perform the connectivity check.',
                    validator=validate_custom_endpoints)
 
 

@@ -3261,8 +3261,7 @@ def _aks_run_command(
     try:
         command = "bash /opt/azure/containers/aks-check-network.sh"
         if custom_endpoints:
-            endpoint_list = [endpoint.strip() for endpoint in custom_endpoints.split(",")]
-            all_endpoints = ",".join(endpoint_list)
+            all_endpoints = ",".join(custom_endpoints)
             command += f" {all_endpoints}"
             logger.debug("Full command: %s", command)
 
