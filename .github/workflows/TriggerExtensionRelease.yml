@@ -35,4 +35,5 @@ jobs:
             azure-devops-token: ${{ secrets.ONE_BRANCH_TOKEN }}
             azure-pipeline-variables:  '{"commit_id": "${{ github.sha }}"}'
         - name: Wait for Extension Release
-          run: sleep 600
+          # azure-cli-extensions-release.yml + azure-cli-extensions-sync-after-release.yml ~= 20 minutes
+          run: sleep 1200
