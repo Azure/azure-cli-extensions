@@ -112,7 +112,7 @@ class StandbypoolScenario(ScenarioTest):
         self.cmd(
             'az standby-container-pool create '
             '--resource-group {rg} --name {standby_pool_name} '
-            '--container-profile-id subscriptions/8cf6c1b6-c80f-437c-87ad-45fbaff54f73/resourceGroups/{rg}/providers/Microsoft.ContainerInstance/containerGroupProfiles/{container_profile_name} '
+            '--container-profile-id subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.ContainerInstance/containerGroupProfiles/{container_profile_name} '
             '--profile-revision 1 '
             '--subnet-ids [0].id=' + subnetId + ' '
             '--max-ready-capacity 1 --location {location}',
