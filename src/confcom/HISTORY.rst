@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.4
+++++++
+* adding faster hashing flag to use buffered reader in dmverity-vhd
+
 0.3.3
 ++++++
 * improving testing standards from pytest recommendations
