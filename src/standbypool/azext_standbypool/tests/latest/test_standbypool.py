@@ -7,10 +7,13 @@
 
 from azure.cli.testsdk import *
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-import json
+import os
+
+TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class StandbypoolScenario(ScenarioTest):
+
     @ResourceGroupPreparer(location="eastus")
     @AllowLargeResponse()
     def test_standby_virtual_machine_pool_scenarios(self):
@@ -88,7 +91,9 @@ class StandbypoolScenario(ScenarioTest):
             "vnet_name": 'myTestVnet',
             "subnet_name": "myTestSubnet",
             "location": "eastus",
-            "standby_pool_name": "testCGPool",
+            "standby_pool_name": "cgname",
+            "container_profile_name":  "testCGP",
+            'template': os.path.join(TEST_DIR, 'CreateContainerGroupProfileTemplate.json')
         })
         self.cmd(
             'az network vnet create --name {vnet_name} --resource-group {rg} '
@@ -98,13 +103,17 @@ class StandbypoolScenario(ScenarioTest):
             'az network vnet subnet show --resource-group {rg} --name {subnet_name} --vnet-name {vnet_name}'
         ).get_output_in_json()
         subnetId = subnet["id"]
+        self.cmd(
+            'az deployment group create --resource-group {rg} --name {container_profile_name} '
+            '--template-file "{template}" '
+        )
 
         # create
         self.cmd(
             'az standby-container-pool create '
             '--resource-group {rg} --name {standby_pool_name} '
-            '--container-profile-id subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.ContainerInstance/containerGroupProfiles/testCG '
-            '--container-profile-revision 1 '
+            '--container-profile-id subscriptions/8cf6c1b6-c80f-437c-87ad-45fbaff54f73/resourceGroups/{rg}/providers/Microsoft.ContainerInstance/containerGroupProfiles/{container_profile_name} '
+            '--profile-revision 1 '
             '--subnet-ids [0].id=' + subnetId + ' '
             '--max-ready-capacity 1 --location {location}',
             checks=[
