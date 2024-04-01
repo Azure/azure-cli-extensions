@@ -13,6 +13,10 @@ Pending
 +++++++
 * Add `az aks check-network outbound` command to check outbound network from nodes. 
 
+2.0.0b8
++++++++
+* Update the minimum required cli core version to `2.56.0` (actually since `2.0.0b7`).
+
 2.0.0b7
 +++++++
 * Support reset default value for loadbalancer profile and natgateway profile
