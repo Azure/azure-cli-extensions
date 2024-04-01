@@ -3627,6 +3627,11 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
                         "port": "[parameters('port')]"
                         }
                     ],
+                    "configMap": {
+                        "keyValuePairs": {
+                            "key1": "value1"
+                        }
+                    },
                     "command": [
                         "/bin/bash",
                         "-c",
@@ -3687,6 +3692,17 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
         # see if the remote image and the local one produce the same output
         self.assertEqual(env_var, "PORT=parameters('abc')")
         self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "alpine:3.16")
+
+    def test_arm_template_config_map_sidecar(self):
+        regular_image_json = json.loads(
+            self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False
+            )
+        )
+
+        mount_locations = list(map(lambda x: x[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_DESTINATION] ,regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS]))
+
+        self.assertTrue(config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION in mount_locations)
 
 
 class PolicyGeneratingSecurityContext(unittest.TestCase):

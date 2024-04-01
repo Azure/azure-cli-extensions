@@ -28,6 +28,7 @@ from azext_confcom.template_util import (
     compare_containers,
     get_values_for_params,
     process_mounts,
+    process_configmap,
     extract_probe,
     process_env_vars_from_template,
     get_image_info,
@@ -648,7 +649,8 @@ def load_policy_from_arm_template_str(
                         image_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                     )
                     or [],
-                    config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes),
+                    config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes)
+                    + process_configmap(image_properties),
                     config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
                     + config.DEBUG_MODE_SETTINGS.get("execProcesses")
                     if debug_mode

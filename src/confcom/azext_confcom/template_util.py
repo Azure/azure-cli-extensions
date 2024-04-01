@@ -275,6 +275,22 @@ def process_mounts(image_properties: dict, volumes: List[dict]) -> List[Dict[str
     return mounts
 
 
+def process_configmap(image_properties: dict) -> List[Dict[str, str]]:
+    # return empty list if we don't have a configmap
+    if not case_insensitive_dict_get(
+        image_properties, config.ACI_FIELD_CONTAINERS_CONFIGMAP
+    ):
+        return []
+
+    return [{
+            config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE:
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_TYPE,
+            config.ACI_FIELD_CONTAINERS_MOUNTS_PATH:
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION,
+            config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY: False,
+            }]
+
+
 def get_values_for_params(input_parameter_json: dict, all_params: dict) -> Dict[str, Any]:
     # combine the parameter file into a single dictionary with the template
     # parameters

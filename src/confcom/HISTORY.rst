@@ -7,6 +7,8 @@ Release History
 * making diff mode more robust
 * bugfix for arm template regex
 * updating genpolicy version up through 3.2.0.azl0.genpolicy1
+* adding configmap sidecar
+* bugfix for seccompProfile missing after injecting policy
 
 0.3.4
 ++++++
