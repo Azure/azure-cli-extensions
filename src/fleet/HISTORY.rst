@@ -82,6 +82,7 @@ Release History
 ++++++
 * Upgrade SDK version to 2024-02-02-preview
 
-1.0.6
+1.1.0
 ++++++
 * Added new in-preview `az fleet updaterun skip` command.
+* Fixed KubeConfig read bug within `az fleet get-credentials`.
