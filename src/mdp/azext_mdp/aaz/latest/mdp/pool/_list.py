@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List all Pool resources
+    """List all pool resources
 
     :example: List by resource group
         az mdp pool list --resource-group "rg1"

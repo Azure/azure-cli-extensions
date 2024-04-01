@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Pool
+    """Create a pool
 
     :example: Create
         az mdp pool create --location "eastus" --name "cli-contoso-pool" --resource-group "rg1" 
