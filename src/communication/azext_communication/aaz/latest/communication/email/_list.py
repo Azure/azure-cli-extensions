@@ -16,6 +16,10 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List requests to list all resources in a subscription.
+
+    :example: Get all resources from a subscription/resource group
+        az communication email list --subscription SubscriptionId
+        az communication email list -g ResourceGroup
     """
 
     _aaz_info = {

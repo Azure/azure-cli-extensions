@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a new EmailService or update an existing EmailService.
+
+    :example: Update a email resource with tags
+        az communication email update -n ResourceName -g ResourceGroup --tags "{tag:tag}"
     """
 
     _aaz_info = {
