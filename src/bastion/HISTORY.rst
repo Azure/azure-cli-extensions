@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.3.1
+1.0.0
 ++++++
 * Fix the bug where an exception is not raised when the _get_auth_token() method receives a non-200 status code response that is not empty, when running the az network bastion ssh command.
 
