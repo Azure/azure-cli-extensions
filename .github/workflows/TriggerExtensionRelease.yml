@@ -10,6 +10,12 @@ on:
 permissions:
   contents: read
 
+# This is the only solution to trigger OneBranch pipeline from a GitHub commit。
+# But it lacks batch CI support, we have to use concurrency to prevent earlier commits task overwriting index.json from later ones。
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency
+concurrency:
+  group: trigger-extension-release
+
 jobs:
     build:
         name: Trigger Extension Release Pipeline
@@ -19,7 +25,6 @@ jobs:
           uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
           with:
             egress-policy: audit
-
         - name: Azure Pipelines Action
           uses: Azure/pipelines@v1.2
           with:
@@ -29,3 +34,5 @@ jobs:
             # expire on 2024/9/21
             azure-devops-token: ${{ secrets.ONE_BRANCH_TOKEN }}
             azure-pipeline-variables:  '{"commit_id": "${{ github.sha }}"}'
+        - name: Wait for Extension Release
+          run: sleep 600
