@@ -2910,7 +2910,6 @@ helps['aks mesh enable-egress-gateway'] = """
     type: command
     short-summary: Enable an Azure Service Mesh egress gateway.
     long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
-    parameters:
     examples:
       - name: Enable an egress gateway.
         text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
