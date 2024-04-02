@@ -36,8 +36,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         # Vnet
         self.set_up_vnet_configuration()
 
-        if self.get_argument_mtls_enabled() is not None:
-            safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=self.get_argument_mtls_enabled())
+        self.set_up_peer_to_peer_encryption()
         ### copy end
             
         ### overwrite custom_domain_configuration
@@ -149,6 +148,21 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 }
             self.managed_env_def["properties"]["customDomainConfiguration"] = custom_domain
 
+    def set_up_peer_to_peer_encryption(self):
+        is_p2p_encryption_enabled = self.get_argument_p2p_encryption_enabled()
+        is_mtls_enabled = self.get_argument_mtls_enabled()
+        logger.info("mtls: p2p_encryption: %s, mtls: %s", is_p2p_encryption_enabled, is_mtls_enabled)
+        
+        if is_p2p_encryption_enabled is not None:
+            safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=is_p2p_encryption_enabled)
+            if is_p2p_encryption_enabled is False:  # keep the two properties consistent.
+                safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=False)
+        
+        if is_mtls_enabled is not None:
+            safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=is_mtls_enabled)
+            if is_mtls_enabled is True:  # keep the two properties consistent.
+                safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=True)
+
     def get_argument_enable_workload_profiles(self):
         return self.get_param("enable_workload_profiles")
 
@@ -169,6 +183,9 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
     
     def get_argument_certificate_key_vault_url(self):
         return self.get_param("certificate_key_vault_url")
+    
+    def get_argument_p2p_encryption_enabled(self):
+        return self.get_param("p2p_encryption_enabled")
 
 
 class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
@@ -178,6 +195,11 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         # validate custom domain configuration
         if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
             raise ValidationError("Cannot use certificate --certificate-file with --certificate-akv-url at the same time")
+
+    def construct_payload(self):
+        super().construct_payload()
+
+        self.set_up_peer_to_peer_encryption()
 
     def set_up_app_log_configuration(self):
         logs_destination = self.get_argument_logs_destination()
@@ -217,6 +239,21 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
             safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateValue", value="")
             safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificatePassword", value="")
 
+    def set_up_peer_to_peer_encryption(self):
+        is_p2p_encryption_enabled = self.get_argument_p2p_encryption_enabled()
+        is_mtls_enabled = self.get_argument_mtls_enabled()
+        logger.info("mtls: p2p_encryption: %s, mtls: %s", is_p2p_encryption_enabled, is_mtls_enabled)
+        
+        if is_p2p_encryption_enabled is not None:
+            safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=is_p2p_encryption_enabled)
+            if is_p2p_encryption_enabled is False:  # keep the two properties consistent.
+                safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=False)
+        
+        if is_mtls_enabled is not None:
+            safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=is_mtls_enabled)
+            if is_mtls_enabled is True:  # keep the two properties consistent.
+                safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=True)
+
     def get_argument_logs_dynamic_json_columns(self):
         return self.get_param("logs_dynamic_json_columns")
     
@@ -226,3 +263,5 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
     def get_argument_certificate_key_vault_url(self):
         return self.get_param("certificate_key_vault_url")
     
+    def get_argument_p2p_encryption_enabled(self):
+        return self.get_param("p2p_encryption_enabled")
