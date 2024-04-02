@@ -8159,6 +8159,42 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         normalClusterCalculated = noopDecorator3.update_k8s_support_plan(normalCluster)
         self.assertEqual(normalClusterCalculated, normalCluster)
 
+    def test_mc_get_node_init_taints(self):
+            # Default, not set.
+            ctx_1 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict({}),
+                self.models,
+                decorator_mode=DecoratorMode.CREATE,
+            )
+            self.assertEqual(ctx_1.get_nodepool_initialization_taints(), None)
+
+            # Populate init taints.
+            ctx_2 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict(
+                    {
+                        "nodepool_initialization_taints": "initTaint1=value1:PreferNoSchedule",
+                    }
+                ),
+                self.models,
+                decorator_mode=DecoratorMode.CREATE,
+            )
+            self.assertEqual(ctx_2.get_nodepool_initialization_taints(), "initTaint1=value2:PreferNoSchedule")
+
+            # Update init taints.
+            ctx_3 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict(
+                    {
+                        "nodepool_initialization_taints": "initTaint2=value1:PreferNoSchedule",
+                    }
+                ),
+                self.models,
+                decorator_mode=DecoratorMode.CREATE,
+            )
+            self.assertEqual(ctx_3.get_nodepool_initialization_taints(), "initTaint2=value1:PreferNoSchedule")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -580,6 +580,9 @@ helps['aks create'] = f"""
         - name: --nodepool-taints
           type: string
           short-summary: The node taints for all node pools in this cluster.
+        - name: --nodepool-initialization-taints
+          type: string
+          short-summary: The node initialization taints for node pools created with aks create operation.
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
