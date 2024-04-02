@@ -12,27 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hdinsight-on-aks clusterpool show",
+    "hdinsight-on-aks clusterpool upgrade run",
     is_preview=True,
 )
-class Show(AAZCommand):
-    """Get a cluster pool.
+class Run(AAZCommand):
+    """Upgrade a cluster pool.
 
-    :example: Gets a cluster pool.
-        az hdinsight-on-aks clusterpool show -g {RG} -n {poolName}
+    :example: Upgrade a cluster pool.
+        az hdinsight-on-aks clusterpool upgrade run --cluster-pool-name {poolName} -g {RG} --upgrade-profile {target-aks-version=1.27.9 upgrade-clusters=false upgrade-cluster-pool=true}
     """
 
     _aaz_info = {
         "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2023-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/upgrade", "2023-11-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -54,11 +55,41 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.upgrade_profile = AAZObjectArg(
+            options=["--upgrade-profile"],
+            arg_group="Properties",
+            help="Define upgrade properties.",
+        )
+        _args_schema.node_os_upgrade = AAZObjectArg(
+            options=["--node-os-upgrade"],
+            arg_group="Properties",
+            blank={},
+        )
+
+        upgrade_profile = cls._args_schema.upgrade_profile
+        upgrade_profile.target_aks_version = AAZStrArg(
+            options=["target-aks-version"],
+            help="Target AKS version. When it's not set, latest version will be used. When upgradeClusterPool is true and upgradeAllClusterNodes is false, target version should be greater or equal to current version. When upgradeClusterPool is false and upgradeAllClusterNodes is true, target version should be equal to AKS version of cluster pool.",
+        )
+        upgrade_profile.upgrade_clusters = AAZBoolArg(
+            options=["upgrade-clusters"],
+            help="whether upgrade all clusters' nodes. If it's true, upgradeClusterPool should be false.",
+            default=False,
+        )
+        upgrade_profile.upgrade_cluster_pool = AAZBoolArg(
+            options=["upgrade-cluster-pool"],
+            help="whether upgrade cluster pool or not. If it's true, upgradeAllClusterNodes should be false.",
+            default=False,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClusterPoolsGet(ctx=self.ctx)()
+        yield self.ClusterPoolsUpgrade(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,27 +104,43 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ClusterPoolsGet(AAZHttpOperation):
+    class ClusterPoolsUpgrade(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/upgrade",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -131,10 +178,37 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_const("upgradeType", "AKSPatchUpgrade", AAZStrType, ".upgrade_profile", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("upgradeType", "NodeOsUpgrade", AAZStrType, ".node_os_upgrade", typ_kwargs={"flags": {"required": True}})
+                properties.discriminate_by("upgradeType", "AKSPatchUpgrade")
+                properties.discriminate_by("upgradeType", "NodeOsUpgrade")
+
+            disc_aks_patch_upgrade = _builder.get(".properties{upgradeType:AKSPatchUpgrade}")
+            if disc_aks_patch_upgrade is not None:
+                disc_aks_patch_upgrade.set_prop("targetAksVersion", AAZStrType, ".upgrade_profile.target_aks_version")
+                disc_aks_patch_upgrade.set_prop("upgradeAllClusterNodes", AAZBoolType, ".upgrade_profile.upgrade_clusters")
+                disc_aks_patch_upgrade.set_prop("upgradeClusterPool", AAZBoolType, ".upgrade_profile.upgrade_cluster_pool")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -305,8 +379,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _RunHelper:
+    """Helper class for Run"""
 
 
-__all__ = ["Show"]
+__all__ = ["Run"]

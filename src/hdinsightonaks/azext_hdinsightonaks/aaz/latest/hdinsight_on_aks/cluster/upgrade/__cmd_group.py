@@ -8,3 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "hdinsight-on-aks cluster upgrade",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Upgrade cluster.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

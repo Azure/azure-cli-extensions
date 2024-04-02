@@ -12,28 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hdinsight-on-aks cluster list-service-config",
+    "hdinsight-on-aks cluster instance-view show",
     is_preview=True,
 )
-class ListServiceConfig(AAZCommand):
-    """List the config dump of all services running in cluster.
+class Show(AAZCommand):
+    """Get the status of a cluster instance.
 
-    :example: Lists the config dump of all services running in cluster.
-        az hdinsight-on-aks cluster list-service-config  --cluster-name {clusterName} --cluster-pool-name {poolName}-g {RG}
+    :example: Get cluster instance view.
+        az hdinsight-on-aks cluster instance-view show --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName}
     """
 
     _aaz_info = {
         "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/serviceconfigs", "2023-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/instanceviews/default", "2023-11-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -50,11 +49,13 @@ class ListServiceConfig(AAZCommand):
             options=["--cluster-name"],
             help="The name of the HDInsight cluster.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.cluster_pool_name = AAZStrArg(
             options=["--cluster-pool-name"],
             help="The name of the cluster pool.",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,7 +64,7 @@ class ListServiceConfig(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClustersListServiceConfigs(ctx=self.ctx)()
+        self.ClustersGetInstanceView(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,11 +76,10 @@ class ListServiceConfig(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class ClustersListServiceConfigs(AAZHttpOperation):
+    class ClustersGetInstanceView(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,7 +93,7 @@ class ListServiceConfig(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/serviceConfigs",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/instanceViews/default",
                 **self.url_parameters
             )
 
@@ -164,60 +164,46 @@ class ListServiceConfig(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-                flags={"read_only": True},
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.component_name = AAZStrType(
-                serialized_name="componentName",
+            _schema_on_200.name = AAZStrType(
                 flags={"required": True},
             )
-            properties.content = AAZStrType()
-            properties.custom_keys = AAZDictType(
-                serialized_name="customKeys",
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
             )
-            properties.default_keys = AAZDictType(
-                serialized_name="defaultKeys",
-            )
-            properties.file_name = AAZStrType(
-                serialized_name="fileName",
+
+            properties = cls._schema_on_200.properties
+            properties.service_statuses = AAZListType(
+                serialized_name="serviceStatuses",
                 flags={"required": True},
             )
-            properties.path = AAZStrType()
-            properties.service_name = AAZStrType(
-                serialized_name="serviceName",
+            properties.status = AAZObjectType(
                 flags={"required": True},
             )
-            properties.type = AAZStrType()
 
-            custom_keys = cls._schema_on_200.value.Element.properties.custom_keys
-            custom_keys.Element = AAZStrType()
+            service_statuses = cls._schema_on_200.properties.service_statuses
+            service_statuses.Element = AAZObjectType()
 
-            default_keys = cls._schema_on_200.value.Element.properties.default_keys
-            default_keys.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.default_keys.Element
-            _element.description = AAZStrType()
-            _element.value = AAZStrType(
+            _element = cls._schema_on_200.properties.service_statuses.Element
+            _element.kind = AAZStrType(
                 flags={"required": True},
             )
+            _element.message = AAZStrType()
+            _element.ready = AAZStrType(
+                flags={"required": True},
+            )
+
+            status = cls._schema_on_200.properties.status
+            status.message = AAZStrType()
+            status.ready = AAZStrType(
+                flags={"required": True},
+            )
+            status.reason = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListServiceConfigHelper:
-    """Helper class for ListServiceConfig"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["ListServiceConfig"]
+__all__ = ["Show"]

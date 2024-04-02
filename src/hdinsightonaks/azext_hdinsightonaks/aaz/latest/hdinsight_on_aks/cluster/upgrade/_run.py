@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hdinsight-on-aks cluster resize",
+    "hdinsight-on-aks cluster upgrade run",
     is_preview=True,
 )
-class Resize(AAZCommand):
-    """Resize an existing Cluster.
+class Run(AAZCommand):
+    """Upgrade a cluster.
 
-    :example: Resize a cluster.
-        az hdinsight-on-aks cluster resize --cluster-name {clusterName} --cluster-pool-name {poolName}-g {RG} -l {westus3} --target-worker-node-count {6}
+    :example: Upgrade a cluster, use command 'az hdinsight-on-aks cluster upgrade list' get upgrades list.
+        az hdinsight-on-aks cluster upgrade run --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName} --hotfix-upgrade component-name=$upgrades[0]["componentName"] target-build-number=$upgrades[0]["targetBuildNumber"] target-cluster-version=$upgrades[0]["targetClusterVersion"] target-oss-version= $upgrades[0]["targetOssVersion"]
     """
 
     _aaz_info = {
         "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/resize", "2023-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/upgrade", "2023-11-01-preview"],
         ]
     }
 
@@ -62,39 +62,41 @@ class Resize(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "ClusterResizeRequest"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="ClusterResizeRequest",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="ClusterResizeRequest",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.target_worker_node_count = AAZIntArg(
-            options=["--worker-node-count", "--target-worker-node-count"],
+        _args_schema.aks_patch_upgrade = AAZObjectArg(
+            options=["--aks-patch-upgrade"],
             arg_group="Properties",
-            help="Target node count of worker node.",
+            blank={},
+        )
+        _args_schema.hotfix_upgrade = AAZObjectArg(
+            options=["--hotfix-upgrade"],
+            arg_group="Properties",
+        )
+
+        hotfix_upgrade = cls._args_schema.hotfix_upgrade
+        hotfix_upgrade.component_name = AAZStrArg(
+            options=["component-name"],
+            help="Name of component to be upgraded.",
+        )
+        hotfix_upgrade.target_build_number = AAZStrArg(
+            options=["target-build-number"],
+            help="Target build number of component to be upgraded.",
+        )
+        hotfix_upgrade.target_cluster_version = AAZStrArg(
+            options=["target-cluster-version"],
+            help="Target cluster version of component to be upgraded.",
+        )
+        hotfix_upgrade.target_oss_version = AAZStrArg(
+            options=["target-oss-version"],
+            help="Target OSS version of component to be upgraded.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ClustersResize(ctx=self.ctx)()
+        yield self.ClustersUpgrade(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -109,7 +111,7 @@ class Resize(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ClustersResize(AAZHttpOperation):
+    class ClustersUpgrade(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -139,7 +141,7 @@ class Resize(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/resize",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/upgrade",
                 **self.url_parameters
             )
 
@@ -202,17 +204,21 @@ class Resize(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("targetWorkerNodeCount", AAZIntType, ".target_worker_node_count", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("upgradeType", "AKSPatchUpgrade", AAZStrType, ".aks_patch_upgrade", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("upgradeType", "HotfixUpgrade", AAZStrType, ".hotfix_upgrade", typ_kwargs={"flags": {"required": True}})
+                properties.discriminate_by("upgradeType", "AKSPatchUpgrade")
+                properties.discriminate_by("upgradeType", "HotfixUpgrade")
 
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+            disc_hotfix_upgrade = _builder.get(".properties{upgradeType:HotfixUpgrade}")
+            if disc_hotfix_upgrade is not None:
+                disc_hotfix_upgrade.set_prop("componentName", AAZStrType, ".hotfix_upgrade.component_name")
+                disc_hotfix_upgrade.set_prop("targetBuildNumber", AAZStrType, ".hotfix_upgrade.target_build_number")
+                disc_hotfix_upgrade.set_prop("targetClusterVersion", AAZStrType, ".hotfix_upgrade.target_cluster_version")
+                disc_hotfix_upgrade.set_prop("targetOssVersion", AAZStrType, ".hotfix_upgrade.target_oss_version")
 
             return self.serialize_content(_content_value)
 
@@ -308,7 +314,7 @@ class Resize(AAZCommand):
             cluster_profile.identity_profile = AAZObjectType(
                 serialized_name="identityProfile",
             )
-            _ResizeHelper._build_schema_identity_profile_read(cluster_profile.identity_profile)
+            _RunHelper._build_schema_identity_profile_read(cluster_profile.identity_profile)
             cluster_profile.kafka_profile = AAZObjectType(
                 serialized_name="kafkaProfile",
             )
@@ -520,12 +526,12 @@ class Resize(AAZCommand):
             flink_profile.history_server = AAZObjectType(
                 serialized_name="historyServer",
             )
-            _ResizeHelper._build_schema_compute_resource_definition_read(flink_profile.history_server)
+            _RunHelper._build_schema_compute_resource_definition_read(flink_profile.history_server)
             flink_profile.job_manager = AAZObjectType(
                 serialized_name="jobManager",
                 flags={"required": True},
             )
-            _ResizeHelper._build_schema_compute_resource_definition_read(flink_profile.job_manager)
+            _RunHelper._build_schema_compute_resource_definition_read(flink_profile.job_manager)
             flink_profile.job_spec = AAZObjectType(
                 serialized_name="jobSpec",
             )
@@ -539,7 +545,7 @@ class Resize(AAZCommand):
                 serialized_name="taskManager",
                 flags={"required": True},
             )
-            _ResizeHelper._build_schema_compute_resource_definition_read(flink_profile.task_manager)
+            _RunHelper._build_schema_compute_resource_definition_read(flink_profile.task_manager)
 
             catalog_options = cls._schema_on_200.properties.cluster_profile.flink_profile.catalog_options
             catalog_options.hive = AAZObjectType()
@@ -593,7 +599,7 @@ class Resize(AAZCommand):
             kafka_profile.cluster_identity = AAZObjectType(
                 serialized_name="clusterIdentity",
             )
-            _ResizeHelper._build_schema_identity_profile_read(kafka_profile.cluster_identity)
+            _RunHelper._build_schema_identity_profile_read(kafka_profile.cluster_identity)
             kafka_profile.connectivity_endpoints = AAZObjectType(
                 serialized_name="connectivityEndpoints",
             )
@@ -909,7 +915,7 @@ class Resize(AAZCommand):
             coordinator.debug = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _ResizeHelper._build_schema_trino_debug_config_read(coordinator.debug)
+            _RunHelper._build_schema_trino_debug_config_read(coordinator.debug)
             coordinator.high_availability_enabled = AAZBoolType(
                 serialized_name="highAvailabilityEnabled",
             )
@@ -944,7 +950,7 @@ class Resize(AAZCommand):
             worker.debug = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _ResizeHelper._build_schema_trino_debug_config_read(worker.debug)
+            _RunHelper._build_schema_trino_debug_config_read(worker.debug)
 
             compute_profile = cls._schema_on_200.properties.compute_profile
             compute_profile.nodes = AAZListType(
@@ -992,8 +998,8 @@ class Resize(AAZCommand):
             return cls._schema_on_200
 
 
-class _ResizeHelper:
-    """Helper class for Resize"""
+class _RunHelper:
+    """Helper class for Run"""
 
     _schema_compute_resource_definition_read = None
 
@@ -1069,4 +1075,4 @@ class _ResizeHelper:
         _schema.suspend = cls._schema_trino_debug_config_read.suspend
 
 
-__all__ = ["Resize"]
+__all__ = ["Run"]

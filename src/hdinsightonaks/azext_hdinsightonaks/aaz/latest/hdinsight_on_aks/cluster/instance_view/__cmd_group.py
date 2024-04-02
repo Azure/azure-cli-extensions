@@ -8,3 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "hdinsight-on-aks cluster instance-view",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Gets the status of a cluster instances.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
