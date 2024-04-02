@@ -329,6 +329,31 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return node_taints
 
+    def get_node_initialization_taints(self) -> Union[List[str], None]:
+        """Obtain the value of node_initialization_taints.
+
+        :return: empty list, list of strings or None
+        """
+        # read the original value passed by the command
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            node_init_taints = self.raw_param.get("node_initialization_taints")
+        else:
+            node_init_taints = self.raw_param.get("node_initialization_taints")
+        # normalize, default is an empty list
+        if node_init_taints is not None:
+            node_init_taints = [x.strip() for x in (node_init_taints.split(",") if node_init_taints else [])]
+        # keep None as None for update mode
+        if node_init_taints is None and self.decorator_mode == DecoratorMode.CREATE:
+            node_init_taints = []
+
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.agentpool and self.agentpool.node_initialization_taints is not None:
+                node_init_taints = self.agentpool.node_initialization_taints
+
+        # this parameter does not need validation
+        return node_init_taints
+
     def get_drain_timeout(self):
         """Obtain the value of drain_timeout.
 
@@ -654,6 +679,15 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.node_taints = self.context.get_node_taints()
         return agentpool
 
+    def set_up_init_taints(self, agentpool: AgentPool) -> AgentPool:
+        """Set up label, tag, taint for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+        agentpool.node_initialization_taints = self.context.get_node_initialization_taints()
+        return agentpool
+
     def set_up_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
         """Set up artifact streaming property for the AgentPool object."""
         self._ensure_agentpool(agentpool)
@@ -744,6 +778,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_agentpool_network_profile(agentpool)
         # set up taints
         agentpool = self.set_up_taints(agentpool)
+        # set up initialization taints
+        agentpool = self.set_up_init_taints(agentpool)
         # set up artifact streaming
         agentpool = self.set_up_artifact_streaming(agentpool)
         # set up skip_gpu_driver_install
