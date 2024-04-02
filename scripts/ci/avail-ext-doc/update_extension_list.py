@@ -30,7 +30,7 @@ AZURE_DOCS_CLI_REPO_PATH = os.path.abspath(os.path.join('.', 'azure-docs-cli'))
 AVAILABLE_EXTENSIONS_DOC = os.path.join(AZURE_DOCS_CLI_REPO_PATH, 'docs-ref-conceptual', 'azure-cli-extensions-list.md')
 TEMPLATE_FILE = os.path.join(AZURE_CLI_EXTENSIONS_REPO_PATH, "scripts", "ci", "avail-ext-doc", "list-template.md")
 
-sys.path.insert(0, AZURE_CLI_EXTENSIONS_REPO_PATH)
+sys.path.insert(0, os.path.join(AZURE_CLI_EXTENSIONS_REPO_PATH, 'scripts'))
 from ci.util import get_index_data, INDEX_PATH
 
 
