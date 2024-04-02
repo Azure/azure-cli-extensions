@@ -13538,7 +13538,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--dns-name-prefix={dns_name_prefix} --node-count=1 "
             "--ssh-key-value={ssh_key_value} --nodepool-taints {nodepool_taints} "
-            "--nodepool-initialization-taints {nodepool_initailization_taints}"
+            "--nodepool-initialization-taints {nodepool_initailization_taints} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeInitializationTaintsPreview "
         )
         self.cmd(
             create_cmd,
@@ -13568,7 +13569,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--nodepool-taints {nodepool_taints2} "
-            "--nodepool-initialization-taints {nodepool_initialization_taints2}"
+            "--nodepool-initialization-taints {nodepool_initialization_taints2} " 
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeInitializationTaintsPreview "
         )
         self.cmd(
             update_cmd,

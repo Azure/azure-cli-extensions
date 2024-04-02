@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+3.0.0b2
++++++++
+* Add `--nodepool-initialization-taints` to `az aks create` and `az aks update`.
+
 3.0.0b1
 +++++++
 * [BREAKING CHANGE] Remove support for nodeSelector for egress gateway for `az aks mesh` command.
