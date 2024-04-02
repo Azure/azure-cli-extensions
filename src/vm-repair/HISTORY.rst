@@ -1,6 +1,8 @@
 
 Release History
 ===============
+1.0.3
+Bug fix the win-nest specific SKU issue
 1.0.2
 ++++++
 Bug fix for repo null string check so its set to main correctly
