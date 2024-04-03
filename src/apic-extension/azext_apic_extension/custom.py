@@ -23,9 +23,40 @@ from .aaz.latest.apic.api.definition import ExportSpecification
 from .aaz.latest.apic.metadata_schema import Create
 from .aaz.latest.apic.metadata_schema import Update
 from .aaz.latest.apic.metadata_schema import ExportMetadataSchema
+from .aaz.latest.apic.api import Update as UpdateAPI
+from .aaz.latest.apic.api.definition import Update as UpdateAPIDefinition
+from .aaz.latest.apic.api.deployment import Update as UpdateAPIDeployment
+from .aaz.latest.apic.api.version import Update as UpdateAPIVersion
+from .aaz.latest.apic.environment import Update as UpdateEnvironment
 
 logger = get_logger(__name__)
 
+class DefaultWorkspaceParameter:
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.workspace_name._required = False
+        args_schema.workspace_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.workspace_name = "default"
+
+class UpdateAPIExtension(DefaultWorkspaceParameter, UpdateAPI):
+    pass
+
+class UpdateAPIDefinitionExtension(DefaultWorkspaceParameter, UpdateAPIDefinition):
+    pass
+    
+class UpdateAPIDeploymentExtension(DefaultWorkspaceParameter, UpdateAPIDeployment):
+    pass
+    
+class UpdateAPIVersionExtension(DefaultWorkspaceParameter, UpdateAPIVersion):
+    pass
+    
+class UpdateEnvironmentExtension(DefaultWorkspaceParameter, UpdateEnvironment):
+    pass
 
 class ImportSpecificationExtension(ImportSpecification):
     @classmethod
