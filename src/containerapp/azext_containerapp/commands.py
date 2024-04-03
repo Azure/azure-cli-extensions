@@ -175,3 +175,9 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_spring_cloud_eureka', supports_no_wait=True)
         g.custom_show_command('show', 'show_spring_cloud_eureka')
         g.custom_command('delete', 'delete_spring_cloud_eureka', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp job logs') as g:
+        g.custom_show_command('show', 'stream_job_logs')
+
+    with self.command_group('containerapp job replica') as g:
+        g.custom_show_command('list', 'listreplica_containerappsjob')
