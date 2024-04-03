@@ -9,5 +9,122 @@ from azure.cli.testsdk import *
 
 
 class GalleryServiceArtifactScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+    _target_locations = [
+        {
+            "name": "eastus2euap"
+        },
+        {
+            "name": "centraluseuap"
+        },
+        {
+            "name": "westcentralus"
+        },
+        {
+            "name": "westus"
+        }
+    ]
+
+    _vm_artifacts_profile = [
+        {
+            "artifactProfiles": [
+                {
+                    "description": "Using a SIG Image for testing",
+                    "imageReference": {
+                        "id": "/subscriptions/d0382b75-92e7-4da3-8e63-0ed4bd4c3d5e/resourceGroups/"
+                              "robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries"
+                              "/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1",
+                        "initialVersion": "0.0.1"
+                    }
+                }
+            ],
+            "description": "VM Artifact profile with default upgrade window",
+            "name": "vmArtifactsProfile",
+            "upgradeSdpPolicy": {
+                "schedulingPolicy": {
+                    "disableRegularUpgrades": False,
+                    "maxConcurrentResourceCountPerRegion": 5,
+                    "upgradeWindow": "Default"
+                },
+                "type": "PlatformOrchestratedForNewAndExistingResources"
+            }
+        }
+    ]
+
+    _location = "eastus2euap"
+    _gallery_name = "cli_extension_test_gallery"
+    _service_artifact_name = "ArcoCreatedWithCLIExtensionTest"
+
+    @ResourceGroupPreparer()
+    def test_service_artifact_list(self):
+        self.kwargs.update({
+            'gallery_name': GalleryServiceArtifactScenario._gallery_name
+        })
+
+        command_to_run = 'az gallery service-artifact list ' \
+                         '--gallery-name {gallery_name} ' \
+                         '--resource-group {rg}'
+        service_artifacts_list = self.cmd(command_to_run).get_output_in_json()
+        assert len(service_artifacts_list) > 0
+
+    @ResourceGroupPreparer()
+    def test_service_artifact_get(self):
+        self.kwargs.update({
+            'gallery_name': GalleryServiceArtifactScenario._gallery_name,
+            'service_artifact_name': GalleryServiceArtifactScenario._service_artifact_name
+        })
+
+        command_to_run = 'az gallery service-artifact get ' \
+                         '--gallery-name {gallery_name} ' \
+                         '--resource-group {rg} ' \
+                         '--service-artifact-name {service_artifact_name}'
+
+        service_artifacts_get = self.cmd(command_to_run).get_output_in_json()
+
+        assert service_artifacts_get["name"] == GalleryServiceArtifactScenario._service_artifact_name
+
+    @ResourceGroupPreparer()
+    def test_service_artifact_create(self):
+        self.kwargs.update({
+            'target_locations': GalleryServiceArtifactScenario._target_locations,
+            'vm_artifacts_profile': GalleryServiceArtifactScenario._vm_artifacts_profile,
+            'location': GalleryServiceArtifactScenario._location,
+            'gallery_name': GalleryServiceArtifactScenario._gallery_name,
+            'service_artifact_name': GalleryServiceArtifactScenario._service_artifact_name
+        })
+
+        command_to_run = 'az gallery service-artifact create ' \
+                         '--gallery-name {gallery_name} ' \
+                         '--resource-group {rg} ' \
+                         '--service-artifact-name {service_artifact_name} ' \
+                         '--location {location}  ' \
+                         '--target-locations "{target_locations}" ' \
+                         '--vm-artifacts-profiles "{vm_artifacts_profile}" ' \
+                         '--description "Test Arco created using cli"'
+
+        service_artifacts_create = self.cmd(command_to_run).get_output_in_json()
+        assert service_artifacts_create["name"] == GalleryServiceArtifactScenario._service_artifact_name
+
+    @ResourceGroupPreparer()
+    def test_service_artifact_update(self):
+        self.kwargs.update({
+            'target_locations': GalleryServiceArtifactScenario._target_locations,
+            'vm_artifacts_profile': GalleryServiceArtifactScenario._vm_artifacts_profile,
+            'location': GalleryServiceArtifactScenario._location,
+            'gallery_name': GalleryServiceArtifactScenario._gallery_name,
+            'service_artifact_name': GalleryServiceArtifactScenario._service_artifact_name,
+            'initial_service_artifact_description': 'Test Arco created using cli extension test',
+            'updated_service_artifact_description': 'Test Arco updated using cli extension test'
+        })
+
+        command_to_run = 'az gallery service-artifact update ' \
+                         '--gallery-name {gallery_name} ' \
+                         '--resource-group {rg} ' \
+                         '--service-artifact-name {service_artifact_name} ' \
+                         '--location {location}  ' \
+                         '--target-locations "{target_locations}" ' \
+                         '--vm-artifacts-profiles "{vm_artifacts_profile}" ' \
+                         '--description "{updated_service_artifact_description}"'
+        service_artifacts_update = self.cmd(command_to_run).get_output_in_json()
+
+        assert service_artifacts_update["name"] == GalleryServiceArtifactScenario._service_artifact_name
+        assert service_artifacts_update["properties"]["description"] == 'Test Arco updated using cli extension test'
