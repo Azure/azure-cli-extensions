@@ -207,8 +207,6 @@ class ContainerappScenarioTest(ScenarioTest):
 
         self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group}')
 
-    # TODO:
-
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_eventstream(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
