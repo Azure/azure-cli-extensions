@@ -121,6 +121,12 @@ def load_arguments(self, _):
             required=False,
             help="Print the generated policy in the terminal",
         )
+        c.argument(
+            "faster_hashing",
+            options_list=("--faster-hashing"),
+            required=False,
+            help="Use buffered image reader for dmverity hashing. This will speed up the hashing process but use much more memory.",
+        )
 
     with self.argument_context("confcom katapolicygen") as c:
         c.argument(
