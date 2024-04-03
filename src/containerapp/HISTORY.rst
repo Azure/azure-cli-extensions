@@ -5,6 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp up/create/update': Wait longer time for logstream of Cloud Build to make sure the container start
+* 'az containerapp job logs show': Support log streaming for job execution
+* 'az containerapp job replica list': Support list replicas of a job execution
 
 0.3.50
 ++++++
