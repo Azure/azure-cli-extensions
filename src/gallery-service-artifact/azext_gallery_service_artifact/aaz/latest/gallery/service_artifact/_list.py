@@ -19,9 +19,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-08-03",
+        "version": "2023-07-03",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/galleries/{}/serviceartifacts", "2022-08-03"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/galleries/{}/serviceartifacts", "2023-07-03"],
         ]
     }
 
@@ -43,11 +43,11 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.gallery_name = AAZStrArg(
             options=["--gallery-name"],
-            help="The name of the Shared Image Gallery.",
+            help="The name of the Gallery under which the Service Artifact is created",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Resource Group containing Service Artifact",
+            help="The name of the resource group. The name is case insensitive.",
             required=True,
         )
         return cls._args_schema
@@ -117,7 +117,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-03",
+                    "api-version", "2023-07-03",
                     required=True,
                 ),
             }
@@ -262,6 +262,9 @@ class _ListHelper:
         )
         image_reference.offer = AAZStrType()
         image_reference.publisher = AAZStrType()
+        image_reference.shared_gallery_image_id = AAZStrType(
+            serialized_name="sharedGalleryImageId",
+        )
         image_reference.sku = AAZStrType()
 
         upgrade_provider_info = _schema_vm_artifacts_profile_read.upgrade_provider_info

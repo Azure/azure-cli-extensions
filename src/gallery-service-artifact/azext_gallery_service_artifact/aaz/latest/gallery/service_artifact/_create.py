@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-08-03",
+        "version": "2023-07-03",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/galleries/{}/serviceartifacts/{}", "2022-08-03"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/galleries/{}/serviceartifacts/{}", "2023-07-03"],
         ]
     }
 
@@ -44,11 +44,11 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.gallery_name = AAZStrArg(
             options=["--gallery-name"],
-            help="The name of the Shared Image Gallery in which the Service Artifact is to be created or updated.",
+            help="The name of the Gallery under which the Service Artifact is created",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the Resource Group containing Service Artifact",
+            help="The name of the resource group. The name is case insensitive.",
             required=True,
         )
         _args_schema.service_artifact_name = AAZStrArg(
@@ -60,25 +60,16 @@ class Create(AAZCommand):
         # define Arg Group "GalleryServiceArtifact"
 
         _args_schema = cls._args_schema
-        _args_schema.id = AAZStrArg(
-            options=["--id"],
-            arg_group="GalleryServiceArtifact",
-            help="Describes the gallery service artifact unique name.",
-        )
         _args_schema.location = AAZStrArg(
             options=["--location"],
             arg_group="GalleryServiceArtifact",
+            help="The Azure region where Service Artifact is created",
             required=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="GalleryServiceArtifact",
             help="Resource tags",
-        )
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="GalleryServiceArtifact",
-            help="Resource type",
         )
 
         tags = cls._args_schema.tags
@@ -90,15 +81,18 @@ class Create(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
+            help="Description of the Service Artifact",
         )
         _args_schema.target_locations = AAZListArg(
             options=["--target-locations"],
             arg_group="Properties",
+            help="List of target locations for the Service Artifact",
             required=True,
         )
         _args_schema.vm_artifacts_profiles = AAZListArg(
             options=["--vm-artifacts-profiles"],
             arg_group="Properties",
+            help="VM Artifact Profile Definition",
             required=True,
         )
 
@@ -140,6 +134,7 @@ class Create(AAZCommand):
         vm_artifacts_profile_create = cls._args_vm_artifacts_profile_create
         vm_artifacts_profile_create.artifact_profiles = AAZListArg(
             options=["artifact-profiles"],
+            help="Artifact Profile",
             required=True,
         )
         vm_artifacts_profile_create.description = AAZStrArg(
@@ -147,6 +142,7 @@ class Create(AAZCommand):
         )
         vm_artifacts_profile_create.name = AAZStrArg(
             options=["name"],
+            help="Name of the VM Artifact Profile",
             required=True,
         )
         vm_artifacts_profile_create.upgrade_provider_info = AAZObjectArg(
@@ -171,21 +167,31 @@ class Create(AAZCommand):
         image_reference = cls._args_vm_artifacts_profile_create.artifact_profiles.Element.image_reference
         image_reference.current_version = AAZStrArg(
             options=["current-version"],
+            help="Current version of the Service Artifact image version",
         )
         image_reference.id = AAZStrArg(
             options=["id"],
+            help="Reference to gallery image id",
         )
         image_reference.initial_version = AAZStrArg(
             options=["initial-version"],
+            help="Initial version of the Service Artifact image version",
         )
         image_reference.offer = AAZStrArg(
             options=["offer"],
+            help="PIR image offer name",
         )
         image_reference.publisher = AAZStrArg(
             options=["publisher"],
+            help="PIR image publisher name",
+        )
+        image_reference.shared_gallery_image_id = AAZStrArg(
+            options=["shared-gallery-image-id"],
+            help="Reference to 1P gallery image id",
         )
         image_reference.sku = AAZStrArg(
             options=["sku"],
+            help="PIR image SKU",
         )
 
         upgrade_provider_info = cls._args_vm_artifacts_profile_create.upgrade_provider_info
@@ -199,9 +205,11 @@ class Create(AAZCommand):
         upgrade_provider_parameters = cls._args_vm_artifacts_profile_create.upgrade_provider_info.upgrade_provider_parameters
         upgrade_provider_parameters.service_group = AAZStrArg(
             options=["service-group"],
+            help="Service group parameter for Ev2",
         )
         upgrade_provider_parameters.service_identifier = AAZStrArg(
             options=["service-identifier"],
+            help="Service identifier GUID for Ev2",
         )
 
         upgrade_sdp_policy = cls._args_vm_artifacts_profile_create.upgrade_sdp_policy
@@ -314,7 +322,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-03",
+                    "api-version", "2023-07-03",
                     required=True,
                 ),
             }
@@ -339,12 +347,10 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("id", AAZStrType, ".id")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("name", AAZStrType, ".service_artifact_name", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
-            _builder.set_prop("type", AAZStrType, ".type")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -425,6 +431,7 @@ class _CreateHelper:
             image_reference.set_prop("initialVersion", AAZStrType, ".initial_version")
             image_reference.set_prop("offer", AAZStrType, ".offer")
             image_reference.set_prop("publisher", AAZStrType, ".publisher")
+            image_reference.set_prop("sharedGalleryImageId", AAZStrType, ".shared_gallery_image_id")
             image_reference.set_prop("sku", AAZStrType, ".sku")
 
         upgrade_provider_info = _builder.get(".upgradeProviderInfo")
@@ -571,6 +578,9 @@ class _CreateHelper:
         )
         image_reference.offer = AAZStrType()
         image_reference.publisher = AAZStrType()
+        image_reference.shared_gallery_image_id = AAZStrType(
+            serialized_name="sharedGalleryImageId",
+        )
         image_reference.sku = AAZStrType()
 
         upgrade_provider_info = _schema_vm_artifacts_profile_read.upgrade_provider_info

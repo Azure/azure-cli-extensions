@@ -83,6 +83,27 @@ class GalleryServiceArtifactScenario(ScenarioTest):
         assert service_artifacts_get["name"] == GalleryServiceArtifactScenario._service_artifact_name
 
     @ResourceGroupPreparer()
+    def test_service_artifact_get_with_expand(self):
+        self.kwargs.update({
+            'gallery_name': GalleryServiceArtifactScenario._gallery_name,
+            'service_artifact_name': GalleryServiceArtifactScenario._service_artifact_name
+        })
+
+        command_to_run = 'az gallery service-artifact get ' \
+                         '--gallery-name {gallery_name} ' \
+                         '--resource-group {rg} ' \
+                         '--service-artifact-name {service_artifact_name} ' \
+                         '--expand latestVersion'
+
+        service_artifacts_get = self.cmd(command_to_run).get_output_in_json()
+
+        assert service_artifacts_get["name"] == GalleryServiceArtifactScenario._service_artifact_name
+        assert len(service_artifacts_get["properties"]["targetLocations"]) > 0
+        for each_location_dict in service_artifacts_get["properties"]["targetLocations"]:
+            assert "name" in each_location_dict
+            assert "vmArtifactsProfiles" in each_location_dict
+
+    @ResourceGroupPreparer()
     def test_service_artifact_create(self):
         self.kwargs.update({
             'target_locations': GalleryServiceArtifactScenario._target_locations,
