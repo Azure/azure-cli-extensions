@@ -55,6 +55,7 @@ class GalleryServiceArtifactScenario(ScenarioTest):
         ]
 
         self._location = "eastus2euap"
+        self._resource_group = "cli_extension_test_rg"
         self._gallery_name = "cli_extension_test_gallery"
         self._service_artifact_name = "ArcoCreatedWithCLIExtensionTest"
         self._initial_service_artifact_description = "Test Arco created using cli extension test"
@@ -64,36 +65,34 @@ class GalleryServiceArtifactScenario(ScenarioTest):
             'target_locations': self._target_locations,
             'vm_artifacts_profile': self._vm_artifacts_profile,
             'location': self._location,
+            'resource_group': self._resource_group,
             'gallery_name': self._gallery_name,
             'service_artifact_name': self._service_artifact_name,
             'initial_service_artifact_description': self._initial_service_artifact_description,
             'updated_service_artifact_description': self._updated_service_artifact_description
         })
 
-    @ResourceGroupPreparer()
     def test_service_artifact_list(self):
         command_to_run = 'az gallery service-artifact list ' \
                          '--gallery-name {gallery_name} ' \
-                         '--resource-group {rg}'
+                         '--resource-group {resource_group}'
         service_artifacts_list = self.cmd(command_to_run).get_output_in_json()
         assert len(service_artifacts_list) > 0
 
-    @ResourceGroupPreparer()
     def test_service_artifact_get(self):
         command_to_run = 'az gallery service-artifact get ' \
                          '--gallery-name {gallery_name} ' \
-                         '--resource-group {rg} ' \
+                         '--resource-group {resource_group} ' \
                          '--service-artifact-name {service_artifact_name}'
 
         service_artifacts_get = self.cmd(command_to_run).get_output_in_json()
 
         assert service_artifacts_get["name"] == self._service_artifact_name
 
-    @ResourceGroupPreparer()
     def test_service_artifact_get_with_expand(self):
         command_to_run = 'az gallery service-artifact get ' \
                          '--gallery-name {gallery_name} ' \
-                         '--resource-group {rg} ' \
+                         '--resource-group {resource_group} ' \
                          '--service-artifact-name {service_artifact_name} ' \
                          '--expand latestVersion'
 
@@ -105,11 +104,10 @@ class GalleryServiceArtifactScenario(ScenarioTest):
             assert "name" in each_location_dict
             assert "vmArtifactsProfiles" in each_location_dict
 
-    @ResourceGroupPreparer()
     def test_service_artifact_create(self):
         command_to_run = 'az gallery service-artifact create ' \
                          '--gallery-name {gallery_name} ' \
-                         '--resource-group {rg} ' \
+                         '--resource-group {resource_group} ' \
                          '--service-artifact-name {service_artifact_name} ' \
                          '--location {location}  ' \
                          '--target-locations "{target_locations}" ' \
@@ -119,11 +117,10 @@ class GalleryServiceArtifactScenario(ScenarioTest):
         service_artifacts_create = self.cmd(command_to_run).get_output_in_json()
         assert service_artifacts_create["name"] == self._service_artifact_name
 
-    @ResourceGroupPreparer()
     def test_service_artifact_update(self):
         command_to_run = 'az gallery service-artifact update ' \
                          '--gallery-name {gallery_name} ' \
-                         '--resource-group {rg} ' \
+                         '--resource-group {resource_group} ' \
                          '--service-artifact-name {service_artifact_name} ' \
                          '--location {location}  ' \
                          '--target-locations "{target_locations}" ' \
