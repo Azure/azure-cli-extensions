@@ -9,57 +9,69 @@ from azure.cli.testsdk import *
 
 
 class GalleryServiceArtifactScenario(ScenarioTest):
-    _target_locations = [
-        {
-            "name": "eastus2euap"
-        },
-        {
-            "name": "centraluseuap"
-        },
-        {
-            "name": "westcentralus"
-        },
-        {
-            "name": "westus"
-        }
-    ]
 
-    _vm_artifacts_profile = [
-        {
-            "artifactProfiles": [
-                {
-                    "description": "Using a SIG Image for testing",
-                    "imageReference": {
-                        "id": "/subscriptions/d0382b75-92e7-4da3-8e63-0ed4bd4c3d5e/resourceGroups/"
-                              "robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries"
-                              "/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1",
-                        "initialVersion": "0.0.1"
-                    }
-                }
-            ],
-            "description": "VM Artifact profile with default upgrade window",
-            "name": "vmArtifactsProfile",
-            "upgradeSdpPolicy": {
-                "schedulingPolicy": {
-                    "disableRegularUpgrades": False,
-                    "maxConcurrentResourceCountPerRegion": 5,
-                    "upgradeWindow": "Default"
-                },
-                "type": "PlatformOrchestratedForNewAndExistingResources"
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self._target_locations = [
+            {
+                "name": "eastus2euap"
+            },
+            {
+                "name": "centraluseuap"
+            },
+            {
+                "name": "westcentralus"
+            },
+            {
+                "name": "westus"
             }
-        }
-    ]
+        ]
 
-    _location = "eastus2euap"
-    _gallery_name = "cli_extension_test_gallery"
-    _service_artifact_name = "ArcoCreatedWithCLIExtensionTest"
+        self._vm_artifacts_profile = [
+            {
+                "artifactProfiles": [
+                    {
+                        "description": "Using a SIG Image for testing",
+                        "imageReference": {
+                            "id": "/subscriptions/d0382b75-92e7-4da3-8e63-0ed4bd4c3d5e/resourceGroups/"
+                                  "robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries"
+                                  "/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1",
+                            "initialVersion": "0.0.1"
+                        }
+                    }
+                ],
+                "description": "VM Artifact profile with default upgrade window",
+                "name": "vmArtifactsProfile",
+                "upgradeSdpPolicy": {
+                    "schedulingPolicy": {
+                        "disableRegularUpgrades": False,
+                        "maxConcurrentResourceCountPerRegion": 5,
+                        "upgradeWindow": "Default"
+                    },
+                    "type": "PlatformOrchestratedForNewAndExistingResources"
+                }
+            }
+        ]
+
+        self._location = "eastus2euap"
+        self._gallery_name = "cli_extension_test_gallery"
+        self._service_artifact_name = "ArcoCreatedWithCLIExtensionTest"
+        self._initial_service_artifact_description = "Test Arco created using cli extension test"
+        self._updated_service_artifact_description = "Test Arco updated using cli extension test"
+
+        self.kwargs.update({
+            'target_locations': self._target_locations,
+            'vm_artifacts_profile': self._vm_artifacts_profile,
+            'location': self._location,
+            'gallery_name': self._gallery_name,
+            'service_artifact_name': self._service_artifact_name,
+            'initial_service_artifact_description': self._initial_service_artifact_description,
+            'updated_service_artifact_description': self._updated_service_artifact_description
+        })
 
     @ResourceGroupPreparer()
     def test_service_artifact_list(self):
-        self.kwargs.update({
-            'gallery_name': GalleryServiceArtifactScenario._gallery_name
-        })
-
         command_to_run = 'az gallery service-artifact list ' \
                          '--gallery-name {gallery_name} ' \
                          '--resource-group {rg}'
@@ -68,11 +80,6 @@ class GalleryServiceArtifactScenario(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_service_artifact_get(self):
-        self.kwargs.update({
-            'gallery_name': GalleryServiceArtifactScenario._gallery_name,
-            'service_artifact_name': GalleryServiceArtifactScenario._service_artifact_name
-        })
-
         command_to_run = 'az gallery service-artifact get ' \
                          '--gallery-name {gallery_name} ' \
                          '--resource-group {rg} ' \
@@ -80,15 +87,10 @@ class GalleryServiceArtifactScenario(ScenarioTest):
 
         service_artifacts_get = self.cmd(command_to_run).get_output_in_json()
 
-        assert service_artifacts_get["name"] == GalleryServiceArtifactScenario._service_artifact_name
+        assert service_artifacts_get["name"] == self._service_artifact_name
 
     @ResourceGroupPreparer()
     def test_service_artifact_get_with_expand(self):
-        self.kwargs.update({
-            'gallery_name': GalleryServiceArtifactScenario._gallery_name,
-            'service_artifact_name': GalleryServiceArtifactScenario._service_artifact_name
-        })
-
         command_to_run = 'az gallery service-artifact get ' \
                          '--gallery-name {gallery_name} ' \
                          '--resource-group {rg} ' \
@@ -97,7 +99,7 @@ class GalleryServiceArtifactScenario(ScenarioTest):
 
         service_artifacts_get = self.cmd(command_to_run).get_output_in_json()
 
-        assert service_artifacts_get["name"] == GalleryServiceArtifactScenario._service_artifact_name
+        assert service_artifacts_get["name"] == self._service_artifact_name
         assert len(service_artifacts_get["properties"]["targetLocations"]) > 0
         for each_location_dict in service_artifacts_get["properties"]["targetLocations"]:
             assert "name" in each_location_dict
@@ -105,14 +107,6 @@ class GalleryServiceArtifactScenario(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_service_artifact_create(self):
-        self.kwargs.update({
-            'target_locations': GalleryServiceArtifactScenario._target_locations,
-            'vm_artifacts_profile': GalleryServiceArtifactScenario._vm_artifacts_profile,
-            'location': GalleryServiceArtifactScenario._location,
-            'gallery_name': GalleryServiceArtifactScenario._gallery_name,
-            'service_artifact_name': GalleryServiceArtifactScenario._service_artifact_name
-        })
-
         command_to_run = 'az gallery service-artifact create ' \
                          '--gallery-name {gallery_name} ' \
                          '--resource-group {rg} ' \
@@ -120,23 +114,13 @@ class GalleryServiceArtifactScenario(ScenarioTest):
                          '--location {location}  ' \
                          '--target-locations "{target_locations}" ' \
                          '--vm-artifacts-profiles "{vm_artifacts_profile}" ' \
-                         '--description "Test Arco created using cli"'
+                         '--description "{initial_service_artifact_description}"'
 
         service_artifacts_create = self.cmd(command_to_run).get_output_in_json()
-        assert service_artifacts_create["name"] == GalleryServiceArtifactScenario._service_artifact_name
+        assert service_artifacts_create["name"] == self._service_artifact_name
 
     @ResourceGroupPreparer()
     def test_service_artifact_update(self):
-        self.kwargs.update({
-            'target_locations': GalleryServiceArtifactScenario._target_locations,
-            'vm_artifacts_profile': GalleryServiceArtifactScenario._vm_artifacts_profile,
-            'location': GalleryServiceArtifactScenario._location,
-            'gallery_name': GalleryServiceArtifactScenario._gallery_name,
-            'service_artifact_name': GalleryServiceArtifactScenario._service_artifact_name,
-            'initial_service_artifact_description': 'Test Arco created using cli extension test',
-            'updated_service_artifact_description': 'Test Arco updated using cli extension test'
-        })
-
         command_to_run = 'az gallery service-artifact update ' \
                          '--gallery-name {gallery_name} ' \
                          '--resource-group {rg} ' \
@@ -145,7 +129,8 @@ class GalleryServiceArtifactScenario(ScenarioTest):
                          '--target-locations "{target_locations}" ' \
                          '--vm-artifacts-profiles "{vm_artifacts_profile}" ' \
                          '--description "{updated_service_artifact_description}"'
+
         service_artifacts_update = self.cmd(command_to_run).get_output_in_json()
 
-        assert service_artifacts_update["name"] == GalleryServiceArtifactScenario._service_artifact_name
-        assert service_artifacts_update["properties"]["description"] == 'Test Arco updated using cli extension test'
+        assert service_artifacts_update["name"] == self._service_artifact_name
+        assert service_artifacts_update["properties"]["description"] == self._updated_service_artifact_description
