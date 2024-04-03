@@ -283,4 +283,5 @@ az apic metadata-schema export-metadata-schema -g api-center-test -s contosoeuap
 Register API or Quick Add
 ```
 az apic api register -g api-center-test -s contosoeuap --api-location "C:/Users/arpishah/examples/cli-examples/spec-examples/openai.json" --environment-name public
+az apic api register -g api-center-test -s contosoeuap --api-location "C:/Users/arpishah/examples/cli-examples/spec-examples/openai.yml" --environment-name public
 ```

@@ -30,4 +30,5 @@ helps['apic api register'] = """
       - name: Register api by providing spec file.
         text: |
           az apic api register -g api-center-test -s contosoeuap --api-location "examples/cli-examples/spec-examples/openai.json" --environment-name public
+          az apic api register -g api-center-test -s contosoeuap --api-location "examples/cli-examples/spec-examples/openai.yml" --environment-name public
 """

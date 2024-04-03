@@ -13,6 +13,7 @@
 import os
 import sys
 import json
+import yaml
 import requests
 from knack.log import get_logger
 import chardet
@@ -50,10 +51,19 @@ class ImportSpecificationExtension(ImportSpecification):
                 result = chardet.detect(data)
                 encoding = result['encoding']
 
-            with open(str(args.source_profile), 'r', encoding=encoding) as f:
-                data = json.load(f)
-                if data:
-                    value = json.dumps(data)
+            if str(args.source_profile).endswith('.yaml') or str(args.source_profile).endswith('.yml'):
+                with open(str(args.source_profile), 'r', encoding=encoding) as f:
+                    content = f.read()
+                    data = yaml.safe_load(content)
+                    if data:
+                        value = content
+
+            if (str(args.source_profile).endswith('.json')):
+                with open(str(args.source_profile), 'r', encoding=encoding) as f:
+                    content = f.read()
+                    data = json.loads(content)
+                    if data:
+                        value = content
 
         # If any of the fields are None, get them from self.args
         if value is None:
@@ -269,14 +279,22 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             encoding = result['encoding']
 
         # TODO - read other file types later
-        with open(str(api_location), 'r', encoding=encoding) as f:
-            data = json.load(f)
-            if data:
-                value = json.dumps(data)
+        if str(api_location).endswith('.yaml') or str(api_location).endswith('.yml'):
+            with open(str(api_location), 'r', encoding=encoding) as f:
+                content = f.read()
+                data = yaml.safe_load(content)
+                if data:
+                    value = content
+        if (str(api_location).endswith('.json')):
+            with open(str(api_location), 'r', encoding=encoding) as f:
+                content = f.read()
+                data = json.loads(content)
+                if data:
+                    value = content
 
         # If we could not read the file, return error
         if value is None:
-            logger.error('Could not load json file')
+            logger.error('Could not load spec file')
             return
 
         # Check if the first field is 'swagger', 'openapi', or something else and get the definition name and version
@@ -295,9 +313,9 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
         info = data['info']
         if info:
             # Create API and Create API Version
-            extracted_api_name = info.get('title', 'Default API').replace(" ", "-").lower()
+            extracted_api_name = _generate_api_id(info.get('title', 'Default-API')).lower()
             extracted_api_description = info.get('description', 'API Description')
-            extracted_api_summary = info.get('summary', extracted_api_description)
+            extracted_api_summary = info.get('summary', str(extracted_api_description)[:200])
             extracted_api_title = info.get('title', 'API Title').replace(" ", "-").lower()
             extracted_api_version = info.get('version', 'v1').replace(".", "-").lower()
             extracted_api_version_title = info.get('version', 'v1').replace(".", "-").lower()
@@ -474,3 +492,11 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
 
                     CreateAPIDeployment(cli_ctx=cmd.cli_ctx)(command_args=api_deployment_args)
                     logger.warning('API deployment was created successfully')
+
+def _generate_api_id(input: str) -> str:
+    import re
+    # Remove invalid characters
+    id = re.sub('[^a-zA-Z0-9-]', '', input)
+    # Remove leading and trailing hyphens
+    id = id.strip('-')
+    return id
