@@ -31,7 +31,8 @@ def load_arguments(self, _):
     from azext_front_door.vendored_sdks.models import (
         PolicyMode, FrontDoorProtocol, FrontDoorHealthProbeMethod, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
         FrontDoorRedirectType, FrontDoorRedirectProtocol, MinimumTLSVersion, Transform, HeaderActionType, RulesEngineOperator, RulesEngineMatchVariable,
-        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType, ManagedRuleSetActionType
+        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType, ManagedRuleSetActionType, ScrubbingRuleEntryState,
+        WebApplicationFirewallScrubbingState, ScrubbingRuleEntryMatchOperator, ScrubbingRuleEntryMatchVariable
     )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
@@ -172,6 +173,7 @@ def load_arguments(self, _):
         c.argument('custom_block_response_body', help='Body to return for blocked requests.')
         c.argument('request_body_check', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Disabled or Enabled status. Default value is Disabled')
         c.argument('sku', arg_type=get_enum_type(SkuName), help='SKU of Firewall policy. This field cannot be updated after creation. Default value is Classic_AzureFrontDoor')
+        c.argument('log-scrubbing', help='')
 
     with self.argument_context('network front-door waf-policy managed-rules add') as c:
         c.argument('policy_name', waf_policy_name_type)

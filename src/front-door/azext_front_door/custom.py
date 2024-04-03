@@ -6,6 +6,7 @@
 
 # pylint: disable=too-many-lines
 
+import ast
 import sys
 
 from azure.cli.core.commands import cached_get, cached_put
@@ -751,10 +752,25 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
                       disabled=False, mode=None, redirect_url=None,
                       custom_block_response_status_code=None,
                       custom_block_response_body=None, tags=None,
-                      request_body_check=None, sku=None):
+                      request_body_check=None, sku=None,
+                      log_scrubbing=None):
     client = cf_waf_policies(cmd.cli_ctx, None)
     from azext_front_door.vendored_sdks.models import (
-        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList, Sku, SkuName)
+        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList, Sku, SkuName,
+        WebApplicationFirewallScrubbingRules)
+
+    scrubbing_dict = ast.literal_eval(log_scrubbing)
+    rules = []
+    rule = None
+    for i in range(len(scrubbing_dict['scrubbing-rules'])):
+        rule = WebApplicationFirewallScrubbingRules(
+            name=scrubbing_dict['scrubbing-rules'][i]['name'],
+            rule_type=scrubbing_dict['scrubbing-rules'][i]['rule-type'],
+            pattern=scrubbing_dict['scrubbing-rules'][i]['pattern'],
+            state=scrubbing_dict['scrubbing-rules'][i]['state']
+        )
+        rules.append(rule)
+
     policy = WebApplicationFirewallPolicy(
         location='global',
         tags=tags,
@@ -766,6 +782,8 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
             custom_block_response_status_code=custom_block_response_status_code,
             custom_block_response_body=custom_block_response_body,
             request_body_check=request_body_check,
+            state=scrubbing_dict['state'],
+            scrubbing_rules=rules
         ),
         custom_rules=CustomRuleList(rules=[]),
         managed_rules=ManagedRuleSetList(rule_sets=[])
@@ -775,7 +793,22 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
 
 def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
                       custom_block_response_status_code=None, custom_block_response_body=None,
-                      disabled=False, request_body_check=None, sku=None):
+                      disabled=False, request_body_check=None, sku=None,
+                      log_scrubbing=None):
+
+    from azext_front_door.vendored_sdks.models import (WebApplicationFirewallScrubbingRules)
+    scrubbing_dict = ast.literal_eval(log_scrubbing)
+    rules = []
+    rule = None
+    for i in range(len(scrubbing_dict['scrubbing-rules'])):
+        rule = WebApplicationFirewallScrubbingRules(
+            name=scrubbing_dict['scrubbing-rules'][i]['name'],
+            rule_type=scrubbing_dict['scrubbing-rules'][i]['rule-type'],
+            pattern=scrubbing_dict['scrubbing-rules'][i]['pattern'],
+            state=scrubbing_dict['scrubbing-rules'][i]['state']
+        )
+        rules.append(rule)
+
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
 
@@ -789,6 +822,8 @@ def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
         c.update_param('custom_block_response_status_code', custom_block_response_status_code, None)
         c.update_param('custom_block_response_body', custom_block_response_body, None)
         c.update_param('request_body_check', request_body_check, None)
+        c.update_param('state', scrubbing_dict['state'], None)
+        c.update_param('scrubbing_rules', rules, None)
     return instance
 
 
