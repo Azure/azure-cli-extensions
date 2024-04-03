@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -882,6 +883,15 @@ helps['cosmosdb copy cancel'] = """
       - name: Cancel job j1
         text: |-
                az cosmosdb copy cancel -g "rg1" --account-name "acc1" --job-name "j1"
+"""
+
+helps['cosmosdb copy complete'] = """
+    type: command
+    short-summary: "Completes an online container copy job."
+    examples:
+      - name: Complete job j1
+        text: |-
+               az cosmosdb copy complete -g "rg1" --account-name "acc1" --job-name "j1"
 """
 
 helps['cosmosdb sql container merge'] = """

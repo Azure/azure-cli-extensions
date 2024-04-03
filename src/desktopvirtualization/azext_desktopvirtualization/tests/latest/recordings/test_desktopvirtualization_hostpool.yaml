@@ -1,0 +1,611 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization hostpool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --description --friendly-name --host-pool-type --load-balancer-type
+        --max-session-limit --personal-desktop-assignment-type --preferred-app-group-type
+        --registration-info --sso-client-id --sso-client-secret-key-vault-path --sso-secret-type
+        --start-vm-on-connect
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_hostpool_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_hostpool_000001",
+        "name": "test_desktopvirtualization_hostpool_000001", "type": "Microsoft.Resources/resourceGroups",
+        "location": "centralus", "tags": {"product": "azurecli", "cause": "automation",
+        "test": "test_desktopvirtualization_hostpool", "date": "2024-03-01T03:45:39Z",
+        "module": "desktopvirtualization"}, "properties": {"provisioningState": "Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '464'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 03:45:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2923F1E903B547F996AE3D2F2B055B46 Ref B: TYO201100114029 Ref C: 2024-03-01T03:45:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centralus", "properties": {"description": "test", "friendlyName":
+      "friendly", "hostPoolType": "Pooled", "loadBalancerType": "BreadthFirst", "maxSessionLimit":
+      999999, "personalDesktopAssignmentType": "Automatic", "preferredAppGroupType":
+      "Desktop", "registrationInfo": {"expirationTime": "2024-03-05T06:38:08.189Z",
+      "registrationTokenOperation": "Update"}, "ssoClientId": "client", "ssoClientSecretKeyVaultPath":
+      "https://keyvault/secret", "ssoSecretType": "SharedKey", "startVMOnConnect":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization hostpool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '511'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -g --description --friendly-name --host-pool-type --load-balancer-type
+        --max-session-limit --personal-desktop-assignment-type --preferred-app-group-type
+        --registration-info --sso-client-id --sso-client-secret-key-vault-path --sso-secret-type
+        --start-vm-on-connect
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostPools/hostpool_000002?api-version=2021-07-12
+  response:
+    body:
+      string: '{"identity": null, "name": "hostpool_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostpools/hostpool_000002",
+        "type": "Microsoft.DesktopVirtualization/hostpools", "location": "centralus",
+        "tags": null, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T03:45:53.52Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T03:45:53.52Z"}, "properties": {"friendlyName": "friendly", "description":
+        "test", "hostPoolType": "Pooled", "personalDesktopAssignmentType": null, "applicationGroupReferences":
+        [], "customRdpProperty": "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;redirectwebauthn:i:1;use
+        multimon:i:1;", "maxSessionLimit": 999999, "loadBalancerType": "BreadthFirst",
+        "validationEnvironment": false, "ring": null, "registrationInfo": {"expirationTime":
+        "2024-03-05T06:38:08.189Z", "token": null, "registrationTokenOperation": "Update"},
+        "vmTemplate": null, "preferredAppGroupType": "Desktop", "migrationRequest":
+        null, "cloudPcResource": false, "startVMOnConnect": false, "ssoadfsAuthority":
+        null, "ssoClientId": "client", "ssoClientSecretKeyVaultPath": "https://keyvault/secret",
+        "ssoSecretType": "SharedKey", "objectId": "b6a1069a-3680-48d1-b15b-256860722962"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1588'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 03:45:54 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostpools/hostpool_000002
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=7bcb77c12c21506594bbc84c20a4a2891f6d7f0bda0e4b28f63e983b7e57b6d3;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=7bcb77c12c21506594bbc84c20a4a2891f6d7f0bda0e4b28f63e983b7e57b6d3;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - 77247aab-8d63-4fdd-8ad7-e561ef759dd1
+      x-ms-lamport-ts:
+      - '5614375940'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX2hvc3Rwb29sX3p0cnB2cDJ4c2oybjRmMmpqMjdhaXNybzRkamxuZ21yeWRmcGpoeC9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi9ob3N0UG9vbHMvaG9zdHBvb2xfaW96ZnRv
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 11BBD52FDF6B4B8A9C3FD45A96D9F467 Ref B: TYO201100115025 Ref C: 2024-03-01T03:45:52Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization hostpool update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostPools/hostpool_000002?api-version=2021-07-12
+  response:
+    body:
+      string: '{"identity": null, "name": "hostpool_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostpools/hostpool_000002",
+        "type": "Microsoft.DesktopVirtualization/hostpools", "location": "centralus",
+        "tags": null, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T03:45:53.52Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T03:45:53.52Z"}, "properties": {"friendlyName": "friendly", "description":
+        "test", "hostPoolType": "Pooled", "personalDesktopAssignmentType": null, "applicationGroupReferences":
+        [], "customRdpProperty": "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;redirectwebauthn:i:1;use
+        multimon:i:1;", "maxSessionLimit": 999999, "loadBalancerType": "BreadthFirst",
+        "validationEnvironment": false, "ring": null, "registrationInfo": null, "vmTemplate":
+        null, "preferredAppGroupType": "Desktop", "migrationRequest": null, "cloudPcResource":
+        false, "startVMOnConnect": false, "ssoadfsAuthority": null, "ssoClientId":
+        "client", "ssoClientSecretKeyVaultPath": "https://keyvault/secret", "ssoSecretType":
+        "SharedKey", "objectId": "b6a1069a-3680-48d1-b15b-256860722962"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1491'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 03:45:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=11a8016699cfc7f02a71b1dcc7167bc48c9f1d1eaecce21a8c4e027e0921cdd8;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=11a8016699cfc7f02a71b1dcc7167bc48c9f1d1eaecce21a8c4e027e0921cdd8;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - 4cc622e2-523c-468e-93d6-9d7cdc380385
+      x-ms-lamport-ts:
+      - '5614376005'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX2hvc3Rwb29sX3p0cnB2cDJ4c2oybjRmMmpqMjdhaXNybzRkamxuZ21yeWRmcGpoeC9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi9ob3N0UG9vbHMvaG9zdHBvb2xfaW96ZnRv
+      x-msedge-ref:
+      - 'Ref A: 9A0D72AFA02143ECA57D4CA8B1C4811D Ref B: TYO201100113029 Ref C: 2024-03-01T03:45:56Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centralus", "properties": {"customRdpProperty": "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;redirectwebauthn:i:1;use
+      multimon:i:1;", "description": "test", "friendlyName": "friendly", "hostPoolType":
+      "Pooled", "loadBalancerType": "BreadthFirst", "maxSessionLimit": 999999, "preferredAppGroupType":
+      "Desktop", "ssoClientId": "client", "ssoClientSecretKeyVaultPath": "https://keyvault/secret",
+      "ssoSecretType": "SharedKey", "startVMOnConnect": false, "validationEnvironment":
+      false}, "tags": {"tag": "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization hostpool update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '693'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostPools/hostpool_000002?api-version=2021-07-12
+  response:
+    body:
+      string: '{"identity": null, "name": "hostpool_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostpools/hostpool_000002",
+        "type": "Microsoft.DesktopVirtualization/hostpools", "location": "centralus",
+        "tags": {"tag": "test"}, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T03:45:53.52Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T03:45:57.27Z"}, "properties": {"friendlyName": "friendly", "description":
+        "test", "hostPoolType": "Pooled", "personalDesktopAssignmentType": null, "applicationGroupReferences":
+        [], "customRdpProperty": "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;redirectwebauthn:i:1;use
+        multimon:i:1;", "maxSessionLimit": 999999, "loadBalancerType": "BreadthFirst",
+        "validationEnvironment": false, "ring": null, "registrationInfo": {"expirationTime":
+        "2024-03-05T06:38:08.189Z", "token": null, "registrationTokenOperation": "None"},
+        "vmTemplate": null, "preferredAppGroupType": "Desktop", "migrationRequest":
+        null, "cloudPcResource": false, "startVMOnConnect": false, "ssoadfsAuthority":
+        null, "ssoClientId": "client", "ssoClientSecretKeyVaultPath": "https://keyvault/secret",
+        "ssoSecretType": "SharedKey", "objectId": "b6a1069a-3680-48d1-b15b-256860722962"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 03:45:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=5dd88b1b095b0bace916bbff8b6816e0a442269c15efc1ddf244384e7f96a14f;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=5dd88b1b095b0bace916bbff8b6816e0a442269c15efc1ddf244384e7f96a14f;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - 26f9701a-eebf-4235-9f07-4481c8253873
+      x-ms-lamport-ts:
+      - '5614375357'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX2hvc3Rwb29sX3p0cnB2cDJ4c2oybjRmMmpqMjdhaXNybzRkamxuZ21yeWRmcGpoeC9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi9ob3N0UG9vbHMvaG9zdHBvb2xfaW96ZnRv
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 9FAFB13371FE4845BA8A2EC1E7C79293 Ref B: TYO201100113029 Ref C: 2024-03-01T03:45:57Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization hostpool show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostPools/hostpool_000002?api-version=2021-07-12
+  response:
+    body:
+      string: '{"identity": null, "name": "hostpool_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostpools/hostpool_000002",
+        "type": "Microsoft.DesktopVirtualization/hostpools", "location": "centralus",
+        "tags": {"tag": "test"}, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T03:45:53.52Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T03:45:57.27Z"}, "properties": {"friendlyName": "friendly", "description":
+        "test", "hostPoolType": "Pooled", "personalDesktopAssignmentType": null, "applicationGroupReferences":
+        [], "customRdpProperty": "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;redirectwebauthn:i:1;use
+        multimon:i:1;", "maxSessionLimit": 999999, "loadBalancerType": "BreadthFirst",
+        "validationEnvironment": false, "ring": null, "registrationInfo": null, "vmTemplate":
+        null, "preferredAppGroupType": "Desktop", "migrationRequest": null, "cloudPcResource":
+        false, "startVMOnConnect": false, "ssoadfsAuthority": null, "ssoClientId":
+        "client", "ssoClientSecretKeyVaultPath": "https://keyvault/secret", "ssoSecretType":
+        "SharedKey", "objectId": "b6a1069a-3680-48d1-b15b-256860722962"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1502'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 03:46:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=607acc0b60c99d398a1b4a887b17d42dc08c6889973dd3e1514cc34bb8598dbf;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=607acc0b60c99d398a1b4a887b17d42dc08c6889973dd3e1514cc34bb8598dbf;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - 75bf7722-6d40-447c-8bd6-9786ff8652c1
+      x-ms-lamport-ts:
+      - '5614375624'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX2hvc3Rwb29sX3p0cnB2cDJ4c2oybjRmMmpqMjdhaXNybzRkamxuZ21yeWRmcGpoeC9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi9ob3N0UG9vbHMvaG9zdHBvb2xfaW96ZnRv
+      x-msedge-ref:
+      - 'Ref A: 9E3ACF0AC1314C1A8C00664E407AE8EA Ref B: TYO201100116049 Ref C: 2024-03-01T03:46:01Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization hostpool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostPools?api-version=2021-07-12
+  response:
+    body:
+      string: '{"value": [{"identity": null, "name": "hostpool_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostpools/hostpool_000002",
+        "type": "Microsoft.DesktopVirtualization/hostpools", "location": "centralus",
+        "tags": {"tag": "test"}, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T03:45:53.52Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T03:45:57.27Z"}, "properties": {"friendlyName": "friendly", "description":
+        "test", "hostPoolType": "Pooled", "personalDesktopAssignmentType": null, "applicationGroupReferences":
+        [], "customRdpProperty": "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;redirectwebauthn:i:1;use
+        multimon:i:1;", "maxSessionLimit": 999999, "loadBalancerType": "BreadthFirst",
+        "validationEnvironment": false, "ring": null, "registrationInfo": null, "vmTemplate":
+        null, "preferredAppGroupType": "Desktop", "migrationRequest": null, "cloudPcResource":
+        false, "startVMOnConnect": false, "ssoadfsAuthority": null, "ssoClientId":
+        "client", "ssoClientSecretKeyVaultPath": "https://keyvault/secret", "ssoSecretType":
+        "SharedKey", "objectId": "b6a1069a-3680-48d1-b15b-256860722962"}}], "nextLink":
+        null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 03:46:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=5d35a7442639fc0711921e32334a8850533656dd03cc677a5addc467ce0ffbe1;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=5d35a7442639fc0711921e32334a8850533656dd03cc677a5addc467ce0ffbe1;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - 0a3a6412-7568-43bc-8c46-226bb45f1834
+      x-ms-lamport-ts:
+      - '5614376380'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX2hvc3Rwb29sX3p0cnB2cDJ4c2oybjRmMmpqMjdhaXNybzRkamxuZ21yeWRmcGpoeA==
+      x-msedge-ref:
+      - 'Ref A: 2EBE1B2A72974907AD954C8D5A7432DC Ref B: TYO201100115035 Ref C: 2024-03-01T03:46:02Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization hostpool retrieve-registration-token
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostPools/hostpool_000002/retrieveRegistrationToken?api-version=2021-07-12
+  response:
+    body:
+      string: '{"expirationTime": "2024-03-05T06:38:08.189Z", "token": null, "resetToken":
+        false, "registrationTokenOperation": "None"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '120'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 03:46:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=a42e49241337d9995315eeb84aeb99a9bb129de89814b49a54798016db5a2698;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=a42e49241337d9995315eeb84aeb99a9bb129de89814b49a54798016db5a2698;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - e0e2487b-7f51-4aec-ae24-6a7d1f0ac816
+      x-ms-lamport-ts:
+      - '5614375651'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX2hvc3Rwb29sX3p0cnB2cDJ4c2oybjRmMmpqMjdhaXNybzRkamxuZ21yeWRmcGpoeC9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi9ob3N0UG9vbHMvaG9zdHBvb2xfaW96ZnRv
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 7664583CB90B4CDB938A0DD64AB4C9FF Ref B: TYO201100113053 Ref C: 2024-03-01T03:46:03Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - desktopvirtualization hostpool delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name -g -y
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostPools/hostpool_000002?api-version=2021-07-12
+  response:
+    body:
+      string: '{"identity": null, "name": "hostpool_000002", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_desktopvirtualization_hostpool_000001/providers/Microsoft.DesktopVirtualization/hostpools/hostpool_000002",
+        "type": "Microsoft.DesktopVirtualization/hostpools", "location": "centralus",
+        "tags": {"tag": "test"}, "kind": null, "systemData": {"createdBy": "v-jingszhang@microsoft.com",
+        "createdByType": "User", "createdAt": "2024-03-01T03:45:53.52Z", "lastModifiedBy":
+        "v-jingszhang@microsoft.com", "lastModifiedByType": "User", "lastModifiedAt":
+        "2024-03-01T03:45:57.27Z"}, "properties": {"friendlyName": "friendly", "description":
+        "test", "hostPoolType": "Pooled", "personalDesktopAssignmentType": null, "applicationGroupReferences":
+        [], "customRdpProperty": "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;redirectwebauthn:i:1;use
+        multimon:i:1;", "maxSessionLimit": 999999, "loadBalancerType": "BreadthFirst",
+        "validationEnvironment": false, "ring": null, "registrationInfo": {"expirationTime":
+        "2024-03-05T06:38:08.189Z", "token": null, "registrationTokenOperation": "None"},
+        "vmTemplate": null, "preferredAppGroupType": "Desktop", "migrationRequest":
+        null, "cloudPcResource": false, "startVMOnConnect": false, "ssoadfsAuthority":
+        null, "ssoClientId": "client", "ssoClientSecretKeyVaultPath": "https://keyvault/secret",
+        "ssoSecretType": "SharedKey", "objectId": "b6a1069a-3680-48d1-b15b-256860722962"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Mar 2024 03:46:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=136ead941a19baf9a74bd41f746b55cb14e4cf321e040e50f7bd8162d430922d;Path=/;HttpOnly;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      - ARRAffinitySameSite=136ead941a19baf9a74bd41f746b55cb14e4cf321e040e50f7bd8162d430922d;Path=/;HttpOnly;SameSite=None;Secure;Domain=rdarmprovider-g-us-r0.wvd.microsoft.com
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-correlation-id:
+      - 12d365a8-18a1-49a5-b05d-cf16a9d8aa56
+      x-ms-lamport-ts:
+      - '5614375807'
+      x-ms-opsarmpath64:
+      - L3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL3Rlc3RfZGVza3RvcHZpcnR1YWxpemF0aW9uX2hvc3Rwb29sX3p0cnB2cDJ4c2oybjRmMmpqMjdhaXNybzRkamxuZ21yeWRmcGpoeC9wcm92aWRlcnMvTWljcm9zb2Z0LkRlc2t0b3BWaXJ0dWFsaXphdGlvbi9ob3N0UG9vbHMvaG9zdHBvb2xfaW96ZnRv
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+      x-msedge-ref:
+      - 'Ref A: F8FE59739F4A4A6796E178D8877C272E Ref B: TYO201100117025 Ref C: 2024-03-01T03:46:05Z'
+      x-powered-by:
+      - ASP.NET
+      x-rate-limit-limit:
+      - '0'
+      x-rate-limit-remaining:
+      - '9223372036854775807'
+      x-rate-limit-reset:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1

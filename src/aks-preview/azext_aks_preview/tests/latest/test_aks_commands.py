@@ -64,6 +64,27 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 return version
         return ""
 
+    def _get_lts_version(self, location):
+        """Return the latest LTS version in the given location."""
+        data = self.cmd(
+            "az aks get-versions -l {}".format(
+                location
+            )
+        ).get_output_in_json()
+        lts_versions = []
+        for version_block in data.get("values", []):
+            caps = version_block.get("capabilities", {})
+            sps = caps.get("supportPlan", [])
+            for sp in sps:
+                if sp == "AKSLongTermSupport":
+                    lts_versions.append(version_block.get("version", ""))
+                    break
+        # remove empty strings
+        lts_versions = [x for x in lts_versions if x]
+        # sort by semantic version, from newest to oldest
+        lts_versions = sorted(lts_versions, key=lambda x: list(map(int, x.split("."))), reverse=True)
+        return lts_versions[0] if lts_versions else None
+
     def _get_asm_supported_revision(self, location):
         revisions_cmd = f"aks mesh get-revisions -l {location}"
         revisions = self.cmd(revisions_cmd).get_output_in_json()
@@ -6932,7 +6953,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # update cluster
-        update_cmd = "aks update -g {resource_group} -n {name} --load-balancer-outbound-ips {update_pip_id}"
+        update_cmd = "aks update -g {resource_group} -n {name} --load-balancer-outbound-ips {update_pip_id} --load-balancer-outbound-ports 200"
 
         self.cmd(
             update_cmd,
@@ -6943,12 +6964,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                     1,
                 ),
                 self.check(
-                    "networkProfile.loadBalancerProfile.effectiveOutboundIPs[0].id",
-                    update_pip_id,
+                    "networkProfile.loadBalancerProfile.allocatedOutboundPorts",
+                    200,
                 ),
             ],
         )
 
+        update_cmd = "aks update -g {resource_group} -n {name} --load-balancer-outbound-ips {update_pip_id} --load-balancer-outbound-ports 0"
+
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "networkProfile.loadBalancerProfile.effectiveOutboundIPs[] | length(@)",
+                    1,
+                ),
+                self.check(
+                    "networkProfile.loadBalancerProfile.allocatedOutboundPorts",
+                    0,
+                ),
+            ],
+        )
         # delete
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
@@ -12029,15 +12066,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
-        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
-        k8s_version, _ = self._get_versions(resource_group_location)
+        lst_version = self._get_lts_version(resource_group_location)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "location": resource_group_location,
-                "k8s_version": k8s_version,
+                "k8s_version": lst_version,
             }
         )
 
@@ -12070,8 +12106,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_update_with_premium_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
-        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
-        k8s_version, _ = self._get_versions(resource_group_location)
+        lst_version = self._get_lts_version(resource_group_location)
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
             {
@@ -12079,7 +12114,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "location": resource_group_location,
-                "k8s_version": k8s_version,
+                "k8s_version": lst_version,
             }
         )
 
@@ -13439,3 +13474,53 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks delete -g {resource_group} -n {aks_name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest',
+                                    location='westus2', preserve_default_location=True)
+    def test_aks_check_network(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'location': resource_group_location,
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--ssh-key-value={ssh_key_value} --node-count=2 --os-sku Ubuntu'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # check network to a random node
+        check_cmd = 'aks check-network outbound --resource-group={resource_group} --name={name}'
+        self.cmd(check_cmd, checks=[self.is_empty()])
+
+        # get node name
+        managed_resource_group = 'MC_' + resource_group + '_' + aks_name + '_' + resource_group_location
+        self.kwargs.update({"managed_resource_group": managed_resource_group})
+
+        list_vmss_cmd = 'vmss list --resource-group={managed_resource_group}'
+        vmss_list = self.cmd(list_vmss_cmd).get_output_in_json()
+
+        assert len(vmss_list) == 1
+        assert vmss_list[0]['provisioningState'] == 'Succeeded'
+
+        vmss_name = vmss_list[0]['name']
+        node_name = vmss_name + '000001'
+        self.kwargs.update({"node_name": node_name})
+
+        # check network to a specific node
+        check_cmd = 'aks check-network outbound --resource-group={resource_group} --name={name} ' \
+            '--node-name={node_name}'
+        self.cmd(check_cmd, checks=[self.is_empty()])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])

@@ -1,0 +1,522 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks list-available-cluster-version
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l --query
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableClusterVersions?api-version=2023-11-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/flink_1.16.0-1.0.6","name":"flink_1.16.0-1.0.6","properties":{"clusterVersion":"1.0.6","ossVersion":"1.16.0","clusterType":"Flink","clusterPoolVersion":"1.0","isPreview":false,"components":[{"name":"Flink","version":"1.16.0"},{"name":"Hive
+        Metastore","version":"3.1.2"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/flink_1.17.0-1.1.0","name":"flink_1.17.0-1.1.0","properties":{"clusterVersion":"1.1.0","ossVersion":"1.17.0","clusterType":"Flink","clusterPoolVersion":"1.1","isPreview":false,"components":[{"name":"Flink","version":"1.17.0"},{"name":"Hive
+        Metastore","version":"3.1.2"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/flink_1.17.0-1.1.1","name":"flink_1.17.0-1.1.1","properties":{"clusterVersion":"1.1.1","ossVersion":"1.17.0","clusterType":"Flink","clusterPoolVersion":"1.1","isPreview":false,"components":[{"name":"Flink","version":"1.17.0"},{"name":"Hive
+        Metastore","version":"3.1.2"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/kafka_3.6.0-1.1.1","name":"kafka_3.6.0-1.1.1","properties":{"clusterVersion":"1.1.1","ossVersion":"3.6.0","clusterType":"Kafka","clusterPoolVersion":"1.1","isPreview":false,"components":[{"name":"Kafka","version":"3.6.0"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/ranger_2.3.0-1.1.0","name":"ranger_2.3.0-1.1.0","properties":{"clusterVersion":"1.1.0","ossVersion":"2.3.0","clusterType":"Ranger","clusterPoolVersion":"1.1","isPreview":false,"components":[]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/ranger_2.3.0-1.1.1","name":"ranger_2.3.0-1.1.1","properties":{"clusterVersion":"1.1.1","ossVersion":"2.3.0","clusterType":"Ranger","clusterPoolVersion":"1.1","isPreview":false,"components":[]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/spark_3.3.1-1.0.6","name":"spark_3.3.1-1.0.6","properties":{"clusterVersion":"1.0.6","ossVersion":"3.3.1","clusterType":"Spark","clusterPoolVersion":"1.0","isPreview":false,"components":[{"name":"Yarn","version":"3.3.1"},{"name":"Spark","version":"3.3.1"},{"name":"Hive
+        Metastore","version":"3.1.2"},{"name":"Zookeeper","version":"3.6.2"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/spark_3.3.1-1.1.0","name":"spark_3.3.1-1.1.0","properties":{"clusterVersion":"1.1.0","ossVersion":"3.3.1","clusterType":"Spark","clusterPoolVersion":"1.1","isPreview":false,"components":[{"name":"Yarn","version":"3.3.1"},{"name":"Spark","version":"3.3.1"},{"name":"Hive
+        Metastore","version":"3.1.2"},{"name":"Zookeeper","version":"3.6.2"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/spark_3.3.1-1.1.1","name":"spark_3.3.1-1.1.1","properties":{"clusterVersion":"1.1.1","ossVersion":"3.3.1","clusterType":"Spark","clusterPoolVersion":"1.1","isPreview":false,"components":[{"name":"Yarn","version":"3.3.4"},{"name":"Spark","version":"3.3.1"},{"name":"Hive
+        Metastore","version":"3.1.2"},{"name":"Zookeeper","version":"3.8.3"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/stub_2.4.1-1.0.0","name":"stub_2.4.1-1.0.0","properties":{"clusterVersion":"1.0.0","ossVersion":"2.4.1","clusterType":"Stub","clusterPoolVersion":"1.0","isPreview":false,"components":[{"name":"ResourceManager","version":"2.4.1"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/stub_2.4.1-1.0.1","name":"stub_2.4.1-1.0.1","properties":{"clusterVersion":"1.0.1","ossVersion":"2.4.1","clusterType":"Stub","clusterPoolVersion":"1.0","isPreview":false,"components":[{"name":"ResourceManager","version":"2.4.1"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/stub_2.4.2-1.0.0","name":"stub_2.4.2-1.0.0","properties":{"clusterVersion":"1.0.0","ossVersion":"2.4.2","clusterType":"Stub","clusterPoolVersion":"1.0","isPreview":false,"components":[{"name":"ResourceManager","version":"2.4.2"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/stub_2.4.3-1.1.0","name":"stub_2.4.3-1.1.0","properties":{"clusterVersion":"1.1.0","ossVersion":"2.4.3","clusterType":"Stub","clusterPoolVersion":"1.1","isPreview":false,"components":[{"name":"ResourceManager","version":"2.4.3"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/trino_0.426.0-1.1.0","name":"trino_0.426.0-1.1.0","properties":{"clusterVersion":"1.1.0","ossVersion":"0.426.0","clusterType":"Trino","clusterPoolVersion":"1.1","isPreview":false,"components":[{"name":"Trino","version":"426"},{"name":"Hive
+        metastore","version":"3.1.2"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/trino_0.410.0-1.0.6","name":"trino_0.410.0-1.0.6","properties":{"clusterVersion":"1.0.6","ossVersion":"0.410.0","clusterType":"Trino","clusterPoolVersion":"1.0","isPreview":false,"components":[{"name":"Trino","version":"410"},{"name":"Hive
+        metastore","version":"3.1.2"}]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterversions/trino_0.426.0-1.1.1","name":"trino_0.426.0-1.1.1","properties":{"clusterVersion":"1.1.1","ossVersion":"0.426.0","clusterType":"Trino","clusterPoolVersion":"1.1","isPreview":false,"components":[{"name":"Trino","version":"426"},{"name":"Hive
+        metastore","version":"3.1.2"}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6328'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Mar 2024 07:24:06 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 47a0636c-7b74-4112-8e15-207e04b0721b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 7C83705CDFFC41C19E0BEC32FBA3E9D6 Ref B: MAA201060514009 Ref C: 2024-03-13T07:24:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --cluster-pool-name -g --service-configs-profiles
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby?api-version=2023-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby","name":"hilo-vjkn4d55e7cby","type":"microsoft.hdinsight/clusterpools/clusters","location":"westus3","systemData":{"createdBy":"v-yuchenli@microsoft.com","createdByType":"User","createdAt":"2024-03-11T06:01:54.5253973Z","lastModifiedBy":"v-yuchenli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-13T07:08:45.9548873Z"},"properties":{"clusterType":"Spark","computeProfile":{"nodes":[{"type":"Head","vmSize":"Standard_D16a_v4","count":3},{"type":"Worker","vmSize":"Standard_D16a_v4","count":3}]},"clusterProfile":{"clusterVersion":"1.0.6","ossVersion":"3.3.1","components":[{"name":"Yarn","version":"3.3.1"},{"name":"Spark","version":"3.3.1"},{"name":"Hive
+        Metastore","version":"3.1.2"},{"name":"Zookeeper","version":"3.6.2"}],"identityProfile":{"msiResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msi","msiClientId":"00000000-0000-0000-0000-000000000000","msiObjectId":"00000000-0000-0000-0000-000000000000"},"authorizationProfile":{"userIds":["00000000-0000-0000-0000-000000000000"]},"serviceConfigsProfiles":[{"serviceName":"yarn-service","configs":[{"component":"hadoop-config","files":[{"fileName":"core-site.xml","values":{"test":"testValue"}}]}]}],"connectivityProfile":{"web":{"fqdn":"hilo-vjkn4d55e7cby.hilopool.10e32bab26da4cc4a44152b318f824e6.westus2.tip.hdinsightaks.net"}},"autoscaleProfile":{"enabled":true,"autoscaleType":"ScheduleBased","gracefulDecommissionTimeout":60,"scheduleBasedConfig":{"defaultCount":3,"timeZone":"UTC","schedules":[{"days":["Monday","Sunday"],"startTime":"10:00","endTime":"12:00","count":10}]}},"sparkProfile":{"defaultStorageUrl":"abfs://testspark@yuchenhilostorage.dfs.core.windows.net/"}},"deploymentId":"8fb986fd6e8e4b0ba6128eb6bcb5defd","provisioningState":"Succeeded","status":"Running"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2036'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Mar 2024 07:24:07 GMT
+      etag:
+      - '"97050db5-0000-0700-0000-65f1512b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: DC916F3739C84E5AB43D22608983FC3A Ref B: MAA201060515021 Ref C: 2024-03-13T07:24:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus3", "properties": {"clusterProfile": {"authorizationProfile":
+      {"userIds": ["00000000-0000-0000-0000-000000000000"]}, "autoscaleProfile": {"autoscaleType":
+      "ScheduleBased", "enabled": true, "gracefulDecommissionTimeout": 60, "scheduleBasedConfig":
+      {"defaultCount": 3, "schedules": [{"count": 10, "days": ["Monday", "Sunday"],
+      "endTime": "12:00", "startTime": "10:00"}], "timeZone": "UTC"}}, "clusterVersion":
+      "1.0.6", "identityProfile": {"msiClientId": "00000000-0000-0000-0000-000000000000",
+      "msiObjectId": "00000000-0000-0000-0000-000000000000", "msiResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msi"},
+      "ossVersion": "3.3.1", "serviceConfigsProfiles": [{"configs": [{"component":
+      "hadoop-config", "files": [{"fileName": "core-site.xml", "values": {"test":
+      "testValue"}}]}], "serviceName": "yarn-service"}], "sparkProfile": {"defaultStorageUrl":
+      "abfs://testspark@yuchenhilostorage.dfs.core.windows.net/"}}, "clusterType":
+      "Spark", "computeProfile": {"nodes": [{"count": 3, "type": "Head", "vmSize":
+      "Standard_D16a_v4"}, {"count": 3, "type": "Worker", "vmSize": "Standard_D16a_v4"}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks cluster update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1221'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --cluster-pool-name -g --service-configs-profiles
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby?api-version=2023-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby","name":"hilo-vjkn4d55e7cby","type":"microsoft.hdinsight/clusterpools/clusters","location":"westus3","systemData":{"createdBy":"v-yuchenli@microsoft.com","createdByType":"User","createdAt":"2024-03-11T06:01:54.5253973Z","lastModifiedBy":"v-yuchenli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-13T07:24:08.8403938Z"},"properties":{"clusterProfile":{"components":[{"name":"Yarn","version":"3.3.1"},{"name":"Spark","version":"3.3.1"},{"name":"Hive
+        Metastore","version":"3.1.2"},{"name":"Zookeeper","version":"3.6.2"}],"connectivityProfile":{"web":{"fqdn":"hilo-vjkn4d55e7cby.hilopool.10e32bab26da4cc4a44152b318f824e6.westus2.tip.hdinsightaks.net"}},"authorizationProfile":{"userIds":["00000000-0000-0000-0000-000000000000"]},"autoscaleProfile":{"autoscaleType":"ScheduleBased","enabled":true,"gracefulDecommissionTimeout":60,"scheduleBasedConfig":{"defaultCount":3,"schedules":[{"count":10,"days":["Monday","Sunday"],"endTime":"12:00","startTime":"10:00"}],"timeZone":"UTC"}},"clusterVersion":"1.0.6","identityProfile":{"msiClientId":"00000000-0000-0000-0000-000000000000","msiObjectId":"00000000-0000-0000-0000-000000000000","msiResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msi"},"ossVersion":"3.3.1","serviceConfigsProfiles":[{"configs":[{"component":"hadoop-config","files":[{"fileName":"core-site.xml","values":{"test":"testValue"}}]}],"serviceName":"yarn-service"}],"sparkProfile":{"defaultStorageUrl":"abfs://testspark@yuchenhilostorage.dfs.core.windows.net/"}},"deploymentId":"8fb986fd6e8e4b0ba6128eb6bcb5defd","provisioningState":"Accepted","status":"Running","clusterType":"Spark","computeProfile":{"nodes":[{"count":3,"type":"Head","vmSize":"Standard_D16a_v4"},{"count":3,"type":"Worker","vmSize":"Standard_D16a_v4"}]}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.HDInsight/locations/WESTUS3/operationStatuses/64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913?api-version=2023-11-01-preview&t=638459114529342147&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=Zt1VYJImMU-FntYAZMsDYEVujxCjKEpGFw2UMposBExtcVnzOGo8B785QHXmNciQ0oqFdYQtrqg2qYgeZ98hcFUNCWkQOKp81eWfDJeXy2ugWlMiZXmWf3mWhqam5XMKRRIsio6Sy96SGC6qO5CUlIlR6V8vpK6oRX7_3QeW7bmbICPiYMDhyyS_20gv4PgeNtfD3_JwWL7MlfcjpUtBKIYbFfo7VQG2EwFsJqSMwt9300Y19vXZVrTmZrX0GKf-h6tiY15bHNWQF76k2K_bFCiqKSlGpuNI0AtEA7n4tPC8QmuWPc3vj-yDUFiltQbpJrTt7MAgoSwIPhsZP5CRag&h=4EUo02m0DPZl1-kk7ug3ojxKuGRPXjSbVBRgsVMN4qs
+      cache-control:
+      - no-cache
+      content-length:
+      - '2035'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Mar 2024 07:24:12 GMT
+      etag:
+      - '"990582ac-0000-0700-0000-65f1549c0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2d88c1f6-128c-4253-8de8-32ce0b4fbbdc
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: CC91DBFDC73C49A39F4DA8684BCD8EE4 Ref B: MAA201060515021 Ref C: 2024-03-13T07:24:08Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --cluster-pool-name -g --service-configs-profiles
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.HDInsight/locations/WESTUS3/operationStatuses/64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913?api-version=2023-11-01-preview&t=638459114529342147&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=Zt1VYJImMU-FntYAZMsDYEVujxCjKEpGFw2UMposBExtcVnzOGo8B785QHXmNciQ0oqFdYQtrqg2qYgeZ98hcFUNCWkQOKp81eWfDJeXy2ugWlMiZXmWf3mWhqam5XMKRRIsio6Sy96SGC6qO5CUlIlR6V8vpK6oRX7_3QeW7bmbICPiYMDhyyS_20gv4PgeNtfD3_JwWL7MlfcjpUtBKIYbFfo7VQG2EwFsJqSMwt9300Y19vXZVrTmZrX0GKf-h6tiY15bHNWQF76k2K_bFCiqKSlGpuNI0AtEA7n4tPC8QmuWPc3vj-yDUFiltQbpJrTt7MAgoSwIPhsZP5CRag&h=4EUo02m0DPZl1-kk7ug3ojxKuGRPXjSbVBRgsVMN4qs
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.HDInsight/locations/WESTUS3/operationStatuses/64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913","name":"64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby","status":"Accepted","startTime":"2024-03-13T07:24:12.6685176Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Mar 2024 07:24:13 GMT
+      etag:
+      - '"1601bf79-0000-0700-0000-65f1549c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2B60A25FE8BB451BB6257E700ECED63A Ref B: MAA201060515021 Ref C: 2024-03-13T07:24:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --cluster-pool-name -g --service-configs-profiles
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.HDInsight/locations/WESTUS3/operationStatuses/64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913?api-version=2023-11-01-preview&t=638459114529342147&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=Zt1VYJImMU-FntYAZMsDYEVujxCjKEpGFw2UMposBExtcVnzOGo8B785QHXmNciQ0oqFdYQtrqg2qYgeZ98hcFUNCWkQOKp81eWfDJeXy2ugWlMiZXmWf3mWhqam5XMKRRIsio6Sy96SGC6qO5CUlIlR6V8vpK6oRX7_3QeW7bmbICPiYMDhyyS_20gv4PgeNtfD3_JwWL7MlfcjpUtBKIYbFfo7VQG2EwFsJqSMwt9300Y19vXZVrTmZrX0GKf-h6tiY15bHNWQF76k2K_bFCiqKSlGpuNI0AtEA7n4tPC8QmuWPc3vj-yDUFiltQbpJrTt7MAgoSwIPhsZP5CRag&h=4EUo02m0DPZl1-kk7ug3ojxKuGRPXjSbVBRgsVMN4qs
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.HDInsight/locations/WESTUS3/operationStatuses/64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913","name":"64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby","status":"Accepted","startTime":"2024-03-13T07:24:12.6685176Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Mar 2024 07:24:44 GMT
+      etag:
+      - '"1601bf79-0000-0700-0000-65f1549c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B1FBF9D117664C6DBAA3CEA4CB4E2B77 Ref B: MAA201060515021 Ref C: 2024-03-13T07:24:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --cluster-pool-name -g --service-configs-profiles
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.HDInsight/locations/WESTUS3/operationStatuses/64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913?api-version=2023-11-01-preview&t=638459114529342147&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=Zt1VYJImMU-FntYAZMsDYEVujxCjKEpGFw2UMposBExtcVnzOGo8B785QHXmNciQ0oqFdYQtrqg2qYgeZ98hcFUNCWkQOKp81eWfDJeXy2ugWlMiZXmWf3mWhqam5XMKRRIsio6Sy96SGC6qO5CUlIlR6V8vpK6oRX7_3QeW7bmbICPiYMDhyyS_20gv4PgeNtfD3_JwWL7MlfcjpUtBKIYbFfo7VQG2EwFsJqSMwt9300Y19vXZVrTmZrX0GKf-h6tiY15bHNWQF76k2K_bFCiqKSlGpuNI0AtEA7n4tPC8QmuWPc3vj-yDUFiltQbpJrTt7MAgoSwIPhsZP5CRag&h=4EUo02m0DPZl1-kk7ug3ojxKuGRPXjSbVBRgsVMN4qs
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.HDInsight/locations/WESTUS3/operationStatuses/64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913","name":"64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby","status":"Accepted","startTime":"2024-03-13T07:24:12.6685176Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Mar 2024 07:25:15 GMT
+      etag:
+      - '"1601bf79-0000-0700-0000-65f1549c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 632F534814164CDC984E7C1D69711075 Ref B: MAA201060515021 Ref C: 2024-03-13T07:25:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --cluster-pool-name -g --service-configs-profiles
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.HDInsight/locations/WESTUS3/operationStatuses/64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913?api-version=2023-11-01-preview&t=638459114529342147&c=MIIHADCCBeigAwIBAgITfARk1TE_ZglsTRafPwAABGTVMTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMTUwODE5WhcNMjUwMTI0MTUwODE5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK902W8oGHqHsYxfQcAXt6Ljumrh6DLgGihvCAJqh_U0j8R4Jupt1lXUnhMY-cA7JAT9q7SEoTZskdrko1uzzlaykxYQUacRB8irTYwbgK6DCIqWuOd2G-W2g3eWAyxRb-Dffjnsz-vBsjd1fyP0MvIXDSDMzp2oK65BSxTbBiStV3YxtKZ3eONvKga4d77iEw0zAZHIFkt0PSHzHO7kk-b_trhadwDxPYnjrQOGmouEj7HuNoC8H7-vKZvgbeplfrHtJO9vq0TOUUqIGlT236cbPe62XQNJRim_aa3chEFUmacjUnjEZtgJjup_tDQ0iV_Oe0ZqRBBGzpjoK23Wch0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSnxeoeDA6bR-Af5MXqnvahGPcbyTAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGj6QqaLOPa3RZUHMPeeSymifn86nh52yaIojZbdHUiE_o0iWzV-2ZRZOxE2IgkOrAeMYXIUhMoqV7XxTwfpi6zGwrzIeuTWMbNjgzbIZGIMJCbUyNbvEkGqxvBpcwzATT8KQYU2-J2iL5slKYZIACN6THLJn5BI6dAecS1X4PJ5vNAgI8qlsYmnafZSCIrWLUQQUsZeLUaxy3t-hozvyfVe-B-nktPdgNv3-iCsI0AtlvezwfFcJXQHQeNByXg5oxXPIe02On7O1u8swvMta16Va5_kDzD80TS3LYzVk2nzUVxEqPaGhpA-vs_ttjm7hDhYk80OIsQ_YZd286sA58Q&s=Zt1VYJImMU-FntYAZMsDYEVujxCjKEpGFw2UMposBExtcVnzOGo8B785QHXmNciQ0oqFdYQtrqg2qYgeZ98hcFUNCWkQOKp81eWfDJeXy2ugWlMiZXmWf3mWhqam5XMKRRIsio6Sy96SGC6qO5CUlIlR6V8vpK6oRX7_3QeW7bmbICPiYMDhyyS_20gv4PgeNtfD3_JwWL7MlfcjpUtBKIYbFfo7VQG2EwFsJqSMwt9300Y19vXZVrTmZrX0GKf-h6tiY15bHNWQF76k2K_bFCiqKSlGpuNI0AtEA7n4tPC8QmuWPc3vj-yDUFiltQbpJrTt7MAgoSwIPhsZP5CRag&h=4EUo02m0DPZl1-kk7ug3ojxKuGRPXjSbVBRgsVMN4qs
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.HDInsight/locations/WESTUS3/operationStatuses/64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913","name":"64e913e5-2235-4f3b-ae93-4ff0c1808df7*A991BDFB905BB673B8B09B3507855BFCC5A1538A999FC5A0FB31FB1ACA0FE913","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby","status":"Succeeded","startTime":"2024-03-13T07:24:12.6685176Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '545'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Mar 2024 07:25:46 GMT
+      etag:
+      - '"010019a7-0000-0100-0000-65f154df0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F4C8947074ED4879BDCA8AE16FF2B8B6 Ref B: MAA201060515021 Ref C: 2024-03-13T07:25:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --cluster-pool-name -g --service-configs-profiles
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby?api-version=2023-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby","name":"hilo-vjkn4d55e7cby","type":"microsoft.hdinsight/clusterpools/clusters","location":"westus3","systemData":{"createdBy":"v-yuchenli@microsoft.com","createdByType":"User","createdAt":"2024-03-11T06:01:54.5253973Z","lastModifiedBy":"v-yuchenli@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-03-13T07:24:08.8403938Z"},"properties":{"clusterType":"Spark","computeProfile":{"nodes":[{"type":"Head","vmSize":"Standard_D16a_v4","count":3},{"type":"Worker","vmSize":"Standard_D16a_v4","count":3}]},"clusterProfile":{"clusterVersion":"1.0.6","ossVersion":"3.3.1","components":[{"name":"Yarn","version":"3.3.1"},{"name":"Spark","version":"3.3.1"},{"name":"Hive
+        Metastore","version":"3.1.2"},{"name":"Zookeeper","version":"3.6.2"}],"identityProfile":{"msiResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Group/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msi","msiClientId":"00000000-0000-0000-0000-000000000000","msiObjectId":"00000000-0000-0000-0000-000000000000"},"authorizationProfile":{"userIds":["00000000-0000-0000-0000-000000000000"]},"serviceConfigsProfiles":[{"serviceName":"yarn-service","configs":[{"component":"hadoop-config","files":[{"fileName":"core-site.xml","values":{"test":"testValue"}}]}]}],"connectivityProfile":{"web":{"fqdn":"hilo-vjkn4d55e7cby.hilopool.10e32bab26da4cc4a44152b318f824e6.westus2.tip.hdinsightaks.net"}},"autoscaleProfile":{"enabled":true,"autoscaleType":"ScheduleBased","gracefulDecommissionTimeout":60,"scheduleBasedConfig":{"defaultCount":3,"timeZone":"UTC","schedules":[{"days":["Monday","Sunday"],"startTime":"10:00","endTime":"12:00","count":10}]}},"sparkProfile":{"defaultStorageUrl":"abfs://testspark@yuchenhilostorage.dfs.core.windows.net/"}},"deploymentId":"8fb986fd6e8e4b0ba6128eb6bcb5defd","provisioningState":"Succeeded","status":"Running"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2036'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Mar 2024 07:25:47 GMT
+      etag:
+      - '"9905deb8-0000-0700-0000-65f154ba0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 9206951EE1364FA9956517CC37C483CB Ref B: MAA201060515021 Ref C: 2024-03-13T07:25:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks cluster list-service-config
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --cluster-pool-name -g
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hilocli-test/providers/Microsoft.HDInsight/clusterpools/hilopool/clusters/hilo-vjkn4d55e7cby/serviceConfigs?api-version=2023-11-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"serviceName":"spark-service","componentName":"livy-config","fileName":"livy.conf","type":"key-value","defaultKeys":{"livy.spark.master":{"value":"yarn","description":"livy.spark.master"},"livy.spark.deploy-mode":{"value":"cluster","description":"livy.spark.deploy-mode"}},"customKeys":{"livy.impersonation.enabled":"true","livy.repl.enableHiveContext":"true","livy.server.session.timeout":"3600000","livy.server.csrf_protection.enabled":"false"}}},{"properties":{"serviceName":"spark-service","componentName":"livy-config","fileName":"livy-client.conf","type":"key-value","defaultKeys":{"livy.client.http.connection.timeout":{"value":"10s","description":"livy.client.http.connection.timeout"}},"customKeys":{}}},{"properties":{"serviceName":"spark-service","componentName":"livy-config","fileName":"log4j2.properties","content":"status
+        = INFO\nname = PropertiesConfig\nappenders = console\nappender.console.type
+        = Console\nappender.console.name = STDOUT\nappender.console.layout.type =
+        PatternLayout\nappender.console.layout.pattern = %d %p %c{1} [%t]: %m | Metadata:
+        %replace{%replace{%replace{%X}{([a-zA-Z0-9_]+)}{\"$1\"}}{\\=}{\\:}}{\\\\{\\\\}}{None
+        Available} %n%ex\nrootLogger.level = INFO\nrootLogger.appenderRef.console.ref
+        = STDOUT\n","type":"content"}},{"properties":{"serviceName":"spark-service","componentName":"livy-config","fileName":"spark-blacklist.conf","content":"#\n#
+        Configuration override / blacklist. Defines a list of properties that users
+        are not allowed\n# to override when starting Spark sessions.\n#\n# This file
+        takes a list of property names (one per line). Empty lines and lines starting
+        with \"#\"\n# are ignored.\n#\n\n# Disallow overriding the master and the
+        deploy mode.\nspark.master\nspark.submit.deployMode\n\n# Disallow overriding
+        the location of Spark cached jars.\nspark.yarn.jar\nspark.yarn.jars\nspark.yarn.archive\n\n#
+        Don''t allow users to override the RSC timeout.\nlivy.rsc.server.idle_timeout\n","type":"content"}},{"properties":{"serviceName":"spark-service","componentName":"livy-config","fileName":"livy-env.sh","content":"#
+        Wrongly configured would results in livy startup failures.\nexport LIVY_LOG_DIR=/usr/livy/logs\n#
+        Changing LIVY_SERVER_JAVA_OPTS make sure to update livy.memory-mb in livy.conf
+        too\nexport LIVY_SERVER_JAVA_OPTS=\"-Xmx1536m\"","type":"content"}},{"properties":{"serviceName":"spark-service","componentName":"zeppelin-config","fileName":"zeppelin-site.xml","type":"key-value","defaultKeys":{"zeppelin.websocket.max.text.message.size":{"value":"1024000","description":"zeppelin.websocket.max.text.message.size"},"zeppelin.config.storage.class":{"value":"org.apache.zeppelin.storage.FileSystemConfigStorage","description":"zeppelin.config.storage.class"},"zeppelin.config.fs.dir":{"value":"file:///usr/zeppelin/dataDir/conf","description":"Path
+        authorization and interepreter setting configurations"},"zeppelin.interpreter.connect.timeout":{"value":"30000","description":"zeppelin.interpreter.connect.timeout"},"zeppelin.interpreter.group.order":{"value":"livy,md,angular,jdbc,spark","description":"zeppelin.interpreter.group.order"},"zeppelin.interpreters":{"value":"org.apache.zeppelin.spark.SparkInterpreter,org.apache.zeppelin.spark.PySparkInterpreter,org.apache.zeppelin.livy.LivySparkInterpreter,org.apache.zeppelin.livy.LivyPySparkInterpreter,org.apache.zeppelin.livy.LivySparkSQLInterpreter,org.apache.zeppelin.markdown.Markdown,org.apache.zeppelin.angular.AngularInterpreter,org.apache.zeppelin.jdbc.JDBCInterpreter","description":"zeppelin.interpreters"},"zeppelin.notebook.dir":{"value":"file:///usr/zeppelin/dataDir/notebook","description":"path
+        or URI for notebook persist"},"zeppelin.interpreter.dir":{"value":"interpreter","description":"Interpreter
+        implementation base directory"},"zeppelin.interpreter.group.default":{"value":"livy","description":"Interpreter
+        default shown"}},"customKeys":{"zeppelin.interpreter.config.upgrade":"true"}}},{"properties":{"serviceName":"spark-service","componentName":"zeppelin-config","fileName":"zeppelin-env.sh","content":"export
+        USE_HADOOP=true\nexport ZEPPELIN_JAVA_OPTS=\"-Dhdp.version=5.1.3.7\"\nexport
+        ZEPPELIN_HOME=/usr/zeppelin/current\nexport ZEPPELIN_CONF_DIR=/usr/zeppelin/conf\nexport
+        ZEPPELIN_LOG_DIR=/usr/zeppelin/logs\nexport ZEPPELIN_PID_DIR=/usr/zeppelin/run\nexport
+        ZEPPELIN_SERVER_CONTEXT_PATH=/p/zeppelin\n\nexport PYTHONPATH=\"${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.9-src.zip\"\nexport
+        SPARK_YARN_USER_ENV=\"PYTHONPATH=${PYTHONPATH}\"\n","type":"content"}},{"properties":{"serviceName":"spark-service","componentName":"zeppelin-config","fileName":"log4j.properties","content":"log4j.rootLogger
+        = INFO, stdout\nlog4j.appender.stdout = org.apache.log4j.ConsoleAppender\nlog4j.appender.stdout.layout
+        = org.apache.log4j.PatternLayout\nlog4j.appender.stdout.layout.ConversionPattern=%5p
+        [%d] ({%t} %F[%M]:%L) - %m%n","type":"content"}},{"properties":{"serviceName":"spark-service","componentName":"spark-config","fileName":"spark-defaults.conf","type":"key-value","defaultKeys":{"spark.history.fs.cleaner.enabled":{"value":"true","description":"spark.history.fs.cleaner.enabled"},"spark.history.fs.cleaner.interval":{"value":"1h","description":"spark.history.fs
+        cleaner interval"},"spark.history.fs.cleaner.maxAge":{"value":"7d","description":"spark.history.fs.cleaner.maxAge"},"spark.io.compression.lz4.blockSize":{"value":"128kb","description":"spark.io.compression.lz4.blockSize"},"spark.shuffle.file.buffer":{"value":"1m","description":"spark.shuffle.file.buffer"},"spark.shuffle.io.backLog":{"value":"8192","description":"spark.shuffle.io.backLog"},"spark.shuffle.io.serverThreads":{"value":"128","description":"spark.shuffle.io.serverThreads"},"spark.shuffle.unsafe.file.output.buffer":{"value":"5m","description":"spark.shuffle.unsafe.file.output.buffer"},"spark.sql.autoBroadcastJoinThreshold":{"value":"26214400","description":"spark.sql.autoBroadcastJoinThreshold"},"spark.sql.shuffle.partitions":{"value":"200","description":"spark.sql.shuffle.partitions"},"spark.unsafe.sorter.spill.reader.buffer.size":{"value":"1m","description":"spark.unsafe.sorter.spill.reader.buffer.size"},"spark.eventLog.enabled":{"value":"true","description":"Whether
+        to log Spark events, useful for reconstructing the Web UI after the application
+        has finished."},"spark.eventLog.dir":{"value":"abfs://testspark@yuchenhilostorage.dfs.core.windows.net//eventlogFolder","description":"Base
+        directory in which Spark events are logged, if spark.eventLog.enabled is true."},"spark.yarn.queue":{"value":"spark","description":"Queue
+        name used for spark application submission"},"spark.sql.catalogImplementation":{"value":"in-memory","description":"Catalog
+        implementation.Default in-memory"},"spark.dynamicAllocation.enabled":{"value":"true","description":"Whether
+        to use dynamic resource allocation, which scales the number of executors registered
+        with this application up and down based on the workload."},"spark.shuffle.service.enabled":{"value":"true","description":"Enables
+        the external shuffle service. This service preserves the shuffle files written
+        by executors e.g. so that executors can be safely removed, or so that shuffle
+        fetches can continue in the event of executor failure."}},"customKeys":{"spark.driver.memoryOverhead":"384","spark.executor.cores":"2","spark.executor.instances":"2","spark.executor.memory":"12288m","spark.executor.memoryOverhead":"384","spark.rdd.compress":"true","spark.serializer":"org.apache.spark.serializer.KryoSerializer","spark.sql.cbo.enabled":"true","spark.sql.cbo.joinReorder.enabled":"true","spark.sql.crossJoin.enabled":"true","spark.sql.files.maxPartitionBytes":"134217728","spark.yarn.containerLauncherMaxThreads":"25","spark.yarn.preserve.staging.files":"false","spark.sql.hive.metastore.jars":"/usr/hive-metastore/lib-3.1/*:/usr/hadoop/current/share/hadoop/common/lib/*:/usr/hadoop/current/share/hadoop/common/*","spark.sql.hive.metastore.version":"3.1","spark.history.fs.logDirectory":"abfs://testspark@yuchenhilostorage.dfs.core.windows.net//eventlogFolder","spark.sql.warehouse.dir":"abfs://testspark@yuchenhilostorage.dfs.core.windows.net//hive/warehouse/managed"}}},{"properties":{"serviceName":"spark-service","componentName":"spark-config","fileName":"spark-env.sh","content":"#
+        - SPARK_HISTORY_OPTS, to set config properties only for the history server
+        (e.g. \"-Dx=y\")\nexport HDP_VERSION=3.3.3.5.2-100223822\nexport PYSPARK_PYTHON=python3\n","type":"content"}},{"properties":{"serviceName":"spark-service","componentName":"spark-config","fileName":"hive-site.xml","type":"key-value","defaultKeys":{"hive.metastore.client.connect.retry.delay":{"value":"5s","description":"hive.metastore.client.connect.retry.delay"},"hive.metastore.client.socket.timeout":{"value":"1800s","description":"hive.metastore.client.socket.timeout"}},"customKeys":{"metastore.catalog.default":"hive","hive.metastore.uris":"thrift://hive-metastore-service:9083"}}},{"properties":{"serviceName":"yarn-service","componentName":"hadoop-config-client","fileName":"core-site.xml","type":"key-value","defaultKeys":{"fs.defaultFS":{"value":"abfs://testspark@yuchenhilostorage.dfs.core.windows.net/","description":"Default
+        FileSystem for all the services."},"fs.azure.account.oauth2.msi.tenant":{"value":"72f988bf-86f1-41af-91ab-2d7cd011db47","description":"fs.azure.account.oauth2.msi.tenant"},"fs.abfs.impl":{"value":"org.apache.hadoop.fs.azurebfs.AzureBlobFileSystem","description":"fs.abfs.impl"},"fs.azure.account.auth.type":{"value":"OAuth","description":"fs.azure.account.auth.type"},"fs.azure.account.oauth2.client.id":{"value":"00000000-0000-0000-0000-000000000000","description":"fs.azure.account.oauth2.client.id"},"fs.azure.identity.transformer.service.principal.substitution.list":{"value":"*","description":"fs.azure.identity.transformer.service.principal.substitution.list"},"fs.azure.identity.transformer.service.principal.id":{"value":"00000000-0000-0000-0000-000000000000","description":"fs.azure.identity.transformer.service.principal.id"},"fs.azure.account.oauth.provider.type":{"value":"org.apache.hadoop.fs.azurebfs.oauth2.MsiTokenProvider","description":"fs.azure.account.oauth.provider.type"}},"customKeys":{}}},{"properties":{"serviceName":"yarn-service","componentName":"hadoop-config-client","fileName":"yarn-env.sh","content":"export
+        YARN_RESOURCEMANAGER_USER=yarn\nexport YARN_NODEMANAGER_USER=yarn\n","type":"content"}},{"properties":{"serviceName":"yarn-service","componentName":"hadoop-config-client","fileName":"yarn-site.xml","type":"key-value","customKeys":{"yarn.nodemanager.resource.memory-mb":"52876","yarn.scheduler.maximum-allocation-mb":"52876"}}},{"properties":{"serviceName":"yarn-service","componentName":"hadoop-config","fileName":"core-site.xml","type":"key-value","defaultKeys":{"fs.defaultFS":{"value":"abfs://testspark@yuchenhilostorage.dfs.core.windows.net/","description":"Default
+        FileSystem for all the services."},"fs.azure.account.oauth2.msi.tenant":{"value":"72f988bf-86f1-41af-91ab-2d7cd011db47","description":"fs.azure.account.oauth2.msi.tenant"},"fs.abfs.impl":{"value":"org.apache.hadoop.fs.azurebfs.AzureBlobFileSystem","description":"fs.abfs.impl"},"fs.azure.account.auth.type":{"value":"OAuth","description":"fs.azure.account.auth.type"},"fs.azure.account.oauth2.client.id":{"value":"00000000-0000-0000-0000-000000000000","description":"fs.azure.account.oauth2.client.id"},"fs.azure.identity.transformer.service.principal.substitution.list":{"value":"*","description":"fs.azure.identity.transformer.service.principal.substitution.list"},"fs.azure.identity.transformer.service.principal.id":{"value":"00000000-0000-0000-0000-000000000000","description":"fs.azure.identity.transformer.service.principal.id"},"fs.azure.account.oauth.provider.type":{"value":"org.apache.hadoop.fs.azurebfs.oauth2.MsiTokenProvider","description":"fs.azure.account.oauth.provider.type"}},"customKeys":{"test":"testValue"}}},{"properties":{"serviceName":"yarn-service","componentName":"hadoop-config","fileName":"yarn-site.xml","type":"key-value","defaultKeys":{"yarn.resourcemanager.recovery.enabled":{"value":"true","description":"yarn.resourcemanager.recovery.enabled"},"yarn.nodemanager.resource.memory-mb":{"value":"52876","description":"yarn.nodemanager.resource.memory-mb"},"yarn.scheduler.maximum-allocation-mb":{"value":"52876","description":"yarn.scheduler.maximum-allocation-mb"},"yarn.timeline-service.enabled":{"value":"false","description":"yarn.timeline-service.enabled
+        to enable timeline server events"},"yarn.resourcemanager.system-metrics-publisher.enabled":{"value":"true","description":"The
+        setting that controls whether or not YARN system metrics are published on
+        the timeline server by RM. Defaults to false."},"yarn.timeline-service.generic-application-history.enabled":{"value":"true","description":"Indicate
+        to clients whether to query generic application data from timeline history-service
+        or not. If not enabled then application data is queried only from Resource
+        Manager. Defaults to false."},"yarn.resourcemanager.configuration.provider-class":{"value":"org.apache.hadoop.yarn.FSBasedIncludeExcludeFileProvider","description":"This
+        configuration helps with loading of configuration based on providers. Leveraged
+        by autoscale feature. org.apache.hadoop.yarn.FSBasedIncludeExcludeFileProvider
+        enables reading of include/exclude files from filesystem configured. Include
+        file configuration is yarn.resourcemanager.nodes.include-path and exclude
+        is yarn.resourcemanager.nodes.exclude-path"},"yarn.resourcemanager.nodes.exclude-path":{"value":"/tmp/excludeFile_8fb986fd6e8e4b0ba6128eb6bcb5defd.xml","description":"Exclude
+        file path used by autoscale service for updating nodes to be excluded for
+        running."},"yarn.resourcemanager.enable-node-untracked-without-include-path":{"value":"true","description":"Enable
+        RM to mark inactive nodes as untracked if not available in include file.Used
+        by autoscale"}},"customKeys":{"yarn.nodemanager.aux-services":"spark_shuffle,mapreduce_shuffle","spark.shuffle.service.resolver.class":"org.apache.spark.network.shuffle.ShuffleMovementAwareExternalShuffleBlockResolver","yarn.nodemanager.aux-services.spark_shuffle.class":"org.apache.spark.network.yarn.YarnShuffleService","yarn.nodemanager.aux-services.mapreduce_shuffle.class":"org.apache.hadoop.mapred.ShuffleHandler","yarn.nodemanager.aux-services.spark_shuffle.classpath":"/usr/spark/aux/*"}}},{"properties":{"serviceName":"yarn-service","componentName":"hadoop-config","fileName":"capacity-scheduler.xml","content":"yarn.scheduler.capacity.maximum-am-resource-percent=0.5\nyarn.scheduler.capacity.maximum-applications=10000\nyarn.scheduler.capacity.node-locality-delay=0\nyarn.scheduler.capacity.resource-calculator=org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator\nyarn.scheduler.capacity.queue-mappings-override.enable=false\nyarn.scheduler.capacity.root.maximum-am-resource-percent=0.5\nyarn.scheduler.capacity.root.maximum-applications=10000\nyarn.scheduler.capacity.root.acl_administer_queue=*\nyarn.scheduler.capacity.root.acl_submit_applications=*\nyarn.scheduler.capacity.root.capacity=100\nyarn.scheduler.capacity.root.queues=default,spark\nyarn.scheduler.capacity.root.ordering-policy=priority-utilization\nyarn.scheduler.capacity.root.priority=0\nyarn.scheduler.capacity.root.default.maximum-am-resource-percent=0.5\nyarn.scheduler.capacity.root.default.maximum-applications=10000\nyarn.scheduler.capacity.root.default.maximum-capacity=5\nyarn.scheduler.capacity.root.default.user-limit-factor=1\nyarn.scheduler.capacity.root.default.state=RUNNING\nyarn.scheduler.capacity.root.default.capacity=5\nyarn.scheduler.capacity.root.default.priority=0\nyarn.scheduler.capacity.root.spark.maximum-am-resource-percent=0.1\nyarn.scheduler.capacity.root.spark.maximum-applications=10000\nyarn.scheduler.capacity.root.spark.state=RUNNING\nyarn.scheduler.capacity.root.spark.maximum-capacity=95\nyarn.scheduler.capacity.root.spark.capacity=95\nyarn.scheduler.capacity.root.spark.priority=10\n","type":"content"}},{"properties":{"serviceName":"yarn-service","componentName":"hadoop-config","fileName":"yarn-env.sh","content":"export
+        YARN_RESOURCEMANAGER_USER=yarn\nexport YARN_NODEMANAGER_USER=yarn\nexport
+        YARN_PROXYSERVER_USER=yarn\nexport YARN_RESOURCEMANAGER_OPTS=\"-javaagent:/usr/hadoop/prometheus/jmx_prometheus_javaagent.jar=9999:/usr/hadoop/etc/hadoop/prometheus-config.yaml
+        -Dnetworkaddress.cache.negative.ttl=0\"\nexport YARN_NODEMANAGER_OPTS=-javaagent:/usr/hadoop/prometheus/jmx_prometheus_javaagent.jar=9999:/usr/hadoop/etc/hadoop/prometheus-config.yaml","type":"content"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '16644'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Mar 2024 07:25:51 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d3d64c82-77f7-41f9-8cd1-1518cfa2d9c4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: CC05920FD7D54EC6BEABFE8F931AF502 Ref B: MAA201060514053 Ref C: 2024-03-13T07:25:49Z'
+    status:
+      code: 200
+      message: OK
+version: 1
