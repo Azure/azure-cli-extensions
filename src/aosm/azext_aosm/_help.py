@@ -40,14 +40,6 @@ helps[
     short-summary: Publish a pre-built AOSM Network Function definition.
 """
 
-
-helps[
-    "aosm nfd delete"
-] = """
-    type: command
-    short-summary: Delete AOSM Network Function Definition.
-"""
-
 helps[
     "aosm nsd"
 ] = """
@@ -74,12 +66,4 @@ helps[
 ] = """
     type: command
     short-summary: Publish a pre-built AOSM Network Service Design.
-"""
-
-
-helps[
-    "aosm nfd delete"
-] = """
-    type: command
-    short-summary: Delete AOSM Network Function Definition.
 """

@@ -113,3 +113,23 @@ def load_arguments(self: AzCommandsLoader, _):
             arg_type=get_three_state_flag(),
             help="Also delete NSD Group. Use with care.",
         )
+        c.argument(
+            "build_output_folder",
+            options_list=["--build-output-folder", "-b"],
+            type=file_type,
+            completer=FilesCompleter(allowednames="*.json"),
+            help=("Path to the folder to publish, created by the build command."),
+        )
+        c.argument(
+            "no_subscription_permissions",
+            options_list=["--no-subscription-permissions", "-u"],
+            completer=FilesCompleter(allowednames="*.json"),
+            help=(
+                "CNF definition_type publish only - ignored for VNF. "
+                "Pass this flag if you do not have permission to import to the "
+                "Publisher subscription (Contributor role + AcrPush role, or a "
+                "custom role that allows the importImage action and AcrPush over the "
+                "whole subscription). This means that the image artifacts will be "
+                "pulled to your local machine and then pushed to the Artifact Store. "
+                "Requires Docker to be installed locally.")
+        )
