@@ -41,12 +41,12 @@ helps[
 """
 
 
-helps[
-    "aosm nfd delete"
-] = """
-    type: command
-    short-summary: Delete AOSM Network Function Definition.
-"""
+# helps[
+#     "aosm nfd delete"
+# ] = """
+#     type: command
+#     short-summary: Delete AOSM Network Function Definition.
+# """
 
 helps[
     "aosm nsd"
@@ -77,9 +77,9 @@ helps[
 """
 
 
-helps[
-    "aosm nfd delete"
-] = """
-    type: command
-    short-summary: Delete AOSM Network Function Definition.
-"""
+# helps[
+#     "aosm nfd delete"
+# ] = """
+#     type: command
+#     short-summary: Delete AOSM Network Function Definition.
+# """
