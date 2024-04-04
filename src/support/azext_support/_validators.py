@@ -153,6 +153,11 @@ def _check_name_availability_subscription(cli_ctx, resource_name, resource_type)
     if not resp["nameAvailable"]:
         raise CLIError(resp["message"])
 
+def validate_tickets_create_no_subscription_new(cli_ctx, problem_classification, ticket_name, technical_resource=None):
+    _validate_problem_classification_name(problem_classification)
+    if is_technical_ticket(parse_support_area_path(problem_classification)["service_name"]):
+        _validate_resource_name_new(cli_ctx, technical_resource)
+    _check_name_availability_no_subscription(cli_ctx, ticket_name, "Microsoft.Support/supportTickets")
 
 def _check_name_availability_subscription_ticket(cli_ctx, ticket_name, resource_name, resource_type):
     from .aaz.latest.support.in_subscription.tickets import CheckNameAvailability
