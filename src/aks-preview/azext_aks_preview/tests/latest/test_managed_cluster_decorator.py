@@ -8167,7 +8167,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models,
                 decorator_mode=DecoratorMode.CREATE,
             )
-            self.assertEqual(ctx_1.get_nodepool_initialization_taints(), None)
+            self.create_and_attach_test_ap_context(ctx_1)
+            self.assertEqual([], ctx_1.get_nodepool_initialization_taints())
 
             # Populate init taints.
             ctx_2 = AKSPreviewManagedClusterContext(
@@ -8180,7 +8181,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models,
                 decorator_mode=DecoratorMode.UPDATE,
             )
-            self.assertEqual(ctx_2.get_nodepool_initialization_taints(), "initTaint1=value2:PreferNoSchedule")
+            self.create_and_attach_test_ap_context(ctx_2)
+            self.assertEqual(["initTaint1=value1:PreferNoSchedule"], ctx_2.get_nodepool_initialization_taints())
 
             # Update init taints.
             ctx_3 = AKSPreviewManagedClusterContext(
@@ -8193,7 +8195,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models,
                 decorator_mode=DecoratorMode.UPDATE,
             )
-            self.assertEqual(ctx_3.get_nodepool_initialization_taints(), "initTaint2=value1:PreferNoSchedule")
+            self.create_and_attach_test_ap_context(ctx_3)
+            self.assertEqual(["initTaint2=value1:PreferNoSchedule"], ctx_3.get_nodepool_initialization_taints())
 
             # Remove init taints
             ctx_4 = AKSPreviewManagedClusterContext(
@@ -8206,8 +8209,18 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models,
                 decorator_mode=DecoratorMode.UPDATE,
             )
-            self.assertEqual(ctx_4.get_nodepool_initialization_taints(), None)
+            self.create_and_attach_test_ap_context(ctx_4)
+            self.assertEqual([], ctx_4.get_nodepool_initialization_taints())
 
+    def create_and_attach_test_ap_context(self, ctx):
+        agentpool_ctx = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSManagedClusterParamDict(ctx.raw_param._BaseAKSParamDict__store),
+            self.models,
+            DecoratorMode.CREATE,
+            AgentPoolDecoratorMode.MANAGED_CLUSTER,
+        )
+        ctx.attach_agentpool_context(agentpool_ctx)
 
 if __name__ == "__main__":
     unittest.main()
