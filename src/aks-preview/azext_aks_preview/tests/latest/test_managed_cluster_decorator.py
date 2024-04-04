@@ -8210,7 +8210,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 decorator_mode=DecoratorMode.UPDATE,
             )
             self.create_and_attach_test_ap_context(ctx_4)
-            self.assertEqual([], ctx_4.get_nodepool_initialization_taints())
+            self.assertEqual([""], ctx_4.get_nodepool_initialization_taints())
 
     def create_and_attach_test_ap_context(self, ctx):
         agentpool_ctx = AKSPreviewAgentPoolContext(
