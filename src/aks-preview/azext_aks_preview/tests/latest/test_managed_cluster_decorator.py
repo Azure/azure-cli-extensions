@@ -8178,7 +8178,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     }
                 ),
                 self.models,
-                decorator_mode=DecoratorMode.CREATE,
+                decorator_mode=DecoratorMode.UPDATE,
             )
             self.assertEqual(ctx_2.get_nodepool_initialization_taints(), "initTaint1=value2:PreferNoSchedule")
 
@@ -8191,9 +8191,22 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     }
                 ),
                 self.models,
-                decorator_mode=DecoratorMode.CREATE,
+                decorator_mode=DecoratorMode.UPDATE,
             )
             self.assertEqual(ctx_3.get_nodepool_initialization_taints(), "initTaint2=value1:PreferNoSchedule")
+
+            # Remove init taints
+            ctx_4 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict(
+                    {
+                        "nodepool_initialization_taints": "",
+                    }
+                ),
+                self.models,
+                decorator_mode=DecoratorMode.UPDATE,
+            )
+            self.assertEqual(ctx_4.get_nodepool_initialization_taints(), None)
 
 
 if __name__ == "__main__":
