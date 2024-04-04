@@ -10,7 +10,7 @@ import json
 from datetime import date, datetime, timedelta
 
 from azext_support._utils import (get_bearer_token, is_quota_ticket,
-                                  is_technical_ticket, parse_support_area_path)
+                                  is_technical_ticket, parse_support_area_path, upload_file)
 from knack.log import get_logger
 from azext_support._completers import (
     _get_supported_languages as getLanguage,
@@ -24,6 +24,8 @@ from .aaz.latest.support.no_subscription.tickets import Update as _UpdateNoSubsc
 from .aaz.latest.support.no_subscription.tickets import Create as _CreateTicketNoSubscription
 from .aaz.latest.support.in_subscription.tickets import List as _List
 from .aaz.latest.support.no_subscription.tickets import List as _ListNoSubscription
+from .aaz.latest.support.in_subscription.file_workspace import Create as _CreateFileWorkspace
+from .aaz.latest.support.no_subscription.file_workspace import Create as _CreateNoSubscriptionFileWorkspace
 
 logger = get_logger(__name__)
 
