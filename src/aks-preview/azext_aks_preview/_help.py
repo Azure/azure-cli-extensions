@@ -574,6 +574,18 @@ helps['aks create'] = f"""
         - name: --enable-windows-recording-rules
           type: bool
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
+        - name: --enable-azure-monitor-app-monitoring
+          type: bool
+          short-summary: Enable Azure Monitor Application Monitoring
+        - name: --enable-auto-instrumentation
+          type: bool
+          short-summary: Enable auto instrumentation for Azure Monitor Application Monitoring
+        - name: --enable-open-telemetry-metrics
+          type: bool
+          short-summary: Enable open telemetry metrics for Azure Monitor Application Monitoring
+        - name: --enable-open-telemetry-logs
+          type: bool
+          short-summary: Enable open telemetry logs for Azure Monitor Application Monitoring
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
@@ -680,6 +692,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh
         - name: Create a kubernetes cluster with Azure Monitor Metrics enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azuremonitormetrics
+        - name: Create a kubernetes cluster with Azure Monitor App Monitoring enabled
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-app-monitoring 
         - name: Create a kubernetes cluster with a nodepool having ip allocation mode set to "StaticBlock"
           text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu --max-pods MaxPodsPerNode --network-plugin azure --vnet-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/NodeSubnet --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/PodSubnet --pod-ip-allocation-mode StaticBlock
 
@@ -1088,6 +1102,30 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-metrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
+        - name: --enable-azure-monitor-app-monitoring
+          type: bool
+          short-summary: Enable Azure Monitor Application Monitoring
+        - name: --enable-auto-instrumentation
+          type: bool
+          short-summary: Enable auto instrumentation for Azure Monitor Application Monitoring
+        - name: --enable-open-telemetry-metrics
+          type: bool
+          short-summary: Enable open telemetry metrics for Azure Monitor Application Monitoring
+        - name: --enable-open-telemetry-logs
+          type: bool
+          short-summary: Enable open telemetry logs for Azure Monitor Application Monitoring
+        - name: --disable-azure-monitor-app-monitoring
+          type: bool
+          short-summary: Disable Azure Monitor Application Monitoring
+        - name: --disable-auto-instrumentation
+          type: bool
+          short-summary: Disable auto instrumentation for Azure Monitor Application Monitoring
+        - name: --disable-open-telemetry-metrics
+          type: bool
+          short-summary: Disable open telemetry metrics for Azure Monitor Application Monitoring
+        - name: --disable-open-telemetry-logs
+          type: bool
+          short-summary: Disable open telemetry logs for Azure Monitor Application Monitoring
         - name: --enable-node-restriction
           type: bool
           short-summary: Enable node restriction option on cluster.

@@ -613,7 +613,7 @@ def aks_create(
     # azure service mesh
     enable_azure_service_mesh=None,
     revision=None,
-    # azure monitor profile
+    # azure monitor profile - metrics
     enable_azuremonitormetrics=False,
     enable_azure_monitor_metrics=False,
     azure_monitor_workspace_resource_id=None,
@@ -621,6 +621,11 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    # azure monitor profile - app monitoring
+    enable_azure_monitor_app_monitoring=False,
+    enable_auto_instrumentation=False,
+    enable_open_telemetry_logs=False,
+    enable_open_telemetry_metrics=False,
     # metrics profile
     enable_cost_analysis=False,
     # AI toolchain operator
@@ -798,6 +803,15 @@ def aks_update(
     enable_windows_recording_rules=False,
     disable_azuremonitormetrics=False,
     disable_azure_monitor_metrics=False,
+     # azure monitor profile - app monitoring
+    enable_azure_monitor_app_monitoring=False,
+    enable_auto_instrumentation=False,
+    enable_open_telemetry_logs=False,
+    enable_open_telemetry_metrics=False,
+    disable_azure_monitor_app_monitoring=False,
+    disable_auto_instrumentation=False,
+    disable_open_telemetry_logs=False,
+    disable_open_telemetry_metrics=False,
     enable_vpa=False,
     disable_vpa=False,
     enable_addon_autoscaling=False,
