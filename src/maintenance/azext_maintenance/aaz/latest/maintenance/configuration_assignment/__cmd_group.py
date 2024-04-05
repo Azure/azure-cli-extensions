@@ -8,3 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "maintenance configuration-assignment",
+)
+class __CMDGroup(AAZCommandGroup):
+    """maintenance configuration-assignment
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
