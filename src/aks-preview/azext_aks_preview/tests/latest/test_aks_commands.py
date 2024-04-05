@@ -3127,6 +3127,117 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+    
+    # create cluster with sku name automatic and standard tier
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_create_with_automatic_sku(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        lst_version = self._get_lts_version(resource_group_location)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --sku automataic --tier standard"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.exists("fqdn"),
+                self.exists("nodeResourceGroup"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("sku.tier", "Standard"),
+            ],
+        )
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_update_with_automatic_sku(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        lst_version = self._get_lts_version(resource_group_location)
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # create a free tier
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=6 --sku base --tier free"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.exists("fqdn"),
+                self.exists("nodeResourceGroup"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Base"),
+                self.check("sku.tier", "Free"),
+            ],
+        )
+
+        # update to automatic sku
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--sku automatic --tier standard"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.exists("fqdn"),
+                self.exists("nodeResourceGroup"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("sku.tier", "Standard"),
+            ],
+        )
+
+        # update from sku name automatic to base
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--sku base --tier standard"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.exists("fqdn"),
+                self.exists("nodeResourceGroup"),
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Base"),
+                self.check("sku.tier", "Standard"),
+            ],
+        )
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(

@@ -24,6 +24,8 @@ from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+    CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
+    CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
@@ -205,6 +207,14 @@ def validate_load_balancer_sku(namespace):
         if namespace.load_balancer_sku.lower() != "basic" and namespace.load_balancer_sku.lower() != "standard":
             raise CLIError("--load-balancer-sku can only be standard or basic")
 
+def validate_sku_name(namespace):
+    """Validates the sku name string."""
+    if namespace.sku is not None:
+        if namespace.sku.lower() not in (
+            CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
+            CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
+        ):
+            raise InvalidArgumentValueError("--sku can only be base or automatic")
 
 def validate_sku_tier(namespace):
     """Validates the sku tier string."""

@@ -67,6 +67,10 @@ CONST_MANAGED_CLUSTER_SKU_TIER_FREE = "free"
 CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD = "standard"
 CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM = "premium"
 
+# ManagedClusterSKU Name
+CONST_MANAGED_CLUSTER_SKU_NAME_BASE = "base"
+CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC = "automatic"
+
 CONST_OUTBOUND_MIGRATION_MULTIZONE_TO_NATGATEWAY_MSG = (
     "Warning: this AKS cluster has multi-zonal nodepools, but NAT Gateway is not currently zone redundant. "
     "Migrating outbound connectivity to NAT Gateway could lead to a reduction in zone redundancy for this cluster. "
