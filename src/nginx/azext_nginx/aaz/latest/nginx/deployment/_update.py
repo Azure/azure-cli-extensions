@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "nginx deployment update",
 )
 class Update(AAZCommand):
-    """Update an Nginx deployment
+    """Update an NGINX deployment
 
     :example: Update tags and enable diagnostics support for a deployment
         az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics
     """
 
     _aaz_info = {
-        "version": "2022-08-01",
+        "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -52,6 +52,9 @@ class Update(AAZCommand):
             help="The name of targeted Nginx deployment",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,6 +66,7 @@ class Update(AAZCommand):
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
             arg_group="Body",
+            help={"short-summary": "Managed identity to perform operations on Azure key vault or storage account", "long-summary": "The managed identity should have necessary access roles on the Azure resources. For certificate access, the managed identity should have cert read access on Azure key vault. For storage account logging, it should have blob contributor role.\nUsage: --identity '{\"type\":\"UserAssigned\",\"userAssignedIdentities\":{\"/subscriptions/subscriptionId/resourcegroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUserAssigneMI\":{}}}'\nType is an enum that accepts values UserAssigned or SystemAssigned"},
             nullable=True,
         )
         _args_schema.location = AAZResourceLocationArg(
@@ -75,11 +79,13 @@ class Update(AAZCommand):
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
             arg_group="Body",
+            help={"short-summary": "The billing information for the resource", "long-summary": "More information on https://docs.nginx.com/nginx-for-azure/billing/overview/\nUsage: --sku name=XXX"},
             nullable=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
+            help={"short-summary": "Tags for deployment.", "long-summary": "Usage: --tags tag1=\"value1\" tag2=\"value2\""},
             nullable=True,
         )
 
@@ -89,9 +95,15 @@ class Update(AAZCommand):
             nullable=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
         )
-        identity.user_assigned_identities = AAZObjectArg(
+        identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
             nullable=True,
+        )
+
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
+            blank={},
         )
 
         sku = cls._args_schema.sku
@@ -108,34 +120,47 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.auto_upgrade_profile = AAZObjectArg(
+            options=["--auto-upgrade-profile"],
+            arg_group="Properties",
+            help="Autoupgrade settings of a deployment.",
+            nullable=True,
+        )
         _args_schema.enable_diagnostics = AAZBoolArg(
             options=["--enable-diagnostics"],
-            help="Boolean to enable or disable diagnostics on your deployment",
             arg_group="Properties",
+            help="Boolean to enable/disable diagnostics support",
             nullable=True,
         )
         _args_schema.logging = AAZObjectArg(
             options=["--logging"],
             arg_group="Properties",
-            nullable=True,
-        )
-        _args_schema.managed_resource_group = AAZStrArg(
-            options=["--managed-resource-group"],
-            arg_group="Properties",
-            help="The managed resource group to deploy VNet injection related network resources.",
+            help={"short-summary": "To have logs sent to your storage account. Must specify managed identity with blob contributor role on Azure storage account", "long-summary": "Usage: --logging storage-account='{\"account-name\":\"<storageaccount>\", \"container-name\":<containername>}'"},
             nullable=True,
         )
         _args_schema.network_profile = AAZObjectArg(
             options=["--network-profile"],
             arg_group="Properties",
+            help={"short-summary": "IP address and VNet + subnet information", "long-summary": "Usage: --network-profile front-end-ip-configuration=\"<private or public IP address information>\" network-interface-configuration=\"<subnet information>\"\nfront-end-ip-configuration: IP information, public or private IP addresses.\nnetwork-interface-configuration: A subnet within your virtual network. This subnet should be delegated to NGINX.NGINXPLUS/nginxDeployments"},
             nullable=True,
         )
-        _args_schema.provisioning_state = AAZStrArg(
-            options=["--provisioning-state"],
-            help="State of the deployment",
+        _args_schema.scaling_properties = AAZObjectArg(
+            options=["--scaling-properties"],
             arg_group="Properties",
+            help={"short-summary": "Scaling for NGINX capacity units (NCUs)", "long-summary": "For more information- https://docs.nginx.com/nginxaas/azure/billing/overview/\nUsage: --scaling-properties capacity=<NCU value>"},
             nullable=True,
-            enum={"Accepted": "Accepted", "Canceled": "Canceled", "Creating": "Creating", "Deleted": "Deleted", "Deleting": "Deleting", "Failed": "Failed", "NotSpecified": "NotSpecified", "Succeeded": "Succeeded", "Updating": "Updating"},
+        )
+        _args_schema.user_profile = AAZObjectArg(
+            options=["--user-profile"],
+            arg_group="Properties",
+            help={"short-summary": "Optional: Preferred communication email", "long-summary": "Usage --user-profile preferred-email=xyz@abc.com"},
+            nullable=True,
+        )
+
+        auto_upgrade_profile = cls._args_schema.auto_upgrade_profile
+        auto_upgrade_profile.upgrade_channel = AAZStrArg(
+            options=["upgrade-channel"],
+            help="Channel used for autoupgrade.",
         )
 
         logging = cls._args_schema.logging
@@ -210,13 +235,82 @@ class Update(AAZCommand):
             options=["subnet-id"],
             nullable=True,
         )
+
+        scaling_properties = cls._args_schema.scaling_properties
+        scaling_properties.profiles = AAZListArg(
+            options=["profiles"],
+        )
+        scaling_properties.capacity = AAZIntArg(
+            options=["capacity"],
+            nullable=True,
+        )
+
+        profiles = cls._args_schema.scaling_properties.profiles
+        profiles.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.scaling_properties.profiles.Element
+        _element.capacity = AAZObjectArg(
+            options=["capacity"],
+            help="The capacity parameters of the profile.",
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+        )
+
+        capacity = cls._args_schema.scaling_properties.profiles.Element.capacity
+        capacity.max = AAZIntArg(
+            options=["max"],
+            help="The maximum number of NCUs the deployment can be autoscaled to.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+        capacity.min = AAZIntArg(
+            options=["min"],
+            help="The minimum number of NCUs the deployment can be autoscaled to.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+
+        user_profile = cls._args_schema.user_profile
+        user_profile.preferred_email = AAZStrArg(
+            options=["preferred-email"],
+            help="The preferred support contact email address of the user used for sending alerts and notification. Can be an empty string or a valid email address.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                pattern="^$|^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.DeploymentsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        yield self.DeploymentsCreate(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
+        yield self.DeploymentsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -246,17 +340,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -271,6 +355,16 @@ class Update(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -301,11 +395,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_nginx_deployment_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_nginx_deployment_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class DeploymentsCreate(AAZHttpOperation):
+    class DeploymentsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -345,17 +439,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
-        
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -370,6 +454,16 @@ class Update(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -412,7 +506,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_nginx_deployment_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_nginx_deployment_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -436,15 +530,24 @@ class Update(AAZCommand):
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type")
-                identity.set_prop("userAssignedIdentities", AAZObjectType, ".user_assigned_identities")
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("autoUpgradeProfile", AAZObjectType, ".auto_upgrade_profile")
                 properties.set_prop("enableDiagnosticsSupport", AAZBoolType, ".enable_diagnostics")
                 properties.set_prop("logging", AAZObjectType, ".logging")
-                properties.set_prop("managedResourceGroup", AAZStrType, ".managed_resource_group")
                 properties.set_prop("networkProfile", AAZObjectType, ".network_profile")
-                properties.set_prop("provisioningState", AAZStrType, ".provisioning_state")
+                properties.set_prop("scalingProperties", AAZObjectType, ".scaling_properties")
+                properties.set_prop("userProfile", AAZObjectType, ".user_profile")
+
+            auto_upgrade_profile = _builder.get(".properties.autoUpgradeProfile")
+            if auto_upgrade_profile is not None:
+                auto_upgrade_profile.set_prop("upgradeChannel", AAZStrType, ".upgrade_channel", typ_kwargs={"flags": {"required": True}})
 
             logging = _builder.get(".properties.logging")
             if logging is not None:
@@ -487,6 +590,33 @@ class Update(AAZCommand):
             if network_interface_configuration is not None:
                 network_interface_configuration.set_prop("subnetId", AAZStrType, ".subnet_id")
 
+            scaling_properties = _builder.get(".properties.scalingProperties")
+            if scaling_properties is not None:
+                scaling_properties.set_prop("autoScaleSettings", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+                scaling_properties.set_prop("capacity", AAZIntType, ".capacity")
+
+            auto_scale_settings = _builder.get(".properties.scalingProperties.autoScaleSettings")
+            if auto_scale_settings is not None:
+                auto_scale_settings.set_prop("profiles", AAZListType, ".profiles", typ_kwargs={"flags": {"required": True}})
+
+            profiles = _builder.get(".properties.scalingProperties.autoScaleSettings.profiles")
+            if profiles is not None:
+                profiles.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.scalingProperties.autoScaleSettings.profiles[]")
+            if _elements is not None:
+                _elements.set_prop("capacity", AAZObjectType, ".capacity", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+
+            capacity = _builder.get(".properties.scalingProperties.autoScaleSettings.profiles[].capacity")
+            if capacity is not None:
+                capacity.set_prop("max", AAZIntType, ".max", typ_kwargs={"flags": {"required": True}})
+                capacity.set_prop("min", AAZIntType, ".min", typ_kwargs={"flags": {"required": True}})
+
+            user_profile = _builder.get(".properties.userProfile")
+            if user_profile is not None:
+                user_profile.set_prop("preferredEmail", AAZStrType, ".preferred_email")
+
             sku = _builder.get(".sku")
             if sku is not None:
                 sku.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
@@ -506,192 +636,240 @@ class Update(AAZCommand):
             )
 
 
-_schema_nginx_deployment_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_nginx_deployment_read = None
 
-def _build_schema_nginx_deployment_read(_schema):
-    global _schema_nginx_deployment_read
-    if _schema_nginx_deployment_read is not None:
-        _schema.id = _schema_nginx_deployment_read.id
-        _schema.identity = _schema_nginx_deployment_read.identity
-        _schema.location = _schema_nginx_deployment_read.location
-        _schema.name = _schema_nginx_deployment_read.name
-        _schema.properties = _schema_nginx_deployment_read.properties
-        _schema.sku = _schema_nginx_deployment_read.sku
-        _schema.system_data = _schema_nginx_deployment_read.system_data
-        _schema.tags = _schema_nginx_deployment_read.tags
-        _schema.type = _schema_nginx_deployment_read.type
-        return
+    @classmethod
+    def _build_schema_nginx_deployment_read(cls, _schema):
+        if cls._schema_nginx_deployment_read is not None:
+            _schema.id = cls._schema_nginx_deployment_read.id
+            _schema.identity = cls._schema_nginx_deployment_read.identity
+            _schema.location = cls._schema_nginx_deployment_read.location
+            _schema.name = cls._schema_nginx_deployment_read.name
+            _schema.properties = cls._schema_nginx_deployment_read.properties
+            _schema.sku = cls._schema_nginx_deployment_read.sku
+            _schema.system_data = cls._schema_nginx_deployment_read.system_data
+            _schema.tags = cls._schema_nginx_deployment_read.tags
+            _schema.type = cls._schema_nginx_deployment_read.type
+            return
 
-    _schema_nginx_deployment_read = AAZObjectType()
+        cls._schema_nginx_deployment_read = _schema_nginx_deployment_read = AAZObjectType()
 
-    nginx_deployment_read = _schema_nginx_deployment_read
-    nginx_deployment_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    nginx_deployment_read.identity = AAZObjectType()
-    nginx_deployment_read.location = AAZStrType()
-    nginx_deployment_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    nginx_deployment_read.properties = AAZObjectType()
-    nginx_deployment_read.sku = AAZObjectType()
-    nginx_deployment_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    nginx_deployment_read.tags = AAZDictType()
-    nginx_deployment_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        nginx_deployment_read = _schema_nginx_deployment_read
+        nginx_deployment_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        nginx_deployment_read.identity = AAZObjectType()
+        nginx_deployment_read.location = AAZStrType()
+        nginx_deployment_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        nginx_deployment_read.properties = AAZObjectType()
+        nginx_deployment_read.sku = AAZObjectType()
+        nginx_deployment_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        nginx_deployment_read.tags = AAZDictType()
+        nginx_deployment_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    identity = _schema_nginx_deployment_read.identity
-    identity.principal_id = AAZStrType(
-        serialized_name="principalId",
-        flags={"read_only": True},
-    )
-    identity.tenant_id = AAZStrType(
-        serialized_name="tenantId",
-        flags={"read_only": True},
-    )
-    identity.type = AAZStrType()
-    identity.user_assigned_identities = AAZDictType(
-        serialized_name="userAssignedIdentities",
-    )
+        identity = _schema_nginx_deployment_read.identity
+        identity.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        identity.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        identity.type = AAZStrType()
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
 
-    user_assigned_identities = _schema_nginx_deployment_read.identity.user_assigned_identities
-    user_assigned_identities.Element = AAZObjectType()
+        user_assigned_identities = _schema_nginx_deployment_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType()
 
-    _element = _schema_nginx_deployment_read.identity.user_assigned_identities.Element
-    _element.client_id = AAZStrType(
-        serialized_name="clientId",
-        flags={"read_only": True},
-    )
-    _element.principal_id = AAZStrType(
-        serialized_name="principalId",
-        flags={"read_only": True},
-    )
+        _element = _schema_nginx_deployment_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
 
-    properties = _schema_nginx_deployment_read.properties
-    properties.enable_diagnostics_support = AAZBoolType(
-        serialized_name="enableDiagnosticsSupport",
-    )
-    properties.ip_address = AAZStrType(
-        serialized_name="ipAddress",
-        flags={"read_only": True},
-    )
-    properties.logging = AAZObjectType()
-    properties.managed_resource_group = AAZStrType(
-        serialized_name="managedResourceGroup",
-    )
-    properties.network_profile = AAZObjectType(
-        serialized_name="networkProfile",
-    )
-    properties.nginx_version = AAZStrType(
-        serialized_name="nginxVersion",
-        flags={"read_only": True},
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-    )
+        properties = _schema_nginx_deployment_read.properties
+        properties.auto_upgrade_profile = AAZObjectType(
+            serialized_name="autoUpgradeProfile",
+        )
+        properties.enable_diagnostics_support = AAZBoolType(
+            serialized_name="enableDiagnosticsSupport",
+        )
+        properties.ip_address = AAZStrType(
+            serialized_name="ipAddress",
+            flags={"read_only": True},
+        )
+        properties.logging = AAZObjectType()
+        properties.managed_resource_group = AAZStrType(
+            serialized_name="managedResourceGroup",
+        )
+        properties.network_profile = AAZObjectType(
+            serialized_name="networkProfile",
+        )
+        properties.nginx_version = AAZStrType(
+            serialized_name="nginxVersion",
+            flags={"read_only": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.scaling_properties = AAZObjectType(
+            serialized_name="scalingProperties",
+        )
+        properties.user_profile = AAZObjectType(
+            serialized_name="userProfile",
+        )
 
-    logging = _schema_nginx_deployment_read.properties.logging
-    logging.storage_account = AAZObjectType(
-        serialized_name="storageAccount",
-    )
+        auto_upgrade_profile = _schema_nginx_deployment_read.properties.auto_upgrade_profile
+        auto_upgrade_profile.upgrade_channel = AAZStrType(
+            serialized_name="upgradeChannel",
+            flags={"required": True},
+        )
 
-    storage_account = _schema_nginx_deployment_read.properties.logging.storage_account
-    storage_account.account_name = AAZStrType(
-        serialized_name="accountName",
-    )
-    storage_account.container_name = AAZStrType(
-        serialized_name="containerName",
-    )
+        logging = _schema_nginx_deployment_read.properties.logging
+        logging.storage_account = AAZObjectType(
+            serialized_name="storageAccount",
+        )
 
-    network_profile = _schema_nginx_deployment_read.properties.network_profile
-    network_profile.front_end_ip_configuration = AAZObjectType(
-        serialized_name="frontEndIPConfiguration",
-    )
-    network_profile.network_interface_configuration = AAZObjectType(
-        serialized_name="networkInterfaceConfiguration",
-    )
+        storage_account = _schema_nginx_deployment_read.properties.logging.storage_account
+        storage_account.account_name = AAZStrType(
+            serialized_name="accountName",
+        )
+        storage_account.container_name = AAZStrType(
+            serialized_name="containerName",
+        )
 
-    front_end_ip_configuration = _schema_nginx_deployment_read.properties.network_profile.front_end_ip_configuration
-    front_end_ip_configuration.private_ip_addresses = AAZListType(
-        serialized_name="privateIPAddresses",
-    )
-    front_end_ip_configuration.public_ip_addresses = AAZListType(
-        serialized_name="publicIPAddresses",
-    )
+        network_profile = _schema_nginx_deployment_read.properties.network_profile
+        network_profile.front_end_ip_configuration = AAZObjectType(
+            serialized_name="frontEndIPConfiguration",
+        )
+        network_profile.network_interface_configuration = AAZObjectType(
+            serialized_name="networkInterfaceConfiguration",
+        )
 
-    private_ip_addresses = _schema_nginx_deployment_read.properties.network_profile.front_end_ip_configuration.private_ip_addresses
-    private_ip_addresses.Element = AAZObjectType()
+        front_end_ip_configuration = _schema_nginx_deployment_read.properties.network_profile.front_end_ip_configuration
+        front_end_ip_configuration.private_ip_addresses = AAZListType(
+            serialized_name="privateIPAddresses",
+        )
+        front_end_ip_configuration.public_ip_addresses = AAZListType(
+            serialized_name="publicIPAddresses",
+        )
 
-    _element = _schema_nginx_deployment_read.properties.network_profile.front_end_ip_configuration.private_ip_addresses.Element
-    _element.private_ip_address = AAZStrType(
-        serialized_name="privateIPAddress",
-    )
-    _element.private_ip_allocation_method = AAZStrType(
-        serialized_name="privateIPAllocationMethod",
-    )
-    _element.subnet_id = AAZStrType(
-        serialized_name="subnetId",
-    )
+        private_ip_addresses = _schema_nginx_deployment_read.properties.network_profile.front_end_ip_configuration.private_ip_addresses
+        private_ip_addresses.Element = AAZObjectType()
 
-    public_ip_addresses = _schema_nginx_deployment_read.properties.network_profile.front_end_ip_configuration.public_ip_addresses
-    public_ip_addresses.Element = AAZObjectType()
+        _element = _schema_nginx_deployment_read.properties.network_profile.front_end_ip_configuration.private_ip_addresses.Element
+        _element.private_ip_address = AAZStrType(
+            serialized_name="privateIPAddress",
+        )
+        _element.private_ip_allocation_method = AAZStrType(
+            serialized_name="privateIPAllocationMethod",
+        )
+        _element.subnet_id = AAZStrType(
+            serialized_name="subnetId",
+        )
 
-    _element = _schema_nginx_deployment_read.properties.network_profile.front_end_ip_configuration.public_ip_addresses.Element
-    _element.id = AAZStrType()
+        public_ip_addresses = _schema_nginx_deployment_read.properties.network_profile.front_end_ip_configuration.public_ip_addresses
+        public_ip_addresses.Element = AAZObjectType()
 
-    network_interface_configuration = _schema_nginx_deployment_read.properties.network_profile.network_interface_configuration
-    network_interface_configuration.subnet_id = AAZStrType(
-        serialized_name="subnetId",
-    )
+        _element = _schema_nginx_deployment_read.properties.network_profile.front_end_ip_configuration.public_ip_addresses.Element
+        _element.id = AAZStrType()
 
-    sku = _schema_nginx_deployment_read.sku
-    sku.name = AAZStrType(
-        flags={"required": True},
-    )
+        network_interface_configuration = _schema_nginx_deployment_read.properties.network_profile.network_interface_configuration
+        network_interface_configuration.subnet_id = AAZStrType(
+            serialized_name="subnetId",
+        )
 
-    system_data = _schema_nginx_deployment_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
+        scaling_properties = _schema_nginx_deployment_read.properties.scaling_properties
+        scaling_properties.auto_scale_settings = AAZObjectType(
+            serialized_name="autoScaleSettings",
+            flags={"client_flatten": True},
+        )
+        scaling_properties.capacity = AAZIntType()
 
-    tags = _schema_nginx_deployment_read.tags
-    tags.Element = AAZStrType()
+        auto_scale_settings = _schema_nginx_deployment_read.properties.scaling_properties.auto_scale_settings
+        auto_scale_settings.profiles = AAZListType(
+            flags={"required": True},
+        )
 
-    _schema.id = _schema_nginx_deployment_read.id
-    _schema.identity = _schema_nginx_deployment_read.identity
-    _schema.location = _schema_nginx_deployment_read.location
-    _schema.name = _schema_nginx_deployment_read.name
-    _schema.properties = _schema_nginx_deployment_read.properties
-    _schema.sku = _schema_nginx_deployment_read.sku
-    _schema.system_data = _schema_nginx_deployment_read.system_data
-    _schema.tags = _schema_nginx_deployment_read.tags
-    _schema.type = _schema_nginx_deployment_read.type
+        profiles = _schema_nginx_deployment_read.properties.scaling_properties.auto_scale_settings.profiles
+        profiles.Element = AAZObjectType()
+
+        _element = _schema_nginx_deployment_read.properties.scaling_properties.auto_scale_settings.profiles.Element
+        _element.capacity = AAZObjectType(
+            flags={"required": True},
+        )
+        _element.name = AAZStrType(
+            flags={"required": True},
+        )
+
+        capacity = _schema_nginx_deployment_read.properties.scaling_properties.auto_scale_settings.profiles.Element.capacity
+        capacity.max = AAZIntType(
+            flags={"required": True},
+        )
+        capacity.min = AAZIntType(
+            flags={"required": True},
+        )
+
+        user_profile = _schema_nginx_deployment_read.properties.user_profile
+        user_profile.preferred_email = AAZStrType(
+            serialized_name="preferredEmail",
+        )
+
+        sku = _schema_nginx_deployment_read.sku
+        sku.name = AAZStrType(
+            flags={"required": True},
+        )
+
+        system_data = _schema_nginx_deployment_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_nginx_deployment_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_nginx_deployment_read.id
+        _schema.identity = cls._schema_nginx_deployment_read.identity
+        _schema.location = cls._schema_nginx_deployment_read.location
+        _schema.name = cls._schema_nginx_deployment_read.name
+        _schema.properties = cls._schema_nginx_deployment_read.properties
+        _schema.sku = cls._schema_nginx_deployment_read.sku
+        _schema.system_data = cls._schema_nginx_deployment_read.system_data
+        _schema.tags = cls._schema_nginx_deployment_read.tags
+        _schema.type = cls._schema_nginx_deployment_read.type
 
 
 __all__ = ["Update"]

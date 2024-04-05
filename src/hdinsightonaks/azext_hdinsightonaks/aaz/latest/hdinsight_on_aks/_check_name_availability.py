@@ -18,14 +18,14 @@ from azure.cli.core.aaz import *
 class CheckNameAvailability(AAZCommand):
     """Check the availability of the resource name.
 
-    :example: Check if the name clicluster  is available in cluster pool cliclusterpool.
+    :example: Check if the name 'clicluster'  is available in cluster pool 'cliclusterpool'.
         az hdinsight-on-aks check-name-availability -l westus3 --name cliclusterpool/clicluster --type Microsoft.HDInsight/clusterPools/clusters
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hdinsight/locations/{}/checknameavailability", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hdinsight/locations/{}/checknameavailability", "2023-11-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class CheckNameAvailability(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }

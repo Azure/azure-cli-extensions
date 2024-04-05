@@ -178,7 +178,7 @@ def _list_credentials(cmd, resource_uri, certificate_validity_in_seconds):
     list_cred_args = {
         'endpoint_name': 'default',
         'resource_uri': resource_uri,
-        'expiresin': certificate_validity_in_seconds,
+        'expiresin': int(certificate_validity_in_seconds),
         'service_name': "SSH"
     }
 
@@ -224,7 +224,7 @@ def get_client_side_proxy(arc_proxy_folder):
         os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
         print_styled_text((Style.SUCCESS, f"SSH Client Proxy saved to {install_location}"))
 
-        _download_proxy_license()
+        _download_proxy_license(arc_proxy_folder)
 
     return install_location
 
@@ -272,8 +272,9 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
     return request_uri, install_location, older_location
 
 
-def _download_proxy_license():
-    proxy_dir = os.path.join('~', ".clientsshproxy")
+def _download_proxy_license(proxy_dir):
+    if not proxy_dir:
+        proxy_dir = os.path.join('~', ".clientsshproxy")
     license_uri = f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}/LICENSE.txt"
     license_install_location = os.path.expanduser(os.path.join(proxy_dir, "LICENSE.txt"))
 

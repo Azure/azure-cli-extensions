@@ -13,37 +13,37 @@ interactions:
       ParameterSetName:
       - -l
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableClusterPoolVersions?api-version=2023-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableClusterPoolVersions?api-version=2023-11-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterpoolversions/1.0","name":"1.0","properties":{"clusterPoolVersion":"1.0","aksVersion":"1.26","isPreview":false}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterpoolversions/1.0","name":"1.0","properties":{"clusterPoolVersion":"1.0","aksVersion":"1.26","isPreview":false}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/availableclusterpoolversions/1.1","name":"1.1","properties":{"clusterPoolVersion":"1.1","aksVersion":"1.27","isPreview":false}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '246'
+      - '481'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 10 Nov 2023 02:27:27 GMT
+      - Thu, 07 Mar 2024 06:24:58 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - c6dbfb6a-3a58-40a2-9063-0a771d0ada52
+      - d182dc24-0344-429a-a282-ce76b983bd84
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-msedge-ref:
+      - 'Ref A: AE8FE2BF8CA54910B1C0714C0F1CAED8 Ref B: MAA201060515029 Ref C: 2024-03-07T06:24:58Z'
     status:
       code: 200
       message: OK

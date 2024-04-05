@@ -22,6 +22,7 @@ from azext_aks_preview._client_factory import (
     cf_agent_pools,
     get_graph_rbac_management_client,
     get_msi_client,
+    get_compute_client,
 )
 from azext_aks_preview._consts import (
     ADDONS,
@@ -52,12 +53,19 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
     CONST_SSH_ACCESS_LOCALUSER,
+    CONST_NODE_PROVISIONING_STATE_SUCCEEDED,
+    CONST_DEFAULT_NODE_OS_TYPE,
+    CONST_VIRTUAL_MACHINE_SCALE_SETS,
+    CONST_VIRTUAL_MACHINES,
+    CONST_AVAILABILITY_SET,
+    CONST_MIN_NODE_IMAGE_VERSION,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
     get_cluster_snapshot_by_snapshot_id,
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
+    process_message_for_run_command,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -97,15 +105,20 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
+    ValidationError,
 )
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
     in_cloud_console,
     sdk_no_wait,
     shell_safe_json_parse,
 )
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import (
+    ResourceNotFoundError,
+    HttpResponseError,
+)
 from azure.graphrbac.models import (
     ApplicationCreateParameters,
     KeyCredential,
@@ -620,6 +633,9 @@ def aks_create(
     storage_pool_option=None,
     node_provisioning_mode=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
+    # trusted launch
+    enable_secure_boot=False,
+    enable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -802,7 +818,7 @@ def aks_update(
     disable_ai_toolchain_operator=False,
     # azure container storage
     enable_azure_container_storage=None,
-    disable_azure_container_storage=False,
+    disable_azure_container_storage=None,
     storage_pool_name=None,
     storage_pool_size=None,
     storage_pool_sku=None,
@@ -1190,6 +1206,9 @@ def aks_agentpool_add(
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
+    # trusted launch
+    enable_secure_boot=False,
+    enable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1245,6 +1264,11 @@ def aks_agentpool_update(
     os_sku=None,
     ssh_access=None,
     yes=False,
+    # trusted launch
+    enable_secure_boot=False,
+    disable_secure_boot=False,
+    enable_vtpm=False,
+    disable_vtpm=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2947,6 +2971,17 @@ def aks_mesh_get_revisions(
     return None
 
 
+def check_iterator(iterator):
+    import itertools
+    try:
+        first = next(iterator)
+    except StopIteration:   # iterator is empty
+        return True, iterator
+    except TypeError:       # iterator is not iterable, e.g. None
+        return True, iterator
+    return False, itertools.chain([first], iterator)
+
+
 def aks_mesh_get_upgrades(
         cmd,
         client,
@@ -2954,15 +2989,14 @@ def aks_mesh_get_upgrades(
         name
 ):
     upgradeProfiles = client.list_mesh_upgrade_profiles(resource_group_name, name)
-    # 'upgradeProfiles' is an ItemPaged object
-    upgrades = []
-    # Iterate over items within pages
-    for page in upgradeProfiles.by_page():
-        for item in page:
-            upgrades.append(item)
-
-    if upgrades:
-        return upgrades[0].properties
+    is_empty, upgradeProfiles = check_iterator(upgradeProfiles)
+    if is_empty:
+        logger.warning("No mesh upgrade profiles found for the cluster '%s' " +
+                       "in the resource group '%s'.", name, resource_group_name)
+        return None
+    upgrade = next(upgradeProfiles, None)
+    if upgrade:
+        return upgrade.properties
     return None
 
 
@@ -3214,3 +3248,226 @@ def _aks_approuting_update(
         return None
 
     return aks_update_decorator.update_mc(mc)
+
+
+def _aks_run_command(
+        cmd,
+        vm_set_type,
+        managed_resource_group,
+        vmss_name=None,
+        instance_id=None,
+        vm_name=None,
+        custom_endpoints=None):
+    try:
+        command = "bash /opt/azure/containers/aks-check-network.sh"
+        if custom_endpoints:
+            all_endpoints = ",".join(custom_endpoints)
+            command += f" {all_endpoints}"
+            logger.debug("Full command: %s", command)
+
+        compute_client = get_compute_client(cmd.cli_ctx)
+
+        if vm_set_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+            RunCommandInput = cmd.get_models('RunCommandInput',
+                                             resource_type=ResourceType.MGMT_COMPUTE,
+                                             operation_group="virtual_machine_scale_sets")
+            command_result = LongRunningOperation(cmd.cli_ctx)(
+                compute_client.virtual_machine_scale_set_vms.begin_run_command(
+                    managed_resource_group, vmss_name, instance_id,
+                    RunCommandInput(command_id="RunShellScript", script=[command])))
+        elif vm_set_type == CONST_AVAILABILITY_SET:
+            RunCommandInput = cmd.get_models('RunCommandInput',
+                                             resource_type=ResourceType.MGMT_COMPUTE,
+                                             operation_group="virtual_machine_run_commands")
+            command_result = LongRunningOperation(cmd.cli_ctx)(
+                compute_client.virtual_machines.begin_run_command(
+                    managed_resource_group, vm_name,
+                    RunCommandInput(command_id="RunShellScript", script=[command])))
+        else:
+            raise ValidationError(f"VM set type {vm_set_type} is not supported!")
+
+        display_status = command_result.value[0].display_status
+        message = command_result.value[0].message
+        if display_status != "Provisioning succeeded":
+            raise InvalidArgumentValueError(
+                f"Can not run command with returned code {display_status} and message {message}")
+        return process_message_for_run_command(message)
+    except Exception as ex:
+        raise HttpResponseError(f"Can not run command with returned exception {ex}") from ex
+
+
+def _aks_verify_resource(resource, resource_type):
+    if resource.provisioning_state != CONST_NODE_PROVISIONING_STATE_SUCCEEDED:
+        raise ValidationError(f"Node pool {resource.name} is in {resource.provisioning_state} state!")
+
+    node_image_version = ""
+    os_type = ""
+    if resource_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+        node_image_version = resource.node_image_version
+        os_type = resource.os_type
+    else:
+        node_image_version = resource.storage_profile.image_reference.id
+        os_type = resource.storage_profile.os_disk.os_type
+
+    if not os_type or os_type != CONST_DEFAULT_NODE_OS_TYPE:
+        raise ValidationError(f"Resource must be of type {CONST_DEFAULT_NODE_OS_TYPE}!")
+
+    if not node_image_version:
+        raise ValidationError(f"No image version found for {resource.name}! Cannot verify supported versions.")
+
+    if resource_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+        version = node_image_version.split("-")[-1]
+    else:
+        version = node_image_version.split("/")[-1]
+
+    if version < CONST_MIN_NODE_IMAGE_VERSION:
+        raise ValidationError(f"Node image version {version} is not supported! "
+                              f"Image version must be at least {CONST_MIN_NODE_IMAGE_VERSION}.")
+
+
+def _aks_get_node_name_vmss(
+        cmd,
+        resource_group,
+        cluster_name,
+        node_name,
+        managed_resource_group):
+    compute_client = get_compute_client(cmd.cli_ctx)
+
+    if not node_name:
+        logger.debug("No node name specified, will randomly select a node from the cluster")
+        agentpool_client = cf_agent_pools(cmd.cli_ctx)
+
+        nodepool_list = list(aks_agentpool_list(cmd, agentpool_client, resource_group, cluster_name))
+        if not nodepool_list:
+            raise ValidationError("No node pool found in the cluster!")
+
+        nodepool_name = ""
+        for nodepool in nodepool_list:
+            try:
+                _aks_verify_resource(nodepool, CONST_VIRTUAL_MACHINE_SCALE_SETS)
+                nodepool_name = nodepool.name
+                logger.debug("Select nodepool: %s", nodepool_name)
+                break
+            except ValidationError as ex:
+                logger.warning(ex)
+                continue
+
+        if not nodepool_name:
+            raise ValidationError("No suitable node pool found in the cluster.")
+
+        vmss_list = compute_client.virtual_machine_scale_sets.list(managed_resource_group)
+        if not vmss_list:
+            raise ValidationError(f"No VMSS found in the managed resource group {managed_resource_group}!")
+
+        for vmss in vmss_list:
+            vmss_tag = vmss.tags.get("aks-managed-poolName")
+            if vmss_tag and vmss_tag == nodepool_name:
+                vmss_name = vmss.name
+                logger.debug("Select VMSS: %s", vmss_name)
+                break
+        if not vmss_name:
+            raise ValidationError(f"No VMSS pool matched AKS node pool {nodepool_name}!")
+
+        instances = list(compute_client.virtual_machine_scale_set_vms.list(managed_resource_group, vmss_name))
+        if not instances:
+            raise ValidationError(f"No instances found in the VMSS {vmss_name}!")
+
+        instance_id = instances[0].instance_id
+        logger.debug("Select instance id: %s", instance_id)
+    else:
+        index = node_name.find("vmss")
+        if index != -1:
+            vmss_name = node_name[:index + 4]
+            instance_id = int(node_name[index + 4:], base=36)
+            instance_info = compute_client.virtual_machine_scale_set_vms.get(
+                managed_resource_group, vmss_name, instance_id)
+            if not instance_info:
+                raise ValidationError(f"Instance id {instance_id} not found in VMSS {vmss_name}!")
+            _aks_verify_resource(instance_info, CONST_VIRTUAL_MACHINES)
+        else:
+            raise ValidationError(f"Node name {node_name} is invalid!")
+
+    return vmss_name, instance_id
+
+
+def _aks_get_node_name_as(
+        cmd,
+        node_name,
+        managed_resource_group):
+    compute_client = get_compute_client(cmd.cli_ctx)
+
+    if not node_name:
+        logger.debug("No node name specified, will randomly select a node from the cluster")
+
+        vm_list = compute_client.virtual_machines.list(managed_resource_group)
+        if not vm_list:
+            raise ValidationError(f"No VM found in the managed resource group {managed_resource_group}!")
+
+        vm_name = ""
+        for vm in vm_list:
+            try:
+                _aks_verify_resource(vm, CONST_VIRTUAL_MACHINES)
+                vm_name = vm.name
+                logger.debug("Select VM: %s", vm_name)
+                break
+            except ValidationError as ex:
+                logger.warning(ex)
+                continue
+
+        if not vm_name:
+            raise ValidationError("No suitable VM found in the managed resource!")
+    else:
+        vm_name = node_name
+        vm_info = compute_client.virtual_machines.get(managed_resource_group, vm_name)
+        if not vm_info:
+            raise ValidationError(f"VM {vm_name} not found in the managed resource group {managed_resource_group}!")
+        _aks_verify_resource(vm_info, CONST_VIRTUAL_MACHINES)
+
+    return vm_name
+
+
+def aks_check_network_outbound(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        node_name=None,
+        custom_endpoints=None):
+    cluster = aks_show(cmd, client, resource_group_name, cluster_name, None)
+    if not cluster:
+        raise ValidationError("Can not get cluster information!")
+
+    vm_set_type = cluster.agent_pool_profiles[0].type
+    if not vm_set_type:
+        raise ValidationError("Can not get VM set type of the cluster!")
+    print("Get node pool VM set type:", vm_set_type)
+
+    location = get_rg_location(cmd.cli_ctx, resource_group_name)
+    managed_resource_group = f"MC_{resource_group_name}_{cluster_name}_{location}"
+    logger.debug("Location: %s, Managed Resource Group: %s", location, managed_resource_group)
+
+    vmss_name = ""
+    instance_id = ""
+    vm_name = ""
+    if vm_set_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+        vmss_name, instance_id = _aks_get_node_name_vmss(
+            cmd, resource_group_name, cluster_name, node_name, managed_resource_group)
+
+        print(f"Start checking outbound network for vmss: {vmss_name},"
+              f" instance_id: {instance_id}, managed_resource_group: {managed_resource_group}")
+    elif vm_set_type == CONST_AVAILABILITY_SET:
+        vm_name = _aks_get_node_name_as(
+            cmd, node_name, managed_resource_group)
+
+        print(f"Start checking outbound network for vm: {vm_name},"
+              f" managed_resource_group: {managed_resource_group}")
+    else:
+        raise ValidationError(f"VM set type {vm_set_type} is not supported!")
+
+    return _aks_run_command(cmd,
+                            vm_set_type,
+                            managed_resource_group,
+                            vmss_name,
+                            instance_id,
+                            vm_name,
+                            custom_endpoints)
