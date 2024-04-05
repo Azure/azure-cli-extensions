@@ -3,6 +3,10 @@ Release History
 
 2.0.0
 -----
+* New File Attachment feature added to support ticket 
+
+1.0.3
+-----
 * Migrate to track 2 SDK
 
 1.0.2
