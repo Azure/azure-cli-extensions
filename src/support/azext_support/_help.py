@@ -6,6 +6,72 @@
 
 from knack.help_files import helps
 
+helps[
+    "support"
+] = """
+type: group
+short-summary: Manage Azure support resource.
+"""
+
+helps[
+    "support services"
+] = """
+type: group
+short-summary: Azure services and related problem categories.
+"""
+
+helps[
+    "support services list"
+] = """
+type: command
+short-summary: Lists all the Azure services available for support ticket creation. Always use the service and it's corresponding problem classification(s) obtained programmatically for support ticket creation. This practice ensures that you always have the most recent set of service and problem classification Ids.
+examples:
+  - name: Gets list of services for which a support ticket can be created.
+    text: |-
+          az support services list
+"""
+
+helps[
+    "support services show"
+] = """
+type: command
+short-summary: Gets a specific Azure service for support ticket creation.
+examples:
+  - name: Gets details of Azure service.
+    text: |-
+          az support services show --service-name "ServiceNameGuid"
+"""
+
+helps[
+    "support services problem-classifications"
+] = """
+type: group
+short-summary: Problem classifications for an Azure service.
+"""
+
+helps[
+    "support services problem-classifications list"
+] = """
+type: command
+short-summary: Lists all the problem classifications (categories) available for an Azure service. Always use the service and it's corresponding problem classification(s) obtained programmatically for support ticket creation. This practice ensures that you always have the most recent set of service and problem classification Ids.
+examples:
+  - name: Gets list of problemClassifications for a service for which a support ticket can be created.
+    text: |-
+          az support services problem-classifications list --service-name "ServiceNameGuid"
+"""
+
+helps[
+    "support services problem-classifications show"
+] = """
+type: command
+short-summary: Gets the problem classification details for an Azure service.
+examples:
+  - name: Gets details of problemClassification for Azure service.
+    text: |
+          az support services problem-classifications show \\
+            --service-name "ServiceNameGuid" \\
+            --problem-classification-name "ProblemClassificationNameGuid"
+"""
 
 helps['support tickets'] = """
 type: group

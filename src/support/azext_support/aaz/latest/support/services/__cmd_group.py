@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "support services",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Azure services and related problem categories.
