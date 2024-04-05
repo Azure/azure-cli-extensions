@@ -10,7 +10,7 @@ import json
 from datetime import date, datetime, timedelta
 
 from azext_support._utils import (get_bearer_token, is_quota_ticket,
-                                  is_technical_ticket, parse_support_area_path)
+                                  is_technical_ticket, parse_support_area_path, upload_file)
 from knack.log import get_logger
 from azext_support._completers import (
     _get_supported_languages as getLanguage,
@@ -24,6 +24,8 @@ from .aaz.latest.support.no_subscription.tickets import Update as _UpdateNoSubsc
 from .aaz.latest.support.no_subscription.tickets import Create as _CreateTicketNoSubscription
 from .aaz.latest.support.in_subscription.tickets import List as _List
 from .aaz.latest.support.no_subscription.tickets import List as _ListNoSubscription
+from .aaz.latest.support.in_subscription.file_workspace import Create as _CreateFileWorkspace
+from .aaz.latest.support.no_subscription.file_workspace import Create as _CreateNoSubscriptionFileWorkspace
 
 logger = get_logger(__name__)
 
@@ -305,3 +307,57 @@ class TicketListNoSubscription(_ListNoSubscription):
             if args.filter == AAZUndefined and args.pagination_limit == AAZUndefined:
                 parameters["$filter"] = "CreatedDate ge " + str(date.today() - timedelta(days=7))
             return parameters
+
+
+class FileWorkspaceCreateNoSubscription(_CreateNoSubscriptionFileWorkspace):
+    def pre_operations(self):
+        from azext_support._validators import _check_name_availability_no_subscription
+
+        super().pre_operations()
+        args = self.ctx.args
+        _check_name_availability_no_subscription(
+            self.cli_ctx,
+            str(args.file_workspace_name),
+            "Microsoft.Support/fileWorkspaces",
+        )
+
+
+class FileWorkspaceCreateSubscription(_CreateFileWorkspace):
+    def pre_operations(self):
+        from azext_support._validators import _check_name_availability_subscription
+
+        super().pre_operations()
+        args = self.ctx.args
+        _check_name_availability_subscription(
+            self.cli_ctx,
+            str(args.file_workspace_name),
+            "Microsoft.Support/fileWorkspaces",
+        )
+
+
+def upload_files_no_subscription(cmd, file_path, file_workspace_name):
+
+    from .aaz.latest.support.no_subscription.file import (
+        Create as Create,
+        Upload as Upload,
+    )
+
+    upload_file(cmd, file_path, file_workspace_name, False, Create, Upload)
+
+
+def upload_files_in_subscription(
+    cmd, file_path, file_workspace_name, subscription_id=None
+):
+    from .aaz.latest.support.in_subscription.file import (
+		Create as Create_Sub,
+		Upload as Upload_Sub,
+	)
+    upload_file(
+        cmd,
+        file_path,
+        file_workspace_name,
+        True,
+        Create_Sub,
+        Upload_Sub,
+        subscription_id,
+    )

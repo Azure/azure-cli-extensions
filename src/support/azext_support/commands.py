@@ -10,6 +10,10 @@ from azext_support._client_factory import (cf_communications,
 from azext_support._validators import validate_tickets_create
 from azure.cli.core.commands import CliCommandType
 from azext_support.custom import TicketUpdate, TicketCreate
+from azext_support.custom import (
+    FileWorkspaceCreateNoSubscription,
+    FileWorkspaceCreateSubscription,
+)
 from azext_support.custom import CommunicationCreate
 from azext_support.custom import CommunicationNoSubscriptionCreate
 from azext_support.custom import TicketUpdateNoSubscription
@@ -67,3 +71,16 @@ def load_command_table(self, _):
     self.command_table['support no-subscription tickets create'] = TicketCreateNoSubscription(loader=self)
     self.command_table['support in-subscription tickets list'] = TicketList(loader=self)
     self.command_table['support no-subscription tickets list'] = TicketListNoSubscription(loader=self)
+    
+    with self.command_group("support no-subscription file") as g:
+        g.custom_command("upload", "upload_files_no_subscription")
+
+    with self.command_group("support in-subscription file") as g:
+        g.custom_command("upload", "upload_files_in_subscription")
+
+    self.command_table[
+        "support in-subscription file-workspace create"
+    ] = FileWorkspaceCreateSubscription(loader=self)
+    self.command_table[
+        "support no-subscription file-workspace create"
+    ] = FileWorkspaceCreateNoSubscription(loader=self)

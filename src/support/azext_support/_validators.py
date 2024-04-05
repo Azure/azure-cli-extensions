@@ -12,9 +12,44 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
+import os
 
 logger = get_logger(__name__)
 
+# file constants
+max_file_name_length = 110
+min_file_size = 1
+max_file_size = 1024 * 1024 * 5
+unsupported_file_extensions_set = {
+    ".bat",
+    ".cmd",
+    ".exe",
+    ".ps1",
+    ".js",
+    ".vbs",
+    ".com",
+    ".lnk",
+    ".reg",
+    ".bin",
+    ".cpl",
+    ".inf",
+    ".ins",
+    ".isu",
+    ".job",
+    ".jse",
+    ".msi",
+    ".msp",
+    ".paf",
+    ".pif",
+    ".rgs",
+    ".scr",
+    ".sct",
+    ".vbe",
+    ".vb",
+    ".ws",
+    ".wsf",
+    ".wsh"
+}
 
 def datetime_type(string):
     """ Validates UTC datetime. Examples of accepted forms:
@@ -39,12 +74,6 @@ def validate_tickets_create_new(cli_ctx, problem_classification, ticket_name, te
     if is_technical_ticket(parse_support_area_path(problem_classification)["service_name"]):
         _validate_resource_name_new(cli_ctx, technical_resource)
     _check_name_availability_subscription(cli_ctx, ticket_name, "Microsoft.Support/supportTickets")
-
-def validate_tickets_create_no_subscription_new(cli_ctx, problem_classification, ticket_name, technical_resource=None):
-    _validate_problem_classification_name(problem_classification)
-    if is_technical_ticket(parse_support_area_path(problem_classification)["service_name"]):
-        _validate_resource_name_new(cli_ctx, technical_resource)
-    _check_name_availability_no_subscription(cli_ctx, ticket_name, "Microsoft.Support/supportTickets")
 
 def validate_communication_create(cmd, namespace):
     _validate_communication_name(cmd, namespace.ticket_name, namespace.communication_name)
@@ -124,6 +153,11 @@ def _check_name_availability_subscription(cli_ctx, resource_name, resource_type)
     if not resp["nameAvailable"]:
         raise CLIError(resp["message"])
 
+def validate_tickets_create_no_subscription_new(cli_ctx, problem_classification, ticket_name, technical_resource=None):
+    _validate_problem_classification_name(problem_classification)
+    if is_technical_ticket(parse_support_area_path(problem_classification)["service_name"]):
+        _validate_resource_name_new(cli_ctx, technical_resource)
+    _check_name_availability_no_subscription(cli_ctx, ticket_name, "Microsoft.Support/supportTickets")
 
 def _check_name_availability_subscription_ticket(cli_ctx, ticket_name, resource_name, resource_type):
     from .aaz.latest.support.in_subscription.tickets import CheckNameAvailability
@@ -147,3 +181,23 @@ def _check_name_availability_no_subscription_ticket(cli_ctx, ticket_name, resour
     resp = CheckNameAvailability(cli_ctx=cli_ctx)(command_args=check_name_availability_input)
     if not resp["nameAvailable"]:
         raise CLIError(resp["message"])
+
+
+def validate_file_path(file_path):
+    if not os.path.exists(file_path):
+        raise CLIError("File does not exist!")
+
+
+def validate_file_name(file_name):
+    if len(file_name) > max_file_name_length:
+        raise CLIError("File name should not be more than 110 characters.")
+
+
+def validate_file_size(file_size):
+    if (file_size > max_file_size) or (file_size < min_file_size):
+        raise CLIError("The file must be between 1 and 5242880 bytes")
+
+
+def validate_file_extension(file_extension):
+    if file_extension in unsupported_file_extensions_set:
+        raise CLIError("The file extension is not supported.")
