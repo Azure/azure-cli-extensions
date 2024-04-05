@@ -3,7 +3,7 @@ Release History
 
 2.0.0
 -----
-* New File Attachment feature added to support ticket 
+* Upgrade CLI Support extension to new Support RP API 2024-04-01
 
 1.0.3
 -----
