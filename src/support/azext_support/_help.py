@@ -6,7 +6,6 @@
 
 from knack.help_files import helps
 
-
 helps[
     "support"
 ] = """
@@ -74,9 +73,7 @@ examples:
             --problem-classification-name "ProblemClassificationNameGuid"
 """
 
-helps[
-    "support tickets"
-] = """
+helps['support tickets'] = """
 type: group
 short-summary: Create and manage Azure support ticket.
 """
