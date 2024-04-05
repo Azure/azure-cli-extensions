@@ -542,7 +542,7 @@ examples:
 """
 
 helps[
-    "support in-Subscription file upload"
+    "support in-subscription file upload"
 ] = """
 type: command
 short-summary: Uploads a file to a workspace for the specified subscription.
@@ -572,7 +572,7 @@ frindly workspace name), and subscription-id, this command will upload all the c
             --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
 """
 helps[
-    "support no-Subscription file upload"
+    "support no-subscription file upload"
 ] = """
 type: command
 short-summary: Uploads a file to a workspace.

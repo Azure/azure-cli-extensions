@@ -21,7 +21,7 @@ class Create(AAZCommand):
         az support in-subscription file-workspace create --file-workspace-name "TestWorkspaceName" --subscription "TestSubscription"
 
     :example: Create a file workspace for a specified subscription (same as the account subscription)
-        az support in-subscription file-workspace show --file-workspace-name "TestWorkspaceName"
+        az support in-subscription file-workspace create --file-workspace-name "TestWorkspaceName"
     """
 
     _aaz_info = {
