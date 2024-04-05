@@ -1,7 +1,7 @@
 Release History
 ===============
 
-1.0.3
+2.0.0
 -----
 * Migrate to track 2 SDK
 
