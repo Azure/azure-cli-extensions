@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List the relevant Azure diagnostics and solutions using problemClassificationId API AND resourceUri or resourceType.
+    """List the relevant Azure diagnostics and solutions using problemClassificationId API.
 
     :example: List DiscoverySolution results for a resource
-        az self-help discovery-solution list --filter "ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'" --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+        az self-help discovery-solution list --filter "ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'" 
     """
 
     _aaz_info = {
-        "version": "2023-09-01-preview",
+        "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/discoverysolutions", "2023-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.help/discoverysolutions", "2024-03-01-preview"],
         ]
     }
 
@@ -46,11 +46,6 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.scope = AAZStrArg(
-            options=["--scope"],
-            help="This is an extension resource provider and only resource level extension is supported at the moment.",
-            required=True,
-        )
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
             help="'ProblemClassificationId' or 'Id' is a mandatory filter to get solutions ids. It also supports optional 'ResourceType' and 'SolutionType' filters. The filter supports only 'and', 'or' and 'eq' operators. Example: $filter=ProblemClassificationId eq '1ddda5b4-cf6c-4d4f-91ad-bc38ab0e811e'",
@@ -93,8 +88,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{scope}/providers/Microsoft.Help/discoverySolutions",
-                **self.url_parameters
+                "/providers/Microsoft.Help/discoverySolutions"
             )
 
         @property
@@ -106,17 +100,6 @@ class List(AAZCommand):
             return "MgmtErrorFormat"
 
         @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "scope", self.ctx.args.scope,
-                    skip_quote=True,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
@@ -126,7 +109,7 @@ class List(AAZCommand):
                     "$skiptoken", self.ctx.args.skiptoken,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01-preview",
+                    "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }

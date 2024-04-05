@@ -8,9 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._create import *
-from ._show import *
-from ._update import *
-from ._wait import *
-from ._warmup import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "self-help simplified-solution",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """simplified solution command will help you create simple solutions for azure resources.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

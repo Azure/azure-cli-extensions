@@ -1,7 +1,56 @@
 interactions:
 - request:
-    body: '{"properties": {"parameters": {}, "triggerCriteria": [{"name": "SolutionId",
-      "value": "Demo2InsightV2"}]}}'
+    body: '{"parameters": {"SearchText": "CanNotRDP", "SymptomId": "KeyVaultVaultNotFoundInsight"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help solution warmup
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '88'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --solution-name --parameters --scope
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003/warmup?api-version=2024-03-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Fri, 05 Apr 2024 22:31:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
+      x-msedge-ref:
+      - 'Ref A: F89F2FEAE799463C89F5BEC1F093B547 Ref B: MNZ221060619045 Ref C: 2024-04-05T22:31:28Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: '{"properties": {"parameters": {"SearchText": "CanNotRDP", "SymptomId":
+      "KeyVaultVaultNotFoundInsight"}, "triggerCriteria": [{"name": "SolutionId",
+      "value": "apollo-cognitve-search-custom-skill"}]}}'
     headers:
       Accept:
       - application/json
@@ -12,44 +61,68 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '106'
+      - '197'
       Content-Type:
       - application/json
       ParameterSetName:
       - --solution-name --trigger-criteria --parameters --scope
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2024-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
-        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Issue
+        getting a custom skill to work","content":"<h2>Resolve issues with a custom
+        skill not working with Cognitive Search</h2>\n<p>Building a custom skill gives
+        you a way to insert transformations unique to your content. A custom skill
+        executes independently, applying whatever enrichment step you require. For
+        example, you could build custom classification models to differentiate business
+        and financial contracts and documents, or add a speech recognition skill to
+        reach deeper into audio files for relevant content.</p>\n<p>If you''re experiencing
+        issues with a custom skill not working with Cognitive Search, use the following
+        guidance to help resolve your issues.</p>\n<h3>Troubleshooting steps</h3>\n<p>If
+        you are having trouble with a custom skill, ensure that:</p>\n<ol>\n<li>Your
+        skill works with a REST client.</li>\n<li>The custom skill meets the <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">custom
+        skill interface guidelines</a>.</li>\n<li>All indexer run errors and warnings
+        are resolved.</li>\n<li><a href=\"https://docs.microsoft.com/azure/search/cognitive-search-create-custom-skill-example\">The
+        skillset definition of the custom skill is valid</a>.</li>\n<li>The input
+        data matches the schema of your target index. For more information, see <a
+        href=\"https://docs.microsoft.com/azure/search/search-indexer-field-mappings\">Field
+        mappings and transformations using Azure Cognitive Search indexers</a>.</li>\n<li>You
+        use <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-debug-session\">debug
+        sessions</a> to identify and resolve errors, validate changes, and push changes
+        to a production skillset in the AI enrichment pipeline.</li>\n</ol>\n<h3>Resources</h3>\n<ul>\n<li><a
+        href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">How
+        to add a custom skill to a cognitive search pipeline</a></li>\n</ul>\n<h3>Relevant
+        results from the web</h3>\n<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->\n","replacementMaps":{"webResults":[{"searchResults":[],"replacementKey":"<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->"}]},"sections":[],"solutionId":"apollo-cognitve-search-custom-skill","provisioningState":"Succeeded"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d941b006-8445-4ecd-8d7d-53f2ccbcc9f2?api-version=2023-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d4c8c021-bf8c-4553-ae1e-6447b45b0f35?api-version=2024-03-01-preview&t=638479530905764443&c=MIIHADCCBeigAwIBAgITfARlFdSUZK8kechtYQAABGUV1DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMjA1NjEzWhcNMjUwMTI0MjA1NjEzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALYMYYup1R1RZPIwVtk7z89JkrsDK8coPmULAovQOy3jgtdJ-z5oyCO28-zQ4LRHmuyeq1ROWdQR5e828FYihyBqnnQQea3EcS6CFfXpYes-7NPXy73E_P3goJLJU7bfuZ4iDPGZxXIIjo6_Uex0eX_AuBJeq8ZFcmNy3x0loDHkDww9lMprf49PmIZJEAshTnLBtfT3BC7JAuTTl2duIcC6YRT8vITdFw1HxFqywnOqD35zttD8vp0XowEP4ksBLfhJWduspxICp4Yu2ouSlh-T4GmsjQaTjrzZpw29eEj3gUyzTfkDY-WEGsEujkl9a9FCX1_AvT-9Eqmd7uYqV6kCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTDXVhSVDy9FvMjLTrSyU7UjKUXqzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHyzMCBJbTmiP_gOh98fZltsl9jQdlB-g_OYCr82viu1SgLxte7Za3Vtb3XRCTquz_JfY_4eQJpUy0p6F37f0oaTQkBvUF7HDDvkm49rmKF4nDFjPGNEqm53KbVEak46WTgD9fGZLQH1XouZGRe0LxQVIWm-K-MYMbrDWF_njKsIaV5Z4VxgFVaX5SlzHvr6coDX5oXwwksEsw8E8g0LfZCpfT5mCwgDPrDv2Ekk26koWUYlmJWgkky22R538qwuJmE6F33YwWStmUGfZfFDyjek8Rd_KyuEuC9IZfk4TTmVjyJmKPi5GhIJGwiATMpLJwt5jD_Hkgbq6vMwud4ZbIE&s=VG6WlFz3K1INOqszK6i4xDkaiIGGczY2ZUh4GuqsT91rC42mY6-1bQi-hnpjs3B3_6TEpUnUS13HxMvp41THk9Rlgu8OilNSJy6z7lhQCwjC011dUifY9xk8G-yXyP4vv7tWAjAuM1aGElU8pyu_Y6KkVvRPwp8TvzLdvMq2Y6lSh497MCMq1X_IhRkUnvIwzMPQX4lBbktURFlyt4MiJodLfFc-r7SHBJAnQFzx9HTbnyBe6MxJFDBXir8oOgdFR8sY5LMKIZ2wiebonMoIsyWuekNWCVJ3hqHWajE7BzQfw08FYdywywAscBx-YpKQPr6fGrF1S0PLdz3d90igHg&h=HdhpXTQJPvhR307fg-YjzDD2HKgCg2G4BLQoYVTTjiw
       cache-control:
       - no-cache
       content-length:
-      - '541'
+      - '2494'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Oct 2023 15:56:22 GMT
+      - Fri, 05 Apr 2024 22:31:29 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d941b006-8445-4ecd-8d7d-53f2ccbcc9f2?api-version=2023-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d4c8c021-bf8c-4553-ae1e-6447b45b0f35?api-version=2024-03-01-preview&t=638479530905920693&c=MIIHADCCBeigAwIBAgITfARlFdSUZK8kechtYQAABGUV1DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMjA1NjEzWhcNMjUwMTI0MjA1NjEzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALYMYYup1R1RZPIwVtk7z89JkrsDK8coPmULAovQOy3jgtdJ-z5oyCO28-zQ4LRHmuyeq1ROWdQR5e828FYihyBqnnQQea3EcS6CFfXpYes-7NPXy73E_P3goJLJU7bfuZ4iDPGZxXIIjo6_Uex0eX_AuBJeq8ZFcmNy3x0loDHkDww9lMprf49PmIZJEAshTnLBtfT3BC7JAuTTl2duIcC6YRT8vITdFw1HxFqywnOqD35zttD8vp0XowEP4ksBLfhJWduspxICp4Yu2ouSlh-T4GmsjQaTjrzZpw29eEj3gUyzTfkDY-WEGsEujkl9a9FCX1_AvT-9Eqmd7uYqV6kCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTDXVhSVDy9FvMjLTrSyU7UjKUXqzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHyzMCBJbTmiP_gOh98fZltsl9jQdlB-g_OYCr82viu1SgLxte7Za3Vtb3XRCTquz_JfY_4eQJpUy0p6F37f0oaTQkBvUF7HDDvkm49rmKF4nDFjPGNEqm53KbVEak46WTgD9fGZLQH1XouZGRe0LxQVIWm-K-MYMbrDWF_njKsIaV5Z4VxgFVaX5SlzHvr6coDX5oXwwksEsw8E8g0LfZCpfT5mCwgDPrDv2Ekk26koWUYlmJWgkky22R538qwuJmE6F33YwWStmUGfZfFDyjek8Rd_KyuEuC9IZfk4TTmVjyJmKPi5GhIJGwiATMpLJwt5jD_Hkgbq6vMwud4ZbIE&s=Dl-PVRs26gX5wwve9AIACvXC1WOm6ej7XhoUk8m6muj81dFYujSYGTSxOl0OJ12wOuml40QQuLDSzRVNHInE3ce4SoIipEQh5TQ7i2vItVPYOde_vR_czOTIJoVc5UCaCoWvhs_0JULU_XXJJTz5VGTTNdaUvhui5SU8FLfF7oab8K0UpLKNfSal6NOjQ63MzTdOS7tdGylf0GNKqPyH6J1OFhGaHJOc7b1cuwBcW9CgBulIQW_ohl4-x7UukJqugo-aVRJv1hedM3gGwoe-AEPtck6mbY8p7HHlJGGSS_aWyIPr2g62goJQiequoIC6-372_nn28TCQFXn4NL4LQQ&h=PoVxBrbJ-9vej2YDQcYq-vnUViO77b8DW5Y_p89AfdA
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
+      x-msedge-ref:
+      - 'Ref A: 1C57C1468A0E4C62A283B4CD670E5193 Ref B: MNZ221060610009 Ref C: 2024-04-05T22:31:30Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -69,12 +142,12 @@ interactions:
       ParameterSetName:
       - --solution-name --trigger-criteria --parameters --scope
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d941b006-8445-4ecd-8d7d-53f2ccbcc9f2?api-version=2023-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d4c8c021-bf8c-4553-ae1e-6447b45b0f35?api-version=2024-03-01-preview&t=638479530905764443&c=MIIHADCCBeigAwIBAgITfARlFdSUZK8kechtYQAABGUV1DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMjA1NjEzWhcNMjUwMTI0MjA1NjEzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALYMYYup1R1RZPIwVtk7z89JkrsDK8coPmULAovQOy3jgtdJ-z5oyCO28-zQ4LRHmuyeq1ROWdQR5e828FYihyBqnnQQea3EcS6CFfXpYes-7NPXy73E_P3goJLJU7bfuZ4iDPGZxXIIjo6_Uex0eX_AuBJeq8ZFcmNy3x0loDHkDww9lMprf49PmIZJEAshTnLBtfT3BC7JAuTTl2duIcC6YRT8vITdFw1HxFqywnOqD35zttD8vp0XowEP4ksBLfhJWduspxICp4Yu2ouSlh-T4GmsjQaTjrzZpw29eEj3gUyzTfkDY-WEGsEujkl9a9FCX1_AvT-9Eqmd7uYqV6kCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTDXVhSVDy9FvMjLTrSyU7UjKUXqzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHyzMCBJbTmiP_gOh98fZltsl9jQdlB-g_OYCr82viu1SgLxte7Za3Vtb3XRCTquz_JfY_4eQJpUy0p6F37f0oaTQkBvUF7HDDvkm49rmKF4nDFjPGNEqm53KbVEak46WTgD9fGZLQH1XouZGRe0LxQVIWm-K-MYMbrDWF_njKsIaV5Z4VxgFVaX5SlzHvr6coDX5oXwwksEsw8E8g0LfZCpfT5mCwgDPrDv2Ekk26koWUYlmJWgkky22R538qwuJmE6F33YwWStmUGfZfFDyjek8Rd_KyuEuC9IZfk4TTmVjyJmKPi5GhIJGwiATMpLJwt5jD_Hkgbq6vMwud4ZbIE&s=VG6WlFz3K1INOqszK6i4xDkaiIGGczY2ZUh4GuqsT91rC42mY6-1bQi-hnpjs3B3_6TEpUnUS13HxMvp41THk9Rlgu8OilNSJy6z7lhQCwjC011dUifY9xk8G-yXyP4vv7tWAjAuM1aGElU8pyu_Y6KkVvRPwp8TvzLdvMq2Y6lSh497MCMq1X_IhRkUnvIwzMPQX4lBbktURFlyt4MiJodLfFc-r7SHBJAnQFzx9HTbnyBe6MxJFDBXir8oOgdFR8sY5LMKIZ2wiebonMoIsyWuekNWCVJ3hqHWajE7BzQfw08FYdywywAscBx-YpKQPr6fGrF1S0PLdz3d90igHg&h=HdhpXTQJPvhR307fg-YjzDD2HKgCg2G4BLQoYVTTjiw
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d941b006-8445-4ecd-8d7d-53f2ccbcc9f2","name":"d941b006-8445-4ecd-8d7d-53f2ccbcc9f2","status":"Succeeded"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/d4c8c021-bf8c-4553-ae1e-6447b45b0f35","name":"d4c8c021-bf8c-4553-ae1e-6447b45b0f35","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -83,21 +156,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Oct 2023 15:56:22 GMT
+      - Fri, 05 Apr 2024 22:31:30 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1D163DD493434876A8923E1EA43C53C7 Ref B: MNZ221060610009 Ref C: 2024-04-05T22:31:30Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -117,38 +190,60 @@ interactions:
       ParameterSetName:
       - --solution-name --trigger-criteria --parameters --scope
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2024-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
-        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Issue
+        getting a custom skill to work","content":"<h2>Resolve issues with a custom
+        skill not working with Cognitive Search</h2>\n<p>Building a custom skill gives
+        you a way to insert transformations unique to your content. A custom skill
+        executes independently, applying whatever enrichment step you require. For
+        example, you could build custom classification models to differentiate business
+        and financial contracts and documents, or add a speech recognition skill to
+        reach deeper into audio files for relevant content.</p>\n<p>If you''re experiencing
+        issues with a custom skill not working with Cognitive Search, use the following
+        guidance to help resolve your issues.</p>\n<h3>Troubleshooting steps</h3>\n<p>If
+        you are having trouble with a custom skill, ensure that:</p>\n<ol>\n<li>Your
+        skill works with a REST client.</li>\n<li>The custom skill meets the <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">custom
+        skill interface guidelines</a>.</li>\n<li>All indexer run errors and warnings
+        are resolved.</li>\n<li><a href=\"https://docs.microsoft.com/azure/search/cognitive-search-create-custom-skill-example\">The
+        skillset definition of the custom skill is valid</a>.</li>\n<li>The input
+        data matches the schema of your target index. For more information, see <a
+        href=\"https://docs.microsoft.com/azure/search/search-indexer-field-mappings\">Field
+        mappings and transformations using Azure Cognitive Search indexers</a>.</li>\n<li>You
+        use <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-debug-session\">debug
+        sessions</a> to identify and resolve errors, validate changes, and push changes
+        to a production skillset in the AI enrichment pipeline.</li>\n</ol>\n<h3>Resources</h3>\n<ul>\n<li><a
+        href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">How
+        to add a custom skill to a cognitive search pipeline</a></li>\n</ul>\n<h3>Relevant
+        results from the web</h3>\n<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->\n","replacementMaps":{"webResults":[{"searchResults":[],"replacementKey":"<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->"}]},"sections":[],"solutionId":"apollo-cognitve-search-custom-skill","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '541'
+      - '2494'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Oct 2023 15:56:22 GMT
+      - Fri, 05 Apr 2024 22:31:30 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '498'
+      - '499'
+      x-msedge-ref:
+      - 'Ref A: 6F9E3D7EF3E34162B1E0A681AFF4667A Ref B: MNZ221060610009 Ref C: 2024-04-05T22:31:30Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -168,38 +263,60 @@ interactions:
       ParameterSetName:
       - --solution-name --scope
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2024-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
-        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Issue
+        getting a custom skill to work","content":"<h2>Resolve issues with a custom
+        skill not working with Cognitive Search</h2>\n<p>Building a custom skill gives
+        you a way to insert transformations unique to your content. A custom skill
+        executes independently, applying whatever enrichment step you require. For
+        example, you could build custom classification models to differentiate business
+        and financial contracts and documents, or add a speech recognition skill to
+        reach deeper into audio files for relevant content.</p>\n<p>If you''re experiencing
+        issues with a custom skill not working with Cognitive Search, use the following
+        guidance to help resolve your issues.</p>\n<h3>Troubleshooting steps</h3>\n<p>If
+        you are having trouble with a custom skill, ensure that:</p>\n<ol>\n<li>Your
+        skill works with a REST client.</li>\n<li>The custom skill meets the <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">custom
+        skill interface guidelines</a>.</li>\n<li>All indexer run errors and warnings
+        are resolved.</li>\n<li><a href=\"https://docs.microsoft.com/azure/search/cognitive-search-create-custom-skill-example\">The
+        skillset definition of the custom skill is valid</a>.</li>\n<li>The input
+        data matches the schema of your target index. For more information, see <a
+        href=\"https://docs.microsoft.com/azure/search/search-indexer-field-mappings\">Field
+        mappings and transformations using Azure Cognitive Search indexers</a>.</li>\n<li>You
+        use <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-debug-session\">debug
+        sessions</a> to identify and resolve errors, validate changes, and push changes
+        to a production skillset in the AI enrichment pipeline.</li>\n</ol>\n<h3>Resources</h3>\n<ul>\n<li><a
+        href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">How
+        to add a custom skill to a cognitive search pipeline</a></li>\n</ul>\n<h3>Relevant
+        results from the web</h3>\n<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->\n","replacementMaps":{"webResults":[{"searchResults":[],"replacementKey":"<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->"}]},"sections":[],"solutionId":"apollo-cognitve-search-custom-skill","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '541'
+      - '2494'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Oct 2023 15:56:23 GMT
+      - Fri, 05 Apr 2024 22:31:31 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
+      x-msedge-ref:
+      - 'Ref A: 03D8BDE61A9048EEBD6688EF49D8D44F Ref B: MNZ221060608021 Ref C: 2024-04-05T22:31:31Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -219,50 +336,93 @@ interactions:
       ParameterSetName:
       - --solution-name --trigger-criteria --parameters --scope
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2024-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
-        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Issue
+        getting a custom skill to work","content":"<h2>Resolve issues with a custom
+        skill not working with Cognitive Search</h2>\n<p>Building a custom skill gives
+        you a way to insert transformations unique to your content. A custom skill
+        executes independently, applying whatever enrichment step you require. For
+        example, you could build custom classification models to differentiate business
+        and financial contracts and documents, or add a speech recognition skill to
+        reach deeper into audio files for relevant content.</p>\n<p>If you''re experiencing
+        issues with a custom skill not working with Cognitive Search, use the following
+        guidance to help resolve your issues.</p>\n<h3>Troubleshooting steps</h3>\n<p>If
+        you are having trouble with a custom skill, ensure that:</p>\n<ol>\n<li>Your
+        skill works with a REST client.</li>\n<li>The custom skill meets the <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">custom
+        skill interface guidelines</a>.</li>\n<li>All indexer run errors and warnings
+        are resolved.</li>\n<li><a href=\"https://docs.microsoft.com/azure/search/cognitive-search-create-custom-skill-example\">The
+        skillset definition of the custom skill is valid</a>.</li>\n<li>The input
+        data matches the schema of your target index. For more information, see <a
+        href=\"https://docs.microsoft.com/azure/search/search-indexer-field-mappings\">Field
+        mappings and transformations using Azure Cognitive Search indexers</a>.</li>\n<li>You
+        use <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-debug-session\">debug
+        sessions</a> to identify and resolve errors, validate changes, and push changes
+        to a production skillset in the AI enrichment pipeline.</li>\n</ol>\n<h3>Resources</h3>\n<ul>\n<li><a
+        href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">How
+        to add a custom skill to a cognitive search pipeline</a></li>\n</ul>\n<h3>Relevant
+        results from the web</h3>\n<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->\n","replacementMaps":{"webResults":[{"searchResults":[],"replacementKey":"<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->"}]},"sections":[],"solutionId":"apollo-cognitve-search-custom-skill","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '541'
+      - '2494'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Oct 2023 15:56:24 GMT
+      - Fri, 05 Apr 2024 22:31:31 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
+      x-msedge-ref:
+      - 'Ref A: 02F7EA6417054379A3708F3AC72B98F8 Ref B: MNZ221060608007 Ref C: 2024-04-05T22:31:31Z'
       x-powered-by:
       - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"content": "<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n",
-      "parameters": {"SearchText": "CanNotRDP", "SymptomId": "KeyVaultVaultNotFoundInsight"},
-      "provisioningState": "Succeeded", "replacementMaps": {"diagnostics": [], "webResults":
-      [{"replacementKey": "<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}]}, "solutionId":
-      "ApolloAzureKBResult_", "title": "Recommended Article(s)", "triggerCriteria":
-      [{"name": "ReplacementKey", "value": "<!--56ee7509-92e1-4b9e-97c2-dda53065294c-->"}]}}'
+    body: '{"properties": {"content": "<h2>Resolve issues with a custom skill not
+      working with Cognitive Search</h2>\n<p>Building a custom skill gives you a way
+      to insert transformations unique to your content. A custom skill executes independently,
+      applying whatever enrichment step you require. For example, you could build
+      custom classification models to differentiate business and financial contracts
+      and documents, or add a speech recognition skill to reach deeper into audio
+      files for relevant content.</p>\n<p>If you''re experiencing issues with a custom
+      skill not working with Cognitive Search, use the following guidance to help
+      resolve your issues.</p>\n<h3>Troubleshooting steps</h3>\n<p>If you are having
+      trouble with a custom skill, ensure that:</p>\n<ol>\n<li>Your skill works with
+      a REST client.</li>\n<li>The custom skill meets the <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">custom
+      skill interface guidelines</a>.</li>\n<li>All indexer run errors and warnings
+      are resolved.</li>\n<li><a href=\"https://docs.microsoft.com/azure/search/cognitive-search-create-custom-skill-example\">The
+      skillset definition of the custom skill is valid</a>.</li>\n<li>The input data
+      matches the schema of your target index. For more information, see <a href=\"https://docs.microsoft.com/azure/search/search-indexer-field-mappings\">Field
+      mappings and transformations using Azure Cognitive Search indexers</a>.</li>\n<li>You
+      use <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-debug-session\">debug
+      sessions</a> to identify and resolve errors, validate changes, and push changes
+      to a production skillset in the AI enrichment pipeline.</li>\n</ol>\n<h3>Resources</h3>\n<ul>\n<li><a
+      href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">How
+      to add a custom skill to a cognitive search pipeline</a></li>\n</ul>\n<h3>Relevant
+      results from the web</h3>\n<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->\n", "parameters":
+      {"SearchText": "CanNotRDP", "SymptomId": "KeyVaultVaultNotFoundInsight"}, "provisioningState":
+      "Succeeded", "replacementMaps": {"webResults": [{"replacementKey": "<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->",
+      "searchResults": []}]}, "sections": [], "solutionId": "apollo-cognitve-search-custom-skill",
+      "title": "Issue getting a custom skill to work", "triggerCriteria": [{"name":
+      "ReplacementKey", "value": "<!--56ee7509-92e1-4b9e-97c2-dda53065294c-->"}]}}'
     headers:
       Accept:
       - application/json
@@ -273,44 +433,68 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '499'
+      - '2454'
       Content-Type:
       - application/json
       ParameterSetName:
       - --solution-name --trigger-criteria --parameters --scope
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2024-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
-        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}],"metricsBasedCharts":[]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Issue
+        getting a custom skill to work","content":"<h2>Resolve issues with a custom
+        skill not working with Cognitive Search</h2>\n<p>Building a custom skill gives
+        you a way to insert transformations unique to your content. A custom skill
+        executes independently, applying whatever enrichment step you require. For
+        example, you could build custom classification models to differentiate business
+        and financial contracts and documents, or add a speech recognition skill to
+        reach deeper into audio files for relevant content.</p>\n<p>If you''re experiencing
+        issues with a custom skill not working with Cognitive Search, use the following
+        guidance to help resolve your issues.</p>\n<h3>Troubleshooting steps</h3>\n<p>If
+        you are having trouble with a custom skill, ensure that:</p>\n<ol>\n<li>Your
+        skill works with a REST client.</li>\n<li>The custom skill meets the <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">custom
+        skill interface guidelines</a>.</li>\n<li>All indexer run errors and warnings
+        are resolved.</li>\n<li><a href=\"https://docs.microsoft.com/azure/search/cognitive-search-create-custom-skill-example\">The
+        skillset definition of the custom skill is valid</a>.</li>\n<li>The input
+        data matches the schema of your target index. For more information, see <a
+        href=\"https://docs.microsoft.com/azure/search/search-indexer-field-mappings\">Field
+        mappings and transformations using Azure Cognitive Search indexers</a>.</li>\n<li>You
+        use <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-debug-session\">debug
+        sessions</a> to identify and resolve errors, validate changes, and push changes
+        to a production skillset in the AI enrichment pipeline.</li>\n</ol>\n<h3>Resources</h3>\n<ul>\n<li><a
+        href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">How
+        to add a custom skill to a cognitive search pipeline</a></li>\n</ul>\n<h3>Relevant
+        results from the web</h3>\n<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"searchResults":[],"replacementKey":"<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->"}],"metricsBasedCharts":[]},"sections":[],"solutionId":"apollo-cognitve-search-custom-skill","provisioningState":"Succeeded"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/7c79a808-1811-4203-b49a-49764b5027c2?api-version=2023-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/16facdd0-bbd8-43ce-b155-6f5d9bc01fe5?api-version=2024-03-01-preview&t=638479530922167618&c=MIIHADCCBeigAwIBAgITfARlFdSUZK8kechtYQAABGUV1DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMjA1NjEzWhcNMjUwMTI0MjA1NjEzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALYMYYup1R1RZPIwVtk7z89JkrsDK8coPmULAovQOy3jgtdJ-z5oyCO28-zQ4LRHmuyeq1ROWdQR5e828FYihyBqnnQQea3EcS6CFfXpYes-7NPXy73E_P3goJLJU7bfuZ4iDPGZxXIIjo6_Uex0eX_AuBJeq8ZFcmNy3x0loDHkDww9lMprf49PmIZJEAshTnLBtfT3BC7JAuTTl2duIcC6YRT8vITdFw1HxFqywnOqD35zttD8vp0XowEP4ksBLfhJWduspxICp4Yu2ouSlh-T4GmsjQaTjrzZpw29eEj3gUyzTfkDY-WEGsEujkl9a9FCX1_AvT-9Eqmd7uYqV6kCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTDXVhSVDy9FvMjLTrSyU7UjKUXqzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHyzMCBJbTmiP_gOh98fZltsl9jQdlB-g_OYCr82viu1SgLxte7Za3Vtb3XRCTquz_JfY_4eQJpUy0p6F37f0oaTQkBvUF7HDDvkm49rmKF4nDFjPGNEqm53KbVEak46WTgD9fGZLQH1XouZGRe0LxQVIWm-K-MYMbrDWF_njKsIaV5Z4VxgFVaX5SlzHvr6coDX5oXwwksEsw8E8g0LfZCpfT5mCwgDPrDv2Ekk26koWUYlmJWgkky22R538qwuJmE6F33YwWStmUGfZfFDyjek8Rd_KyuEuC9IZfk4TTmVjyJmKPi5GhIJGwiATMpLJwt5jD_Hkgbq6vMwud4ZbIE&s=eHKJSK-uPQ1kzM3KM6VHz9SSLnC1NLS_uPqqzqckMliB3nI4kigwsSyh5ZSwkksqVI3K-_6t0B3BkUXSL_p-lJvHj2yFeqBl5o-2g_cFbRLLizq73Juv5q3O31peHytBF1N3ujPp5cUlI0HLMV_2MHcrvTwwCoPkqMI8lhWF3o2ikW9COTInZm8jDsQJqKtxsYTmvRLpDMY0FWclUD0HLDbbYXsUfEc5IoZhITQODfci75e2vgaj6efjOOE-gOsAtE9XV2rfqBZAEy_7iFfuPrYHQKQHy6DaR13UJxQzISUWKQptQQ3ZotecC4lnXNMHXuhxaA9iY-evq-rarBW3gw&h=81rDTiyovlbx1OX_rCZlbRU3hfDOW7Do0z36V4unidI
       cache-control:
       - no-cache
       content-length:
-      - '565'
+      - '2535'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Oct 2023 15:56:24 GMT
+      - Fri, 05 Apr 2024 22:31:31 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/7c79a808-1811-4203-b49a-49764b5027c2?api-version=2023-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/16facdd0-bbd8-43ce-b155-6f5d9bc01fe5?api-version=2024-03-01-preview&t=638479530922948911&c=MIIHADCCBeigAwIBAgITfARlFdSUZK8kechtYQAABGUV1DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMjA1NjEzWhcNMjUwMTI0MjA1NjEzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALYMYYup1R1RZPIwVtk7z89JkrsDK8coPmULAovQOy3jgtdJ-z5oyCO28-zQ4LRHmuyeq1ROWdQR5e828FYihyBqnnQQea3EcS6CFfXpYes-7NPXy73E_P3goJLJU7bfuZ4iDPGZxXIIjo6_Uex0eX_AuBJeq8ZFcmNy3x0loDHkDww9lMprf49PmIZJEAshTnLBtfT3BC7JAuTTl2duIcC6YRT8vITdFw1HxFqywnOqD35zttD8vp0XowEP4ksBLfhJWduspxICp4Yu2ouSlh-T4GmsjQaTjrzZpw29eEj3gUyzTfkDY-WEGsEujkl9a9FCX1_AvT-9Eqmd7uYqV6kCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTDXVhSVDy9FvMjLTrSyU7UjKUXqzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHyzMCBJbTmiP_gOh98fZltsl9jQdlB-g_OYCr82viu1SgLxte7Za3Vtb3XRCTquz_JfY_4eQJpUy0p6F37f0oaTQkBvUF7HDDvkm49rmKF4nDFjPGNEqm53KbVEak46WTgD9fGZLQH1XouZGRe0LxQVIWm-K-MYMbrDWF_njKsIaV5Z4VxgFVaX5SlzHvr6coDX5oXwwksEsw8E8g0LfZCpfT5mCwgDPrDv2Ekk26koWUYlmJWgkky22R538qwuJmE6F33YwWStmUGfZfFDyjek8Rd_KyuEuC9IZfk4TTmVjyJmKPi5GhIJGwiATMpLJwt5jD_Hkgbq6vMwud4ZbIE&s=UMdUHVGlTpywTJYuS-7xJDuVNGkuZzg1vzptkIUmgujb8PIVWU68z3vd4XbedsiQh4ebV4VRL1NddRn8e3Z_uNbVf0thQ2gNCAY_v6jfeeqa7oBd5URGLewVQNOl6HEbQzbDNuc1Q46ELLV-UWPf7omcaju2esWlawVUMN75RGNWucw4fwXC4Qk3NLRCU8FvWJXw6M0ZMa1LXloexZYwOdzIamn_mRvsmOZWsdOCQ3CdilUL-mGwgb81dIpfhC8bPjC3IcsR-pc9oWMpr8GYma1dKiMHLe2wu5W0KnHNFHpd7594E9d7S5ZsCuetTBn1nKwUp0i5gEu7o5MfJyA0ew&h=yoL5ARXuI5RWMkkhMZ02UlTeFY9iJ7G9ukUHXRmHjTA
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '498'
+      - '499'
+      x-msedge-ref:
+      - 'Ref A: 463D206CCC9640F9B8BB8A4BBC3C34E2 Ref B: MNZ221060608007 Ref C: 2024-04-05T22:31:31Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -330,12 +514,12 @@ interactions:
       ParameterSetName:
       - --solution-name --trigger-criteria --parameters --scope
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/7c79a808-1811-4203-b49a-49764b5027c2?api-version=2023-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/16facdd0-bbd8-43ce-b155-6f5d9bc01fe5?api-version=2024-03-01-preview&t=638479530922167618&c=MIIHADCCBeigAwIBAgITfARlFdSUZK8kechtYQAABGUV1DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwMTMwMjA1NjEzWhcNMjUwMTI0MjA1NjEzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALYMYYup1R1RZPIwVtk7z89JkrsDK8coPmULAovQOy3jgtdJ-z5oyCO28-zQ4LRHmuyeq1ROWdQR5e828FYihyBqnnQQea3EcS6CFfXpYes-7NPXy73E_P3goJLJU7bfuZ4iDPGZxXIIjo6_Uex0eX_AuBJeq8ZFcmNy3x0loDHkDww9lMprf49PmIZJEAshTnLBtfT3BC7JAuTTl2duIcC6YRT8vITdFw1HxFqywnOqD35zttD8vp0XowEP4ksBLfhJWduspxICp4Yu2ouSlh-T4GmsjQaTjrzZpw29eEj3gUyzTfkDY-WEGsEujkl9a9FCX1_AvT-9Eqmd7uYqV6kCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTDXVhSVDy9FvMjLTrSyU7UjKUXqzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHyzMCBJbTmiP_gOh98fZltsl9jQdlB-g_OYCr82viu1SgLxte7Za3Vtb3XRCTquz_JfY_4eQJpUy0p6F37f0oaTQkBvUF7HDDvkm49rmKF4nDFjPGNEqm53KbVEak46WTgD9fGZLQH1XouZGRe0LxQVIWm-K-MYMbrDWF_njKsIaV5Z4VxgFVaX5SlzHvr6coDX5oXwwksEsw8E8g0LfZCpfT5mCwgDPrDv2Ekk26koWUYlmJWgkky22R538qwuJmE6F33YwWStmUGfZfFDyjek8Rd_KyuEuC9IZfk4TTmVjyJmKPi5GhIJGwiATMpLJwt5jD_Hkgbq6vMwud4ZbIE&s=eHKJSK-uPQ1kzM3KM6VHz9SSLnC1NLS_uPqqzqckMliB3nI4kigwsSyh5ZSwkksqVI3K-_6t0B3BkUXSL_p-lJvHj2yFeqBl5o-2g_cFbRLLizq73Juv5q3O31peHytBF1N3ujPp5cUlI0HLMV_2MHcrvTwwCoPkqMI8lhWF3o2ikW9COTInZm8jDsQJqKtxsYTmvRLpDMY0FWclUD0HLDbbYXsUfEc5IoZhITQODfci75e2vgaj6efjOOE-gOsAtE9XV2rfqBZAEy_7iFfuPrYHQKQHy6DaR13UJxQzISUWKQptQQ3ZotecC4lnXNMHXuhxaA9iY-evq-rarBW3gw&h=81rDTiyovlbx1OX_rCZlbRU3hfDOW7Do0z36V4unidI
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/7c79a808-1811-4203-b49a-49764b5027c2","name":"7c79a808-1811-4203-b49a-49764b5027c2","status":"Succeeded"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/Solutions/cli_test000003/operationResults/16facdd0-bbd8-43ce-b155-6f5d9bc01fe5","name":"16facdd0-bbd8-43ce-b155-6f5d9bc01fe5","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -344,21 +528,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Oct 2023 15:56:24 GMT
+      - Fri, 05 Apr 2024 22:31:31 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 59133E982320428B98DB139417511021 Ref B: MNZ221060608007 Ref C: 2024-04-05T22:31:32Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -378,38 +562,60 @@ interactions:
       ParameterSetName:
       - --solution-name --trigger-criteria --parameters --scope
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2023-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003?api-version=2024-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Recommended
-        Article(s)","content":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"replacementKey":"<!--bc36ab32-90a8-41c6-8129-2aec7a494ce3-->"}],"metricsBasedCharts":[]},"solutionId":"ApolloAzureKBResult_","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/solutions/cli_test000003","name":"cli_test000003","type":"Microsoft.Help/Solutions","properties":{"title":"Issue
+        getting a custom skill to work","content":"<h2>Resolve issues with a custom
+        skill not working with Cognitive Search</h2>\n<p>Building a custom skill gives
+        you a way to insert transformations unique to your content. A custom skill
+        executes independently, applying whatever enrichment step you require. For
+        example, you could build custom classification models to differentiate business
+        and financial contracts and documents, or add a speech recognition skill to
+        reach deeper into audio files for relevant content.</p>\n<p>If you''re experiencing
+        issues with a custom skill not working with Cognitive Search, use the following
+        guidance to help resolve your issues.</p>\n<h3>Troubleshooting steps</h3>\n<p>If
+        you are having trouble with a custom skill, ensure that:</p>\n<ol>\n<li>Your
+        skill works with a REST client.</li>\n<li>The custom skill meets the <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">custom
+        skill interface guidelines</a>.</li>\n<li>All indexer run errors and warnings
+        are resolved.</li>\n<li><a href=\"https://docs.microsoft.com/azure/search/cognitive-search-create-custom-skill-example\">The
+        skillset definition of the custom skill is valid</a>.</li>\n<li>The input
+        data matches the schema of your target index. For more information, see <a
+        href=\"https://docs.microsoft.com/azure/search/search-indexer-field-mappings\">Field
+        mappings and transformations using Azure Cognitive Search indexers</a>.</li>\n<li>You
+        use <a href=\"https://docs.microsoft.com/azure/search/cognitive-search-debug-session\">debug
+        sessions</a> to identify and resolve errors, validate changes, and push changes
+        to a production skillset in the AI enrichment pipeline.</li>\n</ol>\n<h3>Resources</h3>\n<ul>\n<li><a
+        href=\"https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-interface\">How
+        to add a custom skill to a cognitive search pipeline</a></li>\n</ul>\n<h3>Relevant
+        results from the web</h3>\n<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->\n","replacementMaps":{"diagnostics":[],"webResults":[{"searchResults":[],"replacementKey":"<!--7a365ebd-fbe2-4ff6-8c3c-cfaf82ca9f7f-->"}],"metricsBasedCharts":[]},"sections":[],"solutionId":"apollo-cognitve-search-custom-skill","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '565'
+      - '2535'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 20 Oct 2023 15:56:25 GMT
+      - Fri, 05 Apr 2024 22:31:31 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '497'
+      - '499'
+      x-msedge-ref:
+      - 'Ref A: 1AC10B1977B34CD590DCD108F423A11A Ref B: MNZ221060608007 Ref C: 2024-04-05T22:31:32Z'
       x-powered-by:
       - ASP.NET
     status:
