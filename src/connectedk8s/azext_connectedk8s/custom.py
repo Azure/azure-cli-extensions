@@ -1968,7 +1968,7 @@ def client_side_proxy_wrapper(cmd,
     telemetry.set_debug_info('OS is ', operating_system)
 
     if (clientproxyutils.check_process(proc_name)) and clientproxyutils.check_if_port_is_open(api_server_port):
-        raise ClientRequestError('The proxy port is already in use, potentialy by another proxy instance.', recommendation='Please stop the existing proxy instance or pass a different port through --port option.')
+        raise ClientRequestError('The proxy port is already in use, potentially by another proxy instance.', recommendation='Please stop the existing proxy instance or pass a different port through --port option.')
 
     port_error_string = ""
     if clientproxyutils.check_if_port_is_open(api_server_port):
