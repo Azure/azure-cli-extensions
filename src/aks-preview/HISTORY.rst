@@ -11,6 +11,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+2.0.0b9
++++++++
+* Minimise the roles needed to introduce for Elastic SAN for enabling Azure Container Storage with elasticSan storagepool type.
 
 2.0.0b8
 +++++++
