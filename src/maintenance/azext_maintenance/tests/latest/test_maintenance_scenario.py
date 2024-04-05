@@ -35,8 +35,13 @@ def setup_scenario(test):
 
     test.cmd('az vm host create --host-group clidhtesthostgroup --name clidhtesthost --resource-group "{rg}" --sku ESv3-Type3  --platform-fault-domain 0', checks=[])
 
+    # Create NetworkSecurityGroup
+    test.cmd('az network nsg create --resource-group "{rg}" --name "clitestnsg"', checks=[])
+    test.cmd('az network vnet create --resource-group "{rg}" --name "clitestvnet" --subnet-name "clitestsubnet" --network-security-group "clitestnsg"', checks=[])
+    test.cmd('az network vnet subnet create --name "clitestsubnet" --vnet-name "clitestvnet" --resource-group "{rg}" --address-prefixes "10.0.0.0/24"  --network-security-group "clitestnsg"', checks=[])
+
     # VMSS resource
-    test.cmd('az vmss create -n "clitestvmss" -g "{rg}"  --instance-count 1 --image "Win2016Datacenter" --data-disk-sizes-gb 2 --admin-password "PasswordCLIMaintenanceRP8!"  --upgrade-policy-mode Automatic --orchestration-mode Uniform', checks=[])
+    test.cmd('az vmss create -n "clitestvmss" -g "{rg}"  --instance-count 1 --image "Win2016Datacenter" --data-disk-sizes-gb 2 --admin-password "PasswordCLIMaintenanceRP8!" --vnet-name "clitestvnet" --subnet "clitestsubnet" --upgrade-policy-mode Automatic --orchestration-mode Uniform', checks=[])
 
     # Disable AutomaticUpdates for VM
     test.cmd('az vmss update --name  "clitestvmss"  -g "{rg}"  --set virtualMachineProfile.osProfile.windowsConfiguration.enableAutomaticUpdates=false', checks=[])
@@ -508,17 +513,24 @@ def step__configurationassignments_put_configurationassignments_delete_resourceg
 
 
 def step__scheduledevent_acknowledge(test):
-    test.cmd('az maintenance scheduledevent acknowledge '
+    from azure.core.exceptions import ResourceNotFoundError
+    try:
+        test.cmd('az maintenance scheduledevent acknowledge '
              '--resource-group "{rg}" '
              '--resource-name "clitestvmss" '
              '--resource-type "virtualMachineScaleSets" '
              '--scheduled-event-id "00000000-0000-0000-0000-000000000000" ',
              checks=[])
+    except ResourceNotFoundError as e:
+        test.assertIn("InvalidScheduledEventId", str(e))
 
 
 # Testcase: Scenario
 def call_scenario(test):
     setup_scenario(test)
+
+    # Scheduled events approve
+    step__scheduledevent_acknowledge(test)
 
     # OS Image create/ vmss. CRUD maintenance config
     step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource(test)
@@ -558,9 +570,6 @@ def call_scenario(test):
     step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test)
     step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
     step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
-
-    # Scheduled events approve
-    step__scheduledevent_acknowledge(test)
 
     # Dedicated host test
 
@@ -607,6 +616,7 @@ class MaintenanceScenarioTest(ScenarioTest):
             'HSProbeSettings': '{"protocol": "https", "port": "80", "requestPath": "/"}'
         })
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg', location="eastus2euap")
     def test_maintenance_Scenario(self, rg):
         call_scenario(self)
