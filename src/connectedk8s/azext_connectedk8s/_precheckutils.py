@@ -50,7 +50,7 @@ diagnoser_output = []
 def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, helm_client_location,
                                     kubectl_client_location, kube_config, kube_context, location, http_proxy,
                                     https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp,
-                                    storage_space_available):
+                                    storage_space_available, arm_metadata):
     global diagnoser_output
     try:
         # Setting DNS and Outbound Check as working
@@ -61,7 +61,7 @@ def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, h
             executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location,
                                                     kubectl_client_location, kube_config, kube_context, location,
                                                     http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud,
-                                                    filepath_with_timestamp, storage_space_available)
+                                                    filepath_with_timestamp, storage_space_available, arm_metadata)
         # If cluster_diagnostic_checks_container_log is not empty then only we will check for the results
         if (cluster_diagnostic_checks_container_log is not None and cluster_diagnostic_checks_container_log != ""):
             cluster_diagnostic_checks_container_log_list = cluster_diagnostic_checks_container_log.split("\n")
@@ -116,7 +116,7 @@ def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, h
 def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_instance, helm_client_location,
                                             kubectl_client_location, kube_config, kube_context, location,
                                             http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud,
-                                            filepath_with_timestamp, storage_space_available):
+                                            filepath_with_timestamp, storage_space_available, arm_metadata):
     job_name = "cluster-diagnostic-checks-job"
     # Setting the log output as Empty
     cluster_diagnostic_checks_container_log = ""
@@ -162,14 +162,20 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                                             summary="Error while executing cluster diagnostic checks Job")
                     return
 
-        chart_path = azext_utils.get_chart_path(consts.Cluster_Diagnostic_Checks_Job_Registry_Path, kube_config,
+        diagnostic_checker_registry_path = consts.Cluster_Diagnostic_Checks_Job_Registry_Path
+        # For Azure local environments, the value will be of the form edgeartifacts.edgeacr.<CustomerFQDN>/path/clusterdiagnosticchecks:0.2.1 
+        # e.g "edgeartifacts.edgeacr.autonomous.cloud.private/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.1"
+        if os.getenv('AZURE_LOCAL_DIAGNOSTIC_CHECKS_REGISTRY_PATH'):
+            diagnostic_checker_registry_path = os.getenv('AZURE_LOCAL_DIAGNOSTIC_CHECKS_REGISTRY_PATH')
+
+        chart_path = azext_utils.get_chart_path(diagnostic_checker_registry_path, kube_config,
                                                 kube_context, helm_client_location,
                                                 consts.Pre_Onboarding_Helm_Charts_Folder_Name,
                                                 consts.Pre_Onboarding_Helm_Charts_Release_Name, False)
 
         helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy,
                                                        proxy_cert, azure_cloud, kube_config, kube_context,
-                                                       helm_client_location)
+                                                       helm_client_location, arm_metadata)
 
         # Watching for cluster diagnostic checks container to reach in completed stage
         w = watch.Watch()
@@ -274,7 +280,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
 
 def helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy, proxy_cert,
                                                    azure_cloud, kube_config, kube_context, helm_client_location,
-                                                   onboarding_timeout="60"):
+                                                   onboarding_timeout="60", arm_metadata):
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "cluster-diagnostic-checks", chart_path,
                         "--namespace", "{}".format(consts.Release_Install_Namespace), "--create-namespace",
                         "--output", "json"]
@@ -289,6 +295,17 @@ def helm_install_release_cluster_diagnostic_checks(chart_path, location, http_pr
         cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
     if proxy_cert:
         cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+
+    # Dataplane endpoints from ARM Metadata is only available in Azure local environments.
+    if "dataplaneEndpoints" in arm_metadata:
+        if "arcConfigEndpoint" in arm_metadata["dataplaneEndpoints"]:
+            edgemcr_endpoint = arm_metadata["dataplaneEndpoints"]["globalContainerRegistryEndpoint"]
+            if edgemcr_endpoint and not edgemcr_endpoint.startswith("https://"):
+                edgemcr_endpoint = "https://" + edgemcr_endpoint
+        includeOboCheck = False
+        if edgemcr_endpoint:
+            cmd_helm_install.extend(["--set", "global.mcrRepository={}".format(edgemcr_endpoint)])
+            cmd_helm_install.extend(["--set", "global.includeOboCheck={}".format(includeOboCheck)])
 
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])

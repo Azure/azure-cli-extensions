@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.7.4
+++++++
+* Update for disconnected environment scenario.
+
 1.7.3
 ++++++
 * Skip helm archive download if helm is already installed.
