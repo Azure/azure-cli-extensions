@@ -4460,12 +4460,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         skuName = self.context.get_sku_name()
-        mc.sku = self.models.ManagedClusterSKU()
         if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             mc.sku.name="Automatic"
             # passive Kind should always to match sku.name
             mc.kind = "Automatic"
-            mc.sku.tier="Standard"
         else:
             mc.sku.name="Base"
             # passive Kind should always match sku.name

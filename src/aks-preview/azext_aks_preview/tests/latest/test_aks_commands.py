@@ -3143,13 +3143,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "resource_group": resource_group,
                 "name": aks_name,
                 "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
             }
         )
 
         # create an Automatic cluster
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--sku automataic --node-vm-size standard_ds4_v2"
+            "--sku automatic --node-vm-size standard_ds4_v2 "
+            "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
             create_cmd,
@@ -3163,7 +3165,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # scale the cluster
         scale_cluster_cmd = (
             "aks scale --resource-group={resource_group} --name={name} "
-            "-c 2"
+            "-c 4"
         )
         self.cmd(
             scale_cluster_cmd,
@@ -3176,7 +3178,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         
         # update from sku name Automatic to Base
         update_cmd = (
-            "aks update --resource-group={resource_group} --name={name}"
+            "aks update --resource-group={resource_group} --name={name} "
             "--sku base"
         )
         self.cmd(
