@@ -34,13 +34,13 @@ class ContainerappJavaComponentTests(ScenarioTest):
         self.assertTrue(len(java_component_list) == 0)
 
         # Create Config & Eureka
-        self.cmd('containerapp env java-component spring-cloud-config create -g {} -n {} --environment {}'.format(resource_group, config_name, env_name), checks=[
+        self.cmd('containerapp env java-component config-server-for-spring create -g {} -n {} --environment {}'.format(resource_group, config_name, env_name), checks=[
             JMESPathCheck('name', config_name),
             JMESPathCheck('properties.componentType', "SpringCloudConfig"),
             JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
         self.cmd(
-            'containerapp env java-component spring-cloud-eureka create -g {} -n {} --environment {} --configuration eureka.server.renewal-percent-threshold=0.85 eureka.server.enable-self-preservation=false'.format(
+            'containerapp env java-component eureka-server-for-spring create -g {} -n {} --environment {} --configuration eureka.server.renewal-percent-threshold=0.85 eureka.server.enable-self-preservation=false'.format(
                 resource_group, eureka_name, env_name), checks=[
                 JMESPathCheck('name', eureka_name),
                 JMESPathCheck('properties.componentType', "SpringCloudEureka"),
@@ -54,27 +54,27 @@ class ContainerappJavaComponentTests(ScenarioTest):
 
         # Update Config & Eureka
         self.cmd(
-            'containerapp env java-component spring-cloud-config update -g {} -n {} --environment {} --configuration spring.cloud.config.server.git.uri=https://github.com/Azure-Samples/piggymetrics-config.git'.format(
+            'containerapp env java-component config-server-for-spring update -g {} -n {} --environment {} --configuration spring.cloud.config.server.git.uri=https://github.com/Azure-Samples/piggymetrics-config.git'.format(
                 resource_group, config_name, env_name), checks=[
                 JMESPathCheck('name', config_name),
                 JMESPathCheck('properties.componentType', "SpringCloudConfig"),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck('length(properties.configurations)', 1)
             ])
-        self.cmd('containerapp env java-component spring-cloud-eureka update -g {} -n {} --environment {} --configuration'.format(resource_group, eureka_name, env_name), checks=[
+        self.cmd('containerapp env java-component eureka-server-for-spring update -g {} -n {} --environment {} --configuration'.format(resource_group, eureka_name, env_name), checks=[
                 JMESPathCheck('name', eureka_name),
                 JMESPathCheck('properties.componentType', "SpringCloudEureka"),
                 JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
 
         # Show Config & Eureka
-        self.cmd('containerapp env java-component spring-cloud-config show -g {} -n {} --environment {}'.format(resource_group, config_name, env_name), checks=[
+        self.cmd('containerapp env java-component config-server-for-spring show -g {} -n {} --environment {}'.format(resource_group, config_name, env_name), checks=[
             JMESPathCheck('name', config_name),
             JMESPathCheck('properties.componentType', "SpringCloudConfig"),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('length(properties.configurations)', 1)
         ])
-        self.cmd('containerapp env java-component spring-cloud-eureka show -g {} -n {} --environment {}'.format(resource_group, eureka_name, env_name), checks=[
+        self.cmd('containerapp env java-component eureka-server-for-spring show -g {} -n {} --environment {}'.format(resource_group, eureka_name, env_name), checks=[
             JMESPathCheck('name', eureka_name),
             JMESPathCheck('properties.componentType', "SpringCloudEureka"),
             JMESPathCheck('properties.provisioningState', "Succeeded")
@@ -105,8 +105,8 @@ class ContainerappJavaComponentTests(ScenarioTest):
         ])
 
         # Delete Config & Eureka
-        self.cmd('containerapp env java-component spring-cloud-config delete -g {} -n {} --environment {} --yes'.format(resource_group, config_name, env_name), expect_failure=False)
-        self.cmd('containerapp env java-component spring-cloud-eureka delete -g {} -n {} --environment {} --yes'.format(resource_group, eureka_name, env_name), expect_failure=False)
+        self.cmd('containerapp env java-component config-server-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, config_name, env_name), expect_failure=False)
+        self.cmd('containerapp env java-component eureka-server-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, eureka_name, env_name), expect_failure=False)
 
         # List Java Components
         java_component_list = self.cmd("containerapp env java-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()
