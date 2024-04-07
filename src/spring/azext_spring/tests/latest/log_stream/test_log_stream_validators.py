@@ -7,8 +7,10 @@
 import unittest
 from argparse import Namespace
 
-from azext_spring.log_stream.log_stream_validators import (validate_log_limit, validate_log_lines, validate_log_since)
+from azext_spring.log_stream.log_stream_validators import (validate_log_limit, validate_log_lines, validate_log_since,
+                                                           validate_max_log_requests, validate_thread_number)
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from knack.util import CLIError
 
 try:
     import unittest.mock as mock
@@ -121,3 +123,31 @@ class TestLogStreamValidator(unittest.TestCase):
                           '--limit can not be more than 2048, using 2048 instead']
             self.assertEquals(error_msgs, cm.output)
             self.assertEquals(2048 * 1024, ns.limit)
+
+    def test_invalid_max_log_requests(self):
+        invalid_max_log_requests_number = [-100, -10, -1, 0]
+
+        for num in invalid_max_log_requests_number:
+            ns = Namespace(
+                max_log_requests=num
+            )
+
+            with self.assertRaises(InvalidArgumentValueError) as context:
+                validate_max_log_requests(ns)
+
+            self.assertEquals("--max-log-requests should be larger than 0.", str(context.exception))
+
+    def test_validate_thread_number(self):
+        thread_num = 10
+        for max_allowed_thread_number in range(0, thread_num):
+            with self.assertRaises(CLIError) as context:
+                validate_thread_number(True, thread_num, max_allowed_thread_number)
+
+    def test_valid_thread_number(self):
+        thread_num = 2
+        for max_allowed_thread_number in range(thread_num, thread_num + 100):
+            validate_thread_number(True, thread_num, max_allowed_thread_number)
+
+        thread_num = 10
+        for max_allowed_thread_number in range(0, thread_num):
+            validate_thread_number(False, thread_num, max_allowed_thread_number)

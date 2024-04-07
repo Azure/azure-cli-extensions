@@ -58,7 +58,7 @@ def validate_log_since(namespace):
 
 
 def validate_max_log_requests(namespace):
-    if namespace.max_log_requests <= 1:
+    if namespace.max_log_requests < 1:
         raise InvalidArgumentValueError("--max-log-requests should be larger than 0.")
 
 
