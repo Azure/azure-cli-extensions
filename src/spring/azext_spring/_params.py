@@ -17,7 +17,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
                           validate_managed_environment, validate_dataplane_public_endpoint, validate_server_version,
-                          validate_planned_maintenance, validate_private_storage_access)
+                          validate_planned_maintenance)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
                                      validate_build_update, validate_container_registry_create,
@@ -94,7 +94,8 @@ def load_arguments(self, _):
         c.argument('enable_private_storage_access', 
                    arg_group='VNet Injection',
                    arg_type=get_three_state_flag(),
-                   valiadator=validate_private_storage_access,
+                   default=False, 
+                   is_preview=True,
                    help='If true, make private network access to underlying storage in vnet injection instance')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
@@ -265,7 +266,8 @@ def load_arguments(self, _):
         c.argument('enable_private_storage_access', 
                    arg_group='VNet Injection',
                    arg_type=get_three_state_flag(),
-                   valiadator=validate_private_storage_access,
+                   default=False, 
+                   is_preview=True,
                    help='If true, make private network access to underlying storage in vnet injection instance')
 
         c.argument('enable_planned_maintenance',

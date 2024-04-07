@@ -122,7 +122,6 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
     else:
         updated_resource_properties.vnet_addons = None
 
-    # TODO(haozhan): update here
     if enable_private_storage_access is not None:
         updated_resource_properties.vnet_addons = None
         update_private_storage_access = True
