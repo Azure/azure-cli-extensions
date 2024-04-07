@@ -87,9 +87,10 @@ class DefaultSpringCloud:
         else:
             properties.vnet_addons = None
 
-        # TODO(haozhan): add logic
         if enable_private_storage_access is not None:
-            properties.vnet_addons = None
+            if properties.vnet_addons is None:
+                properties.vnet_addons = models.ServiceVNetAddons()
+            properties.vnet_addons.private_storage_access = "Enabled" if enable_private_storage_access else "Disabled"
 
         if marketplace_plan_id:
             properties.marketplace_resource = models.MarketplaceResource(

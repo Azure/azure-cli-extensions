@@ -2,7 +2,7 @@ Release History
 ===============
 1.20.2
 ---
-* Command `az spring create` and `az spring update` have new argument "--enable-private-storage-access" to set whether make private network access to underlying storage in vnet injection instance.
+* Command `az spring create` and `az spring update` include a new argument "--enable-private-storage-access" to set whether private network access to underlying storage in vnet injection instance.
 
 1.20.1
 ---
