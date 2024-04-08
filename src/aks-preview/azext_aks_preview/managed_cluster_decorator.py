@@ -4459,7 +4459,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
+        # there are existing MCs with nil sku, that is Base/Free
+        if mc.sku is None:
+            mc.sku = self.models.ManagedClusterSKU(
+                sku="Base",
+                tier="Free",
+            )
         skuName = self.context.get_sku_name()
+        
         if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             mc.sku.name="Automatic"
             # passive Kind should always to match sku.name
