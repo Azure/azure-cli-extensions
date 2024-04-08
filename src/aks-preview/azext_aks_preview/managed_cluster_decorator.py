@@ -305,18 +305,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def get_sku_name(self) -> str:
         # read the original value passed by the command
         skuName = self.raw_param.get("sku")
-        if skuName is None:
+        if skuName is not None:
+            skuNameStr = skuName.lower()
+        else:
             if (
                 self.mc and
                 self.mc.sku and
                 getattr(self.mc.sku, 'name', None) is not None
             ):
                 skuNameStr = vars(self.mc.sku)['name'].lower()
-                return skuNameStr
             else:
                 skuNameStr = CONST_MANAGED_CLUSTER_SKU_NAME_BASE
-                return skuNameStr
-        skuNameStr = skuName.lower()
         return skuNameStr
 
     def _get_outbound_type(
