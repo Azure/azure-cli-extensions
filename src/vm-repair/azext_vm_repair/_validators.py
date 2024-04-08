@@ -10,22 +10,14 @@ from knack.log import get_logger
 from knack.util import CLIError
 from azure.cli.core.azclierror import ValidationError
 
+from opencensus.ext.azure.log_exporter import AzureLogHandler
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
-
-from .telemetry import PROD_KEY, track_run_command_telemetry
-from knack.log import get_logger
-from knack.prompting import prompt_y_n, NoTTYException
-from opencensus.ext.azure.log_exporter import AzureLogHandler
 from applicationinsights import TelemetryClient
-from .repair_utils import _get_current_vmrepair_version
 
-from .encryption_types import Encryption
-from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
-
-
+from .telemetry import PROD_KEY,_track_run_command_telemetry
 from .encryption_types import Encryption
 from .exceptions import AzCommandError
 from .repair_utils import (
@@ -34,18 +26,19 @@ from .repair_utils import (
     _fetch_encryption_settings,
     _resolve_api_version,
     check_extension_version,
-    _check_existing_rg
+    _check_existing_rg,
+    _get_current_vmrepair_version
 )
 
 # pylint: disable=line-too-long, broad-except
 
 logger = get_logger(__name__)
+EXTENSION_NAME = 'vm-repair'
 logger.addHandler(AzureLogHandler(
     connection_string='InstrumentationKey='+PROD_KEY)
 )
 tc = TelemetryClient(PROD_KEY)
 tc.context.application.ver = _get_current_vmrepair_version()
-EXTENSION_NAME = 'vm-repair'
 
 
 def validate_create(cmd, namespace):
@@ -201,7 +194,6 @@ def validate_reset_nic(cmd, namespace):
             _call_az_command(set_sub_command)
         except AzCommandError as azCommandError:
             logger.error(azCommandError)
-            track_run_command_telemetry(logger, command_name, parameters, status, message, azCommandError, error_stack_trace, duration, subscription_id, result_json, script_run_id, script_status, script_output, script_duration)
             raise CLIError('Unexpected error occured while setting the subscription..')
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
