@@ -2201,17 +2201,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         updated = False
         enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
         disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
-        egx_gtw_nodeselector = self.raw_param.get("egx_gtw_nodeselector", None)
 
         # deal with egress gateways
         if enable_egress_gateway and disable_egress_gateway:
             raise MutuallyExclusiveArgumentError(
                 "Cannot both enable and disable azure service mesh egress gateway at the same time.",
-            )
-
-        if not enable_egress_gateway and egx_gtw_nodeselector:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot set egress gateway nodeselector without enabling an egress gateway.",
             )
 
         if enable_egress_gateway or disable_egress_gateway:
@@ -2234,26 +2228,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             egress_gateway_exists = False
             for egress in new_profile.istio.components.egress_gateways:
                 egress.enabled = enable_egress_gateway
-                egress.node_selector = egx_gtw_nodeselector
                 egress_gateway_exists = True
                 updated = True
                 break
 
             # egress gateway doesn't exist, append
             if not egress_gateway_exists:
-                if egx_gtw_nodeselector:
-                    new_profile.istio.components.egress_gateways.append(
-                        self.models.IstioEgressGateway(  # pylint: disable=no-member
-                            enabled=enable_egress_gateway,
-                            node_selector=egx_gtw_nodeselector,
-                        )
+                new_profile.istio.components.egress_gateways.append(
+                    self.models.IstioEgressGateway(  # pylint: disable=no-member
+                        enabled=enable_egress_gateway,
                     )
-                else:
-                    new_profile.istio.components.egress_gateways.append(
-                        self.models.IstioEgressGateway(  # pylint: disable=no-member
-                            enabled=enable_egress_gateway,
-                        )
-                    )
+                )
                 updated = True
 
         return new_profile, updated

@@ -12,27 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hdinsight-on-aks cluster show-instance-view",
-    is_preview=True,
+    "new-relic monitor list-connected-partner-resource",
 )
-class ShowInstanceView(AAZCommand):
-    """Get the status of a cluster instance.
+class ListConnectedPartnerResource(AAZCommand):
+    """List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
 
-    :example: Get cluster instance view.
-        az hdinsight-on-aks cluster show-instance-view  --cluster-name testcluster --cluster-pool-name testpool -g RG
+    :example: List of all active deployments that are associated with the marketplace subscription linked to the given monitor.
+        az new-relic monitor list-connected-partner-resource --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/instanceviews/default", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/listconnectedpartnerresources", "2024-01-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,26 +45,30 @@ class ShowInstanceView(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
-            help="The name of the HDInsight cluster.",
+        _args_schema.monitor_name = AAZStrArg(
+            options=["--monitor-name"],
+            help="Name of the Monitoring resource",
             required=True,
-            id_part="child_name_1",
-        )
-        _args_schema.cluster_pool_name = AAZStrArg(
-            options=["--cluster-pool-name"],
-            help="The name of the cluster pool.",
-            required=True,
-            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
+        )
+        _args_schema.body = AAZStrArg(
+            options=["--body"],
+            help="Reusable representation of an email address",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClustersGetInstanceView(ctx=self.ctx)()
+        self.ConnectedPartnerResourcesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,10 +80,11 @@ class ShowInstanceView(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ClustersGetInstanceView(AAZHttpOperation):
+    class ConnectedPartnerResourcesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,13 +98,13 @@ class ShowInstanceView(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/instanceViews/default",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/listConnectedPartnerResources",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -109,11 +114,7 @@ class ShowInstanceView(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "clusterPoolName", self.ctx.args.cluster_pool_name,
+                    "monitorName", self.ctx.args.monitor_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -131,7 +132,7 @@ class ShowInstanceView(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }
@@ -141,10 +142,22 @@ class ShowInstanceView(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args.body,
+                typ=AAZStrType,
+            )
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -164,46 +177,34 @@ class ShowInstanceView(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.name = AAZStrType(
-                flags={"required": True},
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
+            _schema_on_200.value = AAZListType()
 
-            properties = cls._schema_on_200.properties
-            properties.service_statuses = AAZListType(
-                serialized_name="serviceStatuses",
-                flags={"required": True},
-            )
-            properties.status = AAZObjectType(
-                flags={"required": True},
-            )
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
 
-            service_statuses = cls._schema_on_200.properties.service_statuses
-            service_statuses.Element = AAZObjectType()
+            _element = cls._schema_on_200.value.Element
+            _element.properties = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.service_statuses.Element
-            _element.kind = AAZStrType(
-                flags={"required": True},
+            properties = cls._schema_on_200.value.Element.properties
+            properties.account_id = AAZStrType(
+                serialized_name="accountId",
             )
-            _element.message = AAZStrType()
-            _element.ready = AAZStrType(
-                flags={"required": True},
+            properties.account_name = AAZStrType(
+                serialized_name="accountName",
             )
-
-            status = cls._schema_on_200.properties.status
-            status.message = AAZStrType()
-            status.ready = AAZStrType(
-                flags={"required": True},
+            properties.azure_resource_id = AAZStrType(
+                serialized_name="azureResourceId",
             )
-            status.reason = AAZStrType()
+            properties.location = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ShowInstanceViewHelper:
-    """Helper class for ShowInstanceView"""
+class _ListConnectedPartnerResourceHelper:
+    """Helper class for ListConnectedPartnerResource"""
 
 
-__all__ = ["ShowInstanceView"]
+__all__ = ["ListConnectedPartnerResource"]

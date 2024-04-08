@@ -289,6 +289,7 @@ def _fetch_compatible_sku(source_vm, hyperv):
             'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
             'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
             'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+            'capabilities[?name==\'CpuArchitectureType\' && value==\'x64\'] && ' \
             'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
             .format(loc=location)
 
@@ -300,6 +301,7 @@ def _fetch_compatible_sku(source_vm, hyperv):
             'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
             'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
             'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+            'capabilities[?name==\'CpuArchitectureType\' && value==\'x64\'] && ' \
             'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
             .format(loc=location)
 

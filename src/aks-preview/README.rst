@@ -41,8 +41,10 @@ Dependency between aks-preview and azure-cli/acs (azure-cli-core)
       - >= `\2.43.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.43.0>`_, 2022/12/06
     * - 0.5.125 ~ 0.5.150
       - >= `\2.44.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.44.0>`_, 2023/01/10
-    * - 0.5.152 ~ latest
-      - >= `\2.49.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.44.0>`_, 2023/05/23
+    * - 0.5.152 ~ 2.0.0b6
+      - >= `\2.49.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.49.0>`_, 2023/05/23
+    * - 2.0.0b7 ~ latest
+      - >= `\2.56.0 <https://github.com/Azure/azure-cli/releases/tag/azure-cli-2.56.0>`_, 2024/01/09
 
 Released version and adopted API version
 ========================================
