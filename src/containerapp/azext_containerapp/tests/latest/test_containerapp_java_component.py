@@ -114,7 +114,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
-    def test_containerapp_java_component_rename(self, resource_group):
+    def test_containerapp_java_component(self, resource_group):
         # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
