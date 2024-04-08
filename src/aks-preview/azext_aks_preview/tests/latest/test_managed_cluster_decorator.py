@@ -3785,8 +3785,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_azure_service_mesh": True,
-                    "enable_egress_gateway": True,
-                    "egress_gateway_nodeselector": "istio=egress"
+                    "enable_egress_gateway": True
                 }
             ),
             self.models,
@@ -3804,7 +3803,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 components=self.models.IstioComponents(
                     egress_gateways=[
                         self.models.IstioEgressGateway(
-                            enabled=True, nodeSelector={"istio": "egress"}
+                            enabled=True
                         )
                     ]
                 )
@@ -3822,7 +3821,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 components=self.models.IstioComponents(
                     egress_gateways=[
                         self.models.IstioEgressGateway(
-                            enabled=True, nodeSelector={"istio": "egress"}
+                            enabled=True
                         )
                     ]
                 )
@@ -7258,7 +7257,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             {
                 "enable_azure_service_mesh": True,
                 "enable_egress_gateway": True,
-                "egress_gateway_nodeselector": "istio=egress",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -7275,7 +7273,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     components=self.models.IstioComponents(
                         egress_gateways=[
                             self.models.IstioEgressGateway(
-                                enabled=True, nodeSelector={"istio": "egress"}
+                                enabled=True
                             )
                         ]
                     )
