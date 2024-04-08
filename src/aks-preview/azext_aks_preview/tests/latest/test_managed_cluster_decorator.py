@@ -8058,6 +8058,41 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         dec_1.context.raw_param.print_usage_statistics()
+    
+    def test_get_sku_name(self):
+        ctx1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"sku": "Automatic"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx1.get_sku_name(), "automatic")
+
+        ctx2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc2 = self.models.ManagedCluster(
+            location="test_location",
+            sku = self.models.ManagedClusterSKU(name="Automatic", tier="Standard")
+        )
+        ctx2.attach_mc(mc2)
+        self.assertEqual(ctx2.get_sku_name(), "automatic")
+
+        ctx3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc3 = self.models.ManagedCluster(
+            location="test_location",
+            sku = None
+        )
+        ctx3.attach_mc(mc3)
+        self.assertEqual(ctx3.get_sku_name(), "base")
 
     def test_setup_supportPlan(self):
         # default value in `aks_create`

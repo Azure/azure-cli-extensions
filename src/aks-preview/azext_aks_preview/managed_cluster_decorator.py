@@ -305,18 +305,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def get_sku_name(self) -> str:
         # read the original value passed by the command
         skuName = self.raw_param.get("sku")
-
         if skuName is None:
             if (
                 self.mc and
                 self.mc.sku and
-                self.mc.sku.name is not None
+                getattr(self.mc.sku, 'name', None) is not None
             ):
-                skuName = self.mc.sku.name.lower()
+                skuNameStr = vars(self.mc.sku)['name'].lower()
+                return skuNameStr
             else:
-                skuName = CONST_MANAGED_CLUSTER_SKU_NAME_BASE
-
-        return skuName
+                skuNameStr = CONST_MANAGED_CLUSTER_SKU_NAME_BASE
+                return skuNameStr
+        skuNameStr = skuName.lower()
+        return skuNameStr
 
     def _get_outbound_type(
         self,
@@ -4466,7 +4467,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 tier="Free",
             )
         skuName = self.context.get_sku_name()
-        
+
         if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             mc.sku.name="Automatic"
             # passive Kind should always to match sku.name
