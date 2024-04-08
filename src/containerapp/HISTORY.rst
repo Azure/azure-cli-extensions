@@ -5,11 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp up/create/update': Wait longer time for logstream of Cloud Build to make sure the container start
-
-0.3.51
-++++++
-* 'az containerapp env java-component config-server-for-spring': Rename spring-cloud-config to config-server-for-spring
-* 'az containerapp env java-component eureka-server-for-spring': Rename spring-cloud-eureka to eureka-server-for-spring
+* 'az containerapp env java-component config-server-for-spring': Rename 'spring-cloud-config' to 'config-server-for-spring'
+* 'az containerapp env java-component eureka-server-for-spring': Rename 'spring-cloud-eureka' to 'eureka-server-for-spring'
 
 0.3.50
 ++++++
