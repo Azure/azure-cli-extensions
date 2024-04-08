@@ -86,6 +86,15 @@ from azure.cli.core.azclierror import (
 )
 from dateutil.parser import parse
 
+from azure.cli.command_modules.acs._consts import (
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    DecoratorEarlyExitException,
+    DecoratorMode,
+)
+
 
 class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
     def setUp(self):
@@ -3914,6 +3923,26 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx3.attach_mc(mc3)
         self.assertEqual(ctx3.get_sku_name(), "base")
 
+    def test_get_outbound_type(self):
+        ctx1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"sku": "automatic", "outbound_type": "loadBalancer"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        outbound_type_1 = ctx1._get_outbound_type(False, False, None)
+        expect_outbound_type_1 = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
+        self.assertEqual(outbound_type_1,expect_outbound_type_1)
+
+        ctx2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"outbound_type": "loadBalancer"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        outbound_type_2 = ctx2._get_outbound_type(False, False, None)
+        expect_outbound_type_2 = CONST_OUTBOUND_TYPE_LOAD_BALANCER
+        self.assertEqual(outbound_type_2,expect_outbound_type_2)
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
