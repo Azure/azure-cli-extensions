@@ -13,7 +13,7 @@ from .utils import create_containerapp_env
 
 
 class ContainerappJavaComponentTests(ScenarioTest):
-     @AllowLargeResponse(8192)
+    @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
     def test_containerapp_java_component_deprecated(self, resource_group):
         # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
