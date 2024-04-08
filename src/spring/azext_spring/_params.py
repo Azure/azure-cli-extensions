@@ -95,7 +95,7 @@ def load_arguments(self, _):
                    arg_group='VNet Injection',
                    arg_type=get_three_state_flag(),
                    is_preview=True,
-                   help='If true, set private network access to underlying storage in vnet injection instance.')
+                   help='If true, set private network access to backend storage in vnet injection instance.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
                    validator=validate_dataplane_public_endpoint,
@@ -266,7 +266,7 @@ def load_arguments(self, _):
                    arg_group='VNet Injection',
                    arg_type=get_three_state_flag(),
                    is_preview=True,
-                   help='If true, set private network access to underlying storage in vnet injection instance.')
+                   help='If true, set private network access to backend storage in vnet injection instance.')
 
         c.argument('enable_planned_maintenance',
                    arg_group='Planned Maintenance',

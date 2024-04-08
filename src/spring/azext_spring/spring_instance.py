@@ -82,8 +82,8 @@ class DefaultSpringCloud:
                 properties.vnet_addons = models.ServiceVNetAddons()
             val = enable_log_stream_public_endpoint if enable_log_stream_public_endpoint is not None else \
                 enable_dataplane_public_endpoint
-            properties.vnet_addons.data_plane_public_endpoint=val
-            properties.vnet_addons.log_stream_public_endpoint=val
+            properties.vnet_addons.data_plane_public_endpoint = val
+            properties.vnet_addons.log_stream_public_endpoint = val
 
         if enable_private_storage_access is not None:
             if properties.vnet_addons is None:
