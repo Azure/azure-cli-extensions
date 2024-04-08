@@ -78,19 +78,18 @@ class DefaultSpringCloud:
         )
 
         if enable_log_stream_public_endpoint is not None or enable_dataplane_public_endpoint is not None:
+            if properties.vnet_addons is None:
+                properties.vnet_addons = models.ServiceVNetAddons()
             val = enable_log_stream_public_endpoint if enable_log_stream_public_endpoint is not None else \
                 enable_dataplane_public_endpoint
-            properties.vnet_addons = models.ServiceVNetAddons(
-                data_plane_public_endpoint=val,
-                log_stream_public_endpoint=val
-            )
-        else:
-            properties.vnet_addons = None
+            properties.vnet_addons.data_plane_public_endpoint=val
+            properties.vnet_addons.log_stream_public_endpoint=val
 
         if enable_private_storage_access is not None:
             if properties.vnet_addons is None:
                 properties.vnet_addons = models.ServiceVNetAddons()
-            properties.vnet_addons.private_storage_access = "Enabled" if enable_private_storage_access else "Disabled"
+            val = "Enabled" if enable_private_storage_access else "Disabled"
+            properties.vnet_addons.private_storage_access = val
 
         if marketplace_plan_id:
             properties.marketplace_resource = models.MarketplaceResource(

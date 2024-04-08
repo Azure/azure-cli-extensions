@@ -94,7 +94,6 @@ def load_arguments(self, _):
         c.argument('enable_private_storage_access',
                    arg_group='VNet Injection',
                    arg_type=get_three_state_flag(),
-                   default=False,
                    is_preview=True,
                    help='If true, set private network access to underlying storage in vnet injection instance.')
         c.argument('enable_log_stream_public_endpoint',
@@ -266,7 +265,6 @@ def load_arguments(self, _):
         c.argument('enable_private_storage_access',
                    arg_group='VNet Injection',
                    arg_type=get_three_state_flag(),
-                   default=False,
                    is_preview=True,
                    help='If true, set private network access to underlying storage in vnet injection instance.')
 

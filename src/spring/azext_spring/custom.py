@@ -112,20 +112,23 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
     updated_resource_properties.zone_redundant = None
 
     if enable_log_stream_public_endpoint is not None or enable_dataplane_public_endpoint is not None:
+        if updated_resource_properties.vnet_addons is None:
+            updated_resource_properties.vnet_addons = models.ServiceVNetAddons()
         val = enable_log_stream_public_endpoint if enable_log_stream_public_endpoint is not None else \
             enable_dataplane_public_endpoint
-        updated_resource_properties.vnet_addons = models.ServiceVNetAddons(
-            data_plane_public_endpoint=val,
-            log_stream_public_endpoint=val
-        )
+        updated_resource_properties.vnet_addons.data_plane_public_endpoint=val
+        updated_resource_properties.vnet_addons.log_stream_public_endpoint=val
         update_dataplane_public_endpoint = True
-    else:
-        updated_resource_properties.vnet_addons = None
 
     if enable_private_storage_access is not None:
         if updated_resource_properties.vnet_addons is None:
-            updated_resource_properties.vnet_addons = models.ServiceVNetAddons()
-        updated_resource_properties.vnet_addons.private_storage_access = "Enabled" if enable_private_storage_access else "Disabled"
+            updated_resource_properties.vnet_addons = models.ServiceVNetAddons(
+                # explicitly set as none in case unexpected update
+                data_plane_public_endpoint=None,
+                log_stream_public_endpoint=None
+            )
+        val = "Enabled" if enable_private_storage_access else "Disabled"
+        updated_resource_properties.vnet_addons.private_storage_access = val
         update_private_storage_access = True
 
     _update_application_insights_asc_update(cmd, resource_group, name, location,
