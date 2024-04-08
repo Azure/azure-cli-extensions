@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 import os
-from ...vendored_sdks.appplatform.v2024_01_01_preview import models
+from ...vendored_sdks.appplatform.v2024_05_01_preview import models
 from ..._utils import _get_sku_name
 from ...custom import (certificate_add, certificate_update)
 try:
