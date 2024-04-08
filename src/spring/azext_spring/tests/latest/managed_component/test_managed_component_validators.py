@@ -245,9 +245,9 @@ class TestValidateComponentLogs(unittest.TestCase):
                 since=None,
                 max_log_requests=5
             )
-            with self.assertLogs('cli.azext_spring._validators', 'ERROR') as cm:
+            with self.assertLogs('cli.azext_spring.log_stream.log_stream_validators', 'ERROR') as cm:
                 validate_component_logs(_get_test_cmd(), ns)
-            expect_error_msgs = ['ERROR:cli.azext_spring._validators:'
+            expect_error_msgs = ['ERROR:cli.azext_spring.log_stream.log_stream_validators:'
                                  '--lines can not be more than 10000, using 10000 instead']
             self.assertEquals(expect_error_msgs, cm.output)
             self.assertEquals(10000, ns.lines)
@@ -390,9 +390,9 @@ class TestValidateComponentLogs(unittest.TestCase):
                     since='1h',
                     max_log_requests=5,
                 )
-                with self.assertLogs('cli.azext_spring._validators', 'ERROR') as cm:
+                with self.assertLogs('cli.azext_spring.log_stream.log_stream_validators', 'ERROR') as cm:
                     validate_component_logs(_get_test_cmd(), ns)
-                error_msgs = ['ERROR:cli.azext_spring._validators:'
+                error_msgs = ['ERROR:cli.azext_spring.log_stream.log_stream_validators:'
                               '--limit can not be more than 2048, using 2048 instead']
                 self.assertEquals(error_msgs, cm.output)
                 self.assertEquals(2048 * 1024, ns.limit)
