@@ -563,13 +563,13 @@ def call_scenario(test):
     # cancel maintenance config
     step__maintenanceconfigurations_cancel(test)
     # Dynamic scope
-    #step__configurationassignments_put_configurationassignments_createorupdate_subscription(test)
-    #step__configurationassignments_put_configurationassignments_update_subscription(test)
-    #step__configurationassignments_put_configurationassignments_show_subscription(test)
-    #step__configurationassignments_put_configurationassignments_delete_subscription(test)
-    #step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test)
-    #step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
-    #step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_createorupdate_subscription(test)
+    step__configurationassignments_put_configurationassignments_update_subscription(test)
+    step__configurationassignments_put_configurationassignments_show_subscription(test)
+    step__configurationassignments_put_configurationassignments_delete_subscription(test)
+    step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
 
     # Dedicated host test
 
