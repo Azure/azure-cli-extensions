@@ -95,7 +95,7 @@ def load_arguments(self, _):
                    arg_group='VNet Injection',
                    arg_type=get_three_state_flag(),
                    is_preview=True,
-                   options_list=['--enable_private_storage_access', '--enable-psa'],
+                   options_list=['--enable-private-storage-access', '--enable-psa'],
                    help='If true, set private network access to backend storage in vnet injection instance.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
@@ -267,7 +267,7 @@ def load_arguments(self, _):
                    arg_group='VNet Injection',
                    arg_type=get_three_state_flag(),
                    is_preview=True,
-                   options_list=['--enable_private_storage_access', '--enable-psa'],
+                   options_list=['--enable-private-storage-access', '--enable-psa'],
                    help='If true, set private network access to backend storage in vnet injection instance.')
 
         c.argument('enable_planned_maintenance',
