@@ -15,9 +15,8 @@ from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
-from applicationinsights import TelemetryClient
 
-from .telemetry import PROD_KEY,_track_run_command_telemetry
+from .telemetry import PROD_KEY
 from .encryption_types import Encryption
 from .exceptions import AzCommandError
 from .repair_utils import (
@@ -37,8 +36,6 @@ EXTENSION_NAME = 'vm-repair'
 logger.addHandler(AzureLogHandler(
     connection_string='InstrumentationKey='+PROD_KEY)
 )
-tc = TelemetryClient(PROD_KEY)
-tc.context.application.ver = _get_current_vmrepair_version()
 
 
 def validate_create(cmd, namespace):
