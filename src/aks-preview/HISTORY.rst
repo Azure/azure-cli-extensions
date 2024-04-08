@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+3.0.0b2
++++++++
+* Add `--sku` to the `az aks create` command.
+* Add `--sku` to the `az aks update` command.
+
 3.0.0b1
 +++++++
 * [BREAKING CHANGE] Remove support for nodeSelector for egress gateway for `az aks mesh` command.
