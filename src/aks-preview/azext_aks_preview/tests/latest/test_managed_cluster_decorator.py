@@ -3879,6 +3879,41 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),
         ))
 
+    def test_get_sku_name(self):
+        ctx1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"sku": "automatic"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx1.get_sku_name(), "automatic")
+
+        ctx2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc2 = self.models.ManagedCluster(
+            location="test_location",
+            sku = self.models.ManagedClusterSKU(name="Automatic", tier="Standard")
+        )
+        ctx2.attach_mc(mc2)
+        self.assertEqual(ctx2.get_sku_name(), "automatic")
+
+        ctx3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc3 = self.models.ManagedCluster(
+            location="test_location",
+            sku = None
+        )
+        ctx3.attach_mc(mc3)
+        self.assertEqual(ctx3.get_sku_name(), "base")
+
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -5030,6 +5065,47 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         dec_1.context.raw_param.print_usage_statistics()
+
+    def test_set_up_sku(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"sku": "automatic"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            sku=None,
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_sku(mc_1)
+        automaticSKU = self.models.ManagedClusterSKU(name="Automatic", tier="Standard")
+        expect_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            sku=automaticSKU,
+            kind="Automatic",
+        )
+        self.assertEqual(dec_mc_1, expect_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            sku=None,
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_sku(mc_2)
+        baseSKU = self.models.ManagedClusterSKU(name="Base", tier="Free")
+        expect_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            sku=baseSKU,
+            kind="Base",
+        )
+        self.assertEqual(dec_mc_2, expect_mc_2)
 
 
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
@@ -8058,82 +8134,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         dec_1.context.raw_param.print_usage_statistics()
-    
-    def test_get_sku_name(self):
-        ctx1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"sku": "automatic"}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx1.get_sku_name(), "automatic")
-
-        ctx2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        mc2 = self.models.ManagedCluster(
-            location="test_location",
-            sku = self.models.ManagedClusterSKU(name="Automatic", tier="Standard")
-        )
-        ctx2.attach_mc(mc2)
-        self.assertEqual(ctx2.get_sku_name(), "automatic")
-
-        ctx3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        mc3 = self.models.ManagedCluster(
-            location="test_location",
-            sku = None
-        )
-        ctx3.attach_mc(mc3)
-        self.assertEqual(ctx3.get_sku_name(), "base")
-
-    def test_set_up_sku(self):
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {"sku": "automatic"},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            sku=None,
-        )
-        dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.set_up_sku(mc_1)
-        automaticSKU = self.models.ManagedClusterSKU(name="Automatic", tier="Standard")
-        expect_mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            sku=automaticSKU,
-            kind="Automatic",
-        )
-        self.assertEqual(dec_mc_1, expect_mc_1)
-
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            sku=None,
-        )
-        dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_sku(mc_2)
-        baseSKU = self.models.ManagedClusterSKU(name="Base", tier="Free")
-        expect_mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            sku=baseSKU,
-            kind="Base",
-        )
-        self.assertEqual(dec_mc_2, expect_mc_2)
 
     def test_update_sku(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
