@@ -798,7 +798,7 @@ helps['aks update'] = """
         - name: --cluster-service-load-balancer-health-probe-mode
           type: string
           short-summary: Set the cluster service health probe mode.
-          long-summary: Set the cluster service health probe mode. Valid values are "Shared" and "Servicenodeport". Default is "Servicenodeport".
+          long-summary: Set the cluster service health probe mode. Default is "Servicenodeport".
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
