@@ -135,7 +135,6 @@ from azext_aks_preview._validators import (
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
-    validate_egress_gtw_nodeselector,
     validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
@@ -176,6 +175,7 @@ from azext_aks_preview._validators import (
     validate_force_upgrade_disable_and_enable_parameters,
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
+    validate_custom_endpoints,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -2045,16 +2045,6 @@ def load_arguments(self, _):
             "ingress_gateway_type", arg_type=get_enum_type(ingress_gateway_types)
         )
 
-    with self.argument_context("aks mesh enable-egress-gateway") as c:
-        c.argument(
-            "egx_gtw_nodeselector",
-            nargs="*",
-            validator=validate_egress_gtw_nodeselector,
-            required=False,
-            default=None,
-            options_list=["--egress-gateway-nodeselector", "--egx-gtw-ns"],
-        )
-
     with self.argument_context("aks mesh enable") as c:
         c.argument("revision", validator=validate_azure_service_mesh_revision)
         c.argument("key_vault_id")
@@ -2093,6 +2083,15 @@ def load_arguments(self, _):
     with self.argument_context("aks approuting zone update") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
         c.argument("attach_zones")
+
+    with self.argument_context('aks check-network outbound') as c:
+        c.argument('cluster_name', options_list=['--name', '-n'],
+                   required=True, help='Name of the managed cluster.')
+        c.argument('node_name', help='Name of the node to perform the connectivity check.')
+        c.argument('custom_endpoints',
+                   nargs="+",
+                   help='Space-separated additional endpoint(s) to perform the connectivity check.',
+                   validator=validate_custom_endpoints)
 
 
 def _get_default_install_location(exe_name):
