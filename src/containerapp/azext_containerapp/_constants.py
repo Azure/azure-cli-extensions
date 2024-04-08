@@ -117,8 +117,8 @@ steps:
     timeout: 1800
 """
 
-ACA_BUILDER_BULLSEYE_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bullseye-20231107.2"
-ACA_BUILDER_BOOKWORM_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bookworm-20231107.2"
+ACA_BUILDER_BULLSEYE_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bullseye-20240124.1"
+ACA_BUILDER_BOOKWORM_IMAGE = "mcr.microsoft.com/oryx/builder:debian-bookworm-20240124.1"
 
 DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world image
 
@@ -128,3 +128,6 @@ LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enab
 
 DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAME = "containerapp-ext"
 DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE = "containerapp-ns"
+
+JAVA_COMPONENT_CONFIG = "SpringCloudConfig"
+JAVA_COMPONENT_EUREKA = "SpringCloudEureka"

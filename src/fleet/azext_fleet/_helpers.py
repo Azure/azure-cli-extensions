@@ -107,7 +107,14 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
 def _handle_merge(existing, addition, key, replace):
     if not addition[key]:
         return
-    if existing[key] is None:
+    if key not in existing:
+        raise CLIError(
+            "No such key '{}' in existing config, please confirm whether it is a valid config file. "
+            "Consider backing up the existing config file, delete it, and retry the command.".format(
+                key
+            )
+        )
+    if not existing[key]:
         existing[key] = addition[key]
         return
 

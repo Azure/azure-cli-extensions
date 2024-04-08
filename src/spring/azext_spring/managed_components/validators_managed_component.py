@@ -6,13 +6,13 @@
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
-from ..managed_components.managed_component import supported_components
-from .._validators import validate_log_lines as _validate_n_normalize_component_log_lines
-from .._validators import validate_log_since as _validate_n_normalize_component_log_since
-from .._validators import validate_log_limit as _validate_n_normalize_component_log_limit
+
 from .._clierror import NotSupportedPricingTierError
 from .._util_enterprise import is_enterprise_tier
-
+from ..log_stream.log_stream_validators import (validate_log_limit, validate_log_lines, validate_log_since,
+                                                validate_max_log_requests,
+                                                validate_all_instances_and_instance_are_mutually_exclusive)
+from ..managed_components.managed_component import supported_components
 
 logger = get_logger(__name__)
 
@@ -21,10 +21,10 @@ def validate_component_logs(cmd, namespace):
     _validate_component_log_mutual_exclusive_param(namespace)
     _validate_component_log_required_param(namespace)
     _validate_n_normalize_component_for_logs(namespace)
-    _validate_n_normalize_component_log_lines(namespace)
-    _validate_n_normalize_component_log_since(namespace)
-    _validate_n_normalize_component_log_limit(namespace)
-    _validate_max_log_requests(namespace)
+    validate_log_lines(namespace)
+    validate_log_since(namespace)
+    validate_log_limit(namespace)
+    validate_max_log_requests(namespace)
     _validate_is_enterprise_tier(cmd, namespace)
 
 
@@ -35,11 +35,6 @@ def validate_component_list(cmd, namespace):
 def validate_instance_list(cmd, namespace):
     _validate_component_for_instance_list(namespace)
     _validate_is_enterprise_tier(cmd, namespace)
-
-
-def _validate_max_log_requests(namespace):
-    if namespace.max_log_requests <= 1:
-        raise InvalidArgumentValueError("--max-log-requests should be larger than 0.")
 
 
 def _validate_is_enterprise_tier(cmd, namespace):
@@ -84,8 +79,7 @@ def _raise_invalid_component_error(user_input_component_name):
 
 
 def _validate_component_log_mutual_exclusive_param(namespace):
-    if namespace.all_instances is True and namespace.instance is not None:
-        raise InvalidArgumentValueError("--all-instances cannot be set together with --instance/-i.")
+    validate_all_instances_and_instance_are_mutually_exclusive(namespace)
 
 
 def _validate_component_log_required_param(namespace):

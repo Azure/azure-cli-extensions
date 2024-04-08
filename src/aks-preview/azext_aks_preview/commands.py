@@ -233,6 +233,9 @@ def load_command_table(self, _):
         g.custom_command(
             "operation-abort", "aks_agentpool_operation_abort", supports_no_wait=True
         )
+        g.custom_command(
+            "delete-machines", "aks_agentpool_delete_machines", supports_no_wait=True
+        )
 
     with self.command_group(
         "aks machine", machines_sdk, client_factory=cf_machines
@@ -419,3 +422,9 @@ def load_command_table(self, _):
         g.custom_command("delete", "aks_approuting_zone_delete", confirmation=True)
         g.custom_command("update", "aks_approuting_zone_update")
         g.custom_command("list", "aks_approuting_zone_list")
+
+    # AKS check-network command
+    with self.command_group(
+        "aks check-network", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command("outbound", "aks_check_network_outbound")

@@ -13,7 +13,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
   response:
@@ -224,17 +224,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jan 2024 08:31:01 GMT
+      - Mon, 05 Feb 2024 05:12:08 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7002F6FF40AE4A7284F8E79412F90D3B Ref B: MAA201060515021 Ref C: 2024-02-05T05:12:08Z'
     status:
       code: 200
       message: OK
@@ -252,39 +254,40 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.56.0
+      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.57.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_northcentralusstage/providers/Microsoft.App/managedEnvironments/env-northcentralusstage?api-version=2023-11-02-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_northcentralusstage/providers/Microsoft.App/managedEnvironments/env-northcentralusstage","name":"env-northcentralusstage","type":"Microsoft.App/managedEnvironments","location":"North
-        Central US (Stage)","systemData":{"createdBy":"xinyupang@microsoft.com","createdByType":"User","createdAt":"2023-11-20T08:08:11.0019945","lastModifiedBy":"xinyupang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-20T08:08:11.0019945"},"properties":{"provisioningState":"Succeeded","daprAIInstrumentationKey":null,"daprAIConnectionString":null,"vnetConfiguration":null,"defaultDomain":"salmonpond-ed867706.northcentralusstage.azurecontainerapps.io","staticIp":"20.221.43.228","appLogsConfiguration":{"destination":null,"logAnalyticsConfiguration":null},"openTelemetryConfiguration":null,"zoneRedundant":false,"kedaConfiguration":{"version":"2.12.0"},"daprConfiguration":{"version":"1.11.6"},"eventStreamEndpoint":"https://northcentralusstage.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_northcentralusstage/managedEnvironments/env-northcentralusstage/eventstream","customDomainConfiguration":{"customDomainVerificationId":"D3F71C85EB6552E36A89A3E4A080C3CFB00181670B659B0003264FC673AA9B00","dnsSuffix":null,"certificateKeyVaultProperties":null,"certificateValue":null,"certificatePassword":null,"thumbprint":null,"subjectName":null,"expirationDate":null},"workloadProfiles":[{"workloadProfileType":"Consumption","name":"Consumption"}],"appInsightsConfiguration":null,"infrastructureResourceGroup":null,"peerAuthentication":{"mtls":{"enabled":false}}}}'
+        Central US (Stage)","systemData":{"createdBy":"xinyupang@microsoft.com","createdByType":"User","createdAt":"2024-01-15T03:34:09.162828","lastModifiedBy":"xinyupang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-01-15T03:34:09.162828"},"properties":{"provisioningState":"Succeeded","daprAIInstrumentationKey":null,"daprAIConnectionString":null,"vnetConfiguration":null,"defaultDomain":"mangowater-e5cfe1d3.northcentralusstage.azurecontainerapps.io","staticIp":"52.154.232.229","appLogsConfiguration":{"destination":null,"logAnalyticsConfiguration":null},"openTelemetryConfiguration":null,"zoneRedundant":false,"kedaConfiguration":{"version":"2.12.0"},"daprConfiguration":{"version":"1.11.6"},"eventStreamEndpoint":"https://northcentralusstage.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_northcentralusstage/managedEnvironments/env-northcentralusstage/eventstream","customDomainConfiguration":{"customDomainVerificationId":"D3F71C85EB6552E36A89A3E4A080C3CFB00181670B659B0003264FC673AA9B00","dnsSuffix":null,"certificateKeyVaultProperties":null,"certificateValue":null,"certificatePassword":null,"thumbprint":null,"subjectName":null,"expirationDate":null},"workloadProfiles":[{"workloadProfileType":"Consumption","name":"Consumption"}],"appInsightsConfiguration":null,"infrastructureResourceGroup":null,"peerAuthentication":{"mtls":{"enabled":false}}}}'
     headers:
       api-supported-versions:
       - 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview, 2023-04-01-preview,
-        2023-05-01, 2023-05-02-preview, 2023-08-01-preview, 2023-11-02-preview
+        2023-05-01, 2023-05-02-preview, 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview,
+        2024-03-01
       cache-control:
       - no-cache
       content-length:
-      - '1699'
+      - '1698'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jan 2024 08:31:02 GMT
+      - Mon, 05 Feb 2024 05:12:09 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4FA4177C317A41C5B3F63A1A4DE38309 Ref B: MAA201060513023 Ref C: 2024-02-05T05:12:09Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -304,7 +307,7 @@ interactions:
       ParameterSetName:
       - -g -n --environment --source --repo
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
   response:
@@ -515,17 +518,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jan 2024 08:31:04 GMT
+      - Mon, 05 Feb 2024 05:12:10 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8E3C15B42B9F496A8F447E0B8C9B1037 Ref B: MAA201060513021 Ref C: 2024-02-05T05:12:11Z'
     status:
       code: 200
       message: OK
@@ -543,7 +548,7 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
   response:
@@ -754,17 +759,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jan 2024 08:31:05 GMT
+      - Mon, 05 Feb 2024 05:12:13 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8058AE75403E4C9AA43465225EE1029F Ref B: MAA201060516053 Ref C: 2024-02-05T05:12:13Z'
     status:
       code: 200
       message: OK
@@ -784,7 +791,7 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.56.0
+      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.57.0
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/containerapp000002?api-version=2023-11-02-preview
   response:
@@ -794,17 +801,21 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Thu, 11 Jan 2024 08:31:06 GMT
+      - Mon, 05 Feb 2024 05:12:14 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: BFC2BA40180644FC8099D7A0DF68B58B Ref B: MAA201060516025 Ref C: 2024-02-05T05:12:14Z'
     status:
       code: 204
       message: No Content
@@ -822,7 +833,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
   response:
@@ -1033,17 +1044,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jan 2024 08:31:07 GMT
+      - Mon, 05 Feb 2024 05:12:15 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2A5E98D398D7480980FE41E0FD84F1C7 Ref B: MAA201060513035 Ref C: 2024-02-05T05:12:16Z'
     status:
       code: 200
       message: OK
@@ -1061,7 +1074,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.56.0
+      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.57.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps?api-version=2023-11-02-preview
   response:
@@ -1075,17 +1088,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jan 2024 08:31:08 GMT
+      - Mon, 05 Feb 2024 05:12:16 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: C6C658E1FAF040AAB0175E0B91F23AE7 Ref B: MAA201060516009 Ref C: 2024-02-05T05:12:16Z'
     status:
       code: 200
       message: OK
@@ -1103,7 +1118,7 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
   response:
@@ -1314,17 +1329,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jan 2024 08:31:10 GMT
+      - Mon, 05 Feb 2024 05:12:18 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 602C8B3A8DB240E481C03BCAF66013DE Ref B: MAA201060513035 Ref C: 2024-02-05T05:12:18Z'
     status:
       code: 200
       message: OK
@@ -1344,7 +1361,7 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.56.0
+      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.57.0
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env-northcentralusstage?api-version=2023-11-02-preview
   response:
@@ -1354,17 +1371,21 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Thu, 11 Jan 2024 08:31:10 GMT
+      - Mon, 05 Feb 2024 05:12:18 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14997'
+      x-msedge-ref:
+      - 'Ref A: 2B35C27C590B4006B5AEB7139BCF1B38 Ref B: MAA201060514035 Ref C: 2024-02-05T05:12:19Z'
     status:
       code: 204
       message: No Content
@@ -1382,7 +1403,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.57.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
   response:
@@ -1593,17 +1614,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jan 2024 08:31:11 GMT
+      - Mon, 05 Feb 2024 05:12:20 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 356800E2AA0B402388E9A879D7DCA6C5 Ref B: MAA201060513027 Ref C: 2024-02-05T05:12:20Z'
     status:
       code: 200
       message: OK
@@ -1621,7 +1644,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.56.0
+      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.57.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments?api-version=2023-11-02-preview
   response:
@@ -1635,17 +1658,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jan 2024 08:31:12 GMT
+      - Mon, 05 Feb 2024 05:12:21 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: F9904B4E28F946E5A24E492129E06BD1 Ref B: MAA201060515029 Ref C: 2024-02-05T05:12:21Z'
     status:
       code: 200
       message: OK

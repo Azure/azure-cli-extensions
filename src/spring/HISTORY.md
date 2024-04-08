@@ -1,5 +1,17 @@
 Release History
 ===============
+1.20.1
+---
+* Add command to show the configurations pulled by Application Configuration Service from upstream Git repositories. `az spring application-configuration-service config show`.
+
+1.20.0
+---
+* Change default Application Configuration Service generation value to Gen2.
+
+1.19.4
+---
+* Enhance managed component log streaming when `-i/--instance` and `--all-instances` parameters are not specified.
+
 1.19.3
 ---
 * Add arguments `--refresh-interval` in `spring application-configuration-service create` and `spring application-configuration-service update`.

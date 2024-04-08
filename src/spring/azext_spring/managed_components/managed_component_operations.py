@@ -15,6 +15,7 @@ from .managed_component import (Acs, Flux, Scg, ScgOperator,
 
 from ..log_stream.writer import (DefaultWriter, PrefixWriter)
 from ..log_stream.log_stream_operations import log_stream_from_url
+from ..log_stream.log_stream_validators import validate_thread_number
 from .._utils import (get_proxy_api_endpoint, BearerAuth)
 
 
@@ -51,9 +52,7 @@ def managed_component_logs(cmd, client, resource_group, service,
     else:
         url_dict = _get_log_stream_urls(cmd, client, resource_group, service, name, all_instances,
                                         instance, queryOptions)
-        if (follow is True and len(url_dict) > max_log_requests):
-            raise CLIError("You are attempting to follow {} log streams, but maximum allowed concurrency is {}, "
-                           "use --max-log-requests to increase the limit".format(len(url_dict), max_log_requests))
+        validate_thread_number(follow, len(url_dict), max_log_requests)
         threads = _get_log_threads(all_instances, url_dict, auth, exceptions)
 
     if follow and len(threads) > 1:
@@ -94,6 +93,26 @@ def _get_log_stream_urls(cmd, client, resource_group, service, component_name,
     component_api_name = _get_component(component_name).get_api_name()
     hostname = _get_hostname(cmd, client, resource_group, service)
     url_dict = {}
+
+    if component_name and not all_instances and not instance:
+        logger.warning("No `-i/--instance` or `--all-instances` parameters specified.")
+        instances: [ManagedComponentInstance] = _list_managed_component_instances(cmd, client, resource_group, service,
+                                                                                  component_name)
+        if instances is None or len(instances) == 0:
+            # No instances found is handle by each component by provider better error handling.
+            return url_dict
+        elif instances is not None and len(instances) > 1:
+            logger.warning("Multiple instances found:")
+            for temp_instance in instances:
+                logger.warning("{}".format(temp_instance.name))
+            logger.warning("Please use '-i/--instance' parameter to specify the instance name, "
+                           "or use `--all-instance` parameter to get logs for all instances.")
+            return url_dict
+        elif instances is not None and len(instances) == 1:
+            logger.warning("Exact one instance found, will get logs for it:")
+            logger.warning('{}'.format(instances[0].name))
+            # Make it as if user has specified exact instance name
+            instance = instances[0].name
 
     if component_name and all_instances is True:
         instances: [ManagedComponentInstance] = _list_managed_component_instances(cmd, client, resource_group, service, component_name)

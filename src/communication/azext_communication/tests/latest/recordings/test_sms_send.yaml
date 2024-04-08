@@ -1,7 +1,8 @@
 interactions:
 - request:
-    body: '{"phoneNumberType": "tollFree", "assignmentType": "application", "capabilities":
-      {"calling": "inbound", "sms": "inbound+outbound"}}'
+    body: '{"from": "sanitized", "smsRecipients": [{"to": "sanitized", "repeatabilityRequestId":
+      "sanitized", "repeatabilityFirstSent": "sanitized"}], "message": "Hello there!!",
+      "smsSendOptions": {"enableDeliveryReport": false}}'
     headers:
       Accept:
       - application/json
@@ -10,696 +11,48 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '131'
+      - '218'
       Content-Type:
       - application/json
+      Date:
+      - Wed, 27 Mar 2024 00:36:58 GMT
       User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.9.0 azsdk-python-communication-sms/1.0.1 Python/3.10.11 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
-      - ecyowPPqS6i2jEjg4ZPaHAki9yDR8IHa8lF+VXRefVM=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:14:57 GMT
+      - EPlP6ng087ET4TNp6U/kdK9p9H+fqtO+HFsRTg1Lv18=
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/availablePhoneNumbers/countries/US/:search?api-version=2022-12-01
+    uri: https://sanitized.communication.azure.com/sms?api-version=2021-03-07
   response:
     body:
-      string: ''
+      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
+        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
+        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
+        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
+        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
+        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
+        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
+        }</style><title>Service unavailable</title></head><body><div id=''content''><div
+        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
+        working to restore all services as soon as possible. Please check back soon.</p></div><div
+        id=''errorref''><span>0KmoDZgAAAAB90KC6iutUSK0oPaaqEzJJV1NURURHRTA4MjAAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx</span></div></div></body></html>'
     headers:
-      access-control-expose-headers:
-      - Location,Operation-Location,operation-id,search-id
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-12-01, 2022-12-02-preview2,
-        2023-05-01-preview
+      cache-control:
+      - no-store
       content-length:
-      - '0'
-      date:
-      - Mon, 10 Jul 2023 21:14:59 GMT
-      location:
-      - /availablePhoneNumbers/searchResults/e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-      ms-cv:
-      - 0oCFa6AVs0OKZcaJHfr54Q.0
-      operation-id:
-      - search_e77a381c-4c83-4f0d-8c26-d8d134f9d325
-      operation-location:
-      - /phoneNumbers/operations/search_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-      search-id:
-      - e77a381c-4c83-4f0d-8c26-d8d134f9d325
-      strict-transport-security:
-      - max-age=2592000
-      x-azure-ref:
-      - 00XSsZAAAAAC95AuLYaI0Tb//iTt8s8dPWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 1666ms
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:14:59 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/search_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "search", "status": "notStarted", "resourceLocation":
-        "/availablePhoneNumbers/searchResults/e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01",
-        "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "search_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      access-control-expose-headers:
-      - Location
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
+      - '994'
       content-type:
-      - application/json; charset=utf-8
+      - text/html
       date:
-      - Mon, 10 Jul 2023 21:14:59 GMT
-      location:
-      - /availablePhoneNumbers/searchResults/e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-      ms-cv:
-      - 1sgvu8ckHkiHfEW33NKjSA.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
+      - Wed, 27 Mar 2024 00:36:58 GMT
+      x-azure-externalerror:
+      - 0x80072f7d,OriginSecureChannelFailure
       x-azure-ref:
-      - 003SsZAAAAACOSRLM9qV+T4niIV8BuAGsWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 246ms
+      - 0KmoDZgAAAAB90KC6iutUSK0oPaaqEzJJV1NURURHRTA4MjAAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
     status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:02 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/search_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "search", "status": "succeeded", "resourceLocation":
-        "/availablePhoneNumbers/searchResults/e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01",
-        "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "search_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      access-control-expose-headers:
-      - Location
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:01 GMT
-      location:
-      - /availablePhoneNumbers/searchResults/e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-      ms-cv:
-      - 33U6hqjrIEWy4bc890GYfg.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 01XSsZAAAAACpgya4m2CpR42WgUP22xw7WVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 231ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:02 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/availablePhoneNumbers/searchResults/e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"searchId": "e77a381c-4c83-4f0d-8c26-d8d134f9d325", "phoneNumbers":
-        ["+18447321375"], "phoneNumberType": "tollFree", "assignmentType": "application",
-        "capabilities": {"calling": "inbound", "sms": "inbound+outbound"}, "cost":
-        {"amount": 2.0, "currencyCode": "USD", "billingFrequency": "monthly"}, "searchExpiresBy":
-        "2023-07-10T21:31:00.6755562+00:00", "error": "NoError"}'
-    headers:
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-12-01, 2022-12-02-preview2,
-        2023-05-01-preview
-      content-length:
-      - '372'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:02 GMT
-      ms-cv:
-      - NHz5Q+E6PEKa/mQX8AxETg.0
-      strict-transport-security:
-      - max-age=2592000
-      x-azure-ref:
-      - 01XSsZAAAAAAv51ddZmpGRKwYsNw085m/WVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 397ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: '{"searchId": "e77a381c-4c83-4f0d-8c26-d8d134f9d325"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '52'
-      Content-Type:
-      - application/json
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - WP4JrPiFdzuDJOokeXfZvnsXm7AaxUE3f4hMyoiAv6s=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:03 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: POST
-    uri: https://sanitized.communication.azure.com/availablePhoneNumbers/:purchase?api-version=2022-12-01
-  response:
-    body:
-      string: ''
-    headers:
-      access-control-expose-headers:
-      - Operation-Location,operation-id,purchase-id
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-12-01, 2022-12-02-preview2,
-        2023-05-01-preview
-      content-length:
-      - '0'
-      date:
-      - Mon, 10 Jul 2023 21:15:03 GMT
-      ms-cv:
-      - +JpRfpMMEUugtvMvQ+a6HQ.0
-      operation-id:
-      - purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325
-      operation-location:
-      - /phoneNumbers/operations/purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-      purchase-id:
-      - e77a381c-4c83-4f0d-8c26-d8d134f9d325
-      strict-transport-security:
-      - max-age=2592000
-      x-azure-ref:
-      - 01nSsZAAAAAA2S7GG0NTXQ4IFQ0Kjj3TeWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 852ms
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:04 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "purchase", "status": "running", "resourceLocation":
-        null, "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:03 GMT
-      ms-cv:
-      - wb3rHtp1VUuYvPjeuWc8gQ.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 013SsZAAAAAA+SIEl89a7SJvLq8Jr6MGgWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 288ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:06 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "purchase", "status": "running", "resourceLocation":
-        null, "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:05 GMT
-      ms-cv:
-      - xvhbDThHzk6SEC1CCuMOOQ.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 02XSsZAAAAAAyBzLUdZzmSIJkMWTWnm0oWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 266ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:08 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "purchase", "status": "notStarted", "resourceLocation":
-        null, "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:08 GMT
-      ms-cv:
-      - s90YimVj+0+ZX0xlCr6BgA.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 03HSsZAAAAABr/T/iCpJUR6sSFvlpU/ewWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 233ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:11 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "purchase", "status": "notStarted", "resourceLocation":
-        null, "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:10 GMT
-      ms-cv:
-      - JRTvr7WeLEGV0QG9hV0qKQ.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 03nSsZAAAAABnb648n/noRr4CMOI19YcOWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 237ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:13 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "purchase", "status": "notStarted", "resourceLocation":
-        null, "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:12 GMT
-      ms-cv:
-      - HKQF0Cvhn0qIsvVqhe0ang.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 04HSsZAAAAAC8LmBrmGggTYx9zgK3on+LWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 247ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:15 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "purchase", "status": "notStarted", "resourceLocation":
-        null, "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:15 GMT
-      ms-cv:
-      - 9KqQsZp4OEecG1SzsMamtw.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 043SsZAAAAACKOX8OFX/JRLfUnuvKOWYPWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 264ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:18 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "purchase", "status": "notStarted", "resourceLocation":
-        null, "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:17 GMT
-      ms-cv:
-      - mqtL4ETPd0ilCoUZKTlrbQ.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 05XSsZAAAAAD7/wzLwZxeQJmPGmmmmmSyWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 315ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:20 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "purchase", "status": "notStarted", "resourceLocation":
-        null, "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:20 GMT
-      ms-cv:
-      - Sy43HMd8J0eNqXqN8Koinw.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 053SsZAAAAABwsteQbtNZR7alugLkuVTVWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 263ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-phonenumbers/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 10 Jul 2023 21:15:22 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/phoneNumbers/operations/purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325?api-version=2022-12-01
-  response:
-    body:
-      string: '{"operationType": "purchase", "status": "succeeded", "resourceLocation":
-        null, "createdDateTime": "2023-07-10T21:14:58.8936032+00:00", "id": "purchase_e77a381c-4c83-4f0d-8c26-d8d134f9d325",
-        "lastActionDateTime": "0001-01-01T00:00:00+00:00"}'
-    headers:
-      api-supported-versions:
-      - 2021-03-07, 2022-01-11-preview2, 2022-06-01-preview, 2022-11-15-preview, 2022-12-01,
-        2022-12-02-preview2, 2023-05-01-preview
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Jul 2023 21:15:22 GMT
-      ms-cv:
-      - jpmtxniaEkmbaHCTZnI9Yw.0
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 06nSsZAAAAADXuQb4+LkDSrGuF3FFQCoTWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-      x-processing-time:
-      - 248ms
-    status:
-      code: 200
-      message: OK
-    url: sanitized
+      code: 503
+      message: Service Unavailable
 - request:
     body: '{"from": "sanitized", "smsRecipients": [{"to": "sanitized", "repeatabilityRequestId":
       "sanitized", "repeatabilityFirstSent": "sanitized"}], "message": "Hello there!!",
@@ -716,11 +69,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 10 Jul 2023 21:15:23 GMT
+      - Wed, 27 Mar 2024 00:36:58 GMT
       User-Agent:
-      - AzureCli/1.7.0b1 azsdk-python-communication-sms/1.0.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.9.0 azsdk-python-communication-sms/1.0.1 Python/3.10.11 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
-      - F2gVsoKiGelKKuS7WAcQeMVo+zgc6eP2kq1x35uSRvE=
+      - EPlP6ng087ET4TNp6U/kdK9p9H+fqtO+HFsRTg1Lv18=
       x-ms-return-client-request-id:
       - 'true'
     method: POST
@@ -731,23 +84,24 @@ interactions:
         202, "repeatabilityResult": "accepted", "successful": true}]}'
     headers:
       api-supported-versions:
-      - 2020-07-20-preview1, 2020-08-20-preview, 2021-03-07, 2023-06-30-privatepreview
-      content-length:
-      - '136'
+      - 2020-07-20-preview1, 2020-08-20-preview, 2021-03-07, 2023-06-30-privatepreview,
+        2024-02-05-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jul 2023 21:15:22 GMT
+      - Wed, 27 Mar 2024 00:36:59 GMT
       ms-cv:
-      - 045coQPEAUelpfWekAOqFQ.0
+      - fZJkW3Jr2UiawbozctwAog.0
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
+      transfer-encoding:
+      - chunked
       x-azure-ref:
-      - 06nSsZAAAAABcZrW1Iv/eRq67NShBCXmtWVZSMzExMDAwMTE1MDIxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0K2oDZgAAAAC97+9o3nn9Q4yLG43PR9M6V1NURURHRTA4MjAAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 137ms
+      - 104ms
     status:
       code: 202
       message: Accepted

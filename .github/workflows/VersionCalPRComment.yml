@@ -1,8 +1,11 @@
 name: Generate Release Version and Comment PR
 
 on:
+  workflow_dispatch:
   pull_request_target:
       types: [opened, labeled, unlabeled, synchronize]
+      branches:
+        - main
       paths:
         - '**.py'
 
@@ -25,33 +28,39 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 0 # checkout all branches
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}  # checkout pull request branch
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}  # checkout pull request branch
       - name: Show workdirectory after site cloned
         run: |
            pwd
            ls
       - name: Get Diff Files
+        env:
+          bash_sha: ${{ github.event.pull_request.base.sha }}
+          base_branch: ${{ github.event.pull_request.base.ref }}
+          base_branch_pre: "upstream"
+          diff_sha: ${{ github.event.pull_request.head.sha }}
+          diff_branch: ${{ github.event.pull_request.head.ref }}
+          repo_full_name: ${{ github.event.pull_request.head.repo.full_name }}
         run: |
-            echo github.event.pull_request.base.sha: ${{github.event.pull_request.base.sha}}
-            echo github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}
-            echo github.event.pull_request.head.sha: ${{ github.event.pull_request.head.sha }}
-            echo github.event.pull_request.head.ref: ${{ github.event.pull_request.head.ref }}
-            echo github.event.pull_request.head.repo.full_name: ${{ github.event.pull_request.head.repo.full_name }}
-            echo github.sha: ${{github.sha}}
+            set -x
             git --version
             git log --oneline | head -n 30
-            echo git branch -a
             git branch -a
-            git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} > changed_files
+            git fetch https://github.com/Azure/azure-cli-extensions.git ${{ env.base_branch }}:${{ env.base_branch_pre }}/${{ env.base_branch }}
+            git checkout ${{ env.base_branch_pre }}/${{ env.base_branch }}
+            git log --oneline | head -n 30
+            git checkout ${{ env.diff_branch }}
+            git log --oneline | head -n 30
+            git --no-pager diff --name-only --diff-filter=ACMRT ${{ env.base_branch_pre }}/${{ env.base_branch }}...${{ env.diff_branch }} > changed_files
             cat changed_files
             cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq > changed_modules
             echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
       - name: Display Diff Modules
         run: |
-            for mod in `cat changed_modules`
+            for mod in ${{ env.changed_module_list }}
             do
-              echo changed module: ${mod}
+              echo changed module: "${mod}"
             done
       - name: Checkout CLI main repo 
         uses: actions/checkout@master
@@ -85,48 +94,39 @@ jobs:
         id: get_comment_message
         env:
           pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
+          base_branch: ${{ github.event.pull_request.base.ref }}
+          base_branch_pre: "upstream"
+          diff_branch: ${{ github.event.pull_request.head.ref }}
           base_meta_path: "./base_meta/"
           diff_meta_path: "./diff_meta/"
           output_file: "version_update.txt"
         run: |
            chmod +x env/bin/activate
            source ./env/bin/activate
-           echo github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}
-           git checkout ${{ github.event.pull_request.base.ref }}
-           mkdir ${base_meta_path}
-           for mod in `cat changed_modules`
+           set -ev
+           git checkout ${{ env.base_branch_pre }}/${{ env.base_branch }}
+           mkdir ${{ env.base_meta_path }}
+           for mod in ${{ env.changed_module_list }}
            do
-              echo **************************
-              echo changed module: ${mod}
-              azdev extension add ${mod}
-              azdev command-change meta-export ${mod} --meta-output-path ./${base_meta_path}/
-              azdev extension remove ${mod}
-              echo **************************
-              echo -e "\n\n\n\n\n"
+              echo changed module: "${mod}"
+              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./${{ env.base_meta_path }}/ && azdev extension remove "${mod}"
            done
-           echo github.event.pull_request.head.ref: ${{ github.event.pull_request.head.ref }}
-           git checkout ${{ github.event.pull_request.head.ref }}
-           mkdir ${diff_meta_path}
-           for mod in `cat changed_modules`
+           git checkout ${{ env.diff_branch }}
+           mkdir ${{ env.diff_meta_path }}
+           for mod in ${{ env.changed_module_list }}
            do
-              echo **************************
-              echo changed module: ${mod}
-              azdev extension add ${mod}
-              azdev command-change meta-export ${mod} --meta-output-path ./${diff_meta_path}/
-              azdev extension remove ${mod}
-              echo **************************
-              echo -e "\n\n\n\n\n"
+              echo changed module: "${mod}"
+              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./${{ env.diff_meta_path }}/ && azdev extension remove "${mod}"
            done
-           echo ls base_meta_path:
-           ls ./${base_meta_path}/
-           echo ls diff_meta_path
-           ls ./${diff_meta_path}/
+           ls ./${{ env.base_meta_path }}/
+           ls ./${{ env.diff_meta_path }}/
+           git checkout ${{ env.base_branch_pre }}/${{ env.base_branch }}
            python scripts/ci/release_version_cal.py
-           # echo "commit_message=$(cat ${output_file})" >> $GITHUB_ENV
+           # echo "commit_message=$(cat ${{ env.output_file }})" >> $GITHUB_ENV
       - name: Comment on the pull request
         uses: mshick/add-pr-comment@v2
         with:
-           repo-token: ${{ secrets.AZCLIBOT_PAT }}
+           repo-token: ${{ secrets.GITHUB_TOKEN }}
            message-id: versioncommentbot
            message-path: |
             version_update.txt

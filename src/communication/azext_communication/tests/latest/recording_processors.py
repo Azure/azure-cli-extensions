@@ -21,19 +21,23 @@ class URIIdentityReplacer(RecordingProcessor):
     """Replace the identity in request uri"""
 
     def process_request(self, request):
-        resource = (urlparse(request.uri).netloc).split('.')[0]
-        request.uri = re.sub('/phoneNumbers/[%2B\d]+', '/phoneNumbers/sanitized', request.uri)
+        communication_endpoint = (urlparse(request.uri).netloc).split('.')
+        resource = communication_endpoint[0]+'.'+communication_endpoint[1]
+        request.uri = re.sub('/phoneNumbers/[%2B\\d]+', '/phoneNumbers/sanitized', request.uri)
         request.uri = re.sub('/identities/([^/?]+)', '/identities/sanitized', request.uri)
+        request.uri = re.sub('/resourceGroups/([^/?]+)', '/resourceGroups/sanitized', request.uri)
+        request.uri = re.sub('/communicationServices/([^/?]+)', '/communicationServices/sanitized', request.uri)
+        request.uri = re.sub('/userAssignedIdentities/([^/?]+)', '/userAssignedIdentities/sanitized', request.uri)
         request.uri = re.sub('/chat/threads/([^/?]+)', '/chat/threads/sanitized', request.uri)
         request.uri = re.sub('/chat/threads/([^/?]+)/messages/([^/?]+)', '/chat/threads/sanitized/messages/sanitized', request.uri)
         request.uri = re.sub('/rooms/([0-9]+)/', '/rooms/sanitized/', request.uri)
-        request.uri = re.sub('/rooms/([0-9]+)\?', '/rooms/sanitized?', request.uri)
+        request.uri = re.sub('/rooms/([0-9]+)\\?', '/rooms/sanitized?', request.uri)
         request.uri = re.sub(resource, 'sanitized', request.uri)
         return request
-    
+
     def process_response(self, response):
         if 'url' in response:
-            response['url'] = re.sub('/phoneNumbers/[%2B\d]+', '/phoneNumbers/sanitized', response['url'])
+            response['url'] = re.sub('/phoneNumbers/[%2B\\d]+', '/phoneNumbers/sanitized', response['url'])
             response['url'] = re.sub('/identities/([^/?]+)', '/identities/sanitized', response['url'])
             response['url'] = re.sub('/chat/threads/([^/?]+)', '/chat/threads/sanitized', response['url'])
             response['url'] = re.sub('/chat/threads/([^/?]+)/messages/([^/?]+)', '/chat/threads/sanitized/messages/sanitized', response['url'])
@@ -90,11 +94,11 @@ class SMSResponseReplacerProcessor(RecordingProcessor):
                         item['repeatabilityRequestId'] = self._replacement
                     if "repeatabilityFirstSent" in item:
                         item['repeatabilityFirstSent'] = self._replacement
-            
+
             request.body = (json.dumps(body)).encode()
         except (KeyError, ValueError, TypeError):
             return request
-            
+
         return request
 
     def process_response(self, response):
@@ -135,13 +139,15 @@ class BodyReplacerProcessor(RecordingProcessor):
             response['body']['string'] = self._replace_keys(response['body']['string'])
 
         return response
-    
+
     def _replace_keys(self, body):
         import collections.abc
+
         def _replace_recursively(data):
+
             if (isinstance(data, str)):
                 return
-            
+
             if isinstance(data, dict):
                 for key in data:
                     value = data[key]

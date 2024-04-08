@@ -178,7 +178,7 @@ def _list_credentials(cmd, resource_uri, certificate_validity_in_seconds):
     list_cred_args = {
         'endpoint_name': 'default',
         'resource_uri': resource_uri,
-        'expiresin': certificate_validity_in_seconds,
+        'expiresin': int(certificate_validity_in_seconds),
         'service_name': "SSH"
     }
 
@@ -224,6 +224,8 @@ def get_client_side_proxy(arc_proxy_folder):
         os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
         print_styled_text((Style.SUCCESS, f"SSH Client Proxy saved to {install_location}"))
 
+        _download_proxy_license(arc_proxy_folder)
+
     return install_location
 
 
@@ -235,7 +237,9 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
     logger.debug("Platform OS: %s", operating_system)
     logger.debug("Platform architecture: %s", machine)
 
-    if machine.endswith('64') and 'ARM' not in machine.upper():
+    if "arm64" in machine.lower() or "aarch64" in machine.lower():
+        architecture = 'arm64'
+    elif machine.endswith('64'):
         architecture = 'amd64'
     elif machine.endswith('86'):
         architecture = '386'
@@ -244,7 +248,7 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
     else:
         raise azclierror.BadRequestError(f"Unsuported architecture: {machine} is not currently supported")
 
-    # define the request url and install location based on the os and architecture
+    # define the request url and install location based on the os and architecture.
     proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}"
     request_uri = (f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}"
                    f"/{proxy_name}_{consts.CLIENT_PROXY_VERSION}")
@@ -266,6 +270,45 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
         older_location = os.path.join(arc_proxy_folder, older_location)
 
     return request_uri, install_location, older_location
+
+
+def _download_proxy_license(proxy_dir):
+    if not proxy_dir:
+        proxy_dir = os.path.join('~', ".clientsshproxy")
+    license_uri = f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}/LICENSE.txt"
+    license_install_location = os.path.expanduser(os.path.join(proxy_dir, "LICENSE.txt"))
+
+    notice_uri = f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}/ThirdPartyNotice.txt"
+    notice_install_location = os.path.expanduser(os.path.join(proxy_dir, "ThirdPartyNotice.txt"))
+
+    _get_and_write_proxy_license_files(license_uri, license_install_location, "License")
+    _get_and_write_proxy_license_files(notice_uri, notice_install_location, "Third Party Notice")
+
+
+def _get_and_write_proxy_license_files(uri, install_location, target_name):
+    try:
+        license_content = _download_from_uri(uri)
+        file_utils.write_to_file(file_path=install_location,
+                                 mode='wb',
+                                 content=license_content,
+                                 error_message=f"Failed to create {target_name} file at {install_location}.")
+    # pylint: disable=broad-except
+    except Exception:
+        logger.warning("Failed to download Connection Proxy %s file from %s.", target_name, uri)
+
+    print_styled_text((Style.SUCCESS, f"SSH Connection Proxy {target_name} saved to {install_location}."))
+
+
+def _download_from_uri(request_uri):
+    response_content = None
+    with urllib.request.urlopen(request_uri) as response:
+        response_content = response.read()
+        response.close()
+
+    if response_content is None:
+        raise azclierror.ClientRequestError(f"Failed to download file from {request_uri}")
+
+    return response_content
 
 
 def format_relay_info_string(relay_info):

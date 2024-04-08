@@ -12,7 +12,8 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id, validate_build_env_vars,
-                          validate_custom_location_name_or_id, validate_env_name_or_id_for_up)
+                          validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
+                          validate_otlp_headers)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
 
 
@@ -29,7 +30,7 @@ def load_arguments(self, _):
 
     # Springboard
     with self.argument_context('containerapp create', arg_group='Service Binding', is_preview=True) as c:
-        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services, bindings or Java components to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
         c.argument('customized_keys', action=AddCustomizedKeys, nargs='*', help='The customized keys used to change default configuration names. Key is the original name, value is the customized name.')
         c.argument('service_type', help="The service information for dev services.")
         c.ignore('service_type')
@@ -53,9 +54,9 @@ def load_arguments(self, _):
 
     # Springboard
     with self.argument_context('containerapp update', arg_group='Service Binding', is_preview=True) as c:
-        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services, bindings or Java components to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
         c.argument('customized_keys', action=AddCustomizedKeys, nargs='*', help='The customized keys used to change default configuration names. Key is the original name, value is the customized name.')
-        c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services(bindings) to be removed from this app. e.g. BIND_NAME1...")
+        c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services, bindings or Java components to be removed from this app. e.g. BIND_NAME1...")
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
         c.argument('infrastructure_resource_group', options_list=['--infrastructure-resource-group', '-i'], help='Name for resource group that will contain infrastructure resources. If not provided, a resource group name will be generated.', is_preview=True)
@@ -64,8 +65,34 @@ def load_arguments(self, _):
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
 
+    # Telemetry 
+    with self.argument_context('containerapp env telemetry') as c:
+        c.argument('name', id_part=None)
+
+    with self.argument_context('containerapp env telemetry data-dog set') as c:
+        c.argument('site', help='Specify the data dog site')
+        c.argument('key', help='Specify the data dog api key')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry traces')
+        c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable data dog open telemetry metrics')
+
+    with self.argument_context('containerapp env telemetry app-insights set') as c:
+        c.argument('connection_string', help='Application Insights connection string used by container apps environment')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry traces')
+        c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable application insights open telemetry logs')
+
+    with self.argument_context('containerapp env telemetry otlp') as c:
+        c.argument('otlp_name', help='The name of the otlp entry')
+        c.argument('endpoint', options_list=['--endpoint', '-e'], help='The endpoint of the otlp entry')
+        c.argument('insecure', arg_type=get_three_state_flag(), help='Boolean indicating whether the otlp is insecure or not')
+        c.argument('enable_open_telemetry_traces', options_list=['--enable-open-telemetry-traces', '-t'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry traces')
+        c.argument('enable_open_telemetry_logs', options_list=['--enable-open-telemetry-logs', '-l'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry logs')
+        c.argument('enable_open_telemetry_metrics', options_list=['--enable-open-telemetry-metrics', '-m'], arg_type=get_three_state_flag(), help='Boolean indicating whether to enable open telemetry metrics')
+        c.argument('headers', nargs='+', help="A list of headers for the otlp. Space-separated values in 'key=value' format.",
+                   validator=validate_otlp_headers)
+
+    # Storage
     with self.argument_context('containerapp env storage') as c:
-        c.argument('storage_type', arg_type = get_enum_type(['AzureFile', 'NfsAzureFile']), help="Type of the storage. Assumed to be AzureFile if not specified.", is_preview=True)
+        c.argument('storage_type', arg_type=get_enum_type(['AzureFile', 'NfsAzureFile']), help="Type of the storage. Assumed to be AzureFile if not specified.", is_preview=True)
         c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]),
                    help="Access mode for the AzureFile or nfs AzureFile storage.")
         c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"],
@@ -117,6 +144,12 @@ def load_arguments(self, _):
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 
+    with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
+        c.argument('certificate_identity', options_list=['--custom-domain-certificate-identity', '--certificate-identity'],
+                   help='Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.', is_preview=True)
+        c.argument('certificate_key_vault_url', options_list=['--custom-domain-certificate-akv-url', '--certificate-akv-url'],
+                   help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
+     
     with self.argument_context('containerapp env create') as c:
         c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
         c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"],
@@ -125,6 +158,12 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env create', arg_group='Identity', is_preview=True) as c:
         c.argument('system_assigned', options_list=['--mi-system-assigned'], help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
         c.argument('user_assigned', options_list=['--mi-user-assigned'], nargs='+', help='Space-separated user identities to be assigned.')
+
+    with self.argument_context('containerapp env certificate upload') as c:
+        c.argument('certificate_identity', options_list=['--certificate-identity', '--identity'], 
+                   help='Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.', is_preview=True)
+        c.argument('certificate_key_vault_url', options_list=['--certificate-akv-url', '--akv-url'], 
+                   help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
 
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
@@ -150,6 +189,11 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Inbound Timeout Policy') as c:
         c.argument('in_timeout_response_in_seconds', type=int, options_list=['--in-timeout'], help='Specify the response timeout in seconds for the inbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
 
+    with self.argument_context('containerapp env dapr-component resiliency', arg_group='Inbound Circuit Breaker Policy') as c:
+        c.argument('in_circuit_breaker_consecutive_errors', type=int, options_list=['--in-cb-sequential-err'], help='The number of consecutive errors before the circuit is opened.')
+        c.argument('in_circuit_breaker_interval', type=int, options_list=['--in-cb-interval'], help='The optional interval in seconds after which the error count resets to 0. An interval of 0 will never reset. If not specified, the timeout value will be used.')
+        c.argument('in_circuit_breaker_timeout', type=int, options_list=['--in-cb-timeout'], help='The interval in seconds until a retry attempt is made after the circuit is opened.')
+
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound HTTP Retry Policy') as c:
         c.argument('out_http_retry_max', type=int, options_list=['--out-http-retries'], help='Specify the max number of retries for the outbound policy. Default: 3.')
         c.argument('out_http_retry_delay_in_milliseconds', type=int, options_list=['--out-http-delay'], help='Specify the base interval in milliseconds between retries for the outbound policy. Default: 1000.')
@@ -157,6 +201,11 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound Timeout Policy') as c:
         c.argument('out_timeout_response_in_seconds', type=int, options_list=['--out-timeout'], help='Specify the response timeout in seconds for the outbound policy. This spans between the point at which the entire request has been processed and when the response has been completely processed. This timeout includes all retries.')
+
+    with self.argument_context('containerapp env dapr-component resiliency', arg_group='Outbound Circuit Breaker Policy') as c:
+        c.argument('out_circuit_breaker_consecutive_errors', type=int, options_list=['--out-cb-sequential-err'], help='The number of consecutive errors before the circuit is opened.')
+        c.argument('out_circuit_breaker_interval', type=int, options_list=['--out-cb-interval'], help='The optional interval in seconds after which the error count resets to 0. An interval of 0 will never reset. If not specified, the timeout value will be used.')
+        c.argument('out_circuit_breaker_timeout', type=int, options_list=['--out-cb-timeout'], help='The interval in seconds until a retry attempt is made after the circuit is opened.')
 
     with self.argument_context('containerapp env dapr-component init') as c:
         c.argument('statestore', help="The state store component and dev service to create.")
@@ -279,3 +328,9 @@ def load_arguments(self, _):
     with self.argument_context('containerapp github-action add') as c:
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
                    validator=validate_build_env_vars, is_preview=True)
+
+    with self.argument_context('containerapp env java-component') as c:
+        c.argument('java_component_name', options_list=['--name', '-n'], help="The Java component name.")
+        c.argument('environment_name', options_list=['--environment'], help="The environment name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")

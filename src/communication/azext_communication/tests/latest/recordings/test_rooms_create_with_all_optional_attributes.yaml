@@ -13,15 +13,15 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.7.2b1 azsdk-python-communication-identity/1.3.1 Python/3.11.5 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.9.0 azsdk-python-communication-identity/1.5.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
       - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
       x-ms-date:
-      - Mon, 16 Oct 2023 23:02:09 GMT
+      - Wed, 27 Mar 2024 00:31:44 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/identities?api-version=2022-10-01
+    uri: https://sanitized.communication.azure.com/identities?api-version=2023-10-01
   response:
     body:
       string: '{"identity": {"id": "sanitized"}}'
@@ -34,26 +34,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 16 Oct 2023 23:02:09 GMT
+      - Wed, 27 Mar 2024 00:31:45 GMT
       ms-cv:
-      - ORT1XZ3SA0OR4orwmcFL0Q.0
+      - CSNkadGJPUqOXBi63yx8tA.0
       request-context:
       - appId=
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 08cAtZQAAAACeWb4cG8LQR44OkyqetV4NWVZSMzExMDAwMTE1MDUxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 08WgDZgAAAACeGEW3S7+ESLKoBItBD1T2V1NURURHRTAxMDYAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 81ms
+      - 17ms
     status:
       code: 201
       message: Created
 - request:
-    body: '{"validFrom": "2023-10-17T00:02:09.109998", "validUntil": "2023-10-17T01:02:09.109998",
-      "pstnDialOutEnabled": true, 
-      "participants": {"8:acs:xxxx":
+    body: '{"validFrom": "2024-03-27T01:31:44.701568", "validUntil": "2024-03-27T02:31:44.701568",
+      "pstnDialOutEnabled": true, "participants": {"8:acs:e9b97946-5295-4768-82c1-a8bd612e88c1_0000001f-1d33-9371-d68a-08482200d02f":
       {"role": "Presenter"}}}'
     headers:
       Accept:
@@ -67,45 +66,47 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Mon, 16 Oct 2023 23:02:09 GMT
+      - Wed, 27 Mar 2024 00:31:45 GMT
       Repeatability-Request-Id:
-      - 09177066-6c78-11ee-bfe6-8cf8c5abc371
+      - 63ec25ca-ebd1-11ee-84bf-70cf49b3e948
       User-Agent:
-      - AzureCli/1.7.2b1 azsdk-python-communication-rooms/1.1.0b1 Python/3.11.5 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.9.0 azsdk-python-communication-rooms/1.1.0b1 Python/3.10.11 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
-      - wEuhyYA8IxBJbZlT1Vle0NFtkr8oSQkPqzd3zWmIRKE=
+      - rg+OekrUIn0ErgkQBFIQ1HSfkyQTt57ZXJLE1Tj1tBI=
       x-ms-date:
-      - Mon, 16 Oct 2023 23:02:09 GMT
+      - Wed, 27 Mar 2024 00:31:45 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
     uri: https://sanitized.communication.azure.com/rooms?api-version=2023-10-30-preview
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2023-10-16T23:02:11.4910054+00:00",
-        "validFrom": "2023-10-17T00:02:09.109998+00:00", "validUntil": "2023-10-17T01:02:09.109998+00:00",
+      string: '{"id": "sanitized", "createdAt": "2024-03-27T00:31:46.3469955+00:00",
+        "validFrom": "2024-03-27T01:31:44.701568+00:00", "validUntil": "2024-03-27T02:31:44.701568+00:00",
         "pstnDialOutEnabled": true}'
     headers:
       api-deprecated-versions:
       - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview
+      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview, 2024-04-15
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 16 Oct 2023 23:02:11 GMT
+      - Wed, 27 Mar 2024 00:31:45 GMT
       location:
-      - '99419929984491282'
+      - '99499848942828766'
       ms-cv:
-      - n36ljJCk4EeXeFYlyQyl0A.0
+      - B32Lg3B68Em3BhVe+S3R+w.0
       repeatability-result:
       - accepted
       request-context:
       - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 08sAtZQAAAAB7r3h+4Uz+So6FLMidDthrWVZSMzExMDAwMTE1MDUxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 08WgDZgAAAAABH+Fn1OEYQ7s4vD5/zgWkV1NURURHRTAxMjAAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
     status:

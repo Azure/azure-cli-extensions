@@ -30,16 +30,22 @@ from azext_aks_preview._consts import (
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SECRET_ROTATION_ENABLED,
+    CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE,
+    CONST_DNS_ZONE_CONTRIBUTOR_ROLE,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
-    setup_common_guardrails_profile,
+    setup_common_safeguards_profile,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
     update_load_balancer_profile as _update_load_balancer_profile,
+)
+from azext_aks_preview._natgateway import create_nat_gateway_profile
+from azext_aks_preview._natgateway import (
+    update_nat_gateway_profile as _update_nat_gateway_profile
 )
 from azext_aks_preview._podidentity import (
     _fill_defaults_for_pod_identity_profile,
@@ -96,6 +102,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id
+from msrestazure.tools import parse_resource_id
 
 
 logger = get_logger(__name__)
@@ -184,14 +191,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
-    def get_guardrails_level(self) -> Union[str, None]:
-        return self.raw_param.get("guardrails_level")
+    def get_safeguards_level(self) -> Union[str, None]:
+        return self.raw_param.get("safeguards_level")
 
-    def get_guardrails_excluded_namespaces(self) -> Union[str, None]:
-        return self.raw_param.get("guardrails_excluded_ns")
+    def get_safeguards_excluded_namespaces(self) -> Union[str, None]:
+        return self.raw_param.get("safeguards_excluded_ns")
 
-    def get_guardrails_version(self) -> Union[str, None]:
-        return self.raw_param.get("guardrails_version")
+    def get_safeguards_version(self) -> Union[str, None]:
+        return self.raw_param.get("safeguards_version")
 
     def __validate_pod_identity_with_kubenet(self, mc, enable_pod_identity, enable_pod_identity_with_kubenet):
         """Helper function to check the validity of serveral pod identity related parameters.
@@ -2065,10 +2072,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         # returns a service mesh profile only if '--enable-azure-service-mesh' is applied
         enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
+        revision = self.raw_param.get("revision", None)
+        revisions = None
+        if revision is not None:
+            revisions = [revision]
         if enable_asm:
             return self.models.ServiceMeshProfile(  # pylint: disable=no-member
                 mode=CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
-                istio=self.models.IstioServiceMesh(),  # pylint: disable=no-member
+                istio=self.models.IstioServiceMesh(
+                    revisions=revisions
+                ),  # pylint: disable=no-member
             )
 
         return None
@@ -2188,17 +2201,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         updated = False
         enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
         disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
-        egx_gtw_nodeselector = self.raw_param.get("egx_gtw_nodeselector", None)
 
         # deal with egress gateways
         if enable_egress_gateway and disable_egress_gateway:
             raise MutuallyExclusiveArgumentError(
                 "Cannot both enable and disable azure service mesh egress gateway at the same time.",
-            )
-
-        if not enable_egress_gateway and egx_gtw_nodeselector:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot set egress gateway nodeselector without enabling an egress gateway.",
             )
 
         if enable_egress_gateway or disable_egress_gateway:
@@ -2221,26 +2228,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             egress_gateway_exists = False
             for egress in new_profile.istio.components.egress_gateways:
                 egress.enabled = enable_egress_gateway
-                egress.node_selector = egx_gtw_nodeselector
                 egress_gateway_exists = True
                 updated = True
                 break
 
             # egress gateway doesn't exist, append
             if not egress_gateway_exists:
-                if egx_gtw_nodeselector:
-                    new_profile.istio.components.egress_gateways.append(
-                        self.models.IstioEgressGateway(  # pylint: disable=no-member
-                            enabled=enable_egress_gateway,
-                            node_selector=egx_gtw_nodeselector,
-                        )
+                new_profile.istio.components.egress_gateways.append(
+                    self.models.IstioEgressGateway(  # pylint: disable=no-member
+                        enabled=enable_egress_gateway,
                     )
-                else:
-                    new_profile.istio.components.egress_gateways.append(
-                        self.models.IstioEgressGateway(  # pylint: disable=no-member
-                            enabled=enable_egress_gateway,
-                        )
-                    )
+                )
                 updated = True
 
         return new_profile, updated
@@ -2567,15 +2565,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: list of str or None
         """
-        dns_zone_resource_ids = self.raw_param.get("dns_zone_resource_ids")
-        dns_zone_resource_ids = [
-            x.strip()
-            for x in (
-                dns_zone_resource_ids.split(",")
-                if dns_zone_resource_ids
-                else []
-            )
-        ]
+        dns_zone_resource_ids_input = self.raw_param.get("dns_zone_resource_ids")
+        dns_zone_resource_ids = []
+
+        if dns_zone_resource_ids_input:
+            for dns_zone in dns_zone_resource_ids_input.split(","):
+                dns_zone = dns_zone.strip()
+                if dns_zone and is_valid_resource_id(dns_zone):
+                    dns_zone_resource_ids.append(dns_zone)
+                else:
+                    raise CLIError(dns_zone, " is not a valid Azure DNS Zone resource ID.")
 
         return dns_zone_resource_ids
 
@@ -2633,6 +2632,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # Note: No need to check for mutually exclusive parameter with enable-ai-toolchain-operator here
         # because it's already checked in get_ai_toolchain_operator
         return self.raw_param.get("disable_ai_toolchain_operator")
+
+    def get_ssh_access(self) -> Union[str, None]:
+        """Obtain the value of ssh_access.
+        """
+        return self.raw_param.get("ssh_access")
 
 
 # pylint: disable=too-many-public-methods
@@ -2722,6 +2726,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.context.get_load_balancer_idle_timeout(),
                 self.context.get_load_balancer_backend_pool_type(),
                 models=self.models.load_balancer_models,
+            )
+
+        if self.context.get_nat_gateway_managed_outbound_ip_count() is not None:
+            network_profile.nat_gateway_profile = create_nat_gateway_profile(
+                self.context.get_nat_gateway_managed_outbound_ip_count(),
+                self.context.get_nat_gateway_idle_timeout(),
+                models=self.models.nat_gateway_models,
             )
 
         network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
@@ -3058,29 +3069,31 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if not mc.agent_pool_profiles:
                 raise UnknownError("Encountered an unexpected error while getting the agent pools from the cluster.")
             agentpool = mc.agent_pool_profiles[0]
-            agentpool_name_list = [agentpool.name]
+            agentpool_details = []
+            pool_details = {}
+            pool_details["name"] = agentpool.name
+            pool_details["vm_size"] = agentpool.vm_size
+            agentpool_details.append(pool_details)
             # Marking the only agentpool name as the valid nodepool for
             # installing Azure Container Storage during `az aks create`
             nodepool_list = agentpool.name
 
-            from azext_aks_preview.azurecontainerstorage._helpers import check_if_extension_is_installed
-            is_extension_already_installed = check_if_extension_is_installed(
-                self.cmd,
-                self.context.get_resource_group_name(),
-                self.context.get_name(),
+            from azext_aks_preview.azurecontainerstorage._validators import (
+                validate_enable_azure_container_storage_params
             )
-            from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
-            validate_azure_container_storage_params(
-                True,
-                None,
-                pool_name,
+            validate_enable_azure_container_storage_params(
                 pool_type,
+                pool_name,
                 pool_sku,
                 pool_option,
                 pool_size,
                 nodepool_list,
-                agentpool_name_list,
-                is_extension_already_installed,
+                agentpool_details,
+                False,
+                False,
+                False,
+                False,
+                False,
             )
 
             # Setup Azure Container Storage labels on the nodepool
@@ -3113,12 +3126,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
-    def set_up_guardrails_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        excludedNamespaces = self.context.get_guardrails_excluded_namespaces()
-        version = self.context.get_guardrails_version()
-        level = self.context.get_guardrails_level()
+    def set_up_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
+        version = self.context.get_safeguards_version()
+        level = self.context.get_safeguards_level()
         # provided any value?
-        mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
+        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
         return mc
 
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3229,6 +3242,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # Default is disabled so no need to worry about that here
         return mc
 
+    def set_up_agentpool_profile_ssh_access(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        ssh_access = self.context.get_ssh_access()
+        if ssh_access is not None:
+            for agent_pool_profile in mc.agent_pool_profiles:
+                if agent_pool_profile.security_profile is None:
+                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+                agent_pool_profile.security_profile.ssh_access = ssh_access
+        return mc
+
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -3271,8 +3295,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_node_resource_group_profile(mc)
         # set up auto upgrade profile
         mc = self.set_up_auto_upgrade_profile(mc)
-        # set up guardrails profile
-        mc = self.set_up_guardrails_profile(mc)
+        # set up safeguards profile
+        mc = self.set_up_safeguards_profile(mc)
         # set up azure service mesh profile
         mc = self.set_up_azure_service_mesh_profile(mc)
         # setup k8s support plan
@@ -3287,6 +3311,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_container_storage(mc)
         # set up node provisioning profile
         mc = self.set_up_node_provisioning_profile(mc)
+        # set up agentpool profile ssh access
+        mc = self.set_up_agentpool_profile_ssh_access(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -3476,12 +3502,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             pool_size = self.context.raw_param.get("storage_pool_size")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
             node_resource_group = cluster.node_resource_group
-            nodepool_name = self.context.get_intermediate("azure_container_storage_nodepools")
-            agent_pool_details = {}
+            agent_pool_vm_sizes = []
             if len(cluster.agent_pool_profiles) > 0:
                 # Cluster creation has only 1 agentpool
                 agentpool_profile = cluster.agent_pool_profiles[0]
-                agent_pool_details[agentpool_profile.name] = agentpool_profile.vm_size
+                agent_pool_vm_sizes.append(agentpool_profile.vm_size)
 
             self.context.external_functions.perform_enable_azure_container_storage(
                 self.cmd,
@@ -3495,8 +3520,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_size,
                 pool_sku,
                 pool_option,
-                nodepool_name,
-                agent_pool_details,
+                agent_pool_vm_sizes,
                 True,
             )
 
@@ -3546,6 +3570,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             (self.context.get_nodepool_labels(), None),
             (self.context.get_nodepool_taints(), None),
             (self.context.raw_param.get("upgrade_settings"), None),
+            (self.context.get_load_balancer_managed_outbound_ip_count(), None),
+            (self.context.get_load_balancer_managed_outbound_ipv6_count(), None),
+            (self.context.get_load_balancer_outbound_ports(), None),
+            (self.context.get_nat_gateway_managed_outbound_ip_count(), None),
         ]
 
     def check_raw_parameters(self):
@@ -3573,7 +3601,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if pair[0] != pair[1]:
                 is_different_from_special_default = True
                 break
-
         if is_changed or is_different_from_special_default:
             return
 
@@ -3650,109 +3677,194 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
         return mc
 
+    # pylint: disable=too-many-statements,too-many-locals
     def update_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure container storage for the Managed Cluster object
         :return: ManagedCluster
         """
         self._ensure_mc(mc)
         # read the azure container storage values passed
-        pool_type = self.context.raw_param.get("enable_azure_container_storage")
-        disable_azure_container_storage = self.context.raw_param.get("disable_azure_container_storage")
-        enable_azure_container_storage = pool_type is not None
+        enable_pool_type = self.context.raw_param.get("enable_azure_container_storage")
+        disable_pool_type = self.context.raw_param.get("disable_azure_container_storage")
+        enable_azure_container_storage = enable_pool_type is not None
+        disable_azure_container_storage = disable_pool_type is not None
         nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
+        if enable_azure_container_storage and disable_azure_container_storage:
+            raise MutuallyExclusiveArgumentError(
+                'Conflicting flags. Cannot set --enable-azure-container-storage '
+                'and --disable-azure-container-storage together.'
+            )
+
+        # pylint: disable=too-many-nested-blocks
         if enable_azure_container_storage or disable_azure_container_storage:
+            # Require the agent pool profiles for azure container storage
+            # operations. Raise exception if not found.
+            if not mc.agent_pool_profiles:
+                raise UnknownError(
+                    "Encounter an unexpected error while getting agent pool profiles from the cluster "
+                    "in the process of updating agentpool profile."
+                )
             pool_name = self.context.raw_param.get("storage_pool_name")
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
-            agentpool_names = []
-            # Incase of enable_azure_container_storage,
-            # we will collect the agentpool_names and
-            # handle the default values of the nodepool
-            # on which we will install Azure Container Storage.
-            # Incase of disable_azure_container_storage,
-            # the expected value is None and no further
-            # processing is required on the nodepool list.
-            if enable_azure_container_storage:
-                if not mc.agent_pool_profiles:
-                    raise UnknownError(
-                        "Encounter an unexpected error while getting agent pool profiles from the cluster "
-                        "in the process of updating agentpool profile."
-                    )
-
-                for agentpool in mc.agent_pool_profiles:
-                    if agentpool.name is None:
-                        raise UnknownError("Unexpected error while getting agent pool name.")
-                    agentpool_names.append(agentpool.name)
-
-                if nodepool_list is None:
-                    # When not defined, either pick nodepool1 as default or if only
-                    # one nodepool exists. Choose the only nodepool by default.
-                    nodepool_list = "nodepool1"
-                    if len(agentpool_names) == 1:
-                        nodepool_list = agentpool_names[0]
-            from azext_aks_preview.azurecontainerstorage._helpers import check_if_extension_is_installed
-            is_extension_already_installed = check_if_extension_is_installed(
+            agentpool_details = []
+            from azext_aks_preview.azurecontainerstorage._helpers import get_extension_installed_and_cluster_configs
+            (
+                is_extension_installed,
+                is_azureDisk_enabled,
+                is_elasticSan_enabled,
+                is_ephemeralDisk_localssd_enabled,
+                is_ephemeralDisk_nvme_enabled,
+                current_core_value,
+            ) = get_extension_installed_and_cluster_configs(
                 self.cmd,
                 self.context.get_resource_group_name(),
                 self.context.get_name(),
-            )
-            from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
-            validate_azure_container_storage_params(
-                enable_azure_container_storage,
-                disable_azure_container_storage,
-                pool_name,
-                pool_type,
-                pool_sku,
-                pool_option,
-                pool_size,
-                nodepool_list,
-                agentpool_names,
-                is_extension_already_installed,
+                mc.agent_pool_profiles,
             )
 
-        if enable_azure_container_storage:
-            # Set Azure Container Storage labels on the required nodepools
-            azure_container_storage_nodepools_list = nodepool_list.split(',')
-            from azext_aks_preview.azurecontainerstorage._consts import (
-                CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
-                CONST_ACSTOR_IO_ENGINE_LABEL_VAL
-            )
-            for agentpool in mc.agent_pool_profiles:
-                labels = agentpool.node_labels
-                if agentpool.name in azure_container_storage_nodepools_list:
-                    if labels is None:
-                        labels = {}
-                    labels[CONST_ACSTOR_IO_ENGINE_LABEL_KEY] = CONST_ACSTOR_IO_ENGINE_LABEL_VAL
+            if enable_azure_container_storage:
+                from azext_aks_preview.azurecontainerstorage._consts import (
+                    CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
+                    CONST_ACSTOR_IO_ENGINE_LABEL_VAL
+                )
+                labelled_nodepool_arr = []
+                for agentpool in mc.agent_pool_profiles:
+                    pool_details = {}
+                    pool_details["vm_size"] = agentpool.vm_size
+                    node_name = agentpool.name
+                    pool_details["name"] = node_name
+                    if agentpool.node_labels is not None:
+                        node_labels = agentpool.node_labels
+                        if node_labels is not None and \
+                           node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and \
+                           node_name is not None:
+                            labelled_nodepool_arr.append(node_name)
+                        pool_details["node_labels"] = node_labels
+                    agentpool_details.append(pool_details)
+
+                # Incase of a new installation, if the nodepool list is not defined
+                # then check for all the nodepools which are marked with acstor io-engine
+                # labels and include them for installation. If none of the nodepools are
+                # labelled, either pick nodepool1 as default, or if only
+                # one nodepool exists, choose the only nodepool by default.
+                if not is_extension_installed:
+                    if nodepool_list is None:
+                        nodepool_list = "nodepool1"
+                        if len(labelled_nodepool_arr) > 0:
+                            nodepool_list = ','.join(labelled_nodepool_arr)
+                        elif len(agentpool_details) == 1:
+                            pool_detail = agentpool_details[0]
+                            nodepool_list = pool_detail.get("name")
+
+                from azext_aks_preview.azurecontainerstorage._validators import (
+                    validate_enable_azure_container_storage_params
+                )
+                validate_enable_azure_container_storage_params(
+                    enable_pool_type,
+                    pool_name,
+                    pool_sku,
+                    pool_option,
+                    pool_size,
+                    nodepool_list,
+                    agentpool_details,
+                    is_extension_installed,
+                    is_azureDisk_enabled,
+                    is_elasticSan_enabled,
+                    is_ephemeralDisk_localssd_enabled,
+                    is_ephemeralDisk_nvme_enabled,
+                )
+
+                # If the extension is already installed,
+                # we expect that the Azure Container Storage
+                # nodes are already labelled. Use those label
+                # to generate the nodepool_list.
+                if is_extension_installed:
+                    nodepool_list = ','.join(labelled_nodepool_arr)
                 else:
-                    # Remove residual Azure Container Storage labels
-                    # from any other nodepools where its not intended
-                    if labels is not None:
-                        labels.pop(CONST_ACSTOR_IO_ENGINE_LABEL_KEY, None)
-                agentpool.node_labels = labels
+                    # Set Azure Container Storage labels on the required nodepools.
+                    nodepool_list_arr = nodepool_list.split(',')
+                    for agentpool in mc.agent_pool_profiles:
+                        labels = agentpool.node_labels
+                        if agentpool.name in nodepool_list_arr:
+                            if labels is None:
+                                labels = {}
+                            labels[CONST_ACSTOR_IO_ENGINE_LABEL_KEY] = CONST_ACSTOR_IO_ENGINE_LABEL_VAL
+                        else:
+                            # Remove residual Azure Container Storage labels
+                            # from any other nodepools where its not intended
+                            if labels is not None:
+                                labels.pop(CONST_ACSTOR_IO_ENGINE_LABEL_KEY, None)
+                        agentpool.node_labels = labels
 
-            # set intermediates
-            self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
-            self.context.set_intermediate("azure_container_storage_nodepools", nodepool_list, overwrite_exists=True)
+                # set intermediates
+                self.context.set_intermediate("azure_container_storage_nodepools", nodepool_list, overwrite_exists=True)
+                self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
+            if disable_azure_container_storage:
+                from azext_aks_preview.azurecontainerstorage._validators import (
+                    validate_disable_azure_container_storage_params
+                )
+                validate_disable_azure_container_storage_params(
+                    disable_pool_type,
+                    pool_name,
+                    pool_sku,
+                    pool_option,
+                    pool_size,
+                    nodepool_list,
+                    is_extension_installed,
+                    is_azureDisk_enabled,
+                    is_elasticSan_enabled,
+                    is_ephemeralDisk_localssd_enabled,
+                    is_ephemeralDisk_nvme_enabled,
+                )
+                pre_disable_validate = False
 
-        if disable_azure_container_storage:
-            pre_uninstall_validate = False
-            msg = (
-                "Disabling Azure Container Storage will forcefully delete all the storagepools on the cluster and "
-                "affect the applications using these storagepools. Forceful deletion of storagepools can also lead to "
-                "leaking of storage resources which are being consumed. Do you want to validate whether any of "
-                "the storagepools are being used before disabling Azure Container Storage?"
-            )
-            if self.context.get_yes() or prompt_y_n(msg, default="y"):
-                pre_uninstall_validate = True
+                msg = (
+                    "Disabling Azure Container Storage will forcefully delete all the storagepools in the cluster and "
+                    "affect the applications using these storagepools. Forceful deletion of storagepools can also "
+                    "lead to leaking of storage resources which are being consumed. Do you want to validate whether "
+                    "any of the storagepools are being used before disabling Azure Container Storage?"
+                )
 
-            # set intermediate
-            self.context.set_intermediate("disable_azure_container_storage", True, overwrite_exists=True)
+                from azext_aks_preview.azurecontainerstorage._consts import (
+                    CONST_ACSTOR_ALL,
+                )
+                if disable_pool_type != CONST_ACSTOR_ALL:
+                    msg = (
+                        f"Disabling Azure Container Storage for storagepool type {disable_pool_type} "
+                        "will forcefully delete all the storagepools of the same type and affect the "
+                        "applications using these storagepools. Forceful deletion of storagepools can "
+                        "also lead to leaking of storage resources which are being consumed. Do you want to "
+                        f"validate whether any of the storagepools of type {disable_pool_type} are being used "
+                        "before disabling Azure Container Storage?"
+                    )
+                if self.context.get_yes() or prompt_y_n(msg, default="y"):
+                    pre_disable_validate = True
+
+                # set intermediate
+                self.context.set_intermediate("disable_azure_container_storage", True, overwrite_exists=True)
+                self.context.set_intermediate(
+                    "pre_disable_validate_azure_container_storage",
+                    pre_disable_validate,
+                    overwrite_exists=True
+                )
+
+            # Set intermediates
+            self.context.set_intermediate("is_extension_installed", is_extension_installed, overwrite_exists=True)
+            self.context.set_intermediate("is_azureDisk_enabled", is_azureDisk_enabled, overwrite_exists=True)
+            self.context.set_intermediate("is_elasticSan_enabled", is_elasticSan_enabled, overwrite_exists=True)
             self.context.set_intermediate(
-                "pre_uninstall_validate_azure_container_storage",
-                pre_uninstall_validate,
+                "is_ephemeralDisk_nvme_enabled",
+                is_ephemeralDisk_nvme_enabled,
                 overwrite_exists=True
             )
+            self.context.set_intermediate(
+                "is_ephemeralDisk_localssd_enabled",
+                is_ephemeralDisk_localssd_enabled,
+                overwrite_exists=True
+            )
+            self.context.set_intermediate("current_core_value", current_core_value, overwrite_exists=True)
 
         return mc
 
@@ -3786,6 +3898,29 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 backend_pool_type=self.context.get_load_balancer_backend_pool_type(),
                 profile=mc.network_profile.load_balancer_profile,
                 models=self.models.load_balancer_models,
+            )
+        return mc
+
+    def update_nat_gateway_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update nat gateway profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if not mc.network_profile:
+            raise UnknownError(
+                "Unexpectedly get an empty network profile in the process of updating nat gateway profile."
+            )
+        outbound_type = self.context.get_outbound_type()
+        if outbound_type and outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY:
+            mc.network_profile.nat_gateway_profile = None
+        else:
+            mc.network_profile.nat_gateway_profile = _update_nat_gateway_profile(
+                self.context.get_nat_gateway_managed_outbound_ip_count(),
+                self.context.get_nat_gateway_idle_timeout(),
+                mc.network_profile.nat_gateway_profile,
+                models=self.models.nat_gateway_models,
             )
         return mc
 
@@ -4242,18 +4377,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
-    def update_guardrails_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update guardrails profile for the ManagedCluster object
+    def update_safeguards_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update safeguards profile for the ManagedCluster object
         :return: the ManagedCluster object
         """
 
         self._ensure_mc(mc)
 
-        excludedNamespaces = self.context.get_guardrails_excluded_namespaces()
-        version = self.context.get_guardrails_version()
-        level = self.context.get_guardrails_level()
+        excludedNamespaces = self.context.get_safeguards_excluded_namespaces()
+        version = self.context.get_safeguards_version()
+        level = self.context.get_safeguards_level()
 
-        mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
+        mc = setup_common_safeguards_profile(level, version, excludedNamespaces, mc, self.models)
 
         if level is not None:
             mc.safeguards_profile.level = level
@@ -4485,24 +4620,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
             if add_dns_zone:
-                if mc.ingress_profile.web_app_routing.dns_zone_resource_ids is None:
-                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids = []
-                mc.ingress_profile.web_app_routing.dns_zone_resource_ids.extend(dns_zone_resource_ids)
-                if attach_zones:
-                    try:
-                        for dns_zone in dns_zone_resource_ids:
-                            if not add_role_assignment(
-                                self.cmd,
-                                "DNS Zone Contributor",
-                                mc.ingress_profile.web_app_routing.identity.object_id,
-                                False,
-                                scope=dns_zone
-                            ):
-                                logger.warning(
-                                    'Could not create a role assignment for App Routing. '
-                                    'Are you an Owner on this subscription?')
-                    except Exception as ex:
-                        raise CLIError('Error in granting dns zone permisions to managed identity.\n') from ex
+                mc.ingress_profile.web_app_routing.dns_zone_resource_ids = (
+                    mc.ingress_profile.web_app_routing.dns_zone_resource_ids or []
+                )
+                for dns_zone_id in dns_zone_resource_ids:
+                    if dns_zone_id not in mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
+                        mc.ingress_profile.web_app_routing.dns_zone_resource_ids.append(dns_zone_id)
+                        if attach_zones:
+                            try:
+                                is_private_dns_zone = (
+                                    parse_resource_id(dns_zone_id).get("type").lower() == "privatednszones"
+                                )
+                                role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else \
+                                    CONST_DNS_ZONE_CONTRIBUTOR_ROLE
+                                if not add_role_assignment(
+                                    self.cmd,
+                                    role,
+                                    mc.ingress_profile.web_app_routing.identity.object_id,
+                                    False,
+                                    scope=dns_zone_id
+                                ):
+                                    logger.warning(
+                                        'Could not create a role assignment for App Routing. '
+                                        'Are you an Owner on this subscription?')
+                            except Exception as ex:
+                                raise CLIError('Error in granting dns zone permissions to managed identity.\n') from ex
             elif delete_dns_zone:
                 if mc.ingress_profile.web_app_routing.dns_zone_resource_ids:
                     dns_zone_resource_ids = [
@@ -4518,9 +4660,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if attach_zones:
                     try:
                         for dns_zone in dns_zone_resource_ids:
+                            is_private_dns_zone = parse_resource_id(dns_zone).get("type").lower() == "privatednszones"
+                            role = CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE if is_private_dns_zone else \
+                                CONST_DNS_ZONE_CONTRIBUTOR_ROLE
                             if not add_role_assignment(
                                 self.cmd,
-                                "DNS Zone Contributor",
+                                role,
                                 mc.ingress_profile.web_app_routing.identity.object_id,
                                 False,
                                 scope=dns_zone,
@@ -4559,7 +4704,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.ai_toolchain_operator_profile is None:
                 mc.ai_toolchain_operator_profile = self.models.ManagedClusterAIToolchainOperatorProfile()  # pylint: disable=no-member
             mc.ai_toolchain_operator_profile.enabled = False
+        return mc
 
+    def update_agentpool_profile_ssh_access(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        ssh_access = self.context.get_ssh_access()
+        if ssh_access is not None:
+            msg = (
+                f"You're going to update ALL agentpool ssh access to '{ssh_access}' "
+                "This change will take effect after you upgrade the nodepool. Proceed?"
+            )
+            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
+                raise DecoratorEarlyExitException()
+            for agent_pool_profile in mc.agent_pool_profiles:
+                if agent_pool_profile.security_profile is None:
+                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+                agent_pool_profile.security_profile.ssh_access = ssh_access
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
@@ -4603,6 +4764,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_outbound_type_in_network_profile(mc)
         # update loadbalancer profile
         mc = self.update_load_balancer_profile(mc)
+        # update natgateway profile
+        mc = self.update_nat_gateway_profile(mc)
         # update kube proxy config
         mc = self.update_kube_proxy_config(mc)
         # update custom ca trust certificates
@@ -4611,8 +4774,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_resource_group_profile(mc)
         # update auto upgrade profile
         mc = self.update_auto_upgrade_profile(mc)
-        # update guardrails_profile
-        mc = self.update_guardrails_profile(mc)
+        # update safeguards_profile
+        mc = self.update_safeguards_profile(mc)
         # update cluster upgrade settings profile
         mc = self.update_upgrade_settings(mc)
         # update nodepool taints
@@ -4629,6 +4792,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_azure_container_storage(mc)
         # update node provisioning profile
         mc = self.update_node_provisioning_profile(mc)
+        # update agentpool profile ssh access
+        mc = self.update_agentpool_profile_ssh_access(mc)
 
         return mc
 
@@ -4664,27 +4829,32 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         super().postprocessing_after_mc_created(cluster)
         enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
         disable_azure_container_storage = self.context.get_intermediate("disable_azure_container_storage")
+        is_extension_installed = self.context.get_intermediate("is_extension_installed")
+        is_azureDisk_enabled = self.context.get_intermediate("is_azureDisk_enabled")
+        is_elasticSan_enabled = self.context.get_intermediate("is_elasticSan_enabled")
+        is_ephemeralDisk_localssd_enabled = self.context.get_intermediate("is_ephemeralDisk_localssd_enabled")
+        is_ephemeralDisk_nvme_enabled = self.context.get_intermediate("is_ephemeralDisk_nvme_enabled")
+        current_core_value = self.context.get_intermediate("current_core_value")
+        pool_option = self.context.raw_param.get("storage_pool_option")
 
-        if enable_azure_container_storage or disable_azure_container_storage:
+        # enable azure container storage
+        if enable_azure_container_storage:
             if cluster.identity_profile is None or cluster.identity_profile["kubeletidentity"] is None:
                 logger.warning(
                     "Unexpected error getting kubelet's identity for the cluster."
                     "Unable to perform azure container storage operation."
                 )
                 return
-
-        # enable azure container storage
-        if enable_azure_container_storage:
             pool_name = self.context.raw_param.get("storage_pool_name")
             pool_type = self.context.raw_param.get("enable_azure_container_storage")
-            pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
             nodepool_list = self.context.get_intermediate("azure_container_storage_nodepools")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
-            agent_pool_details = {}
+            acstor_nodepool_skus = []
             for agentpool_profile in cluster.agent_pool_profiles:
-                agent_pool_details[agentpool_profile.name] = agentpool_profile.vm_size
+                if agentpool_profile.name in nodepool_list:
+                    acstor_nodepool_skus.append(agentpool_profile.vm_size)
 
             self.context.external_functions.perform_enable_azure_container_storage(
                 self.cmd,
@@ -4698,15 +4868,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_size,
                 pool_sku,
                 pool_option,
-                nodepool_list,
-                agent_pool_details,
+                acstor_nodepool_skus,
                 False,
+                is_extension_installed,
+                is_azureDisk_enabled,
+                is_elasticSan_enabled,
+                is_ephemeralDisk_localssd_enabled,
+                is_ephemeralDisk_nvme_enabled,
+                current_core_value,
             )
 
         # disable azure container storage
         if disable_azure_container_storage:
+            pool_type = self.context.raw_param.get("disable_azure_container_storage")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
-            pre_uninstall_validate = self.context.get_intermediate("pre_uninstall_validate_azure_container_storage")
+            pre_disable_validate = self.context.get_intermediate("pre_disable_validate_azure_container_storage")
             self.context.external_functions.perform_disable_azure_container_storage(
                 self.cmd,
                 self.context.get_subscription_id(),
@@ -4714,11 +4890,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.context.get_name(),
                 self.context.get_node_resource_group(),
                 kubelet_identity_object_id,
-                pre_uninstall_validate,
+                pre_disable_validate,
+                pool_type,
+                pool_option,
+                is_elasticSan_enabled,
+                is_azureDisk_enabled,
+                is_ephemeralDisk_localssd_enabled,
+                is_ephemeralDisk_nvme_enabled,
+                current_core_value,
             )
 
         # attach keyvault to app routing addon
-        from msrestazure.tools import parse_resource_id
         from azure.cli.command_modules.keyvault.custom import set_policy
         from azext_aks_preview._client_factory import get_keyvault_client
         keyvault_id = self.context.get_keyvault_id()
@@ -4743,12 +4925,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     keyvault_client = get_keyvault_client(self.cmd.cli_ctx, subscription_id=keyvault_subscription)
                     keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
                     managed_identity_object_id = cluster.ingress_profile.web_app_routing.identity.object_id
-                    print("managed_identity_object_id", managed_identity_object_id)
                     is_service_principal = False
 
                     try:
                         if keyvault.properties.enable_rbac_authorization:
-                            print("within if block")
                             if not self.context.external_functions.add_role_assignment(
                                 self.cmd,
                                 "Key Vault Secrets User",
@@ -4761,7 +4941,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                                     "Are you an Owner on this subscription?"
                                 )
                         else:
-                            print("within else block")
                             keyvault = set_policy(
                                 self.cmd,
                                 keyvault_client,

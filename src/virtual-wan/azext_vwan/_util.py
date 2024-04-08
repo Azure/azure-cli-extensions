@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import sys
-from knack.util import CLIError
+
+from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.util import sdk_no_wait
 
 
@@ -14,7 +15,7 @@ from ._client_factory import network_client_factory
 def _get_property(items, name):
     result = next((x for x in items if x.name.lower() == name.lower()), None)
     if not result:
-        raise CLIError("Property '{}' does not exist".format(name))
+        raise ArgumentUsageError(f"Property '{name}' does not exist")
     return result
 
 
@@ -30,9 +31,9 @@ def list_network_resource_property(resource, prop):
 
     def list_func(cmd, resource_group_name, resource_name):
         client = getattr(network_client_factory(cmd.cli_ctx), resource)
-        return client.get(resource_group_name, resource_name).__getattribute__(prop)
+        return getattr(client.get(resource_group_name, resource_name), prop)
 
-    func_name = 'list_network_resource_property_{}_{}'.format(resource, prop)
+    func_name = f"list_network_resource_property_{resource}_{prop}"
     setattr(sys.modules[__name__], func_name, list_func)
     return func_name
 
@@ -46,11 +47,10 @@ def get_network_resource_property_entry(resource, prop):
 
         result = next((x for x in items if x.name.lower() == item_name.lower()), None)
         if not result:
-            raise CLIError("Item '{}' does not exist on {} '{}'".format(
-                item_name, resource, resource_name))
+            raise ArgumentUsageError(f"Item '{item_name}' does not exist on {resource} '{resource_name}'")
         return result
 
-    func_name = 'get_network_resource_property_entry_{}_{}'.format(resource, prop)
+    func_name = f"get_network_resource_property_entry_{resource}_{prop}"
     setattr(sys.modules[__name__], func_name, get_func)
     return func_name
 
@@ -62,15 +62,15 @@ def delete_network_resource_property_entry(resource, prop):
         client = getattr(network_client_factory(cmd.cli_ctx), resource)
         item = client.get(resource_group_name, resource_name)
         keep_items = \
-            [x for x in item.__getattribute__(prop) if x.name.lower() != item_name.lower()]
+            [x for x in getattr(item, prop) if x.name.lower() != item_name.lower()]
         _set_param(item, prop, keep_items)
         if no_wait:
             sdk_no_wait(no_wait, client.create_or_update, resource_group_name, resource_name, item)
         else:
             result = sdk_no_wait(no_wait, client.create_or_update, resource_group_name, resource_name, item).result()
             if next((x for x in getattr(result, prop) if x.name.lower() == item_name.lower()), None):
-                raise CLIError("Failed to delete '{}' on '{}'".format(item_name, resource_name))
+                raise ArgumentUsageError(f"Failed to delete '{item_name}' on '{resource_name}'")
 
-    func_name = 'delete_network_resource_property_entry_{}_{}'.format(resource, prop)
+    func_name = f"delete_network_resource_property_entry_{resource}_{prop}"
     setattr(sys.modules[__name__], func_name, delete_func)
     return func_name

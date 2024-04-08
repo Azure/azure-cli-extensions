@@ -39,7 +39,7 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --match-configurations {matchConfigurations} --dynamic-match-configurations {dynamicMatchConfigurations}', checks=checks)
+        'az networkfabric taprule create --resource-group {rg} --location {location} --resource-name {name} --configuration-type {configurationType} --match-configurations {matchConfigurations}', checks=checks)
 
 
 def step_show(test, checks=None):
@@ -66,14 +66,6 @@ def step_list_subscription(test, checks=None):
         'az networkfabric taprule list')
 
 
-def step_resync(test, checks=None):
-    ''' Network Tap Rule resync operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric taprule resync --resource-group {rg} --resource-name {name}')
-
-
 def step_delete(test, checks=None):
     ''' Network Tap Rule delete operation'''
     if checks is None:
@@ -95,8 +87,7 @@ class GA_TapRuleScenarioTest1(ScenarioTest):
             'pollingIntervalInSeconds': CONFIG.get('NETWORK_TAP_RULE', 'polling_interval_in_seconds'),
             'configurationType': CONFIG.get('NETWORK_TAP_RULE', 'configuration_type'),
             'tapRulesUrl': CONFIG.get('NETWORK_TAP_RULE', 'tap_rules_url'),
-            'matchConfigurations': CONFIG.get('NETWORK_TAP_RULE', 'match_configurations'),
-            'dynamicMatchConfigurations': CONFIG.get('NETWORK_TAP_RULE', 'dynamic_match_configurations')
+            'matchConfigurations': CONFIG.get('NETWORK_TAP_RULE', 'match_configurations')
         })
 
     def test_GA_taprule_scenario1(self):

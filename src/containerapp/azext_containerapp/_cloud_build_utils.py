@@ -129,28 +129,34 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         thread.join()
 
         # Source code compression
-        done_spinner = False
-        thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
-        tar_file_path = os.path.join(tempfile.gettempdir(), f"{build_name}.tar.gz")
-        archive_source_code(tar_file_path, source)
-        done_spinner = True
-        thread.join()
+        data_file_path = source
+        source_is_folder = os.path.isdir(source)
+        if source_is_folder:
+            done_spinner = False
+            thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
+            data_file_path = os.path.join(tempfile.gettempdir(), f"{build_name}.tar.gz")
+            archive_source_code(data_file_path, source)
+            done_spinner = True
+            thread.join()
 
         # File upload
         done_spinner = False
-        thread = display_spinner("Uploading compressed data")
+        thread = display_spinner("Uploading data")
         headers = {'Authorization': 'Bearer ' + token}
         try:
-            tar_file = open(tar_file_path, "rb")
-            files = [("file", ("build_data.tar.gz", tar_file, "application/x-tar"))]
+            data_file = open(data_file_path, "rb")
+            file_name = os.path.basename(data_file_path)
+            files = [("file", (file_name, data_file))]
             response_file_upload = requests.post(
                 upload_endpoint,
                 files=files,
                 headers=headers)
         finally:
-            # Close and delete the file now that it was uploaded.
-            tar_file.close()
-            os.unlink(tar_file_path)
+            # Close the file now that it was uploaded.
+            data_file.close()
+            # if customer uploaded source file is a folder, delete the temp compressed file
+            if source_is_folder:
+                os.unlink(data_file_path)
         if not response_file_upload.ok:
             raise ValidationError(f"Error when uploading the file, request exited with {response_file_upload.status_code}")
         done_spinner = True
@@ -177,7 +183,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         thread = display_spinner("Streaming Cloud Build logs")
         headers = {'Authorization': 'Bearer ' + token}
         logs_stream_retries = 0
-        maximum_logs_stream_retries = 5
+        maximum_logs_stream_retries = 8
         while logs_stream_retries < maximum_logs_stream_retries:
             logs_stream_retries += 1
             response_log_streaming = requests.get(
@@ -188,7 +194,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
                 raise ValidationError(f"Error when streaming the logs, request exited with {response_log_streaming.status_code}")
             # Actually validate that we logs streams successfully
             response_log_streaming_lines = response_log_streaming.iter_lines()
-            count_lines_check = 2
+            count_lines_check = 4
             for line in response_log_streaming_lines:
                 log_line = remove_ansi_characters(line.decode("utf-8"))
                 log_in_file(log_line, logs_file, no_print=True)
@@ -205,6 +211,10 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
             if count_lines_check <= 0:
                 # We checked the set number of lines and logs stream without error. Let's continue.
                 break
+            # If the build pod running on legion, it need more time to get the container logs.
+            # Wait for a bit, and then break to try again. Using "logs_stream_retries" as the number of seconds to wait is a primitive exponential retry.
+            log_in_file(f"{substatus_indentation}Wait logstream for build container...\n", logs_file)
+            time.sleep(logs_stream_retries)
         done_spinner = True
         thread.join()
 

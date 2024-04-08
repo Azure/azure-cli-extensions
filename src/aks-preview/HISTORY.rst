@@ -11,8 +11,63 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Vendor new SDK and bump API version to 2023-11-02-preview.
+
+3.0.0b1
++++++++
+* [BREAKING CHANGE] Remove support for nodeSelector for egress gateway for `az aks mesh` command.
+
+2.0.0b8
++++++++
+* Add `az aks check-network outbound` command to check outbound network from nodes.
+* Update the minimum required cli core version to `2.56.0` (actually since `2.0.0b7`).
+
+2.0.0b7
++++++++
+* Support reset default value for loadbalancer profile and natgateway profile
+* Vendor new SDK and bump API version to 2024-02-02-preview.
+
+2.0.0b6
++++++++
+* Fix the resource allocated after disabling ephemeralDisk storagepool type for option `all` in azure container storage.
+
+2.0.0b5
++++++++
+* Add support to enable and disable a single type of storagepool using `--enable-azure-container-storage` and `--disable-azure-container-storage` respectively.
+* Add support to define the resource allocation to Azure Container Storage applications based on the type of node pools used and storagepools enabled.
+
+2.0.0b4
++++++++
+* Add `--enable-vtpm` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-vtpm` to the `az aks nodepool update` command.
+* Add `--enable-secure-boot` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-secure-boot` to the `az aks nodepool update` command.
+
+2.0.0b3
++++++++
+* Add parameter to set revision `--revision` for the Azure Service Mesh addon while creating AKS cluster.
+* Fix for `az aks mesh get-upgrades` command panic response when ASM addon is not enabled.
+
+2.0.0b2
++++++++
+* Add `--pod-ip-allocation-mode` to `az aks create` and `az aks nodepool` commands.
+
+2.0.0b1
++++++++
+* [BREAKING CHANGE] Replace `guardrails` parameters with `safeguards`.
 * Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
+* Add `az aks nodepool delete-machines` command.
+* Update `az aks approuting zone` command to support private dns zones.
+* Vendor new SDK and bump API version to 2024-01-02-preview.
+
+1.0.0b6
++++++++
+* Vendor new SDK and bump API version to 2023-11-02-preview.
+* Add `--ssh-access` to the `az aks create` command.
+* Add `--ssh-access` to the `az aks update` command.
+* Add `--ssh-access` to the `az aks nodepool add` command.
+* Add `--ssh-access` to the `az aks nodepool update` command.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
+* Add `az aks nodepool delete-machines` command.
 
 1.0.0b5
 +++++++
