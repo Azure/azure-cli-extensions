@@ -384,10 +384,10 @@ class TestSpringAppCreateWithPrivateStorageAccess(BasicTest):
         self._execute('rg', 'asa', sku=self._get_sku('Standard'), enable_private_storage_access=True,
                       disable_app_insights=True)
         resource = self.created_resource
-        self.assertEqual(True, resource.properties.vnet_addons.private_storage_access)
+        self.assertEqual("Enabled", resource.properties.vnet_addons.private_storage_access)
 
     def test_asa_create_enterprise_with_private_storage_access(self):
         self._execute('rg', 'asa', sku=self._get_sku('Enterprise'), enable_private_storage_access=True,
                       disable_app_insights=True)
         resource = self.created_resource
-        self.assertEqual(True, resource.properties.vnet_addons.private_storage_access)
+        self.assertEqual("Enabled", resource.properties.vnet_addons.private_storage_access)

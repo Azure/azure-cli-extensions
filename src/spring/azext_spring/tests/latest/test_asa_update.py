@@ -76,4 +76,4 @@ class TestSpringAppUpdateWithPrivateStorageAccess(BasicTest):
     def test_asa_update_with_private_storage_access(self):
         self._execute('rg', 'asa', enable_private_storage_access=True)
         resource = self.updated_resource
-        self.assertEqual(True, resource.properties.vnet_addons.private_storage_access)
+        self.assertEqual("Enabled", resource.properties.vnet_addons.private_storage_access)
