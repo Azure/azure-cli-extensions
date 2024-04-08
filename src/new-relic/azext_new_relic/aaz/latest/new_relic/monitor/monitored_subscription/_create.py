@@ -12,19 +12,21 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "new-relic monitor tag-rule create",
+    "new-relic monitor monitored-subscription create",
 )
 class Create(AAZCommand):
-    """Create a TagRule
-
-    :example: Create a TagRule.
-        az new-relic monitor tag-rule create --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules "{send-aad-logs:'Enabled',send-subscription-logs:'Enabled',send-activity-logs:'Enabled',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}" --metric-rules "{user-email:'UserEmail@123.com',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}"
+    """Create the subscriptions that should be monitored by the NewRelic monitor resource.
+    
+    :example: Create the subscriptions that should be monitored by the NewRelic monitor resource.
+    Please run below commands in the mentioned order
+    1) az new-relic monitor monitored-subscription create --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default --patch-operation AddBegin --subscriptions "[{status:'InProgress',subscription-id:'subscription-id'}]"
+    2) az new-relic monitor monitored-subscription create --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default --patch-operation AddComplete --subscriptions "[{status:'Active',subscription-id:'subscription-id'}]"        
     """
 
     _aaz_info = {
         "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/monitoredsubscriptions/{}", "2024-01-01"],
         ]
     }
 
@@ -45,36 +47,77 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.configuration_name = AAZStrArg(
+            options=["--configuration-name"],
+            help="The configuration name. Only 'default' value is supported.",
+            required=True,
+            enum={"default": "default"},
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
+        )
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
             help="Name of the Monitoring resource",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            options=["--resource-group","--g"],
             help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
-            required=True,
-        )
-        _args_schema.rule_set_name = AAZStrArg(
-            options=["-n", "--name", "--rule-set-name"],
-            help="Name of the TagRule",
             required=True,
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.log_rules = AAZObjectArg(
-            options=["--log-rules"],
+        _args_schema.monitored_subscription_list = AAZListArg(
+            options=["-n", "--subscriptions", "--monitored-subscription-list"],
             arg_group="Properties",
-            help="Set of rules for sending logs for the Monitor resource. Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
+            help="List of subscriptions and the state of the monitoring.",
         )
-        _args_schema.metric_rules = AAZObjectArg(
-            options=["--metric-rules"],
+        _args_schema.patch_operation = AAZStrArg(
+            options=["--patch-operation"],
             arg_group="Properties",
-            help="Set of rules for sending metrics for the Monitor resource. Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
+            help="The operation for the patch on the resource.",
+            enum={"Active": "Active", "AddBegin": "AddBegin", "AddComplete": "AddComplete", "DeleteBegin": "DeleteBegin", "DeleteComplete": "DeleteComplete"},
         )
 
-        log_rules = cls._args_schema.log_rules
+        monitored_subscription_list = cls._args_schema.monitored_subscription_list
+        monitored_subscription_list.Element = AAZObjectArg()
+
+        _element = cls._args_schema.monitored_subscription_list.Element
+        _element.error = AAZStrArg(
+            options=["error"],
+            help="The reason of not monitoring the subscription.",
+        )
+        _element.status = AAZStrArg(
+            options=["status"],
+            help="The state of monitoring.",
+            enum={"Active": "Active", "Deleting": "Deleting", "Failed": "Failed", "InProgress": "InProgress"},
+        )
+        _element.subscription_id = AAZStrArg(
+            options=["subscription-id"],
+            help="The subscriptionId to be monitored.",
+        )
+        _element.tag_rules = AAZObjectArg(
+            options=["tag-rules"],
+            help="The resource-specific properties for this resource.",
+        )
+
+        tag_rules = cls._args_schema.monitored_subscription_list.Element.tag_rules
+        tag_rules.log_rules = AAZObjectArg(
+            options=["log-rules"],
+            help="Set of rules for sending logs for the Monitor resource.",
+        )
+        tag_rules.metric_rules = AAZObjectArg(
+            options=["metric-rules"],
+            help="Set of rules for sending metrics for the Monitor resource.",
+        )
+
+        log_rules = cls._args_schema.monitored_subscription_list.Element.tag_rules.log_rules
         log_rules.filtering_tags = AAZListArg(
             options=["filtering-tags"],
             help="List of filtering tags to be used for capturing logs. This only takes effect if SendActivityLogs flag is enabled. If empty, all resources will be captured. If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
@@ -95,11 +138,11 @@ class Create(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
-        filtering_tags = cls._args_schema.log_rules.filtering_tags
+        filtering_tags = cls._args_schema.monitored_subscription_list.Element.tag_rules.log_rules.filtering_tags
         filtering_tags.Element = AAZObjectArg()
         cls._build_args_filtering_tag_create(filtering_tags.Element)
 
-        metric_rules = cls._args_schema.metric_rules
+        metric_rules = cls._args_schema.monitored_subscription_list.Element.tag_rules.metric_rules
         metric_rules.filtering_tags = AAZListArg(
             options=["filtering-tags"],
             help="List of filtering tags to be used for capturing metrics.",
@@ -117,7 +160,7 @@ class Create(AAZCommand):
             ),
         )
 
-        filtering_tags = cls._args_schema.metric_rules.filtering_tags
+        filtering_tags = cls._args_schema.monitored_subscription_list.Element.tag_rules.metric_rules.filtering_tags
         filtering_tags.Element = AAZObjectArg()
         cls._build_args_filtering_tag_create(filtering_tags.Element)
         return cls._args_schema
@@ -155,7 +198,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TagRulesCreateOrUpdate(ctx=self.ctx)()
+        yield self.MonitoredSubscriptionsCreateorUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -170,7 +213,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TagRulesCreateOrUpdate(AAZHttpOperation):
+    class MonitoredSubscriptionsCreateorUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -200,7 +243,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/tagRules/{ruleSetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/NewRelic.Observability/monitors/{monitorName}/monitoredSubscriptions/{configurationName}",
                 **self.url_parameters
             )
 
@@ -216,15 +259,15 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "configurationName", self.ctx.args.configuration_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "monitorName", self.ctx.args.monitor_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "ruleSetName", self.ctx.args.rule_set_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -261,33 +304,49 @@ class Create(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("logRules", AAZObjectType, ".log_rules")
-                properties.set_prop("metricRules", AAZObjectType, ".metric_rules")
+                properties.set_prop("monitoredSubscriptionList", AAZListType, ".monitored_subscription_list")
+                properties.set_prop("patchOperation", AAZStrType, ".patch_operation")
 
-            log_rules = _builder.get(".properties.logRules")
+            monitored_subscription_list = _builder.get(".properties.monitoredSubscriptionList")
+            if monitored_subscription_list is not None:
+                monitored_subscription_list.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.monitoredSubscriptionList[]")
+            if _elements is not None:
+                _elements.set_prop("error", AAZStrType, ".error")
+                _elements.set_prop("status", AAZStrType, ".status")
+                _elements.set_prop("subscriptionId", AAZStrType, ".subscription_id")
+                _elements.set_prop("tagRules", AAZObjectType, ".tag_rules")
+
+            tag_rules = _builder.get(".properties.monitoredSubscriptionList[].tagRules")
+            if tag_rules is not None:
+                tag_rules.set_prop("logRules", AAZObjectType, ".log_rules")
+                tag_rules.set_prop("metricRules", AAZObjectType, ".metric_rules")
+
+            log_rules = _builder.get(".properties.monitoredSubscriptionList[].tagRules.logRules")
             if log_rules is not None:
                 log_rules.set_prop("filteringTags", AAZListType, ".filtering_tags")
                 log_rules.set_prop("sendAadLogs", AAZStrType, ".send_aad_logs")
                 log_rules.set_prop("sendActivityLogs", AAZStrType, ".send_activity_logs")
                 log_rules.set_prop("sendSubscriptionLogs", AAZStrType, ".send_subscription_logs")
 
-            filtering_tags = _builder.get(".properties.logRules.filteringTags")
+            filtering_tags = _builder.get(".properties.monitoredSubscriptionList[].tagRules.logRules.filteringTags")
             if filtering_tags is not None:
                 _CreateHelper._build_schema_filtering_tag_create(filtering_tags.set_elements(AAZObjectType, "."))
 
-            metric_rules = _builder.get(".properties.metricRules")
+            metric_rules = _builder.get(".properties.monitoredSubscriptionList[].tagRules.metricRules")
             if metric_rules is not None:
                 metric_rules.set_prop("filteringTags", AAZListType, ".filtering_tags")
                 metric_rules.set_prop("sendMetrics", AAZStrType, ".send_metrics")
                 metric_rules.set_prop("userEmail", AAZStrType, ".user_email")
 
-            filtering_tags = _builder.get(".properties.metricRules.filteringTags")
+            filtering_tags = _builder.get(".properties.monitoredSubscriptionList[].tagRules.metricRules.filteringTags")
             if filtering_tags is not None:
                 _CreateHelper._build_schema_filtering_tag_create(filtering_tags.set_elements(AAZObjectType, "."))
 
@@ -317,29 +376,44 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.log_rules = AAZObjectType(
-                serialized_name="logRules",
-            )
-            properties.metric_rules = AAZObjectType(
-                serialized_name="metricRules",
+            properties.monitored_subscription_list = AAZListType(
+                serialized_name="monitoredSubscriptionList",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
             )
 
-            log_rules = cls._schema_on_200_201.properties.log_rules
+            monitored_subscription_list = cls._schema_on_200_201.properties.monitored_subscription_list
+            monitored_subscription_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.monitored_subscription_list.Element
+            _element.error = AAZStrType()
+            _element.status = AAZStrType()
+            _element.subscription_id = AAZStrType(
+                serialized_name="subscriptionId",
+            )
+            _element.tag_rules = AAZObjectType(
+                serialized_name="tagRules",
+            )
+
+            tag_rules = cls._schema_on_200_201.properties.monitored_subscription_list.Element.tag_rules
+            tag_rules.log_rules = AAZObjectType(
+                serialized_name="logRules",
+            )
+            tag_rules.metric_rules = AAZObjectType(
+                serialized_name="metricRules",
+            )
+            tag_rules.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+            )
+
+            log_rules = cls._schema_on_200_201.properties.monitored_subscription_list.Element.tag_rules.log_rules
             log_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
             )
@@ -353,11 +427,11 @@ class Create(AAZCommand):
                 serialized_name="sendSubscriptionLogs",
             )
 
-            filtering_tags = cls._schema_on_200_201.properties.log_rules.filtering_tags
+            filtering_tags = cls._schema_on_200_201.properties.monitored_subscription_list.Element.tag_rules.log_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
             _CreateHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
-            metric_rules = cls._schema_on_200_201.properties.metric_rules
+            metric_rules = cls._schema_on_200_201.properties.monitored_subscription_list.Element.tag_rules.metric_rules
             metric_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
             )
@@ -368,29 +442,9 @@ class Create(AAZCommand):
                 serialized_name="userEmail",
             )
 
-            filtering_tags = cls._schema_on_200_201.properties.metric_rules.filtering_tags
+            filtering_tags = cls._schema_on_200_201.properties.monitored_subscription_list.Element.tag_rules.metric_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
             _CreateHelper._build_schema_filtering_tag_read(filtering_tags.Element)
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
 
             return cls._schema_on_200_201
 
