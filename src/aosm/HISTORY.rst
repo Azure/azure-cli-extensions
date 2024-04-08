@@ -5,6 +5,7 @@ Release History
 
 2.0.0b1
 ++++++++
+* Added: mutating webhook for injectArtifactStoreDetails
 * Added: Users can specify multiple image sources from all types of registries (not just ACRs). General improvements in how CNF image sources are handled. 
 * Fixed: Namespace appeared twice in the `artifacts.json` file, leading to errors in the publish step of the CLI.
 * Changed configurationType for NF Resources from Secret to Open
@@ -23,7 +24,7 @@ Release History
 * No changes, building wheel from correct branch
 * Fixed: customLocation missing from Nexus
 * Fixed: helm charts not uploading correctly
-* Added Nexus support
+* Added: Nexus support
 * Add `publisher` command group for management of publisher resources.
 * Changed the name of the `path_to_mappings` parameter in the CNF input file to `default_values`
 * Added a `helm template` validation step to the `az aosm nfd build` command for the `cnf` definition type

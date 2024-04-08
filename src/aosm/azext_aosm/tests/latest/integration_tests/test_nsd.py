@@ -14,7 +14,7 @@ from distutils.dir_util import copy_tree
 from filecmp import dircmp
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any
+from typing import Any, List
 from unittest.mock import patch
 from azext_aosm.vendored_sdks.models import (
     VirtualNetworkFunctionDefinitionVersion,
@@ -27,7 +27,7 @@ from azure.mgmt.resource.features.v2015_12_01.models import (
     FeatureProperties,
     FeatureResult,
 )
-
+from azext_aosm.common.constants import CNF_TYPE, VNF_TYPE
 from azext_aosm.custom import (
     onboard_nsd_build,
     onboard_nsd_generate_config,
@@ -129,15 +129,24 @@ nginx_deploy_parameters = {
 
 # We don't want to get details from a real NFD (calling out to Azure) in a UT.
 # Therefore we pass in a fake client to supply the deployment parameters from the "NFD".
+
+
+@dataclass
+class NetworkFunctionApplications:
+    name: str
+    depends_on_profile: list
+    artifact_type: str
 @dataclass
 class NetworkFunctionTemplate:
     nfvi_type: str
+    network_function_applications: List[NetworkFunctionApplications]
 
 
 @dataclass
 class NFDVProperties(VirtualNetworkFunctionDefinitionVersion):
     deploy_parameters: str
     network_function_template: NetworkFunctionTemplate  # type: ignore
+    network_function_type: str
 
 
 @dataclass
@@ -148,12 +157,15 @@ class NFDV:
 
 class NFDVs:
     def get(self, network_function_definition_group_name, **_):
-        networkFunctionTemplate = NetworkFunctionTemplate(nfvi_type="AzureCore")
+        networkFunctionApplication = NetworkFunctionApplications(name="test", depends_on_profile=[],artifact_type="")
+        networkFunctionTemplate = NetworkFunctionTemplate(nfvi_type="AzureCore",
+                                                          network_function_applications=[networkFunctionApplication] )
         if "nginx" in network_function_definition_group_name:
             return NFDV(
                 properties=NFDVProperties(
                     deploy_parameters=json.dumps(nginx_deploy_parameters),
                     network_function_template=networkFunctionTemplate,
+                    network_function_type=CNF_TYPE
                 ),
                 id="/subscriptions/00000/resourceGroups/rg/providers/Microsoft.HybridNetwork/publishers/pub/networkFunctionDefinitionGroups/nginx/networkFunctionDefinitionVersions/1.0.0",
             )
@@ -162,6 +174,7 @@ class NFDVs:
                 properties=NFDVProperties(
                     deploy_parameters=json.dumps(ubuntu_deploy_parameters),
                     network_function_template=networkFunctionTemplate,
+                    network_function_type=VNF_TYPE
                 ),
                 id="/subscriptions/00000/resourceGroups/rg/providers/Microsoft.HybridNetwork/publishers/pub/networkFunctionDefinitionGroups/ubuntu/networkFunctionDefinitionVersions/1.0.0",
             )

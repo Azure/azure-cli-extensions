@@ -40,6 +40,9 @@ class ManifestsExist(str, Enum):
     SOME = "some"
 
 
+CNF_TYPE = "ContainerizedNetworkFunction"
+VNF_TYPE = "VirtualNetworkFunction"
+
 # Names of files used in the repo
 # TODO: remove unused constants
 BASE_FOLDER_NAME = "base"

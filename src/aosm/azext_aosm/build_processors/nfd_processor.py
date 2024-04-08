@@ -20,7 +20,9 @@ from azext_aosm.vendored_sdks.models import (
     NFDResourceElementTemplate, NSDArtifactProfile,
     ReferencedResource, TemplateType, ContainerizedNetworkFunctionDefinitionVersion,
     VirtualNetworkFunctionDefinitionVersion)
-from azext_aosm.common.constants import NSD_OUTPUT_FOLDER_FILENAME, NSD_NF_TEMPLATE_FILENAME, NSD_TEMPLATE_FOLDER_NAME
+from azext_aosm.common.constants import (
+    NSD_OUTPUT_FOLDER_FILENAME, NSD_NF_TEMPLATE_FILENAME,
+    NSD_TEMPLATE_FOLDER_NAME, VNF_TYPE, CNF_TYPE)
 from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 logger = get_logger(__name__)
 
@@ -80,11 +82,13 @@ class NFDProcessor(BaseInputProcessor):
 
         # This horrendous if statement is required because:
         # - the 'properties' and 'network_function_template' attributes are optional
-        # - the isinstance check is because the base NetworkFunctionDefinitionVersionPropertiesFormat class
+        # - the isinstance check is because the base
+        #   NetworkFunctionDefinitionVersionPropertiesFormat class
         #   doesn't define the network_function_template attribute, even though both subclasses do.
-        # Not switching to EAFP style because mypy doesn't account for `except AttributeError` (for good reason).
-        # Similar test required in the NFD input, but we can't deduplicate the code because mypy doesn't
-        # propagate type narrowing from isinstance().
+        # Not switching to EAFP style because mypy doesn't
+        # account for `except AttributeError` (for good reason).
+        # Similar test required in the NFD input, but we can't deduplicate the code because mypy
+        # doesn't propagate type narrowing from isinstance().
         if (
             self.input_artifact.network_function_definition.properties
             and isinstance(
@@ -96,10 +100,26 @@ class NFDProcessor(BaseInputProcessor):
             )
             and self.input_artifact.network_function_definition.properties.network_function_template
         ):
-            params = {
-                "nfvi_type":
-                self.input_artifact.network_function_definition.properties.network_function_template.nfvi_type
-            }
+            # Split for line-too-long linting errors
+            nf_type = self.input_artifact.network_function_definition.properties.network_function_type
+            nf_templates = self.input_artifact.network_function_definition.properties.network_function_template
+
+            if nf_type == CNF_TYPE:
+                nf_application_names = [nf_app.name for nf_app in nf_templates.network_function_applications]
+                params = {
+                    "nfvi_type":
+                    nf_templates.nfvi_type,
+                    "is_cnf": True,
+                    "nf_application_names": nf_application_names
+                }
+            elif nf_type == VNF_TYPE:
+                params = {
+                    "nfvi_type":
+                    nf_templates.nfvi_type,
+                    "is_cnf": False
+                }
+            else:
+                raise ResourceNotFoundError(f"The NFDV provided has invalid network function type: {nf_type}")
         else:
             raise ResourceNotFoundError("The NFDV provided has no nfvi type.")
         bicep_contents = render_bicep_contents_from_j2(template_path, params)
