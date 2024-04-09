@@ -13580,8 +13580,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                     "taint1=value1:PreferNoSchedule",
                 ),
                 self.check(
+                    "agentPoolProfiles[0].nodeTaints[1]",
+                    "taint2=value2:PreferNoSchedule",
+                ),
+                self.check(
                     "agentPoolProfiles[0].nodeInitializationTaints[0]",
-                    "initTaint1=value2:PreferNoSchedule",
+                    "initTaint1=value1:PreferNoSchedule",
+                ),
+                self.check(
+                    "agentPoolProfiles[0].nodeInitializationTaints[1]",
+                    "initTaint2=value2:PreferNoSchedule",
                 ),
             ],
         )
