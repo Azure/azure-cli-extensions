@@ -31,9 +31,12 @@ from .aaz.latest.apic.environment import Update as UpdateEnvironment
 
 logger = get_logger(__name__)
 
+
 class DefaultWorkspaceParameter:
+    # pylint: disable=too-few-public-methods
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.workspace_name._required = False
         args_schema.workspace_name._registered = False
@@ -43,20 +46,26 @@ class DefaultWorkspaceParameter:
         args = self.ctx.args
         args.workspace_name = "default"
 
+
 class UpdateAPIExtension(DefaultWorkspaceParameter, UpdateAPI):
     pass
 
+
 class UpdateAPIDefinitionExtension(DefaultWorkspaceParameter, UpdateAPIDefinition):
     pass
-    
+
+
 class UpdateAPIDeploymentExtension(DefaultWorkspaceParameter, UpdateAPIDeployment):
     pass
-    
+
+
 class UpdateAPIVersionExtension(DefaultWorkspaceParameter, UpdateAPIVersion):
     pass
-    
+
+
 class UpdateEnvironmentExtension(DefaultWorkspaceParameter, UpdateEnvironment):
     pass
+
 
 class ImportSpecificationExtension(ImportSpecification):
     @classmethod
@@ -524,10 +533,11 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                     CreateAPIDeployment(cli_ctx=cmd.cli_ctx)(command_args=api_deployment_args)
                     logger.warning('API deployment was created successfully')
 
-def _generate_api_id(input: str) -> str:
+
+def _generate_api_id(title: str) -> str:
     import re
     # Remove invalid characters
-    id = re.sub('[^a-zA-Z0-9-]', '', input)
+    api_id = re.sub('[^a-zA-Z0-9-]', '', title)
     # Remove leading and trailing hyphens
-    id = id.strip('-')
-    return id
+    api_id = api_id.strip('-')
+    return api_id
