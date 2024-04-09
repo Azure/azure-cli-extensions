@@ -718,6 +718,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return load_balancer_backend_pool_type
 
+    def get_cluster_service_load_balancer_health_probe_mode(self) -> Union[str, None]:
+        """Obtain the value of cluster_service_load_balancer_health_probe_mode.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        cluster_service_health_probe_mode = self.raw_param.get(
+            "cluster_service_load_balancer_health_probe_mode"
+        )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return cluster_service_health_probe_mode
+
     def get_nrg_lockdown_restriction_level(self) -> Union[str, None]:
         """Obtain the value of nrg_lockdown_restriction_level.
         :return: string or None
@@ -2735,7 +2749,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # recreate the load balancer profile if load_balancer_managed_outbound_ipv6_count is not None
         if (
             self.context.get_load_balancer_managed_outbound_ipv6_count() is not None or
-            self.context.get_load_balancer_backend_pool_type() is not None
+            self.context.get_load_balancer_backend_pool_type() is not None or
+            self.context.get_cluster_service_load_balancer_health_probe_mode() is not None
         ):
             network_profile.load_balancer_profile = create_load_balancer_profile(
                 self.context.get_load_balancer_managed_outbound_ip_count(),
@@ -2745,6 +2760,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.context.get_load_balancer_outbound_ports(),
                 self.context.get_load_balancer_idle_timeout(),
                 self.context.get_load_balancer_backend_pool_type(),
+                self.context.get_cluster_service_load_balancer_health_probe_mode(),
                 models=self.models.load_balancer_models,
             )
 
@@ -2774,7 +2790,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             network_profile.monitoring = self.models.NetworkMonitoring(  # pylint: disable=no-member
                 enabled=network_observability
             )
-
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3922,6 +3937,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 outbound_ports=self.context.get_load_balancer_outbound_ports(),
                 idle_timeout=self.context.get_load_balancer_idle_timeout(),
                 backend_pool_type=self.context.get_load_balancer_backend_pool_type(),
+                health_probe_mode=self.context.get_cluster_service_load_balancer_health_probe_mode(),
                 profile=mc.network_profile.load_balancer_profile,
                 models=self.models.load_balancer_models,
             )

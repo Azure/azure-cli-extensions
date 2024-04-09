@@ -8,12 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._cancel_verification import *
-from ._create import *
-from ._delete import *
-from ._initiate_verification import *
-from ._list import *
-from ._show import *
-from ._update import *
-from ._wait import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "maintenance scheduledevent",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Scheduled event actions
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

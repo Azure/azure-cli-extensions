@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "communication email delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "communication email domain initiate-verification",
 )
-class Delete(AAZCommand):
-    """Delete to delete a EmailService.
+class InitiateVerification(AAZCommand):
+    """Initiate verification of DNS record.
 
-    :example: Delete a email resource
-        az communication email delete -n ResourceName -g ResourceGroup
+    :example: Initiate Domain Verification
+        az communication email domain initiate-verification --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --verification-type Domain/SPF/DKIM/DKIM2
     """
 
     _aaz_info = {
         "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}/domains/{}/initiateverification", "2023-04-01"],
         ]
     }
 
@@ -46,8 +45,18 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.domain_name = AAZStrArg(
+            options=["--domain-name"],
+            help="The name of the Domains resource.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                max_length=253,
+                min_length=1,
+            ),
+        )
         _args_schema.email_service_name = AAZStrArg(
-            options=["-n", "--name", "--email-service-name"],
+            options=["--email-service-name"],
             help="The name of the EmailService resource.",
             required=True,
             id_part="name",
@@ -60,11 +69,22 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.verification_type = AAZStrArg(
+            options=["--verification-type"],
+            arg_group="Parameters",
+            help="Type of verification.",
+            required=True,
+            enum={"DKIM": "DKIM", "DKIM2": "DKIM2", "DMARC": "DMARC", "Domain": "Domain", "SPF": "SPF"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.EmailServicesDelete(ctx=self.ctx)()
+        yield self.DomainsInitiateVerification(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +95,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class EmailServicesDelete(AAZHttpOperation):
+    class DomainsInitiateVerification(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -85,25 +105,16 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200]:
+            if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -114,13 +125,13 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}/domains/{domainName}/initiateVerification",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -129,6 +140,10 @@ class Delete(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "domainName", self.ctx.args.domain_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "emailServiceName", self.ctx.args.email_service_name,
                     required=True,
@@ -154,15 +169,32 @@ class Delete(AAZCommand):
             }
             return parameters
 
-        def on_200(self, session):
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("verificationType", AAZStrType, ".verification_type", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
             pass
 
-        def on_204(self, session):
-            pass
+
+class _InitiateVerificationHelper:
+    """Helper class for InitiateVerification"""
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
-
-
-__all__ = ["Delete"]
+__all__ = ["InitiateVerification"]

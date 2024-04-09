@@ -12,19 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "communication email show",
+    "maintenance scheduledevent acknowledge",
+    is_preview=True,
 )
-class Show(AAZCommand):
-    """Get the EmailService and its properties.
+class Acknowledge(AAZCommand):
+    """Post Scheduled Event Acknowledgement
 
-    :example: Get a email service's properties
-        az communication email show -n ResourceName -g ResourceGroup
+    :example: Acknowledge scheduled event of a VM
+        az --resource-group {resourceGroup} --resource-name {VMname} --scheduled-event-id {GuidEventId} --subscription {subscriptionId}
+
+    :example: Acknowledge scheduled event of a VMSS
+        az --resource-group {resourceGroup} --resource-name {VMSSname} --scheduled-event-id {GuidEventId} --subscription {subscriptionId}
+
+    :example: Acknowledge scheduled event of a AvailabilitySet
+        az --resource-group {resourceGroup} --resource-name {AVSetname} --scheduled-event-id {GuidEventId} --subscription {subscriptionId}
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/{}/{}/providers/microsoft.maintenance/scheduledevents/{}/acknowledge", "2023-10-01-preview"],
         ]
     }
 
@@ -44,25 +51,32 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.email_service_name = AAZStrArg(
-            options=["-n", "--name", "--email-service-name"],
-            help="The name of the EmailService resource.",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]+$",
-                max_length=63,
-                min_length=1,
-            ),
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.resource_name = AAZStrArg(
+            options=["--resource-name"],
+            help="Resource Name",
+            required=True,
+            id_part="name",
+        )
+        _args_schema.resource_type = AAZStrArg(
+            options=["--resource-type"],
+            help="Resource type",
+            required=True,
+            id_part="type",
+        )
+        _args_schema.scheduled_event_id = AAZStrArg(
+            options=["--scheduled-event-id"],
+            help="Scheduled Event Id. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000)",
+            required=True,
+            id_part="child_name_1",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EmailServicesGet(ctx=self.ctx)()
+        self.ScheduledEventAcknowledge(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,7 +91,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EmailServicesGet(AAZHttpOperation):
+    class ScheduledEventAcknowledge(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -91,27 +105,35 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/emailServices/{emailServiceName}",
+                "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Compute/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/scheduledevents/{scheduledEventId}/acknowledge",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "emailServiceName", self.ctx.args.email_service_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "resourceName", self.ctx.args.resource_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceType", self.ctx.args.resource_type,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "scheduledEventId", self.ctx.args.scheduled_event_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -125,7 +147,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -158,65 +180,13 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.data_location = AAZStrType(
-                serialized_name="dataLocation",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _schema_on_200.value = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _AcknowledgeHelper:
+    """Helper class for Acknowledge"""
 
 
-__all__ = ["Show"]
+__all__ = ["Acknowledge"]

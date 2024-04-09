@@ -115,6 +115,8 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -360,6 +362,11 @@ node_provisioning_modes = [
 ssh_accesses = [
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+]
+
+health_probe_modes = [
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
 ]
 
 
@@ -876,6 +883,12 @@ def load_arguments(self, _):
             action="store_true"
         )
 
+        c.argument(
+            "cluster_service_load_balancer_health_probe_mode",
+            is_preview=True,
+            arg_type=get_enum_type(health_probe_modes),
+        )
+
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
         c.argument("disable_local_accounts", action="store_true")
@@ -1257,6 +1270,12 @@ def load_arguments(self, _):
         )
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
+
+        c.argument(
+            "cluster_service_load_balancer_health_probe_mode",
+            is_preview=True,
+            arg_type=get_enum_type(health_probe_modes),
+        )
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)

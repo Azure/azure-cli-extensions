@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all valid sender usernames for a domains resource.
+
+    :example: Get all sender usernames from a domain resource
+        az communication email domain sender-username list --domain-name DomainName --email-service-name ResourceName -g ResourceGroup
     """
 
     _aaz_info = {

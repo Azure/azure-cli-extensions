@@ -306,3 +306,7 @@ CONST_SSH_ACCESS_LOCALUSER = "localuser"
 # Dns zone contributor role
 CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE = "Private DNS Zone Contributor"
 CONST_DNS_ZONE_CONTRIBUTOR_ROLE = "DNS Zone Contributor"
+
+# Cluster service health probe mode
+CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT = "Servicenodeport"
+CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED = "Shared"
