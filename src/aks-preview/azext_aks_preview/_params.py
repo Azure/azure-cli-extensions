@@ -638,7 +638,7 @@ def load_arguments(self, _):
             validator=validate_nodepool_taints,
             help=(
                 "comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
-                "Pass "" to clear existing taints."
+                "Pass \"\" to clear existing taints."
             ),
         )
         c.argument("node_osdisk_type", arg_type=get_enum_type(node_os_disk_types))
