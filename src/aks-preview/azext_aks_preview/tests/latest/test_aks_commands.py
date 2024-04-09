@@ -13510,7 +13510,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "taint1=value1:PreferNoSchedule,taint2=value2:PreferNoSchedule"
         )
         nodepool_init_taints = (
-            "initTaint1=value1:PreferNoSchedule,initTaint2=value2:PreferNoSchedule"
+            "initTaint1=value1:PreferNoSchedule initTaint2=value2:PreferNoSchedule"
         )
         nodepool_taints2 = "taint1=value2:PreferNoSchedule"
         nodepool_init_taints2 = "initTaint1=value2:PreferNoSchedule"

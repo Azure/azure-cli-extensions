@@ -580,7 +580,7 @@ helps['aks create'] = f"""
         - name: --nodepool-taints
           type: string
           short-summary: The node taints for all node pools in this cluster.
-        - name: --nodepool-initialization-taints
+        - name: --nodepool-init-taints --nodepool-initialization-taints
           type: string
           short-summary: The node initialization taints for node pools created with aks create operation.
         - name: --enable-cost-analysis
@@ -1168,6 +1168,9 @@ helps['aks update'] = """
         - name: --ssh-access
           type: string
           short-summary: Update SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
+      - name: --nodepool-init-taints --nodepool-initialization-taints
+          type: string
+          short-summary: The node initialization taints for all node pools in cluster. 
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
