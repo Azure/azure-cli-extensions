@@ -16,7 +16,7 @@ from .managed_component import (Acs, Flux, Scg, ScgOperator,
 from ..log_stream.writer import (DefaultWriter, PrefixWriter)
 from ..log_stream.log_stream_operations import log_stream_from_url
 from ..log_stream.log_stream_validators import validate_thread_number
-from .._utils import (get_proxy_api_endpoint, BearerAuth)
+from .._utils import (get_bearer_auth, get_hostname)
 
 
 logger = get_logger(__name__)
@@ -42,7 +42,7 @@ class QueryOptions:
 def managed_component_logs(cmd, client, resource_group, service,
                            name=None, all_instances=None, instance=None,
                            follow=None, max_log_requests=5, lines=50, since=None, limit=2048):
-    auth = _get_bearer_auth(cmd)
+    auth = get_bearer_auth(cmd.cli_ctx)
     exceptions = []
     threads = None
     queryOptions = QueryOptions(follow=follow, lines=lines, since=since, limit=limit)
@@ -91,7 +91,7 @@ def _get_component(component):
 def _get_log_stream_urls(cmd, client, resource_group, service, component_name,
                          all_instances, instance, queryOptions: QueryOptions):
     component_api_name = _get_component(component_name).get_api_name()
-    hostname = _get_hostname(cmd, client, resource_group, service)
+    hostname = get_hostname(cmd.cli_ctx, client, resource_group, service)
     url_dict = {}
 
     if component_name and not all_instances and not instance:
@@ -135,18 +135,6 @@ def _get_stream_url(hostname, component_name, instance_name, queryOptions: Query
     return url
 
 
-def _get_bearer_auth(cmd):
-    profile = Profile(cli_ctx=cmd.cli_ctx)
-    creds, _, tenant = profile.get_raw_token()
-    token = creds[1]
-    return BearerAuth(token)
-
-
-def _get_hostname(cmd, client, resource_group, service):
-    resource = client.services.get(resource_group, service)
-    return get_proxy_api_endpoint(cmd.cli_ctx, resource)
-
-
 def _get_log_threads(all_instances, url_dict, auth, exceptions):
     threads = []
     need_prefix = all_instances is True
@@ -187,7 +175,7 @@ def _sequential_start_threads(threads: [Thread]):
 
 
 def _get_log_threads_without_component(cmd, client, resource_group, service, instance_name, auth, exceptions, queryOptions: QueryOptions):
-    hostname = _get_hostname(cmd, client, resource_group, service)
+    hostname = get_hostname(cmd.cli_ctx, client, resource_group, service)
     url_template = "https://{}/api/logstream/managedComponentInstances/{}"
     url = url_template.format(hostname, instance_name)
     url = _attach_logs_query_options(url, queryOptions)
