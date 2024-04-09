@@ -1,4 +1,4 @@
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines,too-many-statements
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -163,7 +163,6 @@ class MonitoringSettingsOperations:
         :type resource_group_name: str
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
         :return: MonitoringSettingResource or the result of cls(response)
         :rtype: ~azure.mgmt.appplatform.v2024_01_01_preview.models.MonitoringSettingResource
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -184,21 +183,20 @@ class MonitoringSettingsOperations:
         )
         cls: ClsType[_models.MonitoringSettingResource] = kwargs.pop("cls", None)
 
-        request = build_get_request(
+        _request = build_get_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.get.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -210,19 +208,15 @@ class MonitoringSettingsOperations:
         deserialized = self._deserialize("MonitoringSettingResource", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
-
-    get.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/monitoringSettings/default"
-    }
+        return deserialized  # type: ignore
 
     def _update_put_initial(
         self,
         resource_group_name: str,
         service_name: str,
-        monitoring_setting_resource: Union[_models.MonitoringSettingResource, IO],
+        monitoring_setting_resource: Union[_models.MonitoringSettingResource, IO[bytes]],
         **kwargs: Any
     ) -> _models.MonitoringSettingResource:
         error_map = {
@@ -250,7 +244,7 @@ class MonitoringSettingsOperations:
         else:
             _json = self._serialize.body(monitoring_setting_resource, "MonitoringSettingResource")
 
-        request = build_update_put_request(
+        _request = build_update_put_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             subscription_id=self._config.subscription_id,
@@ -258,16 +252,15 @@ class MonitoringSettingsOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._update_put_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -286,10 +279,6 @@ class MonitoringSettingsOperations:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
-
-    _update_put_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/monitoringSettings/default"
-    }
 
     @overload
     def begin_update_put(
@@ -314,14 +303,6 @@ class MonitoringSettingsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of LROPoller that returns either MonitoringSettingResource or the result
          of cls(response)
         :rtype:
@@ -334,7 +315,7 @@ class MonitoringSettingsOperations:
         self,
         resource_group_name: str,
         service_name: str,
-        monitoring_setting_resource: IO,
+        monitoring_setting_resource: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -347,18 +328,10 @@ class MonitoringSettingsOperations:
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
         :param monitoring_setting_resource: Parameters for the update operation. Required.
-        :type monitoring_setting_resource: IO
+        :type monitoring_setting_resource: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of LROPoller that returns either MonitoringSettingResource or the result
          of cls(response)
         :rtype:
@@ -371,7 +344,7 @@ class MonitoringSettingsOperations:
         self,
         resource_group_name: str,
         service_name: str,
-        monitoring_setting_resource: Union[_models.MonitoringSettingResource, IO],
+        monitoring_setting_resource: Union[_models.MonitoringSettingResource, IO[bytes]],
         **kwargs: Any
     ) -> LROPoller[_models.MonitoringSettingResource]:
         """Update the Monitoring Setting.
@@ -382,20 +355,9 @@ class MonitoringSettingsOperations:
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
         :param monitoring_setting_resource: Parameters for the update operation. Is either a
-         MonitoringSettingResource type or a IO type. Required.
+         MonitoringSettingResource type or a IO[bytes] type. Required.
         :type monitoring_setting_resource:
-         ~azure.mgmt.appplatform.v2024_01_01_preview.models.MonitoringSettingResource or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         ~azure.mgmt.appplatform.v2024_01_01_preview.models.MonitoringSettingResource or IO[bytes]
         :return: An instance of LROPoller that returns either MonitoringSettingResource or the result
          of cls(response)
         :rtype:
@@ -430,7 +392,7 @@ class MonitoringSettingsOperations:
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize("MonitoringSettingResource", pipeline_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -440,23 +402,21 @@ class MonitoringSettingsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller.from_continuation_token(
+            return LROPoller[_models.MonitoringSettingResource].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_update_put.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/monitoringSettings/default"
-    }
+        return LROPoller[_models.MonitoringSettingResource](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     def _update_patch_initial(
         self,
         resource_group_name: str,
         service_name: str,
-        monitoring_setting_resource: Union[_models.MonitoringSettingResource, IO],
+        monitoring_setting_resource: Union[_models.MonitoringSettingResource, IO[bytes]],
         **kwargs: Any
     ) -> _models.MonitoringSettingResource:
         error_map = {
@@ -484,7 +444,7 @@ class MonitoringSettingsOperations:
         else:
             _json = self._serialize.body(monitoring_setting_resource, "MonitoringSettingResource")
 
-        request = build_update_patch_request(
+        _request = build_update_patch_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             subscription_id=self._config.subscription_id,
@@ -492,16 +452,15 @@ class MonitoringSettingsOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._update_patch_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -520,10 +479,6 @@ class MonitoringSettingsOperations:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
-
-    _update_patch_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/monitoringSettings/default"
-    }
 
     @overload
     def begin_update_patch(
@@ -548,14 +503,6 @@ class MonitoringSettingsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of LROPoller that returns either MonitoringSettingResource or the result
          of cls(response)
         :rtype:
@@ -568,7 +515,7 @@ class MonitoringSettingsOperations:
         self,
         resource_group_name: str,
         service_name: str,
-        monitoring_setting_resource: IO,
+        monitoring_setting_resource: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -581,18 +528,10 @@ class MonitoringSettingsOperations:
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
         :param monitoring_setting_resource: Parameters for the update operation. Required.
-        :type monitoring_setting_resource: IO
+        :type monitoring_setting_resource: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of LROPoller that returns either MonitoringSettingResource or the result
          of cls(response)
         :rtype:
@@ -605,7 +544,7 @@ class MonitoringSettingsOperations:
         self,
         resource_group_name: str,
         service_name: str,
-        monitoring_setting_resource: Union[_models.MonitoringSettingResource, IO],
+        monitoring_setting_resource: Union[_models.MonitoringSettingResource, IO[bytes]],
         **kwargs: Any
     ) -> LROPoller[_models.MonitoringSettingResource]:
         """Update the Monitoring Setting.
@@ -616,20 +555,9 @@ class MonitoringSettingsOperations:
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
         :param monitoring_setting_resource: Parameters for the update operation. Is either a
-         MonitoringSettingResource type or a IO type. Required.
+         MonitoringSettingResource type or a IO[bytes] type. Required.
         :type monitoring_setting_resource:
-         ~azure.mgmt.appplatform.v2024_01_01_preview.models.MonitoringSettingResource or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         ~azure.mgmt.appplatform.v2024_01_01_preview.models.MonitoringSettingResource or IO[bytes]
         :return: An instance of LROPoller that returns either MonitoringSettingResource or the result
          of cls(response)
         :rtype:
@@ -664,7 +592,7 @@ class MonitoringSettingsOperations:
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize("MonitoringSettingResource", pipeline_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -674,14 +602,12 @@ class MonitoringSettingsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller.from_continuation_token(
+            return LROPoller[_models.MonitoringSettingResource].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_update_patch.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/monitoringSettings/default"
-    }
+        return LROPoller[_models.MonitoringSettingResource](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )

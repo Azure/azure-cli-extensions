@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-few-public-methods
 import argparse
-from knack.util import CLIError
+from azure.cli.core.azclierror import ArgumentUsageError
 
 
 class RadiusServerAddAction(argparse._AppendAction):
@@ -18,7 +18,7 @@ class RadiusServerAddAction(argparse._AppendAction):
             try:
                 key, value = item.split('=', 1)
                 kwargs['radius_server_' + key] = value
-            except ValueError:
-                raise CLIError('usage error: {} address=VALUE, score=VALUE, secret=VALUE'.format(option_string))
+            except ValueError as exc:
+                raise ArgumentUsageError(f"usage error: {option_string} address=VALUE, score=VALUE, secret=VALUE") from exc
         action = RadiusServer(**kwargs)
-        super(RadiusServerAddAction, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)

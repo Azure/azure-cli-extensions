@@ -9,6 +9,8 @@ import requests
 from knack.log import get_logger
 from azure.cli.core.style import print_styled_text, Style
 
+MGMT_SERVICE_CLIENT_API_VERSION = '2022-04-01'
+
 logger = get_logger(__name__)
 
 

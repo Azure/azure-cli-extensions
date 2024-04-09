@@ -48,3 +48,11 @@ Release History
 1.3.0
 ++++++
 * `az grafana update`: support Grafana major version argument
+
+1.3.1
+++++++
+* `az grafana delete`: bump azure-mgmt-authorization package version
+
+1.3.2
+++++++
+* Revert to vendored SDK to fix an issue caused by Homebrew dependencies for Mac users

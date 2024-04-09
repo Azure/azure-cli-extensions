@@ -13,11 +13,11 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.8.1 azsdk-python-communication-identity/1.4.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.9.1 azsdk-python-communication-identity/1.5.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
       - kWpGozyV35fifbpKdY8mbdG64VG0Pdq5upzo7YKAFM0=
       x-ms-date:
-      - Fri, 15 Dec 2023 10:22:55 GMT
+      - Mon, 01 Apr 2024 05:37:15 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
@@ -25,7 +25,7 @@ interactions:
   response:
     body:
       string: '{"identity": {"id": "sanitized"}, "accessToken": {"token": "sanitized",
-        "expiresOn": "2023-12-16T10:22:56.4146232+00:00"}}'
+        "expiresOn": "2024-04-02T05:37:16.5458581+00:00"}}'
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
@@ -35,19 +35,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:22:55 GMT
+      - Mon, 01 Apr 2024 05:37:15 GMT
       ms-cv:
-      - 4r/vGt+ga0mBJj2RNTpM3g.2.0
+      - Szbgqd8QvEGuTjHFQ8I7iA.2.0
       request-context:
       - appId=
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 0/yh8ZQAAAACx2U8QZHFzQa/s4e+yPaheSFlEMzBFREdFMDYwOQA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0DEgKZgAAAAAzdFREShceTo9HQOX96kP3SEtCRURHRTA3MTgAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 26ms
+      - 25ms
     status:
       code: 201
       message: Created
@@ -65,40 +65,40 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.8.1 azsdk-python-communication-chat/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.9.1 azsdk-python-communication-chat/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       repeatability-request-id:
-      - 215037df-12d0-472c-a579-ec5b6df45245
+      - 817a9ac4-f2a3-4933-a364-a976aca77819
     method: POST
     uri: https://sanitized.communication.azure.com/chat/threads?api-version=2023-11-07
   response:
     body:
       string: '{"chatThread": {"id": "sanitized", "topic": "thread-topic", "createdOn":
-        "2023-12-15T10:22:57Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "2024-04-01T05:37:17Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
         "communicationUser": {"id": "sanitized"}}}}'
     headers:
       access-control-expose-headers:
       - '*'
       api-supported-versions:
       - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2023-04-01-preview, 2023-07-01-preview,
-        2023-11-07, 2023-11-15-preview
+        2023-11-07, 2023-11-15-preview, 2024-03-07, 2024-03-15-preview
       content-length:
       - '199'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:22:57 GMT
+      - Mon, 01 Apr 2024 05:37:18 GMT
       location:
-      - https://clitest000002.communication.azure.com/chat/threads/19%3Ac3G6_QmoLa6iSlXUVMPIFtY7k9YhY9nQHw_xYiAC2z41@thread.v2
+      - https://clitest000002.unitedstates.communication.azure.com/chat/threads/19%3AvtoQM7WOj1gV0ZMckQrUvTwb5hMnt79W6XydmuA-Njk1@thread.v2
       ms-cv:
-      - WjyPJMYmRUynoMCEPztitA.0
+      - MxSoIgq6Bk2z9w/SjVuVsQ.0
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 0ACl8ZQAAAADuiTTqZjHaTZzrxVXe4gCASFlEMzBFREdFMDQwNwA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0DUgKZgAAAAAB0VpQK/5hQLbTXZA8Uc3eSEtCRURHRTA3MTUAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 665ms
+      - 1392ms
     status:
       code: 201
       message: Created
@@ -127,25 +127,25 @@ interactions:
       - '*'
       api-supported-versions:
       - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2023-04-01-preview, 2023-07-01-preview,
-        2023-11-07, 2023-11-15-preview
+        2023-11-07, 2023-11-15-preview, 2024-03-07, 2024-03-15-preview
       content-length:
       - '19'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:22:57 GMT
+      - Mon, 01 Apr 2024 05:37:18 GMT
       location:
-      - https://clitest000002.communication.azure.com/chat/threads/19%3Ac3G6_QmoLa6iSlXUVMPIFtY7k9YhY9nQHw_xYiAC2z41@thread.v2/messages/1702635778099
+      - https://clitest000002.unitedstates.communication.azure.com/chat/threads/19%3AvtoQM7WOj1gV0ZMckQrUvTwb5hMnt79W6XydmuA-Njk1@thread.v2/messages/1711949839328
       ms-cv:
-      - 97uk4/NgeECf4DBiShq4gQ.0
+      - Nez3CJxGT0KCh9YQgt+mXA.0
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 0ASl8ZQAAAACv04mNNkuIQIdrUDLgBx8ESFlEMzBFREdFMDQwOQA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0D0gKZgAAAADEd/QPhialRZaWwkq6+6tjSEtCRURHRTA3MTEAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 358ms
+      - 348ms
     status:
       code: 201
       message: Created
@@ -174,19 +174,19 @@ interactions:
       - '*'
       api-supported-versions:
       - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2023-04-01-preview, 2023-07-01-preview,
-        2023-11-07, 2023-11-15-preview
+        2023-11-07, 2023-11-15-preview, 2024-03-07, 2024-03-15-preview
       date:
-      - Fri, 15 Dec 2023 10:22:58 GMT
+      - Mon, 01 Apr 2024 05:37:20 GMT
       ms-cv:
-      - B3ee1zw5xUiB/JDUisKMJg.0
+      - dg1zuyxhW0+BkG48k8JvNw.0
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 0Ail8ZQAAAACifTpbZsOZRonG9QtKQI0XSFlEMzBFREdFMDYxNwA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0EEgKZgAAAAD2tc4aHp4nQbNobYsKWU7gSEtCRURHRTA3MTgAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 552ms
+      - 627ms
     status:
       code: 204
       message: No Content
