@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.8
+++++++
+* Add support for running multiple proxy instances on the same machine using different ports.
+
 1.6.7
 ++++++
 * Improve Error logs during Arc Onboarding scenarios, Style fixes.
