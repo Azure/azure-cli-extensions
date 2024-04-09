@@ -633,7 +633,7 @@ def load_arguments(self, _):
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
         c.argument(
             "nodepool_initialization_taints",
-            options_list=["--node-initialization-taints", "--node-init-taints"],
+            options_list=["--nodepool-initialization-taints", "--node-init-taints"],
             nargs="*",
             is_preview=True,
             validator=validate_nodepool_taints,
@@ -1053,7 +1053,8 @@ def load_arguments(self, _):
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
         c.argument(
             "nodepool_initialization_taints",
-            options_list=["--node-initialization-taints", "--node-init-taints"],
+            nargs="*",
+            options_list=["--nodepool-initialization-taints", "--node-init-taints"],
             is_preview=True,
             validator=validate_nodepool_taints,
             help=(
