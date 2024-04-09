@@ -338,7 +338,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         node_init_taints = self.raw_param.get("nodepool_initialization_taints")
         # normalize, default is an empty list
         if node_init_taints is not None:
-            node_init_taints = [x.strip() for x in (node_init_taints if node_init_taints else [""])]
+            node_init_taints = [node_init_taints] if node_init_taints else [""]
         # keep None as None for update mode
         if node_init_taints is None and self.decorator_mode == DecoratorMode.CREATE:
             node_init_taints = []
