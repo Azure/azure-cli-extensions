@@ -636,6 +636,7 @@ def aks_create(
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    cluster_service_load_balancer_health_probe_mode=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -826,6 +827,7 @@ def aks_update(
     azure_container_storage_nodepools=None,
     node_provisioning_mode=None,
     ssh_access=None,
+    cluster_service_load_balancer_health_probe_mode=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
