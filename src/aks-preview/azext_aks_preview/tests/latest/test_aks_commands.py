@@ -3151,6 +3151,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--sku automatic --node-vm-size standard_ds4_v2 "
+            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
@@ -3179,7 +3180,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update from sku name Automatic to Base
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
-            "--sku base"
+            "--sku base "
+            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview"
         )
         self.cmd(
             update_cmd,
