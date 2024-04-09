@@ -162,7 +162,6 @@ from azext_aks_preview._validators import (
     validate_pod_subnet_id,
     validate_pod_ip_allocation_mode,
     validate_priority,
-    validate_sku_name,
     validate_sku_tier,
     validate_snapshot_id,
     validate_snapshot_name,
@@ -506,7 +505,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names), validator=validate_sku_name
+            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
@@ -963,7 +962,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "sku", is_preview=True, arg_type=get_enum_type(sku_names), validator=validate_sku_name
+            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
