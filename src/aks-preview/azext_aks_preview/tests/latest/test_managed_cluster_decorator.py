@@ -5076,6 +5076,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             file_csi_driver=None,
             snapshot_controller=None,
         )
+        baseSKU = self.models.ManagedClusterSKU(name="Base", tier="Free")
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             dns_prefix="testname-testrgname-1234-5",
@@ -5089,6 +5090,8 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             disable_local_accounts=False,
             enable_pod_security_policy=False,
             storage_profile=storage_profile_1,
+            sku=baseSKU,
+            kind="Base",
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
@@ -8150,6 +8153,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             file_csi_driver=None,
             snapshot_controller=None,
         )
+        baseSKU = self.models.ManagedClusterSKU(name="Base", tier="Free")
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
             agent_pool_profiles=[ground_truth_agent_pool_profile_1],
@@ -8157,6 +8161,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             identity=ground_truth_identity_1,
             identity_profile=ground_truth_identity_profile_1,
             storage_profile=ground_truth_storage_profile_1,
+            sku=baseSKU,
+            kind="Base",
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
