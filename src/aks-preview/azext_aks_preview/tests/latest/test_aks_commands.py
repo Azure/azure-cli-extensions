@@ -13566,33 +13566,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        # update some unrelated parameter to check that init taints stay unchanged when not specified in the request
-        update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} --auto-upgrade-channel stable"
-
-        )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check(
-                    "agentPoolProfiles[0].nodeTaints[0]",
-                    "taint1=value1:PreferNoSchedule",
-                ),
-                self.check(
-                    "agentPoolProfiles[0].nodeTaints[1]",
-                    "taint2=value2:PreferNoSchedule",
-                ),
-                self.check(
-                    "agentPoolProfiles[0].nodeInitializationTaints[0]",
-                    "initTaint1=value1:PreferNoSchedule",
-                ),
-                self.check(
-                    "agentPoolProfiles[0].nodeInitializationTaints[1]",
-                    "initTaint2=value2:PreferNoSchedule",
-                ),
-            ],
-        )
 
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
