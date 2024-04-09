@@ -1,0 +1,40 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+
+    - name: Setup development environment
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        python -m pip install -U pip
+        pip install azdev
+        azdev setup -r .
+        azdev extension add apic-extension
+
+    - name: Run style check
+      run: |
+        source .venv/bin/activate
+        azdev style apic-extension
+
+    - name: Run linter
+      run: |
+        source .venv/bin/activate
+        azdev linter apic-extension
+
+    - name: Run tests
+      run: |
+        source .venv/bin/activate
+        azdev test apic-extension
