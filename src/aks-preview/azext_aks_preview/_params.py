@@ -633,12 +633,11 @@ def load_arguments(self, _):
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
         c.argument(
             "nodepool_initialization_taints",
-            nargs="*",
             options_list=["--nodepool-initialization-taints", "--node-init-taints"],
             is_preview=True,
             validator=validate_nodepool_taints,
             help=(
-                "space-separated taints: <key1>=<value1>:<effect1> <key2>=<value2>:<effect2>. "
+                "comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
                 "Pass "" to clear existing taints."
             ),
         )
@@ -1053,12 +1052,11 @@ def load_arguments(self, _):
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
         c.argument(
             "nodepool_initialization_taints",
-            nargs="*",
             options_list=["--nodepool-initialization-taints", "--node-init-taints"],
             is_preview=True,
             validator=validate_nodepool_taints,
             help=(
-                "space-separated taints: <key1>=<value1>:<effect1> <key2>=<value2>:<effect2>. "
+                "comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
                 "Pass "" to clear existing taints."
             ),
         )
