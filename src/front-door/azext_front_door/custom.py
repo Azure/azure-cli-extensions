@@ -6,9 +6,7 @@
 
 # pylint: disable=too-many-lines
 
-import ast
 import sys
-
 from azure.cli.core.commands import cached_get, cached_put
 from azure.cli.core.util import sdk_no_wait
 
@@ -748,83 +746,51 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
 
 
 # region WafPolicy
-def create_waf_policy(cmd, resource_group_name, policy_name,
-                      disabled=False, mode=None, redirect_url=None,
-                      custom_block_response_status_code=None,
-                      custom_block_response_body=None, tags=None,
-                      request_body_check=None, sku=None,
-                      log_scrubbing=None):
-    client = cf_waf_policies(cmd.cli_ctx, None)
-    from azext_front_door.vendored_sdks.models import (
-        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList, Sku, SkuName,
-        WebApplicationFirewallScrubbingRules)
+# def create_waf_policy(cmd, resource_group_name, policy_name,
+#                       disabled=False, mode=None, redirect_url=None,
+#                       custom_block_response_status_code=None,
+#                       custom_block_response_body=None, tags=None,
+#                       request_body_check=None, sku=None):
+#     client = cf_waf_policies(cmd.cli_ctx, None)
+#     from azext_front_door.vendored_sdks.models import (
+#         WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList, Sku, SkuName)
 
-    scrubbing_dict = ast.literal_eval(log_scrubbing)
-    rules = []
-    rule = None
-    for i in range(len(scrubbing_dict['scrubbing-rules'])):
-        rule = WebApplicationFirewallScrubbingRules(
-            name=scrubbing_dict['scrubbing-rules'][i]['name'],
-            rule_type=scrubbing_dict['scrubbing-rules'][i]['rule-type'],
-            pattern=scrubbing_dict['scrubbing-rules'][i]['pattern'],
-            state=scrubbing_dict['scrubbing-rules'][i]['state']
-        )
-        rules.append(rule)
-
-    policy = WebApplicationFirewallPolicy(
-        location='global',
-        tags=tags,
-        sku=Sku(name=sku if sku is not None else SkuName.classic_azure_front_door),
-        policy_settings=PolicySettings(
-            enabled_state='Enabled' if not disabled else 'Disabled',
-            mode=mode,
-            redirect_url=redirect_url,
-            custom_block_response_status_code=custom_block_response_status_code,
-            custom_block_response_body=custom_block_response_body,
-            request_body_check=request_body_check,
-            state=scrubbing_dict['state'],
-            scrubbing_rules=rules
-        ),
-        custom_rules=CustomRuleList(rules=[]),
-        managed_rules=ManagedRuleSetList(rule_sets=[])
-    )
-    return client.begin_create_or_update(resource_group_name, policy_name, policy)
+#     policy = WebApplicationFirewallPolicy(
+#         location='global',
+#         tags=tags,
+#         sku=Sku(name=sku if sku is not None else SkuName.classic_azure_front_door),
+#         policy_settings=PolicySettings(
+#             enabled_state='Enabled' if not disabled else 'Disabled',
+#             mode=mode,
+#             redirect_url=redirect_url,
+#             custom_block_response_status_code=custom_block_response_status_code,
+#             custom_block_response_body=custom_block_response_body,
+#             request_body_check=request_body_check,
+#         ),
+#         custom_rules=CustomRuleList(rules=[]),
+#         managed_rules=ManagedRuleSetList(rule_sets=[])
+#     )
+#     return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
-def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
-                      custom_block_response_status_code=None, custom_block_response_body=None,
-                      disabled=False, request_body_check=None, sku=None,
-                      log_scrubbing=None):
+# def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
+#                       custom_block_response_status_code=None, custom_block_response_body=None,
+#                       disabled=False, request_body_check=None, sku=None):
 
-    from azext_front_door.vendored_sdks.models import (WebApplicationFirewallScrubbingRules)
-    scrubbing_dict = ast.literal_eval(log_scrubbing)
-    rules = []
-    rule = None
-    for i in range(len(scrubbing_dict['scrubbing-rules'])):
-        rule = WebApplicationFirewallScrubbingRules(
-            name=scrubbing_dict['scrubbing-rules'][i]['name'],
-            rule_type=scrubbing_dict['scrubbing-rules'][i]['rule-type'],
-            pattern=scrubbing_dict['scrubbing-rules'][i]['pattern'],
-            state=scrubbing_dict['scrubbing-rules'][i]['state']
-        )
-        rules.append(rule)
+#     with UpdateContext(instance) as c:
+#         c.update_param('tags', tags, True)
 
-    with UpdateContext(instance) as c:
-        c.update_param('tags', tags, True)
+#     with UpdateContext(instance.sku) as c:
+#         c.update_param('name', sku, None)
 
-    with UpdateContext(instance.sku) as c:
-        c.update_param('name', sku, None)
-
-    with UpdateContext(instance.policy_settings) as c:
-        c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', None)
-        c.update_param('mode', mode, None)
-        c.update_param('redirect_url', redirect_url, None)
-        c.update_param('custom_block_response_status_code', custom_block_response_status_code, None)
-        c.update_param('custom_block_response_body', custom_block_response_body, None)
-        c.update_param('request_body_check', request_body_check, None)
-        c.update_param('state', scrubbing_dict['state'], None)
-        c.update_param('scrubbing_rules', rules, None)
-    return instance
+#     with UpdateContext(instance.policy_settings) as c:
+#         c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', None)
+#         c.update_param('mode', mode, None)
+#         c.update_param('redirect_url', redirect_url, None)
+#         c.update_param('custom_block_response_status_code', custom_block_response_status_code, None)
+#         c.update_param('custom_block_response_body', custom_block_response_body, None)
+#         c.update_param('request_body_check', request_body_check, None)
+#     return instance
 
 
 def add_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type, version, rule_set_action=None):

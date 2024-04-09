@@ -3245,7 +3245,7 @@ class PolicySettings(_serialization.Model):
         custom_block_response_status_code: Optional[int] = None,
         custom_block_response_body: Optional[str] = None,
         request_body_check: Optional[Union[str, "_models.PolicyRequestBodyCheck"]] = None,
-        javascript_challenge_expiration_in_minutes: int = 30,
+        javascript_challenge_expiration_in_minutes: int = None,
         state: Optional[Union[str, "_models.WebApplicationFirewallScrubbingState"]] = None,
         scrubbing_rules: Optional[List["_models.WebApplicationFirewallScrubbingRules"]] = None,
         **kwargs: Any
