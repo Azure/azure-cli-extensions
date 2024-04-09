@@ -6,7 +6,6 @@ from azure.cli.core._profile import Profile
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from knack.util import CLIError
-from six.moves.urllib import parse
 from threading import Thread
 from time import sleep
 
@@ -14,7 +13,8 @@ from .managed_component import (Acs, Flux, Scg, ScgOperator,
                                 ManagedComponentInstance, supported_components, get_component)
 
 from ..log_stream.writer import (DefaultWriter, PrefixWriter)
-from ..log_stream.log_stream_operations import log_stream_from_url
+from ..log_stream.log_stream_operations import (attach_logs_query_options, log_stream_from_url,
+                                                LogStreamBaseQueryOptions)
 from ..log_stream.log_stream_validators import validate_thread_number
 from .._utils import (get_bearer_auth, get_hostname)
 
@@ -31,21 +31,13 @@ class ManagedComponentInstanceInfo:
         self.instance = instance
 
 
-class QueryOptions:
-    def __init__(self, follow, lines, since, limit):
-        self.follow = follow
-        self.lines = lines
-        self.since = since
-        self.limit = limit
-
-
 def managed_component_logs(cmd, client, resource_group, service,
                            name=None, all_instances=None, instance=None,
                            follow=None, max_log_requests=5, lines=50, since=None, limit=2048):
     auth = get_bearer_auth(cmd.cli_ctx)
     exceptions = []
     threads = None
-    queryOptions = QueryOptions(follow=follow, lines=lines, since=since, limit=limit)
+    queryOptions = LogStreamBaseQueryOptions(follow=follow, lines=lines, since=since, limit=limit)
     if not name and instance:
         threads = _get_log_threads_without_component(cmd, client, resource_group, service,
                                                      instance, auth, exceptions, queryOptions)
@@ -89,7 +81,7 @@ def _get_component(component):
 
 
 def _get_log_stream_urls(cmd, client, resource_group, service, component_name,
-                         all_instances, instance, queryOptions: QueryOptions):
+                         all_instances, instance, queryOptions: LogStreamBaseQueryOptions):
     component_api_name = _get_component(component_name).get_api_name()
     hostname = get_hostname(cmd.cli_ctx, client, resource_group, service)
     url_dict = {}
@@ -128,10 +120,10 @@ def _get_log_stream_urls(cmd, client, resource_group, service, component_name,
     return url_dict
 
 
-def _get_stream_url(hostname, component_name, instance_name, queryOptions: QueryOptions):
+def _get_stream_url(hostname, component_name, instance_name, queryOptions: LogStreamBaseQueryOptions):
     url_template = "https://{}/api/logstream/managedComponents/{}/instances/{}"
     url = url_template.format(hostname, component_name, instance_name)
-    url = _attach_logs_query_options(url, queryOptions)
+    url = attach_logs_query_options(url, queryOptions)
     return url
 
 
@@ -174,26 +166,14 @@ def _sequential_start_threads(threads: [Thread]):
             # so that ctrl+c can stop the command
 
 
-def _get_log_threads_without_component(cmd, client, resource_group, service, instance_name, auth, exceptions, queryOptions: QueryOptions):
+def _get_log_threads_without_component(cmd, client, resource_group, service, instance_name, auth, exceptions,
+                                       queryOptions: LogStreamBaseQueryOptions):
     hostname = get_hostname(cmd.cli_ctx, client, resource_group, service)
     url_template = "https://{}/api/logstream/managedComponentInstances/{}"
     url = url_template.format(hostname, instance_name)
-    url = _attach_logs_query_options(url, queryOptions)
+    url = attach_logs_query_options(url, queryOptions)
 
     return [Thread(target=log_stream_from_url, args=(url, auth, None, exceptions, _get_default_writer()))]
-
-
-def _attach_logs_query_options(url, queryOptions: QueryOptions):
-    params = {}
-    params["tailLines"] = queryOptions.lines
-    params["limitBytes"] = queryOptions.limit
-    if queryOptions.since:
-        params["sinceSeconds"] = queryOptions.since
-    if queryOptions.follow:
-        params["follow"] = True
-
-    url += "?{}".format(parse.urlencode(params)) if params else ""
-    return url
 
 
 def _get_prefix_writer(prefix):
