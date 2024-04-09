@@ -13577,7 +13577,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check(
                     "agentPoolProfiles[0].nodeTaints[0]",
-                    "taint1=value2:PreferNoSchedule",
+                    "taint1=value1:PreferNoSchedule",
                 ),
                 self.check(
                     "agentPoolProfiles[0].nodeInitializationTaints[0]",
