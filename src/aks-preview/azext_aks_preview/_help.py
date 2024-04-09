@@ -165,6 +165,10 @@ helps['aks create'] = f"""
           type: string
           short-summary: Load balancer backend pool type.
           long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
+        - name: --cluster-service-load-balancer-health-probe-mode
+          type: string
+          short-summary: Set the cluster service health probe mode.
+          long-summary: Set the cluster service health probe mode. Default is "Servicenodeport".
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -601,6 +605,12 @@ helps['aks create'] = f"""
           long-summary: |
               Used together with the "azure" network plugin.
               Requires --pod-subnet-id.
+        - name: --enable-secure-boot
+          type: bool
+          short-summary: Enable Secure Boot on all node pools in the cluster. Must use VMSS agent pool type.
+        - name: --enable-vtpm
+          type: bool
+          short-summary: Enable vTPM on all node pools in the cluster. Must use VMSS agent pool type.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -785,6 +795,10 @@ helps['aks update'] = """
           type: string
           short-summary: Load balancer backend pool type.
           long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
+        - name: --cluster-service-load-balancer-health-probe-mode
+          type: string
+          short-summary: Set the cluster service health probe mode.
+          long-summary: Set the cluster service health probe mode. Default is "Servicenodeport".
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -1742,6 +1756,12 @@ helps['aks nodepool add'] = """
           long-summary: |
               Used together with the "azure" network plugin.
               Requires --pod-subnet-id.
+        - name: --enable-secure-boot
+          type: bool
+          short-summary: Enable Secure Boot on agent node pool. Must use VMSS agent pool type.
+        - name: --enable-vtpm
+          type: bool
+          short-summary: Enable vTPM on agent node pool. Must use VMSS agent pool type.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1865,6 +1885,18 @@ helps['aks nodepool update'] = """
         - name: --ssh-access
           type: string
           short-summary: Update SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
+        - name: --enable-secure-boot
+          type: bool
+          short-summary: Enable Secure Boot on an existing Trusted Launch enabled agent node pool. Must use VMSS agent pool type.
+        - name: --disable-secure-boot
+          type: bool
+          short-summary: Disable Secure Boot on on an existing Trusted Launch enabled agent node pool.
+        - name: --enable-vtpm
+          type: bool
+          short-summary: Enable vTPM on an existing Trusted Launch enabled agent node pool. Must use VMSS agent pool type.
+        - name: --disable-vtpm
+          type: bool
+          short-summary: Disable vTPM on an existing Trusted Launch enabled agent node pool.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2886,13 +2918,9 @@ helps['aks mesh enable-egress-gateway'] = """
     type: command
     short-summary: Enable an Azure Service Mesh egress gateway.
     long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
-    parameters:
-      - name: --egress-gateway-nodeselector --egx-gtw-ns
-        type: string
-        short-summary: Specify the node selector for the egress gateway with space-separated, key-value pairs (key1=value1 key2=value2).
     examples:
       - name: Enable an egress gateway.
-        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --egress-gateway-nodeselector istio=egress
+        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
 """
 
 helps['aks mesh disable-egress-gateway'] = """
@@ -2992,4 +3020,28 @@ helps['aks approuting zone list'] = """
     type: command
     short-summary: List DNS Zone IDs in App Routing.
     long-summary: This command lists the DNS zone resources used in App Routing.
+"""
+
+helps['aks check-network'] = """
+    type: group
+    short-summary: Commands to troubleshoot network connectivity in managed Kubernetes cluster.
+"""
+
+helps['aks check-network outbound'] = """
+    type: command
+    short-summary: Perform outbound network connectivity check for a node in a managed Kubernetes cluster.
+    long-summary: This command checks outbound network connectivity from a node to certain required AKS endpoints.
+    parameters:
+      - name: --name -n
+        type: string
+        short-summary: Name of the managed cluster.
+      - name: --resource-group -g
+        type: string
+        short-summary: Name of the resource group.
+      - name: --node-name
+        type: string
+        short-summary: Name of the node to perform the connectivity check. If not specified, a random node will be chosen.
+      - name: --custom-endpoints
+        type: string
+        short-summary: Additional endpoint(s) to perform the connectivity check, separated by comma.
 """

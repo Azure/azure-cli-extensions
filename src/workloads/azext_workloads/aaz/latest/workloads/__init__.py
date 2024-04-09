@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._sap_availability_zone_detail import *
 from ._sap_disk_configuration import *
 from ._sap_sizing_recommendation import *
 from ._sap_supported_sku import *

@@ -20,13 +20,17 @@ from pkg_resources import parse_version
 from jinja2 import Template  # pylint: disable=import-error
 import requests
 
-SCRIPTS_LOCATION = os.path.abspath(os.path.join('.', 'scripts'))
-
-AZURE_DOCS_CLI_REPO_PATH = os.path.join('.', 'azure-docs-cli')
+# After migration to OneBranch, clone azure-cli-extensions repo and azure-docs-cli repo are required.
+# Also standardizes the directory structure:
+# - $(System.DefaultWorkingDirectory)
+#   - azure-cli-extensions
+#   - azure-docs-cli
+AZURE_CLI_EXTENSIONS_REPO_PATH = os.path.abspath(os.path.join('.', 'azure-cli-extensions'))
+AZURE_DOCS_CLI_REPO_PATH = os.path.abspath(os.path.join('.', 'azure-docs-cli'))
 AVAILABLE_EXTENSIONS_DOC = os.path.join(AZURE_DOCS_CLI_REPO_PATH, 'docs-ref-conceptual', 'azure-cli-extensions-list.md')
-TEMPLATE_FILE = os.path.join(SCRIPTS_LOCATION, "ci", "avail-ext-doc", "list-template.md")
+TEMPLATE_FILE = os.path.join(AZURE_CLI_EXTENSIONS_REPO_PATH, 'scripts', 'ci', 'avail-ext-doc', 'list-template.md')
 
-sys.path.insert(0, SCRIPTS_LOCATION)
+sys.path.insert(0, os.path.join(AZURE_CLI_EXTENSIONS_REPO_PATH, 'scripts'))
 from ci.util import get_index_data, INDEX_PATH
 
 

@@ -13,11 +13,11 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.8.1 azsdk-python-communication-identity/1.4.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.9.1 azsdk-python-communication-identity/1.5.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
       - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
       x-ms-date:
-      - Fri, 15 Dec 2023 10:29:04 GMT
+      - Mon, 01 Apr 2024 05:43:44 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
@@ -34,25 +34,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:29:05 GMT
+      - Mon, 01 Apr 2024 05:43:46 GMT
       ms-cv:
-      - stXmC073x0+5uOToeY9OIA.2.0
+      - XsE5Am0i1k2ndVw6yu70yg.2.0
       request-context:
       - appId=
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 0cSp8ZQAAAADU9R0axwZWRZBVcxBhBYh1SFlEMzBFREdFMDYxMgA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0kUkKZgAAAACjVz6n1op4SpkouvuIji1LSEtCRURHRTA3MDYAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 17ms
+      - 19ms
     status:
       code: 201
       message: Created
 - request:
-    body: '{"validFrom": "2023-12-15T11:29:04.820270", "validUntil": "2023-12-15T12:29:04.820270",
-      "pstnDialOutEnabled": true, "participants": {"8:acs:006dd2c0-d2bc-41fd-90fe-e7a85d92d0c1_0000001d-0ce7-715f-1000-343a0d0004a5":
+    body: '{"validFrom": "2024-04-01T06:43:44.708359", "validUntil": "2024-04-01T07:43:44.708359",
+      "pstnDialOutEnabled": true, "participants": {"8:acs:634e06bd-6049-439a-9422-fda3a6fdd048_0000001f-3811-0942-f40f-343a0d00f2ac":
       {"role": "Presenter"}}}'
     headers:
       Accept:
@@ -66,45 +66,47 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Fri, 15 Dec 2023 10:29:06 GMT
+      - Mon, 01 Apr 2024 05:43:46 GMT
       Repeatability-Request-Id:
-      - c6669cb8-9b34-11ee-b7f9-a497b10aa3d0
+      - ceeca63f-efea-11ee-a6dd-a497b10aa3d0
       User-Agent:
-      - AzureCli/1.8.1 azsdk-python-communication-rooms/1.1.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.9.1 azsdk-python-communication-rooms/1.1.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
-      - 6hKlhJ6cT5JNTDLYG0uv1O4rAQQ2S79KykqyNeIMccw=
+      - tvxV2EN9tsp5Ki3Iw2foVP04LEmsj0jOQo3v5fV5N0c=
       x-ms-date:
-      - Fri, 15 Dec 2023 10:29:06 GMT
+      - Mon, 01 Apr 2024 05:43:46 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
     uri: https://sanitized.communication.azure.com/rooms?api-version=2023-10-30-preview
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2023-12-15T10:29:07.3082387+00:00",
-        "validFrom": "2023-12-15T11:29:04.82027+00:00", "validUntil": "2023-12-15T12:29:04.82027+00:00",
+      string: '{"id": "sanitized", "createdAt": "2024-04-01T05:43:48.3020059+00:00",
+        "validFrom": "2024-04-01T06:43:44.708359+00:00", "validUntil": "2024-04-01T07:43:44.708359+00:00",
         "pstnDialOutEnabled": true}'
     headers:
       api-deprecated-versions:
       - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview
+      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview, 2024-04-15
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:29:06 GMT
+      - Mon, 01 Apr 2024 05:43:48 GMT
       location:
-      - '99463836077726369'
+      - '99452651461263969'
       ms-cv:
-      - +xFVFf3qpkCDwTbP1MD6+A.0
+      - ex+XpHiItUqWVJ6aY21qTA.0
       repeatability-result:
       - accepted
       request-context:
       - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0cip8ZQAAAAAw+EsfrrMwT4jtCBLZaWdBRE9IMzBFREdFMDEyMAA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0k0kKZgAAAACQ8eLk56OcSZ0t/tSYSdpCSEtCRURHRTA3MjEAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
     status:

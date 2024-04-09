@@ -16,18 +16,17 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List requests to list all resources in a resource group.
-
-    :example: Get all resources from a resource group
-        az communication list -g ResourceGroup
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.communication/communicationservices", "2023-04-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/communicationservices", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.communication/communicationservices", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/communicationservices", "2023-04-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = False
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -44,9 +43,7 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -116,7 +113,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -307,7 +304,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

@@ -1,4 +1,4 @@
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines,too-many-statements
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -76,7 +76,6 @@ class ConfigurationServicesOperations:
         :type service_name: str
         :param configuration_service_name: The name of Application Configuration Service. Required.
         :type configuration_service_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConfigurationServiceResource or the result of cls(response)
         :rtype: ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigurationServiceResource
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -97,22 +96,21 @@ class ConfigurationServicesOperations:
         )
         cls: ClsType[_models.ConfigurationServiceResource] = kwargs.pop("cls", None)
 
-        request = build_get_request(
+        _request = build_get_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             configuration_service_name=configuration_service_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.get.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -124,20 +122,16 @@ class ConfigurationServicesOperations:
         deserialized = self._deserialize("ConfigurationServiceResource", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
-
-    get.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configurationServices/{configurationServiceName}"
-    }
+        return deserialized  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         service_name: str,
         configuration_service_name: str,
-        configuration_service_resource: Union[_models.ConfigurationServiceResource, IO],
+        configuration_service_resource: Union[_models.ConfigurationServiceResource, IO[bytes]],
         **kwargs: Any
     ) -> _models.ConfigurationServiceResource:
         error_map = {
@@ -165,7 +159,7 @@ class ConfigurationServicesOperations:
         else:
             _json = self._serialize.body(configuration_service_resource, "ConfigurationServiceResource")
 
-        request = build_create_or_update_request(
+        _request = build_create_or_update_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             configuration_service_name=configuration_service_name,
@@ -174,16 +168,15 @@ class ConfigurationServicesOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._create_or_update_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -202,10 +195,6 @@ class ConfigurationServicesOperations:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
-
-    _create_or_update_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configurationServices/{configurationServiceName}"
-    }
 
     @overload
     async def begin_create_or_update(
@@ -234,14 +223,6 @@ class ConfigurationServicesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ConfigurationServiceResource or the
          result of cls(response)
         :rtype:
@@ -255,7 +236,7 @@ class ConfigurationServicesOperations:
         resource_group_name: str,
         service_name: str,
         configuration_service_name: str,
-        configuration_service_resource: IO,
+        configuration_service_resource: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -271,18 +252,10 @@ class ConfigurationServicesOperations:
         :param configuration_service_name: The name of Application Configuration Service. Required.
         :type configuration_service_name: str
         :param configuration_service_resource: Parameters for the update operation. Required.
-        :type configuration_service_resource: IO
+        :type configuration_service_resource: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ConfigurationServiceResource or the
          result of cls(response)
         :rtype:
@@ -296,7 +269,7 @@ class ConfigurationServicesOperations:
         resource_group_name: str,
         service_name: str,
         configuration_service_name: str,
-        configuration_service_resource: Union[_models.ConfigurationServiceResource, IO],
+        configuration_service_resource: Union[_models.ConfigurationServiceResource, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ConfigurationServiceResource]:
         """Create the default Application Configuration Service or update the existing Application
@@ -310,20 +283,9 @@ class ConfigurationServicesOperations:
         :param configuration_service_name: The name of Application Configuration Service. Required.
         :type configuration_service_name: str
         :param configuration_service_resource: Parameters for the update operation. Is either a
-         ConfigurationServiceResource type or a IO type. Required.
+         ConfigurationServiceResource type or a IO[bytes] type. Required.
         :type configuration_service_resource:
-         ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigurationServiceResource or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigurationServiceResource or IO[bytes]
         :return: An instance of AsyncLROPoller that returns either ConfigurationServiceResource or the
          result of cls(response)
         :rtype:
@@ -359,7 +321,7 @@ class ConfigurationServicesOperations:
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize("ConfigurationServiceResource", pipeline_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -372,17 +334,15 @@ class ConfigurationServicesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ConfigurationServiceResource].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_create_or_update.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configurationServices/{configurationServiceName}"
-    }
+        return AsyncLROPoller[_models.ConfigurationServiceResource](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     async def _delete_initial(  # pylint: disable=inconsistent-return-statements
         self, resource_group_name: str, service_name: str, configuration_service_name: str, **kwargs: Any
@@ -403,22 +363,21 @@ class ConfigurationServicesOperations:
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
-        request = build_delete_request(
+        _request = build_delete_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             configuration_service_name=configuration_service_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self._delete_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -428,11 +387,7 @@ class ConfigurationServicesOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
-            return cls(pipeline_response, None, {})
-
-    _delete_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configurationServices/{configurationServiceName}"
-    }
+            return cls(pipeline_response, None, {})  # type: ignore
 
     @distributed_trace_async
     async def begin_delete(
@@ -447,14 +402,6 @@ class ConfigurationServicesOperations:
         :type service_name: str
         :param configuration_service_name: The name of Application Configuration Service. Required.
         :type configuration_service_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -484,7 +431,7 @@ class ConfigurationServicesOperations:
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: AsyncPollingMethod = cast(
@@ -496,17 +443,13 @@ class ConfigurationServicesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_delete.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configurationServices/{configurationServiceName}"
-    }
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace
     def list(
@@ -519,7 +462,6 @@ class ConfigurationServicesOperations:
         :type resource_group_name: str
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ConfigurationServiceResource or the result of
          cls(response)
         :rtype:
@@ -545,17 +487,16 @@ class ConfigurationServicesOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_list_request(
+                _request = build_list_request(
                     resource_group_name=resource_group_name,
                     service_name=service_name,
                     subscription_id=self._config.subscription_id,
                     api_version=api_version,
-                    template_url=self.list.metadata["url"],
                     headers=_headers,
                     params=_params,
                 )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
+                _request = _convert_request(_request)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -566,14 +507,14 @@ class ConfigurationServicesOperations:
                         for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
                     }
                 )
-                _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _next_request_params["api-version"] = self._api_version
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-                request.method = "GET"
-            return request
+                _request = _convert_request(_request)
+                _request.url = self._client.format_url(_request.url)
+                _request.method = "GET"
+            return _request
 
         async def extract_data(pipeline_response):
             deserialized = self._deserialize("ConfigurationServiceResourceCollection", pipeline_response)
@@ -583,11 +524,11 @@ class ConfigurationServicesOperations:
             return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -599,16 +540,12 @@ class ConfigurationServicesOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    list.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configurationServices"
-    }
-
     async def _validate_initial(
         self,
         resource_group_name: str,
         service_name: str,
         configuration_service_name: str,
-        settings: Union[_models.ConfigurationServiceSettings, IO],
+        settings: Union[_models.ConfigurationServiceSettings, IO[bytes]],
         **kwargs: Any
     ) -> _models.ConfigurationServiceSettingsValidateResult:
         error_map = {
@@ -636,7 +573,7 @@ class ConfigurationServicesOperations:
         else:
             _json = self._serialize.body(settings, "ConfigurationServiceSettings")
 
-        request = build_validate_request(
+        _request = build_validate_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             configuration_service_name=configuration_service_name,
@@ -645,16 +582,15 @@ class ConfigurationServicesOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._validate_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -673,10 +609,6 @@ class ConfigurationServicesOperations:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
-
-    _validate_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configurationServices/{configurationServiceName}/validate"
-    }
 
     @overload
     async def begin_validate(
@@ -703,14 +635,6 @@ class ConfigurationServicesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either
          ConfigurationServiceSettingsValidateResult or the result of cls(response)
         :rtype:
@@ -724,7 +648,7 @@ class ConfigurationServicesOperations:
         resource_group_name: str,
         service_name: str,
         configuration_service_name: str,
-        settings: IO,
+        settings: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -739,18 +663,10 @@ class ConfigurationServicesOperations:
         :param configuration_service_name: The name of Application Configuration Service. Required.
         :type configuration_service_name: str
         :param settings: Application Configuration Service settings to be validated. Required.
-        :type settings: IO
+        :type settings: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either
          ConfigurationServiceSettingsValidateResult or the result of cls(response)
         :rtype:
@@ -764,7 +680,7 @@ class ConfigurationServicesOperations:
         resource_group_name: str,
         service_name: str,
         configuration_service_name: str,
-        settings: Union[_models.ConfigurationServiceSettings, IO],
+        settings: Union[_models.ConfigurationServiceSettings, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ConfigurationServiceSettingsValidateResult]:
         """Check if the Application Configuration Service settings are valid.
@@ -777,20 +693,9 @@ class ConfigurationServicesOperations:
         :param configuration_service_name: The name of Application Configuration Service. Required.
         :type configuration_service_name: str
         :param settings: Application Configuration Service settings to be validated. Is either a
-         ConfigurationServiceSettings type or a IO type. Required.
+         ConfigurationServiceSettings type or a IO[bytes] type. Required.
         :type settings: ~azure.mgmt.appplatform.v2022_03_01_preview.models.ConfigurationServiceSettings
-         or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         or IO[bytes]
         :return: An instance of AsyncLROPoller that returns either
          ConfigurationServiceSettingsValidateResult or the result of cls(response)
         :rtype:
@@ -826,7 +731,7 @@ class ConfigurationServicesOperations:
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize("ConfigurationServiceSettingsValidateResult", pipeline_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -838,14 +743,12 @@ class ConfigurationServicesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ConfigurationServiceSettingsValidateResult].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_validate.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configurationServices/{configurationServiceName}/validate"
-    }
+        return AsyncLROPoller[_models.ConfigurationServiceSettingsValidateResult](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )

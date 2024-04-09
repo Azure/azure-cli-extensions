@@ -23,9 +23,9 @@ class ListAvailableClusterVersion(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hdinsight/locations/{}/availableclusterversions", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hdinsight/locations/{}/availableclusterversions", "2023-11-01-preview"],
         ]
     }
 
@@ -113,7 +113,7 @@ class ListAvailableClusterVersion(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }

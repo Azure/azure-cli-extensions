@@ -102,7 +102,8 @@ def load_tickets_argument(self, _):
                    help='Indicates if this requires a 24x7 response from Azure. Default is false.')
         c.argument('partner_tenant_id', help='Partner tenant id for Admin On Behalf ' +
                    'of (AOBO) scenario. In addition to logging in to the customer tenant, logging in to the partner ' +
-                   'tenant (PT) using "az login -t PT --allow-no-subscriptions" is required.')
+                   'tenant (PT) using "az login -t PT --allow-no-subscriptions" is required.',
+                   deprecate_info=c.deprecate())
 
     with self.argument_context('support tickets create', arg_group="Contact") as c:
         c.argument('contact_first_name', help='First Name', required=True)
@@ -126,10 +127,11 @@ def load_tickets_argument(self, _):
         c.argument('quota_change_subtype', help='Required for certain quota types when there is a sub type that ' +
                    'you are requesting quota increase for. Example: Batch')
         c.argument('quota_change_regions', nargs='+', help='Space-separated list of region for which ' +
-                   'the quota increase request is being made.')
+                   'the quota increase request is being made.', deprecate_info=c.deprecate())
         c.argument('quota_change_payload', nargs='+', help='Space -separated list of serialized payload of the ' +
                    'quota increase request corresponding to regions. Visit ' +
-                   'https://aka.ms/supportrpquotarequestpayload for details.')
+                   'https://aka.ms/supportrpquotarequestpayload for details.',
+                   deprecate_info=c.deprecate())
 
 
 def load_communications_argument(self, _):

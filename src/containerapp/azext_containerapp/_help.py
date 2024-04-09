@@ -586,6 +586,21 @@ helps['containerapp env certificate create'] = """
           az containerapp env certificate create -g MyResourceGroup --name MyEnvironment --certificate-name MyCertificate --hostname MyHostname --validation-method CNAME
 """
 
+helps['containerapp env certificate upload'] = """
+    type: command
+    short-summary: Add or update a certificate.
+    examples:
+    - name: Add or update a certificate.
+      text: |
+          az containerapp env certificate upload -g MyResourceGroup --name MyEnvironment --certificate-file MyFilepath
+    - name: Add or update a certificate with a user-provided certificate name.
+      text: |
+          az containerapp env certificate upload -g MyResourceGroup --name MyEnvironment --certificate-file MyFilepath --certificate-name MyCertificateName
+    - name: Add or update a certificate from azure key vault using managed identity.
+      text: |
+          az containerapp env certificate upload -g MyResourceGroup --name MyEnvironment --akv-url akvSecretUrl --identity system
+"""
+
 helps['containerapp env certificate list'] = """
     type: command
     short-summary: List certificates for an environment.
@@ -1206,7 +1221,8 @@ helps['containerapp env java-component list'] = """
 
 helps['containerapp env java-component spring-cloud-config'] = """
     type: group
-    short-summary: Commands to manage the Spring Cloud Config for the Container Apps environment.
+    short-summary: Commands to manage the Config Server for Spring for the Container Apps environment.
+    deprecate_info: This command group is deprecated. Use 'az containerapp env java-component config-server-for-spring' instead.
 """
 
 helps['containerapp env java-component spring-cloud-config create'] = """
@@ -1261,9 +1277,67 @@ helps['containerapp env java-component spring-cloud-config update'] = """
               --configuration PropertyName1=Value1 PropertyName2=Value2
 """
 
+helps['containerapp env java-component config-server-for-spring'] = """
+    type: group
+    short-summary: Commands to manage the Config Server for Spring for the Container Apps environment.
+"""
+
+helps['containerapp env java-component config-server-for-spring create'] = """
+    type: command
+    short-summary: Command to create the Config Server for Spring.
+    examples:
+    - name: Create a Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component config-server-for-spring delete'] = """
+    type: command
+    short-summary: Command to delete the Config Server for Spring.
+    examples:
+    - name: Delete a Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component config-server-for-spring show'] = """
+    type: command
+    short-summary: Command to show the Config Server for Spring.
+    examples:
+    - name: Show a Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component config-server-for-spring update'] = """
+    type: command
+    short-summary: Command to update the Config Server for Spring.
+    examples:
+    - name: Delete all configurations of the Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update a Config Server for Spring with custom configurations.
+      text: |
+          az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
 helps['containerapp env java-component spring-cloud-eureka'] = """
     type: group
     short-summary: Commands to manage the Spring Cloud Eureka for the Container Apps environment.
+    deprecate_info: This command group is deprecated. Use 'az containerapp env java-component eureka-server-for-spring' instead.
 """
 
 helps['containerapp env java-component spring-cloud-eureka create'] = """
@@ -1322,3 +1396,195 @@ helps['containerapp env java-component spring-cloud-eureka update'] = """
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
 """
+
+helps['containerapp env java-component eureka-server-for-spring'] = """
+    type: group
+    short-summary: Commands to manage the Eureka Server for Spring for the Container Apps environment.
+"""
+
+helps['containerapp env java-component eureka-server-for-spring create'] = """
+    type: command
+    short-summary: Command to create the Eureka Server for Spring.
+    examples:
+    - name: Create a Eureka Server for Spring with default configuration.
+      text: |
+          az containerapp env java-component eureka-server-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+    - name: Create a Eureka Server for Spring with custom configurations.
+      text: |
+          az containerapp env java-component eureka-server-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component eureka-server-for-spring delete'] = """
+    type: command
+    short-summary: Command to delete the Eureka Server for Spring.
+    examples:
+    - name: Delete a Eureka Server for Spring.
+      text: |
+          az containerapp env java-component eureka-server-for-spring delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component eureka-server-for-spring show'] = """
+    type: command
+    short-summary: Command to show the Eureka Server for Spring.
+    examples:
+    - name: Show a Eureka Server for Spring.
+      text: |
+          az containerapp env java-component eureka-server-for-spring show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component eureka-server-for-spring update'] = """
+    type: command
+    short-summary: Command to update the Eureka Server for Spring.
+    examples:
+    - name: Delete all configurations of the Eureka Server for Spring.
+      text: |
+          az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update a Eureka Server for Spring with custom configurations.
+      text: |
+          az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+# Container Apps Telemetry Commands
+
+helps['containerapp env telemetry'] = """
+    type: group
+    short-summary: Commands to manage telemetry settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry data-dog'] = """
+    type: group
+    short-summary: Commands to manage data dog settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry app-insights'] = """
+    type: group
+    short-summary: Commands to manage app insights settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry data-dog set'] = """
+    type: command
+    short-summary: Create or update container apps environment telemetry data dog settings.
+    examples:
+    - name: Create or update container apps environment telemetry data dog settings.
+      text: |
+          az containerapp env telemetry data-dog set -n MyContainerappEnvironment -g MyResourceGroup \\
+              --site dataDogSite --key dataDogKey --enable-open-telemetry-traces true --enable-open-telemetry-metrics true
+"""
+
+helps['containerapp env telemetry data-dog show'] = """
+    type: command
+    short-summary: Show container apps environment telemetry data dog settings.
+    examples:
+    - name: Show container apps environment telemetry data dog settings.
+      text: |
+          az containerapp env telemetry data-dog show -n MyContainerappEnvironment -g MyResourceGroup 
+"""
+
+helps['containerapp env telemetry app-insights set'] = """
+    type: command
+    short-summary: Create or update container apps environment telemetry app insights settings.
+    examples:
+    - name: Create or update container apps environment telemetry app insights settings.
+      text: |
+          az containerapp env telemetry app-insights set -n MyContainerappEnvironment -g MyResourceGroup \\
+              --connection-string connectionString --enable-open-telemetry-traces true --enable-open-telemetry-logs true
+"""
+
+helps['containerapp env telemetry app-insights show'] = """
+    type: command
+    short-summary: Show container apps environment telemetry app insights settings.
+    examples:
+    - name: Show container apps environment telemetry app insights settings.
+      text: |
+          az containerapp env telemetry app-insights show -n MyContainerappEnvironment -g MyResourceGroup 
+"""
+
+helps['containerapp env telemetry data-dog delete'] = """
+    type: command
+    short-summary: Delete container apps environment telemetry data dog settings.
+    examples:
+    - name: Delete container apps environment telemetry data dog settings.
+      text: |
+          az containerapp env telemetry data-dog delete -n MyContainerappEnvironment -g MyResourceGroup
+"""
+
+helps['containerapp env telemetry app-insights delete'] = """
+    type: command
+    short-summary: Delete container apps environment telemetry app insights settings.
+    examples:
+    - name: Delete container apps environment telemetry app insights settings.
+      text: |
+          az containerapp env telemetry app-insights delete -n MyContainerappEnvironment -g MyResourceGroup
+"""
+
+helps['containerapp env telemetry otlp'] = """
+    type: group
+    short-summary: Commands to manage otlp settings for the container apps environment.
+"""
+
+helps['containerapp env telemetry otlp add'] = """
+    type: command
+    short-summary: Add container apps environment telemetry otlp settings.
+    examples:
+    - name: Add container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp add -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName --endpoint otlpEndpoint --insecure false --headers api-key=apiKey \\
+              --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true
+"""
+
+helps['containerapp env telemetry otlp update'] = """
+    type: command
+    short-summary: Update container apps environment telemetry otlp settings.
+    examples:
+    - name: Update container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp update -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName --endpoint otlpEndpoint --insecure false --headers api-key=apiKey \\
+              --enable-open-telemetry-traces true --enable-open-telemetry-logs true --enable-open-telemetry-metrics true
+"""
+
+helps['containerapp env telemetry otlp remove'] = """
+    type: command
+    short-summary: Remove container apps environment telemetry otlp settings.
+    examples:
+    - name: Remove container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp remove -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName
+"""
+
+helps['containerapp env telemetry otlp show'] = """
+    type: command
+    short-summary: Show container apps environment telemetry otlp settings.
+    examples:
+    - name: Show container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp show -n MyContainerappEnvironment -g MyResourceGroup \\
+              --otlp-name otlpName
+"""
+
+helps['containerapp env telemetry otlp list'] = """
+    type: command
+    short-summary: List container apps environment telemetry otlp settings.
+    examples:
+    - name: List container apps environment telemetry otlp settings.
+      text: |
+          az containerapp env telemetry otlp list -n MyContainerappEnvironment -g MyResourceGroup
+"""
+

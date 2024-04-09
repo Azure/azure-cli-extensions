@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.9.1
+++++++
+* Add Email communication Domain resource Initiate and Cancel verification operations
+
+1.9.0
+++++++
+* Adding managed identity support for stable api version 2023-04-01
+
 1.8.0b2
 ++++++
 * Add Email communication resource CRUD operations

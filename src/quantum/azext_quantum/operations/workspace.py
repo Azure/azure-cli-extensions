@@ -19,10 +19,11 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        RequiredArgumentMissingError, ResourceNotFoundError)
 
 from msrestazure.azure_exceptions import CloudError
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
+from .._client_factory import cf_workspaces, cf_quotas, cf_workspace, cf_offerings, _get_data_credentials
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
-from ..vendored_sdks.azure_mgmt_quantum.models import Provider
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider, APIKeys, WorkspaceResourceProperties
+from ..vendored_sdks.azure_mgmt_quantum.models._enums import KeyType
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
@@ -228,6 +229,10 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+        properties = WorkspaceResourceProperties()
+        properties.providers = quantum_workspace.providers
+        properties.api_key_enabled = True
+        quantum_workspace.properties = properties
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)
@@ -380,3 +385,62 @@ def clear(cmd):
     info = WorkspaceInfo(cmd)
     info.clear()
     info.save(cmd)
+
+
+def list_keys(cmd, resource_group_name=None, workspace_name=None):
+    """
+    List Azure Quantum workspace api keys.
+    """
+    client = cf_workspace(cmd.cli_ctx)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    if (not info.resource_group) or (not info.name):
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+
+    keys = client.list_keys(resource_group_name=info.resource_group, workspace_name=info.name)
+    return keys
+
+
+def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type=None):
+    """
+    Regenerate Azure Quantum workspace api keys.
+    """
+    client = cf_workspace(cmd.cli_ctx)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    if (not info.resource_group) or (not info.name):
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+
+    if not key_type:
+        raise RequiredArgumentMissingError("Please select the api key to regenerate.")
+
+    keys = []
+    if key_type is not None:
+        for key in key_type.split(','):
+            keys.append(KeyType[key])
+
+    key_specification = APIKeys(keys=keys)
+    response = client.regenerate_keys(resource_group_name=info.resource_group, workspace_name=info.name, key_specification=key_specification)
+    return response
+
+
+def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=None):
+    """
+    Update the default Azure Quantum workspace.
+    """
+    client = cf_workspaces(cmd.cli_ctx)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    if (not info.resource_group) or (not info.name):
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+
+    if enable_key not in ["True", "true", "False", "false"]:
+        raise InvalidArgumentValueError("Please set –-enable-api-key to be True/true or False/false.")
+
+    ws = client.get(info.resource_group, info.name)
+
+    if (enable_key in ["True", "true"]):
+        ws.properties.api_key_enabled = True
+    elif (enable_key in ["False", "false"]):
+        ws.properties.api_key_enabled = False
+    ws = client.begin_create_or_update(info.resource_group, info.name, ws)
+    if ws:
+        info.save(cmd)
+    return ws
