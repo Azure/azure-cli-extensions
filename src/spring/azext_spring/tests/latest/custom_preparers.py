@@ -166,3 +166,45 @@ class SpringAppNamePreparer(SpringSubResourceWrapper, SingleValueReplacer):
             self.live_only_execute(self.cli_ctx, 'spring app delete -n {} -g {} -s {}'.format(name, group, spring))
         except:
             pass
+
+
+class SpringJobNamePreparer(SpringSubResourceWrapper, SingleValueReplacer):
+    """
+    Prepare a Spring instance before testing and distroy it when finishing.
+    It runs `az spring create -n {} -g {} {addtional_params}` to create the instance
+    """
+    def __init__(self, name_prefix='clitest',
+                 parameter_name='job',
+                 dev_setting_name='AZURE_CLI_TEST_DEV_APP_NAME',
+                 resource_group_parameter_name='resource_group',
+                 spring_parameter_name='spring',
+                 skip_delete=False,
+                 random_name_length=15, key='spring_app'):
+        if ' ' in name_prefix:
+            raise CliTestError('Error: Space character in Spring App name prefix \'%s\'' % name_prefix)
+        super(SpringJobNamePreparer, self).__init__(name_prefix, random_name_length)
+        self.cli_ctx = get_dummy_cli()
+        self.parameter_name = parameter_name
+        self.resource_group_parameter_name = resource_group_parameter_name
+        self.spring_parameter_name = spring_parameter_name
+        self.key = key
+        self.skip_delete = skip_delete
+
+        self.dev_setting_name = os.environ.get(dev_setting_name, None)
+
+    def create_resource(self, name, **kwargs):
+        is_live = self.live_test or self.test_class_instance.in_recording
+        if self.dev_setting_name and is_live:
+            self.test_class_instance.kwargs[self.key] = self.dev_setting_name
+            self.test_class_instance.recording_processors.append(SpringSingleValueReplacer(self.dev_setting_name, self.moniker))
+            return {self.parameter_name: self.dev_setting_name}
+        self.test_class_instance.kwargs[self.key] = name
+        return {self.parameter_name: name}
+
+    def remove_resource(self, name, **kwargs):
+        if self.dev_setting_name or self.skip_delete:
+            return
+        group = self._get_resource_group(**kwargs)
+        spring = self._get_spring(**kwargs)
+        template = 'az spring job delete -n {} -s {} -g {}'.format(name, spring, group)
+        self.live_only_execute(self.cli_ctx, template)

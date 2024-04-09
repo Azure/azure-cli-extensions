@@ -33,9 +33,11 @@ from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
 from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal,
                                      validate_customized_accelerator, validate_pattern_for_show_acs_configs)
+from .jobs import job_validators
 from .managed_components.validators_managed_component import (validate_component_logs, validate_component_list, validate_instance_list)
 from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
                                               validate_app_identity_assign_or_warning)
+
 
 
 # pylint: disable=too-many-statements
@@ -122,6 +124,11 @@ def load_command_table(self, _):
 
     managed_component_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.managed_components.managed_component_operations#{}',
+        client_factory=cf_spring
+    )
+
+    job_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring.jobs.job#{}',
         client_factory=cf_spring
     )
 
@@ -485,6 +492,27 @@ def load_command_table(self, _):
                             custom_command_type=managed_component_cmd_group,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'managed_component_instance_list', validator=validate_instance_list)
+
+    with self.command_group('spring job', custom_command_type=job_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('create', 'job_create', is_preview=True, validator=job_validators.validate_job_create)
+        g.custom_command('update', 'job_update', is_preview=True, validator=job_validators.validate_job_update)
+        g.custom_command('delete', 'job_delete', is_preview=True, validator=job_validators.validate_job_delete)
+        g.custom_command('show', 'job_get', supports_no_wait=True, is_preview=True, validator=job_validators.validate_job_get)
+        g.custom_command('list', 'job_list', supports_no_wait=True, is_preview=True, validator=job_validators.validate_job_list)
+        g.custom_command('deploy', 'job_deploy', supports_no_wait=True, is_preview=True, validator=job_validators.validate_job_deploy)
+        g.custom_command('start', 'job_start', supports_no_wait=True, is_preview=True, validator=job_validators.validate_job_start)
+        g.custom_command('logs', 'job_log_stream', is_preview=True, validator=job_validators.validate_job_log_stream)
+
+    with self.command_group('spring job execution', custom_command_type=job_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('cancel', 'job_execution_cancel', supports_no_wait=True, is_preview=True, validator=job_validators.validate_job_execution_cancel)
+        g.custom_command('show', 'job_execution_get', is_preview=True, validator=job_validators.validate_job_execution_get)
+        g.custom_command('list', 'job_execution_list', is_preview=True, validator=job_validators.validate_job_execution_list)
+
+    with self.command_group('spring job execution instance', custom_command_type=job_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('list', 'job_execution_instance_list', is_preview=True, validator=job_validators.validate_job_execution_instance_list)
 
     with self.command_group('spring', exception_handler=handle_asc_exception):
         pass

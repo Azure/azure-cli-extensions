@@ -9,6 +9,8 @@ import requests
 import re
 import os
 import time
+from azext_spring.jobs.job import (append_managed_component_ref, backfill_secret_envs,
+                                   job_has_resource_id_ref_ignore_case, remove_managed_component_ref)
 from azure.cli.core._profile import Profile
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as ResourceNotFoundException
 from azure.mgmt.loganalytics import LogAnalyticsManagementClient
@@ -21,7 +23,7 @@ import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
-from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
+from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth, wait_till_end)
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2024_05_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
@@ -1023,11 +1025,21 @@ def config_create(cmd, client, service, resource_group):
 def config_delete(cmd, client, service, resource_group):
     return client.config_servers.begin_delete(resource_group, service)
 
-def config_bind(cmd, client, service, resource_group, app):
-    return _config_bind_or_unbind_app(cmd, client, service, resource_group, app, True)
+def config_bind(cmd, client, service, resource_group, app=None, job=None):
+    """app and job will be validated so that one and only one is not None.
+        """
+    if app is not None:
+        return _config_bind_or_unbind_app(cmd, client, service, resource_group, app, True)
+    else:
+        return _config_bind_or_unbind_job(cmd, client, service, resource_group, job, True)
 
-def config_unbind(cmd, client, service, resource_group, app):
-    return _config_bind_or_unbind_app(cmd, client, service, resource_group, app, False)
+def config_unbind(cmd, client, service, resource_group, app=None, job=None):
+    """app and job will be validated so that one and only one is not None.
+            """
+    if app is not None:
+        return _config_bind_or_unbind_app(cmd, client, service, resource_group, app, False)
+    else:
+        return _config_bind_or_unbind_job(cmd, client, service, resource_group, job, False)
 
 def _config_bind_or_unbind_app(cmd, client, service, resource_group, app_name, enabled):
     app = client.apps.get(resource_group, service, app_name)
@@ -1037,7 +1049,34 @@ def _config_bind_or_unbind_app(cmd, client, service, resource_group, app_name, e
         logger.warning('App "{}" has been {}binded'.format(app_name, '' if enabled else 'un'))
         return app
 
-    config_server_id = resource_id(
+    config_server_id = _get_config_server_resource_id(cmd, resource_group, service)
+    if enabled:
+        app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = config_server_id
+    else:
+        app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = ""
+    return client.apps.begin_update(resource_group, service, app_name, app)
+
+def _config_bind_or_unbind_job(cmd, client, service, resource_group, job_name, enabled):
+    job: models.JobResource = client.job.get(resource_group, service, job_name)
+    job = backfill_secret_envs(client, resource_group, service, job_name, job)
+    config_server_id = _get_config_server_resource_id(cmd, resource_group, service)
+    is_job_already_binded = _is_job_already_binded_to_cs(job, config_server_id)
+    if is_job_already_binded == enabled:
+        logger.warning(f'Job {job_name} has been {"" if enabled else "un"}binded.')
+        return job
+
+    if enabled:
+        job = _append_config_server_reference(job, config_server_id)
+    else:
+        job = _remove_config_server_reference(job, config_server_id)
+    """TODO(jiec): There seems to be issues in SDK if we directly return client.job.begin_create_or_update.
+    """
+    poller = client.job.begin_create_or_update(resource_group, service, job_name, job)
+    wait_till_end(cmd, poller)
+    return client.job.get(resource_group, service, job_name)
+
+def _get_config_server_resource_id(cmd, resource_group, service):
+    return resource_id(
         subscription=get_subscription_id(cmd.cli_ctx),
         resource_group=resource_group,
         namespace='Microsoft.AppPlatform',
@@ -1046,12 +1085,16 @@ def _config_bind_or_unbind_app(cmd, client, service, resource_group, app_name, e
         child_type_1="configServers",
         child_name_1=CONFIG_SERVER_DEFAULT_NAME
     )
-    if enabled:
-        app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = config_server_id
-    else:
-        app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = ""
-    return client.apps.begin_update(resource_group, service, app_name, app)
-	
+
+def _is_job_already_binded_to_cs(job: models.JobResource, config_server_id: str):
+    return job_has_resource_id_ref_ignore_case(job, config_server_id)
+
+def _append_config_server_reference(job: models.JobResource, config_server_id) -> models.JobResource:
+    return append_managed_component_ref(job, config_server_id)
+
+def _remove_config_server_reference(job: models.JobResource, config_server_id) -> models.JobResource:
+    return remove_managed_component_ref(job, config_server_id)
+
 def _get_app_addon_configs_with_config_server(addon_configs):
     addon_configs = addon_configs or {}
     addon_configs.setdefault(CONFIG_SERVER_ADDON_NAME, {})
