@@ -8058,6 +8058,506 @@ interactions:
       code: 200
       message: OK
 - request:
+    body: '{"location": "global", "properties": {"filter": {"locations": ["eastus2euap",
+      "centraluseuap"], "osTypes": ["windows", "linux"], "resourceGroups": ["rg1,",
+      "rg2"], "tagSettings": {"filterOperator": "All", "tags": {"tagKey1": ["tagKey1Val1",
+      "tagKey1Val2"], "tagKey2": ["tagKey2Val1", "tagKey2Val2"]}}}, "maintenanceConfigurationId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment create-or-update-subscription
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '505'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --maintenance-configuration-id --name --filter-locations --filter-os-types
+        --filter-tags --filter-resource-group --filter-tags-operator -l
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Maintenance/configurationAssignments/cli_dynamicscope_recording01?api-version=2023-04-01
+  response:
+    body:
+      string: "{\r\n  \"location\": \"global\",\r\n  \"properties\": {\r\n    \"maintenanceConfigurationId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced\",\r\n
+        \   \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \   \"filter\": {\r\n      \"tagSettings\": {\r\n        \"tags\": {\r\n          \"tagKey1\":
+        [\r\n            \"tagKey1Val1\",\r\n            \"tagKey1Val2\"\r\n          ],\r\n
+        \         \"tagKey2\": [\r\n            \"tagKey2Val1\",\r\n            \"tagKey2Val2\"\r\n
+        \         ]\r\n        },\r\n        \"filterOperator\": \"All\"\r\n      },\r\n
+        \     \"resourceTypes\": null,\r\n      \"locations\": [\r\n        \"eastus2euap\",\r\n
+        \       \"centraluseuap\"\r\n      ],\r\n      \"resourceGroups\": [\r\n        \"rg1,\",\r\n
+        \       \"rg2\"\r\n      ],\r\n      \"osTypes\": [\r\n        \"windows\",\r\n
+        \       \"linux\"\r\n      ]\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/microsoft.maintenance/configurationassignments/cli_dynamicscope_recording01\",\r\n
+        \ \"name\": \"cli_dynamicscope_recording01\",\r\n  \"type\": \"microsoft.maintenance/configurationassignments\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1141'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 08:54:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "global", "properties": {"filter": {"locations": ["eastus2euap",
+      "centraluseuap"], "osTypes": ["windows", "linux"], "resourceGroups": ["rg1,",
+      "rg2"], "tagSettings": {"filterOperator": "All", "tags": {"tagKey1": ["tagKey1Val1",
+      "tagKey1Val2"], "tagKey2": ["tagKey2Val1", "tagKey2Val2"]}}}, "maintenanceConfigurationId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment update-subscription
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '505'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --maintenance-configuration-id --name --filter-locations --filter-os-types
+        --filter-tags --filter-resource-group --filter-tags-operator -l
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Maintenance/configurationAssignments/cli_dynamicscope_recording01?api-version=2023-04-01
+  response:
+    body:
+      string: "{\r\n  \"location\": \"global\",\r\n  \"properties\": {\r\n    \"maintenanceConfigurationId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced\",\r\n
+        \   \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \   \"filter\": {\r\n      \"tagSettings\": {\r\n        \"tags\": {\r\n          \"tagKey1\":
+        [\r\n            \"tagKey1Val1\",\r\n            \"tagKey1Val2\"\r\n          ],\r\n
+        \         \"tagKey2\": [\r\n            \"tagKey2Val1\",\r\n            \"tagKey2Val2\"\r\n
+        \         ]\r\n        },\r\n        \"filterOperator\": \"All\"\r\n      },\r\n
+        \     \"resourceTypes\": null,\r\n      \"locations\": [\r\n        \"eastus2euap\",\r\n
+        \       \"centraluseuap\"\r\n      ],\r\n      \"resourceGroups\": [\r\n        \"rg1,\",\r\n
+        \       \"rg2\"\r\n      ],\r\n      \"osTypes\": [\r\n        \"windows\",\r\n
+        \       \"linux\"\r\n      ]\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/microsoft.maintenance/configurationassignments/cli_dynamicscope_recording01\",\r\n
+        \ \"name\": \"cli_dynamicscope_recording01\",\r\n  \"type\": \"microsoft.maintenance/configurationassignments\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1141'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 08:54:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment show-subscription
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Maintenance/configurationAssignments/cli_dynamicscope_recording01?api-version=2023-04-01
+  response:
+    body:
+      string: "{\r\n  \"location\": \"global\",\r\n  \"properties\": {\r\n    \"maintenanceConfigurationId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced\",\r\n
+        \   \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000\",\r\n
+        \   \"filter\": {\r\n      \"tagSettings\": {\r\n        \"tags\": {\r\n          \"tagKey1\":
+        [\r\n            \"tagKey1Val1\",\r\n            \"tagKey1Val2\"\r\n          ],\r\n
+        \         \"tagKey2\": [\r\n            \"tagKey2Val1\",\r\n            \"tagKey2Val2\"\r\n
+        \         ]\r\n        },\r\n        \"filterOperator\": \"All\"\r\n      },\r\n
+        \     \"resourceTypes\": null,\r\n      \"locations\": [\r\n        \"eastus2euap\",\r\n
+        \       \"centraluseuap\"\r\n      ],\r\n      \"resourceGroups\": [\r\n        \"rg1,\",\r\n
+        \       \"rg2\"\r\n      ],\r\n      \"osTypes\": [\r\n        \"windows\",\r\n
+        \       \"linux\"\r\n      ]\r\n    }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/microsoft.maintenance/configurationassignments/cli_dynamicscope_recording01\",\r\n
+        \ \"name\": \"cli_dynamicscope_recording01\",\r\n  \"type\": \"microsoft.maintenance/configurationassignments\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1141'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 08:54:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment delete-subscription
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --yes
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Maintenance/configurationAssignments/cli_dynamicscope_recording01?api-version=2023-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 20 Oct 2023 08:54:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment create-or-update-resource-group
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --maintenance-configuration-id --name --filter-locations --filter-os-types
+        --filter-tags --filter-tags-operator --resource-group
+      User-Agent:
+      - AZURECLI/2.53.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_maintenance_Scenario","date":"2023-10-20T08:37:12Z","module":"maintenance"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '367'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 08:54:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"filter": {"locations": ["eastus2euap",
+      "centraluseuap"], "osTypes": ["windows", "linux"], "tagSettings": {"filterOperator":
+      "All", "tags": {"tagKey1": ["tagKey1Val1", "tagKey1Val2"], "tagKey2": ["tagKey2Val1",
+      "tagKey2Val2"]}}}, "maintenanceConfigurationId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment create-or-update-resource-group
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '475'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --maintenance-configuration-id --name --filter-locations --filter-os-types
+        --filter-tags --filter-tags-operator --resource-group
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/configurationAssignments/cli_dynamicscope_recording01?api-version=2023-04-01
+  response:
+    body:
+      string: "{\r\n  \"location\": \"eastus2euap\",\r\n  \"properties\": {\r\n    \"maintenanceConfigurationId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced\",\r\n
+        \   \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001\",\r\n
+        \   \"filter\": {\r\n      \"tagSettings\": {\r\n        \"tags\": {\r\n          \"tagKey1\":
+        [\r\n            \"tagKey1Val1\",\r\n            \"tagKey1Val2\"\r\n          ],\r\n
+        \         \"tagKey2\": [\r\n            \"tagKey2Val1\",\r\n            \"tagKey2Val2\"\r\n
+        \         ]\r\n        },\r\n        \"filterOperator\": \"All\"\r\n      },\r\n
+        \     \"resourceTypes\": null,\r\n      \"locations\": [\r\n        \"eastus2euap\",\r\n
+        \       \"centraluseuap\"\r\n      ],\r\n      \"resourceGroups\": null,\r\n
+        \     \"osTypes\": [\r\n        \"windows\",\r\n        \"linux\"\r\n      ]\r\n
+        \   }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.maintenance/configurationassignments/cli_dynamicscope_recording01\",\r\n
+        \ \"name\": \"cli_dynamicscope_recording01\",\r\n  \"type\": \"microsoft.maintenance/configurationassignments\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 08:54:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment update-resource-group
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --maintenance-configuration-id --name --filter-locations --filter-os-types
+        --filter-tags --filter-tags-operator --resource-group
+      User-Agent:
+      - AZURECLI/2.53.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_maintenance_Scenario","date":"2023-10-20T08:37:12Z","module":"maintenance"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '367'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 08:54:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"filter": {"locations": ["eastus2euap",
+      "centraluseuap"], "osTypes": ["windows", "linux"], "tagSettings": {"filterOperator":
+      "All", "tags": {"tagKey1": ["tagKey1Val1", "tagKey1Val2"], "tagKey2": ["tagKey2Val1",
+      "tagKey2Val2"]}}}, "maintenanceConfigurationId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment update-resource-group
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '475'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --maintenance-configuration-id --name --filter-locations --filter-os-types
+        --filter-tags --filter-tags-operator --resource-group
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/configurationAssignments/cli_dynamicscope_recording01?api-version=2023-04-01
+  response:
+    body:
+      string: "{\r\n  \"location\": \"eastus2euap\",\r\n  \"properties\": {\r\n    \"maintenanceConfigurationId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced\",\r\n
+        \   \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001\",\r\n
+        \   \"filter\": {\r\n      \"tagSettings\": {\r\n        \"tags\": {\r\n          \"tagKey1\":
+        [\r\n            \"tagKey1Val1\",\r\n            \"tagKey1Val2\"\r\n          ],\r\n
+        \         \"tagKey2\": [\r\n            \"tagKey2Val1\",\r\n            \"tagKey2Val2\"\r\n
+        \         ]\r\n        },\r\n        \"filterOperator\": \"All\"\r\n      },\r\n
+        \     \"resourceTypes\": null,\r\n      \"locations\": [\r\n        \"eastus2euap\",\r\n
+        \       \"centraluseuap\"\r\n      ],\r\n      \"resourceGroups\": null,\r\n
+        \     \"osTypes\": [\r\n        \"windows\",\r\n        \"linux\"\r\n      ]\r\n
+        \   }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.maintenance/configurationassignments/cli_dynamicscope_recording01\",\r\n
+        \ \"name\": \"cli_dynamicscope_recording01\",\r\n  \"type\": \"microsoft.maintenance/configurationassignments\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 08:54:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - maintenance assignment show-resource-group
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/configurationAssignments/cli_dynamicscope_recording01?api-version=2023-04-01
+  response:
+    body:
+      string: "{\r\n  \"location\": \"eastus2euap\",\r\n  \"properties\": {\r\n    \"maintenanceConfigurationId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced\",\r\n
+        \   \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001\",\r\n
+        \   \"filter\": {\r\n      \"tagSettings\": {\r\n        \"tags\": {\r\n          \"tagKey1\":
+        [\r\n            \"tagKey1Val1\",\r\n            \"tagKey1Val2\"\r\n          ],\r\n
+        \         \"tagKey2\": [\r\n            \"tagKey2Val1\",\r\n            \"tagKey2Val2\"\r\n
+        \         ]\r\n        },\r\n        \"filterOperator\": \"All\"\r\n      },\r\n
+        \     \"resourceTypes\": null,\r\n      \"locations\": [\r\n        \"eastus2euap\",\r\n
+        \       \"centraluseuap\"\r\n      ],\r\n      \"resourceGroups\": null,\r\n
+        \     \"osTypes\": [\r\n        \"windows\",\r\n        \"linux\"\r\n      ]\r\n
+        \   }\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.maintenance/configurationassignments/cli_dynamicscope_recording01\",\r\n
+        \ \"name\": \"cli_dynamicscope_recording01\",\r\n  \"type\": \"microsoft.maintenance/configurationassignments\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1166'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 20 Oct 2023 08:54:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
     body: '{"location": "eastus2euap", "properties": {"maintenanceScope": "Host",
       "maintenanceWindow": {"duration": "04:00", "expirationDateTime": "9999-12-31
       00:00", "recurEvery": "Day", "startDateTime": "2025-09-30 08:00", "timeZone":

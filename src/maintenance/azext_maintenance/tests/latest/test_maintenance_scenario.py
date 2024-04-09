@@ -13,6 +13,7 @@ from datetime import datetime, timezone, timedelta
 import time
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk import live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .. import (
@@ -563,13 +564,13 @@ def call_scenario(test):
     # cancel maintenance config
     step__maintenanceconfigurations_cancel(test)
     # Dynamic scope
-    #step__configurationassignments_put_configurationassignments_createorupdate_subscription(test)
-    #step__configurationassignments_put_configurationassignments_update_subscription(test)
-    #step__configurationassignments_put_configurationassignments_show_subscription(test)
-    #step__configurationassignments_put_configurationassignments_delete_subscription(test)
-    #step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test)
-    #step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
-    #step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_createorupdate_subscription(test)
+    step__configurationassignments_put_configurationassignments_update_subscription(test)
+    step__configurationassignments_put_configurationassignments_show_subscription(test)
+    step__configurationassignments_put_configurationassignments_delete_subscription(test)
+    step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
 
     # Dedicated host test
 
@@ -618,6 +619,7 @@ class MaintenanceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg', location="eastus2euap")
+    @live_only() 
     def test_maintenance_Scenario(self, rg):
         call_scenario(self)
         calc_coverage(__file__)
