@@ -13568,7 +13568,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update some unrelated parameter to check that init taints stay unchanged when not specified in the request
         update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} --node-count=2"
+            "aks update --resource-group={resource_group} --name={name} --auto-upgrade-channel stable"
 
         )
         self.cmd(
