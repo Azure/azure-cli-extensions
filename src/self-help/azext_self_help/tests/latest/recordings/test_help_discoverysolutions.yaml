@@ -28,7 +28,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 05 Apr 2024 22:30:37 GMT
+      - Tue, 09 Apr 2024 17:46:54 GMT
       expires:
       - '-1'
       pragma:
@@ -42,7 +42,131 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 9956196873604D039C6CE1693E7BB6AA Ref B: MNZ221060618035 Ref C: 2024-04-05T22:30:37Z'
+      - 'Ref A: DEB6CA9F279E4A01B0DBC49B73925270 Ref B: MNZ221060608035 Ref C: 2024-04-09T17:46:54Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"IssueSummary": "I am not able to make rdp connection to the virtual machine",
+      "ServiceId": "6f16735c-b0ae-b275-ad3a-03479cfa1396"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help discovery-solution list-nlp
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '132'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --issue-summary --service-id
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Help/discoverSolutions?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Help/discoverSolutions/92c2396d-b703-973f-1bca-2eea9425b21a","name":"92c2396d-b703-973f-1bca-2eea9425b21a","type":"Microsoft.Help/discoverSolutions","properties":{"problemClassificationId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396/problemClassifications/92c2396d-b703-973f-1bca-2eea9425b21a","problemTitle":"Failure
+        to connect using RDP or SSH port","problemDescription":"Resolve issues related
+        to connecting via RDP or SSH not covered by other support topics","serviceId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396","solutions":[{"solutionId":"1eee39b5-9658-4d27-bae9-131ce7cd47b0","solutionType":"SelfHelp","description":"Resolve
+        connectivity issues with your Windows VM","requiredInputs":[]}]}},{"id":"/providers/Microsoft.Help/discoverSolutions/923d6b56-d573-f943-b65d-d69ba79ea21a","name":"923d6b56-d573-f943-b65d-d69ba79ea21a","type":"Microsoft.Help/discoverSolutions","properties":{"problemClassificationId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396/problemClassifications/923d6b56-d573-f943-b65d-d69ba79ea21a","problemTitle":"My
+        configuration change impacted connectivity","problemDescription":"A configuration
+        change to the virtual machine has impacted RDP or SSH connectivity","serviceId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396","solutions":[{"solutionId":"7c04b369-3dc5-4b29-941d-23ccfca9e9f0","solutionType":"SelfHelp","description":"Resolve
+        connectivity issue with your Windows VM","requiredInputs":[]}]}},{"id":"/providers/Microsoft.Help/discoverSolutions/5aed3921-4198-0d81-c999-f9c878ac00c8","name":"5aed3921-4198-0d81-c999-f9c878ac00c8","type":"Microsoft.Help/discoverSolutions","properties":{"problemClassificationId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396/problemClassifications/5aed3921-4198-0d81-c999-f9c878ac00c8","problemTitle":"My
+        VMs OS is not booting","problemDescription":"Covers issues where the Guest
+        OS of the VM is crashing or failing to boot to a usable state.","serviceId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396","solutions":[{"solutionId":"apollo-ec711657-87b8-4556-8a17-bd8172ef7921","solutionType":"Solutions","description":"My
+        Windows VM is not booting","requiredInputs":[]}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2366'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Apr 2024 17:46:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2B5B71D24F414C6B9156F7AAFE6CA951 Ref B: MNZ221060619051 Ref C: 2024-04-09T17:46:54Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"IssueSummary": "I am not able to make rdp connection to the virtual machine",
+      "ServiceId": "6f16735c-b0ae-b275-ad3a-03479cfa1396"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help discovery-solution list-nlp-subscription
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '132'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --issue-summary --service-id --subscription-id
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/discoverSolutions?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"subscriptions/6bded6d5-a6af-43e1-96d3-bf71f6f5f8ba/providers/Microsoft.Help/discoverSolutions/92c2396d-b703-973f-1bca-2eea9425b21a","name":"92c2396d-b703-973f-1bca-2eea9425b21a","type":"Microsoft.Help/discoverSolutions","properties":{"problemClassificationId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396/problemClassifications/92c2396d-b703-973f-1bca-2eea9425b21a","problemTitle":"Failure
+        to connect using RDP or SSH port","problemDescription":"Resolve issues related
+        to connecting via RDP or SSH not covered by other support topics","serviceId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396","solutions":[{"solutionId":"1eee39b5-9658-4d27-bae9-131ce7cd47b0","solutionType":"SelfHelp","description":"Resolve
+        connectivity issues with your Windows VM","requiredInputs":[]}]}},{"id":"subscriptions/6bded6d5-a6af-43e1-96d3-bf71f6f5f8ba/providers/Microsoft.Help/discoverSolutions/923d6b56-d573-f943-b65d-d69ba79ea21a","name":"923d6b56-d573-f943-b65d-d69ba79ea21a","type":"Microsoft.Help/discoverSolutions","properties":{"problemClassificationId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396/problemClassifications/923d6b56-d573-f943-b65d-d69ba79ea21a","problemTitle":"My
+        configuration change impacted connectivity","problemDescription":"A configuration
+        change to the virtual machine has impacted RDP or SSH connectivity","serviceId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396","solutions":[{"solutionId":"7c04b369-3dc5-4b29-941d-23ccfca9e9f0","solutionType":"SelfHelp","description":"Resolve
+        connectivity issue with your Windows VM","requiredInputs":[]}]}},{"id":"subscriptions/6bded6d5-a6af-43e1-96d3-bf71f6f5f8ba/providers/Microsoft.Help/discoverSolutions/5aed3921-4198-0d81-c999-f9c878ac00c8","name":"5aed3921-4198-0d81-c999-f9c878ac00c8","type":"Microsoft.Help/discoverSolutions","properties":{"problemClassificationId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396/problemClassifications/5aed3921-4198-0d81-c999-f9c878ac00c8","problemTitle":"My
+        VMs OS is not booting","problemDescription":"Covers issues where the Guest
+        OS of the VM is crashing or failing to boot to a usable state.","serviceId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396","solutions":[{"solutionId":"apollo-ec711657-87b8-4556-8a17-bd8172ef7921","solutionType":"Solutions","description":"My
+        Windows VM is not booting","requiredInputs":[]}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2516'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Apr 2024 17:46:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6CAEE27CF29A4184B7C8487E88CB2C7F Ref B: MNZ221060618047 Ref C: 2024-04-09T17:46:56Z'
       x-powered-by:
       - ASP.NET
     status:

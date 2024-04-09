@@ -30,6 +30,24 @@ class SelfHelpScenario(ScenarioTest):
         self.assertTrue("name" in list_solution_discovery_result[0])
         self.assertTrue("id" in list_solution_discovery_result[0])
 
+        self.kwargs.update({
+            'subscription-id': self.get_subscription_id(),
+            'service-id': "\"6f16735c-b0ae-b275-ad3a-03479cfa1396\"",
+            'issue-summary': "\"I am not able to make rdp connection to the virtual machine\""
+        })
+
+        list_solution_discovery_result_nlp = self.cmd(
+            'self-help discovery-solution list-nlp --issue-summary {issue-summary} --service-id {service-id}', checks=[
+                self.check(
+                    '[0].type', 'Microsoft.Help/discoverSolutions', case_sensitive=False)
+            ]).get_output_in_json()
+
+        list_solution_discovery_result_nlp_subscription = self.cmd(
+            'self-help discovery-solution list-nlp-subscription --issue-summary {issue-summary} --service-id {service-id} --subscription-id {subscription-id}', checks=[
+                self.check(
+                    '[0].type', 'Microsoft.Help/discoverSolutions', case_sensitive=False)
+            ]).get_output_in_json()
+
     @ResourceGroupPreparer()
     @KeyVaultPreparer()
     def test_help_diagnostics(self, resource_group, key_vault):
