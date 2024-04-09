@@ -69,22 +69,10 @@ class Create(AAZCommand):
                 resource_group_arg="resource_group",
             ),
         )
-        _args_schema.sku = AAZObjectArg(
-            options=["--sku"],
-            arg_group="Parameters",
-            help="The pricing tier of web application firewall policy. Defaults to Classic_AzureFrontDoor if not specified.",
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
             help="Resource tags.",
-        )
-
-        sku = cls._args_schema.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="Name of the pricing tier.",
-            enum={"Classic_AzureFrontDoor": "Classic_AzureFrontDoor", "Premium_AzureFrontDoor": "Premium_AzureFrontDoor", "Standard_AzureFrontDoor": "Standard_AzureFrontDoor"},
         )
 
         tags = cls._args_schema.tags
@@ -399,6 +387,16 @@ class Create(AAZCommand):
         exclusions = cls._args_schema.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element.exclusions
         exclusions.Element = AAZObjectArg()
         cls._build_args_managed_rule_exclusion_create(exclusions.Element)
+
+        # define Arg Group "Sku"
+
+        _args_schema = cls._args_schema
+        _args_schema.sku = AAZStrArg(
+            options=["--sku"],
+            arg_group="Sku",
+            help="Name of the pricing tier.",
+            enum={"Classic_AzureFrontDoor": "Classic_AzureFrontDoor", "Premium_AzureFrontDoor": "Premium_AzureFrontDoor", "Standard_AzureFrontDoor": "Standard_AzureFrontDoor"},
+        )
         return cls._args_schema
 
     _args_managed_rule_exclusion_create = None
@@ -545,7 +543,7 @@ class Create(AAZCommand):
             _builder.set_prop("etag", AAZStrType, ".etag")
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("sku", AAZObjectType, ".sku")
+            _builder.set_prop("sku", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -681,7 +679,7 @@ class Create(AAZCommand):
 
             sku = _builder.get(".sku")
             if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+                sku.set_prop("name", AAZStrType, ".sku")
 
             tags = _builder.get(".tags")
             if tags is not None:

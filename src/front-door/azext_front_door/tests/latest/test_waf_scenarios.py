@@ -15,7 +15,7 @@ class WafTests(WafScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(location='westus')
     def test_waf_log_scrubbing(self, resource_group):
         blockpolicy = self.create_random_name(prefix='cli', length=24)
-        cmd = 'az network front-door waf-policy create -g {resource_group} -n {blockpolicy} --mode prevention'.format(**locals())
+        cmd = 'az network front-door waf-policy create -g {resource_group} -n {blockpolicy} --mode prevention --sku Standard_AzureFrontDoor'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['mode'], "Prevention")
@@ -23,10 +23,10 @@ class WafTests(WafScenarioMixin, ScenarioTest):
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
-
-        cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --log-scrubbing \"{{scrubbing-rules:[{{match-variable:QueryStringArgNames,selector-match-operator:EqualsAny}}],state:Enabled}}\"'.format(**locals())
-        result = self.cmd(cmd).get_output_in_json()
-        self.assertEqual(result['policySettings']['LogScrubbing']['State'], "Enabled")
+        options = '--log-scrubbing \"{{scrubbing-rules:[{{match-variable:QueryStringArgNames,selector-match-operator:EqualsAny}}],state:Enabled}}\"'
+        cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy}'.format(**locals())
+        result = self.cmd(cmd + ' ' + options).get_output_in_json()
+        self.assertEqual(result['policySettings']['logScrubbing']['state'], "Enabled")
 
     @live_only()  # --defer seems not work with VCR.py well
     @ResourceGroupPreparer(location='westus')
