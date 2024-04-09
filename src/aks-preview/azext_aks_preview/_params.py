@@ -633,9 +633,10 @@ def load_arguments(self, _):
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
         c.argument(
             "nodepool_initialization_taints",
+            nargs="*",
             is_preview=True,
             validator=validate_nodepool_taints,
-            help='comma-separated taints: <taintKey1>=<taintValue1>:<taintEffect1>, <taintKey2>=<taintValue2>:<taintEffect2>. Use "" to clear existing taints.',
+            help='space-separated taints: <taintKey1>=<taintValue1>:<taintEffect1> <taintKey2>=<taintValue2>:<taintEffect2>. Pass "" to clear existing taints.',
         )
         c.argument("node_osdisk_type", arg_type=get_enum_type(node_os_disk_types))
         c.argument("node_osdisk_size", type=int)
