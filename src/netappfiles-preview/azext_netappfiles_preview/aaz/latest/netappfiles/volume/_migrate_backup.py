@@ -20,9 +20,9 @@ class MigrateBackup(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-01-preview",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}/migratebackups", "2022-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}/migratebackups", "2023-07-01-preview"],
         ]
     }
 
@@ -117,15 +117,6 @@ class MigrateBackup(AAZCommand):
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
 
             return self.on_error(session.http_response)
 
@@ -174,7 +165,7 @@ class MigrateBackup(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -199,9 +190,6 @@ class MigrateBackup(AAZCommand):
             _builder.set_prop("backupVaultId", AAZStrType, ".backup_vault_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
-
-        def on_204(self, session):
-            pass
 
 
 class _MigrateBackupHelper:

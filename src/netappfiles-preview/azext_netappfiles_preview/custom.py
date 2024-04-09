@@ -100,32 +100,53 @@ class VolumeCreate(_VolumeCreate):
         for protocl in args.protocol_types:
             logger.debug("ANF-Extension log: ProtocolType: %s", protocl)
 
-        logger.debug("ANF-Extension log: exportPolicy rules len:%s", len(args.rules))
+        logger.debug("ANF log: exportPolicy rules len:%s", len(args.export_policy_rules))
 
-        for rule in args.rules:
-            logger.debug("ANF-Extension log: rule: %s", rule)
+        for rule in args.export_policy_rules:
+            logger.debug("ANF log: rule: %s", rule)
 
-        if (has_value(args.protocol_types) and any(x in ['NFSv3', 'NFSv4.1'] for x in args.protocol_types) and len(args.rules) == 0)\
-                and not ((len(args.protocol_types) == 1 and all(elem == "NFSv3" for elem in args.protocol_types)) and len(args.rules) == 0):
+        if (has_value(args.protocol_types) and any(x in ['NFSv3', 'NFSv4.1'] for x in args.protocol_types) and len(args.export_policy_rules) == 0)\
+                and not ((len(args.protocol_types) == 1 and all(elem == "NFSv3" for elem in args.protocol_types)) and len(args.export_policy_rules) == 0):
             isNfs41 = False
             isNfs3 = False
             cifs = False
-            rule_index = 1
+
+            if not has_value(args.rule_index):
+                rule_index = 1
+            else:
+                rule_index = int(args.rule_index.to_serialized_data()) or 1
             if "NFSv4.1" in args.protocol_types:
                 isNfs41 = True
-                if not has_value(args.rules["allowed_clients"]):
+                if not has_value(args.allowed_clients):
                     raise ValidationError("Parameter allowed-clients needs to be set when protocol-type is NFSv4.1")
             if "NFSv3" in args.protocol_types:
                 isNfs3 = True
             if "CIFS" in args.protocol_types:
                 cifs = True
 
-            logger.debug("ANF-Extension log: Setting exportPolicy rule index: %s, %s, %s, %s", rule_index, isNfs3, isNfs41, cifs)
+            logger.debug("ANF log: Setting exportPolicy rule index: %s, isNfs3: %s, isNfs4: %s, cifs: %s", rule_index, isNfs3, isNfs41, cifs)
 
-            args.rules[0]["rule_index"] = rule_index
-            args.rules[0]["nfsv3"] = isNfs3
-            args.rules[0]["nfsv41"] = isNfs41
-            args.rules[0]["cifs"] = cifs
+            logger.debug("ANF log: Before exportPolicy rule => : rule_index: %s, nfsv3: %s, nfsv4: %s, cifs: %s", args.export_policy_rules[0]["rule_index"], args.export_policy_rules[0]["nfsv3"], args.export_policy_rules[0]["nfsv41"], args.export_policy_rules[0]["cifs"])
+            logger.debug("ANF log: args.rule_index %s,  rule_index: %s", args.rule_index, rule_index)
+            args.export_policy_rules[0]["rule_index"] = rule_index
+            args.export_policy_rules[0]["nfsv3"] = isNfs3
+            args.export_policy_rules[0]["nfsv41"] = isNfs41
+            args.export_policy_rules[0]["cifs"] = cifs
+            args.export_policy_rules[0]["allowed_clients"] = args.allowed_clients
+            args.export_policy_rules[0]["unix_read_only"] = args.unix_read_only
+            args.export_policy_rules[0]["unix_read_write"] = args.unix_read_write
+            args.export_policy_rules[0]["cifs"] = args.cifs
+            args.export_policy_rules[0]["kerberos5_read_only"] = args.kerberos5_read_only
+            args.export_policy_rules[0]["kerberos5_read_write"] = args.kerberos5_read_write
+            args.export_policy_rules[0]["kerberos5i_read_only"] = args.kerberos5_i_read_only
+            args.export_policy_rules[0]["kerberos5i_read_write"] = args.kerberos5_i_read_write
+            args.export_policy_rules[0]["kerberos5p_read_only"] = args.kerberos5_p_read_only
+            args.export_policy_rules[0]["kerberos5p_read_write"] = args.kerberos5_p_read_write
+            args.export_policy_rules[0]["has_root_access"] = args.has_root_access
+            args.export_policy_rules[0]["chown_mode"] = args.chown_mode
+
+            logger.debug("ANF-Extension log: after exportPolicy rule => : %s, %s, %s, %s", args.export_policy_rules[0]["rule_index"], args.export_policy_rules[0]["nfsv3"], args.export_policy_rules[0]["nfsv41"], args.export_policy_rules[0]["cifs"])
+
         else:
             logger.debug("Don't create export policy")
 
