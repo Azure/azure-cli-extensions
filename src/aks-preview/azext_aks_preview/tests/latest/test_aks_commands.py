@@ -13513,7 +13513,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "initTaint1=value1:PreferNoSchedule,initTaint2=value2:PreferNoSchedule"
         )
         nodepool_taints2 = "taint1=value2:PreferNoSchedule"
-        nodepool_taints3 = "taint1=value3:PreferNoSchedule"
         nodepool_init_taints2 = "initTaint1=value2:PreferNoSchedule"
         self.kwargs.update(
             {
@@ -13530,7 +13529,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "nodepool_taints": nodepool_taints,
                 "nodepool_initialization_taints": nodepool_init_taints,
                 "nodepool_taints2": nodepool_taints2,
-                "nodepool_taints3": nodepool_taints3,
                 "nodepool_initialization_taints2": nodepool_init_taints2,
             }
         )
@@ -13568,10 +13566,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        # update just permanent taints to confirm that init taints are not getting removed when not explicitly specified
+        # update some unrelated parameter to check that init taints stay unchanged when not specified in the request
         update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--nodepool-taints {nodepool_taints2} "
+            "aks update --resource-group={resource_group} --name={name} --node-count=2"
+
         )
         self.cmd(
             update_cmd,
@@ -13590,7 +13588,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
-            "--nodepool-taints {nodepool_taints3} "
+            "--nodepool-taints {nodepool_taints2} "
             "--nodepool-initialization-taints {nodepool_initialization_taints2} " 
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeInitializationTaintsPreview "
         )
@@ -13600,7 +13598,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check(
                     "agentPoolProfiles[0].nodeTaints[0]",
-                    "taint1=value3:PreferNoSchedule",
+                    "taint1=value2:PreferNoSchedule",
                 ),
                 self.check(
                     "agentPoolProfiles[0].nodeInitializationTaints[0]",
