@@ -238,7 +238,7 @@ class SelfHelpScenario(ScenarioTest):
                                  type='vaults')
         self.kwargs.update({
             'scope': resourceId,
-            'troubleshooter-name': 'f81d4fae-7dec-11d0-a765-00a0c91e6bd6',
+            'troubleshooter-name': 'f81d4fae-7dec-11d0-a765-00a0c91e6bf5',
             'solution-id': 'e104dbdf-9e14-4c9f-bc78-21ac90382231',
             'parameters': '{ResourceUri:' + resourceId + '}',
             'responses': '[]'
