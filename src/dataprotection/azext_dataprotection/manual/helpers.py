@@ -878,7 +878,7 @@ def check_and_assign_roles(cmd, role_object, principal_id, role_assignments_arr,
         if role_object['type'] == 'TargetStorageAccount':
             if target_storage_account_id is None:
                 logger.warning('target-storage-account parameter is required to assign permissions '
-                                'over target resource group, skipping')
+                               'over target resource group, skipping')
                 return role_assignments_arr
             resource_id = target_storage_account_id
 
@@ -887,7 +887,7 @@ def check_and_assign_roles(cmd, role_object, principal_id, role_assignments_arr,
     assignment_scope = truncate_id_using_scope(resource_id, permissions_scope)
 
     role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                scope=resource_id, include_inherited=True)
+                                             scope=resource_id, include_inherited=True)
     if not role_assignments:
         assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
                                             scope=assignment_scope)

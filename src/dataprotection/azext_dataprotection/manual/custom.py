@@ -21,11 +21,11 @@ from azure.cli.core.azclierror import (
     ForbiddenError,
     UnauthorizedError
 )
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
@@ -213,7 +213,7 @@ def dataprotection_backup_vault_list_from_resourcegraph(client, resource_groups=
 
 def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_name, datasource_type, vault_name, operation,
                                                           permissions_scope, backup_instance=None, restore_request_object=None,
-                                                          keyvault_id=None, snapshot_resource_group_id=None, 
+                                                          keyvault_id=None, snapshot_resource_group_id=None,
                                                           target_storage_account_id=None, yes=False):
     if operation == 'Backup' and backup_instance is None:
         raise RequiredArgumentMissingError("--backup-instance needs to be given when --operation is given as Backup")
@@ -340,8 +340,8 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
         if 'backupVaultPermissions' in manifest:
             for role_object in manifest['backupVaultPermissions']:
                 role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
-                                                                    backup_instance=backup_instance, principal_id=vault_principal_id,
-                                                                    role_assignments_arr=role_assignments_arr)
+                                                                     backup_instance=backup_instance, principal_id=vault_principal_id,
+                                                                     role_assignments_arr=role_assignments_arr)
 
         if 'dataSourcePermissions' in manifest:
             datasource_principal_id = helper.get_datasource_principal_id_from_object(cmd, datasource_type,
