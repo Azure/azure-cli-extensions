@@ -377,7 +377,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                 role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
     elif operation == "Restore":
         if datasource_type not in ("AzureKubernetesService", "AzureDatabaseForMySQL",
-                                   "AzureDatabaseForPostgresFlexibleServer"):
+                                   "AzureDatabaseForPostgreSQLFlexibleServer"):
             raise InvalidArgumentValueError("Set permissions for restore is currently not supported for given DataSourceType")
 
         for role_object in manifest['backupVaultRestorePermissions']:
