@@ -33,6 +33,9 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
+    CONST_DEFAULT_NODE_VM_SIZE,
+    CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE,
+    CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
 )
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
 
@@ -103,6 +106,56 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             )
         # this parameter does not need validation
         return vm_set_type
+
+    def get_node_vm_size(self) -> str:
+        """Obtain the value of node_vm_size.
+
+        :return: string
+        """
+        return self._get_node_vm_size(read_only=False)
+
+    def _get_node_vm_size(self, read_only: bool = False) -> str:
+        """Internal function to dynamically obtain the value of node_vm_size according to the context.
+
+        If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
+        from the Snapshot. When determining the value of the parameter, obtaining from `agentpool` takes precedence over
+        user's explicit input over snapshot over default vaule.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("node_vm_size")
+        # try to read the property value corresponding to the parameter from the `agentpool` object
+        value_obtained_from_agentpool = None
+        if self.agentpool:
+            value_obtained_from_agentpool = self.agentpool.vm_size
+        # try to retrieve the value from snapshot
+        value_obtained_from_snapshot = None
+        # skip dynamic completion if read_only is specified
+        if not read_only:
+            snapshot = self.get_snapshot()
+            if snapshot:
+                value_obtained_from_snapshot = snapshot.vm_size
+
+        # set default value
+        if value_obtained_from_agentpool is not None:
+            node_vm_size = value_obtained_from_agentpool
+        elif raw_value is not None:
+            node_vm_size = raw_value
+        elif not read_only and value_obtained_from_snapshot is not None:
+            node_vm_size = value_obtained_from_snapshot
+        else:
+            if self.get_os_type().lower() == "windows":
+                node_vm_size = CONST_DEFAULT_WINDOWS_NODE_VM_SIZE
+            else:
+                node_vm_size = CONST_DEFAULT_NODE_VM_SIZE
+                sku = self.raw_param.get("sku")
+                # if --node-vm-size is not specified, but --sku automatic is explicitly specified
+                if sku is not None and sku == "automatic":
+                    node_vm_size = CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE
+
+        # this parameter does not need validation
+        return node_vm_size
 
     def get_crg_id(self) -> Union[str, None]:
         """Obtain the value of crg_id.

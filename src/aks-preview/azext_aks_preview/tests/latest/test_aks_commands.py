@@ -3128,6 +3128,74 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_automatic_sku(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        lst_version = self._get_lts_version(resource_group_location)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create an Automatic cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--sku automatic --node-vm-size standard_ds4_v2 "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("sku.tier", "Standard"),
+            ],
+        )
+        
+        # scale the cluster
+        scale_cluster_cmd = (
+            "aks scale --resource-group={resource_group} --name={name} "
+            "-c 4"
+        )
+        self.cmd(
+            scale_cluster_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("sku.tier", "Standard"),
+            ],
+        )
+        
+        # update from sku name Automatic to Base
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--sku base "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Base"),
+                self.check("sku.tier", "Standard"),
+            ],
+        ) 
+
+        # delete the cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"

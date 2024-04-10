@@ -317,6 +317,9 @@ helps['aks create'] = f"""
         - name: --uptime-sla
           type: bool
           short-summary: --uptime-sla is deprecated. Please use '--tier standard' instead.
+        - name: --sku
+          type: string
+          short-summary: Specify SKU name for managed clusters. '--sku base' enables a base managed cluster. '--sku automatic' enables an automatic managed cluster.
         - name: --tier
           type: string
           short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' does not have a financially backed SLA.
@@ -764,6 +767,9 @@ helps['aks update'] = """
         - name: --no-uptime-sla
           type: bool
           short-summary: Change a standard managed cluster to a free one. --no-uptime-sla is deprecated. Please use '--tier free' instead.
+        - name: --sku
+          type: string
+          short-summary: Specify SKU name for managed clusters. '--sku base' enables a base managed cluster. '--sku automatic' enables an automatic managed cluster.
         - name: --tier
           type: string
           short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' changes a standard managed cluster to a free one.
