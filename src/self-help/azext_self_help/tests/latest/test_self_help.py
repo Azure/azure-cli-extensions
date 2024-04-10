@@ -16,11 +16,12 @@ class SelfHelpScenario(ScenarioTest):
     def test_help_discoverysolutions(self, resource_group, key_vault):
 
         self.kwargs.update({
-            'filter': "\"ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'\""
+            'filter': "\"ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'\"",
+            'scope' : "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read"
         })
 
         list_solution_discovery_result = self.cmd(
-            'self-help discovery-solution list --filter {filter}', checks=[
+            'self-help discovery-solution list --filter {filter} --scope {scope}', checks=[
                 self.check(
                     '[0].type', 'Microsoft.Help/discoverySolutions', case_sensitive=False)
             ]).get_output_in_json()
@@ -237,7 +238,7 @@ class SelfHelpScenario(ScenarioTest):
                                  type='vaults')
         self.kwargs.update({
             'scope': resourceId,
-            'troubleshooter-name': 'f81d4fae-7dec-11d0-a765-00a0c91e6bf5',
+            'troubleshooter-name': str(uuid.uuid4()),
             'solution-id': 'e104dbdf-9e14-4c9f-bc78-21ac90382231',
             'parameters': '{ResourceUri:' + resourceId + '}',
             'responses': '[]'
