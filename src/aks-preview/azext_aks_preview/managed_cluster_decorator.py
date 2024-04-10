@@ -1896,14 +1896,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         # Read the original value passed by the command.
         enable_azure_monitor_app_monitoring = self.raw_param.get("enable_azure_monitor_app_monitoring")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.azure_monitor_profile and
-                self.mc.azure_monitor_profile.app_monitoring
-            ):
-                enable_azure_monitor_app_monitoring = self.mc.azure_monitor_profile.app_monitoring.enabled
+       
         # This parameter does not need dynamic completion.
         if enable_validation:
             if enable_azure_monitor_app_monitoring and self._get_disable_azure_monitor_app_monitoring(False):
@@ -1958,7 +1951,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 self.mc and
                 self.mc.azure_monitor_profile and
                 self.mc.azure_monitor_profile.app_monitoring and
-                self.mc.azure_monitor_profile.auto_instrumentation
+                self.mc.azure_monitor_profile.app_monitoring.auto_instrumentation
             ):
                 enable_auto_instrumentation = self.mc.azure_monitor_profile.auto_instrumentation.enabled
         # This parameter does not need dynamic completion.
@@ -2015,7 +2008,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 self.mc and
                 self.mc.azure_monitor_profile and
                 self.mc.azure_monitor_profile.app_monitoring and
-                self.mc.azure_monitor_profile.open_telemetry_metrics
+                self.mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics
             ):
                 enable_open_telemetry_metrics = self.mc.azure_monitor_profile.open_telemetry_metrics.enabled
         # This parameter does not need dynamic completion.
@@ -2072,7 +2065,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 self.mc and
                 self.mc.azure_monitor_profile and
                 self.mc.azure_monitor_profile.app_monitoring and
-                self.mc.azure_monitor_profile.open_telemetry_logs
+                self.mc.azure_monitor_profile.app_monitoring.open_telemetry_logs
             ):
                 enable_open_telemetry_logs = self.mc.azure_monitor_profile.open_telemetry_logs.enabled
         # This parameter does not need dynamic completion.
@@ -2091,6 +2084,29 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_enable_open_telemetry_logs(enable_validation=True)
+    
+    def _get_disable_open_telemetry_logs(self, enable_validation=True) -> bool: 
+        """Internal function to obtain the value of disable_open_telemetry_logs.
+        This function supports the option of enable_validation. When enabled, if both enable_open_telemetry_logs and
+        disable_open_telemetry_logs are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_open_telemetry_logs = self.raw_param.get("disable_open_telemetry_logs")
+        if disable_open_telemetry_logs and self._get_enable_open_telemetry_logs(False):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-open-telemetry-logs and --disable-open-telemetry-logs "
+                "at the same time."
+            )
+        return disable_open_telemetry_logs
+    
+    def get_disable_open_telemetry_logs(self) -> bool:
+        """Obtain the value of disable_open_telemetry_logs.
+        If both enable_open_telemetry_logs and
+        disable_open_telemetry_logs are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_disable_open_telemetry_logs(enable_validation=True)
 
     def get_enable_node_restriction(self) -> bool:
         """Obtain the value of enable_node_restriction.
