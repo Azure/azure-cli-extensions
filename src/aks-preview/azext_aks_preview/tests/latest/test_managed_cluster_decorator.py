@@ -4058,6 +4058,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             node_labels={"k1": "v1", "k2": "v2"},
             tags={"k1": "v1"},
             node_taints=[],
+            node_initialization_taints=[],
             os_disk_size_gb=100,
             os_disk_type="test_os_disk_type",
             upgrade_settings=self.models.AgentPoolUpgradeSettings(),
@@ -5049,6 +5050,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             enable_auto_scaling=False,
             count=3,
             node_taints=[],
+            node_initialization_taints=[],
             os_disk_size_gb=0,
             upgrade_settings=upgrade_settings_1,
             type=CONST_VIRTUAL_MACHINE_SCALE_SETS,
@@ -8311,6 +8313,68 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         normalClusterCalculated = noopDecorator3.update_k8s_support_plan(normalCluster)
         self.assertEqual(normalClusterCalculated, normalCluster)
 
+    def test_mc_get_node_init_taints(self):
+            # Default, not set.
+            ctx_1 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict({}),
+                self.models,
+                decorator_mode=DecoratorMode.CREATE,
+            )
+            self.create_and_attach_test_ap_context(ctx_1)
+            self.assertEqual([], ctx_1.get_nodepool_initialization_taints())
+
+            # Populate init taints.
+            ctx_2 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict(
+                    {
+                        "nodepool_initialization_taints": "initTaint1=value1:PreferNoSchedule",
+                    }
+                ),
+                self.models,
+                decorator_mode=DecoratorMode.UPDATE,
+            )
+            self.create_and_attach_test_ap_context(ctx_2)
+            self.assertEqual(["initTaint1=value1:PreferNoSchedule"], ctx_2.get_nodepool_initialization_taints())
+
+            # Update init taints.
+            ctx_3 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict(
+                    {
+                        "nodepool_initialization_taints": "initTaint2=value1:PreferNoSchedule",
+                    }
+                ),
+                self.models,
+                decorator_mode=DecoratorMode.UPDATE,
+            )
+            self.create_and_attach_test_ap_context(ctx_3)
+            self.assertEqual(["initTaint2=value1:PreferNoSchedule"], ctx_3.get_nodepool_initialization_taints())
+
+            # Remove init taints
+            ctx_4 = AKSPreviewManagedClusterContext(
+                self.cmd,
+                AKSManagedClusterParamDict(
+                    {
+                        "nodepool_initialization_taints": "",
+                    }
+                ),
+                self.models,
+                decorator_mode=DecoratorMode.UPDATE,
+            )
+            self.create_and_attach_test_ap_context(ctx_4)
+            self.assertEqual([""], ctx_4.get_nodepool_initialization_taints())
+
+    def create_and_attach_test_ap_context(self, ctx):
+        agentpool_ctx = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSManagedClusterParamDict(ctx.raw_param._BaseAKSParamDict__store),
+            self.models,
+            DecoratorMode.CREATE,
+            AgentPoolDecoratorMode.MANAGED_CLUSTER,
+        )
+        ctx.attach_agentpool_context(agentpool_ctx)
 
 if __name__ == "__main__":
     unittest.main()

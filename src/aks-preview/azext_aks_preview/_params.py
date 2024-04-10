@@ -647,6 +647,16 @@ def load_arguments(self, _):
             ),
         )
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
+        c.argument(
+            "nodepool_initialization_taints",
+            options_list=["--nodepool-initialization-taints", "--node-init-taints"],
+            is_preview=True,
+            validator=validate_nodepool_taints,
+            help=(
+                "Comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
+                "Pass \"\" to clear existing taints."
+            ),
+        )
         c.argument("node_osdisk_type", arg_type=get_enum_type(node_os_disk_types))
         c.argument("node_osdisk_size", type=int)
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1065,6 +1075,16 @@ def load_arguments(self, _):
             )
         )
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
+        c.argument(
+            "nodepool_initialization_taints",
+            options_list=["--nodepool-initialization-taints", "--node-init-taints"],
+            is_preview=True,
+            validator=validate_nodepool_taints,
+            help=(
+                "Comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
+                "Pass \"\" to clear existing taints."
+            ),
+        )
         # misc
         c.argument(
             "yes",

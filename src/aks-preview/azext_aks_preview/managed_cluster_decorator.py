@@ -2531,6 +2531,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.agentpool_context.get_node_taints()
 
+    def get_nodepool_initialization_taints(self) -> Union[List[str], None]:
+        """Obtain the value of nodepool_initialization_taints.
+
+        :return: dictionary or None
+        """
+        return self.agentpool_context.get_node_initialization_taints()
+
     def _get_enable_cost_analysis(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_cost_analysis.
 
@@ -3610,6 +3617,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             (self.context.get_api_server_authorized_ip_ranges(), None),
             (self.context.get_nodepool_labels(), None),
             (self.context.get_nodepool_taints(), None),
+            (self.context.get_nodepool_initialization_taints(), None),
             (self.context.raw_param.get("upgrade_settings"), None),
             (self.context.get_load_balancer_managed_outbound_ip_count(), None),
             (self.context.get_load_balancer_managed_outbound_ipv6_count(), None),
@@ -4543,6 +4551,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 agent_profile.node_taints = nodepool_taints
         return mc
 
+    def update_nodepool_initialization_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if not mc.agent_pool_profiles:
+            raise UnknownError(
+                "Encounter an unexpected error while getting agent pool profiles from the cluster in the process of "
+                "updating agentpool profile."
+            )
+
+        # update nodepool taints for all nodepools
+        nodepool_initialization_taints = self.context.get_nodepool_initialization_taints()
+        if nodepool_initialization_taints is not None:
+            for agent_profile in mc.agent_pool_profiles:
+                agent_profile.node_initialization_taints = nodepool_initialization_taints
+        return mc
+
     def update_cost_analysis(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -4830,6 +4854,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_upgrade_settings(mc)
         # update nodepool taints
         mc = self.update_nodepool_taints_mc(mc)
+        # update nodepool initialization taints
+        mc = self.update_nodepool_initialization_taints_mc(mc)
         # update network_observability in network_profile
         mc = self.update_enable_network_observability_in_network_profile(mc)
         # update kubernetes support plan

@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `--nodepool-initialization-taints` to `az aks create` and `az aks update`.
 
 3.0.0b2
 +++++++
