@@ -15,15 +15,15 @@ az edge-zones extended-zone list
 ##### Show extended zone
 ```
 az edge-zones extended-zone show \
-    --extended-zone-name "losangeles""
+    --extended-zone-name "losangeles"
 ```
 ##### Register extended zone
 ```
 az edge-zones extended-zone register \
-    --extended-zone-name "losangeles""
+    --extended-zone-name "losangeles"
 ```
 ##### Unregister extended zone
 ```
 az edge-zones extended-zone unregister \
-    --extended-zone-name "losangeles""
+    --extended-zone-name "losangeles"
 ```
