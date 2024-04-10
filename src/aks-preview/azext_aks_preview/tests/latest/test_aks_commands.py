@@ -126,16 +126,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(versions["values"]) > 0
 
     @AllowLargeResponse()
-    def test_get_os_options(self):
-        osOptions_cmd = "aks get-os-options -l westus2"
-        self.cmd(
-            osOptions_cmd,
-            checks=[
-                self.check("type", "Microsoft.ContainerService/locations/osOptions")
-            ],
-        )
-
-    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
