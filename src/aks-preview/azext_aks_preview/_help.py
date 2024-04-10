@@ -617,6 +617,14 @@ helps['aks create'] = f"""
         - name: --enable-vtpm
           type: bool
           short-summary: Enable vTPM on all node pools in the cluster. Must use VMSS agent pool type.
+        - name: --bootstrap-artifact-source
+          type: string
+          short-summary: Configure artifact source when bootstraping the cluster.
+          long-summary: |
+              The artifacts include the addon image. Use "Direct" to download artifacts from MCR, "Cache" to downalod artifacts from Azure Container Registry.
+        - name: --bootstrap-container-registry-resource-id
+          type: string
+          short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
