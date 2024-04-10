@@ -653,7 +653,7 @@ def load_arguments(self, _):
             is_preview=True,
             validator=validate_nodepool_taints,
             help=(
-                "comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
+                "Comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
                 "Pass \"\" to clear existing taints."
             ),
         )
