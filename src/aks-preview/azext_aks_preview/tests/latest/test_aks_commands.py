@@ -3131,7 +3131,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+        random_name_length=17, name_prefix="clitest", location="eastus"
     )
     def test_aks_automatic_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -3151,7 +3151,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--sku automatic --node-vm-size standard_ds4_v2 "
-            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
@@ -3181,7 +3180,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--sku base "
-            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview"
         )
         self.cmd(
             update_cmd,
