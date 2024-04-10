@@ -46,6 +46,11 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.scope = AAZStrArg(
+            options=["--scope"],
+            help="This is an extension resource provider and only resource level extension is supported at the moment.",
+            required=True,
+        )
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
             help="'ProblemClassificationId' or 'Id' is a mandatory filter to get solutions ids. It also supports optional 'ResourceType' and 'SolutionType' filters. The filter supports only 'and', 'or' and 'eq' operators. Example: $filter=ProblemClassificationId eq '1ddda5b4-cf6c-4d4f-91ad-bc38ab0e811e'",
