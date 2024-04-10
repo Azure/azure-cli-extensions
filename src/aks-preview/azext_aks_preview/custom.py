@@ -481,6 +481,7 @@ def aks_create(
     node_os_upgrade_channel=None,
     cluster_autoscaler_profile=None,
     uptime_sla=False,
+    sku=None,
     tier=None,
     fqdn_subdomain=None,
     api_server_authorized_ip_ranges=None,
@@ -637,6 +638,7 @@ def aks_create(
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    cluster_service_load_balancer_health_probe_mode=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -701,6 +703,7 @@ def aks_update(
     cluster_autoscaler_profile=None,
     uptime_sla=False,
     no_uptime_sla=False,
+    sku=None,
     tier=None,
     api_server_authorized_ip_ranges=None,
     enable_public_fqdn=False,
@@ -828,6 +831,7 @@ def aks_update(
     azure_container_storage_nodepools=None,
     node_provisioning_mode=None,
     ssh_access=None,
+    cluster_service_load_balancer_health_probe_mode=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
