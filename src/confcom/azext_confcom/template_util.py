@@ -423,7 +423,7 @@ def replace_params_and_vars(params: dict, vars_dict: dict, attribute):
     if isinstance(attribute, (int, float, bool)):
         out = attribute
     elif isinstance(attribute, str):
-        out = find_value_in_params_and_vars(params, vars_dict, attribute)
+        out = find_value_in_params_and_vars(params, vars_dict, attribute, ignore_undefined_parameters=True)
         param_name = re.finditer(WHOLE_PARAMETER_AND_VARIABLE, attribute)
 
         # there should only be one match
