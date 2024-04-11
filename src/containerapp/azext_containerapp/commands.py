@@ -213,4 +213,4 @@ def load_command_table(self, args):
         g.custom_show_command('show', 'stream_job_logs')
 
     with self.command_group('containerapp job replica') as g:
-        g.custom_show_command('list', 'listreplica_containerappsjob')
+        g.custom_show_command('list', 'list_replica_containerappsjob')

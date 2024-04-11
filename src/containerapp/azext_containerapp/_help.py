@@ -1599,13 +1599,13 @@ helps['containerapp job logs show'] = """
     examples:
     - name: Fetch the past 20 lines of logs from a job and return
       text: |
-          az containerapp job logs show -n my-containerapp -g MyResourceGroup --container MyContainer
+          az containerapp job logs show -n my-containerappjob -g MyResourceGroup --container MyContainer
     - name: Fetch 30 lines of past logs logs from a job and print logs as they come in
       text: |
-          az containerapp job logs show -n my-containerapp -g MyResourceGroup --container MyContainer --follow --tail 30
+          az containerapp job logs show -n my-containerappjob -g MyResourceGroup --container MyContainer --follow --tail 30
     - name: Fetch logs for a particular execution, replica, and container
       text: |
-          az containerapp job logs show -n my-containerapp -g MyResourceGroup --execution MyExecution --replica MyReplica --container MyContainer
+          az containerapp job logs show -n my-containerappjob -g MyResourceGroup --execution MyExecution --replica MyReplica --container MyContainer
 """
 
 helps['containerapp job replica'] = """
@@ -1619,5 +1619,5 @@ helps['containerapp job replica list'] = """
     examples:
     - name: List a container app job's replicas in a particular execution
       text: |
-          az containerapp job replica list -n my-containerapp -g MyResourceGroup --execution MyExecution
+          az containerapp job replica list -n my-containerappjob -g MyResourceGroup --execution MyExecution
 """

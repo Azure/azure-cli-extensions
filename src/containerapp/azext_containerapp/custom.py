@@ -2631,7 +2631,7 @@ def list_environment_telemetry_otlp(cmd,
     return containerapp_env_def
 
 
-def listreplica_containerappsjob(cmd, resource_group_name, name, execution=None):
+def list_replica_containerappsjob(cmd, resource_group_name, name, execution=None):
     if execution is None:
         executions = ContainerAppsJobPreviewClient.get_executions(cmd=cmd, resource_group_name=resource_group_name, name=name)
         execution = executions['value'][0]['name']
