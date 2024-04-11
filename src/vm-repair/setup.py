@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "1.0.3"
+VERSION = "1.0.4"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -45,6 +45,7 @@ setup(
             'scripts/linux-run-driver.sh',
             'scripts/win-run-driver.ps1',
             'scripts/enable-nestedhyperv.ps1',
+            'scripts/enable-nestedhyperv-test.ps1',
             'scripts/linux-mount-encrypted-disk.sh',
             'scripts/win-mount-encrypted-disk.ps1',
             'scripts/linux-build_setup-cloud-init.txt',
