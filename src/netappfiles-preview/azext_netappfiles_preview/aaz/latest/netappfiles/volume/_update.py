@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2023-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}", "2023-05-01-preview"],
         ]
     }
 
@@ -82,6 +82,28 @@ class Update(AAZCommand):
             ),
         )
 
+        # define Arg Group "Backup"
+
+        _args_schema = cls._args_schema
+        _args_schema.backup_enabled = AAZBoolArg(
+            options=["--backup-enabled"],
+            arg_group="Backup",
+            help="Backup Enabled",
+            nullable=True,
+        )
+        _args_schema.backup_policy_id = AAZStrArg(
+            options=["--backup-policy-id"],
+            arg_group="Backup",
+            help="Backup Policy Resource ID",
+            nullable=True,
+        )
+        _args_schema.policy_enforced = AAZBoolArg(
+            options=["--policy-enforced"],
+            arg_group="Backup",
+            help="Policy Enforced",
+            nullable=True,
+        )
+
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
@@ -111,38 +133,6 @@ class Update(AAZCommand):
             options=["--kv-private-endpoint-id", "--key-vault-private-endpoint-resource-id"],
             arg_group="CMK Encryption",
             help="The resource ID of private endpoint for KeyVault. It must reside in the same VNET as the volume. Only applicable if encryptionKeySource = 'Microsoft.KeyVault'.",
-            nullable=True,
-        )
-
-        # define Arg Group "DataProtection"
-
-        _args_schema = cls._args_schema
-        _args_schema.backup = AAZObjectArg(
-            options=["--backup"],
-            arg_group="DataProtection",
-            help="Backup Properties",
-            nullable=True,
-        )
-
-        backup = cls._args_schema.backup
-        backup.backup_enabled = AAZBoolArg(
-            options=["backup-enabled"],
-            help="Backup Enabled",
-            nullable=True,
-        )
-        backup.backup_policy_id = AAZStrArg(
-            options=["backup-policy-id"],
-            help="Backup Policy Resource ID",
-            nullable=True,
-        )
-        backup.backup_vault_id = AAZStrArg(
-            options=["backup-vault-id"],
-            help="Backup Vault Resource ID",
-            nullable=True,
-        )
-        backup.policy_enforced = AAZBoolArg(
-            options=["policy-enforced"],
-            help="Policy Enforced",
             nullable=True,
         )
 
@@ -274,7 +264,7 @@ class Update(AAZCommand):
             help="Specifies the number of days after which data that is not accessed by clients will be tiered.",
             nullable=True,
             fmt=AAZIntArgFormat(
-                maximum=183,
+                maximum=63,
                 minimum=7,
             ),
         )
@@ -336,13 +326,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Specifies whether LDAP is enabled or not for a given NFS volume.",
             nullable=True,
-        )
-        _args_schema.network_features = AAZStrArg(
-            options=["--network-features"],
-            arg_group="Properties",
-            help="Basic network, or Standard features available to the volume. hide me",
-            nullable=True,
-            enum={"Basic": "Basic", "Basic_Standard": "Basic_Standard", "Standard": "Standard", "Standard_Basic": "Standard_Basic"},
         )
         _args_schema.placement_rules = AAZListArg(
             options=["--placement-rules"],
@@ -432,7 +415,7 @@ class Update(AAZCommand):
         _args_schema.usage_threshold = AAZIntArg(
             options=["--usage-threshold"],
             arg_group="Properties",
-            help={"short-summary": "Maximum storage quota allowed for a file system in bytes.", "long-summary": "This is a soft quota used for alerting only. Minimum size is 100 GiB. \nUpper limit is 100TiB, 500Tib for LargeVolume."},
+            help={"short-summary": "Maximum storage quota allowed for a file system as integer number of GiB", "long-summary": "This is a soft quota used for alerting only. Minimum size is 100 GiB. \nUpper limit is 100TiB, 500Tib for LargeVolume or 2400Tib for LargeVolume on exceptional basis."},
             fmt=AAZIntArgFormat(
                 maximum=2638827906662400,
                 minimum=107374182400,
@@ -486,6 +469,11 @@ class Update(AAZCommand):
             arg_group="Replication",
             help="The remote region for the other end of the Volume Replication.",
             nullable=True,
+        )
+        _args_schema.remote_volume_resource_id = AAZStrArg(
+            options=["--remote-volume-id", "--remote-volume-resource-id"],
+            arg_group="Replication",
+            help="The resource ID of the remote volume.",
         )
         _args_schema.replication_schedule = AAZStrArg(
             options=["--replication-schedule"],
@@ -602,7 +590,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2023-05-01-preview",
                     required=True,
                 ),
             }
@@ -709,7 +697,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2023-05-01-preview",
                     required=True,
                 ),
             }
@@ -790,7 +778,6 @@ class Update(AAZCommand):
                 properties.set_prop("isRestoring", AAZBoolType, ".is_restoring")
                 properties.set_prop("keyVaultPrivateEndpointResourceId", AAZStrType, ".key_vault_private_endpoint_resource_id")
                 properties.set_prop("ldapEnabled", AAZBoolType, ".ldap_enabled")
-                properties.set_prop("networkFeatures", AAZStrType, ".network_features")
                 properties.set_prop("placementRules", AAZListType, ".placement_rules")
                 properties.set_prop("protocolTypes", AAZListType, ".protocol_types")
                 properties.set_prop("proximityPlacementGroup", AAZStrType, ".proximity_placement_group")
@@ -810,7 +797,7 @@ class Update(AAZCommand):
 
             data_protection = _builder.get(".properties.dataProtection")
             if data_protection is not None:
-                data_protection.set_prop("backup", AAZObjectType, ".backup")
+                data_protection.set_prop("backup", AAZObjectType)
                 data_protection.set_prop("replication", AAZObjectType)
                 data_protection.set_prop("snapshot", AAZObjectType)
                 data_protection.set_prop("volumeRelocation", AAZObjectType)
@@ -819,13 +806,13 @@ class Update(AAZCommand):
             if backup is not None:
                 backup.set_prop("backupEnabled", AAZBoolType, ".backup_enabled")
                 backup.set_prop("backupPolicyId", AAZStrType, ".backup_policy_id")
-                backup.set_prop("backupVaultId", AAZStrType, ".backup_vault_id")
                 backup.set_prop("policyEnforced", AAZBoolType, ".policy_enforced")
 
             replication = _builder.get(".properties.dataProtection.replication")
             if replication is not None:
                 replication.set_prop("endpointType", AAZStrType, ".endpoint_type")
                 replication.set_prop("remoteVolumeRegion", AAZStrType, ".remote_volume_region")
+                replication.set_prop("remoteVolumeResourceId", AAZStrType, ".remote_volume_resource_id", typ_kwargs={"flags": {"required": True}})
                 replication.set_prop("replicationSchedule", AAZStrType, ".replication_schedule")
 
             snapshot = _builder.get(".properties.dataProtection.snapshot")

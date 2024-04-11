@@ -20,7 +20,7 @@ class Create(AAZCommand):
     Create the specified volume within the capacity pool
 
     :example: Create an ANF volume
-        az netappfiles volume create -g group --account-name aname --pool-name pname --volume-name vname -l location --service-level "Premium" --usage-threshold 107374182400 --creation-token "unique-token" --protocol-types NFSv3 --vnet myvnet --subnet-id "/subscriptions/mysubsid/resourceGroups/myrg/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/default" --rules '[{"allowed_clients":"0.0.0.0/0","rule_index":"1","unix_read_only":"true","unix_read_write":"false","cifs":"false","nfsv3":"true","nfsv41":"false"}]'
+        az netappfiles volume create -g group --account-name aname --pool-name pname --volume-name vname -l location --service-level "Premium" --usage-threshold 100 --creation-token "unique-token" --protocol-types NFSv3 --vnet myvnet --subnet-id "/subscriptions/mysubsid/resourceGroups/myrg/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/default" --rules '[{"allowed_clients":"0.0.0.0/0","rule_index":"1","unix_read_only":"true","unix_read_write":"false","cifs":"false","nfsv3":"true","nfsv41":"false"}]'
 
     :example: Create an ANF volume with zones (Availability Zone) specified
         az netappfiles volume create -g mygroup --account-name myaccname --pool-name mypoolname --name myvolname -l westus2 --service-level premium --usage-threshold 100 --file-path "unique-file-path" --vnet myvnet --subnet mysubnet --protocol-types NFSv3 --zones zone1
@@ -30,9 +30,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2023-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}", "2023-05-01-preview"],
         ]
     }
 
@@ -85,6 +85,25 @@ class Create(AAZCommand):
             ),
         )
 
+        # define Arg Group "Backup"
+
+        _args_schema = cls._args_schema
+        _args_schema.backup_enabled = AAZBoolArg(
+            options=["--backup-enabled"],
+            arg_group="Backup",
+            help="Backup Enabled",
+        )
+        _args_schema.backup_policy_id = AAZStrArg(
+            options=["--backup-policy-id"],
+            arg_group="Backup",
+            help="Backup Policy Resource ID",
+        )
+        _args_schema.policy_enforced = AAZBoolArg(
+            options=["--policy-enforced"],
+            arg_group="Backup",
+            help="Policy Enforced",
+        )
+
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
@@ -132,33 +151,6 @@ class Create(AAZCommand):
             options=["--kv-private-endpoint-id", "--key-vault-private-endpoint-resource-id"],
             arg_group="CMK Encryption",
             help="The resource ID of private endpoint for KeyVault. It must reside in the same VNET as the volume. Only applicable if encryptionKeySource = 'Microsoft.KeyVault'.",
-        )
-
-        # define Arg Group "DataProtection"
-
-        _args_schema = cls._args_schema
-        _args_schema.backup = AAZObjectArg(
-            options=["--backup"],
-            arg_group="DataProtection",
-            help="Backup Properties",
-        )
-
-        backup = cls._args_schema.backup
-        backup.backup_enabled = AAZBoolArg(
-            options=["backup-enabled"],
-            help="Backup Enabled",
-        )
-        backup.backup_policy_id = AAZStrArg(
-            options=["backup-policy-id"],
-            help="Backup Policy Resource ID",
-        )
-        backup.backup_vault_id = AAZStrArg(
-            options=["backup-vault-id"],
-            help="Backup Vault Resource ID",
-        )
-        backup.policy_enforced = AAZBoolArg(
-            options=["policy-enforced"],
-            help="Policy Enforced",
         )
 
         # define Arg Group "ExportPolicy"
@@ -282,7 +274,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Specifies the number of days after which data that is not accessed by clients will be tiered.",
             fmt=AAZIntArgFormat(
-                maximum=183,
+                maximum=63,
                 minimum=7,
             ),
         )
@@ -450,9 +442,9 @@ class Create(AAZCommand):
         _args_schema.usage_threshold = AAZIntArg(
             options=["--usage-threshold"],
             arg_group="Properties",
-            help={"short-summary": "Maximum storage quota allowed for a file system in bytes.", "long-summary": "This is a soft quota used for alerting only. Minimum size is 100 GiB. \nUpper limit is 100TiB, 500Tib for LargeVolume."},
+            help={"short-summary": "Maximum storage quota allowed for a file system as integer number of GiB", "long-summary": "This is a soft quota used for alerting only. Minimum size is 100 GiB. \nUpper limit is 100TiB, 500Tib for LargeVolume or 2400Tib for LargeVolume on exceptional basis."},
             required=True,
-            default=107374182400,
+            default=100,
             fmt=AAZIntArgFormat(
                 maximum=2638827906662400,
                 minimum=107374182400,
@@ -500,6 +492,7 @@ class Create(AAZCommand):
             options=["--remote-path"],
             arg_group="Replication",
             help="The full path to a volume that is to be migrated into ANF. Required for Migration volumes",
+            is_preview=True,
         )
         _args_schema.remote_volume_region = AAZStrArg(
             options=["--remote-volume-region"],
@@ -521,7 +514,7 @@ class Create(AAZCommand):
         remote_path = cls._args_schema.remote_path
         remote_path.external_host_name = AAZStrArg(
             options=["external-host-name"],
-            help="The Path to a ONTAP Host",
+            help="The Path to a Ontap Host",
             required=True,
         )
         remote_path.server_name = AAZStrArg(
@@ -643,7 +636,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2023-05-01-preview",
                     required=True,
                 ),
             }
@@ -716,7 +709,7 @@ class Create(AAZCommand):
 
             data_protection = _builder.get(".properties.dataProtection")
             if data_protection is not None:
-                data_protection.set_prop("backup", AAZObjectType, ".backup")
+                data_protection.set_prop("backup", AAZObjectType)
                 data_protection.set_prop("replication", AAZObjectType)
                 data_protection.set_prop("snapshot", AAZObjectType)
                 data_protection.set_prop("volumeRelocation", AAZObjectType)
@@ -725,7 +718,6 @@ class Create(AAZCommand):
             if backup is not None:
                 backup.set_prop("backupEnabled", AAZBoolType, ".backup_enabled")
                 backup.set_prop("backupPolicyId", AAZStrType, ".backup_policy_id")
-                backup.set_prop("backupVaultId", AAZStrType, ".backup_vault_id")
                 backup.set_prop("policyEnforced", AAZBoolType, ".policy_enforced")
 
             replication = _builder.get(".properties.dataProtection.replication")
