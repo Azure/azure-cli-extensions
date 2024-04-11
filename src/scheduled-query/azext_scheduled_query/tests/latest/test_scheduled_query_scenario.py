@@ -30,7 +30,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             'action_group2': self.create_random_name('clitest', 20)
         })
         with mock.patch('azure.cli.command_modules.vm.custom._gen_guid', side_effect=self.create_guid):
-            vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
+            vm = self.cmd('vm create -n {vm} -g {rg} --image Ubuntu2204 --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
         self.kwargs.update({
             'vm_id': vm['id'],
             'rg_id': resource_id(subscription=self.get_subscription_id(),
@@ -90,11 +90,11 @@ class Scheduled_queryScenarioTest(ScenarioTest):
         })
         self.cmd('monitor scheduled-query create -g {rg} -n {name3} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360 resource id _ResourceId" --description "Test rule" --action-groups {action_group_id_1} --custom-properties k1=v1', checks=[
             self.check('actions.actionGroups', [action_group_1['id']]),
-            self.check('actions.customProperties', {'k1':'v1'})
+            self.check('actions.customProperties', {'k1': 'v1'})
         ])
         self.cmd('monitor scheduled-query update -g {rg} -n {name3} --action-groups {action_group_id_2} --custom-properties k2=v2', checks=[
             self.check('actions.actionGroups', [action_group_2['id']]),
-            self.check('actions.customProperties', {'k2':'v2'})
+            self.check('actions.customProperties', {'k2': 'v2'})
         ])
         self.cmd('monitor scheduled-query show -g {rg} -n {name1}',
                  checks=[
@@ -144,7 +144,6 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             'action_group_id_2': action_group_2['id'],
             'action_group_id_3': action_group_3['id']
         })
-        time.sleep(180)
         self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'placeholder_1\' > 360" --condition-query placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h)" --description "Test rule"',
                  checks=[
                      self.check('name', '{name1}'),
@@ -209,7 +208,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             'ws': self.create_random_name('clitest', 20),
         })
         with mock.patch('azure.cli.command_modules.vm.custom._gen_guid', side_effect=self.create_guid):
-            vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
+            vm = self.cmd('vm create -n {vm} -g {rg} --image Ubuntu2204 --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
         self.kwargs.update({
             'vm_id': vm['id'],
             'rg_id': resource_id(subscription=self.get_subscription_id(),
