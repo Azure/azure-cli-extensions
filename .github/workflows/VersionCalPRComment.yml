@@ -8,13 +8,14 @@ on:
         - main
       paths:
         - '**.py'
+        - '!**/test_*.py'
 
 permissions:
   pull-requests: write
 
 jobs:
   version-cal:
-    if: contains(github.event.pull_request.labels.*.name, 'auto-cal-version')
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-cal-version') }}
     runs-on: ubuntu-latest
     steps:
       - name: Set Init Version Message
