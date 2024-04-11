@@ -3763,7 +3763,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "resources": [
             {
             "name": "[parameters('containergroupname')]",
-            "type": "Microsoft.ContainerInstance/containerGroups",
+            "type": "Microsoft.ContainerInstance/containerGroupProfiles",
             "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
