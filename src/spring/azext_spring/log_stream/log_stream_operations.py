@@ -11,10 +11,33 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from collections import defaultdict
 from knack.log import get_logger
 from knack.util import CLIError
+from six.moves.urllib import parse
+
 from .writer import DefaultWriter
 
 
 logger = get_logger(__name__)
+
+
+class LogStreamBaseQueryOptions:  # pylint: disable=too-few-public-methods
+    def __init__(self, follow, lines, since, limit):
+        self.follow = follow
+        self.lines = lines
+        self.since = since
+        self.limit = limit
+
+
+def attach_logs_query_options(url, queryOptions: LogStreamBaseQueryOptions):
+    params = {}
+    params["tailLines"] = queryOptions.lines
+    params["limitBytes"] = queryOptions.limit
+    if queryOptions.since:
+        params["sinceSeconds"] = queryOptions.since
+    if queryOptions.follow:
+        params["follow"] = True
+
+    url += "?{}".format(parse.urlencode(params)) if params else ""
+    return url
 
 
 # pylint: disable=bare-except, too-many-statements

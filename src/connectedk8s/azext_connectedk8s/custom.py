@@ -1951,8 +1951,14 @@ def client_side_proxy_wrapper(cmd,
     tenant_id = profile.get_subscription()['tenantId']
 
     client_proxy_port = consts.CLIENT_PROXY_PORT
+
+    # Check if the internal port is already open. If so and the user has specified a port,
+    # try using the port before the user specified port instead.
+    if clientproxyutils.check_if_port_is_open(client_proxy_port) and api_server_port != consts.API_SERVER_PORT:
+        client_proxy_port = int(api_server_port) - 1
+
     if int(client_proxy_port) == int(api_server_port):
-        raise ClientRequestError('Proxy uses port 47010 internally.', recommendation='Please pass some other unused port through --port option.')
+        raise ClientRequestError(f'Proxy uses port {client_proxy_port} internally.', recommendation='Please pass some other unused port through --port option.')
 
     args = []
     operating_system = platform.system()
@@ -1961,8 +1967,8 @@ def client_side_proxy_wrapper(cmd,
     telemetry.set_debug_info('CSP Version is ', consts.CLIENT_PROXY_VERSION)
     telemetry.set_debug_info('OS is ', operating_system)
 
-    if (clientproxyutils.check_process(proc_name)):
-        raise ClientRequestError('Another instance of proxy already running')
+    if (clientproxyutils.check_process(proc_name)) and clientproxyutils.check_if_port_is_open(api_server_port):
+        raise ClientRequestError('The proxy port is already in use, potentially by another proxy instance.', recommendation='Please stop the existing proxy instance or pass a different port through --port option.')
 
     port_error_string = ""
     if clientproxyutils.check_if_port_is_open(api_server_port):

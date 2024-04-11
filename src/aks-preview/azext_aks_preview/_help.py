@@ -165,6 +165,10 @@ helps['aks create'] = f"""
           type: string
           short-summary: Load balancer backend pool type.
           long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
+        - name: --cluster-service-load-balancer-health-probe-mode
+          type: string
+          short-summary: Set the cluster service health probe mode.
+          long-summary: Set the cluster service health probe mode. Default is "Servicenodeport".
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -313,6 +317,9 @@ helps['aks create'] = f"""
         - name: --uptime-sla
           type: bool
           short-summary: --uptime-sla is deprecated. Please use '--tier standard' instead.
+        - name: --sku
+          type: string
+          short-summary: Specify SKU name for managed clusters. '--sku base' enables a base managed cluster. '--sku automatic' enables an automatic managed cluster.
         - name: --tier
           type: string
           short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' does not have a financially backed SLA.
@@ -580,6 +587,9 @@ helps['aks create'] = f"""
         - name: --nodepool-taints
           type: string
           short-summary: The node taints for all node pools in this cluster.
+        - name: --node-init-taints --nodepool-initialization-taints
+          type: string
+          short-summary: The node initialization taints for node pools created with aks create operation.
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -607,6 +617,14 @@ helps['aks create'] = f"""
         - name: --enable-vtpm
           type: bool
           short-summary: Enable vTPM on all node pools in the cluster. Must use VMSS agent pool type.
+        - name: --bootstrap-artifact-source
+          type: string
+          short-summary: Configure artifact source when bootstraping the cluster.
+          long-summary: |
+              The artifacts include the addon image. Use "Direct" to download artifacts from MCR, "Cache" to downalod artifacts from Azure Container Registry.
+        - name: --bootstrap-container-registry-resource-id
+          type: string
+          short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -760,6 +778,9 @@ helps['aks update'] = """
         - name: --no-uptime-sla
           type: bool
           short-summary: Change a standard managed cluster to a free one. --no-uptime-sla is deprecated. Please use '--tier free' instead.
+        - name: --sku
+          type: string
+          short-summary: Specify SKU name for managed clusters. '--sku base' enables a base managed cluster. '--sku automatic' enables an automatic managed cluster.
         - name: --tier
           type: string
           short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' changes a standard managed cluster to a free one.
@@ -791,6 +812,10 @@ helps['aks update'] = """
           type: string
           short-summary: Load balancer backend pool type.
           long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
+        - name: --cluster-service-load-balancer-health-probe-mode
+          type: string
+          short-summary: Set the cluster service health probe mode.
+          long-summary: Set the cluster service health probe mode. Default is "Servicenodeport".
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -1165,6 +1190,9 @@ helps['aks update'] = """
         - name: --ssh-access
           type: string
           short-summary: Update SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
+        - name: --node-init-taints --nodepool-initialization-taints
+          type: string
+          short-summary: The node initialization taints for all node pools in cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -2910,13 +2938,9 @@ helps['aks mesh enable-egress-gateway'] = """
     type: command
     short-summary: Enable an Azure Service Mesh egress gateway.
     long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
-    parameters:
-      - name: --egress-gateway-nodeselector --egx-gtw-ns
-        type: string
-        short-summary: Specify the node selector for the egress gateway with space-separated, key-value pairs (key1=value1 key2=value2).
     examples:
       - name: Enable an egress gateway.
-        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --egress-gateway-nodeselector istio=egress
+        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
 """
 
 helps['aks mesh disable-egress-gateway'] = """

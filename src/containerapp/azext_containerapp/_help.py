@@ -1221,7 +1221,8 @@ helps['containerapp env java-component list'] = """
 
 helps['containerapp env java-component spring-cloud-config'] = """
     type: group
-    short-summary: Commands to manage the Spring Cloud Config for the Container Apps environment.
+    short-summary: Commands to manage the Config Server for Spring for the Container Apps environment.
+    deprecate_info: This command group is deprecated. Use 'az containerapp env java-component config-server-for-spring' instead.
 """
 
 helps['containerapp env java-component spring-cloud-config create'] = """
@@ -1276,9 +1277,67 @@ helps['containerapp env java-component spring-cloud-config update'] = """
               --configuration PropertyName1=Value1 PropertyName2=Value2
 """
 
+helps['containerapp env java-component config-server-for-spring'] = """
+    type: group
+    short-summary: Commands to manage the Config Server for Spring for the Container Apps environment.
+"""
+
+helps['containerapp env java-component config-server-for-spring create'] = """
+    type: command
+    short-summary: Command to create the Config Server for Spring.
+    examples:
+    - name: Create a Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component config-server-for-spring delete'] = """
+    type: command
+    short-summary: Command to delete the Config Server for Spring.
+    examples:
+    - name: Delete a Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component config-server-for-spring show'] = """
+    type: command
+    short-summary: Command to show the Config Server for Spring.
+    examples:
+    - name: Show a Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component config-server-for-spring update'] = """
+    type: command
+    short-summary: Command to update the Config Server for Spring.
+    examples:
+    - name: Delete all configurations of the Config Server for Spring.
+      text: |
+          az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update a Config Server for Spring with custom configurations.
+      text: |
+          az containerapp env java-component config-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
 helps['containerapp env java-component spring-cloud-eureka'] = """
     type: group
     short-summary: Commands to manage the Spring Cloud Eureka for the Container Apps environment.
+    deprecate_info: This command group is deprecated. Use 'az containerapp env java-component eureka-server-for-spring' instead.
 """
 
 helps['containerapp env java-component spring-cloud-eureka create'] = """
@@ -1333,6 +1392,68 @@ helps['containerapp env java-component spring-cloud-eureka update'] = """
     - name: Update a Spring Cloud Eureka with custom configurations.
       text: |
           az containerapp env java-component spring-cloud-eureka update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component eureka-server-for-spring'] = """
+    type: group
+    short-summary: Commands to manage the Eureka Server for Spring for the Container Apps environment.
+"""
+
+helps['containerapp env java-component eureka-server-for-spring create'] = """
+    type: command
+    short-summary: Command to create the Eureka Server for Spring.
+    examples:
+    - name: Create a Eureka Server for Spring with default configuration.
+      text: |
+          az containerapp env java-component eureka-server-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+    - name: Create a Eureka Server for Spring with custom configurations.
+      text: |
+          az containerapp env java-component eureka-server-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component eureka-server-for-spring delete'] = """
+    type: command
+    short-summary: Command to delete the Eureka Server for Spring.
+    examples:
+    - name: Delete a Eureka Server for Spring.
+      text: |
+          az containerapp env java-component eureka-server-for-spring delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component eureka-server-for-spring show'] = """
+    type: command
+    short-summary: Command to show the Eureka Server for Spring.
+    examples:
+    - name: Show a Eureka Server for Spring.
+      text: |
+          az containerapp env java-component eureka-server-for-spring show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component eureka-server-for-spring update'] = """
+    type: command
+    short-summary: Command to update the Eureka Server for Spring.
+    examples:
+    - name: Delete all configurations of the Eureka Server for Spring.
+      text: |
+          az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update a Eureka Server for Spring with custom configurations.
+      text: |
+          az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
