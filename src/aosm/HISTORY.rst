@@ -5,6 +5,8 @@ Release History
 
 2.0.0b1
 ++++++++
+* Added expose_all parameter in input file to expose all parameters in deployParameters and CGS
+* Removed multiple_instances and depends_on from input file
 * Added: mutating webhook for injectArtifactStoreDetails
 * Added: Users can specify multiple image sources from all types of registries (not just ACRs). General improvements in how CNF image sources are handled. 
 * Fixed: Namespace appeared twice in the `artifacts.json` file, leading to errors in the publish step of the CLI.
