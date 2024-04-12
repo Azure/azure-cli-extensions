@@ -17,7 +17,7 @@ from azext_aosm.common.constants import (  # NSD_DEFINITION_TEMPLATE_FILENAME,
     BASE_FOLDER_NAME,
     CGS_FILENAME,
     CGS_NAME,
-    DEPLOYMENT_PARAMETERS_FILENAME,
+    DEPLOY_PARAMETERS_FILENAME,
     MANIFEST_FOLDER_NAME,
     NSD_BASE_TEMPLATE_FILENAME,
     NSD_DEFINITION_FOLDER_NAME,
@@ -58,6 +58,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
     """CLI handler for publishing NFDs."""
 
     config: OnboardingNSDInputConfig
+    processors: list[AzureCoreArmBuildProcessor | NFDProcessor]
 
     @property
     def default_config_file_name(self) -> str:
@@ -104,8 +105,11 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
                     ).absolute(),
                 )
                 # TODO: generalise for nexus in nexus ready stories
+                # For NSDs, we don't have the option to expose ARM template parameters. This could be supported by
+                # adding an 'expose_all_parameters' option to NSD input.jsonc file, as we have for NFD input files.
+                # For now, we prefer this simpler interface for NSDs, but we might need to revisit in the future.
                 processor_list.append(
-                    AzureCoreArmBuildProcessor(arm_input.artifact_name, arm_input)
+                    AzureCoreArmBuildProcessor(arm_input.artifact_name, arm_input, expose_all_params=False)
                 )
             elif resource_element.resource_element_type == "NF":
                 assert isinstance(resource_element.properties, NetworkFunctionPropertiesConfig)
@@ -208,11 +212,10 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
 
         # For each RET (arm template or NF), generate RET
         for processor in self.processors:
-            # Generate RET
             nf_ret = processor.generate_resource_element_template()
             ret_list.append(nf_ret)
 
-            # Adding supporting file: config mappings
+            # Add supporting file: config mappings
             deploy_values = nf_ret.configuration.parameter_values
             mapping_file = LocalFileBuilder(
                 Path(
@@ -224,8 +227,8 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
             )
             supporting_files.append(mapping_file)
 
-            # Generate deploymentParameters schema properties
-            params_schema = processor.generate_params_schema()
+            # Generate deployParameters schema properties
+            params_schema = processor.generate_schema()
             schema_properties.update(params_schema)
 
             # List of NF RET names, for adding to required part of CGS
@@ -242,7 +245,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
             "nfvi_site_name": self.nfvi_site_name,
             "nf_rets": ret_list,
             "cgs_file": CGS_FILENAME,
-            "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,
+            "deploy_parameters_file": DEPLOY_PARAMETERS_FILENAME,
             "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME,
         }
 
@@ -286,7 +289,7 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
     def _render_config_group_schema_contents(complete_schema, nf_names):
         params_content = {
             "$schema": "https://json-schema.org/draft-07/schema#",
-            "title": f"{CGS_NAME}",
+            "title": CGS_NAME,
             "type": "object",
             "properties": complete_schema,
             "required": nf_names,

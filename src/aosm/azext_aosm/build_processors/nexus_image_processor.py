@@ -41,14 +41,12 @@ class NexusImageProcessor(BaseInputProcessor):
     A class for processing Nexus image inputs.
 
     :param name: The name of the artifact.
-    :type name: str
     :param input_artifact: The input artifact.
-    :type input_artifact: NexusImageFileInput
     """
+    input_artifact: NexusImageFileInput
 
-    def __init__(self, name: str, input_artifact: NexusImageFileInput):
-        super().__init__(name, input_artifact)
-        self.input_artifact: NexusImageFileInput = input_artifact
+    def __init__(self, name: str, input_artifact: NexusImageFileInput, expose_all_params: bool):
+        super().__init__(name, input_artifact, expose_all_params)
 
     def get_artifact_manifest_list(self) -> List[ManifestArtifactFormat]:
         """

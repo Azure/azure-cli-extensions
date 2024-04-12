@@ -45,7 +45,7 @@ NSD_INPUT_FILE_NAME = "nsd_core_input.jsonc"
 CGV_DATA = {
     "ubuntu": {
         "nfdvName": "exampleNfdvName",
-        "deploymentParameters": [
+        "deployParameters": [
             {
                 "location": "eastus",
                 "subnetName": "subnet",
@@ -61,7 +61,7 @@ CGV_DATA = {
 MULTIPLE_INSTANCES_CGV_DATA = {
     "ubuntu": {
         "nfdvName": "exampleNfdvName",
-        "deploymentParameters": [
+        "deployParameters": [
             {
                 "location": "eastus",
                 "subnetName": "subnet",
@@ -84,14 +84,14 @@ MULTIPLE_NFs_CGV_DATA = {
     "multi-nf": {
         "nfdvName": "exampleNfdvName",
         "managedIdentityId": "exampleManagedIdentityId",
-        "deploymentParameters": [
+        "deployParameters": [
             {"service_port": 5222, "serviceAccount_create": False}
         ],
     },
     "ubuntu": {
         "nfdvName": "exampleNfdvName",
         "managedIdentity": "managed_identity",
-        "deploymentParameters": {
+        "deployParameters": {
             "location": "eastus",
             "subnetName": "ubuntu-vm-subnet",
             "ubuntuVmName": "ubuntu-vm",

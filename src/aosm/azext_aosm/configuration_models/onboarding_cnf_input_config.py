@@ -40,15 +40,16 @@ class HelmPackageConfig:
             )
         },
     )
-    depends_on: list = field(
-        default_factory=lambda: [],
-        metadata={
-            "comment": (
-                "Names of the Helm packages this package depends on.\n"
-                "Leave as an empty array if there are no dependencies."
-            )
-        },
-    )
+    # # NOTE: there is a story to reimplement this, so not deleting
+    # depends_on: list = field(
+    #     default_factory=lambda: [],
+    #     metadata={
+    #         "comment": (
+    #             "Names of the Helm packages this package depends on.\n"
+    #             "Leave as an empty array if there are no dependencies."
+    #         )
+    #     },
+    # )
 
     def validate(self):
         """Validate the helm package configuration."""

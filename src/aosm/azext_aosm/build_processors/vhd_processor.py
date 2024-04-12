@@ -42,14 +42,12 @@ class VHDProcessor(BaseInputProcessor):
     A class for processing VHD inputs.
 
     :param name: The name of the artifact.
-    :type name: str
     :param input_artifact: The input artifact.
-    :type input_artifact: VHDFileInput
     """
+    input_artifact: VHDFileInput
 
-    def __init__(self, name: str, input_artifact: VHDFileInput):
-        super().__init__(name, input_artifact)
-        self.input_artifact: VHDFileInput = input_artifact
+    def __init__(self, name: str, input_artifact: VHDFileInput, expose_all_params: bool):
+        super().__init__(name, input_artifact, expose_all_params)
 
     def get_artifact_manifest_list(self) -> List[ManifestArtifactFormat]:
         """

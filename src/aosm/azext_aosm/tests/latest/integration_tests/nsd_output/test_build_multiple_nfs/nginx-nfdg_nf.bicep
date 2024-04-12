@@ -27,9 +27,9 @@ param nfviType string = 'AzureArcKubernetes'
 param resourceGroupId string = resourceGroup().id
 
 @secure()
-param deploymentParametersObject object
+param deployParametersObject object
 
-var deploymentParameters = deploymentParametersObject.deploymentParameters
+var deployParameters = deployParametersObject.deployParameters
 
 var identityObject = (managedIdentity == '')  ? {
   type: 'SystemAssigned'
@@ -56,7 +56,7 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
 
 }
 
-resource nf_resource 'Microsoft.HybridNetwork/networkFunctions@2023-09-01' = [for (values, i) in deploymentParameters: {
+resource nf_resource 'Microsoft.HybridNetwork/networkFunctions@2023-09-01' = [for (values, i) in deployParameters: {
   name: 'nginx-nfdg${i}'
   location: location
   identity: identityObject

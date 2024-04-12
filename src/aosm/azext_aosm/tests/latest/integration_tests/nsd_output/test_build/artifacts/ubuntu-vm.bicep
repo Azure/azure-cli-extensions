@@ -24,7 +24,7 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
   scope: resourceGroup(configObject.publisherResourceGroup)
 }
 
-resource nfResource 'Microsoft.HybridNetwork/networkFunctions@2023-09-01' = [for (values, i) in configObject.deploymentParameters: {
+resource nfResource 'Microsoft.HybridNetwork/networkFunctions@2023-09-01' = [for (values, i) in configObject.deployParameters: {
   name: '${configObject.nfdgName}${i}'
   location: configObject.location
   identity: identityObject

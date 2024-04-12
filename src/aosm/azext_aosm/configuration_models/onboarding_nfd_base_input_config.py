@@ -25,6 +25,16 @@ class OnboardingNFDBaseInputConfig(OnboardingBaseInputConfig):
             "comment": "Version of the network function definition in 1.1.1 format (three integers separated by dots)."
         },
     )
+    expose_all_parameters: bool = field(
+        default=False,
+        metadata={
+            "comment": (
+                "If set to true, all NFD configuration parameters are made available to the designer, including "
+                "optional parameters and those with defaults.\nIf not set or set to false, only required parameters "
+                "without defaults will be exposed."
+            )
+        },
+    )
 
     @property
     def acr_manifest_name(self) -> str:

@@ -45,7 +45,7 @@ class AzureCoreArmProcessorTest(TestCase):
             template_path=mock_arm_template_path,
             default_config=None
         )
-        self.processor = AzureCoreArmBuildProcessor("test-name", self.core_arm_input)
+        self.processor = AzureCoreArmBuildProcessor("test-name", self.core_arm_input, expose_all_params=False)
 
     def test_get_artifact_manifest_list(self):
         """Test get artifact manifest list for Azure Core arm processor."""

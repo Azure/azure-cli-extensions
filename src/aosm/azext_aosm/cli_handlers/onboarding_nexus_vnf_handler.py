@@ -15,7 +15,7 @@ from azext_aosm.common.constants import (
     BASE_FOLDER_NAME,
     VNF_TEMPLATE_FOLDER_NAME,
     VNF_OUTPUT_FOLDER_FILENAME,
-    DEPLOYMENT_PARAMETERS_FILENAME,
+    DEPLOY_PARAMETERS_FILENAME,
     NEXUS_IMAGE_PARAMETERS_FILENAME,
     TEMPLATE_PARAMETERS_FILENAME,
     VNF_NEXUS_BASE_TEMPLATE_FILENAME,
@@ -74,7 +74,8 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
                 template_path=Path(arm_template.file_path).absolute(),
             )
             processor_list.append(
-                NexusArmBuildProcessor(arm_input.artifact_name, arm_input)
+                NexusArmBuildProcessor(arm_input.artifact_name, arm_input,
+                                       expose_all_params=self.config.expose_all_parameters)
             )
         # For each image, instantiate image processor
         for image in self.config.images:
@@ -86,7 +87,8 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
                 source_acr_registry=source_acr_registry,
             )
             processor_list.append(
-                NexusImageProcessor(image_input.artifact_name, image_input)
+                NexusImageProcessor(image_input.artifact_name, image_input,
+                                    expose_all_params=self.config.expose_all_parameters)
             )
 
         return processor_list
@@ -150,7 +152,7 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             "acr_nf_applications": arm_nf_application_list,
             "sa_nf_applications": [],
             "nexus_image_nf_applications": image_nf_application_list,
-            "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,
+            "deploy_parameters_file": DEPLOY_PARAMETERS_FILENAME,
             "template_parameters_file": TEMPLATE_PARAMETERS_FILENAME,
             "image_parameters_file": NEXUS_IMAGE_PARAMETERS_FILENAME
         }

@@ -9,6 +9,8 @@ from abc import abstractmethod
 
 from .onboarding_nfd_base_handler import OnboardingNFDBaseCLIHandler
 from knack.log import get_logger
+from azext_aosm.build_processors.arm_processor import BaseArmBuildProcessor
+from azext_aosm.build_processors.vhd_processor import VHDProcessor
 from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path
 from azext_aosm.configuration_models.onboarding_vnf_input_config import (
     OnboardingCoreVNFInputConfig, OnboardingNexusVNFInputConfig
@@ -36,6 +38,7 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
     """CLI handler for publishing NFDs."""
 
     config: OnboardingCoreVNFInputConfig | OnboardingNexusVNFInputConfig
+    processors: list[BaseArmBuildProcessor | VHDProcessor]
 
     @property
     def default_config_file_name(self) -> str:
@@ -80,7 +83,7 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
         For each processor:
         - Generates NF application for each processor
-        - Generates deploymentParameters (flattened to be one schema overall)
+        - Generates deployParameters (flattened to be one schema overall)
         - Generates supporting parameters files (to avoid stringified JSON in template)
 
         """
@@ -96,8 +99,8 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
             arm_nf_application_list.extend(arm_nf_application)
             image_nf_application_list.extend(image_nf_application)
 
-            # Generate deploymentParameters schema properties
-            params_schema = processor.generate_params_schema()
+            # Generate deployParameters schema properties
+            params_schema = processor.generate_schema()
             schema_properties.update(params_schema)
 
             # Generate local file for parameters, i.e imageParameters
@@ -114,18 +117,18 @@ class OnboardingVNFCLIHandler(OnboardingNFDBaseCLIHandler):
             template_path, params
         )
 
-        # Create a bicep element
-        # + add its supporting files (deploymentParameters, vhdParameters and templateParameters)
+        # Create the bicep element
         bicep_file = BicepDefinitionElementBuilder(
             Path(VNF_OUTPUT_FOLDER_FILENAME, NF_DEFINITION_FOLDER_NAME),
             bicep_contents,
         )
+        # Add deployParameters, vhdParameters and templateParameters as supporting files
         for supporting_file in supporting_files:
             bicep_file.add_supporting_file(supporting_file)
 
-        # Add the deploymentParameters schema file
+        # Add the deployParameters schema file
         bicep_file.add_supporting_file(
-            self._render_deployment_params_schema(
+            self._render_deploy_params_schema(
                 schema_properties, VNF_OUTPUT_FOLDER_FILENAME, NF_DEFINITION_FOLDER_NAME
             )
         )

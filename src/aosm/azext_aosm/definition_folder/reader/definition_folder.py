@@ -92,7 +92,7 @@ class DefinitionFolder:
         """Deploy the resources defined in the folder."""
         self._create_or_confirm_existence_of_resource_group(config, command_context)
         for element in self.elements:
-            logger.debug(
+            logger.info(
                 "Deploying definition element %s of type %s",
                 element.path,
                 type(element),

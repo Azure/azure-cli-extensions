@@ -50,7 +50,7 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
   properties: {
     // versionState should be changed to 'Active' once it is finalized.
     versionState: 'Preview'
-    deployParameters: string(loadJsonContent('schemas/deploymentParameters.json'))
+    deployParameters: string(loadJsonContent('schemas/deployParameters.json'))
     networkFunctionType: 'VirtualNetworkFunction'
     networkFunctionTemplate: {
       nfviType: 'AzureCore'

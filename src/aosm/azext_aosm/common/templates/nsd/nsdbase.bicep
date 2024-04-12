@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 
-// This file creates the base AOSM resources for a CNF
+// This file creates the base AOSM resources for an NSD
 param location string
 @description('Name of a publisher, expected to be in the resource group where you deploy the template')
 param publisherName string
+@description('Name of an ACR-backed Artifact Store, deployed under the publisher.')
 param acrArtifactStoreName string
 @description('Name of an Network Service Design Group')
 param nsDesignGroup string

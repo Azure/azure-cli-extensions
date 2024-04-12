@@ -53,15 +53,16 @@ class NetworkFunctionPropertiesConfig:
             "comment": "Type of Network Function. Valid values are 'cnf' or 'vnf'."
         },
     )
-    multiple_instances: str = field(
-        default="",
-        metadata={
-            "comment": (
-                "Set to true or false. Whether the NSD should allow arbitrary numbers of this type of NF. "
-                "If false only a single instance will be allowed. Only supported on VNFs, must be set to false on CNFs."
-            )
-        },
-    )
+    # multiple_instances: str = field(
+    #     default="",
+    #     metadata={
+    #         "comment": (
+    #             "Set to true or false. Whether the NSD should allow arbitrary numbers of this type of NF. "
+    #             "If false only a single instance will be allowed. "
+    #             "Only supported on VNFs, must be set to false on CNFs."
+    #         )
+    #     },
+    # )
 
     def validate(self):
         """Validate the configuration."""
@@ -85,12 +86,12 @@ class NetworkFunctionPropertiesConfig:
         if self.type.lower() not in ["cnf", "vnf"]:
             raise ValidationError("type must either be cnf or vnf")
 
-        if not self.multiple_instances:
-            raise ValidationError(
-                "multiple_instances must be set for your network function"
-            )
-        if self.multiple_instances.lower() not in ["false", "true"]:
-            raise ValidationError("multiple_instances must be either true or false")
+        # if not self.multiple_instances:
+        #     raise ValidationError(
+        #         "multiple_instances must be set for your network function"
+        #     )
+        # if self.multiple_instances.lower() not in ["false", "true"]:
+        #     raise ValidationError("multiple_instances must be either true or false")
 
 
 @dataclass

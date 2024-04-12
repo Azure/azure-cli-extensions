@@ -21,6 +21,7 @@ class TestHelmChartProcessor(TestCase):
             name="test-nf-agent-cnf",
             input_artifact=Mock(),
             registry_handler=None,
+            expose_all_params=False
         )
 
     def test_find_chart_images(self):

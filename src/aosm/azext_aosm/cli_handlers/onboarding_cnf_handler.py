@@ -26,7 +26,7 @@ from azext_aosm.common.constants import (
     CNF_MANIFEST_TEMPLATE_FILENAME,
     CNF_OUTPUT_FOLDER_FILENAME,
     CNF_TEMPLATE_FOLDER_NAME,
-    DEPLOYMENT_PARAMETERS_FILENAME,
+    DEPLOY_PARAMETERS_FILENAME,
     HELM_TEMPLATE,
     MANIFEST_FOLDER_NAME,
     NF_DEFINITION_FOLDER_NAME,
@@ -63,6 +63,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
     """CLI handler for publishing NFDs."""
 
     config: OnboardingCNFInputConfig
+    processors: list[HelmChartProcessor]
 
     @property
     def default_config_file_name(self) -> str:
@@ -100,7 +101,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
         for helm_package in self.config.helm_packages:
             if helm_package.default_values:
                 if Path(helm_package.default_values).exists():
-                    provided_config = yaml_processor.load(
+                    user_override_default_config = yaml_processor.load(
                         open(helm_package.default_values)
                     )
                 else:
@@ -108,15 +109,18 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
                         f"ERROR: The default values file '{helm_package.default_values}' does not exist"
                     )
             else:
-                provided_config = None
+                user_override_default_config = None
 
             helm_input = HelmChartInput.from_chart_path(
-                Path(helm_package.path_to_chart).absolute(),
-                default_config=provided_config,
+                chart_path=Path(helm_package.path_to_chart).absolute(),
+                default_config=user_override_default_config,
                 default_config_path=helm_package.default_values,
             )
             helm_processor = HelmChartProcessor(
-                helm_package.name, helm_input, registry_handler
+                name=helm_package.name,
+                input_artifact=helm_input,
+                registry_handler=registry_handler,
+                expose_all_params=self.config.expose_all_parameters,
             )
             processor_list.append(helm_processor)
         return processor_list
@@ -218,6 +222,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
     def build_artifact_list(self) -> ArtifactDefinitionElementBuilder:
         """Build the artifact list."""
+        logger.info("Creating artifacts list for artifacts.json")
         artifact_list = []
         # For each helm package, get list of artifacts and combine
         # For each arm template, get list of artifacts and combine
@@ -237,22 +242,26 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
 
     def build_resource_bicep(self) -> BicepDefinitionElementBuilder:
         """Build the resource bicep file."""
-        logger.info("Creating artifacts list for artifacts.json")
+        logger.info("Creating NF definition bicep template")
         nf_application_list = []
         mappings_files = []
-        schema_properties = {}
-        # For each helm package, generate nf application, generate mappings profile
+        deploy_params_schema = {}
+        # For each helm package, generate nf application, params schema and mappings profile
         for processor in self.processors:
-            # Generate nf application
             nf_application = processor.generate_nf_application()
             nf_application_list.append(nf_application)
 
-            # Generate deploymentParameters schema properties
-            params_schema = processor.generate_params_schema()
-            schema_properties.update(params_schema)
+            # The AOSM API models are very permissive with None values. Our code should never set these to None,
+            # so we use these asserts to ensure that, and to keep type checking happy.
+            assert nf_application.name is not None
+            assert nf_application.deploy_parameters_mapping_rule_profile is not None
+            assert nf_application.deploy_parameters_mapping_rule_profile.helm_mapping_rule_profile is not None
+            assert nf_application.deploy_parameters_mapping_rule_profile.helm_mapping_rule_profile.values is not None
 
-            # Adding supporting file: config mappings
-            deploy_values = (
+            deploy_params_schema.update(processor.generate_schema())
+
+            # Add supporting file: config mappings
+            mapping_rules = (
                 nf_application.deploy_parameters_mapping_rule_profile.helm_mapping_rule_profile.values
             )
             mapping_file = LocalFileBuilder(
@@ -261,7 +270,7 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
                     NF_DEFINITION_FOLDER_NAME,
                     nf_application.name + "-mappings.json",
                 ),
-                json.dumps(json.loads(deploy_values), indent=4),
+                json.dumps(json.loads(mapping_rules), indent=4),
             )
             mappings_files.append(mapping_file)
 
@@ -269,27 +278,26 @@ class OnboardingCNFCLIHandler(OnboardingNFDBaseCLIHandler):
         template_path = get_template_path(
             CNF_TEMPLATE_FOLDER_NAME, CNF_DEFINITION_TEMPLATE_FILENAME
         )
-
         params = {
             "acr_nf_applications": nf_application_list,
-            "deployment_parameters_file": DEPLOYMENT_PARAMETERS_FILENAME,
+            "deploy_parameters_file": DEPLOY_PARAMETERS_FILENAME,
         }
         bicep_contents = render_bicep_contents_from_j2(template_path, params)
 
         # Create a bicep element + add its supporting mapping files
-        bicep_file = BicepDefinitionElementBuilder(
+        bicep_element_builder = BicepDefinitionElementBuilder(
             Path(CNF_OUTPUT_FOLDER_FILENAME, NF_DEFINITION_FOLDER_NAME), bicep_contents
         )
         for mappings_file in mappings_files:
-            bicep_file.add_supporting_file(mappings_file)
+            bicep_element_builder.add_supporting_file(mappings_file)
 
-        # Add the deploymentParameters schema file
-        bicep_file.add_supporting_file(
-            self._render_deployment_params_schema(
-                schema_properties, CNF_OUTPUT_FOLDER_FILENAME, NF_DEFINITION_FOLDER_NAME
+        # Add the deployParameters schema file
+        bicep_element_builder.add_supporting_file(
+            self._render_deploy_params_schema(
+                deploy_params_schema, CNF_OUTPUT_FOLDER_FILENAME, NF_DEFINITION_FOLDER_NAME
             )
         )
-        return bicep_file
+        return bicep_element_builder
 
     def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
         """Build the all parameters json file."""

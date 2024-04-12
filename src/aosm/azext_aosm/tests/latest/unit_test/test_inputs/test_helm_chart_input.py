@@ -125,15 +125,15 @@ class TestHelmChartInput(TestCase):
             artifact_version="1.0.0",
             chart_path=self.chart_path,
         )
+        # # NOTE: temporarly commented out as we have commented out the code for using the values.schema.json
+        # # Test case when values.schema.json exists in the chart.
+        # with open(self.chart_path / "values.schema.json", "w") as f:
+        #     json.dump({"key": "value"}, f)
+        # schema = helm_chart_input.get_schema()
+        # self.assertEqual(schema, {"key": "value"})
 
-        # Test case when values.schema.json exists in the chart.
-        with open(self.chart_path / "values.schema.json", "w") as f:
-            json.dump({"key": "value"}, f)
-        schema = helm_chart_input.get_schema()
-        self.assertEqual(schema, {"key": "value"})
-
-        # Test case when values.schema.json does not exist in the chart.
-        os.remove(self.chart_path / "values.schema.json")
+        # # Test case when values.schema.json does not exist in the chart.
+        # os.remove(self.chart_path / "values.schema.json")
         with open(self.chart_path / "values.yaml", "w") as f:
             f.write("key: value")
         schema = helm_chart_input.get_schema()

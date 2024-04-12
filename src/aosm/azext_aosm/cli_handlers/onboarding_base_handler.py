@@ -15,7 +15,7 @@ from jinja2 import StrictUndefined, Template
 from knack.log import get_logger
 
 from azext_aosm.common.command_context import CommandContext
-from azext_aosm.common.constants import DEPLOYMENT_PARAMETERS_FILENAME
+from azext_aosm.common.constants import DEPLOY_PARAMETERS_FILENAME
 from azext_aosm.configuration_models.common_parameters_config import (
     BaseCommonParametersConfig,
 )
@@ -319,7 +319,7 @@ class OnboardingBaseCLIHandler(ABC):
             if carry_on != "y":
                 raise UnclassifiedUserFault("User aborted!")
 
-    def _render_deployment_params_schema(
+    def _render_deploy_params_schema(
         self, complete_params_schema, output_folder_name, definition_folder_name
     ):
         """Render the schema for deployParameters.json."""
@@ -327,7 +327,7 @@ class OnboardingBaseCLIHandler(ABC):
             Path(
                 output_folder_name,
                 definition_folder_name,
-                DEPLOYMENT_PARAMETERS_FILENAME,
+                DEPLOY_PARAMETERS_FILENAME,
             ),
             json.dumps(
                 self._build_deploy_params_schema(complete_params_schema), indent=4

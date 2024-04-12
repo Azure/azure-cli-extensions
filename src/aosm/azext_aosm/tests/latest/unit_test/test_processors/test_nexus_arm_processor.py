@@ -44,7 +44,7 @@ class NexusArmProcessorTest(TestCase):
             template_path=mock_arm_template_path,
             default_config=None
         )
-        self.processor = NexusArmBuildProcessor("test-name", self.nexus_arm_input)
+        self.processor = NexusArmBuildProcessor("test-name", self.nexus_arm_input, expose_all_params=False)
 
     def test_get_artifact_manifest_list(self):
         """Test get artifact manifest list for nexus arm processor."""

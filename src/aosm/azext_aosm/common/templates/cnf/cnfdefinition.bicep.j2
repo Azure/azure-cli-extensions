@@ -41,7 +41,7 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
     {#- Note that all paths in bicep must be specified using the forward slash #}
     {#-  (/) character even if running on Windows. #}
     {#- See https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/modules#local-file #}
-    deployParameters: string(loadJsonContent('{{deployment_parameters_file}}'))
+    deployParameters: string(loadJsonContent('{{deploy_parameters_file}}'))
     networkFunctionType: 'ContainerizedNetworkFunction'
     networkFunctionTemplate: {
       nfviType: 'AzureArcKubernetes'

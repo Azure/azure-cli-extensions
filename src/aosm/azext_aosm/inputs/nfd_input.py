@@ -64,6 +64,8 @@ class NFDInput(BaseInput):
             publisher_name: str = split_id[8]
             nfdg_name: str = split_id[10]
             publisher_resource_group: str = split_id[4]
+        else:
+            raise ValueError("No Network Function ID found")
 
         logger.info("Getting default values for NFD Input")
 
@@ -87,7 +89,10 @@ class NFDInput(BaseInput):
             self.network_function_definition.properties
             and isinstance(
                 self.network_function_definition.properties,
-                (ContainerizedNetworkFunctionDefinitionVersion, VirtualNetworkFunctionDefinitionVersion),
+                (
+                    ContainerizedNetworkFunctionDefinitionVersion,
+                    VirtualNetworkFunctionDefinitionVersion,
+                ),
             )
             and self.network_function_definition.properties.network_function_template
             and self.network_function_definition.properties.network_function_template.nfvi_type
@@ -119,7 +124,7 @@ class NFDInput(BaseInput):
                     "nfdgName": {"type": "string"},
                     "nfdvName": {"type": "string"},
                     "publisherResourceGroup": {"type": "string"},
-                    "deploymentParameters": {
+                    "deployParameters": {
                         "type": "array",
                         "items": {"type": "object"},
                     },
@@ -132,7 +137,7 @@ class NFDInput(BaseInput):
                     "nfdgName",
                     "nfdvName",
                     "publisherResourceGroup",
-                    "deploymentParameters",
+                    "deployParameters",
                     "customLocationId",
                     "managedIdentityId",
                 ],
@@ -148,7 +153,7 @@ class NFDInput(BaseInput):
         nfdv_properties = self.network_function_definition.properties
 
         if nfdv_properties and nfdv_properties.deploy_parameters:
-            schema["properties"]["configObject"]["properties"]["deploymentParameters"][
+            schema["properties"]["configObject"]["properties"]["deployParameters"][
                 "items"
             ] = json.loads(nfdv_properties.deploy_parameters)
 
@@ -156,9 +161,6 @@ class NFDInput(BaseInput):
 
             return copy.deepcopy(schema)
 
-        logger.error(
-            "No deployment parameters schema found on the network function definition version."
-        )
         raise ValueError(
             "No deployment parameters schema found on the network function definition version."
         )

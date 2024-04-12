@@ -52,7 +52,7 @@ NF_DEFINITION_FOLDER_NAME = "nfDefinition"
 ALL_PARAMETERS_FILE_NAME = "all_deploy.parameters.json"
 CGS_FILENAME = "config-group-schema.json"
 CGS_NAME = "ConfigGroupSchema"
-DEPLOYMENT_PARAMETERS_FILENAME = "deploymentParameters.json"
+DEPLOY_PARAMETERS_FILENAME = "deployParameters.json"
 TEMPLATE_PARAMETERS_FILENAME = "templateParameters.json"
 VHD_PARAMETERS_FILENAME = "vhdParameters.json"
 NEXUS_IMAGE_PARAMETERS_FILENAME = "imageParameters.json"
@@ -95,16 +95,6 @@ NEXUS_IMAGE_REGEX = r"^[\~]?(\d+)\.(\d+)\.(\d+)$"
 # TEMPLATES_DIR_NAME = "templates"
 GENERATED_VALUES_MAPPINGS_DIR_NAME = "generatedValuesMappings"
 
-# Items used when building NFDs/NSDs
-OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME = "optionalDeploymentParameters.txt"
-
-OPTIONAL_DEPLOYMENT_PARAMETERS_HEADING = (
-    "# The following parameters are optional as they have default values.\n"
-    "# If you do not wish to expose them in the NFD, find and remove them from both\n"
-    f"# {DEPLOYMENT_PARAMETERS_FILENAME} and {TEMPLATE_PARAMETERS_FILENAME} (and {VHD_PARAMETERS_FILENAME} if\n"
-    "they are there)\n"
-)
-
 # Deployment Schema
 SCHEMA_PREFIX = {
     "$schema": "https://json-schema.org/draft-07/schema#",
@@ -136,8 +126,6 @@ IMAGE_PATH_REGEX = r".Values\.([^\s})]*)"
 # To match the image name and version if 'imagePullSecrets:' is present in the yaml file
 IMAGE_PULL_SECRETS_START_STRING = "imagePullSecrets:"
 IMAGE_NAME_AND_VERSION_REGEX = r"\/(?P<name>[^\s]*):(?P<version>[^\s)\"}]*)"
-
-DEPLOYMENT_PARAMETER_MAPPING_REGEX = r"\{deployParameters.(.+?)\}"
 
 # Assume that the registry id is of the form:
 # /subscriptions/<sub_id>/resourceGroups/<rg_name>/providers/
