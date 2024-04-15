@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic service show",
 )
 class Show(AAZCommand):
-    """Show service details
+    """Show details of an Azure API Center service instance.
 
     :example: Show service details
         az apic service show -g contoso-resources -s contoso

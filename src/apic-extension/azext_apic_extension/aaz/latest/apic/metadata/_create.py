@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic metadata-schema create",
+    "apic metadata create",
 )
 class Create(AAZCommand):
-    """Create new or updates existing metadata schema.
+    """Create a new metadata schema.
 
     :example: Create schema
-        az az apic metadata-schema create --resource-group api-center-test --service-name contoso --name "test1" --schema '{\"type\":\"string\", \"title\":\"First name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}'
+        az az apic metadata create --resource-group api-center-test --service-name contoso --name "test1" --schema '{\"type\":\"string\", \"title\":\"First name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}'
     """
 
     _aaz_info = {
@@ -69,21 +69,21 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.assigned_to = AAZListArg(
-            options=["--assigned-to"],
+        _args_schema.assignments = AAZListArg(
+            options=["--assignments"],
             arg_group="Properties",
+            help="Defines the assignment scope for the custom metadata, e.g. \"[{entity:api,required:true,deprecated:false}]\". The available entity values are: api, deployment, environment.",
         )
         _args_schema.schema = AAZStrArg(
             options=["--schema"],
             arg_group="Properties",
             help="JSON schema defining the type.",
-            required=True,
         )
 
-        assigned_to = cls._args_schema.assigned_to
-        assigned_to.Element = AAZObjectArg()
+        assignments = cls._args_schema.assignments
+        assignments.Element = AAZObjectArg()
 
-        _element = cls._args_schema.assigned_to.Element
+        _element = cls._args_schema.assignments.Element
         _element.deprecated = AAZBoolArg(
             options=["deprecated"],
         )
@@ -195,7 +195,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("assignedTo", AAZListType, ".assigned_to")
+                properties.set_prop("assignedTo", AAZListType, ".assignments")
                 properties.set_prop("schema", AAZStrType, ".schema", typ_kwargs={"flags": {"required": True}})
 
             assigned_to = _builder.get(".properties.assignedTo")

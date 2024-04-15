@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic environment head",
+    "apic api version check-exists",
 )
-class Head(AAZCommand):
-    """Checks if specified environment exists.
+class CheckExists(AAZCommand):
+    """Checks if specified API version exists.
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/environments/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apis/{}/versions/{}", "2024-03-01"],
         ]
     }
 
@@ -41,9 +41,9 @@ class Head(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.environment_name = AAZStrArg(
-            options=["--name", "--environment", "--environment-name"],
-            help="The name of the environment.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
@@ -64,6 +64,16 @@ class Head(AAZCommand):
                 min_length=1,
             ),
         )
+        _args_schema.version_id = AAZStrArg(
+            options=["--version-id"],
+            help="The id of the API version.",
+            required=True,
+            id_part="child_name_3",
+            fmt=AAZStrArgFormat(
+                max_length=90,
+                min_length=1,
+            ),
+        )
         _args_schema.workspace_name = AAZStrArg(
             options=["-w", "--workspace", "--workspace-name"],
             help="The name of the workspace.",
@@ -79,7 +89,7 @@ class Head(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EnvironmentsHead(ctx=self.ctx)()
+        self.ApiVersionsHead(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,7 +100,7 @@ class Head(AAZCommand):
     def post_operations(self):
         pass
 
-    class EnvironmentsHead(AAZHttpOperation):
+    class ApiVersionsHead(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -104,7 +114,7 @@ class Head(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/environments/{environmentName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apis/{apiName}/versions/{versionName}",
                 **self.url_parameters
             )
 
@@ -120,7 +130,7 @@ class Head(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "environmentName", self.ctx.args.environment_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -133,6 +143,10 @@ class Head(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "versionName", self.ctx.args.version_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -156,8 +170,8 @@ class Head(AAZCommand):
             pass
 
 
-class _HeadHelper:
-    """Helper class for Head"""
+class _CheckExistsHelper:
+    """Helper class for CheckExists"""
 
 
-__all__ = ["Head"]
+__all__ = ["CheckExists"]

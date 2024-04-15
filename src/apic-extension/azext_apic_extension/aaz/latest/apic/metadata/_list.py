@@ -12,33 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic metadata-schema export-metadata-schema",
+    "apic metadata list",
 )
-class ExportMetadataSchema(AAZCommand):
-    """Exports the effective metadata schema.
+class List(AAZCommand):
+    """List a collection of metadata schemas.
 
-    :example: Export Metadata Schema assigned to api
-        az apic metadata-schema export-metadata-schema -g api-center-test -s contosoeuap --assigned-to api --file-name filepath
-
-    :example: Export Metadata Schema assigned to deployment
-        az apic metadata-schema export-metadata-schema -g api-center-test -s contosoeuap --assigned-to deployment --file-name filepath
-
-    :example: Export Metadata Schema assigned to environment
-        az apic metadata-schema export-metadata-schema -g api-center-test -s contosoeuap --assigned-to environment --file-name filepath
+    :example: List schemas
+        az apic metadata list -g api-center-test -s contosoeuap
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/exportmetadataschema", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/metadataschemas", "2024-03-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -55,30 +49,23 @@ class ExportMetadataSchema(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--name", "--service", "--service-name"],
+            options=["-s", "--service", "--service-name"],
             help="The name of the API Center service.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 max_length=90,
                 min_length=1,
             ),
         )
-
-        # define Arg Group "Payload"
-
-        _args_schema = cls._args_schema
-        _args_schema.assigned_to = AAZStrArg(
-            options=["--assigned-to"],
-            arg_group="Payload",
-            help="An entity the metadata schema is requested for.",
-            enum={"api": "api", "deployment": "deployment", "environment": "environment"},
+        _args_schema.filter = AAZStrArg(
+            options=["--filter"],
+            help="OData filter parameter.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ServicesExportMetadataSchema(ctx=self.ctx)()
+        self.MetadataSchemasList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,46 +77,31 @@ class ExportMetadataSchema(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ServicesExportMetadataSchema(AAZHttpOperation):
+    class MetadataSchemasList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/exportMetadataSchema",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/metadataSchemas",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -157,6 +129,9 @@ class ExportMetadataSchema(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
+                    "$filter", self.ctx.args.filter,
+                ),
+                **self.serialize_query_param(
                     "api-version", "2024-03-01",
                     required=True,
                 ),
@@ -167,24 +142,10 @@ class ExportMetadataSchema(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("assignedTo", AAZStrType, ".assigned_to")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -204,14 +165,76 @@ class ExportMetadataSchema(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.format = AAZStrType()
-            _schema_on_200.value = AAZStrType()
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+                flags={"read_only": True},
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"read_only": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.assigned_to = AAZListType(
+                serialized_name="assignedTo",
+            )
+            properties.schema = AAZStrType(
+                flags={"required": True},
+            )
+
+            assigned_to = cls._schema_on_200.value.Element.properties.assigned_to
+            assigned_to.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.assigned_to.Element
+            _element.deprecated = AAZBoolType()
+            _element.entity = AAZStrType()
+            _element.required = AAZBoolType()
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200
 
 
-class _ExportMetadataSchemaHelper:
-    """Helper class for ExportMetadataSchema"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["ExportMetadataSchema"]
+__all__ = ["List"]

@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic api head",
+    "apic api deployment check-exists",
 )
-class Head(AAZCommand):
-    """Checks if specified API exists.
+class CheckExists(AAZCommand):
+    """Checks if specified API deployment exists.
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apis/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apis/{}/deployments/{}", "2024-03-01"],
         ]
     }
 
@@ -41,11 +41,21 @@ class Head(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--name", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                max_length=90,
+                min_length=1,
+            ),
+        )
+        _args_schema.deployment_id = AAZStrArg(
+            options=["--deployment-id"],
+            help="The id of the API deployment.",
+            required=True,
+            id_part="child_name_3",
             fmt=AAZStrArgFormat(
                 max_length=90,
                 min_length=1,
@@ -79,7 +89,7 @@ class Head(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ApisHead(ctx=self.ctx)()
+        self.DeploymentsHead(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,7 +100,7 @@ class Head(AAZCommand):
     def post_operations(self):
         pass
 
-    class ApisHead(AAZHttpOperation):
+    class DeploymentsHead(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -104,7 +114,7 @@ class Head(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apis/{apiName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apis/{apiName}/deployments/{deploymentName}",
                 **self.url_parameters
             )
 
@@ -120,7 +130,11 @@ class Head(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "deploymentName", self.ctx.args.deployment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -156,8 +170,8 @@ class Head(AAZCommand):
             pass
 
 
-class _HeadHelper:
-    """Helper class for Head"""
+class _CheckExistsHelper:
+    """Helper class for CheckExists"""
 
 
-__all__ = ["Head"]
+__all__ = ["CheckExists"]

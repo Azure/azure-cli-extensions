@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic service update",
 )
 class Update(AAZCommand):
-    """Update service
+    """Update an instance of an Azure API Center service.
 
     :example: Update service details
         az apic update -g contoso-resources -s contoso

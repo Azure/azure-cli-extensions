@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete service
+    """Deletes an instance of an Azure API Center service.
 
     :example: Delete service
         az apic service delete -s contoso -g contoso-resources

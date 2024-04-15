@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List a collection of API versions.
 
     :example: List API versions
-        az apic api version list -g api-center-test -s contosoeuap --api-name echo-api
+        az apic api version list -g api-center-test -s contosoeuap --api-id echo-api
     """
 
     _aaz_info = {
@@ -45,9 +45,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             fmt=AAZStrArgFormat(
                 max_length=90,
@@ -130,7 +130,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(

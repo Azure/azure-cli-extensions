@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic service list",
 )
 class List(AAZCommand):
-    """List services within an Azure subscription.
+    """Lists Azure API Center services within an Azure subscription.
 
     :example: List services in resource group
         az apic list -g contoso-resources

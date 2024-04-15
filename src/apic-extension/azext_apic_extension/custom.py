@@ -20,9 +20,9 @@ import chardet
 from azure.cli.core.aaz._arg import AAZStrArg
 from .aaz.latest.apic.api.definition import ImportSpecification
 from .aaz.latest.apic.api.definition import ExportSpecification
-from .aaz.latest.apic.metadata_schema import Create
-from .aaz.latest.apic.metadata_schema import Update
-from .aaz.latest.apic.metadata_schema import ExportMetadataSchema
+from .aaz.latest.apic.metadata import Create as CreateMetadataSchema
+from .aaz.latest.apic.metadata import Update as UpdateMetadataSchema
+from .aaz.latest.apic.metadata import Export as ExportMetadataSchema
 from .aaz.latest.apic.api import Update as UpdateAPI
 from .aaz.latest.apic.api.definition import Update as UpdateAPIDefinition
 from .aaz.latest.apic.api.deployment import Update as UpdateAPIDeployment
@@ -173,7 +173,7 @@ class ExportSpecificationExtension(ExportSpecification):
                     f.write(results)
 
 
-class CreateMetadataSchemaExtension(Create):
+class CreateMetadataSchemaExtension(CreateMetadataSchema):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -214,7 +214,7 @@ class CreateMetadataSchemaExtension(Create):
         self.ctx.args.schema = value
 
 
-class UpdateMetadataSchemaExtension(Update):
+class UpdateMetadataSchemaExtension(UpdateMetadataSchema):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -406,13 +406,13 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             from .aaz.latest.apic.api import Create as CreateAPI
 
             api_args = {
-                'api_name': extracted_api_name,
+                'api_id': extracted_api_name,
                 'resource_group': resource_group,
                 'service_name': service_name,
                 'workspace_name': 'default',
                 'title': extracted_api_title,
                 'summary': extracted_api_summary,
-                'kind': extracted_api_kind,
+                'type': extracted_api_kind,
                 'contacts': contacts,
                 'license': extracted_api_license,
                 'terms_of_service': extracted_api_terms_of_service,
@@ -427,10 +427,10 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             from .aaz.latest.apic.api.version import Create as CreateAPIVersion
 
             api_version_args = {
-                'api_name': extracted_api_name,
+                'api_id': extracted_api_name,
                 'resource_group': resource_group,
                 'service_name': service_name,
-                'version_name': extracted_api_version,
+                'version_id': extracted_api_version,
                 'workspace_name': 'default',
                 'lifecycle_stage': 'design',  # TODO: Extract from spec or not pass. was it required?
                 'title': extracted_api_version_title
@@ -443,12 +443,12 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             from .aaz.latest.apic.api.definition import Create as CreateAPIDefinition
 
             api_definition_args = {
-                'api_name': extracted_api_name,
+                'api_id': extracted_api_name,
                 'resource_group': resource_group,
                 'service_name': service_name,
-                'version_name': extracted_api_version,
+                'version_id': extracted_api_version,
                 'workspace_name': 'default',
-                'definition_name': extracted_definition_name,
+                'definition_id': extracted_definition_name,
                 'title': extracted_definition_name,  # TODO Extract from spec
                 'description': extracted_api_description,  # TODO Extract from spec
             }
@@ -469,9 +469,9 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'resource_group': resource_group,
                 'service_name': service_name,
                 'workspace_name': 'default',
-                'api_name': extracted_api_name,
-                'version_name': extracted_api_version,
-                'definition_name': extracted_definition_name,
+                'api_id': extracted_api_name,
+                'version_id': extracted_api_version,
+                'definition_id': extracted_definition_name,
                 'format': 'inline',
                 'specification': specification_details,  # TODO write the correct spec object
                 'source_profile': api_location
@@ -492,7 +492,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                     'resource_group': resource_group,
                     'service_name': service_name,
                     'workspace_name': 'default',
-                    'environment_name': environment_name
+                    'environment_id': environment_name
                 }
 
                 getEnvironmentResults = GetEnvironment(cli_ctx=cmd.cli_ctx)(command_args=environment_args)
@@ -519,8 +519,8 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                         'resource_group': resource_group,
                         'service_name': service_name,
                         'workspace_name': 'default',
-                        'api_name': extracted_api_name,
-                        'deployment_name': extracted_deployment_name,
+                        'api_id': extracted_api_name,
+                        'deployment_id': extracted_deployment_name,
                         'description': extracted_deployment_description,
                         'title': extracted_deployment_title,
                         'definition_id': extracted_definition_id,

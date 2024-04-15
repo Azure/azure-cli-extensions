@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "apic environment update",
 )
 class Update(AAZCommand):
-    """Update new or updates existing environment.
+    """Update existing environment.
 
     :example: Update environment
-        az apic environment update -g api-center-test -s contosoeuap --name public --title "Public cloud"
+        az apic environment update -g api-center-test -s contosoeuap --environment-id public --title "Public cloud"
     """
 
     _aaz_info = {
@@ -46,9 +46,9 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.environment_name = AAZStrArg(
-            options=["--name", "--environment", "--environment-name"],
-            help="The name of the environment.",
+        _args_schema.environment_id = AAZStrArg(
+            options=["--environment-id"],
+            help="The id of the environment.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
@@ -96,15 +96,16 @@ class Update(AAZCommand):
             help="Description.",
             nullable=True,
         )
-        _args_schema.kind = AAZStrArg(
-            options=["--kind"],
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
             arg_group="Properties",
-            help="Environment kind.",
+            help="Environment type.",
             enum={"development": "development", "production": "production", "staging": "staging", "testing": "testing"},
         )
         _args_schema.onboarding = AAZObjectArg(
             options=["--onboarding"],
             arg_group="Properties",
+            help="{developerPortalUri:['https://developer.contoso.com'],instructions:'instructions markdown'}",
             nullable=True,
         )
         _args_schema.server = AAZObjectArg(
@@ -217,7 +218,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "environmentName", self.ctx.args.environment_name,
+                    "environmentName", self.ctx.args.environment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -308,7 +309,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "environmentName", self.ctx.args.environment_name,
+                    "environmentName", self.ctx.args.environment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -398,7 +399,7 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("customProperties", AAZFreeFormDictType, ".custom_properties")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("kind", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("onboarding", AAZObjectType, ".onboarding")
                 properties.set_prop("server", AAZObjectType, ".server")
                 properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})

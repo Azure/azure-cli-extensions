@@ -223,6 +223,7 @@ class List(AAZCommand):
             properties.license = AAZObjectType()
             properties.lifecycle_stage = AAZStrType(
                 serialized_name="lifecycleStage",
+                flags={"read_only": True},
             )
             properties.summary = AAZStrType()
             properties.terms_of_service = AAZObjectType(

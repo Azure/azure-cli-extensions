@@ -12,7 +12,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['apic api register'] = """
     type: command
-    short-summary: Single Command for registering api, api version, api definition, import spec, create deployment provided a spec file.
+    short-summary: Registers a new API with version, definition, and associated deployments using the specification file as the source of truth.
     parameters:
       - name: --api-location -l
         type: string

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic service create",
 )
 class Create(AAZCommand):
-    """Create an instance of Azure API Center service.
+    """Creates an instance of an Azure API Center service.
 
     :example: Create service Example 1
         az apic create -g contoso-resources -s contoso -l centraluseuap

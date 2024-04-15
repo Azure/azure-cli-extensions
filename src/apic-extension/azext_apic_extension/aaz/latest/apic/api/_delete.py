@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete specified API.
 
     :example: Delete API
-        az apic api delete -g contoso-resources -s contoso --name echo-api
+        az apic api delete -g contoso-resources -s contoso --api-id echo-api
     """
 
     _aaz_info = {
@@ -45,9 +45,9 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--name", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
@@ -126,7 +126,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(

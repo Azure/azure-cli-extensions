@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic metadata-schema show",
+    "apic metadata show",
 )
 class Show(AAZCommand):
     """Get details of the metadata schema.
 
     :example: Show schema details 1
-        az apic metadata-schema show -g api-center-test -s contosoeuap --name approver
+        az apic metadata show -g api-center-test -s contosoeuap --name approver
 
     :example: Show schema details 2
-        az az apic metadata-schema show --resource-group api-center-test --service-name contoso --name "testchoices"
+        az az apic metadata show --resource-group api-center-test --service-name contoso --name "testchoices"
     """
 
     _aaz_info = {

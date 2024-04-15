@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "apic api deployment update",
 )
 class Update(AAZCommand):
-    """Update new or updates existing API deployment.
+    """Update existing API deployment.
 
     :example: Update API deployment
-        az apic api deployment update -g api-center-test -s contoso --name production --title "Production deployment" --api echo-api
+        az apic api deployment update -g api-center-test -s contoso --deployment-id production --title "Production deployment" --api-id echo-api
     """
 
     _aaz_info = {
@@ -46,9 +46,9 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
@@ -56,9 +56,9 @@ class Update(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.deployment_name = AAZStrArg(
-            options=["--name", "--deployment", "--deployment-name"],
-            help="The name of the API deployment.",
+        _args_schema.deployment_id = AAZStrArg(
+            options=["--deployment-id"],
+            help="The id of the API deployment.",
             required=True,
             id_part="child_name_3",
             fmt=AAZStrArgFormat(
@@ -221,11 +221,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "deploymentName", self.ctx.args.deployment_name,
+                    "deploymentName", self.ctx.args.deployment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -316,11 +316,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "deploymentName", self.ctx.args.deployment_name,
+                    "deploymentName", self.ctx.args.deployment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(

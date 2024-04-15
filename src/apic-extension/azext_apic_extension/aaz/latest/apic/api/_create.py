@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "apic api create",
 )
 class Create(AAZCommand):
-    """Create new or updates existing API.
+    """Register a new API.
 
     :example: Create API
-        az apic api create -g contoso-resources -s contoso --name echo-api --title "Echo API"
+        az apic api create -g contoso-resources -s contoso --api-id echo-api --title "Echo API" --type REST
     """
 
     _aaz_info = {
@@ -44,9 +44,9 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--name", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             fmt=AAZStrArgFormat(
                 max_length=90,
@@ -103,11 +103,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Additional, external documentation for the API.",
         )
-        _args_schema.kind = AAZStrArg(
-            options=["--kind"],
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
             arg_group="Properties",
-            help="Kind of API. For example, REST or GraphQL.",
             required=True,
+            help="Type of API.",
             enum={"graphql": "graphql", "grpc": "grpc", "rest": "rest", "soap": "soap", "webhook": "webhook", "websocket": "websocket"},
         )
         _args_schema.license = AAZObjectArg(
@@ -273,7 +273,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -332,7 +332,7 @@ class Create(AAZCommand):
                 properties.set_prop("customProperties", AAZFreeFormDictType, ".custom_properties")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("externalDocumentation", AAZListType, ".external_documentation")
-                properties.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("kind", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("license", AAZObjectType, ".license")
                 properties.set_prop("summary", AAZStrType, ".summary")
                 properties.set_prop("termsOfService", AAZObjectType, ".terms_of_service")
@@ -424,6 +424,7 @@ class Create(AAZCommand):
             properties.license = AAZObjectType()
             properties.lifecycle_stage = AAZStrType(
                 serialized_name="lifecycleStage",
+                flags={"read_only": True},
             )
             properties.summary = AAZStrType()
             properties.terms_of_service = AAZObjectType(
