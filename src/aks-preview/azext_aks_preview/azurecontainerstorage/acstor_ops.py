@@ -196,7 +196,11 @@ def perform_enable_azure_container_storage(  # pylint: disable=too-many-statemen
         long_op_result = LongRunningOperation(cmd.cli_ctx)(result)
         if long_op_result.provisioning_state == "Succeeded":
             logger.warning(op_text)
+        logger.warning("CLUSTER NAME: ", cluster_name)
+        logger.warning(f"LONG OP DEBUG: {long_op_result}")
     except Exception as ex:  # pylint: disable=broad-except
+        logger.warning("EXCEPTION CLUSTER NAME: ", cluster_name)
+        logger.warning(f"EXCEPTION: {ex}")
         if is_cluster_create:
             logger.error("Azure Container Storage failed to install.\nError: %s", ex)
             logger.warning(
