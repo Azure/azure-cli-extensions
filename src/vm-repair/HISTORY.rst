@@ -1,6 +1,9 @@
 
 Release History
 ===============
+1.0.4
+++++++
+Logging improvements and script fixing
 
 1.0.3
 ++++++
