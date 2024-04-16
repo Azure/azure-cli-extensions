@@ -18,56 +18,15 @@ import requests
 from knack.log import get_logger
 import chardet
 from azure.cli.core.aaz._arg import AAZStrArg
-from .aaz.latest.apic.api.definition import ImportSpecification
-from .aaz.latest.apic.api.definition import ExportSpecification
+from .command_patches import ImportAPIDefinitionExtension
+from .command_patches import ExportAPIDefinitionExtension
 from .aaz.latest.apic.metadata import Create as CreateMetadataSchema
 from .aaz.latest.apic.metadata import Update as UpdateMetadataSchema
 from .aaz.latest.apic.metadata import Export as ExportMetadataSchema
-from .aaz.latest.apic.api import Update as UpdateAPI
-from .aaz.latest.apic.api.definition import Update as UpdateAPIDefinition
-from .aaz.latest.apic.api.deployment import Update as UpdateAPIDeployment
-from .aaz.latest.apic.api.version import Update as UpdateAPIVersion
-from .aaz.latest.apic.environment import Update as UpdateEnvironment
 
 logger = get_logger(__name__)
 
-
-class DefaultWorkspaceParameter:
-    # pylint: disable=too-few-public-methods
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        # pylint: disable=protected-access
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.workspace_name._required = False
-        args_schema.workspace_name._registered = False
-        return args_schema
-
-    def pre_operations(self):
-        args = self.ctx.args
-        args.workspace_name = "default"
-
-
-class UpdateAPIExtension(DefaultWorkspaceParameter, UpdateAPI):
-    pass
-
-
-class UpdateAPIDefinitionExtension(DefaultWorkspaceParameter, UpdateAPIDefinition):
-    pass
-
-
-class UpdateAPIDeploymentExtension(DefaultWorkspaceParameter, UpdateAPIDeployment):
-    pass
-
-
-class UpdateAPIVersionExtension(DefaultWorkspaceParameter, UpdateAPIVersion):
-    pass
-
-
-class UpdateEnvironmentExtension(DefaultWorkspaceParameter, UpdateEnvironment):
-    pass
-
-
-class ImportSpecificationExtension(ImportSpecification):
+class ImportSpecificationExtension(ImportAPIDefinitionExtension):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -121,7 +80,7 @@ class ImportSpecificationExtension(ImportSpecification):
                              'Please use --format "url" to import the specification from a URL for size greater than 3 mb.')
 
 
-class ExportSpecificationExtension(ExportSpecification):
+class ExportSpecificationExtension(ExportAPIDefinitionExtension):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
