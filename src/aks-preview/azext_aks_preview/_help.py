@@ -584,15 +584,6 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-app-monitoring
           type: bool
           short-summary: Enable Azure Monitor Application Monitoring
-        - name: --enable-auto-instrumentation
-          type: bool
-          short-summary: Enable auto instrumentation for Azure Monitor Application Monitoring
-        - name: --enable-open-telemetry-metrics
-          type: bool
-          short-summary: Enable open telemetry metrics for Azure Monitor Application Monitoring
-        - name: --enable-open-telemetry-logs
-          type: bool
-          short-summary: Enable open telemetry logs for Azure Monitor Application Monitoring
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
@@ -1130,27 +1121,9 @@ helps['aks update'] = """
         - name: --enable-azure-monitor-app-monitoring
           type: bool
           short-summary: Enable Azure Monitor Application Monitoring
-        - name: --enable-auto-instrumentation
-          type: bool
-          short-summary: Enable auto instrumentation for Azure Monitor Application Monitoring
-        - name: --enable-open-telemetry-metrics
-          type: bool
-          short-summary: Enable open telemetry metrics for Azure Monitor Application Monitoring
-        - name: --enable-open-telemetry-logs
-          type: bool
-          short-summary: Enable open telemetry logs for Azure Monitor Application Monitoring
         - name: --disable-azure-monitor-app-monitoring
           type: bool
           short-summary: Disable Azure Monitor Application Monitoring
-        - name: --disable-auto-instrumentation
-          type: bool
-          short-summary: Disable auto instrumentation for Azure Monitor Application Monitoring
-        - name: --disable-open-telemetry-metrics
-          type: bool
-          short-summary: Disable open telemetry metrics for Azure Monitor Application Monitoring
-        - name: --disable-open-telemetry-logs
-          type: bool
-          short-summary: Disable open telemetry logs for Azure Monitor Application Monitoring
         - name: --enable-node-restriction
           type: bool
           short-summary: Enable node restriction option on cluster.
