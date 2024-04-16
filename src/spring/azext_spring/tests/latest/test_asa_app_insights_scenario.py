@@ -14,10 +14,10 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 '''
-Since the scenarios covered here involves a lot of Azure Spring service creation. 
+Since the scenarios covered here involves a lot of Azure Spring service creation.
 It will take around 5~10 minutes to create one. And may take 1~2 hours to finish all.
 So as a trade-off, mark it as record_only. It will run against the requests and responses
-in yaml files under recordings fold. If the yaml file is not here, it will call to backend 
+in yaml files under recordings fold. If the yaml file is not here, it will call to backend
 and generate the yaml file again.
 '''
 

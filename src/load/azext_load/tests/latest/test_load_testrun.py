@@ -53,7 +53,7 @@ class LoadTestRunScenario(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(LoadTestRunScenario, self).__init__(*args, **kwargs)
         self.kwargs.update({"subscription_id": self.get_subscription_id()})
-    
+
     @live_only()
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -77,7 +77,7 @@ class LoadTestRunScenario(ScenarioTest):
             "--no-wait",
         )
 
-        #waiting for test to start
+        # waiting for test to start
         if self.is_live:
             time.sleep(20)
 
@@ -100,7 +100,7 @@ class LoadTestRunScenario(ScenarioTest):
         ).get_output_in_json()
 
         assert test_run.get("status") in ["CANCELLING", "FAILED", "CANCELLED"]
-    
+
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_run_list(self, rg, load):
@@ -165,7 +165,7 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
         create_test(self)
-        
+
         checks = [
             JMESPathCheck("testRunId", self.kwargs["test_run_id"]),
             JMESPathCheck("description", self.kwargs["description"]),
@@ -206,8 +206,8 @@ class LoadTestRunScenario(ScenarioTest):
             )
         except Exception as e:
             assert "Test run with given test run ID : " in str(e)
-            assert "already exist" in str(e) 
-        
+            assert "already exist" in str(e)
+
         # 2. Create a test run with invalid test run id
         self.kwargs.update(
             {
@@ -224,7 +224,7 @@ class LoadTestRunScenario(ScenarioTest):
             )
         except Exception as e:
             assert "Invalid test-run-id value" in str(e)
-    
+
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_run_delete(self, rg, load):
@@ -250,7 +250,10 @@ class LoadTestRunScenario(ScenarioTest):
                 "test_run_id": LoadTestRunConstants.UPDATE_TEST_RUN_ID,
                 "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
                 "test_plan": LoadTestRunConstants.TEST_PLAN,
-                "new_description": "Updated test run description",
+                "description1": "Updated test run description1",
+                "display_name1": "TestRunDisplayNameUpdated1",
+                "description2": "Updated test run description2",
+                "display_name2": "TestRunDisplayNameUpdated2",
             }
         )
 
@@ -258,13 +261,19 @@ class LoadTestRunScenario(ScenarioTest):
         create_test_run(self)
         if self.is_live:
             time.sleep(20)
+
+        # update display name and description
         self.cmd(
             "az load test-run update "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--test-run-id {test_run_id} "
-            "--description '{new_description}' ",
-            checks=[JMESPathCheck("description", self.kwargs["new_description"])],
+            "--description '{description1}' "
+            "--display-name '{display_name1}' ",
+            checks=[
+                JMESPathCheck("description", self.kwargs["description1"]),
+                JMESPathCheck("displayName", self.kwargs["display_name1"]),
+            ],
         ).get_output_in_json()
 
         self.cmd(
@@ -272,7 +281,58 @@ class LoadTestRunScenario(ScenarioTest):
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--test-run-id {test_run_id}",
-            checks=[JMESPathCheck("description", self.kwargs["new_description"])],
+            checks=[
+                JMESPathCheck("description", self.kwargs["description1"]),
+                JMESPathCheck("displayName", self.kwargs["display_name1"]),
+            ],
+        ).get_output_in_json()
+
+        # update display name only
+        self.cmd(
+            "az load test-run update "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-run-id {test_run_id} "
+            "--display-name '{display_name2}' ",
+            checks=[
+                JMESPathCheck("description", self.kwargs["description1"]),
+                JMESPathCheck("displayName", self.kwargs["display_name2"]),
+            ],
+        ).get_output_in_json()
+
+        self.cmd(
+            "az load test-run show "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-run-id {test_run_id}",
+            checks=[
+                JMESPathCheck("description", self.kwargs["description1"]),
+                JMESPathCheck("displayName", self.kwargs["display_name2"]),
+            ],
+        ).get_output_in_json()
+
+        # update description only
+        self.cmd(
+            "az load test-run update "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-run-id {test_run_id} "
+            "--description '{description2}' ",
+            checks=[
+                JMESPathCheck("description", self.kwargs["description2"]),
+                JMESPathCheck("displayName", self.kwargs["display_name2"]),
+            ],
+        ).get_output_in_json()
+
+        self.cmd(
+            "az load test-run show "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-run-id {test_run_id}",
+            checks=[
+                JMESPathCheck("description", self.kwargs["description2"]),
+                JMESPathCheck("displayName", self.kwargs["display_name2"]),
+            ],
         ).get_output_in_json()
 
     @ResourceGroupPreparer(**rg_params)
@@ -421,7 +481,7 @@ class LoadTestRunScenario(ScenarioTest):
             self.kwargs["app_component_id"]
         )
 
-        #Invalid cases for app component
+        # Invalid cases for app component
         # 1. Create a test run with invalid App Component Id
         self.kwargs.update(
             {

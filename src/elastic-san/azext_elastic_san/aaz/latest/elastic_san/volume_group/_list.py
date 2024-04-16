@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san volume-group list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List Volume Groups.

@@ -29,6 +29,7 @@ from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
+from azure.cli.command_modules.role import graph_client_factory
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core._profile import Profile
@@ -40,11 +41,9 @@ from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
 from Crypto.PublicKey import RSA
 from Crypto.Util import asn1
-from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import resource_providers_client
-from azext_connectedk8s._client_factory import get_graph_client_service_principals
-from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_10_01
+from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2022_10_01, cf_connected_cluster_prev_2023_11_01
 from azext_connectedk8s._client_factory import cf_connectedmachine
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
@@ -132,7 +131,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # Set preview client if latest preview properties are provided.
     if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
-        client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+        client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
 
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
@@ -315,14 +314,23 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
+            preview_cluster_resource = None
+            public_key = None
+
+            try:
+                preview_cluster_resource = get_connectedk8s_2023_11_01(cmd, configmap_rg_name,
+                                        configmap_cluster_name)
+                public_key = preview_cluster_resource.agent_public_key_certificate
+            except Exception as e:  # pylint: disable=broad-except
+                utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
+
             if (configmap_rg_name.lower() == resource_group_name.lower() and
                     configmap_cluster_name.lower() == cluster_name.lower()):
                 # Re-put connected cluster
-                try:
-                    public_key = client.get(configmap_rg_name,
-                                            configmap_cluster_name).agent_public_key_certificate
-                except Exception as e:  # pylint: disable=broad-except
-                    utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
+                
+                # If cluster is of kind provisioned cluster, there are several properties that cannot be updated
+                validate_existing_provisioned_cluster_for_reput(preview_cluster_resource, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location)    
+
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
                 cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
@@ -417,6 +425,25 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                kube_context, no_wait, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations,
                                custom_locations_oid, helm_client_location, enable_private_link, arm_metadata, onboarding_timeout, container_log_path)
     return put_cc_response
+
+def validate_existing_provisioned_cluster_for_reput(cluster_resource, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location):
+    if (cluster_resource != None) and (cluster_resource.kind != None) and (cluster_resource.kind.lower() == consts.Provisioned_Cluster_Kind):
+        if azure_hybrid_benefit is not None:
+            raise InvalidArgumentValueError("Updating the 'azure hybrid benefit' property of a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the 'az aksarc update' CLI command.\nhttps://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update")
+
+        validation_values = [
+            kubernetes_distro,
+            kubernetes_infra,
+            enable_private_link,
+            private_link_scope_resource_id,
+            distribution_version,
+            azure_hybrid_benefit,
+            location,
+        ]
+
+        for value in validation_values:
+            if value is not None:
+                raise InvalidArgumentValueError("Updating the following properties of a Provisioned Cluster are not supported from the Connected Cluster CLI: kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, location, public_key.\n\nPlease use the 'az aksarc update' CLI command. https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update")
 
 
 def send_cloud_telemetry(cmd):
@@ -832,14 +859,20 @@ def get_server_address(kube_config, kube_context):
 
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
-    # Override preview client to show private link properties to customers
-    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+    # Override preview client to show private link properties and cluster kind to customers
+    client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
+    return client.get(resource_group_name, cluster_name)
+
+
+def get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name):
+    # Override preview client to show private link properties and cluster kind to customers
+    client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
     return client.get(resource_group_name, cluster_name)
 
 
 def list_connectedk8s(cmd, client, resource_group_name=None):
-    # Override preview client to show private link properties to customers
-    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+    # Override preview client to show private link properties and cluster kind to customers
+    client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
     if not resource_group_name:
         return client.list_by_subscription()
     return client.list_by_resource_group(resource_group_name)
@@ -858,6 +891,11 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         utils.user_confirmation(confirmation_message, yes)
 
     logger.warning("This operation might take a while ...\n")
+
+    # Check if the cluster is of supported type for deletion
+    preview_cluster_resource = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+    if (preview_cluster_resource != None) and (preview_cluster_resource.kind != None) and (preview_cluster_resource.kind.lower() == consts.Provisioned_Cluster_Kind):
+        raise InvalidArgumentValueError("Deleting a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the 'az aksarc delete' CLI command.\nhttps://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-delete")
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -1006,6 +1044,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
+    # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+
+    if (connected_cluster != None) and (connected_cluster.kind != None) and (connected_cluster.kind.lower() == consts.Provisioned_Cluster_Kind):
+        raise InvalidArgumentValueError("Updating a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the 'az aksarc update' CLI command. https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update")
+
     # Set preview client as most of the patchable fields are available in preview api-version
     client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
 
@@ -1149,6 +1193,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
 
 def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None, upgrade_timeout="600"):
+    # Check if cluster supports upgrading
+    connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+
+    if (connected_cluster != None) and (connected_cluster.kind != None) and (connected_cluster.kind.lower() == consts.Provisioned_Cluster_Kind):
+        raise InvalidArgumentValueError("Upgrading a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the 'az aksarc upgrade' CLI command. https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-upgrade")
+    
     logger.warning("This operation might take a while...\n")
 
     # Send cloud information to telemetry
@@ -1395,7 +1445,11 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
     # Check if cluster is private link enabled
-    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+
+    if (connected_cluster != None) and (connected_cluster.kind != None) and (connected_cluster.kind.lower() == consts.Provisioned_Cluster_Kind):
+        raise InvalidArgumentValueError("Enable feature of a Provisioned Cluster is not supported from the Connected Cluster CLI. For information on how to enable a feature on a Provisioned Cluster using a cluster extension, please refer to: https://learn.microsoft.com/en-us/azure/aks/deploy-extensions-az-cli")
+
     if connected_cluster.private_link_state.lower() == "enabled" and (enable_cluster_connect or enable_cl):
         telemetry.set_exception(exception='Invalid arguments provided', fault_type=consts.Invalid_Argument_Fault_Type,
                                 summary='Invalid arguments provided')
@@ -1520,6 +1574,12 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
     utils.user_confirmation(confirmation_message, yes)
 
+    # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+
+    if (connected_cluster != None)  and (connected_cluster.kind != None) and (connected_cluster.kind.lower() == consts.Provisioned_Cluster_Kind):
+        raise InvalidArgumentValueError("Disable feature of a Provisioned Cluster is not supported from the Connected Cluster CLI. For information on how to disable a feature on a Provisioned Cluster using a cluster extension, please refer to: https://learn.microsoft.com/en-us/azure/aks/deploy-extensions-az-cli")
+
     logger.warning("This operation might take a while...\n")
 
     disable_cluster_connect, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
@@ -1547,9 +1607,6 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     helm_client_location = install_helm_client()
 
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
-
-    # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
     kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
@@ -1804,8 +1861,9 @@ def client_side_proxy_wrapper(cmd,
                               api_server_port=consts.API_SERVER_PORT):
 
     cloud = send_cloud_telemetry(cmd)
+    profile = Profile()
+    tenant_id = profile.get_subscription()['tenantId']
 
-    tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
     client_proxy_port = consts.CLIENT_PROXY_PORT
     if int(client_proxy_port) == int(api_server_port):
         raise ClientRequestError('Proxy uses port 47010 internally.', recommendation='Please pass some other unused port through --port option.')
@@ -1926,9 +1984,9 @@ def client_side_proxy_wrapper(cmd,
         user_type = account['user']['type']
 
         if user_type == 'user':
-            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': consts.CLIENTPROXY_CLIENT_ID}}
+            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenant_id, 'clientID': consts.CLIENTPROXY_CLIENT_ID}}
         else:
-            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': account['user']['name']}}
+            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenant_id, 'clientID': account['user']['name']}}
 
         if cloud == 'DOGFOOD':
             dict_file['cloud'] = 'AzureDogFood'
@@ -1997,7 +2055,7 @@ def client_side_proxy_wrapper(cmd,
         args.append("-d")
         debug_mode = True
 
-    client_side_proxy_main(cmd, tenantId, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
+    client_side_proxy_main(cmd, tenant_id, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
 
 
 # Prepare data as needed by client proxy executable
@@ -2017,7 +2075,7 @@ def prepare_clientproxy_data(response):
 
 
 def client_side_proxy_main(cmd,
-                           tenantId,
+                           tenant_id,
                            client,
                            resource_group_name,
                            cluster_name,
@@ -2033,14 +2091,14 @@ def client_side_proxy_main(cmd,
                            path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                            context_name=None,
                            clientproxy_process=None):
-    expiry, clientproxy_process = client_side_proxy(cmd, tenantId, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
+    expiry, clientproxy_process = client_side_proxy(cmd, tenant_id, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
     next_refresh_time = expiry - consts.CSP_REFRESH_TIME
 
     while(True):
         time.sleep(60)
         if(clientproxyutils.check_if_csp_is_running(clientproxy_process)):
             if time.time() >= next_refresh_time:
-                expiry, clientproxy_process = client_side_proxy(cmd, tenantId, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=clientproxy_process)
+                expiry, clientproxy_process = client_side_proxy(cmd, tenant_id, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=clientproxy_process)
                 next_refresh_time = expiry - consts.CSP_REFRESH_TIME
         else:
             telemetry.set_exception(exception='Process closed externally.', fault_type=consts.Proxy_Closed_Externally_Fault_Type,
@@ -2049,7 +2107,7 @@ def client_side_proxy_main(cmd,
 
 
 def client_side_proxy(cmd,
-                      tenantId,
+                      tenant_id,
                       client,
                       resource_group_name,
                       cluster_name,
@@ -2118,14 +2176,14 @@ def client_side_proxy(cmd,
     if token is None:
         if utils.is_cli_using_msal_auth():  # jwt token approach if cli is using MSAL. This is for cli >= 2.30.0
             kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)
-            post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)
+            post_at_response = clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenant_id, kid, clientproxy_process)
 
             if post_at_response.status_code != 200:
                 if post_at_response.status_code == 500 and "public key expired" in post_at_response.text:  # pop public key must have been rotated
                     telemetry.set_exception(exception=post_at_response.text, fault_type=consts.PoP_Public_Key_Expried_Fault_Type,
                                             summary='PoP public key has expired')
                     kid = clientproxyutils.fetch_pop_publickey_kid(api_server_port, clientproxy_process)  # fetch the rotated PoP public key
-                    clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenantId, kid, clientproxy_process)  # fetch and post the at corresponding to the new public key
+                    clientproxyutils.fetch_and_post_at_to_csp(cmd, api_server_port, tenant_id, kid, clientproxy_process)  # fetch and post the at corresponding to the new public key
                 else:
                     telemetry.set_exception(exception=post_at_response.text, fault_type=consts.Post_AT_To_ClientProxy_Failed_Fault_Type,
                                             summary='Failed to post access token to client proxy')
@@ -2199,14 +2257,15 @@ def check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id):
 
 def get_custom_locations_oid(cmd, cl_oid):
     try:
-        sp_graph_client = get_graph_client_service_principals(cmd.cli_ctx)
-        sub_filters = []
-        sub_filters.append("appId eq '{}'".format("bc313c14-388c-4e7d-a58e-70017303ee3b"))  # Lookup using well-known first-party application id
-        result = list(sp_graph_client.list(filter=(' and '.join(sub_filters))))
-        if len(result) != 0:
-            if cl_oid is not None and cl_oid != result[0].object_id:
-                logger.debug("The 'Custom-locations' OID passed is different from the actual OID({}) of the Custom Locations RP app. Proceeding with the correct one...".format(result[0].object_id))
-            return result[0].object_id  # Using the fetched OID
+        graph_client = graph_client_factory(cmd.cli_ctx)
+        app_id = "bc313c14-388c-4e7d-a58e-70017303ee3b"
+        # Requires Application.Read.All for Microsoft Graph since AAD Graph is deprecated. See below for work-around.
+        # https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/custom-locations#enable-custom-locations-on-your-cluster
+        app_object = graph_client.service_principal_list(filter="appId eq '{}'".format(app_id))
+        if len(app_object) != 0:
+            if cl_oid is not None and cl_oid != app_object[0]['id']:
+                logger.debug("The 'Custom-locations' OID passed is different from the actual OID({}) of the Custom Locations RP app. Proceeding with the correct one...".format(app_object[0]['id']))
+            return app_object[0]['id']  # Using the fetched OID
 
         if cl_oid is None:
             logger.warning("Failed to enable Custom Locations feature on the cluster. Unable to fetch Object ID of Azure AD application used by Azure Arc service. Try enabling the feature by passing the --custom-locations-oid parameter directly. Learn more at https://aka.ms/CustomLocationsObjectID")
@@ -2405,7 +2464,7 @@ def install_kubectl_client():
         kubectl_filepath = os.path.join(home_dir, '.azure', 'kubectl-client')
 
         try:
-            os.mkdir(kubectl_filepath)
+            os.makedirs(kubectl_filepath)
         except FileExistsError:
             pass
 
@@ -2480,6 +2539,7 @@ def crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
 
 def check_operation_support(operation_name, agent_version):
     error_summary = 'This CLI version does not support {} for Agents older than v1.14'.format(operation_name)
-    if (version.parse(agent_version) < version.parse("1.14.0")):
+    # Version check for stable release train (agent_version will be in X.Y.Z format as opposed to X.Y.Z-NONSTABLE)
+    if '-' not in agent_version and (version.parse(agent_version) < version.parse("1.14.0")):
         telemetry.set_exception(exception='Operation not supported on older Agents', fault_type=consts.Operation_Not_Supported_Fault_Type, summary=error_summary)
         raise ClientRequestError(error_summary, recommendation="Please upgrade to the latest version of the Agents using 'az connectedk8s upgrade -g <rg_name> -n <cluster_name>'.")

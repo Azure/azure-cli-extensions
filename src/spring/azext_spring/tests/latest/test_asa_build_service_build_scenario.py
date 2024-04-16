@@ -11,6 +11,7 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
+
 @record_only()
 class BuildServiceBuildTest(ScenarioTest):
     def test_build(self):
@@ -32,7 +33,6 @@ class BuildServiceBuildTest(ScenarioTest):
             self.check('properties.provisioningState', 'Succeeded'),
         ])
         self.cmd('spring build-service build delete -n {name} -g {rg} --service {serviceName} -y')
-
 
     def test_container_registry(self):
         self.kwargs.update({

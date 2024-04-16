@@ -8,7 +8,6 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-import os
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, record_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .. import (
@@ -35,7 +34,7 @@ from .helper import (
     create_dev_box_dependencies,
     get_endpoint,
     login_account,
-    get_aad_id
+    get_aad_id,
 )
 
 
@@ -927,7 +926,6 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("location", "{location}"),
                 self.check("virtualNetworkType", "Unmanaged"),
                 self.check("singleSignOnStatus", "Enabled"),
-
             ],
         )
 
@@ -959,7 +957,7 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("virtualNetworkType", "Managed"),
                 self.check("singleSignOnStatus", "Disabled"),
                 self.check("managedVirtualNetworkRegions[0]", "canadacentral"),
-                self.check("healthStatus", "Warning")
+                self.check("healthStatus", "Warning"),
             ],
         )
 
@@ -975,7 +973,7 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("localAdministrator", "Enabled"),
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
-                self.check("devBoxCount", 0)
+                self.check("devBoxCount", 0),
             ],
         )
 
@@ -986,7 +984,6 @@ class DevcenterScenarioTest(ScenarioTest):
             '--resource-group "{rg}" ',
             checks=[],
         )
-
 
         self.cmd(
             "az devcenter admin schedule create "
@@ -1261,7 +1258,6 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-
     @ResourceGroupPreparer(
         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
     )
@@ -1494,26 +1490,22 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             {
                 "subscriptionId": self.get_subscription_id(),
                 "location": "canadacentral",
-                "userName": "amlim@fidalgosh010.onmicrosoft.com" #update to your guest account
+                "userName": "amlim@fidalgosh010.onmicrosoft.com",  # update to your guest account
             }
         )
         login_account(self)
         get_aad_id(self)
-        
+
     def test_project_dataplane_scenario(self):
-     
         self.kwargs.update(
             {
                 "devcenterName": self.create_random_name(prefix="cli", length=24),
                 "location": "canadacentral",
-                "rg": self.create_random_name(prefix="cli", length=24)
+                "rg": self.create_random_name(prefix="cli", length=24),
             }
         )
 
-        self.cmd(
-        "az group create "
-        '--location "{location}" '
-        '--name "{rg}" ')
+        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
 
         create_dev_center(self)
         create_project_with_dev_box_limit(self)
@@ -1566,14 +1558,11 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             {
                 "location": "canadacentral",
                 "devcenterName": self.create_random_name(prefix="cli", length=24),
-                "rg": self.create_random_name(prefix="cli", length=24)
+                "rg": self.create_random_name(prefix="cli", length=24),
             }
         )
 
-        self.cmd(
-        "az group create "
-        '--location "{location}" '
-        '--name "{rg}" ')
+        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
 
         create_dev_center(self)
         create_project(self)
@@ -1581,7 +1570,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         add_dev_box_user_role_to_project(self)
         create_pool(self)
         login_account(self)
-        
+
         self.cmd(
             "az devcenter dev pool list "
             '--dev-center "{devcenterName}" '
@@ -1695,14 +1684,11 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "location": "canadacentral",
-                "rg": self.create_random_name(prefix="cli", length=24)
+                "rg": self.create_random_name(prefix="cli", length=24),
             }
         )
 
-        self.cmd(
-        "az group create "
-        '--location "{location}" '
-        '--name "{rg}" ')
+        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
         create_catalog(self)
         login_account(self)
 
@@ -1752,14 +1738,11 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "location": "canadacentral",
-                "rg": self.create_random_name(prefix="cli", length=24)
+                "rg": self.create_random_name(prefix="cli", length=24),
             }
         )
 
-        self.cmd(
-        "az group create "
-        '--location "{location}" '
-        '--name "{rg}" ')
+        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
         create_catalog(self)
         login_account(self)
         function_app_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/functionapp"
@@ -1849,14 +1832,11 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "location": "canadacentral",
-                "rg": self.create_random_name(prefix="cli", length=24)
+                "rg": self.create_random_name(prefix="cli", length=24),
             }
         )
 
-        self.cmd(
-        "az group create "
-        '--location "{location}" '
-        '--name "{rg}" ')
+        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
         create_proj_env_type(self)
         login_account(self)
 
@@ -1871,20 +1851,15 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-
     def test_dev_box_dataplane_scenario(self):
         self.kwargs.update(
             {
                 "location": "canadacentral",
                 "devBoxName": self.create_random_name(prefix="cli", length=24),
-                "rg": self.create_random_name(prefix="cli", length=24)
-
+                "rg": self.create_random_name(prefix="cli", length=24),
             }
         )
-        self.cmd(
-        "az group create "
-        '--location "{location}" '
-        '--name "{rg}" ')
+        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
         create_dev_box_dependencies(self)
         login_account(self)
 
@@ -2093,8 +2068,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             checks=[
                 self.check("[0].action.name", "{actionName}"),
                 self.check("[0].action.actionType", "Stop"),
-                self.exists(
-                    "[0].action.next.scheduledTime"),
+                self.exists("[0].action.next.scheduledTime"),
                 self.exists("[0].action.suspendedUntil"),
                 self.check(
                     "[0].action.sourceId",
@@ -2143,21 +2117,16 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-    
     @AllowLargeResponse()
     def test_environment_dataplane_scenario(self):
         self.kwargs.update(
             {
                 "envName": self.create_random_name(prefix="cli", length=12),
                 "location": "centraluseuap",
-                "rg": self.create_random_name(prefix="cli", length=24)
-                
+                "rg": self.create_random_name(prefix="cli", length=24),
             }
         )
-        self.cmd(
-        "az group create "
-        '--location "{location}" '
-        '--name "{rg}" ')
+        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
         create_environment_dependencies(self)
         login_account(self)
 
@@ -2266,14 +2235,10 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 "envName": self.create_random_name(prefix="cli", length=12),
                 "location": "centraluseuap",
                 "rg": self.create_random_name(prefix="cli", length=24),
-                "environmentDefinitionName": "Sandbox"
-                
+                "environmentDefinitionName": "Sandbox",
             }
         )
-        self.cmd(
-        "az group create "
-        '--location "{location}" '
-        '--name "{rg}" ')
+        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
         create_environment_dependencies(self)
         login_account(self)
 
@@ -2301,7 +2266,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.check("environmentType", "{envTypeName}"),
                 self.check("name", "{envName}"),
                 self.check("provisioningState", "Succeeded"),
-                self.check("expirationDate", "2025-11-30T22:35:00+00:00")
+                self.check("expirationDate", "2025-11-30T22:35:00+00:00"),
             ],
         )
 
@@ -2317,7 +2282,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.check("environmentType", "{envTypeName}"),
                 self.check("name", "{envName}"),
                 self.check("provisioningState", "Succeeded"),
-                self.check("expirationDate", "2025-12-30T22:35:00+00:00")
+                self.check("expirationDate", "2025-12-30T22:35:00+00:00"),
             ],
         )
 
@@ -2340,12 +2305,12 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             "az devcenter dev environment list-operation "
             '--name "{envName}" '
             '--project "{projectName}" '
-            '--dev-center "{devcenterName}" ').get_output_in_json()[0]["operationId"]
-        
+            '--dev-center "{devcenterName}" '
+        ).get_output_in_json()[0]["operationId"]
+
         self.kwargs.update(
             {
                 "operationId": operationId,
-
             }
         )
 
@@ -2409,7 +2374,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             checks=[
                 self.check("name", "{actionName}"),
                 self.check("actionType", "Delete"),
-                self.check("next.scheduledTime", "{scheduledTime}")
+                self.check("next.scheduledTime", "{scheduledTime}"),
             ],
         )
 
@@ -2426,7 +2391,6 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-
         self.cmd(
             "az devcenter dev environment skip-action "
             '--name "{envName}" '
@@ -2434,21 +2398,16 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" '
             '--action-name "{actionName}"'
         )
-        
 
     def test_dev_box_repair_dataplane_scenario(self):
         self.kwargs.update(
             {
                 "location": "centraluseuap",
                 "devBoxName": self.create_random_name(prefix="cli", length=24),
-                "rg": self.create_random_name(prefix="cli", length=24)
-
+                "rg": self.create_random_name(prefix="cli", length=24),
             }
         )
-        self.cmd(
-        "az group create "
-        '--location "{location}" '
-        '--name "{rg}" ')
+        self.cmd("az group create " '--location "{location}" ' '--name "{rg}" ')
         create_dev_box_dependencies(self)
         login_account(self)
 
@@ -2459,8 +2418,6 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--pool "{poolName}" '
             '--dev-center "{devcenterName}" ',
         )
-
-
 
         self.cmd(
             "az devcenter dev dev-box repair "
@@ -2497,12 +2454,12 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             "az devcenter dev dev-box list-operation "
             '--name "{devBoxName}" '
             '--project "{projectName}" '
-            '--dev-center "{devcenterName}" ').get_output_in_json()[0]["operationId"]
-        
+            '--dev-center "{devcenterName}" '
+        ).get_output_in_json()[0]["operationId"]
+
         self.kwargs.update(
             {
                 "operationId": operationId,
-
             }
         )
 
@@ -2522,4 +2479,3 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.check("status", "Succeeded"),
             ],
         )
- 

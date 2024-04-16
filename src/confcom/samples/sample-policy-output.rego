@@ -9,15 +9,70 @@ framework_version := "0.2.3"
 
 fragments := [{
 	"feed": "mcr.microsoft.com/aci/aci-cc-infra-fragment",
-	"includes": ["containers"],
+	"includes": [
+		"containers",
+		"fragments",
+	],
 	"issuer": "did:x509:0:sha256:I__iuL25oXEVFdTP_aBLx_eT1RPHbCQ_ECBQfYZpt9s::eku:1.3.6.1.4.1.311.76.59.1.3",
 	"minimum_svn": "1",
 }]
 
 containers := [
 	{
-		"allow_elevated": true,
+		"allow_elevated": false,
 		"allow_stdio_access": true,
+		"capabilities": {
+			"ambient": [],
+			"bounding": [
+				"CAP_AUDIT_WRITE",
+				"CAP_CHOWN",
+				"CAP_DAC_OVERRIDE",
+				"CAP_FOWNER",
+				"CAP_FSETID",
+				"CAP_KILL",
+				"CAP_MKNOD",
+				"CAP_NET_BIND_SERVICE",
+				"CAP_NET_RAW",
+				"CAP_SETFCAP",
+				"CAP_SETGID",
+				"CAP_SETPCAP",
+				"CAP_SETUID",
+				"CAP_SYS_CHROOT",
+			],
+			"effective": [
+				"CAP_AUDIT_WRITE",
+				"CAP_CHOWN",
+				"CAP_DAC_OVERRIDE",
+				"CAP_FOWNER",
+				"CAP_FSETID",
+				"CAP_KILL",
+				"CAP_MKNOD",
+				"CAP_NET_BIND_SERVICE",
+				"CAP_NET_RAW",
+				"CAP_SETFCAP",
+				"CAP_SETGID",
+				"CAP_SETPCAP",
+				"CAP_SETUID",
+				"CAP_SYS_CHROOT",
+			],
+			"inheritable": [],
+			"permitted": [
+				"CAP_AUDIT_WRITE",
+				"CAP_CHOWN",
+				"CAP_DAC_OVERRIDE",
+				"CAP_FOWNER",
+				"CAP_FSETID",
+				"CAP_KILL",
+				"CAP_MKNOD",
+				"CAP_NET_BIND_SERVICE",
+				"CAP_NET_RAW",
+				"CAP_SETFCAP",
+				"CAP_SETGID",
+				"CAP_SETPCAP",
+				"CAP_SETUID",
+				"CAP_SYS_CHROOT",
+			],
+		},
 		"command": ["bash"],
 		"env_rules": [
 			{
@@ -51,7 +106,7 @@ containers := [
 				"strategy": "string",
 			},
 			{
-				"pattern": "((?i)FABRIC)_.+=.+",
+				"pattern": "(?i)(FABRIC)_.+=.+",
 				"required": false,
 				"strategy": "re2",
 			},
@@ -128,12 +183,77 @@ containers := [
 				"type": "bind",
 			},
 		],
+		"no_new_privileges": false,
+		"seccomp_profile_sha256": "",
 		"signals": [],
+		"user": {
+			"group_idnames": [{
+				"pattern": "",
+				"strategy": "any",
+			}],
+			"umask": "0022",
+			"user_idname": {
+				"pattern": "",
+				"strategy": "any",
+			},
+		},
 		"working_dir": "/",
 	},
 	{
 		"allow_elevated": false,
 		"allow_stdio_access": true,
+		"capabilities": {
+			"ambient": [],
+			"bounding": [
+				"CAP_CHOWN",
+				"CAP_DAC_OVERRIDE",
+				"CAP_FSETID",
+				"CAP_FOWNER",
+				"CAP_MKNOD",
+				"CAP_NET_RAW",
+				"CAP_SETGID",
+				"CAP_SETUID",
+				"CAP_SETFCAP",
+				"CAP_SETPCAP",
+				"CAP_NET_BIND_SERVICE",
+				"CAP_SYS_CHROOT",
+				"CAP_KILL",
+				"CAP_AUDIT_WRITE",
+			],
+			"effective": [
+				"CAP_CHOWN",
+				"CAP_DAC_OVERRIDE",
+				"CAP_FSETID",
+				"CAP_FOWNER",
+				"CAP_MKNOD",
+				"CAP_NET_RAW",
+				"CAP_SETGID",
+				"CAP_SETUID",
+				"CAP_SETFCAP",
+				"CAP_SETPCAP",
+				"CAP_NET_BIND_SERVICE",
+				"CAP_SYS_CHROOT",
+				"CAP_KILL",
+				"CAP_AUDIT_WRITE",
+			],
+			"inheritable": [],
+			"permitted": [
+				"CAP_CHOWN",
+				"CAP_DAC_OVERRIDE",
+				"CAP_FSETID",
+				"CAP_FOWNER",
+				"CAP_MKNOD",
+				"CAP_NET_RAW",
+				"CAP_SETGID",
+				"CAP_SETUID",
+				"CAP_SETFCAP",
+				"CAP_SETPCAP",
+				"CAP_NET_BIND_SERVICE",
+				"CAP_SYS_CHROOT",
+				"CAP_KILL",
+				"CAP_AUDIT_WRITE",
+			],
+		},
 		"command": ["/pause"],
 		"env_rules": [
 			{
@@ -150,7 +270,20 @@ containers := [
 		"exec_processes": [],
 		"layers": ["16b514057a06ad665f92c02863aca074fd5976c755d26bff16365299169e8415"],
 		"mounts": [],
+		"no_new_privileges": false,
+		"seccomp_profile_sha256": "",
 		"signals": [],
+		"user": {
+			"group_idnames": [{
+				"pattern": "",
+				"strategy": "any",
+			}],
+			"umask": "0022",
+			"user_idname": {
+				"pattern": "",
+				"strategy": "any",
+			},
+		},
 		"working_dir": "/",
 	},
 ]
@@ -164,6 +297,8 @@ allow_runtime_logging := false
 allow_environment_variable_dropping := true
 
 allow_unencrypted_scratch := false
+
+allow_capability_dropping := true
 
 mount_device := data.framework.mount_device
 

@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os, time
+import os
+import time
 import tempfile
 
 from azext_load.tests.latest.constants import LoadTestConstants
@@ -597,11 +598,6 @@ class LoadTestScenario(ScenarioTest):
                 "--engine-instances 11 ",
             )
         except Exception as e:
-            msg = (
-                "Test with given test ID : "
-                + LoadTestConstants.INVALID_UPDATE_TEST_ID
-                + " does not exist"
-            )
             assert "Test with given test ID " in str(e)
 
     @ResourceGroupPreparer(**rg_params)

@@ -9,7 +9,7 @@ param (
 
 $RecordingsFolderPath = "src\quantum\azext_quantum\tests\latest\recordings"
 
-function Obfuscate-SASTokens {
+function Invoke-SASTokenObfuscation {
     param (
         [Parameter(mandatory=$true)]
         $RecordingsFolderPath
@@ -17,7 +17,8 @@ function Obfuscate-SASTokens {
     
     Get-ChildItem "$RecordingsFolderPath" -Filter *.yaml | 
     Foreach-Object {
-        $PathToRecording = "$RecordingsFolderPath/$_"
+        $RecordingFileName = $_.Name
+        $PathToRecording = "$RecordingsFolderPath\$RecordingFileName"
         Write-Verbose -Message "Searching for SAS Tokens in ""$PathToRecording"" and obfuscating it..."
         # Signature "sig=" query parameter consists of URL-encoded Base64 characters, so [\w%] should suffice
         (Get-Content $PathToRecording) -replace 'sig=[\w%]+(&|$)','sig=REDACTED$1' | Set-Content $PathToRecording
@@ -42,7 +43,7 @@ az account set -s $Env:AZURE_QUANTUM_SUBSCRIPTION_ID
 azdev test quantum --live --verbose --xml-path $RecordingsFolderPath
 
 # Make sure we don't check-in SAS-tokens
-Obfuscate-SASTokens -RecordingsFolderPath $RecordingsFolderPath
+Invoke-SASTokenObfuscation -RecordingsFolderPath $RecordingsFolderPath
 
 # Restoring to initial folder location
 Pop-Location

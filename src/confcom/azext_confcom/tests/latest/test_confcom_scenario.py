@@ -18,6 +18,7 @@ from azext_confcom.template_util import case_insensitive_dict_get
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
+
 class MountEnforcement(unittest.TestCase):
     custom_json = """
     {
@@ -146,6 +147,7 @@ class MountEnforcement(unittest.TestCase):
             mount[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_OPTIONS][2], "rw"
         )
 
+
 class PolicyGenerating(unittest.TestCase):
     custom_json = """
       {
@@ -195,7 +197,7 @@ class PolicyGenerating(unittest.TestCase):
                     "strategy": "string"
                 },
                 {
-                    "name": "((?i)FABRIC)_.+",
+                    "name": "(?i)(FABRIC)_.+",
                     "value": ".+",
                     "strategy": "re2"
                 },
@@ -267,88 +269,88 @@ class PolicyGenerating(unittest.TestCase):
     def test_injected_sidecar_container_msi(self):
         image = self.aci_policy.get_images()[0]
         env_vars = [
-                {
-                    "name": "IDENTITY_API_VERSION",
-                    "value": ".+",
-                },
-                {
-                    "name": "IDENTITY_HEADER",
-                    "value": ".+",
-                },
-                {
-                    "name": "IDENTITY_SERVER_THUMBPRINT",
-                    "value": ".+",
-                },
-                {
-                    "name": "ACI_MI_CLIENT_ID_.+",
-                    "value": ".+",
-                },
-                {
-                    "name": "ACI_MI_RES_ID_.+",
-                    "value": ".+",
-                },
-                {
-                    "name": "HOSTNAME",
-                    "value": ".+",
-                },
-                {
-                    "name": "TERM",
-                    "value": "xterm",
-                },
-                {
-                    "name": "PATH",
-                    "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-                },
-                {
-                    "name": "((?i)FABRIC)_.+",
-                    "value": ".+",
-                },
-                {
-                    "name": "Fabric_Id+",
-                    "value": ".+",
-                },
-                {
-                    "name": "Fabric_ServiceName",
-                    "value": ".+",
-                },
-                {
-                    "name": "Fabric_ApplicationName",
-                    "value": ".+",
-                },
-                {
-                    "name": "Fabric_CodePackageName",
-                    "value": ".+",
-                },
-                {
-                    "name": "Fabric_ServiceDnsName",
-                    "value": ".+",
-                },
-                {
-                    "name": "ACI_MI_DEFAULT",
-                    "value": ".+",
-                },
-                {
-                    "name": "TokenProxyIpAddressEnvKeyName",
-                    "value": "[ContainerToHostAddress|Fabric_NodelPOrFQDN]",
-                },
-                {
-                    "name": "ContainerToHostAddress",
-                    "value": "",
-                },
-                {
-                    "name": "Fabric_NetworkingMode",
-                    "value": ".+",
-                },
-                {
-                    "name": "azurecontainerinstance_restarted_by",
-                    "value": ".+",
-                }
-            ]
-        command = ["/bin/sh","-c","until ./msiAtlasAdapter; do echo $? restarting; done"]
+            {
+                "name": "IDENTITY_API_VERSION",
+                "value": ".+",
+            },
+            {
+                "name": "IDENTITY_HEADER",
+                "value": ".+",
+            },
+            {
+                "name": "IDENTITY_SERVER_THUMBPRINT",
+                "value": ".+",
+            },
+            {
+                "name": "ACI_MI_CLIENT_ID_.+",
+                "value": ".+",
+            },
+            {
+                "name": "ACI_MI_RES_ID_.+",
+                "value": ".+",
+            },
+            {
+                "name": "HOSTNAME",
+                "value": ".+",
+            },
+            {
+                "name": "TERM",
+                "value": "xterm",
+            },
+            {
+                "name": "PATH",
+                "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            },
+            {
+                "name": "(?i)(FABRIC)_.+",
+                "value": ".+",
+            },
+            {
+                "name": "Fabric_Id+",
+                "value": ".+",
+            },
+            {
+                "name": "Fabric_ServiceName",
+                "value": ".+",
+            },
+            {
+                "name": "Fabric_ApplicationName",
+                "value": ".+",
+            },
+            {
+                "name": "Fabric_CodePackageName",
+                "value": ".+",
+            },
+            {
+                "name": "Fabric_ServiceDnsName",
+                "value": ".+",
+            },
+            {
+                "name": "ACI_MI_DEFAULT",
+                "value": ".+",
+            },
+            {
+                "name": "TokenProxyIpAddressEnvKeyName",
+                "value": "[ContainerToHostAddress|Fabric_NodelPOrFQDN]",
+            },
+            {
+                "name": "ContainerToHostAddress",
+                "value": "",
+            },
+            {
+                "name": "Fabric_NetworkingMode",
+                "value": ".+",
+            },
+            {
+                "name": "azurecontainerinstance_restarted_by",
+                "value": ".+",
+            }
+        ]
+        command = ["/bin/sh", "-c", "until ./msiAtlasAdapter; do echo $? restarting; done"]
         self.assertEqual(image.base, "mcr.microsoft.com/aci/msi-atlas-adapter")
         self.assertIsNotNone(image)
 
-        self.assertEquals(image._command, command)
+        self.assertEqual(image._command, command)
         for env_var in env_vars:
             env_names = map(lambda x: x['pattern'], image._environmentRules + image._extraEnvironmentRules)
             self.assertIn(env_var['name'] + "=" + env_var['value'], env_names)
@@ -402,6 +404,7 @@ class PolicyGeneratingDebugMode(unittest.TestCase):
         self.assertTrue(expected_env_var_dropping in policy)
         self.assertTrue(expected_capability_dropping in policy)
         self.assertTrue(expected_unencrypted_scratch in policy)
+
 
 class SidecarValidation(unittest.TestCase):
     custom_json = """
@@ -474,9 +477,7 @@ class SidecarValidation(unittest.TestCase):
                 self.aci_policy.get_serialized_output(
                     output_type=OutputType.RAW, rego_boilerplate=False
                 )
-            )[0][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS
-            ]
+            )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
         )
 
     def test_incorrect_sidecar(self):
@@ -495,6 +496,7 @@ class SidecarValidation(unittest.TestCase):
         }
 
         self.assertEqual(diff, expected_diff)
+
 
 class CustomJsonParsing(unittest.TestCase):
     def test_customized_workingdir(self):
@@ -630,11 +632,10 @@ class CustomJsonParsing(unittest.TestCase):
         with load_policy_from_str(custom_json) as aci_policy:
             image = aci_policy.pull_image(aci_policy.get_images()[0])
             self.assertIsNotNone(image.id)
-            print("image: ", image)
 
             self.assertEqual(
                 image.id,
-                "sha256:187eae39ad949e24d9410fa5c4eab8cafba7edd4892211c1d710bdaf49265c37",
+                "sha256:e525c930fe751104ff24c356a7bcfad66ce4b92797780eb38dc2ff95d7a66fdc",
             )
 
     def test_infrastructure_svn(self):
@@ -729,15 +730,12 @@ class CustomJsonParsing(unittest.TestCase):
         with load_policy_from_str(custom_json) as aci_policy:
             aci_policy.populate_policy_content_for_all_images()
             self.assertTrue(
-            json.loads(
-                aci_policy.get_serialized_output(
-                    output_type=OutputType.RAW, rego_boilerplate=False
+                json.loads(
+                    aci_policy.get_serialized_output(
+                        output_type=OutputType.RAW, rego_boilerplate=False
                     )
-            )[0][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS
-            ]
-        )
-
+                )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
+            )
 
     def test_stdio_access_updated(self):
         custom_json = """
@@ -757,14 +755,12 @@ class CustomJsonParsing(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
 
             self.assertFalse(
-            json.loads(
-                aci_policy.get_serialized_output(
-                    output_type=OutputType.RAW, rego_boilerplate=False
-                )
-            )[0][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS
-            ]
-        )
+                json.loads(
+                    aci_policy.get_serialized_output(
+                        output_type=OutputType.RAW, rego_boilerplate=False
+                    )
+                )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
+            )
 
 
 class CustomJsonParsingIncorrect(unittest.TestCase):
@@ -955,5 +951,3 @@ class CustomJsonParsingIncorrect(unittest.TestCase):
         with self.assertRaises(SystemExit) as exc_info:
             load_policy_from_str(custom_json)
         self.assertEqual(exc_info.exception.code, 1)
-
-

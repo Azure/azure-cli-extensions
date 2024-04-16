@@ -12,10 +12,13 @@ please update the target branch/commit to find diff in function find_modified_fi
 import json
 import logging
 import os
-from subprocess import check_call, check_output
+import re
+import shutil
+from subprocess import CalledProcessError, check_call, check_output
 
 import service_name
 from pkg_resources import parse_version
+from util import get_ext_metadata
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -87,7 +90,33 @@ class AzdevExtensionHelper:
         self._cmd('azdev style {}'.format(self.extension_name))
 
     def build(self):
-        pass
+        self._cmd('azdev extension build {}'.format(self.extension_name))
+
+    def check_extension_name(self):
+        extension_root_dir_name = self.extension_name
+        original_cwd = os.getcwd()
+        dist_dir = os.path.join(original_cwd, 'dist')
+        files = os.listdir(dist_dir)
+        logger.info(f"wheel files in the dist directory: {files}")
+        for f in files:
+            if f.endswith('.whl'):
+                NAME_REGEX = r'(.*)-\d+.\d+.\d+'
+                extension_name = re.findall(NAME_REGEX, f)[0]
+                extension_name = extension_name.replace('_', '-')
+                logger.info(f"extension name is: {extension_name}")
+                ext_file = os.path.join(dist_dir, f)
+                break
+        metadata = get_ext_metadata(dist_dir, ext_file, extension_name)
+        pretty_metadata = json.dumps(metadata, indent=2)
+        logger.info(f"metadata in the wheel file is: {pretty_metadata}")
+        shutil.rmtree(dist_dir)
+        if '_' in extension_root_dir_name:
+            raise ValueError(f"Underscores `_` are not allowed in the extension root directory, "
+                             f"please change it to a hyphen `-`.")
+        if metadata['name'] != extension_name:
+            raise ValueError(f"The name {metadata['name']} in setup.py "
+                             f"is not the same as the extension name {extension_name}! \n"
+                             f"Please fix the name in setup.py!")
 
 
 def find_modified_files_against_master_branch():
@@ -200,8 +229,21 @@ def azdev_on_internal_extension(modified_files, azdev_type):
         azdev_extension.add_from_code()
         if azdev_type in ['all', 'linter']:
             azdev_extension.linter()
+            azdev_extension.build()
+            azdev_extension.check_extension_name()
         if azdev_type in ['all', 'style']:
-            azdev_extension.style()
+            try:
+                azdev_extension.style()
+            except CalledProcessError as e:
+                statement_msg = """
+                ------------------- Please note -------------------
+                This task does not block the PR merge.
+                And it is recommended if you want to create a separate PR to fix these style issues.
+                CLI will modify it to force block PR merge on 2025.
+                ---------------------- Thanks ----------------------
+                """
+                logger.error(statement_msg)
+                exit(1)
 
         logger.info('Checking service name for internal extensions')
         service_name.check()

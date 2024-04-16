@@ -12,13 +12,16 @@ Internal Network tests scenarios
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
+
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
     pass
 
+
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
+
 
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
@@ -30,22 +33,25 @@ def call_scenario1(test):
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
+
 def step_create(test, checks=None):
     '''internalnetwork create operation'''
     if checks is None:
         checks = []
     test.cmd('az networkfabric internalnetwork create --resource-group {rg} --l3-isolation-domain-name {l3domain} --resource-name {name} --vlan-id {vlan_id}'
-			 ' --mtu {mtu} --extension {extension} --is-monitoring-enabled {isMonitoringEnabled} --connected-ipv4-subnets {connectedIpv4Subnets}'
+             ' --mtu {mtu} --connected-ipv4-subnets {connectedIpv4Subnets}'
              ' --static-route-configuration {staticRouteConf} --bgp-configuration {bgpConf}'
-             ' --import-route-policy {importRoutePolicy} --export-route-policy {exportRoutePolicy}', checks=checks)
+             ' --import-route-policy {importRoutePolicy}', checks=checks)
+
 
 def step_update(test, checks=None):
     '''internalnetwork update operation'''
     if checks is None:
         checks = []
     test.cmd('az networkfabric internalnetwork update --resource-group {rg} --resource-name {name} --l3domain {l3domain} '
-			 ' --connected-ipv4-subnets {updatedConnectedIpv4Subnets}  --static-route-configuration {updatedStaticRouteConf}'
+             ' --connected-ipv4-subnets {updatedConnectedIpv4Subnets}  --static-route-configuration {updatedStaticRouteConf}'
              ' --bgp-configuration {updatedBgpConf}', checks=checks)
+
 
 def step_show(test, checks=None):
     '''internalnetwork show operation'''
@@ -54,11 +60,14 @@ def step_show(test, checks=None):
     test.cmd(
         'az networkfabric internalnetwork show --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
 
+
 def step_list_resource_group(test, checks=None):
     '''internalnetwork list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric internalnetwork list --resource-group {rg} --l3domain {l3domain}')
+    test.cmd(
+        'az networkfabric internalnetwork list --resource-group {rg} --l3domain {l3domain}')
+
 
 def step_delete(test, checks=None):
     '''internalnetwork delete operation'''
@@ -66,6 +75,7 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric internalnetwork delete --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
+
 
 class GA_InternalNetworkScenarioTest1(ScenarioTest):
     ''' Internal Network Scenario test'''

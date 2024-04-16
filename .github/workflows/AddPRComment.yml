@@ -23,4 +23,5 @@ jobs:
         uses: mshick/add-pr-comment@v2
         with:
           repo-token: ${{ secrets.CLI_BOT }}
+          message-id: prcommentbot
           message: "${{ env.message }}"

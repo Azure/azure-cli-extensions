@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-# pylint: disable=too-many-statements
+# pylint: disable=too-many-statements, too-many-locals
 
 from azure.cli.core.commands import CliCommandType
 
@@ -107,6 +107,13 @@ def load_command_table(self, _):
         self.command_table['monitor app-insights component continues-export show'] = ExportConfigurationShow(loader=self)
         self.command_table['monitor app-insights component continues-export list'] = ExportConfigurationList(loader=self)
         self.command_table['monitor app-insights component continues-export delete'] = ExportConfigurationDelete(loader=self)
+
+    with self.command_group('monitor app-insights workbook'):
+        from .custom import WorkbookCreate, WorkbookUpdate, IdentityAssign, IdentityRemove
+        self.command_table['monitor app-insights workbook create'] = WorkbookCreate(loader=self)
+        self.command_table['monitor app-insights workbook update'] = WorkbookUpdate(loader=self)
+        self.command_table['monitor app-insights workbook identity assign'] = IdentityAssign(loader=self)
+        self.command_table['monitor app-insights workbook identity remove'] = IdentityRemove(loader=self)
 
     with self.command_group('monitor app-insights component continues-export', command_type=export_configurations_sdk, custom_command_type=export_configurations_custom_sdk) as g:
         g.custom_command('create', 'create_export_configuration')

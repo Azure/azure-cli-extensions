@@ -540,6 +540,11 @@ dataprotection backup-instance restore initialize-for-data-recovery-as-files:
     target_blob_container_url:
       rule_exclusions:
       - option_length_too_long
+dataprotection backup-instance update-msi-permissions:
+  parameters:
+    target_storage_account_id:
+      rule_exclusions:
+      - option_length_too_long
 dataprotection backup-vault create:
   parameters:
     alerts_for_all_job_failures:
@@ -1344,6 +1349,22 @@ iot edge deployment update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot ops asset create:
+  parameters:
+    cluster_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    custom_location_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot ops asset endpoint create:
+  parameters:
+    cluster_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    custom_location_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 k8sconfiguration create:
   parameters:
     helm_operator_version:

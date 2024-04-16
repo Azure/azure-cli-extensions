@@ -10,7 +10,7 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 # pylint: disable=unused-import
-from .generated._help import helps  # pylint: disable=reimported
+
 try:
     from .manual._help import helps  # pylint: disable=reimported
 except ImportError as e:
@@ -18,3 +18,38 @@ except ImportError as e:
         pass
     else:
         raise e
+
+
+helps['monitor data-collection'] = '''
+    type: group
+    short-summary: Manage Monitor
+'''
+
+helps['monitor data-collection rule'] = """
+    type: group
+    short-summary: Manage data collection rule with monitor control service
+"""
+
+helps['monitor data-collection rule association'] = """
+    type: group
+    short-summary: Manage data collection rule association with monitor control service
+"""
+
+helps['monitor data-collection rule association list'] = """
+    type: command
+    short-summary: "Lists associations for the specified data collection rule. And Lists associations for the \
+specified data collection endpoint. And Lists associations for the specified resource."
+    examples:
+      - name: List associations for specified data collection rule
+        text: |-
+               az monitor data-collection rule association list --rule-name "myCollectionRule" --resource-group \
+"myResourceGroup"
+      - name: List associations for specified data collection endpoint
+        text: |-
+               az monitor data-collection rule association list --data-collection-endpoint-name \
+"myDataCollectionEndpointName" --resource-group "myResourceGroup"
+      - name: List associations for specified resource
+        text: |-
+               az monitor data-collection rule association list --resource "subscriptions/703362b3-f278-4e4b-9179-c76ea\
+f41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm"
+"""

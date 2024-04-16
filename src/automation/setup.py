@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.2.2'
+VERSION = '1.0.0b1'
 try:
     from azext_automation.manual.version import VERSION
 except ImportError:

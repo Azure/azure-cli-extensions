@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=protected-access, line-too-long, raise-missing-from
+# pylint: disable=too-many-lines, too-many-branches, too-many-statements
 
 import copy
 from knack.util import CLIError
@@ -80,7 +81,8 @@ class AzureFirewallCreate(_AzureFirewallCreate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZBoolArg, AAZResourceIdArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZBoolArg, AAZResourceIdArg, AAZResourceIdArgFormat, \
+            AAZIntArg, AAZIntArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.private_ranges = AAZListArg(
             options=['--private-ranges'],
@@ -125,6 +127,44 @@ class AzureFirewallCreate(_AzureFirewallCreate):
             fmt=AAZResourceIdArgFormat(
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/publicIPAddresses/{}"
             ),
+        )
+        args_schema.enable_explicit_proxy = AAZBoolArg(
+            options=["--enable-explicit-proxy"],
+            arg_group="Explicit Proxy",
+            help="When set to true, explicit proxy mode is enabled.",
+        )
+        args_schema.http_port = AAZIntArg(
+            options=["--http-port"],
+            arg_group="Explicit Proxy",
+            help="Port number for explicit proxy http protocol, cannot be greater than 64000.",
+            fmt=AAZIntArgFormat(
+                maximum=64000,
+                minimum=0,
+            ),
+        )
+        args_schema.https_port = AAZBoolArg(
+            options=["--https-port"],
+            arg_group="Explicit Proxy",
+            help="Port number for explicit proxy https protocol, cannot be greater than 64000.",
+            fmt=AAZIntArgFormat(
+                maximum=64000,
+                minimum=0,
+            ),
+        )
+        args_schema.enable_pac_file = AAZBoolArg(
+            options=["--enable-pac-file"],
+            arg_group="Explicit Proxy",
+            help="When set to true, pac file port and url needs to be provided.",
+        )
+        args_schema.pac_file_port = AAZIntArg(
+            options=["--pac-file-port"],
+            arg_group="Explicit Proxy",
+            help="Port number for firewall to serve PAC file.",
+        )
+        args_schema.pac_file = AAZStrArg(
+            options=["--pac-file"],
+            arg_group="Explicit Proxy",
+            help="SAS URL for PAC file.",
         )
         args_schema.m_public_ip._fmt = AAZResourceIdArgFormat(
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
@@ -219,6 +259,19 @@ class AzureFirewallCreate(_AzureFirewallCreate):
                     child_name_1='AzureFirewallManagementSubnet'
                 )
                 args.mgmt_ip_conf_subnet = management_subnet_id
+
+        if has_value(args.enable_explicit_proxy):
+            args.additional_properties['Network.ExplicitProxy.EnableExplicitProxy'] = args.enable_explicit_proxy
+        if has_value(args.http_port):
+            args.additional_properties['Network.ExplicitProxy.HttpPort'] = args.http_port
+        if has_value(args.https_port):
+            args.additional_properties['Network.ExplicitProxy.HttpsPort'] = args.https_port
+        if has_value(args.enable_pac_file):
+            args.additional_properties['Network.ExplicitProxy.EnablePacFile'] = args.enable_pac_file
+        if has_value(args.pac_file_port):
+            args.additional_properties['Network.ExplicitProxy.PacFilePort'] = args.pac_file_port
+        if has_value(args.pac_file):
+            args.additional_properties['Network.ExplicitProxy.PacFile'] = args.pac_file
 
 
 # pylint: disable=too-many-branches disable=too-many-statements

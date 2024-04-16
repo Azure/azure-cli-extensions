@@ -99,7 +99,7 @@ helps['quantum job submit'] = """
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --target-capability MyTargetCapability
-      - name: Submit QIR bitcode from a file in the current folder.
+      - name: Submit QIR bitcode or human-readable LLVM code from a file in the current folder.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
@@ -282,4 +282,45 @@ helps['quantum workspace show'] = """
       - name: Show the details of a provided Azure Quantum workspace.
         text: |-
             az quantum workspace show -g MyResourceGroup -w MyWorkspace
+"""
+
+helps['quantum workspace update'] = """
+    type: command
+    short-summary: Update the given (or current) Azure Quantum workspace.
+    examples:
+      - name: Enable a provided Azure Quantum workspace api keys.
+        text: |-
+            az quantum workspace update --enable-api-key True
+      - name: Disable a provided Azure Quantum workspace api keys.
+        text: |-
+            az quantum workspace update --enable-api-key False
+"""
+
+helps['quantum workspace keys'] = """
+    type: group
+    short-summary: Manage Azure Quantum Workspace api keys.
+"""
+
+helps['quantum workspace keys list'] = """
+    type: command
+    short-summary: List api keys for the given (or current) Azure Quantum workspace.
+    examples:
+      - name: Show the currently selected default Azure Quantum workspace api keys.
+        text: |-
+            az quantum workspace keys list
+"""
+
+helps['quantum workspace keys regenerate'] = """
+    type: command
+    short-summary: Regenerate api key for the given (or current) Azure Quantum workspace.
+    examples:
+      - name: Regenerate the currently selected default Azure Quantum workspace primary api key.
+        text: |-
+            az quantum workspace keys regenerate --key-type Primary
+      - name: Regenerate the currently selected default Azure Quantum workspace secondary api key.
+        text: |-
+            az quantum workspace keys regenerate --key-type Secondary
+      - name: Regenerate the currently selected default Azure Quantum workspace secondary api key.
+        text: |-
+            az quantum workspace keys regenerate --key-type Primary,Secondary
 """
