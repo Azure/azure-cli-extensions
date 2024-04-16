@@ -1925,13 +1925,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def _get_enable_azure_monitor_app_monitoring(self, enable_validation=True) -> bool:
         """Internal function to obtain the value of enable_azure_monitor_app_monitoring.
-        This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_app_monitoring
-        and disable_azure_monitor_app_monitoring are specified, raise a MutuallyExclusiveArgumentError.
+        This function supports the option of enable_validation. When enabled, if both
+        enable_azure_monitor_app_monitoring and disable_azure_monitor_app_monitoring are specified,
+        raise a MutuallyExclusiveArgumentError.
         :return: bool
         """
         # Read the original value passed by the command.
         enable_azure_monitor_app_monitoring = self.raw_param.get("enable_azure_monitor_app_monitoring")
-       
+
         # This parameter does not need dynamic completion.
         if enable_validation:
             if enable_azure_monitor_app_monitoring and self._get_disable_azure_monitor_app_monitoring(False):
@@ -1951,8 +1952,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def _get_disable_azure_monitor_app_monitoring(self, enable_validation=True) -> bool:
         """Internal function to obtain the value of disable_azure_monitor_app_monitoring.
-        This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_app_monitoring
-        and disable_azure_monitor_app_monitoring are specified, raise a MutuallyExclusiveArgumentError.
+        This function supports the option of enable_validation. When enabled, if both
+        enable_azure_monitor_app_monitoring and disable_azure_monitor_app_monitoring are specified,
+        raise a MutuallyExclusiveArgumentError.
         :return: bool
         """
         # Read the original value passed by the command.
@@ -1971,7 +1973,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_disable_azure_monitor_app_monitoring(enable_validation=True)
-    
+
     def get_enable_node_restriction(self) -> bool:
         """Obtain the value of enable_node_restriction.
 
@@ -3153,7 +3155,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 metric_labels_allowlist=str(ksm_metric_labels_allow_list),
                 metric_annotations_allow_list=str(ksm_metric_annotations_allow_list))
             self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
-        
+
         if self.context.get_enable_azure_monitor_app_monitoring():
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
@@ -4342,7 +4344,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
                 self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
             )
-        
+
         if self.context.get_disable_azure_monitor_app_monitoring():
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()

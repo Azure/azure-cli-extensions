@@ -808,7 +808,7 @@ def aks_update(
     enable_windows_recording_rules=False,
     disable_azuremonitormetrics=False,
     disable_azure_monitor_metrics=False,
-     # azure monitor profile - app monitoring
+    # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
     disable_azure_monitor_app_monitoring=False,
     enable_vpa=False,
