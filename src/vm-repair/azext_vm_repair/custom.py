@@ -651,12 +651,20 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         revert_ip_command = None
         if orig_ip_allocation_method == DYNAMIC_CONFIG:
             # Revert Static to Dynamic
-            revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
-                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
+            if application_names:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method} --asgs {asgs}' \
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG,asgs=application_names)
+            else:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
         else:
             # Revert to original static ip
-            revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
-                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
+            if application_names:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address,asgs=application_names)
+            else:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
 
         _call_az_command(revert_ip_command)
         logger.info('VM guest NIC reset is complete and all configurations are reverted.')
