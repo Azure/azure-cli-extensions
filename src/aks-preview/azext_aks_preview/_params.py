@@ -2141,6 +2141,7 @@ def load_arguments(self, _):
             options_list=["--yes", "-y"],
             help="Do not prompt for confirmation.",
             action="store_true",
+            default=False,
             required=False
         )
 
@@ -2150,6 +2151,7 @@ def load_arguments(self, _):
             options_list=["--yes", "-y"],
             help="Do not prompt for confirmation.",
             action="store_true",
+            default=False,
             required=False
         )
 
