@@ -70,7 +70,7 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
     // This details the NFVIs that should be available in the Site object created by the operator.
     nfvisFromSite: {
       nfvi1: {
-        name: nfviSiteName
+        name: '${nfviSiteName}1'
         type: 'AzureCore'
       }
     }

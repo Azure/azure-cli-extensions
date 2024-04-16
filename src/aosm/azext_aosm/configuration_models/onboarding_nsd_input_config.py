@@ -19,7 +19,6 @@ from azext_aosm.configuration_models.onboarding_base_input_config import (
 class NetworkFunctionPropertiesConfig:
     """Network function object for NSDs."""
 
-    # TODO: Improve publisher commment
     publisher: str = field(
         default="",
         metadata={"comment": "The name of the existing publisher for the NSD."},
@@ -31,7 +30,11 @@ class NetworkFunctionPropertiesConfig:
     name: str = field(
         default="",
         metadata={
-            "comment": "The name of the existing Network Function Definition Group to deploy using this NSD."
+            "comment": (
+                "The name of the existing Network Function Definition Group"
+                " to deploy using this NSD.\n"
+                "This will be the same as the NF name if you published your NFDV using the CLI."
+            )
         },
     )
     version: str = field(
@@ -176,21 +179,18 @@ class OnboardingNSDInputConfig(OnboardingBaseInputConfig):
             "comment": "Optional. Description of the Network Service Design Version (NSDV)."
         },
     )
-    nfvi_type: str = field(
-        default="AzureCore",
-        metadata={
-            "comment": (
-                "Type of NFVI (for nfvisFromSite). Defaults to 'AzureCore'.\n"
-                "Valid values are 'AzureCore', 'AzureOperatorNexus' or 'AzureArcKubernetes."
-            )
-        },
-    )
 
     # # TODO: Add detailed comment for this
     resource_element_templates: "list[NetworkFunctionConfig | ArmTemplateConfig]" = (
         field(
             default_factory=lambda: [NetworkFunctionConfig(), ArmTemplateConfig()],
-            metadata={"comment": "List of Resource Element Templates."},
+            metadata={
+                "comment": (
+                    "List of Resource Element Templates (RETs).\n"
+                    "There must be at least one NF RET.\n"
+                    "ArmTemplate RETs are optional. Delete if not required."
+                )
+            },
         )
     )
 
@@ -212,10 +212,7 @@ class OnboardingNSDInputConfig(OnboardingBaseInputConfig):
             raise ValidationError("nsd_name must be set")
         if not self.nsd_version:
             raise ValidationError("nsd_version must be set")
-        if self.nfvi_type not in ["AzureCore", "AzureOperatorNexus", "AzureArcKubernetes"]:
-            raise ValidationError(
-                "nfvi_type must be either 'AzureCore', 'AzureOperatorNexus' or 'AzureArcKubernetes'"
-            )
+
         # Validate each RET
         for configuration in self.resource_element_templates:
             configuration.validate()

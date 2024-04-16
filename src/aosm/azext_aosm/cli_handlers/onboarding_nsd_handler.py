@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional
 
 from knack.log import get_logger
 from azext_aosm.build_processors.nfd_processor import NFDProcessor
@@ -59,6 +59,8 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
 
     config: OnboardingNSDInputConfig
     processors: list[AzureCoreArmBuildProcessor | NFDProcessor]
+    nfvi_types: list[Literal["AzureArcKubernetes"] | Literal["AzureOperatorNexus"] |
+                     Literal["AzureCore"] | Literal["Unknown"]] = []
 
     @property
     def default_config_file_name(self) -> str:
@@ -122,6 +124,12 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
                 # I am concerned that if we have multiple NFs we will have clashing artifact names.
                 # I'm not changing the behaviour right now as it's too high risk, but we should look again here.
                 nfdv_object = self._get_nfdv(resource_element.properties)
+
+                # Add nfvi_type to list for creating nfvisFromSite later
+                # There is a 1:1 mapping between NF RET and nfvisFromSite object,
+                # as we shouldn't build NSDVs that deploy different RETs against the same custom location
+                self.nfvi_types.append(nfdv_object.properties.network_function_template.nfvi_type)
+
                 nfd_input = NFDInput(
                     # This would be the alternative if we swap from nsd name/version to nfd.
                     # artifact_name=resource_element.properties.name,
@@ -234,13 +242,20 @@ class OnboardingNSDCLIHandler(OnboardingBaseCLIHandler):
             # List of NF RET names, for adding to required part of CGS
             nf_names.append(processor.name)
 
+        # If all NF RETs nfvi_types are AzureCore, only make one nfviFromSite object
+        # This is a design decision, for simplification of nfvisFromSite and also
+        # so that users are discouraged from deploying NFs across multiple locations
+        # within a single SNS
+        if all(nfvi_type == "AzureCore" for nfvi_type in self.nfvi_types):
+            self.nfvi_types = ["AzureCore"]
+
         template_path = get_template_path(
             NSD_TEMPLATE_FOLDER_NAME, NSD_DEFINITION_TEMPLATE_FILENAME
         )
 
         params = {
             "nsdv_description": self.config.nsdv_description,
-            "nfvi_type": self.config.nfvi_type,
+            "nfvi_types": self.nfvi_types,
             "cgs_name": CGS_NAME,
             "nfvi_site_name": self.nfvi_site_name,
             "nf_rets": ret_list,

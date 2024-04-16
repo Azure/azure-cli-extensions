@@ -69,10 +69,12 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
     }
     // This details the NFVIs that should be available in the Site object created by the operator.
     nfvisFromSite: {
-      nfvi1: {
-        name: nfviSiteName
-        type: '{{ nfvi_type}}'
+    {%- for nfvi in nfvi_types %}
+      nfvi{{loop.index}}: {
+        name: '${nfviSiteName}{{loop.index}}'
+        type: '{{ nfvi}}'
       }
+    {%- endfor %}
     }
     // This field lists the templates that will be deployed by AOSM and the config mappings
     // to the values in the CG schemas.

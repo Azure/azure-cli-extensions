@@ -122,7 +122,7 @@ class NFDInput(BaseInput):
                     "location": {"type": "string"},
                     "publisherName": {"type": "string"},
                     "nfdgName": {"type": "string"},
-                    "nfdvName": {"type": "string"},
+                    "nfdv": {"type": "string"},
                     "publisherResourceGroup": {"type": "string"},
                     "deployParameters": {
                         "type": "array",
@@ -135,7 +135,7 @@ class NFDInput(BaseInput):
                     "location",
                     "publisherName",
                     "nfdgName",
-                    "nfdvName",
+                    "nfdv",
                     "publisherResourceGroup",
                     "deployParameters",
                     "customLocationId",
