@@ -1937,177 +1937,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_azure_monitor_app_monitoring(enable_validation=True)
     
-    def _get_enable_auto_instrumentation(self, enable_validation=True) -> bool:
-        """Internal function to obtain the value of enable_auto_instrumentation.
-        This function supports the option of enable_validation. When enabled, if both enable_auto_instrumentation and
-        disable_auto_instrumentation are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        # Read the original value passed by the command.
-        enable_auto_instrumentation = self.raw_param.get("enable_auto_instrumentation")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.azure_monitor_profile and
-                self.mc.azure_monitor_profile.app_monitoring and
-                self.mc.azure_monitor_profile.app_monitoring.auto_instrumentation
-            ):
-                enable_auto_instrumentation = self.mc.azure_monitor_profile.auto_instrumentation.enabled
-        # This parameter does not need dynamic completion.
-        if enable_validation:
-            if enable_auto_instrumentation and self._get_disable_auto_instrumentation(False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-auto-instrumentation and --disable-auto-instrumentation "
-                    "at the same time."
-                )
-        return enable_auto_instrumentation
-    
-    def get_enable_auto_instrumentation(self) -> bool:
-        """Obtain the value of enable_auto_instrumentation.
-        If both enable_auto_instrumentation and
-        disable_auto_instrumentation are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        return self._get_enable_auto_instrumentation(enable_validation=True)
-
-    def _get_disable_auto_instrumentation(self, enable_validation=True) -> bool:
-        """Internal function to obtain the value of disable_auto_instrumentation.
-        This function supports the option of enable_validation. When enabled, if both enable_auto_instrumentation and
-        disable_auto_instrumentation are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        # Read the original value passed by the command.
-        disable_auto_instrumentation = self.raw_param.get("disable_auto_instrumentation")
-        if disable_auto_instrumentation and self._get_enable_auto_instrumentation(False):
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-auto-instrumentation and --disable-auto-instrumentation "
-                "at the same time."
-            )
-        return disable_auto_instrumentation
-    
-    def get_disable_auto_instrumentation(self) -> bool:
-        """Obtain the value of disable_auto_instrumentation.
-        If both enable_auto_instrumentation and
-        disable_auto_instrumentation are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        return self._get_disable_auto_instrumentation(enable_validation=True)
-
-    def _get_enable_open_telemetry_metrics(self, enable_validation=True) -> bool:
-        """Internal function to obtain the value of enable_open_telemetry_metrics.
-        This function supports the option of enable_validation. When enabled, if both enable_open_telemetry_metrics and
-        disable_open_telemetry_metrics are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        # Read the original value passed by the command.
-        enable_open_telemetry_metrics = self.raw_param.get("enable_open_telemetry_metrics")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.azure_monitor_profile and
-                self.mc.azure_monitor_profile.app_monitoring and
-                self.mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics
-            ):
-                enable_open_telemetry_metrics = self.mc.azure_monitor_profile.open_telemetry_metrics.enabled
-        # This parameter does not need dynamic completion.
-        if enable_validation:
-            if enable_open_telemetry_metrics and self._get_disable_open_telemetry_metrics(False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-open-telemetry-metrics and --disable-open-telemetry-metrics "
-                    "at the same time."
-                )
-        return enable_open_telemetry_metrics
-    
-    def get_enable_open_telemetry_metrics(self) -> bool:
-        """Obtain the value of enable_open_telemetry_metrics.
-        If both enable_open_telemetry_metrics and
-        disable_open_telemetry_metrics are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        return self._get_enable_open_telemetry_metrics(enable_validation=True)
-
-    def _get_disable_open_telemetry_metrics(self, enable_validation=True) -> bool:
-        """Internal function to obtain the value of disable_open_telemetry_metrics.
-        This function supports the option of enable_validation. When enabled, if both enable_open_telemetry_metrics and
-        disable_open_telemetry_metrics are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        # Read the original value passed by the command.
-        disable_open_telemetry_metrics = self.raw_param.get("disable_open_telemetry_metrics")
-        if disable_open_telemetry_metrics and self._get_enable_open_telemetry_metrics(False):
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-open-telemetry-metrics and --disable-open-telemetry-metrics "
-                "at the same time."
-            )
-        return disable_open_telemetry_metrics
-    
-    def get_disable_open_telemetry_metrics(self) -> bool:
-        """Obtain the value of disable_open_telemetry_metrics.
-        If both enable_open_telemetry_metrics and
-        disable_open_telemetry_metrics are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        return self._get_disable_open_telemetry_metrics(enable_validation=True)
-
-    def _get_enable_open_telemetry_logs(self, enable_validation=True) -> bool:
-        """Internal function to obtain the value of enable_open_telemetry_logs.
-        This function supports the option of enable_validation. When enabled, if both enable_open_telemetry_logs and
-        disable_open_telemetry_logs are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        # Read the original value passed by the command.
-        enable_open_telemetry_logs = self.raw_param.get("enable_open_telemetry_logs")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.azure_monitor_profile and
-                self.mc.azure_monitor_profile.app_monitoring and
-                self.mc.azure_monitor_profile.app_monitoring.open_telemetry_logs
-            ):
-                enable_open_telemetry_logs = self.mc.azure_monitor_profile.open_telemetry_logs.enabled
-        # This parameter does not need dynamic completion.
-        if enable_validation:
-            if enable_open_telemetry_logs and self._get_disable_open_telemetry_logs(False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-open-telemetry-logs and --disable-open-telemetry-logs "
-                    "at the same time."
-                )
-        return enable_open_telemetry_logs
-    
-    def get_enable_open_telemetry_logs(self) -> bool:
-        """Obtain the value of enable_open_telemetry_logs.
-        If both enable_open_telemetry_logs and
-        disable_open_telemetry_logs are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        return self._get_enable_open_telemetry_logs(enable_validation=True)
-    
-    def _get_disable_open_telemetry_logs(self, enable_validation=True) -> bool: 
-        """Internal function to obtain the value of disable_open_telemetry_logs.
-        This function supports the option of enable_validation. When enabled, if both enable_open_telemetry_logs and
-        disable_open_telemetry_logs are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        # Read the original value passed by the command.
-        disable_open_telemetry_logs = self.raw_param.get("disable_open_telemetry_logs")
-        if disable_open_telemetry_logs and self._get_enable_open_telemetry_logs(False):
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-open-telemetry-logs and --disable-open-telemetry-logs "
-                "at the same time."
-            )
-        return disable_open_telemetry_logs
-    
-    def get_disable_open_telemetry_logs(self) -> bool:
-        """Obtain the value of disable_open_telemetry_logs.
-        If both enable_open_telemetry_logs and
-        disable_open_telemetry_logs are specified, raise a MutuallyExclusiveArgumentError.
-        :return: bool
-        """
-        return self._get_disable_open_telemetry_logs(enable_validation=True)
-
     def get_enable_node_restriction(self) -> bool:
         """Obtain the value of enable_node_restriction.
 
@@ -3293,18 +3122,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.azure_monitor_profile.app_monitoring = (
                 self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
             )
-            if self.context.get_enable_auto_instrumentation():
-                mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
-                )
-            if self.context.get_enable_open_telemetry_metrics():
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
-                )
-            if self.context.get_enable_open_telemetry_logs():
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
-                )
+            mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
+            )
 
         return mc
 
@@ -4441,35 +4267,29 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
-            if self.context.get_enable_auto_instrumentation():
-                mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
-                )
-            if self.context.get_disable_auto_instrumentation():
-                mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=False)
-                )
-            if self.context.get_enable_open_telemetry_metrics():
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
-                )
-            if self.context.get_disable_open_telemetry_metrics():
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=False)
-                )
-            if self.context.get_enable_open_telemetry_logs():
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
-                )
-            if self.context.get_disable_open_telemetry_logs():
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=False)
-                )
+            mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
+            )
         
         if self.context.get_disable_azure_monitor_app_monitoring():
             if mc.azure_monitor_profile is None:
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+            mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=False)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=False)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=False)
+            )
 
         # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
         # TODO: should remove get value from disable_azuremonitormetrics once the option is removed

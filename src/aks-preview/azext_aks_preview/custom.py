@@ -623,9 +623,6 @@ def aks_create(
     enable_windows_recording_rules=False,
     # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
-    enable_auto_instrumentation=False,
-    enable_open_telemetry_logs=False,
-    enable_open_telemetry_metrics=False,
     # metrics profile
     enable_cost_analysis=False,
     # AI toolchain operator
@@ -805,13 +802,7 @@ def aks_update(
     disable_azure_monitor_metrics=False,
      # azure monitor profile - app monitoring
     enable_azure_monitor_app_monitoring=False,
-    enable_auto_instrumentation=False,
-    enable_open_telemetry_logs=False,
-    enable_open_telemetry_metrics=False,
     disable_azure_monitor_app_monitoring=False,
-    disable_auto_instrumentation=False,
-    disable_open_telemetry_logs=False,
-    disable_open_telemetry_metrics=False,
     enable_vpa=False,
     disable_vpa=False,
     enable_addon_autoscaling=False,

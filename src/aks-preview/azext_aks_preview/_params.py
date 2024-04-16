@@ -815,9 +815,6 @@ def load_arguments(self, _):
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
         c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
-        c.argument("enable_auto_instrumentation", is_preview=True, action="store_true")
-        c.argument("enable_open_telemetry_metrics", is_preview=True, action="store_true")
-        c.argument("enable_open_telemetry_logs", is_preview=True, action="store_true")
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
@@ -1148,13 +1145,7 @@ def load_arguments(self, _):
         )
         c.argument("disable_azure_monitor_metrics", action="store_true")
         c.argument("enable_azure_monitor_app_monitoring", action="store_true")
-        c.argument("enable_auto_instrumentation", action="store_true")
-        c.argument("enable_open_telemetry_metrics", action="store_true")
-        c.argument("enable_open_telemetry_logs", action="store_true")
         c.argument("disable_azure_monitor_app_monitoring", action="store_true")
-        c.argument("disable_auto_instrumentation", action="store_true")
-        c.argument("disable_open_telemetry_metrics", action="store_true")
-        c.argument("disable_open_telemetry_logs", action="store_true")
         c.argument(
             "enable_vpa",
             action="store_true",
