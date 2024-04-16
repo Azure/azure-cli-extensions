@@ -123,11 +123,6 @@ class Create(AAZCommand):
                 max_length=200,
             ),
         )
-        _args_schema.terms_of_service = AAZObjectArg(
-            options=["--terms-of-service"],
-            arg_group="Properties",
-            help="Terms of service for the API.",
-        )
         _args_schema.title = AAZStrArg(
             options=["--title"],
             arg_group="Properties",
@@ -210,16 +205,6 @@ class Create(AAZCommand):
         license.url = AAZStrArg(
             options=["url"],
             help="URL pointing to the license details. The URL field is mutually exclusive of the identifier field.",
-            fmt=AAZStrArgFormat(
-                max_length=200,
-            ),
-        )
-
-        terms_of_service = cls._args_schema.terms_of_service
-        terms_of_service.url = AAZStrArg(
-            options=["url"],
-            help="URL pointing to the terms of service.",
-            required=True,
             fmt=AAZStrArgFormat(
                 max_length=200,
             ),
@@ -335,7 +320,6 @@ class Create(AAZCommand):
                 properties.set_prop("kind", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("license", AAZObjectType, ".license")
                 properties.set_prop("summary", AAZStrType, ".summary")
-                properties.set_prop("termsOfService", AAZObjectType, ".terms_of_service")
                 properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
 
             contacts = _builder.get(".properties.contacts")
@@ -367,10 +351,6 @@ class Create(AAZCommand):
                 license.set_prop("identifier", AAZStrType, ".identifier")
                 license.set_prop("name", AAZStrType, ".name")
                 license.set_prop("url", AAZStrType, ".url")
-
-            terms_of_service = _builder.get(".properties.termsOfService")
-            if terms_of_service is not None:
-                terms_of_service.set_prop("url", AAZStrType, ".url", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 

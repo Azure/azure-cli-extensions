@@ -132,12 +132,6 @@ class Update(AAZCommand):
                 max_length=200,
             ),
         )
-        _args_schema.terms_of_service = AAZObjectArg(
-            options=["--terms-of-service"],
-            arg_group="Properties",
-            help="Terms of service for the API.",
-            nullable=True,
-        )
         _args_schema.title = AAZStrArg(
             options=["--title"],
             arg_group="Properties",
@@ -230,15 +224,6 @@ class Update(AAZCommand):
             options=["url"],
             help="URL pointing to the license details. The URL field is mutually exclusive of the identifier field.",
             nullable=True,
-            fmt=AAZStrArgFormat(
-                max_length=200,
-            ),
-        )
-
-        terms_of_service = cls._args_schema.terms_of_service
-        terms_of_service.url = AAZStrArg(
-            options=["url"],
-            help="URL pointing to the terms of service.",
             fmt=AAZStrArgFormat(
                 max_length=200,
             ),
@@ -491,7 +476,6 @@ class Update(AAZCommand):
                 properties.set_prop("kind", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("license", AAZObjectType, ".license")
                 properties.set_prop("summary", AAZStrType, ".summary")
-                properties.set_prop("termsOfService", AAZObjectType, ".terms_of_service")
                 properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
 
             contacts = _builder.get(".properties.contacts")
@@ -523,10 +507,6 @@ class Update(AAZCommand):
                 license.set_prop("identifier", AAZStrType, ".identifier")
                 license.set_prop("name", AAZStrType, ".name")
                 license.set_prop("url", AAZStrType, ".url")
-
-            terms_of_service = _builder.get(".properties.termsOfService")
-            if terms_of_service is not None:
-                terms_of_service.set_prop("url", AAZStrType, ".url", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
