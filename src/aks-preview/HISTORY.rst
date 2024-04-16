@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+3.0.0b4
++++++++
+* Add `--enable-azure-monitor-app-monitoring` to the `az aks create` command.
+* Add `--enable-azure-monitor-app-monitoring` and `--disable-azure-monitor-app-monitoring` to the `az aks update` command.
+
 3.0.0b3
 +++++++
 * Add `--nodepool-initialization-taints` to `az aks create` and `az aks update`.
