@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}", "2022-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}", "2024-01-01"],
         ]
     }
 
@@ -51,6 +51,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
 
@@ -66,7 +67,7 @@ class Create(AAZCommand):
         _args_schema.new_relic_account = AAZObjectArg(
             options=["--new-relic-account"],
             arg_group="Properties",
-            help="MarketplaceSubscriptionStatus of the resource",
+            help="MarketplaceSubscriptionStatus of the resource Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show",
         )
         _args_schema.org_creation_source = AAZStrArg(
             options=["--org-creation-source"],
@@ -77,12 +78,12 @@ class Create(AAZCommand):
         _args_schema.plan_data = AAZObjectArg(
             options=["--plan-data"],
             arg_group="Properties",
-            help="Plan details",
+            help="Plan details Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
         )
         _args_schema.user_info = AAZObjectArg(
             options=["--user-info"],
             arg_group="Properties",
-            help="User Info",
+            help="User Info Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
         )
 
         new_relic_account = cls._args_schema.new_relic_account
@@ -206,11 +207,11 @@ class Create(AAZCommand):
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
             arg_group="Resource",
-            help="The managed service identities assigned to this resource.",
+            help="The managed service identities assigned to this resource. Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Resource",
-            help="The geo-location where the resource lives",
+            help="The geo-location where the resource lives When not specified, the location of the resource group will be used.",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
@@ -219,7 +220,7 @@ class Create(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Resource",
-            help="Resource tags.",
+            help="Resource tags. Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
         )
 
         identity = cls._args_schema.identity
@@ -324,7 +325,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }
@@ -517,6 +518,12 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+            )
+            properties.saa_s_azure_subscription_status = AAZStrType(
+                serialized_name="saaSAzureSubscriptionStatus",
+            )
+            properties.subscription_state = AAZStrType(
+                serialized_name="subscriptionState",
             )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",

@@ -5,7 +5,7 @@
 
 from ._clierror import ConflictRequestError
 from ._utils import wait_till_end
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from azure.cli.core.azclierror import (AzureInternalError, CLIInternalError)
 from azure.core.exceptions import HttpResponseError
 from msrestazure.azure_exceptions import CloudError

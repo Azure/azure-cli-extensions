@@ -147,6 +147,10 @@ class Create(AAZCommand):
             options=["nfs"],
             help="Properties of a NFS storage class",
         )
+        type_properties.native = AAZObjectArg(
+            options=["native"],
+            blank={},
+        )
         type_properties.rwx = AAZObjectArg(
             options=["rwx"],
             help="Properties of a RWX storage class",
@@ -365,10 +369,12 @@ class Create(AAZCommand):
             if type_properties is not None:
                 type_properties.set_const("type", "Blob", AAZStrType, ".blob", typ_kwargs={"flags": {"required": True}})
                 type_properties.set_const("type", "NFS", AAZStrType, ".nfs", typ_kwargs={"flags": {"required": True}})
+                type_properties.set_const("type", "Native", AAZStrType, ".native", typ_kwargs={"flags": {"required": True}})
                 type_properties.set_const("type", "RWX", AAZStrType, ".rwx", typ_kwargs={"flags": {"required": True}})
                 type_properties.set_const("type", "SMB", AAZStrType, ".smb", typ_kwargs={"flags": {"required": True}})
                 type_properties.discriminate_by("type", "Blob")
                 type_properties.discriminate_by("type", "NFS")
+                type_properties.discriminate_by("type", "Native")
                 type_properties.discriminate_by("type", "RWX")
                 type_properties.discriminate_by("type", "SMB")
 
