@@ -614,8 +614,8 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         orig_ip_address = ip_config_object['privateIPAddress']
         application_names=""
         applicationSecurityGroups='applicationSecurityGroups'
-        if 'applicationSecurityGroups' in ip_config_object:
-            for item in ip_config_object['applicationSecurityGroups']:
+        if applicationSecurityGroups in ip_config_object:
+            for item in ip_config_object[applicationSecurityGroups]:
                 application_id_tokens = item['id'].split('/')
                 if application_id_tokens[-1] is not None:
                     application_names+=application_id_tokens[-1]+ " "
