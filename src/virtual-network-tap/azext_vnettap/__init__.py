@@ -14,7 +14,7 @@ class VirtualNetworkTapCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         from .profiles import CUSTOM_VNET_TAP
-        register_resource_type('latest', CUSTOM_VNET_TAP, '2023-11-01')
+        register_resource_type('latest', CUSTOM_VNET_TAP, '2022-11-01')
 
         super(VirtualNetworkTapCommandsLoader, self).__init__(
             cli_ctx=cli_ctx,
