@@ -3026,12 +3026,14 @@ def aks_mesh_upgrade_complete(
         cmd,
         client,
         resource_group_name,
-        name):
+        name,
+        yes):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
+        yes=yes,
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE)
 
 

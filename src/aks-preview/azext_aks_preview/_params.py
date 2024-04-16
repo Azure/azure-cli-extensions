@@ -2144,6 +2144,15 @@ def load_arguments(self, _):
             required=False
         )
 
+    with self.argument_context("aks mesh upgrade complete") as c:
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true",
+            required=False
+        )
+
     with self.argument_context("aks approuting enable") as c:
         c.argument("enable_kv", action="store_true")
         c.argument("keyvault_id", options_list=["--attach-kv"])
