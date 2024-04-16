@@ -3039,13 +3039,15 @@ def aks_mesh_upgrade_rollback(
         cmd,
         client,
         resource_group_name,
-        name
+        name,
+        yes
 ):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
+        yes=yes,
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK)
 
 
@@ -3068,6 +3070,7 @@ def _aks_mesh_update(
         enable_egress_gateway=None,
         disable_egress_gateway=None,
         revision=None,
+        yes=False,
         mesh_upgrade_command=None,
 ):
     raw_parameters = locals()
@@ -3081,7 +3084,6 @@ def _aks_mesh_update(
         raw_parameters=raw_parameters,
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
     )
-
     try:
         mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_azure_service_mesh_profile(mc)
