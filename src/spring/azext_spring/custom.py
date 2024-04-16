@@ -23,7 +23,7 @@ from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
 from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2024_01_01_preview import models, AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2024_05_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
