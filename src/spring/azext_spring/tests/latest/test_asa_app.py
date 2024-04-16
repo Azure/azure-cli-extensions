@@ -8,7 +8,7 @@ import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2024_01_01_preview import models
+from ...vendored_sdks.appplatform.v2024_05_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment,
@@ -22,6 +22,7 @@ try:
 except ImportError:
     from unittest import mock
 
+from .common.test_utils import get_test_cmd
 from azure.cli.core.mock import DummyCli
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.commands import AzCliCommand
@@ -30,16 +31,6 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
 
 
 class BasicTest(unittest.TestCase):
@@ -74,7 +65,7 @@ class BasicTest(unittest.TestCase):
 class TestSetActiveDeploy(BasicTest):
     def test_blue_green_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        app_set_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
+        app_set_deployment(get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
         call_args = client.apps.begin_set_active_deployments.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
@@ -83,7 +74,7 @@ class TestSetActiveDeploy(BasicTest):
 
     def test_unset_active_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        app_unset_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app')
+        app_unset_deployment(get_test_cmd(), client, 'rg', 'asc', 'app')
         call_args = client.apps.begin_set_active_deployments.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
@@ -92,7 +83,7 @@ class TestSetActiveDeploy(BasicTest):
 
     def test_blue_green_standard(self):
         client = self._get_basic_mock_client(sku='Standard')
-        app_set_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
+        app_set_deployment(get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
         call_args = client.apps.begin_set_active_deployments.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
@@ -101,7 +92,7 @@ class TestSetActiveDeploy(BasicTest):
 
     def test_unset_active_standard(self):
         client = self._get_basic_mock_client(sku='Standard')
-        app_unset_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app')
+        app_unset_deployment(get_test_cmd(), client, 'rg', 'asc', 'app')
         call_args = client.apps.begin_set_active_deployments.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
@@ -128,7 +119,7 @@ class TestAppDeploy_Patch(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        app_deploy(_get_test_cmd(), client, *args, **kwargs)
+        app_deploy(get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_update.call_args_list
         self.assertEqual(1, len(call_args))
@@ -295,7 +286,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        app_deploy(_get_test_cmd(), client, *args, **kwargs)
+        app_deploy(get_test_cmd(), client, *args, **kwargs)
 
         self.verify_build_args(client, *args)
 
@@ -401,7 +392,7 @@ class TestAppDeploy_Put(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        app_deploy(_get_test_cmd(), client, *args, **kwargs)
+        app_deploy(get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
@@ -468,7 +459,7 @@ class TestAppUpdate(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        app_update(_get_test_cmd(), client, *args, **kwargs)
+        app_update(get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_update.call_args_list
         if len(call_args):
@@ -672,7 +663,7 @@ class TestAppCreate(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        app_create(_get_test_cmd(), client, *args, **kwargs)
+        app_create(get_test_cmd(), client, *args, **kwargs)
         call_args = client.apps.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
@@ -819,7 +810,7 @@ class TestDeploymentCreate(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        deployment_create(_get_test_cmd(), client, *args, **kwargs)
+        deployment_create(get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
@@ -915,7 +906,7 @@ class RemoteDebugTest(BasicTest):
         deployment = self._get_deployment()
         deployment.name = 'my-deployment'
         deployment_enable_remote_debugging(
-            _get_test_cmd(),
+            get_test_cmd(),
             client,
             'rg', 'asc', 'app', 123, deployment)
         args = client.deployments.begin_enable_remote_debugging.call_args_list
@@ -929,7 +920,7 @@ class RemoteDebugTest(BasicTest):
         deployment = self._get_deployment()
         deployment.name = 'my-deployment'
         deployment_enable_remote_debugging(
-            _get_test_cmd(),
+            get_test_cmd(),
             client,
             'rg', 'asc', 'app', deployment=deployment)
         args = client.deployments.begin_enable_remote_debugging.call_args_list
@@ -941,7 +932,7 @@ class RemoteDebugTest(BasicTest):
         deployment = self._get_deployment()
         deployment.name = 'my-deployment'
         deployment_disable_remote_debugging(
-            _get_test_cmd(),
+            get_test_cmd(),
             client,
             'rg', 'asc', 'app', deployment)
         args = client.deployments.begin_disable_remote_debugging.call_args_list
@@ -953,7 +944,7 @@ class RemoteDebugTest(BasicTest):
         deployment = self._get_deployment()
         deployment.name = 'my-deployment'
         deployment_get_remote_debugging(
-            _get_test_cmd(),
+            get_test_cmd(),
             client,
             'rg', 'asc', 'app', deployment)
         args = client.deployments.get_remote_debugging_config.call_args_list
@@ -965,7 +956,7 @@ class CustomDomainTests(BasicTest):
 
     def test_create_domain(self):
         client = self._get_basic_mock_client()
-        domain_update(_get_test_cmd(), client,
+        domain_update(get_test_cmd(), client,
                       'rg', 'asc', 'app', 'my-domain')
         args = client.custom_domains.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))
@@ -987,7 +978,7 @@ class CustomDomainTests(BasicTest):
 
         client = self._get_basic_mock_client()
         client.certificates.get = _get_cert
-        domain_update(_get_test_cmd(), client,
+        domain_update(get_test_cmd(), client,
                       'rg', 'asc', 'app', 'my-domain', 'my-cert')
         args = client.custom_domains.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))
@@ -1001,7 +992,7 @@ class CustomDomainTests(BasicTest):
 
     def test_create_domain_with_ingress(self):
         client = self._get_basic_mock_client()
-        domain_update(_get_test_cmd(), client,
+        domain_update(get_test_cmd(), client,
                       'rg', 'asc', 'app', 'my-domain', enable_ingress_to_app_tls=True)
         args = client.custom_domains.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))

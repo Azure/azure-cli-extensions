@@ -12,6 +12,22 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+3.0.0b3
++++++++
+* Add `--nodepool-initialization-taints` to `az aks create` and `az aks update`.
+* Add `--bootstrap-artifact-source` and `--bootstrap-container-registry-resource-id` to `az aks create`.
+
+3.0.0b2
++++++++
+* Add `--sku` to the `az aks create` command.
+* Add `--sku` to the `az aks update` command.
+* Support cluster service health probe mode by `--cluster-service-load-balancer-health-probe-mode {Shared, Servicenodeport}`
+
+
+3.0.0b1
++++++++
+* [BREAKING CHANGE] Remove support for nodeSelector for egress gateway for `az aks mesh` command.
+
 2.0.0b8
 +++++++
 * Add `az aks check-network outbound` command to check outbound network from nodes.

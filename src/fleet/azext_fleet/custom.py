@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import re
 import json
 
 from knack.util import CLIError
@@ -62,15 +61,6 @@ def create_fleet(cmd,
             operation_group="fleets",
             vm_size=vm_size
         )
-        if dns_name_prefix is None:
-            subscription_id = get_subscription_id(cmd.cli_ctx)
-            # Use subscription id to provide uniqueness and prevent DNS name clashes
-            name_part = re.sub('[^A-Za-z0-9-]', '', name)[0:10]
-            if not name_part[0].isalpha():
-                name_part = (str('a') + name_part)[0:10]
-            resource_group_part = re.sub('[^A-Za-z0-9-]', '', resource_group_name)[0:16]
-            dns_name_prefix = f'{name_part}-{resource_group_part}-{subscription_id[0:6]}'
-
         api_server_access_profile = api_server_access_profile_model(
             enable_private_cluster=enable_private_cluster,
             enable_vnet_integration=enable_vnet_integration,
