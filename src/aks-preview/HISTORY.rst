@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* support `--yes` for `az aks mesh upgrade rollback` command.
 
 3.0.0b3
 +++++++
