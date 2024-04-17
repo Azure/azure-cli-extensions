@@ -15,7 +15,7 @@ Pending
 3.0.0b4
 +++++++
 * Fix the issue that option `--uptime-sla` is ignored in command `az aks create`.
-* Fix the issue that option `--uptime-sla` and `--no-uptime-sla` is ignored in command `az aks update`.
+* Fix the issue that option `--uptime-sla` and `--no-uptime-sla` are ignored in command `az aks update`.
 
 3.0.0b3
 +++++++
