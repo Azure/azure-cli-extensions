@@ -704,7 +704,7 @@ def compare_env_vars(
 
 
 def inject_policy_into_template(
-    arm_template_path: str, parameter_data_path: str, policy: str, count: int, hashes: dict
+    arm_template_path: str, parameter_data_path: str, policy: str, count: int
 ) -> bool:
     write_flag = False
     parameter_data = None
@@ -767,25 +767,7 @@ def inject_policy_into_template(
                 config.ACI_FIELD_TEMPLATE_CCE_POLICY
             ] = policy
             write_flag = True
-    # get containers to inject the base64 encoding of seccom profile hash into template if exists
-    containers = case_insensitive_dict_get(
-        container_group_properties, config.ACI_FIELD_CONTAINERS
-    )
-    for c in containers:
-        container_image = case_insensitive_dict_get(c, config.ACI_FIELD_TEMPLATE_IMAGE)
-        container_properties = case_insensitive_dict_get(c, config.ACI_FIELD_TEMPLATE_PROPERTIES)
-        security_context = case_insensitive_dict_get(
-            container_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
-        )
-        if security_context:
-            seccomp_profile = case_insensitive_dict_get(
-                security_context, config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE
-            )
-            if seccomp_profile:
-                hash_base64 = os_util.str_to_base64(hashes.get(container_image, ""))
-                security_context[config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE] = hash_base64
-                write_flag = True
-    # write base64 encoding of seccomp profile hash to the template
+
     if write_flag:
         os_util.write_json_to_file(arm_template_path, input_arm_json)
         return True
