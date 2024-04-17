@@ -12034,6 +12034,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(upgrade_complete_revisions) == 1
         assert upgrade_revision in upgrade_complete_revisions
 
+        # delete the cluster
+        delete_cmd = (
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        )
+        self.cmd(
+            delete_cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
