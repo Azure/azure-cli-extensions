@@ -10610,8 +10610,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-    # live only due to downloading k8s-extension extension
-    @live_only()
     @AllowLargeResponse(8192)
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
@@ -10840,7 +10838,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-    @live_only()
     @AllowLargeResponse(8192)
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_azuremonitorappmonitoring(self, resource_group, resource_group_location):
@@ -10860,7 +10857,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
         ])
 
-        # enabling or disabling azuremonitorappmonitoring
+        # no enabling or disabling azuremonitorappmonitoring
         # will not affect any field in the cluster.
         # the only check we should perform is to verify that the cluster is provisioned successfully.
 
