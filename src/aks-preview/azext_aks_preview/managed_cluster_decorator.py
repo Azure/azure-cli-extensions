@@ -3211,21 +3211,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         mc.sku = self.models.ManagedClusterSKU()
         skuName = self.context.get_sku_name()
-        if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+        tier = self.context.get_tier()
+        if skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             mc.sku.name = "Automatic"
             # passive Kind should always to match sku.name
             mc.kind = "Automatic"
+
+            # default tier for automatic sku is standard
             mc.sku.tier = "Standard"
         else:
             mc.sku.name = "Base"
             # passive Kind should always match sku.name
             mc.kind = "Base"
-            mc.sku.tier = "Free"
-        if self.context.get_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
-            mc.sku.tier = "Standard"
 
-        if self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
+        if self.context.get_uptime_sla() or tier == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+            mc.sku.tier = "Standard"
+        if tier == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
             mc.sku.tier = "Premium"
+        # backfill the tier to "Free" if it's not set
+        if mc.sku.tier is None:
+            mc.sku.tier = "Free"
         return mc
 
     def set_up_k8s_support_plan(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4498,13 +4503,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # there are existing MCs with nil sku, that is Base/Free
         if mc.sku is None:
-            mc.sku = self.models.ManagedClusterSKU(
-                sku="Base",
-                tier="Free",
-            )
+            mc.sku = self.models.ManagedClusterSKU()
         skuName = self.context.get_sku_name()
-
-        if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+        tier = self.context.get_tier()
+        if skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             mc.sku.name = "Automatic"
             # passive Kind should always to match sku.name
             mc.kind = "Automatic"
@@ -4514,13 +4516,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.kind = "Base"
 
         # Premium without LTS is ok (not vice versa)
-        if self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
+        if tier == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
             mc.sku.tier = "Premium"
-
-        if self.context.get_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+        if self.context.get_uptime_sla() or tier == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
             mc.sku.tier = "Standard"
-
-        if self.context.get_no_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
+        if self.context.get_no_uptime_sla() or tier == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
+            mc.sku.tier = "Free"
+        # backfill the tier to "Free" if it's not set
+        if mc.sku.tier is None:
             mc.sku.tier = "Free"
         return mc
 
