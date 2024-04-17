@@ -37,7 +37,10 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument(
             "definition_type",
             arg_type=definition_type,
-            help="Type of AOSM definition to be published. The config file differs depending on type.",
+            help=(
+                "Type of AOSM definition to be published. The config file differs"
+                " depending on type."
+            ),
             required=True,
         )
         c.argument(
@@ -51,7 +54,10 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=["--config-file", "-f"],
             type=file_type,
             completer=FilesCompleter(allowednames="*.jsonc"),
-            help="The path to the configuration file. This is a JSONC file that contains the required parameters for building the NFD.",
+            help=(
+                "The path to the configuration file. This is a JSONC file that contains"
+                " the required parameters for building the NFD."
+            ),
         )
         c.argument(
             "clean",
@@ -63,7 +69,7 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=["--build-output-folder", "-b"],
             type=file_type,
             completer=FilesCompleter(allowednames="*.json"),
-            help=("Path to the folder to publish, created by the build command."),
+            help="Path to the folder to publish, created by the build command.",
         )
         # This will only ever output one string and will fail if more than one
         # skip steps are provided. It might be good to change that.
@@ -83,13 +89,15 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=["--no-subscription-permissions", "-u"],
             arg_type=get_three_state_flag(),
             help=(
-                "Used only for CNF publish - ignored in all other scenarios. "
-                "Pass this flag if you do not have permission to import to the "
-                "Publisher subscription (Contributor role + AcrPush role, or a "
-                "custom role that allows the importImage action and AcrPush over the "
-                "whole subscription). Using this flag causes image artifacts to be "
-                "pulled to your local machine and then pushed to the Artifact Store. This is slower than a copy entirely within Azure, but is an alternative if you do not have the required permissions. "
-                "Requires Docker to be installed locally."
+                "Used only for CNF publish - ignored in all other scenarios. Pass this"
+                " flag if you do not have permission to import to the Publisher"
+                " subscription (Contributor role + AcrPush role, or a custom role that"
+                " allows the importImage action and AcrPush over the whole"
+                " subscription). Using this flag causes image artifacts to be pulled to"
+                " your local machine and then pushed to the Artifact Store. This is"
+                " slower than a copy entirely within Azure, but is an alternative if"
+                " you do not have the required permissions. Requires Docker to be"
+                " installed locally."
             ),
         )
 
@@ -105,7 +113,10 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=["--config-file", "-f"],
             type=file_type,
             completer=FilesCompleter(allowednames="*.jsonc"),
-            help="The path to the configuration file. This is a JSONC file that contains the required parameters for building the NSD.",
+            help=(
+                "The path to the configuration file. This is a JSONC file that contains"
+                " the required parameters for building the NSD."
+            ),
         )
         c.argument("skip", arg_type=ns_skip_steps, help="Optional skip steps")
         c.argument(
@@ -118,7 +129,7 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=["--build-output-folder", "-b"],
             type=file_type,
             completer=FilesCompleter(allowednames="*.json"),
-            help=("Path to the folder to publish, created by the build command."),
+            help="Path to the folder to publish, created by the build command.",
         )
         c.argument(
             "no_subscription_permissions",
@@ -131,5 +142,6 @@ def load_arguments(self: AzCommandsLoader, _):
                 "custom role that allows the importImage action and AcrPush over the "
                 "whole subscription). This means that the image artifacts will be "
                 "pulled to your local machine and then pushed to the Artifact Store. "
-                "Requires Docker to be installed locally.")
+                "Requires Docker to be installed locally."
+            ),
         )
