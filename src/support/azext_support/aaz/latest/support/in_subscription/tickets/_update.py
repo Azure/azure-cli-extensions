@@ -62,7 +62,6 @@ class Update(AAZCommand):
             options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
-            id_part="name",
         )
         _args_schema.advanced_diagnostic_consent = AAZStrArg(
             options=["--advanced-diagnostic-consent"],

@@ -51,7 +51,6 @@ class Show(AAZCommand):
             options=["--file-workspace-name"],
             help="File Workspace Name",
             required=True,
-            id_part="name",
         )
         return cls._args_schema
 

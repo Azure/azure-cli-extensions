@@ -48,13 +48,11 @@ class Show(AAZCommand):
             options=["--communication-name"],
             help="Communication name.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.ticket_name = AAZStrArg(
             options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
-            id_part="name",
         )
         return cls._args_schema
 

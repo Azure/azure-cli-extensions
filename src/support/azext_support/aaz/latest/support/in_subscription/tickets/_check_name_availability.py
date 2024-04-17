@@ -42,7 +42,6 @@ class CheckNameAvailability(AAZCommand):
             options=["--support-ticket-name"],
             help="Support ticket name.",
             required=True,
-            id_part="name",
         )
 
         # define Arg Group "CheckNameAvailabilityInput"
