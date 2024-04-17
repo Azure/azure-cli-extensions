@@ -16,9 +16,9 @@ class Upload(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/fileworkspaces/{}/files/{}/upload", "2022-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/fileworkspaces/{}/files/{}/upload", "2024-04-01"],
         ]
     }
 
@@ -42,11 +42,13 @@ class Upload(AAZCommand):
             options=["--file-name"],
             help="File Name",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.file_workspace_name = AAZStrArg(
             options=["--file-workspace-name"],
             help="File WorkspaceName",
             required=True,
+            id_part="name",
         )
 
         # define Arg Group "UploadFile"
@@ -125,7 +127,7 @@ class Upload(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }

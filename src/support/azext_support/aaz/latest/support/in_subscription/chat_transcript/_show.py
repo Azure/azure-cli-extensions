@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/supporttickets/{}/chattranscripts/{}", "2022-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/supporttickets/{}/chattranscripts/{}", "2024-04-01"],
         ]
     }
 
@@ -48,11 +48,13 @@ class Show(AAZCommand):
             options=["--chat-transcript-name"],
             help="ChatTranscript name.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.ticket_name = AAZStrArg(
             options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 
@@ -121,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -182,9 +184,7 @@ class Show(AAZCommand):
             messages.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.messages.Element
-            _element.body = AAZStrType(
-                flags={"required": True},
-            )
+            _element.body = AAZStrType()
             _element.communication_direction = AAZStrType(
                 serialized_name="communicationDirection",
                 flags={"read_only": True},

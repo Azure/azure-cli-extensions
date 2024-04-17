@@ -36,9 +36,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/supporttickets/{}", "2022-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/supporttickets/{}", "2024-04-01"],
         ]
     }
 
@@ -62,6 +62,7 @@ class Update(AAZCommand):
             options=["--ticket-name"],
             help="Support ticket name.",
             required=True,
+            id_part="name",
         )
         _args_schema.advanced_diagnostic_consent = AAZStrArg(
             options=["--advanced-diagnostic-consent"],
@@ -212,7 +213,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -295,7 +296,7 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
@@ -304,6 +305,7 @@ class Update(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.advanced_diagnostic_consent = AAZStrType(
                 serialized_name="advancedDiagnosticConsent",
+                flags={"required": True},
             )
             properties.contact_details = AAZObjectType(
                 serialized_name="contactDetails",
@@ -318,10 +320,13 @@ class Update(AAZCommand):
             )
             properties.enrollment_id = AAZStrType(
                 serialized_name="enrollmentId",
-                flags={"read_only": True},
             )
             properties.file_workspace_name = AAZStrType(
                 serialized_name="fileWorkspaceName",
+            )
+            properties.is_temporary_ticket = AAZStrType(
+                serialized_name="isTemporaryTicket",
+                flags={"read_only": True},
             )
             properties.modified_date = AAZStrType(
                 serialized_name="modifiedDate",

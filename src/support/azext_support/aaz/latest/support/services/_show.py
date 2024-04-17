@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "support services show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a specific Azure service for support ticket creation.
@@ -23,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.support/services/{}", "2022-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.support/services/{}", "2024-04-01"],
         ]
     }
 
@@ -49,7 +48,6 @@ class Show(AAZCommand):
             options=["--service-name"],
             help="Name of the Azure service.",
             required=True,
-            is_preview=True,
         )
         return cls._args_schema
 
@@ -110,7 +108,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
