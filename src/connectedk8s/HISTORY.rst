@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.6.9
+1.7.0
 ++++++
 * Update helm binary download source.
 * Introduce "--skip-ssl-verification" flag.
