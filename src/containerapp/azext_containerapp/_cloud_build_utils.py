@@ -136,7 +136,6 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         # File upload
         done_spinner = False
         thread = display_spinner("Uploading data")
-        container_app_id = container_app_result["id"]
         base_proxy_endpoint = container_app_result["properties"]["eventStreamEndpoint"].rstrip("/eventstream")
         upload_endpoint = f"{base_proxy_endpoint}/upload?token={token}"
         headers = {'Authorization': 'Bearer ' + token}
