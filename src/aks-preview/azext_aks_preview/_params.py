@@ -2141,7 +2141,8 @@ def load_arguments(self, _):
             options_list=["--yes", "-y"],
             help="Do not prompt for confirmation.",
             action="store_true",
-            default=False
+            default=False,
+            required=False
         )
 
     with self.argument_context("aks mesh upgrade complete") as c:
@@ -2150,7 +2151,8 @@ def load_arguments(self, _):
             options_list=["--yes", "-y"],
             help="Do not prompt for confirmation.",
             action="store_true",
-            default=False
+            default=False,
+            required=False
         )
 
     with self.argument_context("aks approuting enable") as c:
