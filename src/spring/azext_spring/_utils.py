@@ -23,7 +23,7 @@ from azure.cli.core.profiles import ResourceType
 from knack.util import CLIError, todict
 from knack.log import get_logger
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
-from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 

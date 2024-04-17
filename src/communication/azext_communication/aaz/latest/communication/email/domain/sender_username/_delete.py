@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete to delete a SenderUsernames resource.
+
+    :example: Delete a sender username resource
+        az communication email domain sender-username delete --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --sender-username SenderUsername
     """
 
     _aaz_info = {

@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
+from .common.test_utils import get_test_cmd
 from ...custom import spring_update
 try:
     import unittest.mock as mock
@@ -17,16 +18,6 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 free_mock_client = mock.MagicMock()
-
-
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
 
 
 def _mock_get_mgmt_service_client(cli_ctx, client_or_resource_type):
@@ -54,7 +45,7 @@ class BasicTest(unittest.TestCase):
     @mock.patch('azext_spring.custom.get_mgmt_service_client', _mock_get_mgmt_service_client)
     def _execute(self, resource_group, name, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
-        spring_update(_get_test_cmd(), client, resource_group, name, **kwargs)
+        spring_update(get_test_cmd(), client, resource_group, name, **kwargs)
         call_args = client.services.begin_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(3, len(call_args[0][1]))

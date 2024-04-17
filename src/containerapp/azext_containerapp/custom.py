@@ -2295,35 +2295,35 @@ def update_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.update()
 
 
-def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
     return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
 
 
-def update_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
     return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
 
 
-def show_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name):
+def show_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
     return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG)
 
 
-def delete_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+def delete_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
 
 
-def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
     return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
 
 
-def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
     return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
 
 
-def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name):
+def show_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
     return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA)
 
 
-def delete_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+def delete_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)
 
 

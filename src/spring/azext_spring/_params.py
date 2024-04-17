@@ -8,8 +8,8 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag, tags_type
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
-                          validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
-                          validate_log_limit, validate_log_since, validate_sku, normalize_sku, validate_jvm_options,
+                          validate_name, validate_app_name, validate_deployment_name, validate_sku,
+                          normalize_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
@@ -39,6 +39,7 @@ from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
                              fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
+from .log_stream.log_stream_validators import (validate_log_lines, validate_log_limit, validate_log_since)
 from ._app_managed_identity_validator import (validate_create_app_with_user_identity_or_warning,
                                               validate_create_app_with_system_identity_or_warning,
                                               validate_app_force_set_system_identity_or_warning,
@@ -1128,6 +1129,20 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('service', service_name_type)
 
+    def prepare_common_logs_argument(c):
+        c.argument('follow',
+                   options_list=['--follow ', '-f'],
+                   help='The flag to indicate logs should be streamed.',
+                   action='store_true')
+        c.argument('lines',
+                   type=int,
+                   help='Number of lines to show. Maximum is 10000.')
+        c.argument('since',
+                   help='Only return logs newer than a relative duration like 5s, 2m, or 1h. Maximum is 1h')
+        c.argument('limit',
+                   type=int,
+                   help='Maximum kibibyte of logs to return. Ceiling number is 2048.')
+
     with self.argument_context('spring component logs') as c:
         c.argument('name', options_list=['--name', '-n'],
                    help="Name of the component. Find component names from command `az spring component list`")
@@ -1137,21 +1152,10 @@ def load_arguments(self, _):
         c.argument('instance',
                    options_list=['--instance', '-i'],
                    help='Name of an existing instance of the component.')
-        c.argument('follow',
-                   options_list=['--follow ', '-f'],
-                   help='The flag to indicate logs should be streamed.',
-                   action='store_true')
-        c.argument('lines',
-                   type=int,
-                   help='Number of lines to show. Maximum is 10000. Default is 50.')
-        c.argument('since',
-                   help='Only return logs newer than a relative duration like 5s, 2m, or 1h. Maximum is 1h')
-        c.argument('limit',
-                   type=int,
-                   help='Maximum kibibyte of logs to return. Ceiling number is 2048.')
         c.argument('max_log_requests',
                    type=int,
                    help="Specify maximum number of concurrent logs to follow when get logs by all-instances.")
+        prepare_common_logs_argument(c)
 
     with self.argument_context('spring component instance') as c:
         c.argument('component', options_list=['--component', '-c'],

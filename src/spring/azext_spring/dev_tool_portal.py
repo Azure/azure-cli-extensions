@@ -7,7 +7,7 @@
 from knack.log import get_logger
 
 from azure.cli.core.util import sdk_no_wait
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 
 DEFAULT_NAME = "default"
 

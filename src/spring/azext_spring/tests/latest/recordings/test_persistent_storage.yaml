@@ -15,12 +15,12 @@ interactions:
       ParameterSetName:
       - -n -g --query -o
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-storage/21.1.0 Python/3.9.6 (macOS-14.2.1-arm64-arm-64bit)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2023-01-01&$expand=kerb
   response:
     body:
-      string: '{"keys":[{"creationTime":"2024-01-18T03:11:34.2146963Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2024-01-18T03:11:34.2146963Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+      string: '{"keys":[{"creationTime":"2024-04-15T07:03:52.0428303Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2024-04-15T07:03:52.0428303Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
     headers:
       cache-control:
       - no-cache
@@ -29,23 +29,21 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 18 Jan 2024 03:14:29 GMT
+      - Mon, 15 Apr 2024 07:04:16 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
+      x-msedge-ref:
+      - 'Ref A: FEC1BC647E4E413A84A0C777F5866E2E Ref B: MAA201060516011 Ref C: 2024-04-15T07:04:16Z'
     status:
       code: 200
       message: OK
@@ -68,39 +66,43 @@ interactions:
       ParameterSetName:
       - --name --storage-type --account-name --account-key -g -s
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.6 (macOS-14.2.1-arm64-arm-64bit)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-05-01-preview
   response:
     body:
       string: '{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"clitest000002","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name","name":"test-storage-name"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/test-storage-name/operationId/d4290642-cb73-4530-9cf2-16729d312914?api-version=2024-01-01-preview&t=638411444717192034&c=MIIHHjCCBgagAwIBAgITOgI9LlF5jGEEQe1CmgAEAj0uUTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjMxMTAxMjE0OTQ5WhcNMjQxMDI2MjE0OTQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMKt_zl2yRFDxIUmqoEA-B7WoRkSqscgwk6CGqDbwEVJS3oTI4Gk-ukQ6El3GQJVthiuwZGw4jwvTDyVWC8mQH2Zni6X1ocTXrNNa6VFJnvzeEn-HpmPATuII8AWtdtUnBvGZGAwgspvH8iZZCiHDowHCWhjVsU6_ipCsmzQeH3oRJI4AwUS_nCVA7U9WPdgIyQp6v5QPzcYCO_zIbNW4y_Cc3phfPEQvPvtSKhuijt68F5WlUY6Ps23ksosYG5VTx7z6skGG9arA5UKUzbbEO8lxzda3OFPZdG7OHe8-VMXxJjtSanZSSbdLgYBRB9m9PGr6voKtML9W5rEukE-lEUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRYUmiD-EjeFFNZByiKICN9p1JofzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAKRwStAdrsy7tgEfmtXPZXIwgdXOYwSx2Kqzlhq8b6Ptid4V3vhJvDV0WLS7d72KIMUwZiBnfPHhMmsdkLOSpNSZYC23g3QJSBWvoS86Rpkeru5bEyQmv1gucF_MyaFaUXUd4b7xnvCkv-BBNO8m1lvFAowB2odz9esggf82yeOVBx0yEK_NNOK4l36XvRjvIqemSLZOSi1wow_wn_ovhAEPpSSN7UTahPtz7J12vhP1LuZ4Rvn_hNx48ncw445nMBnMVmcuuakaKDC6_sAcs5lg9jq2yHSaIHRw4xcoS5XwvIykGPMUyAD-dXWFih_XFOKh7ea50hObFhghf3Dtvlo&s=UTnYmit5MQeWGquA9S_iPRCTShfQkYFuzD7VgkSb1SwvdZqcMhLKCUYCrGRAv6Jaw8jfUNyvVRC4QoltAf6YrfLs3tcpe1d6X_e4CRgcPsS4ww2FzHpcTPHlnmGHTYt3945qB37jv1vb_kqCXmwWqv0fumTGfNQDwpWyFOpnVZvu70ELDiblEKkFFfeORloc_qb0lj10yypOwZG-apsAOhf_Iu3dd3duRFr7MBC-Jfcp6KjFwS199Rk_5S8vlXFWCG3v8w2Muqrkl7KFKj3-M4N9oCfD2dpvXL-t0SCGZLeq-Io_IErz6WBL44W6qEeOmaOTPvHvFsWtrirsx075eg&h=Gc4ynTGLDBkKjINvdqKQUWNpBzKbJnPQQP3W8r1V6A0
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-storage-name/operationId/93adcc26-5240-4c41-be41-031912ca2a49?api-version=2024-05-01-preview&t=638487614596848728&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=Uoopm3109uBOrjWn5lAdTwzxqxKaAHpBu9k7xFAoEocdetGdyAXfy0FTZtKACMF4VG1X3k1gBPbnPIrFWNN3Zv5oiOZSHBOla08VhbW3nY9mzA68HtgxKpBjf2q4JNHH5DtEzebrFfazdo-38WFzQvjk1VipVAK2dNcZgEzn3jtEtmDOWcjlGmgP1D7SIx-I8ESiL6IMBUuYV3WngEO9dhVaMHkOWGTNELu0VBvoN4UW_y3SE_un_05EqwpMUdzgn8HKe-KvQPt3rLEhnOJnfjvIJoZVq8-6wulJnBsnhlOwSxfLELVgnFKdi0yIR2x8FHu5Le9ERdKVI1fmHGb2PQ&h=2St28Xx_CjUPxvIR94T1DHLKSy7CFNaFAO-0UJDnweE
       cache-control:
       - no-cache
       content-length:
       - '322'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Thu, 18 Jan 2024 03:14:31 GMT
+      - Mon, 15 Apr 2024 07:04:19 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationResults/d4290642-cb73-4530-9cf2-16729d312914/Spring/test-storage-name?api-version=2024-01-01-preview&t=638411444717348758&c=MIIHHjCCBgagAwIBAgITOgI9LlF5jGEEQe1CmgAEAj0uUTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjMxMTAxMjE0OTQ5WhcNMjQxMDI2MjE0OTQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMKt_zl2yRFDxIUmqoEA-B7WoRkSqscgwk6CGqDbwEVJS3oTI4Gk-ukQ6El3GQJVthiuwZGw4jwvTDyVWC8mQH2Zni6X1ocTXrNNa6VFJnvzeEn-HpmPATuII8AWtdtUnBvGZGAwgspvH8iZZCiHDowHCWhjVsU6_ipCsmzQeH3oRJI4AwUS_nCVA7U9WPdgIyQp6v5QPzcYCO_zIbNW4y_Cc3phfPEQvPvtSKhuijt68F5WlUY6Ps23ksosYG5VTx7z6skGG9arA5UKUzbbEO8lxzda3OFPZdG7OHe8-VMXxJjtSanZSSbdLgYBRB9m9PGr6voKtML9W5rEukE-lEUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRYUmiD-EjeFFNZByiKICN9p1JofzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAKRwStAdrsy7tgEfmtXPZXIwgdXOYwSx2Kqzlhq8b6Ptid4V3vhJvDV0WLS7d72KIMUwZiBnfPHhMmsdkLOSpNSZYC23g3QJSBWvoS86Rpkeru5bEyQmv1gucF_MyaFaUXUd4b7xnvCkv-BBNO8m1lvFAowB2odz9esggf82yeOVBx0yEK_NNOK4l36XvRjvIqemSLZOSi1wow_wn_ovhAEPpSSN7UTahPtz7J12vhP1LuZ4Rvn_hNx48ncw445nMBnMVmcuuakaKDC6_sAcs5lg9jq2yHSaIHRw4xcoS5XwvIykGPMUyAD-dXWFih_XFOKh7ea50hObFhghf3Dtvlo&s=RL_8ozN2mE4Rt_Dh6ApD4xK6RxVgn4JPvmymtYvwOHKVLK5K4sUcKTr5tAszI8LtHjbht3SEzqT3IqrL4ft0wlfO-4Ph-yZMasS-5-qTvkt_WYaXcsjsb-Hc6M4UycSn845cYtZiTwy689O1RujlqZqPDDf-j7drZMS-Bs4Z69oxtjbYJMS-WzgZAfy4ZHDHeTY8Is8kAl7o84bdrcPxE6LbRmZMug65gymqyK-Q6ipFQfJXbMqN6BEjkuLJelVKeFyVf4N9AzsSMrBZKuLcEzYn4iP_CZ7EN-RQRE9mbwGXYOi_2rRuqi5mKPJq0yVVpVmIejihQuQI-cGATIw7zA&h=Mx02j_9xCUdBq9yKEzZUqAcuPHVr-jEBwgML-jvpAZ0
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/93adcc26-5240-4c41-be41-031912ca2a49/Spring/test-storage-name?api-version=2024-05-01-preview&t=638487614597004253&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=kRNYevQ_xqBMDXBD9zRjklTBD_JvyDuRRulNp4Ec-lTE7RCpZmOer69TKqN5-BRjRlGgMhABN44GU3yMxuosc7gaNfKIlwTGUGNDj9LJ4f3cK89xfiqou6JoU8rPS4Ulwvd3NiwcTNsQumDD46j8UhjrXHMNKMPm7RC9TOIoNY13bxgvEW0w0x1z02szRypaZI0QzcDkjNeVmt4O6QZAUnLrDBIf09n-gSm-7qwyRdd4t0qeWw0bGlnHrpGrnkKVwni258iEIRU-Slcc-NzCfs8Y-O4XHUNfe7phGFV_SA1qWHrXAV2SnLKYVPeuOA7WlzGDN1IDyq4wJI96VMpixw&h=2IMP_oj1QtHuunia_JknbfaMQHiDgqcsopKEOFUf7LY
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: FF756157438C486FB939BC13E35BB256 Ref B: MAA201060515017 Ref C: 2024-04-15T07:04:18Z'
       x-rp-server-mvid:
-      - e87f36cc-a007-45c6-8900-a43a2150612d
+      - 4c93324c-8d05-4614-bf23-e41ef7c9c1f7
     status:
       code: 201
       message: Created
@@ -118,21 +120,21 @@ interactions:
       ParameterSetName:
       - --name --storage-type --account-name --account-key -g -s
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.6 (macOS-14.2.1-arm64-arm-64bit)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/test-storage-name/operationId/d4290642-cb73-4530-9cf2-16729d312914?api-version=2024-01-01-preview&t=638411444717192034&c=MIIHHjCCBgagAwIBAgITOgI9LlF5jGEEQe1CmgAEAj0uUTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjMxMTAxMjE0OTQ5WhcNMjQxMDI2MjE0OTQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMKt_zl2yRFDxIUmqoEA-B7WoRkSqscgwk6CGqDbwEVJS3oTI4Gk-ukQ6El3GQJVthiuwZGw4jwvTDyVWC8mQH2Zni6X1ocTXrNNa6VFJnvzeEn-HpmPATuII8AWtdtUnBvGZGAwgspvH8iZZCiHDowHCWhjVsU6_ipCsmzQeH3oRJI4AwUS_nCVA7U9WPdgIyQp6v5QPzcYCO_zIbNW4y_Cc3phfPEQvPvtSKhuijt68F5WlUY6Ps23ksosYG5VTx7z6skGG9arA5UKUzbbEO8lxzda3OFPZdG7OHe8-VMXxJjtSanZSSbdLgYBRB9m9PGr6voKtML9W5rEukE-lEUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRYUmiD-EjeFFNZByiKICN9p1JofzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAKRwStAdrsy7tgEfmtXPZXIwgdXOYwSx2Kqzlhq8b6Ptid4V3vhJvDV0WLS7d72KIMUwZiBnfPHhMmsdkLOSpNSZYC23g3QJSBWvoS86Rpkeru5bEyQmv1gucF_MyaFaUXUd4b7xnvCkv-BBNO8m1lvFAowB2odz9esggf82yeOVBx0yEK_NNOK4l36XvRjvIqemSLZOSi1wow_wn_ovhAEPpSSN7UTahPtz7J12vhP1LuZ4Rvn_hNx48ncw445nMBnMVmcuuakaKDC6_sAcs5lg9jq2yHSaIHRw4xcoS5XwvIykGPMUyAD-dXWFih_XFOKh7ea50hObFhghf3Dtvlo&s=UTnYmit5MQeWGquA9S_iPRCTShfQkYFuzD7VgkSb1SwvdZqcMhLKCUYCrGRAv6Jaw8jfUNyvVRC4QoltAf6YrfLs3tcpe1d6X_e4CRgcPsS4ww2FzHpcTPHlnmGHTYt3945qB37jv1vb_kqCXmwWqv0fumTGfNQDwpWyFOpnVZvu70ELDiblEKkFFfeORloc_qb0lj10yypOwZG-apsAOhf_Iu3dd3duRFr7MBC-Jfcp6KjFwS199Rk_5S8vlXFWCG3v8w2Muqrkl7KFKj3-M4N9oCfD2dpvXL-t0SCGZLeq-Io_IErz6WBL44W6qEeOmaOTPvHvFsWtrirsx075eg&h=Gc4ynTGLDBkKjINvdqKQUWNpBzKbJnPQQP3W8r1V6A0
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-storage-name/operationId/93adcc26-5240-4c41-be41-031912ca2a49?api-version=2024-05-01-preview&t=638487614596848728&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=Uoopm3109uBOrjWn5lAdTwzxqxKaAHpBu9k7xFAoEocdetGdyAXfy0FTZtKACMF4VG1X3k1gBPbnPIrFWNN3Zv5oiOZSHBOla08VhbW3nY9mzA68HtgxKpBjf2q4JNHH5DtEzebrFfazdo-38WFzQvjk1VipVAK2dNcZgEzn3jtEtmDOWcjlGmgP1D7SIx-I8ESiL6IMBUuYV3WngEO9dhVaMHkOWGTNELu0VBvoN4UW_y3SE_un_05EqwpMUdzgn8HKe-KvQPt3rLEhnOJnfjvIJoZVq8-6wulJnBsnhlOwSxfLELVgnFKdi0yIR2x8FHu5Le9ERdKVI1fmHGb2PQ&h=2St28Xx_CjUPxvIR94T1DHLKSy7CFNaFAO-0UJDnweE
   response:
     body:
-      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/test-storage-name/operationId/d4290642-cb73-4530-9cf2-16729d312914","name":"d4290642-cb73-4530-9cf2-16729d312914","status":"Succeeded","startTime":"2024-01-18T03:14:31.6284829Z","endTime":"2024-01-18T03:14:31.9390459Z"}'
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-storage-name/operationId/93adcc26-5240-4c41-be41-031912ca2a49","name":"93adcc26-5240-4c41-be41-031912ca2a49","status":"Succeeded","startTime":"2024-04-15T07:04:19.5403068Z","endTime":"2024-04-15T07:04:20.1104446Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '375'
+      - '380'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Thu, 18 Jan 2024 03:14:31 GMT
+      - Mon, 15 Apr 2024 07:04:19 GMT
       expires:
       - '-1'
       pragma:
@@ -141,14 +143,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: B48CDBBCB16C48498C78A5104AA59F05 Ref B: MAA201060515017 Ref C: 2024-04-15T07:04:19Z'
       x-rp-server-mvid:
-      - e87f36cc-a007-45c6-8900-a43a2150612d
+      - 4c93324c-8d05-4614-bf23-e41ef7c9c1f7
     status:
       code: 200
       message: OK
@@ -166,9 +168,9 @@ interactions:
       ParameterSetName:
       - --name --storage-type --account-name --account-key -g -s
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.6 (macOS-14.2.1-arm64-arm-64bit)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-05-01-preview
   response:
     body:
       string: '{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"clitest000002","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name","name":"test-storage-name"}'
@@ -178,9 +180,9 @@ interactions:
       content-length:
       - '322'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Thu, 18 Jan 2024 03:14:32 GMT
+      - Mon, 15 Apr 2024 07:04:20 GMT
       expires:
       - '-1'
       pragma:
@@ -189,14 +191,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3448651E58A249C594E8D2BBA2C67DB9 Ref B: MAA201060515017 Ref C: 2024-04-15T07:04:20Z'
       x-rp-server-mvid:
-      - e87f36cc-a007-45c6-8900-a43a2150612d
+      - 4c93324c-8d05-4614-bf23-e41ef7c9c1f7
     status:
       code: 200
       message: OK
@@ -214,9 +216,9 @@ interactions:
       ParameterSetName:
       - --name -g -s
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.6 (macOS-14.2.1-arm64-arm-64bit)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-05-01-preview
   response:
     body:
       string: '{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"clitest000002","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name","name":"test-storage-name"}'
@@ -226,9 +228,9 @@ interactions:
       content-length:
       - '322'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Thu, 18 Jan 2024 03:14:33 GMT
+      - Mon, 15 Apr 2024 07:04:22 GMT
       expires:
       - '-1'
       pragma:
@@ -237,14 +239,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6E2C592072F0450EA011680D0403F45D Ref B: MAA201060515051 Ref C: 2024-04-15T07:04:22Z'
       x-rp-server-mvid:
-      - e87f36cc-a007-45c6-8900-a43a2150612d
+      - 4c93324c-8d05-4614-bf23-e41ef7c9c1f7
     status:
       code: 200
       message: OK
@@ -262,9 +264,9 @@ interactions:
       ParameterSetName:
       - -g -s
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.6 (macOS-14.2.1-arm64-arm-64bit)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages?api-version=2024-05-01-preview
   response:
     body:
       string: '{"value":[{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"clitest000002","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name","name":"test-storage-name"}]}'
@@ -274,9 +276,9 @@ interactions:
       content-length:
       - '334'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Thu, 18 Jan 2024 03:14:35 GMT
+      - Mon, 15 Apr 2024 07:04:24 GMT
       expires:
       - '-1'
       pragma:
@@ -285,14 +287,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: E5E505F331614A709D968CDBB0DDD057 Ref B: MAA201060516019 Ref C: 2024-04-15T07:04:23Z'
       x-rp-server-mvid:
-      - e87f36cc-a007-45c6-8900-a43a2150612d
+      - 4c93324c-8d05-4614-bf23-e41ef7c9c1f7
     status:
       code: 200
       message: OK
@@ -310,9 +312,9 @@ interactions:
       ParameterSetName:
       - --name -g -s
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.6 (macOS-14.2.1-arm64-arm-64bit)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-05-01-preview
   response:
     body:
       string: '{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"clitest000002","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name","name":"test-storage-name"}'
@@ -322,9 +324,9 @@ interactions:
       content-length:
       - '322'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Thu, 18 Jan 2024 03:14:38 GMT
+      - Mon, 15 Apr 2024 07:04:25 GMT
       expires:
       - '-1'
       pragma:
@@ -333,14 +335,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: D98B164C1F2E458883B0FED582D4EF5F Ref B: MAA201060514029 Ref C: 2024-04-15T07:04:25Z'
       x-rp-server-mvid:
-      - e87f36cc-a007-45c6-8900-a43a2150612d
+      - 4c93324c-8d05-4614-bf23-e41ef7c9c1f7
     status:
       code: 200
       message: OK
@@ -360,37 +362,41 @@ interactions:
       ParameterSetName:
       - --name -g -s
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.6 (macOS-14.2.1-arm64-arm-64bit)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-05-01-preview
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/test-storage-name/operationId/20315243-0418-4e36-9f97-5a9721f38aa5?api-version=2024-01-01-preview&t=638411444814743639&c=MIIHHjCCBgagAwIBAgITOgI9LlF5jGEEQe1CmgAEAj0uUTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjMxMTAxMjE0OTQ5WhcNMjQxMDI2MjE0OTQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMKt_zl2yRFDxIUmqoEA-B7WoRkSqscgwk6CGqDbwEVJS3oTI4Gk-ukQ6El3GQJVthiuwZGw4jwvTDyVWC8mQH2Zni6X1ocTXrNNa6VFJnvzeEn-HpmPATuII8AWtdtUnBvGZGAwgspvH8iZZCiHDowHCWhjVsU6_ipCsmzQeH3oRJI4AwUS_nCVA7U9WPdgIyQp6v5QPzcYCO_zIbNW4y_Cc3phfPEQvPvtSKhuijt68F5WlUY6Ps23ksosYG5VTx7z6skGG9arA5UKUzbbEO8lxzda3OFPZdG7OHe8-VMXxJjtSanZSSbdLgYBRB9m9PGr6voKtML9W5rEukE-lEUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRYUmiD-EjeFFNZByiKICN9p1JofzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAKRwStAdrsy7tgEfmtXPZXIwgdXOYwSx2Kqzlhq8b6Ptid4V3vhJvDV0WLS7d72KIMUwZiBnfPHhMmsdkLOSpNSZYC23g3QJSBWvoS86Rpkeru5bEyQmv1gucF_MyaFaUXUd4b7xnvCkv-BBNO8m1lvFAowB2odz9esggf82yeOVBx0yEK_NNOK4l36XvRjvIqemSLZOSi1wow_wn_ovhAEPpSSN7UTahPtz7J12vhP1LuZ4Rvn_hNx48ncw445nMBnMVmcuuakaKDC6_sAcs5lg9jq2yHSaIHRw4xcoS5XwvIykGPMUyAD-dXWFih_XFOKh7ea50hObFhghf3Dtvlo&s=sW58M1oIP86UAONphkhwSEd9rAGYdTAq3GQUmAAVEF17CHbXyxRguG8Pnj-9vIlHYaGlPlJAKMYQFVUlziARC_UnaLdIvp2A5VG3vzJVB-VF-2eaNADgpnQDxeQ0oCTX2Igu3_mmBSPVILPmNXBXAlUiLeCY2aL-x-1308I3nDK0EgAaj4kPwt_RFtTLQvVYl3H39a1ojefekBF5yLgX1BP8ldhmohU4bh4IyLx5wHBpwpBWtmhGKrPA4uQe0IBP-j07kFw47I3gIvg4icS4Jfv0n38RA7474gzMmH07dJQClr_mQoWR-_3DEUQ8TIKbzg--FPbcKxAP-8du3_WjQA&h=Jiz7W5CGWr_0FEVmKXjUvnAmgP1nPDOWTX85AQXgedw
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-storage-name/operationId/5f7a2961-c070-4573-91f9-942c8f355c51?api-version=2024-05-01-preview&t=638487614672969418&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=MV91W--N-OShxNCDwOGblJAUSDRN9ckh-ptd5FZ-pVcF0LbeG1T4IiAXE42O8vrX27idip4cE6ff_l-IFaMvmn2Kp2tQZwMBZ-QiRRQtYiUQl2YbjYYmB7_9AIwHgADRi76lkHk9rlYXngebGZ2xqi7BLu90wwX01XZRzKdJU1h0dO4yNm98rbMIFVdBLS0EG2BUCE1jT9HagiAMgmJIhQo-MV9KTYr3nmWOMc9dDFyKJ0tXZO0Xn0pKkibSjCloOHmA8RJVdON3Tw3bTUpNYl3B7TnEOZGgvvhPoHAgMPBQ3irjWFMc4vQrIKrTeDwfXiMqUO1IG1Tpgcxoxx4oCA&h=iylWhFtb9IU_pJUYSHRhxxfqZPzNArb9bqGIf58lQ-8
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 18 Jan 2024 03:14:41 GMT
+      - Mon, 15 Apr 2024 07:04:26 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationResults/20315243-0418-4e36-9f97-5a9721f38aa5/Spring/test-storage-name?api-version=2024-01-01-preview&t=638411444814899863&c=MIIHHjCCBgagAwIBAgITOgI9LlF5jGEEQe1CmgAEAj0uUTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjMxMTAxMjE0OTQ5WhcNMjQxMDI2MjE0OTQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMKt_zl2yRFDxIUmqoEA-B7WoRkSqscgwk6CGqDbwEVJS3oTI4Gk-ukQ6El3GQJVthiuwZGw4jwvTDyVWC8mQH2Zni6X1ocTXrNNa6VFJnvzeEn-HpmPATuII8AWtdtUnBvGZGAwgspvH8iZZCiHDowHCWhjVsU6_ipCsmzQeH3oRJI4AwUS_nCVA7U9WPdgIyQp6v5QPzcYCO_zIbNW4y_Cc3phfPEQvPvtSKhuijt68F5WlUY6Ps23ksosYG5VTx7z6skGG9arA5UKUzbbEO8lxzda3OFPZdG7OHe8-VMXxJjtSanZSSbdLgYBRB9m9PGr6voKtML9W5rEukE-lEUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRYUmiD-EjeFFNZByiKICN9p1JofzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAKRwStAdrsy7tgEfmtXPZXIwgdXOYwSx2Kqzlhq8b6Ptid4V3vhJvDV0WLS7d72KIMUwZiBnfPHhMmsdkLOSpNSZYC23g3QJSBWvoS86Rpkeru5bEyQmv1gucF_MyaFaUXUd4b7xnvCkv-BBNO8m1lvFAowB2odz9esggf82yeOVBx0yEK_NNOK4l36XvRjvIqemSLZOSi1wow_wn_ovhAEPpSSN7UTahPtz7J12vhP1LuZ4Rvn_hNx48ncw445nMBnMVmcuuakaKDC6_sAcs5lg9jq2yHSaIHRw4xcoS5XwvIykGPMUyAD-dXWFih_XFOKh7ea50hObFhghf3Dtvlo&s=TnYRsmTFA9hE1lfENFZnpjf7ruJguKrSDt_229GpZ0ymKusjuvfnDHiDxTKTvuOv2sYObb672DBGvwlLl6NRrALKnCi3mu9oogPkO7Fehe2asdRLK_q6_1aFSQaStMAPKpv9IP1ZfsZ6rXvtCzB02XzgJWY4jwSmOHgUXWjBmRwz8EYOtM6K2SW2vnLF_NEtvKMjXabmKoOdHHja7Y4jgOJy83GdcPqXYHl3PbIDYuxH3ri8In7izAtIEb6_D2g1RBwgMHJtem9VdflhrPvY0ZxEmsMxs_fo7-jqeSTvCxsAjIf7DEOHMVhEkdM9m3LcnMP3_KKM1Ru7_46W2BmiHA&h=EnGZkcHCqZAVv9Z6K4IS05lfp7VAZpHqWmrA6ntxNVg
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/5f7a2961-c070-4573-91f9-942c8f355c51/Spring/test-storage-name?api-version=2024-05-01-preview&t=638487614672969418&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=hqEfAKFcWfZ_wBMJ0Bopif9ZENW39O6vflGkivp-pxgRCwB_KTn2qbyS0HR3uEMFSw8NjvjyBUusvrGPP2aPzn8lzWNJXwwjUsr0aVYqvIB1T70YRpBOrwnwuLy16Iv7cbvSnzvjtudXNArekOj00C5IRo1GkXvIsLrK1Sic3XK4EAB0qPyCBQ6kv6aJjusgbXjEN182Yxftv6RsWrOBV7p9zkBx9ftI7m8YUEaRWRLoStun4dPgn7fhBgShWVGVMUSQXGaDs78YOkeWPM7v24nOkYufVj3LZ5zg-iOZZG52ZTKijCOUDExKhdnmZua0zuZdM3LHPH_dp4dlwdyFxQ&h=AdGGDXls-Ls1m4zdyr2OVTFViVzIpwuNEDmtLaucqrY
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
+      x-msedge-ref:
+      - 'Ref A: C94F792B58A64109A2C43F7D140E61D5 Ref B: MAA201060514029 Ref C: 2024-04-15T07:04:26Z'
       x-rp-server-mvid:
-      - e87f36cc-a007-45c6-8900-a43a2150612d
+      - 4c93324c-8d05-4614-bf23-e41ef7c9c1f7
     status:
       code: 202
       message: Accepted
@@ -408,21 +414,21 @@ interactions:
       ParameterSetName:
       - --name -g -s
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.6 (macOS-14.2.1-arm64-arm-64bit)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/test-storage-name/operationId/20315243-0418-4e36-9f97-5a9721f38aa5?api-version=2024-01-01-preview&t=638411444814743639&c=MIIHHjCCBgagAwIBAgITOgI9LlF5jGEEQe1CmgAEAj0uUTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjMxMTAxMjE0OTQ5WhcNMjQxMDI2MjE0OTQ5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMKt_zl2yRFDxIUmqoEA-B7WoRkSqscgwk6CGqDbwEVJS3oTI4Gk-ukQ6El3GQJVthiuwZGw4jwvTDyVWC8mQH2Zni6X1ocTXrNNa6VFJnvzeEn-HpmPATuII8AWtdtUnBvGZGAwgspvH8iZZCiHDowHCWhjVsU6_ipCsmzQeH3oRJI4AwUS_nCVA7U9WPdgIyQp6v5QPzcYCO_zIbNW4y_Cc3phfPEQvPvtSKhuijt68F5WlUY6Ps23ksosYG5VTx7z6skGG9arA5UKUzbbEO8lxzda3OFPZdG7OHe8-VMXxJjtSanZSSbdLgYBRB9m9PGr6voKtML9W5rEukE-lEUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBRYUmiD-EjeFFNZByiKICN9p1JofzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAKRwStAdrsy7tgEfmtXPZXIwgdXOYwSx2Kqzlhq8b6Ptid4V3vhJvDV0WLS7d72KIMUwZiBnfPHhMmsdkLOSpNSZYC23g3QJSBWvoS86Rpkeru5bEyQmv1gucF_MyaFaUXUd4b7xnvCkv-BBNO8m1lvFAowB2odz9esggf82yeOVBx0yEK_NNOK4l36XvRjvIqemSLZOSi1wow_wn_ovhAEPpSSN7UTahPtz7J12vhP1LuZ4Rvn_hNx48ncw445nMBnMVmcuuakaKDC6_sAcs5lg9jq2yHSaIHRw4xcoS5XwvIykGPMUyAD-dXWFih_XFOKh7ea50hObFhghf3Dtvlo&s=sW58M1oIP86UAONphkhwSEd9rAGYdTAq3GQUmAAVEF17CHbXyxRguG8Pnj-9vIlHYaGlPlJAKMYQFVUlziARC_UnaLdIvp2A5VG3vzJVB-VF-2eaNADgpnQDxeQ0oCTX2Igu3_mmBSPVILPmNXBXAlUiLeCY2aL-x-1308I3nDK0EgAaj4kPwt_RFtTLQvVYl3H39a1ojefekBF5yLgX1BP8ldhmohU4bh4IyLx5wHBpwpBWtmhGKrPA4uQe0IBP-j07kFw47I3gIvg4icS4Jfv0n38RA7474gzMmH07dJQClr_mQoWR-_3DEUQ8TIKbzg--FPbcKxAP-8du3_WjQA&h=Jiz7W5CGWr_0FEVmKXjUvnAmgP1nPDOWTX85AQXgedw
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-storage-name/operationId/5f7a2961-c070-4573-91f9-942c8f355c51?api-version=2024-05-01-preview&t=638487614672969418&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=MV91W--N-OShxNCDwOGblJAUSDRN9ckh-ptd5FZ-pVcF0LbeG1T4IiAXE42O8vrX27idip4cE6ff_l-IFaMvmn2Kp2tQZwMBZ-QiRRQtYiUQl2YbjYYmB7_9AIwHgADRi76lkHk9rlYXngebGZ2xqi7BLu90wwX01XZRzKdJU1h0dO4yNm98rbMIFVdBLS0EG2BUCE1jT9HagiAMgmJIhQo-MV9KTYr3nmWOMc9dDFyKJ0tXZO0Xn0pKkibSjCloOHmA8RJVdON3Tw3bTUpNYl3B7TnEOZGgvvhPoHAgMPBQ3irjWFMc4vQrIKrTeDwfXiMqUO1IG1Tpgcxoxx4oCA&h=iylWhFtb9IU_pJUYSHRhxxfqZPzNArb9bqGIf58lQ-8
   response:
     body:
-      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/test-storage-name/operationId/20315243-0418-4e36-9f97-5a9721f38aa5","name":"20315243-0418-4e36-9f97-5a9721f38aa5","status":"Succeeded","startTime":"2024-01-18T03:14:41.3745145Z","endTime":"2024-01-18T03:14:41.5051124Z"}'
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-storage-name/operationId/5f7a2961-c070-4573-91f9-942c8f355c51","name":"5f7a2961-c070-4573-91f9-942c8f355c51","status":"Succeeded","startTime":"2024-04-15T07:04:27.2310862Z","endTime":"2024-04-15T07:04:28.2391939Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '375'
+      - '380'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Thu, 18 Jan 2024 03:14:48 GMT
+      - Mon, 15 Apr 2024 07:04:27 GMT
       expires:
       - '-1'
       pragma:
@@ -431,14 +437,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 5B213E8FE7644AC9904E320168F1A2C8 Ref B: MAA201060514029 Ref C: 2024-04-15T07:04:27Z'
       x-rp-server-mvid:
-      - e87f36cc-a007-45c6-8900-a43a2150612d
+      - 4c93324c-8d05-4614-bf23-e41ef7c9c1f7
     status:
       code: 200
       message: OK
@@ -456,9 +462,9 @@ interactions:
       ParameterSetName:
       - --name -g -s
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.6 (macOS-14.2.1-arm64-arm-64bit)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000003/storages/test-storage-name?api-version=2024-05-01-preview
   response:
     body:
       string: '{"error":{"code":"NotFound","message":"Storage ''test-storage-name''
@@ -469,9 +475,9 @@ interactions:
       content-length:
       - '109'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Thu, 18 Jan 2024 03:14:50 GMT
+      - Mon, 15 Apr 2024 07:04:29 GMT
       expires:
       - '-1'
       pragma:
@@ -480,10 +486,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: EDDA3A05542C44498965416ADC9A356B Ref B: MAA201060513031 Ref C: 2024-04-15T07:04:29Z'
       x-rp-server-mvid:
-      - e87f36cc-a007-45c6-8900-a43a2150612d
+      - 4c93324c-8d05-4614-bf23-e41ef7c9c1f7
     status:
       code: 404
       message: Not Found

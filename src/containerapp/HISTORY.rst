@@ -5,6 +5,8 @@ Release History
 upcoming
 ++++++
 * 'az containerapp up/create/update': Wait longer time for logstream of Cloud Build to make sure the container start
+* 'az containerapp env java-component config-server-for-spring': Support create/update/show/delete Spring Cloud Config; deprecation of 'az containerapp env java-component spring-cloud-config'
+* 'az containerapp env java-component eureka-server-for-spring': Support create/update/show/delete Spring Cloud Eureka; deprecation of 'az containerapp env java-component spring-cloud-eureka'
 
 0.3.50
 ++++++

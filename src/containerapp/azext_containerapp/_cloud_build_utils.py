@@ -211,7 +211,6 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
             if count_lines_check <= 0:
                 # We checked the set number of lines and logs stream without error. Let's continue.
                 break
-            # If the build pod running on legion, it need more time to get the container logs.
             # Wait for a bit, and then break to try again. Using "logs_stream_retries" as the number of seconds to wait is a primitive exponential retry.
             log_in_file(f"{substatus_indentation}Wait logstream for build container...\n", logs_file)
             time.sleep(logs_stream_retries)
