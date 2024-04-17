@@ -84,7 +84,7 @@ az hdinsight-on-aks cluster show-instance-view --cluster-name testcluster --clus
 
 ```sh
 az hdinsight-on-aks cluster update -n testpsspark --cluster-pool-name ps-test-pool \
- -g yuchenPSGroup --service-configs-profiles @config.json
+ -g Group --service-configs-profiles @config.json
 ```
 
 #### List jobs of HDInsight on AKS cluster ####

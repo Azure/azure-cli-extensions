@@ -361,30 +361,6 @@ def validate_node_public_ip_tags(ns):
         ns.node_public_ip_tags = tags_dict
 
 
-def validate_egress_gtw_nodeselector(namespace):
-    """Validates that provided node selector is a valid format"""
-
-    if not hasattr(namespace, 'egx_gtw_nodeselector'):
-        return
-
-    labels = namespace.egx_gtw_nodeselector
-
-    if labels is None:
-        # no specify any labels
-        namespace.egx_gtw_nodeselector = {}
-        return
-
-    if isinstance(labels, list):
-        labels_dict = {}
-        for item in labels:
-            labels_dict.update(validate_label(item))
-        after_validation_labels = labels_dict
-    else:
-        after_validation_labels = validate_label(labels)
-
-    namespace.egx_gtw_nodeselector = after_validation_labels
-
-
 def validate_nodepool_labels(namespace):
     """Validates that provided node labels is a valid format"""
 
@@ -675,6 +651,15 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
 
 
+def validate_bootstrap_container_registry_resource_id(namespace):
+    container_registry_resource_id = namespace.bootstrap_container_registry_resource_id
+    if container_registry_resource_id is None or container_registry_resource_id == '':
+        return
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(container_registry_resource_id):
+        raise InvalidArgumentValueError("--bootstrap-container-registry-resource-id is not a valid Azure resource ID.")
+
+
 def validate_enable_custom_ca_trust(namespace):
     """Validates Custom CA Trust can only be used on Linux."""
     if namespace.enable_custom_ca_trust:
@@ -858,3 +843,14 @@ def validate_artifact_streaming(namespace):
     if namespace.enable_artifact_streaming:
         if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
             raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')
+
+
+def validate_custom_endpoints(namespace):
+    """Validates that custom endpoints do not contain protocol."""
+    if not namespace.custom_endpoints:
+        return
+
+    if isinstance(namespace.custom_endpoints, list):
+        for endpoint in namespace.custom_endpoints:
+            if "://" in endpoint:
+                raise InvalidArgumentValueError(f"Custom endpoint {endpoint} should not contain protocol.")

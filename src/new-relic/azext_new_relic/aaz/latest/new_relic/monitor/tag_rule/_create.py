@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a TagRule
 
     :example: Create a TagRule.
-        az new-relic monitor tag-rule create --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules send-aad-logs="Enabled" send-subscription-logs="Enabled" send-activity-logs="Enabled" filtering-tags=[] --metric-rules user-email="UserEmail@123.com" filtering-tags=[{"name":"Environment","value":"Prod","action":"Include"}]
+        az new-relic monitor tag-rule create --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules "{send-aad-logs:'Enabled',send-subscription-logs:'Enabled',send-activity-logs:'Enabled',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}" --metric-rules "{user-email:'UserEmail@123.com',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}"
     """
 
     _aaz_info = {
-        "version": "2022-07-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2022-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2024-01-01"],
         ]
     }
 
@@ -47,10 +47,11 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
-            help="Name of the Monitors resource",
+            help="Name of the Monitoring resource",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
         _args_schema.rule_set_name = AAZStrArg(
@@ -65,12 +66,12 @@ class Create(AAZCommand):
         _args_schema.log_rules = AAZObjectArg(
             options=["--log-rules"],
             arg_group="Properties",
-            help="Set of rules for sending logs for the Monitor resource.",
+            help="Set of rules for sending logs for the Monitor resource. Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
         )
         _args_schema.metric_rules = AAZObjectArg(
             options=["--metric-rules"],
             arg_group="Properties",
-            help="Set of rules for sending metrics for the Monitor resource.",
+            help="Set of rules for sending metrics for the Monitor resource. Support shorthand-syntax, json-file and yaml-file. Try \"??\" to show more.",
         )
 
         log_rules = cls._args_schema.log_rules
@@ -237,7 +238,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }

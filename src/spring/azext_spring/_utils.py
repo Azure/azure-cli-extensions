@@ -17,12 +17,13 @@ from io import open
 from re import (search, match, compile)
 from json import dumps
 
+from azure.cli.core._profile import Profile
 from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from knack.util import CLIError, todict
 from knack.log import get_logger
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
-from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 
@@ -291,6 +292,11 @@ def get_portal_uri(cli_ctx):
         return 'https://portal.azure.com'
 
 
+def get_hostname(cli_ctx, client, resource_group, service_name):
+    resource = client.services.get(resource_group, service_name)
+    return get_proxy_api_endpoint(cli_ctx, resource)
+
+
 def get_proxy_api_endpoint(cli_ctx, spring_resource):
     """Get the endpoint of the proxy api."""
     if not spring_resource.properties.fqdn:
@@ -379,6 +385,13 @@ def _register_resource_provider(cmd, resource_provider):
                "Please check with your admin on permissions, "
                "or try running registration manually with: az provider register --wait --namespace {0}")
         raise ValidationError(resource_provider, msg.format(e.args)) from e
+
+
+def get_bearer_auth(cli_ctx):
+    profile = Profile(cli_ctx=cli_ctx)
+    creds, _, tenant = profile.get_raw_token()
+    token = creds[1]
+    return BearerAuth(token)
 
 
 class BearerAuth(requests.auth.AuthBase):

@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
-from ...vendored_sdks.appplatform.v2024_01_01_preview import models
+from .common.test_utils import get_test_cmd
+from ...vendored_sdks.appplatform.v2024_05_01_preview import models
 from ...spring_instance import (spring_create)
 from ..._utils import (_get_sku_name)
 
@@ -20,16 +21,6 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 free_mock_client = mock.MagicMock()
-
-
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
 
 
 def _cf_resource_group(cli_ctx, subscription_id=None):
@@ -63,7 +54,7 @@ class BasicTest(unittest.TestCase):
     @mock.patch('azext_spring._utils.cf_resource_groups', _cf_resource_group)
     def _execute(self, resource_group, name, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
-        spring_create(_get_test_cmd(), client, resource_group, name, **kwargs)
+        spring_create(get_test_cmd(), client, resource_group, name, **kwargs)
         call_args = client.services.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(3, len(call_args[0][0]))
@@ -139,6 +130,29 @@ class TestSpringAppsCreateWithApplicationLiveView(BasicTest):
                       disable_app_insights=True)
         self.assertIsNone(self.alv_resource)
         self.assertIsNone(self.dev_tool)
+
+
+class TestSpringAppsCreateWithApplicationConfigurationService(BasicTest):
+    def __init__(self, methodName: str = ...):
+        super().__init__(methodName=methodName)
+        self.acs_resource = None
+        self.acs_request = None
+
+    def _execute(self, resource_group, name, **kwargs):
+        client = kwargs.pop('client', None) or _get_basic_mock_client()
+        super()._execute(resource_group, name, client=client, **kwargs)
+        self.acs_request = client.configuration_services.begin_create_or_update.call_args_list
+        self.acs_resource = self.acs_request[0][0][3] if self.acs_request else None
+
+    def test_asa_enterprise_with_acs(self):
+        self._execute('rg', 'asa', sku=self._get_sku('Enterprise'),
+                      enable_application_configuration_service=True)
+        self.assertIsNotNone(self.acs_resource)
+        self.assertEqual('rg', self.acs_request[0][0][0])
+        self.assertEqual('asa', self.acs_request[0][0][1])
+        self.assertEqual('default', self.acs_request[0][0][2])
+        self.assertIsNotNone(self.acs_resource)
+        self.assertEqual(models.ConfigurationServiceGeneration.GEN2, self.acs_resource.properties.generation)
 
 
 class TestSpringAppsCreateWithApplicationAccelerator(BasicTest):
