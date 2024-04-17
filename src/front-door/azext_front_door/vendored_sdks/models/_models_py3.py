@@ -3205,8 +3205,8 @@ class PolicySettings(_serialization.Model):
      content. Known values are: "Disabled" and "Enabled".
     :vartype request_body_check: str or ~azure.mgmt.frontdoor.models.PolicyRequestBodyCheck
     :ivar javascript_challenge_expiration_in_minutes: Defines the JavaScript challenge cookie
-     validity lifetime in minutes. Value must be an integer between 5 and 1440 with the default
-     value being 30.
+     validity lifetime in minutes. This setting is only applicable to Premium_AzureFrontDoor. Value
+     must be an integer between 5 and 1440 with the default value being 30.
     :vartype javascript_challenge_expiration_in_minutes: int
     :ivar state: State of the log scrubbing config. Default value is Enabled. Known values are:
      "Enabled" and "Disabled".
@@ -3245,7 +3245,7 @@ class PolicySettings(_serialization.Model):
         custom_block_response_status_code: Optional[int] = None,
         custom_block_response_body: Optional[str] = None,
         request_body_check: Optional[Union[str, "_models.PolicyRequestBodyCheck"]] = None,
-        javascript_challenge_expiration_in_minutes: int = None,
+        javascript_challenge_expiration_in_minutes: Optional[int] = None,
         state: Optional[Union[str, "_models.WebApplicationFirewallScrubbingState"]] = None,
         scrubbing_rules: Optional[List["_models.WebApplicationFirewallScrubbingRules"]] = None,
         **kwargs: Any
@@ -3270,8 +3270,8 @@ class PolicySettings(_serialization.Model):
          content. Known values are: "Disabled" and "Enabled".
         :paramtype request_body_check: str or ~azure.mgmt.frontdoor.models.PolicyRequestBodyCheck
         :keyword javascript_challenge_expiration_in_minutes: Defines the JavaScript challenge cookie
-         validity lifetime in minutes. Value must be an integer between 5 and 1440 with the default
-         value being 30.
+         validity lifetime in minutes. This setting is only applicable to Premium_AzureFrontDoor. Value
+         must be an integer between 5 and 1440 with the default value being 30.
         :paramtype javascript_challenge_expiration_in_minutes: int
         :keyword state: State of the log scrubbing config. Default value is Enabled. Known values are:
          "Enabled" and "Disabled".
