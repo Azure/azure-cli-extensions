@@ -173,6 +173,12 @@ aks update:
     disable_ai_toolchain_operator:
       rule_exclusions:
         - option_length_too_long
+    bootstrap_artifact_source:
+      rule_exclusions:
+        - option_length_too_long
+    bootstrap_container_registry_resource_id:
+      rule_exclusions:
+        - option_length_too_long
 aks delete:
   parameters:
     ignore_pod_disruption_budget:
