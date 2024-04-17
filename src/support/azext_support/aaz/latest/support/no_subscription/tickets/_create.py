@@ -20,17 +20,62 @@ class Create(AAZCommand):
     :example: Create a ticket for Billing related issues
         az support no-subscription tickets create --ticket-name "BillingTestTicketName" --title "BillingTicketTitle"--contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "BillingTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification  "/providers/Microsoft.Support/services/BillingServiceNameGuid/problemClassifications/BillingProblemClassificationNameGuid" --severity "minimal"
 
-    :example: Create a ticket for Subscription Management related issues.
+    :example: Create a ticket for Subscription Management related issues
         az support no-subscription tickets create --ticket-name "SubMgmtTestTicketName" --title "SubMgmtTicketTitle" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "SubMgmtTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification  "/providers/Microsoft.Support/services/SubMgmtServiceNameGuid/problemClassifications/SubMgmtProblemClassificationNameGuid" --severity "minimal"
 
     :example: Create a ticket for Technical issue related to a specific resource
         az support no-subscription tickets create --ticket-name "TechnicalTestTicketName" --title "TechnicalTicketTitle" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com"--description "TechnicalTicketDescription" --advanced-diagnostic-consent "Yes" --problem-classification  "/providers/Microsoft.Support/services/TechnicalServiceNameGuid/problemClassifications/TechnicalProblemClassificationNameGuid" --severity "minimal" --technical-resource "/RgName/providers/Microsoft.Compute/virtualMachines/RName" --secondary-consent "[{type:VirtualMachineMemoryDump,user-consent:No}]"
+
+    :example: Create a ticket to request Quota increase for Active Jobs and Job Schedules for a Batch account
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "my description" --advanced-diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/batch_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_Batch_Account" --title "Quota Increase for Batch Account" --quota-change-version "1.0" --quota-change-request-sub-type "Account" --quota-change-requests '[{"region":"EastUS","payload":"{\"AccountName\":\"test\",\"NewLimit\":200,\"Type\":\"Jobs\"}"}]'
+
+    :example: Ticket to request Quota increase for Azure SQL managed instance
+        az support no-subscription tickets create --contact-country "usa" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "my description" --advanced-diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/sql_managedinstance_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_SQLMI" --title "Quota Increase for SQL Managed Instance" --quota-change-version "1.0" --quota-change-request-sub-type "SQLMI" --quota-change-requests '[{"region":"EastUS","payload":"{\"NewLimit\":200, \"Metadata\":null, \"Type\":\"vCore\"}"},{"region":"EastUS","payload":"{\"NewLimit\":200, \"Metadata\":null, \"Type\":\"Subnet\"}"}]'
+
+    :example: Create a ticket to request Quota increase for Batch accounts for a subscription
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for Batch accounts in subscription" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/batch_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_Batch_Account_Subscription" --title "Quota Increase for Batch Accounts in Subscription" --quota-change-version "1.0" --quota-change-request-sub-type "Subscription" --quota-change-requests '[{"region":"EastUS","payload":"{\"NewLimit\":200,\"Type\":\"Account\"}"}]'
+
+    :example: Create a ticket to request Quota increase for Compute VM Cores
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for Compute VM Cores" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/CoresQuotaProblemClassificationNameGuid" --severity "minimal" --ticket-name "Quota_Increase_Compute_VM_Cores" --title "Quota Increase for Compute VM Cores" --quota-change-version "1.0" --quota-change-requests '[{"region":"EASTUS","payload":"{\"VMFamily\":\"DSv3 Series\",\"NewLimit\":110}"}]'
+
+    :example: Create a ticket to request Quota increase for DTUs for Azure Synapse Analytics
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for DTUs for Azure Synapse Analytics" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/sql_datawarehouse_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_DTUs_Synapse" --title "Quota Increase for DTUs in Azure Synapse Analytics" --quota-change-version "1.0" --quota-change-request-sub-type "DTUs" --quota-change-requests '[{"region":"EastUS","payload":"{\"ServerName\":\"testserver\",\"NewLimit\":54000}"}]'
+
+    :example: Create a ticket to request Quota increase for DTUs for SQL Database
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for DTUs for SQL Database" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/sql_database_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_DTUs_SQL_DB" --title "Quota Increase for DTUs in SQL Database" --quota-change-version "1.0" --quota-change-request-sub-type "DTUs" --quota-change-requests '[{"region":"EastUS","payload":"{\"ServerName\":\"testserver\",\"NewLimit\":54000}"}]'
+
+    :example: Create a ticket to request Quota increase for Low-priority cores for a Batch account
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for Low-priority cores for a Batch account" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/batch_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_LowPriority_Batch_Account" --title "Quota Increase for Low-priority Cores in Batch Account" --quota-change-version "1.0" --quota-change-request-sub-type "Account" --quota-change-requests '[{"region":"EastUS","payload":"{\"AccountName\":\"test\",\"NewLimit\":200,\"Type\":\"LowPriority\"}"}]'
+
+    :example: Create a ticket to request Quota increase for Low-priority cores for Machine Learning service
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for Low-priority cores for Machine Learning service" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/machine_learning_service_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_LowPriority_ML_Service" --title "Quota Increase for Low-priority Cores in Machine Learning Service" --quota-change-version "1.0" --quota-change-request-sub-type "BatchAml" --quota-change-requests '[{"region":"EastUS","payload":"{\"NewLimit\":200,\"Type\":\"LowPriority\"}"}]'
+
+    :example: Create a ticket for Generic Quota increase for any Azure Service
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting a generic quota increase for any Azure service" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/GenericProblemClassificationNameGuid" --severity "minimal" --ticket-name "Quota_Increase_Generic" --title "Generic Quota Increase for Any Azure Service"
+
+    :example: Create a ticket to request Quota increase for Pools for a Batch account
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for Pools for a Batch account" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/BatchQuotaProblemClassificationNameGuid" --severity "minimal" --ticket-name "Quota_Increase_Batch_Pools" --title "Quota Increase for Pools in Batch Account"  --quota-change-version "1.0" --quota-change-requests '[{"region":"WESTUS","payload":"{\"AccountName\":\"test\",\"NewLimit\":102,\"Type\":\"Pools\"}"}]'
+
+    :example: Create a ticket to request Quota increase for Servers for Azure Synapse Analytics
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for Servers for Azure Synapse Analytics" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/sql_datawarehouse_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_Servers_Synapse" --title "Quota Increase for Servers in Azure Synapse Analytics" --quota-change-version "1.0" --quota-change-request-sub-type "Servers" --quota-change-requests '[{"region":"EastUS","payload":"{\"NewLimit\":200}"}]'
+
+    :example: Create a ticket to request Quota increase for Servers for SQL Database
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for Servers for SQL Database" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/sql_database_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_Servers_SQL_Database" --title "Quota Increase for Servers in SQL Database" --quota-change-version "1.0" --quota-change-request-sub-type "Servers" --quota-change-requests '[{"region":"EastUS","payload":"{\"NewLimit\":200}"}]'
+
+    :example: Create a ticket to request Quota increase for services that do not require additional details in the quotaTicketDetails object
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for services without additional details" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/cosmosdb_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_Services_No_Details" --title "Quota Increase for Services without Details"
+
+    :example: Create a ticket to request Quota increase for specific VM family cores for a Batch account
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for specific VM family cores for a Batch account" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/batch_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_VMFam_Cores_Batch_Account" --title "Quota Increase for Specific VM Family Cores in Batch Account" --quota-change-version "1.0" --quota-change-request-sub-type "Account" --quota-change-requests '[{"region":"EastUS","payload":"{\"AccountName\":\"test\",\"VMFamily\":\"standardA0_A7Family\",\"NewLimit\":200,\"Type\":\"Dedicated\"}"}]'
+
+    :example: Here are the updated commands:  Create a ticket to request Quota increase for Servers for SQL Database:  bash Copy code support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for Servers for SQL Database" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/sql_database_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_Servers_SQL_Database" --title "Quota Increase for Servers in SQL Database" --quota-change-version "1.0" --quota-change-request-sub-type "Servers" --quota-change-requests '[{"region":"EastUS","payload":"{\"NewLimit\":200}"}]' Create a ticket to request Quota increase for services that do not require additional details in the quotaTicketDetails object:  bash Copy code support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for services without additional details" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/cosmosdb_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_Services_No_Details" --title "Quota Increase for Services without Details" Create a ticket to request Quota increase for specific VM family cores for a Batch account:  bash Copy code support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for specific VM family cores for a Batch account" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/batch_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_VMFam_Cores_Batch_Account" --title "Quota Increase for Specific VM Family Cores in Batch Account" --quota-change-version "1.0" --quota-change-request-sub-type "Account" --quota-change-requests '[{"region":"EastUS","payload":"{\"AccountName\":\"test\",\"VMFamily\":\"standardA0_A7Family\",\"NewLimit\":200,\"Type\":\"Dedicated\"}"}]' Create a ticket to request Quota increase for specific VM family cores for Machine Learning service
+        az support no-subscription tickets create --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "abc" --contact-language "en-US" --contact-last-name "xyz" --contact-method "email" --contact-timezone "Pacific Standard Time" --description "Requesting quota increase for specific VM family cores for Machine Learning service" --diagnostic-consent "Yes" --problem-classification "/providers/Microsoft.Support/services/quota_service_guid/problemClassifications/machine_learning_service_problemClassification_guid" --severity "moderate" --ticket-name "Quota_Increase_VMFam_Cores_ML_Service" --title "Quota Increase for Specific VM Family Cores in Machine Learning Service" --quota-change-version "1.0" --quota-change-request-sub-type "BatchAml" --quota-change-requests '[{"region":"EastUS","payload":"{\"VMFamily\":\"standardA0_A7Family\",\"NewLimit\":200,\"Type\":\"Dedicated\"}"}]'
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.support/supporttickets/{}", "2022-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.support/supporttickets/{}", "2024-04-01"],
         ]
     }
 
@@ -59,8 +104,8 @@ class Create(AAZCommand):
         _args_schema.advanced_diagnostic_consent = AAZStrArg(
             options=["--advanced-diagnostic-consent"],
             help="Advanced diagnostic consent to be updated on the support ticket.",
-            enum={"No": "No", "Yes": "Yes"},
             required=True,
+            enum={"No": "No", "Yes": "Yes"},
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
@@ -91,8 +136,8 @@ class Create(AAZCommand):
         _args_schema.severity = AAZStrArg(
             options=["--severity"],
             help="A value that indicates the urgency of the case, which in turn determines the response time according to the service level agreement of the technical support plan you have with Azure. Note: 'Highest critical impact', also known as the 'Emergency - Severe impact' level in the Azure portal is reserved only for our Premium customers.",
-            enum={"critical": "critical", "highestcriticalimpact": "highestcriticalimpact", "minimal": "minimal", "moderate": "moderate"},
             required=True,
+            enum={"critical": "critical", "highestcriticalimpact": "highestcriticalimpact", "minimal": "minimal", "moderate": "moderate"},
         )
         _args_schema.title = AAZStrArg(
             options=["--title"],
@@ -149,8 +194,8 @@ class Create(AAZCommand):
             options=["--contact-method"],
             arg_group="Contact",
             help="Preferred contact method.",
-            enum={"email": "email", "phone": "phone"},
             required=True,
+            enum={"email": "email", "phone": "phone"},
         )
         _args_schema.contact_language = AAZStrArg(
             options=["--contact-language"],
@@ -175,6 +220,13 @@ class Create(AAZCommand):
         contact_additional_emails.Element = AAZStrArg()
 
         # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.enrollment_id = AAZStrArg(
+            options=["--enrollment-id"],
+            arg_group="Properties",
+            help="Enrollment Id associated with the support ticket.",
+        )
 
         # define Arg Group "Quota"
 
@@ -291,7 +343,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -316,13 +368,14 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("advancedDiagnosticConsent", AAZStrType, ".advanced_diagnostic_consent")
+                properties.set_prop("advancedDiagnosticConsent", AAZStrType, ".advanced_diagnostic_consent", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("contactDetails", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("enrollmentId", AAZStrType, ".enrollment_id")
                 properties.set_prop("fileWorkspaceName", AAZStrType, ".file_workspace_name")
                 properties.set_prop("problemClassificationId", AAZStrType, ".problem_classification", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("problemStartTime", AAZStrType, ".start_time")
@@ -404,7 +457,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
@@ -413,6 +466,7 @@ class Create(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.advanced_diagnostic_consent = AAZStrType(
                 serialized_name="advancedDiagnosticConsent",
+                flags={"required": True},
             )
             properties.contact_details = AAZObjectType(
                 serialized_name="contactDetails",
@@ -427,10 +481,13 @@ class Create(AAZCommand):
             )
             properties.enrollment_id = AAZStrType(
                 serialized_name="enrollmentId",
-                flags={"read_only": True},
             )
             properties.file_workspace_name = AAZStrType(
                 serialized_name="fileWorkspaceName",
+            )
+            properties.is_temporary_ticket = AAZStrType(
+                serialized_name="isTemporaryTicket",
+                flags={"read_only": True},
             )
             properties.modified_date = AAZStrType(
                 serialized_name="modifiedDate",

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "support no-subscription file",
 )
 class __CMDGroup(AAZCommandGroup):
-    """File operations for no subscription.
+    """File operations
     """
     pass
 

@@ -36,16 +36,19 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.support/supporttickets/{}", "2022-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.support/supporttickets/{}", "2024-04-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
+    AZ_SUPPORT_GENERIC_UPDATE = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -58,102 +61,227 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.ticket_name = AAZStrArg(
-            options=["--ticket-name"],
+        _args_schema.support_ticket_name = AAZStrArg(
+            options=["--support-ticket-name"],
             help="Support ticket name.",
             required=True,
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
         _args_schema.advanced_diagnostic_consent = AAZStrArg(
             options=["--advanced-diagnostic-consent"],
+            arg_group="Properties",
             help="Advanced diagnostic consent to be updated on the support ticket.",
             enum={"No": "No", "Yes": "Yes"},
         )
+        _args_schema.contact_details = AAZObjectArg(
+            options=["--contact-details"],
+            arg_group="Properties",
+            help="Contact information of the user requesting to create a support ticket.",
+        )
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
+            arg_group="Properties",
+            help="Detailed description of the question or issue.",
+        )
+        _args_schema.enrollment_id = AAZStrArg(
+            options=["--enrollment-id"],
+            arg_group="Properties",
+            help="Enrollment Id associated with the support ticket.",
+            nullable=True,
+        )
+        _args_schema.file_workspace_name = AAZStrArg(
+            options=["--file-workspace-name"],
+            arg_group="Properties",
+            help="File workspace name.",
+            nullable=True,
+        )
+        _args_schema.problem_classification_id = AAZStrArg(
+            options=["--problem-classification-id"],
+            arg_group="Properties",
+            help="Each Azure service has its own set of issue categories, also known as problem classification. This parameter is the unique Id for the type of problem you are experiencing.",
+        )
+        _args_schema.problem_scoping_questions = AAZStrArg(
+            options=["--problem-scoping-questions"],
+            arg_group="Properties",
+            help="Problem scoping questions associated with the support ticket.",
+            nullable=True,
+        )
+        _args_schema.problem_start_time = AAZDateTimeArg(
+            options=["--problem-start-time"],
+            arg_group="Properties",
+            help="Time in UTC (ISO 8601 format) when the problem started.",
+            nullable=True,
+        )
+        _args_schema.quota_ticket_details = AAZObjectArg(
+            options=["--quota-ticket-details"],
+            arg_group="Properties",
+            help="Additional ticket details associated with a quota support ticket request.",
+            nullable=True,
+        )
+        _args_schema.require24_x7_response = AAZBoolArg(
+            options=["--require24-x7-response"],
+            arg_group="Properties",
+            help="Indicates if this requires a 24x7 response from Azure.",
+            nullable=True,
+        )
         _args_schema.secondary_consent = AAZListArg(
             options=["--secondary-consent"],
+            arg_group="Properties",
             help="This property indicates secondary consents for the support ticket",
+            nullable=True,
+        )
+        _args_schema.service_id = AAZStrArg(
+            options=["--service-id"],
+            arg_group="Properties",
+            help="This is the resource Id of the Azure service resource associated with the support ticket.",
         )
         _args_schema.severity = AAZStrArg(
             options=["--severity"],
-            help="Severity level.",
+            arg_group="Properties",
+            help="A value that indicates the urgency of the case, which in turn determines the response time according to the service level agreement of the technical support plan you have with Azure. Note: 'Highest critical impact', also known as the 'Emergency - Severe impact' level in the Azure portal is reserved only for our Premium customers.",
             enum={"critical": "critical", "highestcriticalimpact": "highestcriticalimpact", "minimal": "minimal", "moderate": "moderate"},
         )
-        _args_schema.status = AAZStrArg(
-            options=["--status"],
-            help="Status to be updated on the ticket.",
-            enum={"closed": "closed", "open": "open"},
+        _args_schema.support_plan_id = AAZStrArg(
+            options=["--support-plan-id"],
+            arg_group="Properties",
+            help="Support plan id associated with the support ticket.",
+            nullable=True,
+        )
+        _args_schema.support_ticket_id = AAZStrArg(
+            options=["--support-ticket-id"],
+            arg_group="Properties",
+            help="System generated support ticket Id that is unique.",
+            nullable=True,
+        )
+        _args_schema.technical_ticket_details = AAZObjectArg(
+            options=["--technical-ticket-details"],
+            arg_group="Properties",
+            help="Additional ticket details associated with a technical support ticket request.",
+            nullable=True,
+        )
+        _args_schema.title = AAZStrArg(
+            options=["--title"],
+            arg_group="Properties",
+            help="Title of the support ticket.",
+        )
+
+        contact_details = cls._args_schema.contact_details
+        contact_details.additional_email_addresses = AAZListArg(
+            options=["additional-email-addresses"],
+            help="Additional email addresses listed will be copied on any correspondence about the support ticket.",
+            nullable=True,
+        )
+        contact_details.country = AAZStrArg(
+            options=["country"],
+            help="Country of the user. This is the ISO 3166-1 alpha-3 code.",
+        )
+        contact_details.first_name = AAZStrArg(
+            options=["first-name"],
+            help="First name.",
+        )
+        contact_details.last_name = AAZStrArg(
+            options=["last-name"],
+            help="Last name.",
+        )
+        contact_details.phone_number = AAZStrArg(
+            options=["phone-number"],
+            help="Phone number. This is required if preferred contact method is phone.",
+            nullable=True,
+        )
+        contact_details.preferred_contact_method = AAZStrArg(
+            options=["preferred-contact-method"],
+            help="Preferred contact method.",
+            enum={"email": "email", "phone": "phone"},
+        )
+        contact_details.preferred_support_language = AAZStrArg(
+            options=["preferred-support-language"],
+            help="Preferred language of support from Azure. Support languages vary based on the severity you choose for your support ticket. Learn more at [Azure Severity and responsiveness](https://azure.microsoft.com/support/plans/response). Use the standard language-country code. Valid values are 'en-us' for English, 'zh-hans' for Chinese, 'es-es' for Spanish, 'fr-fr' for French, 'ja-jp' for Japanese, 'ko-kr' for Korean, 'ru-ru' for Russian, 'pt-br' for Portuguese, 'it-it' for Italian, 'zh-tw' for Chinese and 'de-de' for German.",
+        )
+        contact_details.preferred_time_zone = AAZStrArg(
+            options=["preferred-time-zone"],
+            help="Time zone of the user. This is the name of the time zone from [Microsoft Time Zone Index Values](https://support.microsoft.com/help/973627/microsoft-time-zone-index-values).",
+        )
+        contact_details.primary_email_address = AAZStrArg(
+            options=["primary-email-address"],
+            help="Primary email address.",
+        )
+
+        additional_email_addresses = cls._args_schema.contact_details.additional_email_addresses
+        additional_email_addresses.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        quota_ticket_details = cls._args_schema.quota_ticket_details
+        quota_ticket_details.quota_change_request_sub_type = AAZStrArg(
+            options=["quota-change-request-sub-type"],
+            help="Required for certain quota types when there is a sub type, such as Batch, for which you are requesting a quota increase.",
+            nullable=True,
+        )
+        quota_ticket_details.quota_change_request_version = AAZStrArg(
+            options=["quota-change-request-version"],
+            help="Quota change request version.",
+            nullable=True,
+        )
+        quota_ticket_details.quota_change_requests = AAZListArg(
+            options=["quota-change-requests"],
+            help="This property is required for providing the region and new quota limits.",
+            nullable=True,
+        )
+
+        quota_change_requests = cls._args_schema.quota_ticket_details.quota_change_requests
+        quota_change_requests.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.quota_ticket_details.quota_change_requests.Element
+        _element.payload = AAZStrArg(
+            options=["payload"],
+            help="Payload of the quota increase request.",
+            nullable=True,
+        )
+        _element.region = AAZStrArg(
+            options=["region"],
+            help="Region for which the quota increase request is being made.",
+            nullable=True,
         )
 
         secondary_consent = cls._args_schema.secondary_consent
-        secondary_consent.Element = AAZObjectArg()
+        secondary_consent.Element = AAZObjectArg(
+            nullable=True,
+        )
 
         _element = cls._args_schema.secondary_consent.Element
         _element.type = AAZStrArg(
             options=["type"],
             help="The service name for which the secondary consent is being provided. The value needs to be retrieved from the Problem Classification API response.",
+            nullable=True,
         )
         _element.user_consent = AAZStrArg(
             options=["user-consent"],
             help="User consent value provided",
+            nullable=True,
             enum={"No": "No", "Yes": "Yes"},
         )
 
-        # define Arg Group "Contact"
-
-        _args_schema = cls._args_schema
-        _args_schema.contact_additional_emails = AAZListArg(
-            options=["--contact-additional-emails"],
-            arg_group="Contact",
-            help="Email addresses listed will be copied on any correspondence about the support ticket.",
+        technical_ticket_details = cls._args_schema.technical_ticket_details
+        technical_ticket_details.resource_id = AAZStrArg(
+            options=["resource-id"],
+            help="This is the resource Id of the Azure service resource (For example: A virtual machine resource or an HDInsight resource) for which the support ticket is created.",
+            nullable=True,
         )
-        _args_schema.contact_country = AAZStrArg(
-            options=["--contact-country"],
-            arg_group="Contact",
-            help="Country of the user. This is the ISO 3166-1 alpha-3 code.",
-        )
-        _args_schema.contact_first_name = AAZStrArg(
-            options=["--contact-first-name"],
-            arg_group="Contact",
-            help="First name.",
-        )
-        _args_schema.contact_last_name = AAZStrArg(
-            options=["--contact-last-name"],
-            arg_group="Contact",
-            help="Last name.",
-        )
-        _args_schema.contact_phone_number = AAZStrArg(
-            options=["--contact-phone-number"],
-            arg_group="Contact",
-            help="Phone number. This is required if preferred contact method is phone.",
-        )
-        _args_schema.contact_method = AAZStrArg(
-            options=["--contact-method"],
-            arg_group="Contact",
-            help="Preferred contact method.",
-            enum={"email": "email", "phone": "phone"},
-        )
-        _args_schema.contact_language = AAZStrArg(
-            options=["--contact-language"],
-            arg_group="Contact",
-            help="Preferred language of support from Azure. Support languages vary based on the severity you choose for your support ticket. Learn more at [Azure Severity and responsiveness](https://azure.microsoft.com/support/plans/response/). Use the standard language-country code. Valid values are 'en-us' for English, 'zh-hans' for Chinese, 'es-es' for Spanish, 'fr-fr' for French, 'ja-jp' for Japanese, 'ko-kr' for Korean, 'ru-ru' for Russian, 'pt-br' for Portuguese, 'it-it' for Italian, 'zh-tw' for Chinese and 'de-de' for German.",
-        )
-        _args_schema.contact_timezone = AAZStrArg(
-            options=["--contact-timezone"],
-            arg_group="Contact",
-            help="Time zone of the user. This is the name of the time zone from [Microsoft Time Zone Index Values](https://support.microsoft.com/help/973627/microsoft-time-zone-index-values).",
-        )
-        _args_schema.contact_email = AAZStrArg(
-            options=["--contact-email"],
-            arg_group="Contact",
-            help="Primary email address.",
-        )
-
-        contact_additional_emails = cls._args_schema.contact_additional_emails
-        contact_additional_emails.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SupportTicketsNoSubscriptionUpdate(ctx=self.ctx)()
+        self.SupportTicketsNoSubscriptionGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
+        yield self.SupportTicketsNoSubscriptionCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -164,11 +292,19 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SupportTicketsNoSubscriptionUpdate(AAZHttpOperation):
+    class SupportTicketsNoSubscriptionGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -188,7 +324,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PATCH"
+            return "GET"
 
         @property
         def error_format(self):
@@ -198,7 +334,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "supportTicketName", self.ctx.args.ticket_name,
+                    "supportTicketName", self.ctx.args.support_ticket_name,
                     required=True,
                 ),
             }
@@ -208,7 +344,98 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_support_ticket_details_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
+    class SupportTicketsNoSubscriptionCreate(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/providers/Microsoft.Support/supportTickets/{supportTicketName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "supportTicketName", self.ctx.args.support_ticket_name,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -230,39 +457,8 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                value=self.ctx.vars.instance,
             )
-            _builder.set_prop("advancedDiagnosticConsent", AAZStrType, ".advanced_diagnostic_consent")
-            _builder.set_prop("contactDetails", AAZObjectType)
-            _builder.set_prop("secondaryConsent", AAZListType, ".secondary_consent")
-            _builder.set_prop("severity", AAZStrType, ".severity")
-            _builder.set_prop("status", AAZStrType, ".status")
-
-            contact_details = _builder.get(".contactDetails")
-            if contact_details is not None:
-                contact_details.set_prop("additionalEmailAddresses", AAZListType, ".contact_additional_emails")
-                contact_details.set_prop("country", AAZStrType, ".contact_country")
-                contact_details.set_prop("firstName", AAZStrType, ".contact_first_name")
-                contact_details.set_prop("lastName", AAZStrType, ".contact_last_name")
-                contact_details.set_prop("phoneNumber", AAZStrType, ".contact_phone_number")
-                contact_details.set_prop("preferredContactMethod", AAZStrType, ".contact_method")
-                contact_details.set_prop("preferredSupportLanguage", AAZStrType, ".contact_language")
-                contact_details.set_prop("preferredTimeZone", AAZStrType, ".contact_timezone")
-                contact_details.set_prop("primaryEmailAddress", AAZStrType, ".contact_email")
-
-            additional_email_addresses = _builder.get(".contactDetails.additionalEmailAddresses")
-            if additional_email_addresses is not None:
-                additional_email_addresses.set_elements(AAZStrType, ".")
-
-            secondary_consent = _builder.get(".secondaryConsent")
-            if secondary_consent is not None:
-                secondary_consent.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".secondaryConsent[]")
-            if _elements is not None:
-                _elements.set_prop("type", AAZStrType, ".type")
-                _elements.set_prop("userConsent", AAZStrType, ".user_consent")
 
             return self.serialize_content(_content_value)
 
@@ -282,206 +478,316 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.advanced_diagnostic_consent = AAZStrType(
-                serialized_name="advancedDiagnosticConsent",
-            )
-            properties.contact_details = AAZObjectType(
-                serialized_name="contactDetails",
-                flags={"required": True},
-            )
-            properties.created_date = AAZStrType(
-                serialized_name="createdDate",
-                flags={"read_only": True},
-            )
-            properties.description = AAZStrType(
-                flags={"required": True},
-            )
-            properties.enrollment_id = AAZStrType(
-                serialized_name="enrollmentId",
-                flags={"read_only": True},
-            )
-            properties.file_workspace_name = AAZStrType(
-                serialized_name="fileWorkspaceName",
-            )
-            properties.modified_date = AAZStrType(
-                serialized_name="modifiedDate",
-                flags={"read_only": True},
-            )
-            properties.problem_classification_display_name = AAZStrType(
-                serialized_name="problemClassificationDisplayName",
-                flags={"read_only": True},
-            )
-            properties.problem_classification_id = AAZStrType(
-                serialized_name="problemClassificationId",
-                flags={"required": True},
-            )
-            properties.problem_scoping_questions = AAZStrType(
-                serialized_name="problemScopingQuestions",
-            )
-            properties.problem_start_time = AAZStrType(
-                serialized_name="problemStartTime",
-            )
-            properties.quota_ticket_details = AAZObjectType(
-                serialized_name="quotaTicketDetails",
-            )
-            properties.require24_x7_response = AAZBoolType(
-                serialized_name="require24X7Response",
-            )
-            properties.secondary_consent = AAZListType(
-                serialized_name="secondaryConsent",
-            )
-            properties.service_display_name = AAZStrType(
-                serialized_name="serviceDisplayName",
-                flags={"read_only": True},
-            )
-            properties.service_id = AAZStrType(
-                serialized_name="serviceId",
-                flags={"required": True},
-            )
-            properties.service_level_agreement = AAZObjectType(
-                serialized_name="serviceLevelAgreement",
-            )
-            properties.severity = AAZStrType(
-                flags={"required": True},
-            )
-            properties.status = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.support_engineer = AAZObjectType(
-                serialized_name="supportEngineer",
-            )
-            properties.support_plan_display_name = AAZStrType(
-                serialized_name="supportPlanDisplayName",
-                flags={"read_only": True},
-            )
-            properties.support_plan_id = AAZStrType(
-                serialized_name="supportPlanId",
-            )
-            properties.support_plan_type = AAZStrType(
-                serialized_name="supportPlanType",
-                flags={"read_only": True},
-            )
-            properties.support_ticket_id = AAZStrType(
-                serialized_name="supportTicketId",
-            )
-            properties.technical_ticket_details = AAZObjectType(
-                serialized_name="technicalTicketDetails",
-            )
-            properties.title = AAZStrType(
-                flags={"required": True},
-            )
-
-            contact_details = cls._schema_on_200.properties.contact_details
-            contact_details.additional_email_addresses = AAZListType(
-                serialized_name="additionalEmailAddresses",
-            )
-            contact_details.country = AAZStrType(
-                flags={"required": True},
-            )
-            contact_details.first_name = AAZStrType(
-                serialized_name="firstName",
-                flags={"required": True},
-            )
-            contact_details.last_name = AAZStrType(
-                serialized_name="lastName",
-                flags={"required": True},
-            )
-            contact_details.phone_number = AAZStrType(
-                serialized_name="phoneNumber",
-            )
-            contact_details.preferred_contact_method = AAZStrType(
-                serialized_name="preferredContactMethod",
-                flags={"required": True},
-            )
-            contact_details.preferred_support_language = AAZStrType(
-                serialized_name="preferredSupportLanguage",
-                flags={"required": True},
-            )
-            contact_details.preferred_time_zone = AAZStrType(
-                serialized_name="preferredTimeZone",
-                flags={"required": True},
-            )
-            contact_details.primary_email_address = AAZStrType(
-                serialized_name="primaryEmailAddress",
-                flags={"required": True},
-            )
-
-            additional_email_addresses = cls._schema_on_200.properties.contact_details.additional_email_addresses
-            additional_email_addresses.Element = AAZStrType()
-
-            quota_ticket_details = cls._schema_on_200.properties.quota_ticket_details
-            quota_ticket_details.quota_change_request_sub_type = AAZStrType(
-                serialized_name="quotaChangeRequestSubType",
-            )
-            quota_ticket_details.quota_change_request_version = AAZStrType(
-                serialized_name="quotaChangeRequestVersion",
-            )
-            quota_ticket_details.quota_change_requests = AAZListType(
-                serialized_name="quotaChangeRequests",
-            )
-
-            quota_change_requests = cls._schema_on_200.properties.quota_ticket_details.quota_change_requests
-            quota_change_requests.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.quota_ticket_details.quota_change_requests.Element
-            _element.payload = AAZStrType()
-            _element.region = AAZStrType()
-
-            secondary_consent = cls._schema_on_200.properties.secondary_consent
-            secondary_consent.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.secondary_consent.Element
-            _element.type = AAZStrType()
-            _element.user_consent = AAZStrType(
-                serialized_name="userConsent",
-            )
-
-            service_level_agreement = cls._schema_on_200.properties.service_level_agreement
-            service_level_agreement.expiration_time = AAZStrType(
-                serialized_name="expirationTime",
-                flags={"read_only": True},
-            )
-            service_level_agreement.sla_minutes = AAZIntType(
-                serialized_name="slaMinutes",
-                flags={"read_only": True},
-            )
-            service_level_agreement.start_time = AAZStrType(
-                serialized_name="startTime",
-                flags={"read_only": True},
-            )
-
-            support_engineer = cls._schema_on_200.properties.support_engineer
-            support_engineer.email_address = AAZStrType(
-                serialized_name="emailAddress",
-                flags={"read_only": True},
-            )
-
-            technical_ticket_details = cls._schema_on_200.properties.technical_ticket_details
-            technical_ticket_details.resource_id = AAZStrType(
-                serialized_name="resourceId",
-            )
+            _UpdateHelper._build_schema_support_ticket_details_read(cls._schema_on_200)
 
             return cls._schema_on_200
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("advancedDiagnosticConsent", AAZStrType, ".advanced_diagnostic_consent", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("contactDetails", AAZObjectType, ".contact_details", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("enrollmentId", AAZStrType, ".enrollment_id")
+                properties.set_prop("fileWorkspaceName", AAZStrType, ".file_workspace_name")
+                properties.set_prop("problemClassificationId", AAZStrType, ".problem_classification_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("problemScopingQuestions", AAZStrType, ".problem_scoping_questions")
+                properties.set_prop("problemStartTime", AAZStrType, ".problem_start_time")
+                properties.set_prop("quotaTicketDetails", AAZObjectType, ".quota_ticket_details")
+                properties.set_prop("require24X7Response", AAZBoolType, ".require24_x7_response")
+                properties.set_prop("secondaryConsent", AAZListType, ".secondary_consent")
+                properties.set_prop("serviceId", AAZStrType, ".service_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("severity", AAZStrType, ".severity", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("supportPlanId", AAZStrType, ".support_plan_id")
+                properties.set_prop("supportTicketId", AAZStrType, ".support_ticket_id")
+                properties.set_prop("technicalTicketDetails", AAZObjectType, ".technical_ticket_details")
+                properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
+
+            contact_details = _builder.get(".properties.contactDetails")
+            if contact_details is not None:
+                contact_details.set_prop("additionalEmailAddresses", AAZListType, ".additional_email_addresses")
+                contact_details.set_prop("country", AAZStrType, ".country", typ_kwargs={"flags": {"required": True}})
+                contact_details.set_prop("firstName", AAZStrType, ".first_name", typ_kwargs={"flags": {"required": True}})
+                contact_details.set_prop("lastName", AAZStrType, ".last_name", typ_kwargs={"flags": {"required": True}})
+                contact_details.set_prop("phoneNumber", AAZStrType, ".phone_number")
+                contact_details.set_prop("preferredContactMethod", AAZStrType, ".preferred_contact_method", typ_kwargs={"flags": {"required": True}})
+                contact_details.set_prop("preferredSupportLanguage", AAZStrType, ".preferred_support_language", typ_kwargs={"flags": {"required": True}})
+                contact_details.set_prop("preferredTimeZone", AAZStrType, ".preferred_time_zone", typ_kwargs={"flags": {"required": True}})
+                contact_details.set_prop("primaryEmailAddress", AAZStrType, ".primary_email_address", typ_kwargs={"flags": {"required": True}})
+
+            additional_email_addresses = _builder.get(".properties.contactDetails.additionalEmailAddresses")
+            if additional_email_addresses is not None:
+                additional_email_addresses.set_elements(AAZStrType, ".")
+
+            quota_ticket_details = _builder.get(".properties.quotaTicketDetails")
+            if quota_ticket_details is not None:
+                quota_ticket_details.set_prop("quotaChangeRequestSubType", AAZStrType, ".quota_change_request_sub_type")
+                quota_ticket_details.set_prop("quotaChangeRequestVersion", AAZStrType, ".quota_change_request_version")
+                quota_ticket_details.set_prop("quotaChangeRequests", AAZListType, ".quota_change_requests")
+
+            quota_change_requests = _builder.get(".properties.quotaTicketDetails.quotaChangeRequests")
+            if quota_change_requests is not None:
+                quota_change_requests.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.quotaTicketDetails.quotaChangeRequests[]")
+            if _elements is not None:
+                _elements.set_prop("payload", AAZStrType, ".payload")
+                _elements.set_prop("region", AAZStrType, ".region")
+
+            secondary_consent = _builder.get(".properties.secondaryConsent")
+            if secondary_consent is not None:
+                secondary_consent.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.secondaryConsent[]")
+            if _elements is not None:
+                _elements.set_prop("type", AAZStrType, ".type")
+                _elements.set_prop("userConsent", AAZStrType, ".user_consent")
+
+            technical_ticket_details = _builder.get(".properties.technicalTicketDetails")
+            if technical_ticket_details is not None:
+                technical_ticket_details.set_prop("resourceId", AAZStrType, ".resource_id")
+
+            return _instance_value
+
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
+            )
 
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_support_ticket_details_read = None
+
+    @classmethod
+    def _build_schema_support_ticket_details_read(cls, _schema):
+        if cls._schema_support_ticket_details_read is not None:
+            _schema.id = cls._schema_support_ticket_details_read.id
+            _schema.name = cls._schema_support_ticket_details_read.name
+            _schema.properties = cls._schema_support_ticket_details_read.properties
+            _schema.type = cls._schema_support_ticket_details_read.type
+            return
+
+        cls._schema_support_ticket_details_read = _schema_support_ticket_details_read = AAZObjectType()
+
+        support_ticket_details_read = _schema_support_ticket_details_read
+        support_ticket_details_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        support_ticket_details_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        support_ticket_details_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        support_ticket_details_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_support_ticket_details_read.properties
+        properties.advanced_diagnostic_consent = AAZStrType(
+            serialized_name="advancedDiagnosticConsent",
+            flags={"required": True},
+        )
+        properties.contact_details = AAZObjectType(
+            serialized_name="contactDetails",
+            flags={"required": True},
+        )
+        properties.created_date = AAZStrType(
+            serialized_name="createdDate",
+            flags={"read_only": True},
+        )
+        properties.description = AAZStrType(
+            flags={"required": True},
+        )
+        properties.enrollment_id = AAZStrType(
+            serialized_name="enrollmentId",
+        )
+        properties.file_workspace_name = AAZStrType(
+            serialized_name="fileWorkspaceName",
+        )
+        properties.is_temporary_ticket = AAZStrType(
+            serialized_name="isTemporaryTicket",
+            flags={"read_only": True},
+        )
+        properties.modified_date = AAZStrType(
+            serialized_name="modifiedDate",
+            flags={"read_only": True},
+        )
+        properties.problem_classification_display_name = AAZStrType(
+            serialized_name="problemClassificationDisplayName",
+            flags={"read_only": True},
+        )
+        properties.problem_classification_id = AAZStrType(
+            serialized_name="problemClassificationId",
+            flags={"required": True},
+        )
+        properties.problem_scoping_questions = AAZStrType(
+            serialized_name="problemScopingQuestions",
+        )
+        properties.problem_start_time = AAZStrType(
+            serialized_name="problemStartTime",
+        )
+        properties.quota_ticket_details = AAZObjectType(
+            serialized_name="quotaTicketDetails",
+        )
+        properties.require24_x7_response = AAZBoolType(
+            serialized_name="require24X7Response",
+        )
+        properties.secondary_consent = AAZListType(
+            serialized_name="secondaryConsent",
+        )
+        properties.service_display_name = AAZStrType(
+            serialized_name="serviceDisplayName",
+            flags={"read_only": True},
+        )
+        properties.service_id = AAZStrType(
+            serialized_name="serviceId",
+            flags={"required": True},
+        )
+        properties.service_level_agreement = AAZObjectType(
+            serialized_name="serviceLevelAgreement",
+        )
+        properties.severity = AAZStrType(
+            flags={"required": True},
+        )
+        properties.status = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.support_engineer = AAZObjectType(
+            serialized_name="supportEngineer",
+        )
+        properties.support_plan_display_name = AAZStrType(
+            serialized_name="supportPlanDisplayName",
+            flags={"read_only": True},
+        )
+        properties.support_plan_id = AAZStrType(
+            serialized_name="supportPlanId",
+        )
+        properties.support_plan_type = AAZStrType(
+            serialized_name="supportPlanType",
+            flags={"read_only": True},
+        )
+        properties.support_ticket_id = AAZStrType(
+            serialized_name="supportTicketId",
+        )
+        properties.technical_ticket_details = AAZObjectType(
+            serialized_name="technicalTicketDetails",
+        )
+        properties.title = AAZStrType(
+            flags={"required": True},
+        )
+
+        contact_details = _schema_support_ticket_details_read.properties.contact_details
+        contact_details.additional_email_addresses = AAZListType(
+            serialized_name="additionalEmailAddresses",
+        )
+        contact_details.country = AAZStrType(
+            flags={"required": True},
+        )
+        contact_details.first_name = AAZStrType(
+            serialized_name="firstName",
+            flags={"required": True},
+        )
+        contact_details.last_name = AAZStrType(
+            serialized_name="lastName",
+            flags={"required": True},
+        )
+        contact_details.phone_number = AAZStrType(
+            serialized_name="phoneNumber",
+        )
+        contact_details.preferred_contact_method = AAZStrType(
+            serialized_name="preferredContactMethod",
+            flags={"required": True},
+        )
+        contact_details.preferred_support_language = AAZStrType(
+            serialized_name="preferredSupportLanguage",
+            flags={"required": True},
+        )
+        contact_details.preferred_time_zone = AAZStrType(
+            serialized_name="preferredTimeZone",
+            flags={"required": True},
+        )
+        contact_details.primary_email_address = AAZStrType(
+            serialized_name="primaryEmailAddress",
+            flags={"required": True},
+        )
+
+        additional_email_addresses = _schema_support_ticket_details_read.properties.contact_details.additional_email_addresses
+        additional_email_addresses.Element = AAZStrType()
+
+        quota_ticket_details = _schema_support_ticket_details_read.properties.quota_ticket_details
+        quota_ticket_details.quota_change_request_sub_type = AAZStrType(
+            serialized_name="quotaChangeRequestSubType",
+        )
+        quota_ticket_details.quota_change_request_version = AAZStrType(
+            serialized_name="quotaChangeRequestVersion",
+        )
+        quota_ticket_details.quota_change_requests = AAZListType(
+            serialized_name="quotaChangeRequests",
+        )
+
+        quota_change_requests = _schema_support_ticket_details_read.properties.quota_ticket_details.quota_change_requests
+        quota_change_requests.Element = AAZObjectType()
+
+        _element = _schema_support_ticket_details_read.properties.quota_ticket_details.quota_change_requests.Element
+        _element.payload = AAZStrType()
+        _element.region = AAZStrType()
+
+        secondary_consent = _schema_support_ticket_details_read.properties.secondary_consent
+        secondary_consent.Element = AAZObjectType()
+
+        _element = _schema_support_ticket_details_read.properties.secondary_consent.Element
+        _element.type = AAZStrType()
+        _element.user_consent = AAZStrType(
+            serialized_name="userConsent",
+        )
+
+        service_level_agreement = _schema_support_ticket_details_read.properties.service_level_agreement
+        service_level_agreement.expiration_time = AAZStrType(
+            serialized_name="expirationTime",
+            flags={"read_only": True},
+        )
+        service_level_agreement.sla_minutes = AAZIntType(
+            serialized_name="slaMinutes",
+            flags={"read_only": True},
+        )
+        service_level_agreement.start_time = AAZStrType(
+            serialized_name="startTime",
+            flags={"read_only": True},
+        )
+
+        support_engineer = _schema_support_ticket_details_read.properties.support_engineer
+        support_engineer.email_address = AAZStrType(
+            serialized_name="emailAddress",
+            flags={"read_only": True},
+        )
+
+        technical_ticket_details = _schema_support_ticket_details_read.properties.technical_ticket_details
+        technical_ticket_details.resource_id = AAZStrType(
+            serialized_name="resourceId",
+        )
+
+        _schema.id = cls._schema_support_ticket_details_read.id
+        _schema.name = cls._schema_support_ticket_details_read.name
+        _schema.properties = cls._schema_support_ticket_details_read.properties
+        _schema.type = cls._schema_support_ticket_details_read.type
 
 
 __all__ = ["Update"]
