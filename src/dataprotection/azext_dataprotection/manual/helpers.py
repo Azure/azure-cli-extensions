@@ -33,8 +33,15 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
                           "deleteRGMapping": "/backupResourceGuardProxies/delete",
                           "getSecurityPIN": "/backupSecurityPIN/action",
                           "disableSoftDelete": "/backupconfig/write",
+                          "RecoveryServicesDisableImmutability": "/write#reduceImmutabilityState",
+                          "RecoveryServicesStopProtection": "/backupFabrics/protectionContainers/protectedItems/write#stopProtectionWithRetainData",
                           "DisableMUA": "/backupResourceGuardProxies/delete",
-                          "DeleteBackupInstance": "/backupInstances/delete"}
+                          "DeleteBackupInstance": "/backupInstances/delete",
+                          "DataProtectionDisableImmutability": "/write#reduceImmutabilityState",
+                          "DataProtectionSoftDelete": "/write#reduceSoftDeleteSecurity",
+                          "DataProtectionStopProtection": "/backupInstances/stopProtection/action",
+                          "DataProtectionSuspendBackup": "/backupInstances/suspendBackups/action",
+                          "DataProtectionRestore": "/backupInstances/restore/action",}
 
 
 datasource_map = {

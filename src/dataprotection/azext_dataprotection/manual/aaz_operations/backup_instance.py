@@ -7,12 +7,16 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core.aaz import (
-    AAZFreeFormDictArg, AAZStrArg, AAZResourceGroupNameArg, AAZResourceLocationArg, AAZResourceLocationArgFormat
+    AAZFreeFormDictArg, AAZStrArg, AAZResourceGroupNameArg, AAZResourceLocationArg,
+    AAZResourceLocationArgFormat, AAZUndefined, has_value
 )
+from azure.cli.core.aaz.utils import assign_aaz_list_arg
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance import (
     Create as _Create,
     ValidateForBackup as _ValidateForBackup,
     ValidateForRestore as _ValidateForRestore,
+    StopProtection as _StopProtection,
+    SuspendBackup as _SuspendBackup,
 )
 from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore import (
     Validate as _ValidateForCRR,
@@ -20,7 +24,10 @@ from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore import 
 )
 
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance.restore import Trigger as _RestoreTrigger
-from ..helpers import convert_dict_keys_snake_to_camel
+from ..helpers import (
+    convert_dict_keys_snake_to_camel, critical_operation_map,
+    transform_resource_guard_operation_request
+)
 
 
 class ValidateAndCreate(_Create):
@@ -265,3 +272,61 @@ class TriggerCRR(_TriggerCRR):
                 'restoreRequestObject': restore_request_object,
                 'crossRegionRestoreDetails': crr_details
             })
+
+
+class SuspendBackup(_SuspendBackup):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        _args_schema = cls._args_schema
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            help="Tenant ID for cross-tenant calls"
+        )
+        return cls._args_schema
+
+    def pre_operations(self):
+        # Allow users to enter predefined shorthand instead of the full path, if necessary
+        if has_value(self.ctx.args.resource_guard_operation_requests):
+            self.ctx.args.resource_guard_operation_requests = assign_aaz_list_arg(
+                self.ctx.args.resource_guard_operation_requests,
+                self.ctx.args.resource_guard_operation_requests,
+                element_transformer=lambda _, operation:
+                    transform_resource_guard_operation_request(self, _, operation)
+            )
+        if has_value(self.ctx.args.tenant_id):
+            # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
+            self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))
+
+
+class StopProtection(_StopProtection):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        _args_schema = cls._args_schema
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            help="Tenant ID for cross-tenant calls"
+        )
+        return cls._args_schema
+
+    def pre_operations(self):
+        # Allow users to enter predefined shorthand instead of the full path, if necessary
+        if has_value(self.ctx.args.resource_guard_operation_requests):
+            self.ctx.args.resource_guard_operation_requests = assign_aaz_list_arg(
+                self.ctx.args.resource_guard_operation_requests,
+                self.ctx.args.resource_guard_operation_requests,
+                element_transformer=lambda _, operation:
+                    transform_resource_guard_operation_request(self, _, operation)
+            )
+        if has_value(self.ctx.args.tenant_id):
+            # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
+            self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))
