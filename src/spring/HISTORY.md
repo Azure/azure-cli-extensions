@@ -1,5 +1,14 @@
 Release History
 ===============
+1.21.0
+---
+* Add argument `--enable-config-server` to `az spring create` to create Spring Cloud Config Server in enterprise tier during creating service instance.
+* Add new command `az spring config-server create` to create Spring Cloud Config Server in enterprise tier.
+* Add new command `az spring config-server delete` to delete Spring Cloud Config Server in enterprise tier.
+* Add new command `az spring config-server bind` to bind an app to Spring Cloud Config Server in enterprise tier.
+* Add new command `az spring config-server unbind` to unbind an app with Spring Cloud Config Server in enterprise tier.
+* Add argument `--bind-config-server` to `az spring app create` bind with default config server during creation automatically.
+
 1.20.1
 ---
 * Add command to show the configurations pulled by Application Configuration Service from upstream Git repositories. `az spring application-configuration-service config show`.

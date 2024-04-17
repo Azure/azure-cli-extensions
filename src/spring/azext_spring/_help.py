@@ -38,7 +38,7 @@ helps['spring create'] = """
       text: |
         az provider register -n Microsoft.SaaS
         az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
-        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal --enable-application-live-view  --enable-application-accelerator
+        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-config-server --enable-service-registry --enable-gateway --enable-api-portal --enable-application-live-view  --enable-application-accelerator
 """
 
 helps['spring list-marketplace-plan'] = """
@@ -190,8 +190,8 @@ helps['spring app create'] = """
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --assign-endpoint true --cpu 2 --memory 3 --instance-count 3
-    - name: Create an app binding to the default Service Registry and Application Configuration Service.
-      text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --bind-service-registry --bind-application-configuration-service
+    - name: Create an app binding to the default Service Registry, Application Configuration Service and Spring Cloud Config Server.
+      text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --bind-service-registry --bind-application-configuration-service --bind-config-server
 """
 
 helps['spring app append-persistent-storage'] = """
@@ -486,12 +486,44 @@ helps['spring config-server git repo list'] = """
 
 helps['spring config-server enable'] = """
     type: command
-    short-summary: (Support Standard consumption Tier) Enable Config Server.
+    short-summary: (Standard consumption Tier Only) Enable Config Server.
 """
 
 helps['spring config-server disable'] = """
     type: command
-    short-summary: (Support Standard consumption Tier) Disable Config Server.
+    short-summary: (Standard consumption Tier Only) Disable Config Server.
+"""
+
+helps['spring config-server create'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Create Config Server.
+    examples:
+        - name: Create Config Server.
+          text: az spring config-server create -s MyService -g MyResourceGroup
+"""
+
+helps['spring config-server delete'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Delete Config Server.
+    examples:
+        - name: Delete Config Server.
+          text: az spring config-server delete -s MyService -g MyResourceGroup
+"""
+
+helps['spring config-server bind'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Bind an app to Config Server.
+    examples:
+        - name: Bind an app to Config Server.
+          text: az spring config-server bind --app MyApp -s MyService -g MyResourceGroup
+"""
+
+helps['spring config-server unbind'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Unbind an app from Config Server.
+    examples:
+        - name: Unbind an app from Config Server.
+          text: az spring config-server unbind --app MyApp -s MyService -g MyResourceGroup
 """
 
 helps['spring eureka-server'] = """

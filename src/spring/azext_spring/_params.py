@@ -34,7 +34,9 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
                                      validate_build_cert_reference, validate_acs_create, not_support_enterprise,
-                                     validate_create_app_binding_default_application_configuration_service, validate_create_app_binding_default_service_registry)
+                                     validate_create_app_binding_default_application_configuration_service,
+                                     validate_create_app_binding_default_config_server,
+                                     validate_create_app_binding_default_service_registry)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -171,6 +173,11 @@ def load_arguments(self, _):
                    options_list=['--application-configuration-service-generation', '--acs-gen'],
                    validator=validate_acs_create,
                    help='(Enterprise Tier Only) Application Configuration Service Generation to enable.')
+        c.argument('enable_config_server',
+                   action='store_true',
+                   options_list=['--enable-config-server', '--enable-cs'],
+                   arg_group="Config Server",
+                   help='(Enterprise Tier Only) Enable Config Server.')
         c.argument('enable_application_live_view',
                    action='store_true',
                    options_list=['--enable-application-live-view', '--enable-alv'],
@@ -349,6 +356,11 @@ def load_arguments(self, _):
                    options_list=['--bind-application-configuration-service', '--bind-acs'],
                    validator=validate_create_app_binding_default_application_configuration_service,
                    help='Bind the app to the default Application Configuration Service automatically.')
+        c.argument('bind_config_server',
+                   action='store_true',
+                   options_list=['--bind-config-server --bind-cs'],
+                   validator=validate_create_app_binding_default_config_server,
+                   help='Bind the app to the default Config Server automatically.')
         c.argument('cpu', arg_type=cpu_type)
         c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int,
