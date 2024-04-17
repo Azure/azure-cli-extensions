@@ -9,12 +9,12 @@ from azure.cli.core.util import user_confirmation
 from azure.core.serialization import NULL as AzureCoreNull
 from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name, get_registry_by_name
 from .vendored_sdks.containerregistry.v2023_11_01_preview.models._models_py3 import CacheRule, ArtifactSyncScopeFilterProperties, CacheRuleUpdateParameters, ImportSource, ImportImageParameters
- 
+
 
 def _create_kql(starts_with=None, ends_with=None, contains=None):
     if not starts_with and not ends_with and not contains:
         return "Tags"
-    
+
     query = "Tags | where "
 
     if starts_with:
@@ -44,7 +44,7 @@ def _separate_params(query):
 
     if "Name contains" in query:
         contains = query.split("Name contains")[1].split("'")[1]
-    
+
     return starts_with, ends_with, contains
 
 
@@ -101,7 +101,7 @@ def acr_cache_create(cmd,
                      yes=False):
 
     registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
-    
+
     sync_str = "Active" if sync else "Inactive"
     cred_set_id = AzureCoreNull if not cred_set else f'{registry.id}/credentialSets/{cred_set}'
     tag = None
@@ -129,6 +129,7 @@ def acr_cache_create(cmd,
                                cache_rule_create_parameters=cache_rule_create_params,
                                dry_run=dry_run)
 
+
 def acr_cache_update_custom(cmd,
                             client,
                             registry_name,
@@ -141,17 +142,16 @@ def acr_cache_update_custom(cmd,
                             ends_with=None,
                             contains=None):
 
-
     instance = CacheRuleUpdateParameters()
     registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
     if remove_cred_set:
-         instance = client.get(resource_group_name=rg,
-                               registry_name=registry_name,
-                               cache_rule_name=name)    
+        instance = client.get(resource_group_name=rg,
+                              registry_name=registry_name,
+                              cache_rule_name=name)
 
     cred_set_id = AzureCoreNull if remove_cred_set else f'{registry.id}/credentialSets/{cred_set}'
-    
+
     if remove_cred_set or cred_set:
         instance.credential_set_resource_id = cred_set_id
 
@@ -166,7 +166,7 @@ def acr_cache_update_custom(cmd,
                                    registry_name=registry_name,
                                    cache_rule_name=name,
                                    cache_rule_create_parameters=instance)
-        
+
     return client.begin_update(resource_group_name=rg,
                                registry_name=registry_name,
                                cache_rule_name=name,
@@ -186,21 +186,18 @@ def acr_cache_sync(cmd,
                                   registry_name=registry_name,
                                   cache_rule_name=name)
     tag = image
-    id = rule.id
+    rule_id = rule.id
     source_repo = rule.source_repository
     target_repo = rule.target_repository
     source_image_str = source_repo[source_repo.find('/') + 1:] + ":" + tag
 
-    import_source = ImportSource(source_image=source_image_str, 
-                                 cache_rule_resource_id=id)
-   
-    params = ImportImageParameters(source=import_source, 
+    import_source = ImportSource(source_image=source_image_str,
+                                 cache_rule_resource_id=rule_id)
+
+    params = ImportImageParameters(source=import_source,
                                    mode="NoForce",
                                    target_tags=[target_repo + ":" + tag])
 
-    return client.registries.begin_import_image(
-            resource_group_name=rg,
-            registry_name=registry_name,
-            parameters=params)
- 
-
+    return client.registries.begin_import_image(resource_group_name=rg,
+                                                registry_name=registry_name,
+                                                parameters=params)

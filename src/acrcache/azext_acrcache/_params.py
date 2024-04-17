@@ -16,4 +16,3 @@ def load_arguments(self, _):
         c.argument('target_repo', options_list=['--target-repo', '-t'], help="The target repository namespace such as 'ubuntu'.")
         c.argument('remove_cred_set', action="store_true", help='Optional boolean indicating whether to remove the credential set from the cache rule. False by default.')
         c.argument('sync', arg_type=get_three_state_flag(), help='Optional boolean indicating whether to enable artifact sync on the cache rule. False by default.')
-

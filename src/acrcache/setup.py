@@ -51,4 +51,3 @@ setup(
     install_requires=DEPENDENCIES,
     package_data={'azext_acrcache': ['azext_metadata.json']},
 )
- 
