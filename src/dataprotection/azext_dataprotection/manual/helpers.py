@@ -16,6 +16,7 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
     CLIInternalError,
+    CLIError,
     MutuallyExclusiveArgumentError,
 )
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -31,10 +32,10 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
                           "updatePolicy": "/backupPolicies/write",
                           "deleteRGMapping": "/backupResourceGuardProxies/delete",
                           "getSecurityPIN": "/backupSecurityPIN/action",
-                          "disableSoftDelete": "/backupconfig/write"}
+                          "disableSoftDelete": "/backupconfig/write",
+                          "DisableMUA": "/backupResourceGuardProxies/delete",
+                          "DeleteBackupInstance": "/backupInstances/delete"}
 
-operation_request_map = {"DisableMUA": "/deleteResourceGuardProxyRequests/default",
-                         "DeleteBackupInstance": "/deleteBackupInstanceRequests/default"}
 
 datasource_map = {
     "AzureDisk": "Microsoft.Compute/disks",
@@ -894,3 +895,28 @@ def check_and_assign_roles(cmd, role_object, principal_id, role_assignments_arr,
         role_assignments_arr.append(get_permission_object_from_role_object(assignment))
 
     return role_assignments_arr
+
+
+def transform_resource_guard_operation_request(cmd, _, operation):
+    # if we don't have a shorthand defined, just returning the value unchanged
+    if str(operation) in critical_operation_map:
+        from azext_dataprotection.aaz.latest.dataprotection.backup_vault.resource_guard_mapping \
+            import Show as ResourceGuardMappingGet
+        resource_guard_mapping = ResourceGuardMappingGet(cli_ctx=cmd.cli_ctx)(command_args={
+            "resource_group": str(cmd.ctx.args.resource_group),
+            "vault_name": str(cmd.ctx.args.vault_name),
+            "resource_guard_mapping_name": "DppResourceGuardProxy",
+        })
+
+        formatted_operation = None
+        for operation_detail in resource_guard_mapping['properties']['resourceGuardOperationDetails']:
+            if operation_detail['vaultCriticalOperation'] == 'Microsoft.DataProtection/backupVaults' + critical_operation_map[str(operation)]:
+                formatted_operation = operation_detail['defaultResourceRequest']
+                break
+
+        if formatted_operation is None:
+            raise CLIError("Unable to proceed with shorthand argument {}. "
+                            "Please retry the command with the full payload".format(operation))
+
+        return formatted_operation
+    return operation
