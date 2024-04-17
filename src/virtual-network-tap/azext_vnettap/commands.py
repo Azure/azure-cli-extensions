@@ -13,13 +13,13 @@ from ._client_factory import cf_virtual_network_taps, cf_nic_tap_config
 def load_command_table(self, _):
 
     network_vnet_tap_sdk = CliCommandType(
-        operations_tmpl='azext_vnettap.vendored_sdks.operations.#VirtualNetworkTapsOperations.{}',
+        operations_tmpl='azext_vnettap.vendored_sdks.operations#VirtualNetworkTapsOperations.{}',
         client_factory=cf_virtual_network_taps,
         min_api='2023-02-01'
     )
 
     network_nic_tap_config_sdk = CliCommandType(
-        operations_tmpl='azext_vnettap.vendored_sdks.operations.#NetworkInterfaceTapConfigurationsOperations.{}',
+        operations_tmpl='azext_vnettap.vendored_sdks.operations#NetworkInterfaceTapConfigurationsOperations.{}',
         client_factory=cf_nic_tap_config,
         min_api='2023-02-01'
     )
