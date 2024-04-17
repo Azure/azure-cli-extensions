@@ -26,13 +26,13 @@ def load_command_table(self, _):
 
     with self.command_group('network vnet tap', network_vnet_tap_sdk) as g:
         g.custom_command('create', 'create_vnet_tap')
-        g.command('delete', 'delete')
+        g.command('delete', 'begin_delete')
         g.custom_command('list', 'list_vnet_taps')
         g.show_command('show', 'get')
         g.generic_update_command('update')
 
     with self.command_group('network nic vtap-config', network_nic_tap_config_sdk) as g:
         g.custom_command('create', 'create_vtap_config')
-        g.command('delete', 'delete')
-        g.command('list', 'list')
+        g.command('delete', 'begin_delete')
+        g.command('list', 'list_all')
         g.show_command('show', 'get')
