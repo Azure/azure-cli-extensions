@@ -25,7 +25,7 @@ def create_vnet_tap(cmd, resource_group_name, tap_name, destination, port=None, 
         destination_network_interface_ip_configuration=SubResource(id=destination)
         if dest_type == 'networkInterfaces' else None
     )
-    return client.create_or_update(resource_group_name, tap_name, vtap)
+    return client.begin_create_or_update(resource_group_name, tap_name, vtap)
 
 
 def list_vnet_taps(cmd, resource_group_name=None):
@@ -42,7 +42,7 @@ def create_vtap_config(cmd, resource_group_name, network_interface_name, vtap_co
     vtap_config = NetworkInterfaceTapConfiguration(
         virtual_network_tap=SubResource(id=vnet_tap)
     )
-    return client.create_or_update(resource_group_name, network_interface_name, vtap_config_name, vtap_config)
+    return client.begin_create_or_update(resource_group_name, network_interface_name, vtap_config_name, vtap_config)
 
 
 def list_nics(cmd, resource_group_name=None):
