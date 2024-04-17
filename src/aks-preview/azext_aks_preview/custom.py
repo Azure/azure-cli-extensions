@@ -59,6 +59,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_AVAILABILITY_SET,
     CONST_MIN_NODE_IMAGE_VERSION,
+    CONST_ARTIFACT_SOURCE_DIRECT,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
@@ -481,6 +482,7 @@ def aks_create(
     node_os_upgrade_channel=None,
     cluster_autoscaler_profile=None,
     uptime_sla=False,
+    sku=None,
     tier=None,
     fqdn_subdomain=None,
     api_server_authorized_ip_ranges=None,
@@ -523,6 +525,8 @@ def aks_create(
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
     http_proxy_config=None,
+    bootstrap_artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
+    bootstrap_container_registry_resource_id=None,
     # addons
     enable_addons=None,  # pylint: disable=redefined-outer-name
     workspace_resource_id=None,
@@ -556,6 +560,7 @@ def aks_create(
     nodepool_tags=None,
     nodepool_labels=None,
     nodepool_taints=None,
+    nodepool_initialization_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
     vm_set_type=None,
@@ -636,6 +641,7 @@ def aks_create(
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    cluster_service_load_balancer_health_probe_mode=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -700,6 +706,7 @@ def aks_update(
     cluster_autoscaler_profile=None,
     uptime_sla=False,
     no_uptime_sla=False,
+    sku=None,
     tier=None,
     api_server_authorized_ip_ranges=None,
     enable_public_fqdn=False,
@@ -753,6 +760,7 @@ def aks_update(
     max_count=None,
     nodepool_labels=None,
     nodepool_taints=None,
+    nodepool_initialization_taints=None,
     # misc
     yes=False,
     no_wait=False,
@@ -826,6 +834,7 @@ def aks_update(
     azure_container_storage_nodepools=None,
     node_provisioning_mode=None,
     ssh_access=None,
+    cluster_service_load_balancer_health_probe_mode=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2927,15 +2936,13 @@ def aks_mesh_enable_egress_gateway(
         client,
         resource_group_name,
         name,
-        egx_gtw_nodeselector,
 ):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
-        enable_egress_gateway=True,
-        egx_gtw_nodeselector=egx_gtw_nodeselector)
+        enable_egress_gateway=True)
 
 
 def aks_mesh_disable_egress_gateway(
@@ -2949,8 +2956,7 @@ def aks_mesh_disable_egress_gateway(
         client,
         resource_group_name,
         name,
-        disable_egress_gateway=True,
-        egx_gtw_nodeselector=None)
+        disable_egress_gateway=True)
 
 
 def aks_mesh_get_revisions(
@@ -3060,7 +3066,6 @@ def _aks_mesh_update(
         disable_ingress_gateway=None,
         ingress_gateway_type=None,
         enable_egress_gateway=None,
-        egx_gtw_nodeselector=None,
         disable_egress_gateway=None,
         revision=None,
         mesh_upgrade_command=None,

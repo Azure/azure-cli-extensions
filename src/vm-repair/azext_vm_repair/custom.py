@@ -528,6 +528,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         return_dict = command.init_return_dict()
         return_dict['script_status'] = command.script.status
         return_dict['logs'] = stdout
+        return_dict['err'] = stderr
         return_dict['log_full_path'] = log_fullpath
         return_dict['output'] = command.script.output
         return_dict['vm_name'] = repair_vm_name
