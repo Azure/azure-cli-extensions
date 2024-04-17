@@ -91,6 +91,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(revisions["meshRevisions"]) > 0
         return revisions['meshRevisions'][0]['revision']
 
+    def _get_asm_upgrade_version(self, resource_group, name):
+        get_upgrade_cmd = f"aks mesh get-upgrades --resource-group={resource_group} --name={name}"
+        upgrades = self.cmd(get_upgrade_cmd).get_output_in_json()
+        assert "upgrades" in upgrades and len(upgrades["upgrades"]) > 0
+        return upgrades["upgrades"][0]
+
     @classmethod
     def generate_ssh_keys(cls):
         # If the `--ssh-key-value` option is not specified, the validator will try to read the ssh-key from the "~/.ssh" directory,
@@ -11919,6 +11925,114 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.is_empty(),
             ],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_azure_service_mesh_canary_upgrade(
+        self, resource_group, resource_group_location
+    ):
+        """This test case exercises canary upgrade with mesh upgrade command.
+
+        It creates a cluster, enables azure service mesh, fetches available upgrade revison, upgrades the cluster then disable it.
+        """
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+        installed_revision = self._get_asm_supported_revision(resource_group_location)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "revision": installed_revision,
+            }
+        )
+
+        # create cluster with --enable-azure-service-mesh
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview "
+            "--ssh-key-value={ssh_key_value} "
+            "--enable-azure-service-mesh --revision={revision} --output=json"
+        )
+        aks_cluster_create = self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("serviceMeshProfile.mode", "Istio"),
+                self.exists("serviceMeshProfile.istio.revisions")
+            ],
+        ).get_output_in_json()
+        cluster_create_revisions = aks_cluster_create["serviceMeshProfile"]["istio"]["revisions"]
+        assert len(cluster_create_revisions) == 1
+        assert installed_revision in cluster_create_revisions
+
+        # get upgrades
+        upgrade_revision = self._get_asm_upgrade_version(resource_group, "{name}")
+        self.kwargs.update(
+            {
+                "upgrade_revision": upgrade_revision,
+            }
+        )
+        # upgrade start
+        upgrade_start_cmd = (
+            "aks mesh upgrade start --revision {upgrade_revision} --resource-group={resource_group} --name={name}"
+        )
+        aks_cluster_upgrade_start = self.cmd(
+            upgrade_start_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("serviceMeshProfile.mode", "Istio"),
+            ],
+        ).get_output_in_json()
+        upgrade_start_revisions = aks_cluster_upgrade_start["serviceMeshProfile"]["istio"]["revisions"]
+        print(upgrade_start_revisions)
+        assert len(upgrade_start_revisions) == 2
+        assert installed_revision in upgrade_start_revisions and upgrade_revision in upgrade_start_revisions
+
+        # upgrade rollback
+        upgrade_rollback_cmd = (
+            "aks mesh upgrade rollback --resource-group={resource_group} --name={name} --yes"
+        )
+        aks_cluster_upgrade_rollback = self.cmd(
+            upgrade_rollback_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("serviceMeshProfile.mode", "Istio"),
+            ],
+        ).get_output_in_json()
+        upgrade_rollback_revisions = aks_cluster_upgrade_rollback["serviceMeshProfile"]["istio"]["revisions"]
+        assert len(upgrade_rollback_revisions) == 1
+        assert installed_revision in upgrade_rollback_revisions
+
+        # upgrade start again
+        self.cmd(
+            upgrade_start_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("serviceMeshProfile.mode", "Istio"),
+            ],
+        )
+
+        # upgrade complete
+        upgrade_complete_cmd = (
+            "aks mesh upgrade complete --resource-group={resource_group} --name={name} --yes"
+        )
+        aks_cluster_upgrade_complete = self.cmd(
+            upgrade_complete_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("serviceMeshProfile.mode", "Istio"),
+            ],
+        ).get_output_in_json()
+        upgrade_complete_revisions = aks_cluster_upgrade_complete["serviceMeshProfile"]["istio"]["revisions"]
+        assert len(upgrade_complete_revisions) == 1
+        assert upgrade_revision in upgrade_complete_revisions
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
