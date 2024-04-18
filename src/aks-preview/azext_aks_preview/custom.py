@@ -3029,7 +3029,8 @@ def aks_mesh_upgrade_complete(
         client,
         resource_group_name,
         name,
-        yes):
+        yes=False
+):
     return _aks_mesh_update(
         cmd,
         client,
@@ -3044,7 +3045,7 @@ def aks_mesh_upgrade_rollback(
         client,
         resource_group_name,
         name,
-        yes
+        yes=False
 ):
     return _aks_mesh_update(
         cmd,
