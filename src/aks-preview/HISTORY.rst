@@ -12,6 +12,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+3.0.0b5
++++++++
+* Add `--bootstrap-artifact-source` and `--bootstrap-container-registry-resource-id` to `az aks update`.
+
+3.0.0b4
++++++++
+* Fix the issue that option `--uptime-sla` is ignored in command `az aks create`.
+* Fix the issue that option `--uptime-sla` and `--no-uptime-sla` are ignored in command `az aks update`.
+
 3.0.0b3
 +++++++
 * Add `--nodepool-initialization-taints` to `az aks create` and `az aks update`.
