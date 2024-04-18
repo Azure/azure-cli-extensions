@@ -181,6 +181,11 @@ aks update:
         - option_length_too_long
     disable_azure_monitor_app_monitoring:
       rule_exclusions: 
+    bootstrap_artifact_source:
+      rule_exclusions:
+        - option_length_too_long
+    bootstrap_container_registry_resource_id:
+      rule_exclusions:
         - option_length_too_long
 aks delete:
   parameters:
