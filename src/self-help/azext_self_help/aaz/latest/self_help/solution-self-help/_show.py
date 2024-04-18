@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get the self help solution using the applicable solutionId while creating the solution.
 
     :example: Show Solution at Resource Level
-        az self-help self-help show --solution-id solution-id
+        az self-help solution-self-help show --solution-id solution-id
     """
 
     _aaz_info = {
