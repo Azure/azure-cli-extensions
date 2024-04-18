@@ -13,9 +13,9 @@ from .custom import format_scale
 
 APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
 APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN = "configFilePatterns"
-APP_LIVE_VIEW="appLiveView"
-ACTUATOR_PORT="actuatorPort"
-ACTUATOR_PATH="actuatorPath"
+APP_LIVE_VIEW = "appLiveView"
+ACTUATOR_PORT = "actuatorPort"
+ACTUATOR_PATH = "actuatorPath"
 
 
 class DefaultDeployment:
