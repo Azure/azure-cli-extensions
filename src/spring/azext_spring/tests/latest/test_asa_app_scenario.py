@@ -170,6 +170,24 @@ class AppCRUD(ScenarioTest):
             self.check('properties.addonConfigs.serviceRegistry.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(self.get_subscription_id(), resource_group, spring))
         ])
 
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'], location = 'eastasia')
+    @SpringAppNamePreparer()
+    def test_app_actuator_configs(self, resource_group, spring, app):
+        self.kwargs.update({
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName}', checks=[
+            self.check('name', '{app}'),
+        ])
+
+        # add actuator configs
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8080 --custom-actuator-path actuator', checks=[
+            self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8080}}),
+        ])
 
 class BlueGreenTest(ScenarioTest):
 
