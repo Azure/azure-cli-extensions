@@ -1,5 +1,9 @@
 Release History
 ===============
+1.20.2
+---
+* Add arguments `--custom-actuator-port` and `--custom-actuator-path` in `spring app update`, `spring app deploy` and `spring app deployment create` to support custom actuator.
+
 1.20.1
 ---
 * Add command to show the configurations pulled by Application Configuration Service from upstream Git repositories. `az spring application-configuration-service config show`.

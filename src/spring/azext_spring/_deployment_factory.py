@@ -116,13 +116,11 @@ class DefaultDeployment:
                         APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN: config_file_patterns
                     }
                 }
-            app_live_view = {}
-            if custom_actuator_path is not None:
-                app_live_view[ACTUATOR_PATH] = custom_actuator_path
-            if custom_actuator_port is not None:
-                app_live_view[ACTUATOR_PORT] = custom_actuator_port
-            if app_live_view:
-                addon_configs[APP_LIVE_VIEW] = app_live_view
+            if any([custom_actuator_port, custom_actuator_path]):
+                addon_configs[APP_LIVE_VIEW] = {
+                    ACTUATOR_PORT: custom_actuator_port,
+                    ACTUATOR_PATH: custom_actuator_path
+                }
             return addon_configs
         return None
 

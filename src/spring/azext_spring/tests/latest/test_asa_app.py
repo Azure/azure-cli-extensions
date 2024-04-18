@@ -336,6 +336,19 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
                          resource.properties.deployment_settings.addon_configs)
 
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_actuator_port_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
+                      custom_actuator_port='8888')
+        resource = self.patch_deployment_resource
+        self.assertEqual('BuildResult', resource.properties.source.type)
+        self.assertEqual(self.result_id, resource.properties.source.build_result_id)
+        self.assertIsNone(resource.properties.source.version)
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': None}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_build_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment = self._get_deployment()
@@ -573,6 +586,16 @@ class TestAppUpdate(BasicTest):
         self._execute('rg', 'asc', 'app', deployment=deployment, client=client, custom_actuator_port='8888', custom_actuator_path='updated-path')
         resource = self.patch_deployment_resource
         self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'updated-path'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    def test_app_update_in_enterprise_with_actuator_path(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment = self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.addon_configs = {
+            'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, custom_actuator_path='updated-path')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': None, 'actuatorPath': 'updated-path'}},
                          resource.properties.deployment_settings.addon_configs)
 
     def test_app_update_clear_jvm_option_in_enterprise(self):
@@ -925,6 +948,14 @@ class TestDeploymentCreate(BasicTest):
         self._execute('rg', 'asc', 'app', 'green', client=client,  custom_actuator_port='8888', custom_actuator_path='actuator-path')
         resource = self.put_deployment_resource
         self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    def test_create_deployment_with_actuator_port_in_enterprise(self):
+        deployment = self._get_deployment(sku='Enterprise')
+        client = self._get_basic_mock_client('Enterprise', deployment)
+        self._execute('rg', 'asc', 'app', 'green', client=client,  custom_actuator_port='8888')
+        resource = self.put_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': None }},
                          resource.properties.deployment_settings.addon_configs)
 
 class RemoteDebugTest(BasicTest):
