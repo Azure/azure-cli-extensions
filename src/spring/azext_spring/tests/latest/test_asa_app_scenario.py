@@ -55,7 +55,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy fake file, the fail is expected
-        with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error."):
+        with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error"):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
@@ -82,7 +82,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy change to .Net
-        with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
+        with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped"):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
 
 
