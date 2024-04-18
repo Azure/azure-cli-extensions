@@ -3215,6 +3215,9 @@ configuration:
           label: Azure Data Explorer
       - addLabel:
           label: Service Attention
+      - assignTo:
+          users:
+          - evelyn-ys
       description: '[kusto] auto assign labels and users based on issue description. '
     - if:
       - payloadType: Pull_Request
@@ -3241,9 +3244,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      - assignTo:
-          users:
-          - jsntcy
+          - evelyn-ys
       description: '[kusto] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3669,6 +3670,8 @@ configuration:
       - assignTo:
           users:
           - necusjz
+          - AllyW
+          - kairu-ms
       description: '[ stream-analytics ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -3859,6 +3862,53 @@ configuration:
           users:
           - jsntcy
       description: '[ logic ] Notify to review Update index.json PR'
+    - if:
+        - payloadType: Issues
+        - or:
+            - titleContains:
+                pattern: az \b(logic)\b
+                isRegex: True
+            - bodyContains:
+                pattern: az \b(logic)\b
+                isRegex: True
+        - or:
+            - isAction:
+                action: Opened
+      then:
+        - addLabel:
+            label: Logic App
+        - addLabel:
+            label: Auto-Assign
+        - assignTo:
+            users:
+            - ReaNAiveD
+            - zhoxing-ms
+      description: '[Logic] auto assign labels and users based on issue description.'
+    - if:
+        - payloadType: Pull_Request
+        - isAction:
+            action: Opened
+        - or:
+            - titleContains:
+                pattern: '\b(logic|LOGIC)\b'
+                isRegex: True
+            - bodyContains:
+                pattern: az \b(logic)\b
+                isRegex: True
+      then:
+        - addLabel:
+            label: Auto-Assign
+        - addLabel:
+            label: Logic App
+        - requestReview:
+            reviewer: zhoxing-ms
+        - requestReview:
+            reviewer: ReaNAiveD
+        - assignTo:
+            users:
+            - zhoxing-ms
+            - ReaNAiveD
+      description: '[logic] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4089,6 +4139,7 @@ configuration:
       - assignTo:
           users:
           - necusjz
+          - kairu-ms
       description: '[ network-manager ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4665,6 +4716,10 @@ configuration:
           label: extension/grafana
       - addLabel:
           label: Service Attention
+      - assignTo:
+          users:
+          - AllyW
+          - kairu-ms
       description: '[grafana] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -4687,6 +4742,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
+          - AllyW
       - addLabel:
           label: extension/grafana
       - requestReview:
@@ -5058,9 +5114,12 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Network
+      - addLabel:
+          label: Network - Network Manager
       - assignTo:
           users:
           - necusjz
+          - kairu-ms
       description: '[NetworkManager] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5084,13 +5143,16 @@ configuration:
           reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
+      - addLabel:
+          label: Network
+      - addLabel:
+          label: Network - Network Manager
       - requestReview:
           reviewer: kairu-ms
       - assignTo:
           users:
           - necusjz
-      - addLabel:
-          label: Network
+          - kairu-ms
       - requestReview:
           reviewer: jsntcy
       description: '[NetworkManager] Auto assign labels and reviewers based on PR title/description.'
@@ -5348,7 +5410,42 @@ configuration:
           label: Attestation
       - addLabel:
           label: Service Attention
+      - assignTo:
+          users:
+          - ReaNAiveD
       description: '[attestation] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z attestation'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z attestation'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Aa]ttestation)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Aa]ttestation)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Attestation
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: jsntcy
+      - requestReview:
+          reviewer: ReaNAiveD
+      - assignTo:
+          users:
+          - ReaNAiveD
+      description: '[Attestation] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5416,7 +5513,8 @@ configuration:
           label: Stream Analytics
       - assignTo:
           users:
-          - jsntcy
+          - AllyW
+          - kairu-ms
       description: '[stream-analytics] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5439,6 +5537,8 @@ configuration:
       - assignTo:
           users:
           - necusjz
+          - AllyW
+          - kairu-ms
       - addLabel:
           label: Stream Analytics
       - requestReview:
@@ -5778,6 +5878,67 @@ configuration:
           label: Service Attention
       description: '[Communication] auto assign labels and users based on issue description.'
     - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z internet-analyzer'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z internet-analyzer'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Ii]nternet-[Aa]nalyzer)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Ii]nternet-[Aa]nalyzer)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Internet Analyzer
+      - assignTo:
+          users:
+          - necusjz
+          - kairu-ms
+      description: '[Internet Analyzer] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z internet-analyzer'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z internet-analyzer'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Ii]nternet-[Aa]nalyzer)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Ii]nternet-[Aa]nalyzer)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Internet Analyzer
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: necusjz
+      - requestReview:
+          reviewer: kairu-ms
+      - assignTo:
+          users:
+          - necusjz
+          - kairu-ms
+      description: '[Internet Analyzer] Auto assign labels and reviewers based on PR title/description.'
+    - if:
       - payloadType: Pull_Request
       - isAction:
           action: Opened
@@ -5927,5 +6088,255 @@ configuration:
       - addLabel:
           label: Service Attention
       description: '[Data Factory] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z peering'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z peering'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Pp]eering)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Pp]eering)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Peering
+      - assignTo:
+          users:
+          - necusjz
+          - kairu-ms
+      description: '[Peering] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z peering'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z peering'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Pp]eering)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Pp]eering)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Peering
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: jsntcy
+      - requestReview:
+          reviewer: necusjz
+      - requestReview:
+          reviewer: kairu-ms
+      - assignTo:
+          users:
+          - necusjz
+          - kairu-ms
+      description: '[Peering] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z storagesync'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z storagesync'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Ss]toragesync)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Ss]toragesync)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Storagesync
+      - assignTo:
+          users:
+          - calvinhzy
+      description: '[Storagesync] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z storagesync'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z storagesync'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Ss]toragesync)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Ss]toragesync)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Storagesync
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: jsntcy
+      - requestReview:
+          reviewer: calvinhzy
+      - assignTo:
+          users:
+          - calvinhzy
+      description: '[Storagesync] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z network watcher'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z network watcher'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Nn]etwork [Ww]atcher)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Nn]etwork [Ww]atcher)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Network - Network Watcher
+      - assignTo:
+          users:
+          - kairu-ms
+          - AllyW
+          - necusjz
+      description: '[Network Watcher] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z network watcher'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z network watcher'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Nn]etwork [Ww]atcher)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Nn]etwork [Ww]atcher)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Network - Network Watcher
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: jsntcy
+      - requestReview:
+          reviewer: kairu-ms
+      - requestReview:
+          reviewer: necusjz
+      - assignTo:
+          users:
+          - necusjz
+          - kairu-ms
+          - AllyW
+      description: '[Network Watcher] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z powerbi'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z powerbi'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Pp]owerbi)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Pp]owerbi)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: PowerBI
+      - assignTo:
+          users:
+          - kairu-ms
+          - AllyW
+      description: '[PowerBI] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z powerbi'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z powerbi'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Pp]owerbi)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Pp]owerbi)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: PowerBI
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: jsntcy
+      - requestReview:
+          reviewer: kairu-ms
+      - requestReview:
+          reviewer: AllyW
+      - assignTo:
+          users:
+          - kairu-ms
+          - AllyW
+      description: '[PowerBI] Auto assign labels and reviewers based on PR title/description.'
 onFailure: 
 onSuccess: 
