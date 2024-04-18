@@ -191,12 +191,6 @@ def load_command_table(self, args):
         g.custom_show_command('show', 'show_eureka_server_for_spring')
         g.custom_command('delete', 'delete_eureka_server_for_spring', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp env java-component spring-cloud-eureka') as g:
-        g.custom_command('create', 'create_spring_cloud_eureka', supports_no_wait=True)
-        g.custom_command('update', 'update_spring_cloud_eureka', supports_no_wait=True)
-        g.custom_show_command('show', 'show_spring_cloud_eureka')
-        g.custom_command('delete', 'delete_spring_cloud_eureka', confirmation=True, supports_no_wait=True)
-
     with self.command_group('containerapp env java-component config-server-for-spring') as g:
         g.custom_command('create', 'create_config_server_for_spring', supports_no_wait=True)
         g.custom_command('update', 'update_config_server_for_spring', supports_no_wait=True)
