@@ -8,6 +8,7 @@ from ...application_configuration_service import (application_configuration_serv
 import unittest
 from argparse import Namespace
 from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError
+from .common.test_utils import get_test_cmd
 from ..._validators_enterprise import validate_refresh_interval
 try:
     import unittest.mock as mock
@@ -22,16 +23,6 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 free_mock_client = mock.MagicMock()
-
-
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
 
 
 def _cf_resource_group(cli_ctx, subscription_id=None):
@@ -59,7 +50,7 @@ class BasicTest(unittest.TestCase):
     @mock.patch('azext_spring._utils.cf_resource_groups', _cf_resource_group)
     def _execute(self, resource_group, generation, refresh_interval, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
-        application_configuration_service_create(_get_test_cmd(), client, 'myasa',
+        application_configuration_service_create(get_test_cmd(), client, 'myasa',
                                                  resource_group, generation, refresh_interval)
         call_args = client.configuration_services.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))

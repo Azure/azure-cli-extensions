@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new Domains resource under the parent EmailService resource or update an existing Domains resource.
+
+    :example: Create a domain with tags
+        az communication email domain create --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --location global --domain-management AzureManaged/CustomerManaged --tags "{tag:tag}" --user-engmnt-tracking Enabled/Disabled
     """
 
     _aaz_info = {

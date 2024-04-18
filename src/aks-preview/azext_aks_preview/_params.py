@@ -111,8 +111,14 @@ from azext_aks_preview._consts import (
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
+    CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
+    CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
+    CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_ARTIFACT_SOURCE_CACHE,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -135,7 +141,6 @@ from azext_aks_preview._validators import (
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
-    validate_egress_gtw_nodeselector,
     validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
@@ -177,6 +182,7 @@ from azext_aks_preview._validators import (
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
     validate_custom_endpoints,
+    validate_bootstrap_container_registry_resource_id,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -236,6 +242,10 @@ pod_ip_allocation_modes = [
 
 # consts for ManagedCluster
 load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
+sku_names = [
+    CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
+    CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
+]
 sku_tiers = [
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
@@ -355,6 +365,16 @@ node_provisioning_modes = [
 ssh_accesses = [
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+]
+
+health_probe_modes = [
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
+]
+
+bootstrap_artifact_source_types = [
+    CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_ARTIFACT_SOURCE_CACHE,
 ]
 
 
@@ -500,6 +520,9 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
+            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+        )
+        c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
         )
         c.argument("fqdn_subdomain")
@@ -562,6 +585,17 @@ def load_arguments(self, _):
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
         )
         c.argument("http_proxy_config")
+        c.argument(
+            "bootstrap_artifact_source",
+            arg_type=get_enum_type(bootstrap_artifact_source_types),
+            default=CONST_ARTIFACT_SOURCE_DIRECT,
+            is_preview=True,
+        )
+        c.argument(
+            "bootstrap_container_registry_resource_id",
+            validator=validate_bootstrap_container_registry_resource_id,
+            is_preview=True,
+        )
         # addons
         c.argument(
             "enable_addons",
@@ -632,6 +666,16 @@ def load_arguments(self, _):
             ),
         )
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
+        c.argument(
+            "nodepool_initialization_taints",
+            options_list=["--nodepool-initialization-taints", "--node-init-taints"],
+            is_preview=True,
+            validator=validate_nodepool_taints,
+            help=(
+                "Comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
+                "Pass \"\" to clear existing taints."
+            ),
+        )
         c.argument("node_osdisk_type", arg_type=get_enum_type(node_os_disk_types))
         c.argument("node_osdisk_size", type=int)
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -868,6 +912,12 @@ def load_arguments(self, _):
             action="store_true"
         )
 
+        c.argument(
+            "cluster_service_load_balancer_health_probe_mode",
+            is_preview=True,
+            arg_type=get_enum_type(health_probe_modes),
+        )
+
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
         c.argument("disable_local_accounts", action="store_true")
@@ -952,6 +1002,9 @@ def load_arguments(self, _):
             deprecate_info=c.deprecate(
                 target="--no-uptime-sla", redirect="--tier", hide=True
             ),
+        )
+        c.argument(
+            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
         )
         c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
@@ -1041,6 +1094,16 @@ def load_arguments(self, _):
             )
         )
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
+        c.argument(
+            "nodepool_initialization_taints",
+            options_list=["--nodepool-initialization-taints", "--node-init-taints"],
+            is_preview=True,
+            validator=validate_nodepool_taints,
+            help=(
+                "Comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
+                "Pass \"\" to clear existing taints."
+            ),
+        )
         # misc
         c.argument(
             "yes",
@@ -1246,6 +1309,12 @@ def load_arguments(self, _):
         )
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
+
+        c.argument(
+            "cluster_service_load_balancer_health_probe_mode",
+            is_preview=True,
+            arg_type=get_enum_type(health_probe_modes),
+        )
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -2044,16 +2113,6 @@ def load_arguments(self, _):
     with self.argument_context("aks mesh disable-ingress-gateway") as c:
         c.argument(
             "ingress_gateway_type", arg_type=get_enum_type(ingress_gateway_types)
-        )
-
-    with self.argument_context("aks mesh enable-egress-gateway") as c:
-        c.argument(
-            "egx_gtw_nodeselector",
-            nargs="*",
-            validator=validate_egress_gtw_nodeselector,
-            required=False,
-            default=None,
-            options_list=["--egress-gateway-nodeselector", "--egx-gtw-ns"],
         )
 
     with self.argument_context("aks mesh enable") as c:

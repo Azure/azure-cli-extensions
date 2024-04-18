@@ -69,6 +69,12 @@ aks create:
     enable_vtpm:
       rule_exclusions:
         - option_length_too_long
+    bootstrap_artifact_source:
+      rule_exclusions:
+        - option_length_too_long
+    bootstrap_container_registry_resource_id:
+      rule_exclusions:
+        - option_length_too_long
 aks update:
   parameters:
     enable_pod_identity_with_kubenet:
