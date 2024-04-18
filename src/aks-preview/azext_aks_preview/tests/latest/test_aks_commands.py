@@ -126,16 +126,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(versions["values"]) > 0
 
     @AllowLargeResponse()
-    def test_get_os_options(self):
-        osOptions_cmd = "aks get-os-options -l westus2"
-        self.cmd(
-            osOptions_cmd,
-            checks=[
-                self.check("type", "Microsoft.ContainerService/locations/osOptions")
-            ],
-        )
-
-    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
@@ -3151,6 +3141,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--sku automatic --node-vm-size standard_ds4_v2 "
+            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/NRGLockdownPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeAutoProvisioningPreview "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
@@ -3179,6 +3174,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update from sku name Automatic to Base
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
+            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/NRGLockdownPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeAutoProvisioningPreview "
             "--sku base "
         )
         self.cmd(
@@ -13717,18 +13717,20 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         location="westcentralus",
     )
     def test_aks_artifact_source(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name('cliakstest', 16)
         vnet_name = self.create_random_name("clitest", 16)
         aks_subnet_name = "aks-subnet"
         acr_subnet_name = "acr-subnet"
         cluster_identity_name = self.create_random_name("clitest", 16)
         kubelet_identity_name = self.create_random_name("clitest", 16)
         acr_name = self.create_random_name("clitest", 16)
+        aks_name_1 = self.create_random_name('cliakstest', 16)
+        aks_name_2 = self.create_random_name('cliakstest', 16)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 'location': resource_group_location,
-                "aks_name": aks_name,
+                "aks_name_1": aks_name_1,
+                "aks_name_2": aks_name_2,
                 "vnet_name": vnet_name,
                 "aks_subnet_name": aks_subnet_name,
                 "acr_subnet_name": acr_subnet_name,
@@ -13899,9 +13901,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         self.cmd(create_role_assignment_cmd)
 
-        # create AKS cluster
-        create_cmd = (
-            "aks create --resource-group {resource_group} --name {aks_name} -c 1 --ssh-key-value={ssh_key_value} "
+        # create AKS cluster to use Cache as artifact source
+        create_cmd_1 = (
+            "aks create --resource-group {resource_group} --name {aks_name_1} -c 1 --ssh-key-value={ssh_key_value} "
             "--network-plugin kubenet --vnet-subnet-id {vnet_id}/subnets/{aks_subnet_name} "
             "--assign-identity {cluster_identity_id} "
             "--assign-kubelet-identity {kubelet_identity_id} "
@@ -13909,11 +13911,37 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/BootstrapProfilePreview "
             "-o json"
         )
-        self.cmd(create_cmd, checks=[
+        self.cmd(create_cmd_1, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("bootstrapProfile.artifactSource", "Cache"),
+            self.check("bootstrapProfile.containerRegistryId", acr_id),
+        ])
+
+        # create AKS cluster to use Direct as artifact source
+        create_cmd_2 = (
+            "aks create --resource-group {resource_group} --name {aks_name_2} -c 1 --ssh-key-value={ssh_key_value} "
+            "--network-plugin kubenet --vnet-subnet-id {vnet_id}/subnets/{aks_subnet_name} "
+            "--assign-identity {cluster_identity_id} "
+            "--assign-kubelet-identity {kubelet_identity_id} "
+            "-o json"
+        )
+        self.cmd(create_cmd_2, checks=[
+            self.check("provisioningState", "Succeeded"),
+        ])
+
+        # update AKS cluster to use Cache as artifact source
+        update_cmd = (
+            "aks update --resource-group {resource_group} --name {aks_name_2} "
+            "--bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id {acr_id} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/BootstrapProfilePreview "
+            "-o json"
+        )
+        self.cmd(update_cmd, checks=[
             self.check("provisioningState", "Succeeded"),
             self.check("bootstrapProfile.artifactSource", "Cache"),
             self.check("bootstrapProfile.containerRegistryId", acr_id),
         ])
 
         # delete
-        self.cmd("aks delete -g {resource_group} -n {aks_name} --yes --no-wait", checks=[self.is_empty()])
+        self.cmd("aks delete -g {resource_group} -n {aks_name_1} --yes --no-wait", checks=[self.is_empty()])
+        self.cmd("aks delete -g {resource_group} -n {aks_name_2} --yes --no-wait", checks=[self.is_empty()])
