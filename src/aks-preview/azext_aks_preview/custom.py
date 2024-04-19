@@ -1038,12 +1038,12 @@ def aks_upgrade(cmd,
         kubernetes_version = mcsnapshot.managed_cluster_properties_read_only.kubernetes_version
 
     instance = _update_upgrade_settings(
-            cmd,
-            instance,
-            enable_force_upgrade=enable_force_upgrade,
-            disable_force_upgrade=disable_force_upgrade,
-            upgrade_override_until=upgrade_override_until)
-    
+        cmd,
+        instance,
+        enable_force_upgrade=enable_force_upgrade,
+        disable_force_upgrade=disable_force_upgrade,
+        upgrade_override_until=upgrade_override_until)
+
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
             logger.warning("The cluster is already on version %s and is not in a failed state. No operations "
