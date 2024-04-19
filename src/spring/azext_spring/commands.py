@@ -165,10 +165,10 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'config_get')
         g.custom_command('enable', 'config_enable')
         g.custom_command('disable', 'config_disable')
-        g.custom_command('create', 'config_create')
-        g.custom_command('delete', 'config_delete', confirmation=True)
-        g.custom_command('bind', 'config_bind')
-        g.custom_command('unbind', 'config_unbind')
+        g.custom_command('create', 'config_create', is_preview=True)
+        g.custom_command('delete', 'config_delete', confirmation=True, is_preview=True)
+        g.custom_command('bind', 'config_bind', is_preview=True)
+        g.custom_command('unbind', 'config_unbind', is_preview=True)
 
     with self.command_group('spring config-server git',
                             supports_local_cache=True, exception_handler=handle_asc_exception) as g:

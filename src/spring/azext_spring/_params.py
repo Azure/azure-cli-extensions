@@ -176,6 +176,7 @@ def load_arguments(self, _):
         c.argument('enable_config_server',
                    action='store_true',
                    options_list=['--enable-config-server', '--enable-cs'],
+                   is_preview=True,
                    arg_group="Config Server",
                    help='(Enterprise Tier Only) Enable Config Server.')
         c.argument('enable_application_live_view',
@@ -359,6 +360,7 @@ def load_arguments(self, _):
         c.argument('bind_config_server',
                    action='store_true',
                    options_list=['--bind-config-server --bind-cs'],
+                   is_preview=True,
                    validator=validate_create_app_binding_default_config_server,
                    help='Bind the app to the default Config Server automatically.')
         c.argument('cpu', arg_type=cpu_type)
@@ -674,6 +676,19 @@ def load_arguments(self, _):
     with self.argument_context('spring config-server set') as c:
         c.argument('config_file',
                    help='A yaml file path for the configuration of Spring Cloud config server')
+
+    with self.argument_context('spring config-server'.format(scope)) as c:
+        c.argument('service', options_list=['--service', '-s', c.deprecate(target='--name', redirect='--service', hide=True), 
+                    c.deprecate(target='-n', redirect='-s', hide=True)],
+                    help="The name of Azure Spring Apps instance.")
+
+    for scope in ['bind', 'unbind', 'create', 'delete']:
+        with self.argument_context('spring config-server {}'.format(scope)) as c:
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['bind', 'unbind']:
+        with self.argument_context('spring config-server {}'.format(scope)) as c:
+            c.argument('app', help='Name of app.', validator=validate_app_name)
 
     for scope in ['spring config-server git set', 'spring config-server git repo add', 'spring config-server git repo update']:
         with self.argument_context(scope) as c:

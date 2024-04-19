@@ -732,27 +732,27 @@ def eureka_disable(cmd, client, resource_group, name):
     return cached_put(cmd, client.begin_update_patch, eureka_server_resource, resource_group, name).result()
 
 
-def config_enable(cmd, client, resource_group, name):
-    config_server_resource = client.get(resource_group, name)
+def config_enable(cmd, client, resource_group, service):
+    config_server_resource = client.get(resource_group, service)
     if not config_server_resource.properties.enabled_state:
         raise CLIError("Only supported Standard consumption Tier.")
 
     config_server_properties = models.ConfigServerProperties(enabled_state="Enabled")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
-def config_disable(cmd, client, resource_group, name):
-    config_server_resource = client.get(resource_group, name)
+def config_disable(cmd, client, resource_group, service):
+    config_server_resource = client.get(resource_group, service)
     if not config_server_resource.properties.enabled_state:
         raise CLIError("Only supported Standard consumption Tier.")
 
     config_server_properties = models.ConfigServerProperties(enabled_state="Disabled")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, service).result()
 
-def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
-    config_server_resource = client.config_servers.get(resource_group, name)
+def config_set(cmd, client, resource_group, service, config_file, no_wait=False):
+    config_server_resource = client.config_servers.get(resource_group, service)
     if config_server_resource.properties.enabled_state and config_server_resource.properties.enabled_state == "Disabled":
         raise CLIError("Config server is disabled.")
 
@@ -797,28 +797,28 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     config_server_properties = models.ConfigServerProperties(enabled_state="Enabled", config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
-    validate_config_server_settings(client, resource_group, name, config_server_settings)
+    validate_config_server_settings(client, resource_group, service, config_server_settings)
     logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
 
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return sdk_no_wait(no_wait, client.config_servers.begin_update_put, resource_group, name, config_server_resource)
+    return sdk_no_wait(no_wait, client.config_servers.begin_update_put, resource_group, service, config_server_resource)
 
 
-def config_get(cmd, client, resource_group, name):
-    config_server_resource = client.config_servers.get(resource_group, name)
+def config_get(cmd, client, resource_group, service):
+    config_server_resource = client.config_servers.get(resource_group, service)
 
     if not config_server_resource.properties.enabled_state and not config_server_resource.properties.config_server and not config_server_resource.properties.resource_requests:
         raise CLIError("Config server not set.")
     return config_server_resource
 
-def config_clear(cmd, client, resource_group, name):
-    config_server_resource = client.config_servers.get(resource_group, name)
+def config_clear(cmd, client, resource_group, service):
+    config_server_resource = client.config_servers.get(resource_group, service)
     config_server_properties = models.ConfigServerProperties(enabled_state=config_server_resource.properties.enabled_state)
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return client.config_servers.begin_update_put(resource_group, name, config_server_resource)
+    return client.config_servers.begin_update_put(resource_group, service, config_server_resource)
 
 
-def config_git_set(cmd, client, resource_group, name, uri,
+def config_git_set(cmd, client, resource_group, service, uri,
                    label=None,
                    search_paths=None,
                    username=None,
@@ -827,7 +827,7 @@ def config_git_set(cmd, client, resource_group, name, uri,
                    host_key_algorithm=None,
                    private_key=None,
                    strict_host_key_checking=None):
-    config_server_resource = client.config_servers.get(resource_group, name)
+    config_server_resource = client.config_servers.get(resource_group, service)
     if config_server_resource.properties.enabled_state and config_server_resource.properties.enabled_state == "Disabled":
         raise CLIError("Config server is disabled.")
 
@@ -849,14 +849,14 @@ def config_git_set(cmd, client, resource_group, name, uri,
     config_server_properties = models.ConfigServerProperties(enabled_state="Enabled", config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
-    validate_config_server_settings(client, resource_group, name, config_server_settings)
+    validate_config_server_settings(client, resource_group, service, config_server_settings)
 
     logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.config_servers.begin_update_put, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.config_servers.begin_update_put, config_server_resource, resource_group, service).result()
 
 
-def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
+def config_repo_add(cmd, client, resource_group, service, uri, repo_name,
                     pattern=None,
                     label=None,
                     search_paths=None,
@@ -866,7 +866,7 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     host_key_algorithm=None,
                     private_key=None,
                     strict_host_key_checking=None):
-    config_server_resource = client.config_servers.get(resource_group, name)
+    config_server_resource = client.config_servers.get(resource_group, service)
     config_server = config_server_resource.properties.config_server
     git_property = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
 
@@ -902,15 +902,15 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
         config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
-    validate_config_server_settings(client, resource_group, name, config_server_settings)
+    validate_config_server_settings(client, resource_group, service, config_server_settings)
 
     logger.warning("[2/2] Adding config server settings repo, (this operation can take a while to complete)")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
-def config_repo_delete(cmd, client, resource_group, name, repo_name):
-    config_server_resource = client.config_servers.get(resource_group, name)
+def config_repo_delete(cmd, client, resource_group, service, repo_name):
+    config_server_resource = client.config_servers.get(resource_group, service)
     config_server = config_server_resource.properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo '{}' not found.".format(repo_name))
@@ -927,14 +927,14 @@ def config_repo_delete(cmd, client, resource_group, name, repo_name):
         config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
-    validate_config_server_settings(client, resource_group, name, config_server_settings)
+    validate_config_server_settings(client, resource_group, service, config_server_settings)
 
     logger.warning("[2/2] Deleting config server settings repo, (this operation can take a while to complete)")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
-def config_repo_update(cmd, client, resource_group, name, repo_name,
+def config_repo_update(cmd, client, resource_group, service, repo_name,
                        uri=None,
                        pattern=None,
                        label=None,
@@ -945,7 +945,7 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
                        host_key_algorithm=None,
                        private_key=None,
                        strict_host_key_checking=None):
-    config_server_resource = client.config_servers.get(resource_group, name)
+    config_server_resource = client.config_servers.get(resource_group, service)
     config_server = config_server_resource.properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo '{}' not found.".format(repo_name))
@@ -980,15 +980,15 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
-    validate_config_server_settings(client, resource_group, name, config_server_settings)
+    validate_config_server_settings(client, resource_group, service, config_server_settings)
 
     logger.warning("[2/2] Updating config server settings repo, (this operation can take a while to complete)")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
-def config_repo_list(cmd, client, resource_group, name):
-    config_server_resource = client.config_servers.get(resource_group, name)
+def config_repo_list(cmd, client, resource_group, service):
+    config_server_resource = client.config_servers.get(resource_group, service)
     config_server = config_server_resource.properties.config_server
 
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:

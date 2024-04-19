@@ -437,16 +437,25 @@ helps['spring config-server'] = """
 helps['spring config-server show'] = """
     type: command
     short-summary: Show Config Server.
+    examples:
+        - name: Show the metadata for the default config server in service instance MyService.
+          text: az spring config-server show -s MyService -g MyResourceGroup
 """
 
 helps['spring config-server set'] = """
     type: command
     short-summary: Set Config Server from a yaml file.
+    examples:
+        - name: Set Config Server from a yaml file to service instance MyService.
+          text: az spring config-server create -s MyService -g MyResourceGroup --config-file MyConfigFile.yaml
 """
 
 helps['spring config-server clear'] = """
     type: command
     short-summary: Erase all settings in Config Server.
+    examples:
+        - name: Update the settings for the default config server in service instance MyService to empty.
+          text: az spring config-server clear -s MyService -g MyResourceGroup
 """
 
 helps['spring config-server git'] = """
@@ -462,26 +471,41 @@ helps['spring config-server git repo'] = """
 helps['spring config-server git set'] = """
     type: command
     short-summary: Set git property of Config Server, will totally override the old one.
+    examples:
+        - name: Set a public git repository for the Config Server without credential.
+          text: az spring config-server create -s MyService -g MyResourceGroup --uri UrlOfGitRepository --label LabelOfGitRepository --search-paths "/path1,/path2"
 """
 
 helps['spring config-server git repo add'] = """
     type: command
     short-summary: Add a new repository of git property of Config Server.
+    examples:
+        - name: Set a public git repository for the Config Server without auth.
+          text: az spring config-server git repo add -s MyService -g MyResourceGroup --uri UrlOfGitRepository --repo-name GitRepoName
 """
 
 helps['spring config-server git repo remove'] = """
     type: command
     short-summary: Remove an existing repository of git property of Config Server.
+    examples:
+        - name: Remove an existing repository under a certain service instance.
+          text: az spring config-server git repo remove -s MyService -g MyResourceGroup --repo-name GitRepoName
 """
 
 helps['spring config-server git repo update'] = """
     type: command
     short-summary: Override an existing repository of git property of Config Server, will totally override the old one.
+    examples:
+        - name: Update one of the additional repositories.
+          text: az spring config-server git repo update -s MyService -g MyResourceGroup --uri UrlOfGitRepository --repo-name GitRepoName --label LabelOfGitRepository
 """
 
 helps['spring config-server git repo list'] = """
     type: command
     short-summary: List all repositories of git property of Config Server.
+    examples:
+        - name: List all repositories under a certain service instance.
+          text: az spring config-server git repo list -s MyService -g MyResourceGroup
 """
 
 helps['spring config-server enable'] = """
@@ -498,7 +522,7 @@ helps['spring config-server create'] = """
     type: command
     short-summary: (Enterprise Tier Only) Create Config Server.
     examples:
-        - name: Create Config Server.
+        - name: Create a Config Server without repository settings.
           text: az spring config-server create -s MyService -g MyResourceGroup
 """
 
