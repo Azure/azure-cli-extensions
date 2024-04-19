@@ -983,6 +983,14 @@ class PollerProgressBar(IndeterminateProgressBar):
         self.message = self.poller.status()
         super().update_progress()
 
+def longRunningOperationShowProgress(cli_ctx, name, no_wait, func, *args, **kwargs):
+    poller = sdk_no_wait(no_wait, func, *args, **kwargs)
+    progress_bar = None
+    disable_progress_bar = cli_ctx.config.getboolean('core', 'disable_progress_bar', False)
+    if not disable_progress_bar and not cli_ctx.only_show_errors:
+        progress_bar = PollerProgressBar(cli_ctx, poller)
+    return LongRunningOperation(cli_ctx, 'Starting {}'.format(name),progress_bar=progress_bar)(poller)
+
 def aks_scale(cmd,  # pylint: disable=unused-argument
               client,
               resource_group_name,
@@ -1010,19 +1018,14 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
             agent_profile.count = int(node_count)
             # null out the SP profile because otherwise validation complains
             instance.service_principal_profile = None
-            poller = sdk_no_wait(
-                no_wait,
+            return longRunningOperationShowProgress(
+                cmd.cli_ctx,
+                "Scaling",no_wait,
                 client.begin_create_or_update,
                 resource_group_name,
                 name,
                 instance,
-                headers=headers,
-            )
-            progress_bar = None
-            disable_progress_bar = cmd.cli_ctx.config.getboolean('core', 'disable_progress_bar', False)
-            if not disable_progress_bar and not cmd.cli_ctx.only_show_errors:
-                progress_bar = PollerProgressBar(cmd.cli_ctx, poller)
-            return LongRunningOperation(cmd.cli_ctx, 'Starting {}'.format(cmd.name),progress_bar=progress_bar)(poller)
+                headers=headers)
 
     raise CLIError(f'The nodepool "{nodepool_name}" was not found.')
 
