@@ -20,7 +20,6 @@ from azure.cli.command_modules.monitor.actions import AAZCustomListArg
 from .aaz.latest.monitor.data_collection.endpoint import Create as _EndpointCreate
 from .aaz.latest.monitor.data_collection.rule import Create as _RuleCreate, Update as _RuleUpdate, Show as RuleShow
 
-# comment
 try:
     from .manual.custom import *  # noqa: F403
 except ImportError as e:
