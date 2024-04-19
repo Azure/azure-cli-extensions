@@ -10822,14 +10822,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: enable-azure-container-storage
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
                      '--enable-azure-container-storage azureDisk'
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
 
         # Sleep for 5 mins before next operation,
         # since azure container storage operations take
         # some time to post process.
         time.sleep(5 * 60)
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
 
         # update: disable-azure-container-storage
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
