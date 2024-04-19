@@ -1205,7 +1205,7 @@ def devcenter_environment_operation_show_logs_by_operation(
     )
     logs_array = []
     for log in logs:
-        if log:  
+        if log:
             try:
                 logs_string = json.loads(log)
                 logs_array.append(logs_string)
