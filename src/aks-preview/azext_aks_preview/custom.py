@@ -1114,13 +1114,13 @@ def _update_upgrade_settings(cmd, instance,
 
     ClusterUpgradeSettings = cmd.get_models(
         "ClusterUpgradeSettings",
-        resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
 
     UpgradeOverrideSettings = cmd.get_models(
         "UpgradeOverrideSettings",
-        resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
 
