@@ -174,7 +174,7 @@ def load_command_table(self, _):
                             supports_local_cache=True, exception_handler=handle_asc_exception) as g:
         g.custom_command('set', 'config_git_set')
         g.custom_command('repo add', 'config_repo_add')
-        g.custom_command('repo remove', 'config_repo_delete')
+        g.custom_command('repo remove', 'config_repo_delete', confirmation=True)
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
 
