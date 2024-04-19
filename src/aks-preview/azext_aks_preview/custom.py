@@ -1139,7 +1139,8 @@ def _update_upgrade_settings(cmd, instance,
                              disable_force_upgrade=False,
                              upgrade_override_until=None):
     existing_until = None
-    if instance.upgrade_settings is not None and instance.upgrade_settings.override_settings is not None and instance.upgrade_settings.override_settings.until is not None:
+    if (instance.upgrade_settings is not None and instance.upgrade_settings.override_settings is not None
+            and instance.upgrade_settings.override_settings.until is not None):
         existing_until = instance.upgrade_settings.override_settings.until
 
     force_upgrade = None
