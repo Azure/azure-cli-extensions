@@ -25,6 +25,16 @@ helps['dataprotection backup-instance initialize'] = """
         text: az dataprotection backup-instance initialize --datasource-type AzureDisk -l southeastasia --policy-id {disk_policy_id} --datasource-id {disk_id}
 """
 
+helps['dataprotection backup-instance update'] = """
+    type: command
+    short-summary: Update properties associated with a backup instance.
+    examples:
+      - name: Fetch backup configuration for vaulted blobs, providing a list of containers to back up
+        text: az dataprotection backup-instance initialize-backupconfig --container-list 
+      - name: Update backed up containers for a vaulted blob backup instance
+        text: az dataprotection backup-instance update --backup-instance-name MyDisk1 --vaulted-blob-container-list {backup_configuration} -g MyResourceGroup --vault-name MyVault
+"""
+
 helps['dataprotection backup-instance update-policy'] = """
     type: command
     short-summary: Update backup policy associated with backup instance.

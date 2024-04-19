@@ -106,6 +106,7 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True)
+        g.custom_command('update', 'dataprotection_backup_instance_update', supports_no_wait=True)
 
     with self.command_group('dataprotection backup-instance restore', exception_handler=exception_handler) as g:
         g.custom_command('trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)

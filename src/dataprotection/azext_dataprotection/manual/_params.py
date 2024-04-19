@@ -115,6 +115,13 @@ def load_arguments(self, _):
         c.argument('snapshot_resource_group_name', options_list=['--snapshot-resource-group-name', '--snapshot-rg'], type=str, help="Name of the resource group in which the backup snapshots should be stored")
         c.argument('tags', tags_type)
 
+    with self.argument_context('dataprotection backup-instance update') as c:
+        c.argument('backup_instance_name', type=str, help="Backup instance name.")
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', vault_name_type)
+        c.argument('vaulted_blob_container_list', type=validate_file_or_dict, help="Enter the container list to modify a vaulted blob backup. The output for "
+                   "'az dataprotection backup-instance initialize-backupconfig' needs to be provided as input")
+
     with self.argument_context('dataprotection backup-instance update-policy') as c:
         c.argument('backup_instance_name', type=str, help="Backup instance name.")
         c.argument('resource_group_name', resource_group_name_type)

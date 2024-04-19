@@ -739,6 +739,27 @@ def get_permission_object_from_keyvault(keyvault):
     return permission_object
 
 
+def convert_backup_instance_show_to_input(backup_instance):
+    backup_instance['backup_instance_name'] = backup_instance['name']
+
+    if 'name' in backup_instance:
+        del backup_instance['name']
+    if 'id' in backup_instance:
+        del backup_instance['id']
+    if 'resourceGroup' in backup_instance:
+        del backup_instance['resourceGroup']
+    if 'type' in backup_instance:
+        del backup_instance['type']
+    if 'properties' in backup_instance:
+        if 'currentProtectionState' in backup_instance['properties']:
+            del backup_instance['properties']['currentProtectionState']
+        if 'protectionStatus' in backup_instance['properties']:
+            del backup_instance['properties']['protectionStatus']
+        if 'provisioningState' in backup_instance['properties']:
+            del backup_instance['properties']['provisioningState']
+    return backup_instance
+
+
 def convert_dict_keys_snake_to_camel(dictionary):
     '''
     Recursively converts all dictionary and nested dictionary keys from snake case to camel case

@@ -117,7 +117,7 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
             raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
                                             ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources, '
                                             ' --backup-hook-references for given datasource type.')
-        return helper.get_blob_backupconfig(vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group)
+        return helper.get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group)
     else:
         raise InvalidArgumentValueError('Given datasource type is not supported currently. '
                                         'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
@@ -194,23 +194,55 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     }
 
 
-def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):
+def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, backup_instance_name,
+                                          vaulted_blob_container_list=None, no_wait=False):
     from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as BackupInstanceShow
     backup_instance = BackupInstanceShow(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name,
         "backup_instance_name": backup_instance_name
     })
-    policy_info = backup_instance['properties']['policyInfo']
-    policy_info['policyId'] = policy_id
 
-    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Update
-    return Update(cli_ctx=cmd.cli_ctx)(command_args={
+    backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = \
+        [vaulted_blob_container_list,]
+
+    backup_instance = helper.convert_backup_instance_show_to_input(backup_instance)
+
+    from azext_dataprotection.manual.aaz_operations.backup_instance import UpdateWithBI
+    return UpdateWithBI(cli_ctx=cmd.cli_ctx)(command_args={
         "no_wait": no_wait,
-        "backup_instance_name": backup_instance_name,
+        "backup_instance": backup_instance,
         "resource_group": resource_group_name,
         "vault_name": vault_name,
-        "policy_info": policy_info
+    })
+
+
+
+def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):
+    # For some reason, the auto-generated Backup Instance Update does not contain some fields. Prominently
+    # in this situation, it is missing the properties.policyInfo.policyParameters section entirely, even though
+    # Backup Instance Create contains it. To get around this, we have a modified Update function that basically
+    # does a Create with an entire backup instance input.
+
+    # To achieve that, we have to fetch the currently present backup instance, make any necessary changes
+    # to that, and then remove any extranous fields that might be present.
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as BackupInstanceShow
+    backup_instance = BackupInstanceShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "backup_instance_name": backup_instance_name
+    })
+
+    backup_instance['properties']['policyInfo']['policyId'] = policy_id
+
+    backup_instance = helper.convert_backup_instance_show_to_input(backup_instance)
+
+    from azext_dataprotection.manual.aaz_operations.backup_instance import UpdateWithBI
+    return UpdateWithBI(cli_ctx=cmd.cli_ctx)(command_args={
+        "no_wait": no_wait,
+        "backup_instance": backup_instance,
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
     })
 
 
