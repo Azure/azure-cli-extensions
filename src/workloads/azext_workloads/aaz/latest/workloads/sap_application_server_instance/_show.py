@@ -19,16 +19,16 @@ class Show(AAZCommand):
     """Show the SAP Application Server Instance corresponding to the Virtual Instance for SAP solutions resource.
 
     :example: Get an overview of an App Server Instance
-        az workloads sap-application-server-instance show -g <Resource-group-name> --sap-virtual-instance-name <VIS name> -n <ResourceName>
+        az workloads sap-application-server-instance show -g <resource-group-name> --sap-virtual-instance-name <vis-name> -n <app-instance-name>
 
     :example: Get an overview of an App Server Instance using the Azure resource ID of the instance
-        az workloads sap-application-server-instance show --id <ResourceID>
+        az workloads sap-application-server-instance show --id <resource-id>
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/applicationinstances/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -53,6 +53,9 @@ class Show(AAZCommand):
             help="The name of SAP Application Server instance resource.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.*",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -62,6 +65,9 @@ class Show(AAZCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
         return cls._args_schema
 
@@ -134,7 +140,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -189,6 +195,10 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.dispatcher_status = AAZStrType(
+                serialized_name="dispatcherStatus",
+                flags={"read_only": True},
+            )
             properties.errors = AAZObjectType()
             properties.gateway_port = AAZIntType(
                 serialized_name="gatewayPort",

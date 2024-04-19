@@ -13,46 +13,44 @@ interactions:
       ParameterSetName:
       - -l
       User-Agent:
-      - AZURECLI/2.54.0 azsdk-python-azure-mgmt-containerservice/28.0.0b Python/3.8.10
-        (Linux-6.2.0-1016-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.57.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.2.0-1019-azure-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/meshRevisionProfiles?api-version=2023-10-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/meshRevisionProfiles?api-version=2024-02-02-preview
   response:
     body:
       string: "{\n  \"value\": [\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/meshRevisionProfiles/istio\",\n
         \   \"name\": \"istio\",\n    \"type\": \"Microsoft.ContainerService/locations/meshRevisionProfiles\",\n
         \   \"properties\": {\n     \"meshRevisions\": [\n      {\n       \"revision\":
-        \"asm-1-17\",\n       \"upgrades\": [\n        \"asm-1-18\"\n       ],\n       \"compatibleWith\":
+        \"asm-1-18\",\n       \"upgrades\": [\n        \"asm-1-19\"\n       ],\n       \"compatibleWith\":
         [\n        {\n         \"name\": \"kubernetes\",\n         \"versions\": [\n
-        \         \"1.25.11\",\n          \"1.25.15\",\n          \"1.26.6\",\n          \"1.26.10\",\n
-        \         \"1.27.3\",\n          \"1.27.7\",\n          \"1.28.0\",\n          \"1.28.3\"\n
-        \        ]\n        }\n       ]\n      },\n      {\n       \"revision\": \"asm-1-18\",\n
-        \      \"compatibleWith\": [\n        {\n         \"name\": \"kubernetes\",\n
-        \        \"versions\": [\n          \"1.25.11\",\n          \"1.25.15\",\n
-        \         \"1.26.6\",\n          \"1.26.10\",\n          \"1.27.3\",\n          \"1.27.7\",\n
-        \         \"1.28.0\",\n          \"1.28.3\"\n         ]\n        }\n       ]\n
+        \         \"1.26.10\",\n          \"1.26.12\",\n          \"1.27.7\",\n          \"1.27.9\",\n
+        \         \"1.28.3\",\n          \"1.28.5\"\n         ]\n        }\n       ]\n
+        \     },\n      {\n       \"revision\": \"asm-1-19\",\n       \"compatibleWith\":
+        [\n        {\n         \"name\": \"kubernetes\",\n         \"versions\": [\n
+        \         \"1.26.10\",\n          \"1.26.12\",\n          \"1.27.7\",\n          \"1.27.9\",\n
+        \         \"1.28.3\",\n          \"1.28.5\"\n         ]\n        }\n       ]\n
         \     }\n     ]\n    }\n   }\n  ]\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1040'
+      - '958'
       content-type:
       - application/json
       date:
-      - Sat, 25 Nov 2023 12:31:30 GMT
+      - Tue, 27 Feb 2024 23:45:59 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: E490D4E66F3A4B3C8A90882B7B6A04D1 Ref B: MNZ221060608021 Ref C: 2024-02-27T23:46:00Z'
     status:
       code: 200
       message: OK

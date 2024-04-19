@@ -562,6 +562,7 @@ class WindowsManagedDiskCreateRestoreGen2Test(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+
 class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -616,6 +617,7 @@ class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(Liv
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+
 class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -662,6 +664,7 @@ class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveSc
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+
 class LinuxManagedDiskCreateRestoreTestwithOracle8andpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -695,6 +698,7 @@ class LinuxManagedDiskCreateRestoreTestwithOracle8andpublicip(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+
 class ResetNICWindowsVM(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -721,7 +725,7 @@ class ResetNICWindowsVM(LiveScenarioTest):
 
 @pytest.mark.repairandrestore
 class RepairAndRestoreLinuxVM(LiveScenarioTest):
-    
+
     @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_RepairAndRestoreLinuxVM(self, resource_group):
         self.kwargs.update({
@@ -777,3 +781,31 @@ class LinuxARMManagedDiskCreateRestoreTest(LiveScenarioTest):
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+        
+class ResetNICWithASG(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_ResetNicWindowsVM(self, resource_group):
+        self.kwargs.update({
+            'vm': 'vm1'
+        })
+
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2016Datacenter --admin-password !Passw0rd2018')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        #create ASG
+        self.cmd('az network asg create \
+                  --resource-group myResourceGroup \
+                  --name myASG')
+
+        # Test Reset NIC
+        self.cmd('vm repair reset-nic -g {rg} -n {vm} --yes')
+
+        # Mac address should be changed in the Guest OS but no way to assert from here.
+        # Assert that the VM is still running afterwards
+        vm_instance_view = self.cmd('vm get-instance-view -g {rg} -n {vm} -o json').get_output_in_json()
+        vm_power_state = vm_instance_view['instanceView']['statuses'][1]['code']
+        assert vm_power_state == 'PowerState/running'

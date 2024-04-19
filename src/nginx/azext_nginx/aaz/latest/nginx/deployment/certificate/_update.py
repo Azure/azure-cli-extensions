@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "nginx deployment certificate update",
 )
 class Update(AAZCommand):
-    """Update an Nginx deployment certificate
+    """Update an NGINX deployment certificate
 
     :example: Update the certificate virtual path, key virtual path and certificate
         az nginx deployment certificate update --certificate-name myCertificate --deployment-name myDeployment --resource-group myResourceGroup --certificate-path /etc/nginx/testupdated.cert --key-path /etc/nginx/testupdated.key --key-vault-secret-id newKeyVaultSecretId
     """
 
     _aaz_info = {
-        "version": "2022-08-01",
+        "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/certificates/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/certificates/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -58,6 +58,9 @@ class Update(AAZCommand):
             help="The name of targeted Nginx deployment",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -73,52 +76,55 @@ class Update(AAZCommand):
                 resource_group_arg="resource_group",
             ),
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.certificate_path = AAZStrArg(
             options=["--certificate-path"],
-            help="This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment",
             arg_group="Properties",
+            help={"short-summary": "Certificate path in Nginx configuration structure", "long-summary": "This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"},
             nullable=True,
         )
         _args_schema.key_vault_secret_id = AAZStrArg(
             options=["--key-vault-secret-id"],
-            help="The secret id to the certificate in KeyVault",
             arg_group="Properties",
+            help="The secret ID for your certificate from Azure Key Vault",
             nullable=True,
         )
         _args_schema.key_path = AAZStrArg(
             options=["--key-path"],
-            help="This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment",
             arg_group="Properties",
+            help={"short-summary": "Key path in Nginx configuration structure", "long-summary": "This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"},
             nullable=True,
-        )
-        _args_schema.provisioning_state = AAZStrArg(
-            options=["--provisioning-state"],
-            help="State of the certificate deployment",
-            arg_group="Properties",
-            nullable=True,
-            enum={"Accepted": "Accepted", "Canceled": "Canceled", "Creating": "Creating", "Deleted": "Deleted", "Deleting": "Deleting", "Failed": "Failed", "NotSpecified": "NotSpecified", "Succeeded": "Succeeded", "Updating": "Updating"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.CertificatesGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        yield self.CertificatesCreate(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
+        yield self.CertificatesCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -148,17 +154,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
-        
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -177,6 +173,16 @@ class Update(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -207,11 +213,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_nginx_certificate_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_nginx_certificate_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class CertificatesCreate(AAZHttpOperation):
+    class CertificatesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -251,17 +257,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
-        
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -280,6 +276,16 @@ class Update(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -322,7 +328,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_nginx_certificate_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_nginx_certificate_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -339,18 +345,12 @@ class Update(AAZCommand):
             )
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType)
-            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("certificateVirtualPath", AAZStrType, ".certificate_path")
                 properties.set_prop("keyVaultSecretId", AAZStrType, ".key_vault_secret_id")
                 properties.set_prop("keyVirtualPath", AAZStrType, ".key_path")
-                properties.set_prop("provisioningState", AAZStrType, ".provisioning_state")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -363,91 +363,101 @@ class Update(AAZCommand):
             )
 
 
-_schema_nginx_certificate_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_nginx_certificate_read = None
 
-def _build_schema_nginx_certificate_read(_schema):
-    global _schema_nginx_certificate_read
-    if _schema_nginx_certificate_read is not None:
-        _schema.id = _schema_nginx_certificate_read.id
-        _schema.location = _schema_nginx_certificate_read.location
-        _schema.name = _schema_nginx_certificate_read.name
-        _schema.properties = _schema_nginx_certificate_read.properties
-        _schema.system_data = _schema_nginx_certificate_read.system_data
-        _schema.tags = _schema_nginx_certificate_read.tags
-        _schema.type = _schema_nginx_certificate_read.type
-        return
+    @classmethod
+    def _build_schema_nginx_certificate_read(cls, _schema):
+        if cls._schema_nginx_certificate_read is not None:
+            _schema.id = cls._schema_nginx_certificate_read.id
+            _schema.location = cls._schema_nginx_certificate_read.location
+            _schema.name = cls._schema_nginx_certificate_read.name
+            _schema.properties = cls._schema_nginx_certificate_read.properties
+            _schema.system_data = cls._schema_nginx_certificate_read.system_data
+            _schema.type = cls._schema_nginx_certificate_read.type
+            return
 
-    _schema_nginx_certificate_read = AAZObjectType()
+        cls._schema_nginx_certificate_read = _schema_nginx_certificate_read = AAZObjectType()
 
-    nginx_certificate_read = _schema_nginx_certificate_read
-    nginx_certificate_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    nginx_certificate_read.location = AAZStrType()
-    nginx_certificate_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    nginx_certificate_read.properties = AAZObjectType()
-    nginx_certificate_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    nginx_certificate_read.tags = AAZDictType()
-    nginx_certificate_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        nginx_certificate_read = _schema_nginx_certificate_read
+        nginx_certificate_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        nginx_certificate_read.location = AAZStrType()
+        nginx_certificate_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        nginx_certificate_read.properties = AAZObjectType()
+        nginx_certificate_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        nginx_certificate_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_nginx_certificate_read.properties
-    properties.certificate_virtual_path = AAZStrType(
-        serialized_name="certificateVirtualPath",
-    )
-    properties.key_vault_secret_id = AAZStrType(
-        serialized_name="keyVaultSecretId",
-    )
-    properties.key_virtual_path = AAZStrType(
-        serialized_name="keyVirtualPath",
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-    )
+        properties = _schema_nginx_certificate_read.properties
+        properties.certificate_error = AAZObjectType(
+            serialized_name="certificateError",
+        )
+        properties.certificate_virtual_path = AAZStrType(
+            serialized_name="certificateVirtualPath",
+        )
+        properties.key_vault_secret_created = AAZStrType(
+            serialized_name="keyVaultSecretCreated",
+            flags={"read_only": True},
+        )
+        properties.key_vault_secret_id = AAZStrType(
+            serialized_name="keyVaultSecretId",
+        )
+        properties.key_vault_secret_version = AAZStrType(
+            serialized_name="keyVaultSecretVersion",
+            flags={"read_only": True},
+        )
+        properties.key_virtual_path = AAZStrType(
+            serialized_name="keyVirtualPath",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.sha1_thumbprint = AAZStrType(
+            serialized_name="sha1Thumbprint",
+            flags={"read_only": True},
+        )
 
-    system_data = _schema_nginx_certificate_read.system_data
-    system_data.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
+        certificate_error = _schema_nginx_certificate_read.properties.certificate_error
+        certificate_error.code = AAZStrType()
+        certificate_error.message = AAZStrType()
 
-    tags = _schema_nginx_certificate_read.tags
-    tags.Element = AAZStrType()
+        system_data = _schema_nginx_certificate_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-    _schema.id = _schema_nginx_certificate_read.id
-    _schema.location = _schema_nginx_certificate_read.location
-    _schema.name = _schema_nginx_certificate_read.name
-    _schema.properties = _schema_nginx_certificate_read.properties
-    _schema.system_data = _schema_nginx_certificate_read.system_data
-    _schema.tags = _schema_nginx_certificate_read.tags
-    _schema.type = _schema_nginx_certificate_read.type
+        _schema.id = cls._schema_nginx_certificate_read.id
+        _schema.location = cls._schema_nginx_certificate_read.location
+        _schema.name = cls._schema_nginx_certificate_read.name
+        _schema.properties = cls._schema_nginx_certificate_read.properties
+        _schema.system_data = cls._schema_nginx_certificate_read.system_data
+        _schema.type = cls._schema_nginx_certificate_read.type
 
 
 __all__ = ["Update"]

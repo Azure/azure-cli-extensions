@@ -15,8 +15,8 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2023_11_01_preview.models import (ApmReference, CertificateReference)
-from .vendored_sdks.appplatform.v2023_11_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2024_05_01_preview.models import (ApmReference, CertificateReference)
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
 
 from ._gateway_constant import (GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE,
                                 GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE, GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
@@ -329,6 +329,18 @@ def _validate_patterns(patterns):
         raise InvalidArgumentValueError("Patterns should be the collection of patterns separated by comma, each pattern in the format of 'application' or 'application/profile'")
 
 
+def validate_pattern_for_show_acs_configs(namespace):
+    if namespace.config_file_pattern:
+        if not _is_valid_pattern(namespace.config_file_pattern):
+            raise InvalidArgumentValueError("Pattern should be in the format of 'application' or 'application/profile'")
+        if _is_valid_app_and_profile_name(namespace.config_file_pattern):
+            parts = namespace.config_file_pattern.split('/')
+            if parts[1] == '*':
+                namespace.config_file_pattern = f"{parts[0]}/default"
+        elif _is_valid_app_name(namespace.config_file_pattern):
+            namespace.config_file_pattern = f"{namespace.config_file_pattern}/default"
+
+
 def _is_valid_pattern(pattern):
     return _is_valid_app_name(pattern) or _is_valid_app_and_profile_name(pattern)
 
@@ -350,6 +362,15 @@ def validate_acs_create(namespace):
     if namespace.application_configuration_service_generation is not None:
         if namespace.enable_application_configuration_service is False:
             raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
+
+
+def validate_refresh_interval(namespace):
+    if namespace.refresh_interval:
+        if not isinstance(namespace.refresh_interval, int):
+            raise InvalidArgumentValueError("--refresh-interval should be a number.")
+
+        if namespace.refresh_interval < 0:
+            raise ArgumentUsageError("--refresh-interval must be greater than or equal to 0.")
 
 
 def validate_gateway_update(cmd, namespace):
@@ -452,7 +473,7 @@ def _validate_gateway_response_cache_scope(namespace):
 def _validate_gateway_response_cache_size(namespace):
     if namespace.response_cache_size is not None:
         size = namespace.response_cache_size
-        if type(size) != str:
+        if not isinstance(size, str):
             raise InvalidArgumentValueError('--response-cache-size should be a string')
         if GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE.lower() == size.lower():
             # Normalize the input
@@ -467,7 +488,7 @@ def _validate_gateway_response_cache_size(namespace):
 def _validate_gateway_response_cache_ttl(namespace):
     if namespace.response_cache_ttl is not None:
         ttl = namespace.response_cache_ttl
-        if type(ttl) != str:
+        if not isinstance(ttl, str):
             raise InvalidArgumentValueError('--response-cache-ttl should be a string')
         if GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE.lower() == ttl.lower():
             # Normalize the input
@@ -657,3 +678,39 @@ def validate_build_cert_reference(cmd, namespace):
     get_cert_resource_id(cert_names, cmd, namespace, result)
 
     namespace.build_certificates = result
+
+
+def validate_create_app_binding_default_service_registry(cmd, namespace):
+    if namespace.bind_service_registry:
+        namespace.bind_service_registry = _get_eactly_one_service_registry_resource_id(cmd,
+                                                                                       namespace.resource_group,
+                                                                                       namespace.service)
+
+
+def _get_eactly_one_service_registry_resource_id(cmd, resource_group, service):
+    client = get_client(cmd)
+    service_registry_resources = list(client.service_registries.list(resource_group, service))
+    if len(service_registry_resources) == 0:
+        raise ClientRequestError('App cannot bind to service registry because it is not configured.')
+    if len(service_registry_resources) > 1:
+        raise ClientRequestError('App cannot bind to multiple service registries.')
+    return service_registry_resources[0].id
+
+
+def validate_create_app_binding_default_application_configuration_service(cmd, namespace):
+    if namespace.bind_application_configuration_service:
+        namespace.bind_application_configuration_service \
+            = _get_eactly_one_application_configuration_service_resource_id(cmd,
+                                                                            namespace.resource_group,
+                                                                            namespace.service)
+
+
+def _get_eactly_one_application_configuration_service_resource_id(cmd, resource_group, service):
+    client = get_client(cmd)
+    acs_resources = list(client.configuration_services.list(resource_group, service))
+    if len(acs_resources) == 0:
+        raise ClientRequestError('App cannot bind to application configuration service '
+                                 'because it is not configured.')
+    if len(acs_resources) > 1:
+        raise ClientRequestError('App cannot bind to multiple application configuration services.')
+    return acs_resources[0].id

@@ -21,7 +21,7 @@ from knack.log import get_logger
 from ._clierror import NotSupportedPricingTierError
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name, _java_runtime_in_number)
 from ._util_enterprise import is_enterprise_tier
-from .vendored_sdks.appplatform.v2023_11_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
@@ -176,48 +176,6 @@ def validate_cosmos_type(namespace):
         if namespace.key_space is None:
             raise InvalidArgumentValueError(
                 "Cosmosdb with type {} should specify collection name".format(type))
-
-
-def validate_log_limit(namespace):
-    temp_limit = None
-    try:
-        temp_limit = namespace.limit
-    except:
-        raise InvalidArgumentValueError('--limit must contains only digit')
-    if temp_limit < 1:
-        raise InvalidArgumentValueError('--limit must be in the range [1,2048]')
-    if temp_limit > 2048:
-        temp_limit = 2048
-        logger.error("--limit can not be more than 2048, using 2048 instead")
-    namespace.limit = temp_limit * 1024
-
-
-def validate_log_lines(namespace):
-    temp_lines = None
-    try:
-        temp_lines = namespace.lines
-    except:
-        raise InvalidArgumentValueError('--lines must contains only digit')
-    if temp_lines < 1:
-        raise InvalidArgumentValueError('--lines must be in the range [1,10000]')
-    if temp_lines > 10000:
-        temp_lines = 10000
-        logger.error("--lines can not be more than 10000, using 10000 instead")
-    namespace.lines = temp_lines
-
-
-def validate_log_since(namespace):
-    if namespace.since:
-        last = namespace.since[-1:]
-        try:
-            namespace.since = int(
-                namespace.since[:-1]) if last in ("hms") else int(namespace.since)
-        except:
-            raise InvalidArgumentValueError("--since contains invalid characters")
-        namespace.since *= 60 if last == "m" else 1
-        namespace.since *= 3600 if last == "h" else 1
-        if namespace.since > 3600:
-            raise InvalidArgumentValueError("--since can not be more than 1h")
 
 
 def validate_jvm_options(namespace):
@@ -632,7 +590,7 @@ def validate_jar(namespace):
     version_number = int(runtime_version[len("Java_"):])
     if values["jdk_version"] not in _java_runtime_in_number():
         raise InvalidArgumentValueError("Your java application is compiled with {}, currently the supported "
-                                        "java version is Java_8, Java_11, Java_17, you can configure the java runtime "
+                                        "java version is Java_8, Java_11, Java_17 and Java_21, you can configure the java runtime "
                                         "with --runtime-version".format("Java_" + str(values["jdk_version"])) + tips)
     if values["jdk_version"] > version_number:
         telemetry.set_user_fault("invalid_java_runtime")

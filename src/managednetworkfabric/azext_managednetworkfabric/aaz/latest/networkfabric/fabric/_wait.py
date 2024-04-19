@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -47,7 +47,6 @@ class Wait(AAZWaitCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
         return cls._args_schema
@@ -117,7 +116,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-15",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }
@@ -187,7 +186,6 @@ class Wait(AAZWaitCommand):
             )
             properties.fabric_version = AAZStrType(
                 serialized_name="fabricVersion",
-                flags={"read_only": True},
             )
             properties.ipv4_prefix = AAZStrType(
                 serialized_name="ipv4Prefix",
@@ -277,6 +275,7 @@ class Wait(AAZWaitCommand):
             )
             terminal_server_configuration.primary_ipv6_prefix = AAZStrType(
                 serialized_name="primaryIpv6Prefix",
+                nullable=True,
             )
             terminal_server_configuration.secondary_ipv4_prefix = AAZStrType(
                 serialized_name="secondaryIpv4Prefix",
@@ -284,6 +283,7 @@ class Wait(AAZWaitCommand):
             )
             terminal_server_configuration.secondary_ipv6_prefix = AAZStrType(
                 serialized_name="secondaryIpv6Prefix",
+                nullable=True,
             )
             terminal_server_configuration.serial_number = AAZStrType(
                 serialized_name="serialNumber",
@@ -368,12 +368,14 @@ class _WaitHelper:
         )
         option_a_properties.primary_ipv6_prefix = AAZStrType(
             serialized_name="primaryIpv6Prefix",
+            nullable=True,
         )
         option_a_properties.secondary_ipv4_prefix = AAZStrType(
             serialized_name="secondaryIpv4Prefix",
         )
         option_a_properties.secondary_ipv6_prefix = AAZStrType(
             serialized_name="secondaryIpv6Prefix",
+            nullable=True,
         )
         option_a_properties.vlan_id = AAZIntType(
             serialized_name="vlanId",

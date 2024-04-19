@@ -21,7 +21,8 @@ ManagedEnvironment = {
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
         "workloadProfiles": None,
-        "InfrastructureResourceGroup": None
+        "infrastructureResourceGroup": None,
+        "openTelemetryConfiguration": None
     }
 }
 
@@ -88,7 +89,7 @@ SecretVolumeItem = {
 
 Volume = {
     "name": None,
-    "storageType": "EmptyDir",  # AzureFile, EmptyDir or Secret
+    "storageType": "EmptyDir",  # AzureFile, EmptyDir, Secret or NfsAzureFile
     "storageName": None,   # None for EmptyDir or Secret, otherwise name of storage resource
     "secrets": None,  # [SecretVolumeItem]
     "mountOptions": None,
@@ -304,6 +305,11 @@ DaprComponentResiliency = {
                     "maxIntervalInMilliseconds": None,
                 }
             },
+            "circuitBreakerPolicy": {
+                "consecutiveErrors": None,
+                "timeoutInSeconds": None,
+                "intervalInSeconds": None
+            }
         },
         "outboundPolicy": {
             "timeoutPolicy": {
@@ -316,6 +322,11 @@ DaprComponentResiliency = {
                     "maxIntervalInMilliseconds": None,
                 }
             },
+            "circuitBreakerPolicy": {
+                "consecutiveErrors": None,
+                "timeoutInSeconds": None,
+                "intervalInSeconds": None
+            }
         }
     }
 }
@@ -372,7 +383,8 @@ ContainerAppCertificateEnvelope = {
     "location": None,
     "properties": {
         "password": None,
-        "value": None
+        "value": None,
+        "certificateKeyVaultProperties": None
     }
 }
 
@@ -419,7 +431,8 @@ GitHubActionConfiguration = {
     "publishType": None,  # str
     "os": None,  # str
     "runtimeStack": None,  # str
-    "runtimeVersion": None  # str
+    "runtimeVersion": None,  # str
+    "buildEnvironmentVariables": None  # [EnvironmentVar]
 }
 
 RegistryInfo = {
@@ -451,9 +464,23 @@ ContainerAppCustomDomain = {
     "certificateId": None
 }
 
+ManagedEnvironmentStorageProperties = {
+    "location": None,
+    "properties": {
+        "azureFile": None,
+        "nfsAzureFile": None,
+    }
+}
+
 AzureFileProperties = {
     "accountName": None,
     "accountKey": None,
+    "accessMode": None,
+    "shareName": None
+}
+
+NfsAzureFileProperties = {
+    "server": None,
     "accessMode": None,
     "shareName": None
 }
@@ -509,4 +536,54 @@ ConnectedEnvironment = {
 ExtendedLocation = {
     "name": None,
     "type": None
+}
+
+AppInsightsConfiguration = {
+    "connectionString": None
+}
+
+OpenTelemetryConfiguration = {
+    "destinationsConfiguration": None,
+    "tracesConfiguration": None,
+    "logsConfiguration": None,
+    "metricsConfiguration": None
+}
+
+DestinationsConfiguration = {
+    "dataDogConfiguration": None
+}
+
+DataDogConfiguration = {
+    "site": None,
+    "key": None
+}
+
+TracesConfiguration = {
+    "destinations": []
+}
+
+LogsConfiguration = {
+    "destinations": []
+}
+
+MetricsConfiguration = {
+    "destinations": []
+}
+
+ManagedServiceIdentity = {
+    "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
+    "userAssignedIdentities": None  # {string: UserAssignedIdentity}
+}
+
+JavaComponent = {
+    "properties": {
+        "componentType": None
+    }
+}
+
+CustomDomainConfiguration = {
+    "dnsSuffix": None,
+    "certificateValue": None,
+    "certificatePassword": None,
+    "certificateKeyVaultProperties": None
 }

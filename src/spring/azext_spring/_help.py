@@ -190,6 +190,8 @@ helps['spring app create'] = """
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --assign-endpoint true --cpu 2 --memory 3 --instance-count 3
+    - name: Create an app binding to the default Service Registry and Application Configuration Service.
+      text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --bind-service-registry --bind-application-configuration-service
 """
 
 helps['spring app append-persistent-storage'] = """
@@ -1061,6 +1063,16 @@ helps['spring application-configuration-service unbind'] = """
           text: az spring application-configuration-service unbind --app MyApp -s MyService -g MyResourceGroup
 """
 
+helps['spring application-configuration-service config'] = """
+    type: group
+    short-summary: Commands to manage the configurations pulled by Application Configuration Service from upstream Git repositories.
+"""
+
+helps['spring application-configuration-service config show'] = """
+    type: command
+    short-summary: Command to show the configurations pulled by Application Configuration Service from upstream Git repositories.
+"""
+
 helps['spring gateway'] = """
     type: group
     short-summary: (Enterprise Tier Only) Commands to manage gateway in Azure Spring Apps.
@@ -1538,4 +1550,46 @@ helps['spring apm disable-globally'] = """
     examples:
         - name: Disable an APM globally.
           text: az spring apm disable-globally --name first-apm --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring component'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to handle managed components.
+"""
+
+helps['spring component logs'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Show logs for managed components. Logs will be streamed when setting '-f/--follow'. For now, only supports subcomponents of (a) Application Configuration Service (b) Spring Cloud Gateway
+    examples:
+        - name: Show logs for all instances of flux in Application Configuration Serice (Gen2)
+          text: az spring component logs --name flux-source-controller --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --all-instances
+        - name: Show logs for a specific instance of application-configuration-service in Application Configuration Serice
+          text: az spring component logs --name application-configuration-service --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --instance InstanceName
+        - name: Stream and watch logs for all instances of spring-cloud-gateway
+          text: az spring component logs --name spring-cloud-gateway --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --all-instances --follow
+        - name: Show logs for a specific instance without specify the component name
+          text: az spring component logs --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --instance InstanceName
+"""
+
+helps['spring component list'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List managed components.
+    examples:
+        - name: List all managed components
+          text: az spring component list --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
+"""
+
+helps['spring component instance'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to handle instances of a managed component.
+"""
+
+helps['spring component instance list'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List all available instances of a specific managed component in an Azure Spring Apps instance.
+    examples:
+        - name: List instances for spring-cloud-gateway of Spring Cloud Gateway
+          text: az spring component instance list --component spring-cloud-gateway --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
+        - name: List instances for spring-cloud-gateway-operator of Spring Cloud Gateway
+          text: az spring component instance list --component spring-cloud-gateway-operator --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
 """

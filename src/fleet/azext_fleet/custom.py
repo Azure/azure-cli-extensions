@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import re
 import json
 
 from knack.util import CLIError
@@ -14,6 +13,10 @@ from azure.cli.core.util import sdk_no_wait
 
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
+from azext_fleet.constants import UPGRADE_TYPE_CONTROLPLANEONLY
+from azext_fleet.constants import UPGRADE_TYPE_FULL
+from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
+from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 
 
 # pylint: disable=too-many-locals
@@ -58,15 +61,6 @@ def create_fleet(cmd,
             operation_group="fleets",
             vm_size=vm_size
         )
-        if dns_name_prefix is None:
-            subscription_id = get_subscription_id(cmd.cli_ctx)
-            # Use subscription id to provide uniqueness and prevent DNS name clashes
-            name_part = re.sub('[^A-Za-z0-9-]', '', name)[0:10]
-            if not name_part[0].isalpha():
-                name_part = (str('a') + name_part)[0:10]
-            resource_group_part = re.sub('[^A-Za-z0-9-]', '', resource_group_name)[0:16]
-            dns_name_prefix = f'{name_part}-{resource_group_part}-{subscription_id[0:6]}'
-
         api_server_access_profile = api_server_access_profile_model(
             enable_private_cluster=enable_private_cluster,
             enable_vnet_integration=enable_vnet_integration,
@@ -211,6 +205,26 @@ def get_credentials(cmd,  # pylint: disable=unused-argument
         raise CLIError("Fail to find kubeconfig file.") from exc
 
 
+def reconcile_fleet(cmd,  # pylint: disable=unused-argument
+                    client,
+                    resource_group_name,
+                    name,
+                    no_wait=False):
+
+    poll_interval = 5
+    fleet = client.get(resource_group_name, name)
+    if fleet.hub_profile is not None:
+        poll_interval = 30
+
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name,
+                       name,
+                       fleet,
+                       if_match=fleet.e_tag,
+                       polling_interval=poll_interval)
+
+
 def create_fleet_member(cmd,
                         client,
                         resource_group_name,
@@ -268,6 +282,23 @@ def delete_fleet_member(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
 
 
+def reconcile_fleet_member(cmd,  # pylint: disable=unused-argument
+                           client,
+                           resource_group_name,
+                           name,
+                           fleet_name,
+                           no_wait=False):
+
+    member = client.get(resource_group_name, fleet_name, name)
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
+                       resource_group_name,
+                       fleet_name,
+                       name,
+                       member,
+                       if_match=member.e_tag)
+
+
 def create_update_run(cmd,
                       client,
                       resource_group_name,
@@ -279,10 +310,17 @@ def create_update_run(cmd,
                       stages=None,
                       update_strategy_name=None,
                       no_wait=False):
-    if upgrade_type == "Full" and kubernetes_version is None:
-        raise CLIError("Please set kubernetes version when upgrade type is 'Full'.")
-    if upgrade_type == "NodeImageOnly" and kubernetes_version is not None:
-        raise CLIError("Cannot set kubernetes version when upgrade type is 'NodeImageOnly'.")
+
+    if upgrade_type in UPGRADE_TYPE_ERROR_MESSAGES:
+        if (
+            ((upgrade_type in (UPGRADE_TYPE_FULL, UPGRADE_TYPE_CONTROLPLANEONLY)) and kubernetes_version is None) or  # pylint: disable=line-too-long
+            (upgrade_type == UPGRADE_TYPE_NODEIMAGEONLY and kubernetes_version is not None)
+        ):
+            raise CLIError(UPGRADE_TYPE_ERROR_MESSAGES[upgrade_type])
+    else:
+        raise CLIError((f"The upgrade type parameter '{upgrade_type}' is not valid."
+                        f"Valid options are: '{UPGRADE_TYPE_FULL}', '{UPGRADE_TYPE_CONTROLPLANEONLY}', or '{UPGRADE_TYPE_NODEIMAGEONLY}'"))  # pylint: disable=line-too-long
+
     if stages is not None and update_strategy_name is not None:
         raise CLIError("Cannot set stages when update strategy name is set.")
 
@@ -378,6 +416,38 @@ def stop_update_run(cmd,  # pylint: disable=unused-argument
                     name,
                     no_wait=False):
     return sdk_no_wait(no_wait, client.begin_stop, resource_group_name, fleet_name, name)
+
+
+def skip_update_run(cmd,  # pylint: disable=unused-argument
+                    client,
+                    resource_group_name,
+                    fleet_name,
+                    name,
+                    targets=None,
+                    no_wait=False):
+
+    update_run_skip_properties_model = cmd.get_models(
+        "SkipProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="update_runs"
+    )
+
+    update_run_skip_target_model = cmd.get_models(
+        "SkipTarget",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="update_runs"
+    )
+
+    skipTargets = []
+    for target in targets:
+        key, value = target.split(':')
+        skipTargets.append(update_run_skip_target_model(
+            type=key,
+            name=value
+        ))
+
+    skip_properties = update_run_skip_properties_model(targets=skipTargets)
+    return sdk_no_wait(no_wait, client.begin_skip, resource_group_name, fleet_name, name, skip_properties)
 
 
 def get_update_run_strategy(cmd, operation_group, stages):

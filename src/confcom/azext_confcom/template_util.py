@@ -81,9 +81,14 @@ def get_image_info(progress, message_queue, tar_mapping, image):
         if tar_location:
             with tarfile.open(tar_location) as tar:
                 # get all the info out of the tarfile
-                image_info = os_util.map_image_from_tar(
-                    image_name, tar, tar_location
-                )
+                try:
+                    image_info = os_util.map_image_from_tar_backwards_compatibility(
+                        image_name, tar, tar_location
+                    )
+                except IndexError:
+                    image_info = os_util.map_image_from_tar(
+                        image_name, tar, tar_location
+                    )
                 if image_info is not None:
                     tar = True
                     message_queue.append(f"{image_name} read from local tar file")
@@ -270,6 +275,22 @@ def process_mounts(image_properties: dict, volumes: List[dict]) -> List[Dict[str
     return mounts
 
 
+def process_configmap(image_properties: dict) -> List[Dict[str, str]]:
+    # return empty list if we don't have a configmap
+    if not case_insensitive_dict_get(
+        image_properties, config.ACI_FIELD_CONTAINERS_CONFIGMAP
+    ):
+        return []
+
+    return [{
+            config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE:
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_TYPE,
+            config.ACI_FIELD_CONTAINERS_MOUNTS_PATH:
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION,
+            config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY: False,
+            }]
+
+
 def get_values_for_params(input_parameter_json: dict, all_params: dict) -> Dict[str, Any]:
     # combine the parameter file into a single dictionary with the template
     # parameters
@@ -390,12 +411,35 @@ def change_key_names(dictionary) -> Dict:
     return dictionary
 
 
+def get_diff_size(diff: dict) -> int:
+    """Utility function: get the size of the diff dictionary"""
+    size = 0
+    for key in diff:
+        if isinstance(diff[key], dict):
+            size += get_diff_size_helper(diff[key])
+        else:
+            size += 1
+    return size
+
+
+def get_diff_size_helper(diff: dict) -> int:
+    size = 0
+    for key in diff:
+        if isinstance(diff[key], dict):
+            size += get_diff_size_helper(diff[key])
+        elif isinstance(diff[key], list) and key == "env_rules":
+            size += len(diff[key])
+        else:
+            size += 1
+    return size
+
+
 def replace_params_and_vars(params: dict, vars_dict: dict, attribute):
     out = None
     if isinstance(attribute, (int, float, bool)):
         out = attribute
     elif isinstance(attribute, str):
-        out = find_value_in_params_and_vars(params, vars_dict, attribute)
+        out = find_value_in_params_and_vars(params, vars_dict, attribute, ignore_undefined_parameters=True)
         param_name = re.finditer(WHOLE_PARAMETER_AND_VARIABLE, attribute)
 
         # there should only be one match
@@ -520,10 +564,7 @@ def extract_confidential_properties(
     )
 
     if confidential_compute_properties is None:
-        eprint(
-            f"""Field ["{config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES}"]
-             not found in ["{config.ACI_FIELD_TEMPLATE_PROPERTIES}"]"""
-        )
+        return ([], [])
 
     cce_policy = case_insensitive_dict_get(
         confidential_compute_properties, config.ACI_FIELD_TEMPLATE_CCE_POLICY
@@ -676,7 +717,7 @@ def compare_env_vars(
 
 
 def inject_policy_into_template(
-    arm_template_path: str, parameter_data_path: str, policy: str, count: int, hashes: dict
+    arm_template_path: str, parameter_data_path: str, policy: str, count: int
 ) -> bool:
     write_flag = False
     parameter_data = None
@@ -694,12 +735,12 @@ def inject_policy_into_template(
     aci_list = [
         item
         for item in arm_resources
-        if item["type"] == config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL
+        if item["type"] in config.ACI_FIELD_SUPPORTED_RESOURCES
     ]
 
     if not aci_list:
         eprint(
-            f'Field ["type"] must contain value of ["{config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL}"]'
+            f'Field ["type"] must contain one of {config.ACI_FIELD_SUPPORTED_RESOURCES}'
         )
 
     resource = aci_list[count]
@@ -713,10 +754,11 @@ def inject_policy_into_template(
         container_group_properties, config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES
     )
 
-    if confidential_compute_properties is None:
-        eprint(
-            f'Field ["{config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES}"] ' +
-            f'not found in ["{config.ACI_FIELD_TEMPLATE_PROPERTIES}"]'
+    if not confidential_compute_properties:
+        # initialize the confcom properties and reassign the variable to the empty dict
+        container_group_properties[config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES] = {}
+        confidential_compute_properties = case_insensitive_dict_get(
+            container_group_properties, config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES
         )
 
     cce_policy = case_insensitive_dict_get(
@@ -739,25 +781,7 @@ def inject_policy_into_template(
                 config.ACI_FIELD_TEMPLATE_CCE_POLICY
             ] = policy
             write_flag = True
-    # get containers to inject the base64 encoding of seccom profile hash into template if exists
-    containers = case_insensitive_dict_get(
-        container_group_properties, config.ACI_FIELD_CONTAINERS
-    )
-    for c in containers:
-        container_image = case_insensitive_dict_get(c, config.ACI_FIELD_TEMPLATE_IMAGE)
-        container_properties = case_insensitive_dict_get(c, config.ACI_FIELD_TEMPLATE_PROPERTIES)
-        security_context = case_insensitive_dict_get(
-            container_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
-        )
-        if security_context:
-            seccomp_profile = case_insensitive_dict_get(
-                security_context, config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE
-            )
-            if seccomp_profile:
-                hash_base64 = os_util.str_to_base64(hashes.get(container_image, ""))
-                security_context[config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE] = hash_base64
-                write_flag = True
-    # write base64 encoding of seccomp profile hash to the template
+
     if write_flag:
         os_util.write_json_to_file(arm_template_path, input_arm_json)
         return True
@@ -810,12 +834,12 @@ def get_container_group_name(
     aci_list = [
         item
         for item in arm_resources
-        if item["type"] == config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL
+        if item["type"] in config.ACI_FIELD_SUPPORTED_RESOURCES
     ]
 
     if not aci_list:
         eprint(
-            f'Field ["type"] must contain value of ["{config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL}"]'
+            f'Field ["type"] must contain one of {config.ACI_FIELD_SUPPORTED_RESOURCES}'
         )
 
     resource = aci_list[count]
@@ -843,12 +867,12 @@ def print_existing_policy_from_arm_template(arm_template_path, parameter_data_pa
     aci_list = [
         item
         for item in arm_resources
-        if item["type"] == config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL
+        if item["type"] in config.ACI_FIELD_SUPPORTED_RESOURCES
     ]
 
     if not aci_list:
         eprint(
-            f'Field ["type"] must contain value of ["{config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL}"]'
+            f'Field ["type"] must contain one of {config.ACI_FIELD_SUPPORTED_RESOURCES}'
         )
     for i, resource in enumerate(aci_list):
         container_group_properties = case_insensitive_dict_get(

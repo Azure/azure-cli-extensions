@@ -8,11 +8,12 @@ import tempfile
 import time
 
 import yaml
+from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 from azure.cli.testsdk.decorators import serial_test
 
-from .common import TEST_LOCATION
+from .common import TEST_LOCATION, STAGE_LOCATION
 from .custom_preparers import ConnectedClusterPreparer
 from .utils import create_extension_and_custom_location
 
@@ -94,8 +95,11 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
             ])
         storage_name = self.create_random_name(prefix='storage', length=24)
         shares_name = self.create_random_name(prefix='share', length=24)
+        storage_account_location = TEST_LOCATION
+        if format_location(storage_account_location) == format_location(STAGE_LOCATION):
+            storage_account_location = "eastus"
 
-        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share'.format(resource_group, storage_name))
+        self.cmd('storage account create -g {} -n {} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --location {}'.format(resource_group, storage_name, storage_account_location))
         self.cmd('storage share-rm create -g {} -n {} --storage-account {} --access-tier "TransactionOptimized" --quota 1024'.format(resource_group, shares_name, storage_name))
 
         storage_keys = self.cmd('az storage account keys list -g {} -n {}'.format(resource_group, storage_name)).get_output_in_json()[0]

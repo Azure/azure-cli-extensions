@@ -40,3 +40,19 @@ Release History
 1.2.8
 ++++++
 * `az grafana create`: support deterministic outbound IP argument
+
+1.2.10
+++++++
+* `az grafana backup`: exclude provisioned dashboards during backup
+
+1.3.0
+++++++
+* `az grafana update`: support Grafana major version argument
+
+1.3.1
+++++++
+* `az grafana delete`: bump azure-mgmt-authorization package version
+
+1.3.2
+++++++
+* Revert to vendored SDK to fix an issue caused by Homebrew dependencies for Mac users

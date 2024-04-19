@@ -12,18 +12,32 @@ def get_selected_subscription():
     return Profile().get_subscription_id()
 
 
-def get_backup_instance_query(datasource_type, resource_groups, vaults, protection_status, datasource_id):
+def get_backup_instance_query(datasource_type, resource_groups, vaults, protection_status, datasource_id,
+                              backup_instance_id, backup_instance_name):
     query = "RecoveryServicesResources | where type =~ 'microsoft.dataprotection/backupvaults/backupinstances'"
     query += "| extend vaultName = split(split(id, '/Microsoft.DataProtection/backupVaults/')[1],'/')[0]"
     query += "| extend protectionState = properties.currentProtectionState"
     query += "| extend datasourceId = properties.dataSourceInfo.resourceID"
 
-    manifest = helper.load_manifest(datasource_type)
-    query = add_filter_to_query(query, "properties.dataSourceInfo.datasourceType", manifest["datasourceType"])
+    if datasource_type:
+        manifest = helper.load_manifest(datasource_type)
+        query = add_filter_to_query(query, "properties.dataSourceInfo.datasourceType", manifest["datasourceType"])
     query = add_filter_to_query(query, "resourceGroup", resource_groups)
     query = add_filter_to_query(query, "vaultName", vaults)
     query = add_filter_to_query(query, "protectionState", protection_status)
     query = add_filter_to_query(query, "datasourceId", datasource_id)
+    query = add_filter_to_query(query, "id", backup_instance_id)
+    query = add_filter_to_query(query, "name", backup_instance_name)
+
+    return query
+
+
+def get_backup_vault_query(resource_groups, vaults, vault_id):
+    query = "resources | where type =~ 'microsoft.dataprotection/backupvaults'"
+
+    query = add_filter_to_query(query, "resourceGroup", resource_groups)
+    query = add_filter_to_query(query, "name", vaults)
+    query = add_filter_to_query(query, "id", vault_id)
 
     return query
 
@@ -37,8 +51,9 @@ def get_backup_job_query(datasource_type, resource_groups, vaults, start_time, e
     query += ", type =~ 'microsoft.dataprotection/backupVaults/backupJobs', properties.operationCategory, 'Invalid')"
     query += "| extend datasourceId = properties.dataSourceId"
 
-    manifest = helper.load_manifest(datasource_type)
-    query = add_filter_to_query(query, "properties.dataSourceType", manifest["datasourceType"])
+    if datasource_type:
+        manifest = helper.load_manifest(datasource_type)
+        query = add_filter_to_query(query, "properties.dataSourceType", manifest["datasourceType"])
     query = add_filter_to_query(query, "resourceGroup", resource_groups)
     query = add_filter_to_query(query, "vaultName", vaults)
     query = add_filter_to_query(query, "operation", operation)

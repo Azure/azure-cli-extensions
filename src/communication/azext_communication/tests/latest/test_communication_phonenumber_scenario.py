@@ -18,11 +18,11 @@ import os
 class CommunicationPhonenumberScenarios(ScenarioTest):
 
     def __init__(self, method_name):
-            super().__init__(method_name, recording_processors=[
-                URIIdentityReplacer(),
-                PhoneNumberResponseReplacerProcessor(),
-                BodyReplacerProcessor(keys=["id", "token", "phoneNumber"])
-            ])
+        super().__init__(method_name, recording_processors=[
+            URIIdentityReplacer(),
+            PhoneNumberResponseReplacerProcessor(),
+            BodyReplacerProcessor(keys=["id", "token", "phoneNumber"])
+        ])
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
@@ -31,9 +31,9 @@ class CommunicationPhonenumberScenarios(ScenarioTest):
             get_new_phonenumber(communication_resource_info[1])
 
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
-        
+
         phonenumber_list = self.cmd(
-            'az communication phonenumbers list-phonenumbers').get_output_in_json()
+            'az communication phonenumber list').get_output_in_json()
         assert len(phonenumber_list) > 0
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -47,7 +47,7 @@ class CommunicationPhonenumberScenarios(ScenarioTest):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
         phonenumber_info = self.cmd(
-            'az communication phonenumbers show-phonenumber --phonenumber \"{phonenumber}\"').get_output_in_json()
+            'az communication phonenumber show --phonenumber \"{phonenumber}\"').get_output_in_json()
         self.assertIsNotNone(phonenumber_info['id'])
         self.assertIsNotNone(phonenumber_info['assignmentType'])
         self.assertIsNotNone(phonenumber_info['capabilities'])
@@ -61,7 +61,7 @@ class CommunicationPhonenumberScenarios(ScenarioTest):
             get_new_phonenumber(communication_resource_info[1])
 
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
-        
+
         phonenumber_list = self.cmd(
             'az communication phonenumber list').get_output_in_json()
         assert len(phonenumber_list) > 0

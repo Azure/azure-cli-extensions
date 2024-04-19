@@ -2846,10 +2846,10 @@ configuration:
             action: Opened
       - or:
         - titleContains:
-            pattern: az ml
+            pattern: '\b(az ml)\b'
             isRegex: True
         - bodyContains:
-            pattern: az ml
+            pattern: '\b(az ml)\b'
             isRegex: True
       then:
       - addLabel:
@@ -2894,10 +2894,10 @@ configuration:
             action: Opened
       - or:
         - titleContains:
-            pattern: az pipelines
+            pattern: '\b(az pipelines)\b'
             isRegex: True
         - bodyContains:
-            pattern: az pipelines
+            pattern: '\b(az pipelines)\b'
             isRegex: True
       then:
       - addLabel:
@@ -2916,10 +2916,10 @@ configuration:
             action: Opened
       - or:
         - titleContains:
-            pattern: az ssh
+            pattern: '\b(az ssh)\b'
             isRegex: True
         - bodyContains:
-            pattern: az ssh
+            pattern: '\b(az ssh)\b'
             isRegex: True
       then:
       - addLabel:
@@ -2935,10 +2935,10 @@ configuration:
           action: Opened
       - or:
         - titleContains:
-            pattern: az ssh
+            pattern: '\b(az ssh)\b'
             isRegex: True
         - bodyContains:
-            pattern: az ssh
+            pattern: '\b(az ssh)\b'
             isRegex: True
       then:
       - addLabel:
@@ -3008,10 +3008,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az spring-cloud
+            pattern: '\b(az spring-cloud)\b'
             isRegex: True
         - bodyContains:
-            pattern: az spring-cloud
+            pattern: '\b(az spring-cloud)\b'
             isRegex: True
       - or:
         - isAction:
@@ -3054,10 +3054,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az monitor
+            pattern: '\b(az monitor)\b'
             isRegex: True
         - bodyContains:
-            pattern: az monitor
+            pattern: '\b(az monitor)\b'
             isRegex: True
       - or:
         - isAction:
@@ -3081,10 +3081,10 @@ configuration:
           action: Opened
       - or:
         - titleContains:
-            pattern: az monitor
+            pattern: '\b(az monitor)\b'
             isRegex: True
         - bodyContains:
-            pattern: az monitor
+            pattern: '\b(az monitor)\b'
             isRegex: True
       then:
       - addLabel:
@@ -3132,10 +3132,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az network
+            pattern: '\b(az network)\b'
             isRegex: True
         - bodyContains:
-            pattern: az network
+            pattern: '\b(az network)\b'
             isRegex: True
       - or:
         - isAction:
@@ -3203,10 +3203,10 @@ configuration:
             action: Opened
       - or:
         - titleContains:
-            pattern: az kusto
+            pattern: '\b(az kusto)\b'
             isRegex: True
         - bodyContains:
-            pattern: az kusto
+            pattern: '\b(az kusto)\b'
             isRegex: True
       then:
       - addLabel:
@@ -3215,6 +3215,9 @@ configuration:
           label: Azure Data Explorer
       - addLabel:
           label: Service Attention
+      - assignTo:
+          users:
+          - evelyn-ys
       description: '[kusto] auto assign labels and users based on issue description. '
     - if:
       - payloadType: Pull_Request
@@ -3241,18 +3244,16 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      - assignTo:
-          users:
-          - jsntcy
+          - evelyn-ys
       description: '[kusto] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az storage
+            pattern: '\b(az storage)\b'
             isRegex: True
         - bodyContains:
-            pattern: az storage
+            pattern: '\b(az storage)\b'
             isRegex: True
       - or:
         - isAction:
@@ -3279,10 +3280,10 @@ configuration:
           action: Opened
       - or:
         - titleContains:
-            pattern: az storage
+            pattern: '\b(az storage)\b'
             isRegex: True
         - bodyContains:
-            pattern: az storage
+            pattern: '\b(az storage)\b'
             isRegex: True
       then:
       - addLabel:
@@ -3324,10 +3325,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az keyvault
+            pattern: '\b(az keyvault)\b'
             isRegex: True
         - bodyContains:
-            pattern: az keyvault
+            pattern: '\b(az keyvault)\b'
             isRegex: True
       - or:
         - isAction:
@@ -3352,10 +3353,10 @@ configuration:
             action: Opened
       - or:
         - titleContains:
-            pattern: az cosmosdb
+            pattern: '\b(az cosmosdb)\b'
             isRegex: True
         - bodyContains:
-            pattern: az cosmosdb
+            pattern: '\b(az cosmosdb)\b'
             isRegex: True
       then:
       - addLabel:
@@ -3398,10 +3399,10 @@ configuration:
             action: Opened
       - or:
         - titleContains:
-            pattern: az eventgrid
+            pattern: '\b(az eventgrid)\b'
             isRegex: True
         - bodyContains:
-            pattern: az eventgrid
+            pattern: '\b(az eventgrid)\b'
             isRegex: True
       then:
       - addLabel:
@@ -3417,10 +3418,10 @@ configuration:
           action: Opened
       - or:
         - titleContains:
-            pattern: az login
+            pattern: '\b(az login)\b'
             isRegex: True
         - bodyContains:
-            pattern: az login
+            pattern: '\b(az login)\b'
             isRegex: True
       then:
       - addLabel:
@@ -3439,10 +3440,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az login
+            pattern: '\b(az login)\b'
             isRegex: True
         - bodyContains:
-            pattern: az login
+            pattern: '\b(az login)\b'
             isRegex: True
       - or:
         - isAction:
@@ -3669,6 +3670,8 @@ configuration:
       - assignTo:
           users:
           - necusjz
+          - AllyW
+          - kairu-ms
       description: '[ stream-analytics ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -3859,6 +3862,53 @@ configuration:
           users:
           - jsntcy
       description: '[ logic ] Notify to review Update index.json PR'
+    - if:
+        - payloadType: Issues
+        - or:
+            - titleContains:
+                pattern: az \b(logic)\b
+                isRegex: True
+            - bodyContains:
+                pattern: az \b(logic)\b
+                isRegex: True
+        - or:
+            - isAction:
+                action: Opened
+      then:
+        - addLabel:
+            label: Logic App
+        - addLabel:
+            label: Auto-Assign
+        - assignTo:
+            users:
+            - ReaNAiveD
+            - zhoxing-ms
+      description: '[Logic] auto assign labels and users based on issue description.'
+    - if:
+        - payloadType: Pull_Request
+        - isAction:
+            action: Opened
+        - or:
+            - titleContains:
+                pattern: '\b(logic|LOGIC)\b'
+                isRegex: True
+            - bodyContains:
+                pattern: az \b(logic)\b
+                isRegex: True
+      then:
+        - addLabel:
+            label: Auto-Assign
+        - addLabel:
+            label: Logic App
+        - requestReview:
+            reviewer: zhoxing-ms
+        - requestReview:
+            reviewer: ReaNAiveD
+        - assignTo:
+            users:
+            - zhoxing-ms
+            - ReaNAiveD
+      description: '[logic] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4089,6 +4139,7 @@ configuration:
       - assignTo:
           users:
           - necusjz
+          - kairu-ms
       description: '[ network-manager ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4607,10 +4658,10 @@ configuration:
             action: Opened
       - or:
         - titleContains:
-            pattern: az datamigration
+            pattern: '\b(az datamigration)\b'
             isRegex: True
         - bodyContains:
-            pattern: az datamigration
+            pattern: '\b(az datamigration)\b'
             isRegex: True
       then:
       - addLabel:
@@ -4665,6 +4716,10 @@ configuration:
           label: extension/grafana
       - addLabel:
           label: Service Attention
+      - assignTo:
+          users:
+          - AllyW
+          - kairu-ms
       description: '[grafana] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -4687,6 +4742,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
+          - AllyW
       - addLabel:
           label: extension/grafana
       - requestReview:
@@ -4698,10 +4754,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az functionapp
+            pattern: '\b(az functionapp)\b'
             isRegex: True
         - bodyContains:
-            pattern: az functionapp
+            pattern: '\b(az functionapp)\b'
             isRegex: True
       - or:
         - isAction:
@@ -4770,10 +4826,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az desktopvirtualization
+            pattern: '\b(az desktopvirtualization)\b'
             isRegex: True
         - bodyContains:
-            pattern: az desktopvirtualization
+            pattern: '\b(az desktopvirtualization)\b'
             isRegex: True
       - or:
         - isAction:
@@ -4819,10 +4875,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az containerapp
+            pattern: '\b(az containerapp)\b'
             isRegex: True
         - bodyContains:
-            pattern: az containerapp
+            pattern: '\b(az containerapp)\b'
             isRegex: True
       - or:
         - isAction:
@@ -4989,10 +5045,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az network bastion
+            pattern: '\b(az network bastion)\b'
             isRegex: True
         - bodyContains:
-            pattern: az network bastion
+            pattern: '\b(az network bastion)\b'
             isRegex: True
       - or:
         - isAction:
@@ -5058,9 +5114,12 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Network
+      - addLabel:
+          label: Network - Network Manager
       - assignTo:
           users:
           - necusjz
+          - kairu-ms
       description: '[NetworkManager] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5084,13 +5143,16 @@ configuration:
           reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
+      - addLabel:
+          label: Network
+      - addLabel:
+          label: Network - Network Manager
       - requestReview:
           reviewer: kairu-ms
       - assignTo:
           users:
           - necusjz
-      - addLabel:
-          label: Network
+          - kairu-ms
       - requestReview:
           reviewer: jsntcy
       description: '[NetworkManager] Auto assign labels and reviewers based on PR title/description.'
@@ -5348,7 +5410,42 @@ configuration:
           label: Attestation
       - addLabel:
           label: Service Attention
+      - assignTo:
+          users:
+          - ReaNAiveD
       description: '[attestation] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z attestation'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z attestation'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Aa]ttestation)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Aa]ttestation)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Attestation
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: jsntcy
+      - requestReview:
+          reviewer: ReaNAiveD
+      - assignTo:
+          users:
+          - ReaNAiveD
+      description: '[Attestation] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5416,7 +5513,8 @@ configuration:
           label: Stream Analytics
       - assignTo:
           users:
-          - jsntcy
+          - AllyW
+          - kairu-ms
       description: '[stream-analytics] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -5439,6 +5537,8 @@ configuration:
       - assignTo:
           users:
           - necusjz
+          - AllyW
+          - kairu-ms
       - addLabel:
           label: Stream Analytics
       - requestReview:
@@ -5472,10 +5572,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az healthcareapis
+            pattern: '\b(az healthcareapis)\b'
             isRegex: True
         - bodyContains:
-            pattern: az healthcareapis
+            pattern: '\b(az healthcareapis)\b'
             isRegex: True
       - or:
         - isAction:
@@ -5567,10 +5667,10 @@ configuration:
           action: Opened
       - or:
         - titleContains:
-            pattern: az account
+            pattern: '\b(az account)\b'
             isRegex: True
         - bodyContains:
-            pattern: az account
+            pattern: '\b(az account)\b'
             isRegex: True
       then:
       - requestReview:
@@ -5589,10 +5689,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az account
+            pattern: '\b(az account)\b'
             isRegex: True
         - bodyContains:
-            pattern: az account
+            pattern: '\b(az account)\b'
             isRegex: True
       - or:
         - isAction:
@@ -5633,7 +5733,7 @@ configuration:
             pattern: '[Ss]erial-[Cc]onsole'
             isRegex: True
         - bodyContains:
-            pattern: az serial-console
+            pattern: '\b(az serial-console)\b'
             isRegex: True
       then:
       - requestReview:
@@ -5697,11 +5797,11 @@ configuration:
           action: Opened
       - or:
         - titleContains:
-            pattern: az fleet
-            isRegex: False
+            pattern: '\b(az fleet)\b'
+            isRegex: True
         - bodyContains:
-            pattern: az fleet
-            isRegex: False
+            pattern: '\b(az fleet)\b'
+            isRegex: True
       then:
       - requestReview:
           reviewer: jsntcy
@@ -5729,6 +5829,8 @@ configuration:
           reviewer: zhoxing-ms
       - requestReview:
           reviewer: yanzhudd
+      - requestReview:
+          reviewer: qwuae1
       - addLabel:
           label: Auto-Assign
       - assignTo:
@@ -5739,10 +5841,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az azurestackhci
+            pattern: '\b(az azurestackhci)\b'
             isRegex: True
         - bodyContains:
-            pattern: az azurestackhci
+            pattern: '\b(az azurestackhci)\b'
             isRegex: True
       - or:
         - isAction:
@@ -5759,10 +5861,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az communication
+            pattern: '\b(az communication)\b'
             isRegex: True
         - bodyContains:
-            pattern: az communication
+            pattern: '\b(az communication)\b'
             isRegex: True
       - or:
         - isAction:
@@ -5776,15 +5878,76 @@ configuration:
           label: Service Attention
       description: '[Communication] auto assign labels and users based on issue description.'
     - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z internet-analyzer'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z internet-analyzer'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Ii]nternet-[Aa]nalyzer)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Ii]nternet-[Aa]nalyzer)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Internet Analyzer
+      - assignTo:
+          users:
+          - necusjz
+          - kairu-ms
+      description: '[Internet Analyzer] auto assign labels and users based on issue description.'
+    - if:
       - payloadType: Pull_Request
       - isAction:
           action: Opened
       - or:
         - titleContains:
-            pattern: az load
+            pattern: '[Aa]z internet-analyzer'
             isRegex: True
         - bodyContains:
-            pattern: az load
+            pattern: '[Aa]z internet-analyzer'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Ii]nternet-[Aa]nalyzer)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Ii]nternet-[Aa]nalyzer)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Internet Analyzer
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: necusjz
+      - requestReview:
+          reviewer: kairu-ms
+      - assignTo:
+          users:
+          - necusjz
+          - kairu-ms
+      description: '[Internet Analyzer] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '\b(az load)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b(az load)\b'
             isRegex: True
       then:
       - requestReview:
@@ -5803,10 +5966,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az mysql
+            pattern: '\b(az mysql)\b'
             isRegex: True
         - bodyContains:
-            pattern: az mysql
+            pattern: '\b(az mysql)\b'
             isRegex: True
       - or:
         - isAction:
@@ -5909,10 +6072,10 @@ configuration:
       - payloadType: Issues
       - or:
         - titleContains:
-            pattern: az datafactory
+            pattern: '\b(az datafactory)\b'
             isRegex: True
         - bodyContains:
-            pattern: az datafactory
+            pattern: '\b(az datafactory)\b'
             isRegex: True
       - or:
         - isAction:
@@ -5925,5 +6088,255 @@ configuration:
       - addLabel:
           label: Service Attention
       description: '[Data Factory] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z peering'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z peering'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Pp]eering)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Pp]eering)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Peering
+      - assignTo:
+          users:
+          - necusjz
+          - kairu-ms
+      description: '[Peering] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z peering'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z peering'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Pp]eering)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Pp]eering)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Peering
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: jsntcy
+      - requestReview:
+          reviewer: necusjz
+      - requestReview:
+          reviewer: kairu-ms
+      - assignTo:
+          users:
+          - necusjz
+          - kairu-ms
+      description: '[Peering] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z storagesync'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z storagesync'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Ss]toragesync)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Ss]toragesync)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Storagesync
+      - assignTo:
+          users:
+          - calvinhzy
+      description: '[Storagesync] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z storagesync'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z storagesync'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Ss]toragesync)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Ss]toragesync)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Storagesync
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: jsntcy
+      - requestReview:
+          reviewer: calvinhzy
+      - assignTo:
+          users:
+          - calvinhzy
+      description: '[Storagesync] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z network watcher'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z network watcher'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Nn]etwork [Ww]atcher)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Nn]etwork [Ww]atcher)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Network - Network Watcher
+      - assignTo:
+          users:
+          - kairu-ms
+          - AllyW
+          - necusjz
+      description: '[Network Watcher] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z network watcher'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z network watcher'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Nn]etwork [Ww]atcher)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Nn]etwork [Ww]atcher)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: Network - Network Watcher
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: jsntcy
+      - requestReview:
+          reviewer: kairu-ms
+      - requestReview:
+          reviewer: necusjz
+      - assignTo:
+          users:
+          - necusjz
+          - kairu-ms
+          - AllyW
+      description: '[Network Watcher] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Issues
+      - or:
+        - titleContains:
+            pattern: '[Aa]z powerbi'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z powerbi'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Pp]owerbi)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Pp]owerbi)\b'
+            isRegex: True
+      - or:
+        - isAction:
+            action: Opened
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: PowerBI
+      - assignTo:
+          users:
+          - kairu-ms
+          - AllyW
+      description: '[PowerBI] auto assign labels and users based on issue description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '[Aa]z powerbi'
+            isRegex: True
+        - bodyContains:
+            pattern: '[Aa]z powerbi'
+            isRegex: True
+        - titleContains:
+            pattern: '\b([Pp]owerbi)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Pp]owerbi)\b'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - addLabel:
+          label: PowerBI
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: jsntcy
+      - requestReview:
+          reviewer: kairu-ms
+      - requestReview:
+          reviewer: AllyW
+      - assignTo:
+          users:
+          - kairu-ms
+          - AllyW
+      description: '[PowerBI] Auto assign labels and reviewers based on PR title/description.'
 onFailure: 
 onSuccess: 

@@ -7,8 +7,21 @@ import re
 import json
 import requests
 from knack.log import get_logger
+from azure.cli.core.style import print_styled_text, Style
+
+MGMT_SERVICE_CLIENT_API_VERSION = '2022-04-01'
 
 logger = get_logger(__name__)
+
+
+def get_yes_or_no_option(option_description):
+    print_styled_text([(Style.ACTION, ' ? '), (Style.PRIMARY, option_description)], end='')
+    option = input()
+    yes_options = ["y", "yes", "Y", "Yes", "YES"]
+    no_options = ["n", "no", "N", "No", "NO"]
+    while (option not in yes_options) and (option not in no_options):
+        option = input("This option can only be Yes or No, please input again: ")
+    return option in yes_options
 
 
 def create_datasource_mapping(source_data_sources, destination_data_sources):

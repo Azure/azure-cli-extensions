@@ -3,6 +3,12 @@
 Release History
 ===============
 ===============
+
+##### 0.3.0
+++++++
+No new commands added or updated.
+Commands for new api version 2023-07-01-preview added.
+
 ##### 0.2.1
 ++++++
 No new commands added.

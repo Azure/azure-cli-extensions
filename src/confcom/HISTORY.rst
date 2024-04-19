@@ -2,6 +2,28 @@
 
 Release History
 ===============
+0.3.5
+++++++
+* making diff mode more robust
+* bugfix for arm template regex
+* updating genpolicy version up through 3.2.0.azl0.genpolicy1
+* adding configmap sidecar
+* bugfix for seccompProfile missing after injecting policy
+* adding cs2 support
+
+0.3.4
+++++++
+* adding faster hashing flag to use buffered reader in dmverity-vhd
+
+0.3.3
+++++++
+* improving testing standards from pytest recommendations
+* updating genpolicy version up through genpolicy-0.6.2-5
+
+0.3.2
+++++++
+* updating genpolicy version to allow for topologySpreadConstraints, version genpolicy-0.6.2-2
+
 0.3.1
 ++++++
 * removing unneeded print statement

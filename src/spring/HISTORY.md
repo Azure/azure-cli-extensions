@@ -1,5 +1,38 @@
 Release History
 ===============
+1.20.1
+---
+* Add command to show the configurations pulled by Application Configuration Service from upstream Git repositories. `az spring application-configuration-service config show`.
+
+1.20.0
+---
+* Change default Application Configuration Service generation value to Gen2.
+
+1.19.4
+---
+* Enhance managed component log streaming when `-i/--instance` and `--all-instances` parameters are not specified.
+
+1.19.3
+---
+* Add arguments `--refresh-interval` in `spring application-configuration-service create` and `spring application-configuration-service update`.
+
+1.19.2
+---
+* Add runtime version `Java_21`.
+
+1.19.1
+---
+* Create workspace-based Application Insights instead, since classic Application Insights will be retired on 29 February 2024.
+
+1.19.0
+---
+* Add new commands for managed component log streaming `az spring component list`, `az spring component instance list` and `az spring component logs`.
+
+1.18.0
+---
+* Add arguments `--bind-service-registry` in `spring app create`.
+* Add arguments `--bind-application-configuration-service` in `spring app create`.
+
 1.17.0
 ---
 * Add arguments `--enable-api-try-out` in `spring api-portal update`
