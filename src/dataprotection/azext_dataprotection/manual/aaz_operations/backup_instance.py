@@ -170,7 +170,10 @@ class RestoreTrigger(_RestoreTrigger):
 
         @property
         def content(self):
-            return convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data())
+            request_body = self.ctx.args.restore_request_object.to_serialized_data()
+            request_body['resourceGuardOperationRequests'] = self.ctx.args.resource_guard_operation_requests.to_serialized_data()
+            request_body = convert_dict_keys_snake_to_camel(request_body)
+            return request_body
 
 
 class ValidateForCRR(_ValidateForCRR):
