@@ -177,7 +177,7 @@ class DefaultApp:
         return secret_var_def
 
     def _load_addon_configs(self, bind_service_registry=None, bind_application_configuration_service=None, bind_config_server=None, **_):
-        if not bind_service_registry and not bind_application_configuration_service and not bind_config_server:
+        if not any([bind_service_registry, bind_application_configuration_service, bind_config_server]):
             return None
 
         addon_configs = {}
