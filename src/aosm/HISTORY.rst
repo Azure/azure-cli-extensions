@@ -5,6 +5,9 @@ Release History
 
 2.0.0b1
 ++++++++
+* Renamed nfdvName to nfdv in CGVs
+* Added useful comments to input files
+* Added 1:1 mapping between NFVIsFromSite and NF RETs
 * Added expose_all parameter in input file to expose all parameters in deployParameters and CGS
 * Removed multiple_instances and depends_on from input file
 * Added: mutating webhook for injectArtifactStoreDetails
@@ -23,7 +26,6 @@ Release History
 * Fixed: Manifest name built from ACR name, so clashes
 * Fixed: Nexus image version must be semver
 * Fixed: Sensible error when no type given in helm chart schema
-* No changes, building wheel from correct branch
 * Fixed: customLocation missing from Nexus
 * Fixed: helm charts not uploading correctly
 * Added: Nexus support
