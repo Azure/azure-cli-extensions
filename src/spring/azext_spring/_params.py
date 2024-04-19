@@ -524,7 +524,7 @@ def load_arguments(self, _):
             c.argument('custom_actuator_port', type=int,
                        help='(Enterprise Tier Only) Custom actuator port for the app. Default to 8080.', validator=validate_custom_actuator_port)
             c.argument('custom_actuator_path', type=str,
-                       help='(Enterprise Tier Only) Custom actuator path for the app. Default to "/actuator".', validator=only_support_enterprise())
+                       help='(Enterprise Tier Only) Custom actuator path for the app. Default to "/actuator".', validator=only_support_enterprise)
 
     with self.argument_context('spring app scale') as c:
         c.argument('cpu', arg_type=cpu_type)
