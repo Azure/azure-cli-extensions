@@ -36,6 +36,8 @@ examples:
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu
   - name: Create a cache rule with a credential set.
     text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu -c MyCredSet
+  - name: Create a cache rule with artifact sync enabled and set a tag filter.
+    text: az acr cache create -r myregistry -n MyRule -s docker.io/library/ubuntu -t ubuntu --sync true --starts-with v1 --ends-with beta
 """
 
 helps['acr cache update'] = """
@@ -46,6 +48,8 @@ examples:
     text: az acr cache update -r myregistry -n MyRule -c NewCredSet
   - name: Remove a credential set from an existing cache rule.
     text: az acr cache update -r myregistry -n MyRule --remove-cred-set
+  - name: Enable artifact sync and set a tag filter.
+    text: az acr cache update -r myregistry -n MyRule --sync true --starts-with v1 --ends-with beta
 """
 
 helps['acr cache delete'] = """
@@ -54,4 +58,12 @@ short-summary: Delete a cache rule.
 examples:
   - name: Delete a cache rule.
     text: az acr cache delete -r myregistry -n MyRule
+"""
+
+helps['acr cache sync'] = """
+type: command
+short-summary: Sync a tag immediately. Artifact sync must be enabled on the cache rule and the tag must be within any specified tag filter.
+examples:
+  - name: Sync the 'latest' tag.
+    text: az acr cache sync -r myregistry -n MyRule --image latest
 """

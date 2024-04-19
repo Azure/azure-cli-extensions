@@ -140,7 +140,8 @@ def acr_cache_update_custom(cmd,
                             sync=None,
                             starts_with=None,
                             ends_with=None,
-                            contains=None):
+                            contains=None,
+                            yes=False):
 
     instance = CacheRuleUpdateParameters()
     registry, rg = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
@@ -160,6 +161,10 @@ def acr_cache_update_custom(cmd,
 
     if starts_with or ends_with or contains:
         instance.artifact_sync_scope_filter_properties = ArtifactSyncScopeFilterProperties(type="KQL", query=_create_kql(starts_with, ends_with, contains))
+
+    if sync:
+        user_confirmation("Your cache rule has Artifact Sync enabled and will automatically import tags into your registry. This may incur additional storage charges. Continue?", yes)
+
 
     if remove_cred_set:
         return client.begin_create(resource_group_name=rg,
