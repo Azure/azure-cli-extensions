@@ -920,7 +920,7 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
     if datasource_type == 'AzureKubernetesService':
         restore_request["restore_target_info"]["object_type"] = "ItemLevelRestoreTargetInfo"
         restore_request["restore_target_info"]["restore_criteria"] = helper.get_resource_criteria_list(datasource_type, restore_configuration,
-                                                                                                       None, None, None)
+                                                                                                       None, None, None, None)
 
     return restore_request
 
@@ -968,7 +968,8 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
 
 def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore, restore_location, backup_instance_id=None,
                                          target_resource_id=None, recovery_point_id=None, point_in_time=None, container_list=None,
-                                         from_prefix_pattern=None, to_prefix_pattern=None, restore_configuration=None):
+                                         from_prefix_pattern=None, to_prefix_pattern=None, restore_configuration=None,
+                                         vaulted_blob_prefix_pattern=None):
     restore_request = {}
     restore_mode = None
     manifest = helper.load_manifest(datasource_type)
@@ -999,6 +1000,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
     restore_request["restore_target_info"]["restore_criteria"] = helper.get_resource_criteria_list(datasource_type, restore_configuration,
                                                                                                    container_list, from_prefix_pattern,
-                                                                                                   to_prefix_pattern, recovery_point_id)
+                                                                                                   to_prefix_pattern, recovery_point_id,
+                                                                                                   vaulted_blob_prefix_pattern)
 
     return restore_request

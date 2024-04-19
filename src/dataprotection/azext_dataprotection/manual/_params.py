@@ -294,6 +294,8 @@ def load_arguments(self, _):
         c.argument('from_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for start range.")
         c.argument('to_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for end range.")
         c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
+        c.argument('vaulted_blob_prefix_pattern', options_list=['--vaulted-blob-prefix-pattern', '--vaulted-blob-prefix'],
+                   type=validate_file_or_dict, help="Specify the prefix pattern for vaulted blobs.")
 
     with self.argument_context('dataprotection backup-instance validate-for-restore') as c:
         c.argument('backup_instance_name', options_list=['--backup-instance-name', '--name', '-n'], type=str, help="Backup instance name.")
