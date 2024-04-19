@@ -45,7 +45,7 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
             self.check('properties.resourceRequests.memory', '1Gi'),
             self.check('properties.resourceRequests.instanceCount', '2'),
             self.check('length(properties.instances)', '2'),
-            #self.check('configServer.gitProperty.uri', 'https://github.com/azure-samples/spring-petclinic-microservices-config'),
+            self.check('properties.configServer.gitProperty.uri', 'https://github.com/azure-samples/spring-petclinic-microservices-config'),
         ])
 
         self.cmd('az spring config-server delete -g {rg} --service {serviceName} --yes')
