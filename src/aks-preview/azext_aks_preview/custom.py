@@ -108,7 +108,7 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     ValidationError,
 )
-from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core.commands import LongRunningOperation,IndeterminateProgressBar
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
@@ -974,6 +974,14 @@ def aks_get_credentials(
     except (IndexError, ValueError) as exc:
         raise CLIError("Fail to find kubeconfig file.") from exc
 
+class PollerProgressBar(IndeterminateProgressBar):
+    def __init__(self, cli_ctx, poller, message="Running"):
+        super().__init__(cli_ctx, message)
+        self.poller = poller
+
+    def update_progress(self):
+        self.message = self.poller.status()
+        super().update_progress()
 
 def aks_scale(cmd,  # pylint: disable=unused-argument
               client,
@@ -1002,7 +1010,7 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
             agent_profile.count = int(node_count)
             # null out the SP profile because otherwise validation complains
             instance.service_principal_profile = None
-            return sdk_no_wait(
+            poller = sdk_no_wait(
                 no_wait,
                 client.begin_create_or_update,
                 resource_group_name,
@@ -1010,6 +1018,12 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
                 instance,
                 headers=headers,
             )
+            progress_bar = None
+            disable_progress_bar = cmd.cli_ctx.config.getboolean('core', 'disable_progress_bar', False)
+            if not disable_progress_bar and not cmd.cli_ctx.only_show_errors:
+                progress_bar = PollerProgressBar(cmd.cli_ctx, poller)
+            return LongRunningOperation(cmd.cli_ctx, 'Starting {}'.format(cmd.name),progress_bar=progress_bar)(poller)
+
     raise CLIError(f'The nodepool "{nodepool_name}" was not found.')
 
 
