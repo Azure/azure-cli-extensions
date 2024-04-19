@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "support no-subscription file list",
 )
 class List(AAZCommand):
-    """List all the Files information under a workspace for an Azure subscription.
+    """List all the Files information under a workspace.
 
     :example: List all the files within a file-workspace
         az support no-subscription file list --file-workspace "TestFileWorkspaceName"
