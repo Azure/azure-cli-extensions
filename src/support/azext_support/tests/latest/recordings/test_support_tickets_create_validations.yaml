@@ -17,11 +17,11 @@ interactions:
       ParameterSetName:
       - --debug --description --severity --ticket-name --severity --title --contact-country
         --contact-email --contact-first-name --contact-language --contact-last-name
-        --contact-method --contact-timezone --diagnostic-consent --problem-classification
+        --contact-method --contact-timezone --advanced-diagnostic-consent --problem-classification
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
   response:
     body:
       string: '{"message":"Name 12345 is invalid. The name cannot include: ''<'',
@@ -36,7 +36,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:08:24 GMT
+      - Fri, 19 Apr 2024 01:59:58 GMT
       expires:
       - '-1'
       pragma:
@@ -47,10 +47,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/c3424be2-2383-41d2-b908-8901e221883e
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
       x-msedge-ref:
-      - 'Ref A: 76884B03F77143F9AB913E7E0A7C1911 Ref B: CO6AA3150219033 Ref C: 2024-02-14T22:08:24Z'
+      - 'Ref A: 753838D135B444B5AD0AA14CF5F57A7A Ref B: CO6AA3150218047 Ref C: 2024-04-19T01:59:58Z'
     status:
       code: 200
       message: OK

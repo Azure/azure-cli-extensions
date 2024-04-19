@@ -24,7 +24,7 @@ class Update(AAZCommand):
         az support in-subscription tickets update --ticket-name "TestTicketName" --status "closed"
 
     :example: Update support ticket customer contact details properties
-        az support in-subscription tickets update --ticket-name "TestTicketName" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-US" --contact-last-name "Bar" --contact-method "phone" --contact-phone-number "123-456-7890" --contact-timezone "Pacific Standard Time"
+        az support in-subscription tickets update --ticket-name "TestTicketName" --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" --contact-country "USA" --contact-email "abc@contoso.com" --contact-first-name "Foo" --contact-language "en-us" --contact-last-name "Bar" --contact-method "phone" --contact-phone-number "123-456-7890" --contact-timezone "Pacific Standard Time"
 
     :example: Update advanced diagnostic consent of a support ticket
         az support in-subscription tickets update --ticket-name "TestTicketName" --advanced-diagnostic-consent "Yes"

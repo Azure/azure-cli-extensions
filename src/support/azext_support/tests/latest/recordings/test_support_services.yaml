@@ -11,9 +11,9 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-support/6.0.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Support/services?api-version=2020-04-01
+    uri: https://centraluseuap.management.azure.com/providers/Microsoft.Support/services?api-version=2024-04-01
   response:
     body:
       string: '{"value":[{"id":"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea","name":"484e2236-bc6d-b1bb-76d2-7d09278cf9ea","type":"Microsoft.Support/services","properties":{"displayName":"Activity
@@ -30,21 +30,20 @@ interactions:
         Service Domains","resourceTypes":["MICROSOFT.DOMAINREGISTRATION/DOMAINS"]}},{"id":"/providers/Microsoft.Support/services/0420c0b3-5e23-1475-d8ad-c883ef940b46","name":"0420c0b3-5e23-1475-d8ad-c883ef940b46","type":"Microsoft.Support/services","properties":{"displayName":"App
         Service on Azure Stack Hub","resourceTypes":["Microsoft.AzureStack/registrations"]}},{"id":"/providers/Microsoft.Support/services/101732bb-31af-ee61-7c16-d4ad77c86a50","name":"101732bb-31af-ee61-7c16-d4ad77c86a50","type":"Microsoft.Support/services","properties":{"displayName":"Application
         Gateway","resourceTypes":["MICROSOFT.NETWORK/APPLICATIONGATEWAYS"]}},{"id":"/providers/Microsoft.Support/services/939c13c2-cd69-70fb-0851-c219bca05cb0","name":"939c13c2-cd69-70fb-0851-c219bca05cb0","type":"Microsoft.Support/services","properties":{"displayName":"Application
-        Gateway for Containers - Preview","resourceTypes":["microsoft.servicenetworking/trafficcontrollers","microsoft.servicenetworking/trafficcontrollers/frontends","microsoft.servicenetworking/trafficcontrollers/associations"]}},{"id":"/providers/Microsoft.Support/services/63df7848-ce1c-06d4-517f-2a62983372c6","name":"63df7848-ce1c-06d4-517f-2a62983372c6","type":"Microsoft.Support/services","properties":{"displayName":"Application
+        Gateway for Containers","resourceTypes":["microsoft.servicenetworking/trafficcontrollers","microsoft.servicenetworking/trafficcontrollers/frontends","microsoft.servicenetworking/trafficcontrollers/associations"]}},{"id":"/providers/Microsoft.Support/services/63df7848-ce1c-06d4-517f-2a62983372c6","name":"63df7848-ce1c-06d4-517f-2a62983372c6","type":"Microsoft.Support/services","properties":{"displayName":"Application
         Insights","resourceTypes":["MICROSOFT.INSIGHTS/COMPONENTS","MICROSOFT.INSIGHTS/ACTIVITYLOGALERTS","MICROSOFT.INSIGHTS/METRICALERTS","MICROSOFT.INSIGHTS/SCHEDULEDQUERYRULES"]}},{"id":"/providers/Microsoft.Support/services/2fd37acf-7616-eae7-546b-1a78a16d11b5","name":"2fd37acf-7616-eae7-546b-1a78a16d11b5","type":"Microsoft.Support/services","properties":{"displayName":"ASE","resourceTypes":["MICROSOFT.WEB/HOSTINGENVIRONMENTS"]}},{"id":"/providers/Microsoft.Support/services/b661f9c2-28ee-800a-b621-118a6787a8e6","name":"b661f9c2-28ee-800a-b621-118a6787a8e6","type":"Microsoft.Support/services","properties":{"displayName":"Automanage
-        for Virtual Machines","resourceTypes":["microsoft.automanage"]}},{"id":"/providers/Microsoft.Support/services/81437870-7683-745e-1c1f-7d9e7e2401ef","name":"81437870-7683-745e-1c1f-7d9e7e2401ef","type":"Microsoft.Support/services","properties":{"displayName":"Automanage
-        Machine Configuration","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/82881226-e06c-2b57-3365-38437e84059e","name":"82881226-e06c-2b57-3365-38437e84059e","type":"Microsoft.Support/services","properties":{"displayName":"Autoscale","resourceTypes":["MICROSOFT.INSIGHTS/AUTOSCALESETTINGS"]}},{"id":"/providers/Microsoft.Support/services/500d88b2-c24c-0d5d-3b76-acfde7d6ee20","name":"500d88b2-c24c-0d5d-3b76-acfde7d6ee20","type":"Microsoft.Support/services","properties":{"displayName":"Avere
-        vFXT","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/31af6335-2e73-ce48-c02e-6b9473b59f7a","name":"31af6335-2e73-ce48-c02e-6b9473b59f7a","type":"Microsoft.Support/services","properties":{"displayName":"Azure
+        for Virtual Machines","resourceTypes":["microsoft.automanage"]}},{"id":"/providers/Microsoft.Support/services/82881226-e06c-2b57-3365-38437e84059e","name":"82881226-e06c-2b57-3365-38437e84059e","type":"Microsoft.Support/services","properties":{"displayName":"Autoscale","resourceTypes":["MICROSOFT.INSIGHTS/AUTOSCALESETTINGS"]}},{"id":"/providers/Microsoft.Support/services/500d88b2-c24c-0d5d-3b76-acfde7d6ee20","name":"500d88b2-c24c-0d5d-3b76-acfde7d6ee20","type":"Microsoft.Support/services","properties":{"displayName":"Avere
+        vFXT","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/1b9679f1-9cb9-a8db-549e-2fcdfbb89e7c","name":"1b9679f1-9cb9-a8db-549e-2fcdfbb89e7c","type":"Microsoft.Support/services","properties":{"displayName":"Azure
+        AI Search","resourceTypes":["MICROSOFT.SEARCH/SEARCHSERVICES"]}},{"id":"/providers/Microsoft.Support/services/31af6335-2e73-ce48-c02e-6b9473b59f7a","name":"31af6335-2e73-ce48-c02e-6b9473b59f7a","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         AI Studio","resourceTypes":["Microsoft.MachineLearningServices","Microsoft.MachineLearningServices/aistudio"]}},{"id":"/providers/Microsoft.Support/services/11689be9-43d7-ba72-5806-03ab87626a4a","name":"11689be9-43d7-ba72-5806-03ab87626a4a","type":"Microsoft.Support/services","properties":{"displayName":"Azure
-        Arc enabled Kubernetes","resourceTypes":["Microsoft.Kubernetes/connectedClusters"]}},{"id":"/providers/Microsoft.Support/services/9ef6b6ba-0bb2-e927-2ea7-32f90a97414d","name":"9ef6b6ba-0bb2-e927-2ea7-32f90a97414d","type":"Microsoft.Support/services","properties":{"displayName":"Azure
+        Arc enabled Kubernetes","resourceTypes":["Microsoft.Kubernetes/connectedClusters","Microsoft.KubernetesConfiguration/extensions"]}},{"id":"/providers/Microsoft.Support/services/9ef6b6ba-0bb2-e927-2ea7-32f90a97414d","name":"9ef6b6ba-0bb2-e927-2ea7-32f90a97414d","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Arc enabled PostgreSQL - Preview","resourceTypes":["Microsoft.AzureArcData/postgresinstances"]}},{"id":"/providers/Microsoft.Support/services/bdb8e8ae-3bba-4c43-e8ad-36e132e481ef","name":"bdb8e8ae-3bba-4c43-e8ad-36e132e481ef","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Arc enabled SCVMM","resourceTypes":["Microsoft.ScVmm"]}},{"id":"/providers/Microsoft.Support/services/17318db1-cfda-52da-b65f-68e53ba89e64","name":"17318db1-cfda-52da-b65f-68e53ba89e64","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Arc enabled servers","resourceTypes":["Microsoft.hybridcompute/machines"]}},{"id":"/providers/Microsoft.Support/services/f6575f88-34bc-79d3-8693-05ee9b7ca72b","name":"f6575f88-34bc-79d3-8693-05ee9b7ca72b","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Arc enabled SQL Managed Instance","resourceTypes":["Microsoft.AzureArcData/sqlmanagedinstances"]}},{"id":"/providers/Microsoft.Support/services/2d45b14d-73cf-eb4b-0dc3-6ee86904c64b","name":"2d45b14d-73cf-eb4b-0dc3-6ee86904c64b","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Arc enabled VMware vSphere","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/216cb580-99ad-5c86-d60e-72aca32dc2a2","name":"216cb580-99ad-5c86-d60e-72aca32dc2a2","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Arc Resource Bridge","resourceTypes":["Microsoft.ResourceConnector/Appliances"]}},{"id":"/providers/Microsoft.Support/services/ab3e222e-3538-2b59-d3e8-963047a08f8b","name":"ab3e222e-3538-2b59-d3e8-963047a08f8b","type":"Microsoft.Support/services","properties":{"displayName":"Azure
-        Arc-enabled Data Services","resourceTypes":["Microsoft.AzureArcData/datacontrollers"]}},{"id":"/providers/Microsoft.Support/services/8dfc5d56-9245-222f-19fc-dfafc3fba973","name":"8dfc5d56-9245-222f-19fc-dfafc3fba973","type":"Microsoft.Support/services","properties":{"displayName":"Azure
-        Arc-enabled SQL Server","resourceTypes":["Microsoft.AzureArcData/sqlServerInstances"]}},{"id":"/providers/Microsoft.Support/services/90426252-f966-63ea-cbda-cab5ceaa865d","name":"90426252-f966-63ea-cbda-cab5ceaa865d","type":"Microsoft.Support/services","properties":{"displayName":"Azure
+        Arc-enabled Data Services","resourceTypes":["Microsoft.AzureArcData/datacontrollers"]}},{"id":"/providers/Microsoft.Support/services/90426252-f966-63ea-cbda-cab5ceaa865d","name":"90426252-f966-63ea-cbda-cab5ceaa865d","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Automation","resourceTypes":["MICROSOFT.AUTOMATION/AUTOMATIONACCOUNTS","MICROSOFT.AUTOMATION/AUTOMATIONACCOUNTS/RUNBOOKS","MICROSOFT.AUTOMATION/AUTOMATIONACCOUNTS/JOBS"]}},{"id":"/providers/Microsoft.Support/services/17d72dfc-8f48-94cb-05e6-5f88efdf72d7","name":"17d72dfc-8f48-94cb-05e6-5f88efdf72d7","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Backup","resourceTypes":["Microsoft.RecoveryServices/vaults","Microsoft.DataProtection/BackupVaults"]}},{"id":"/providers/Microsoft.Support/services/f26f06d5-c3b1-0372-8c5b-93a371ec434c","name":"f26f06d5-c3b1-0372-8c5b-93a371ec434c","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Blueprint - Preview","resourceTypes":["Microsoft.Blueprint/BLUEPRINTS"]}},{"id":"/providers/Microsoft.Support/services/58cf91d7-3a04-37d3-9818-9bd5c979d9a9","name":"58cf91d7-3a04-37d3-9818-9bd5c979d9a9","type":"Microsoft.Support/services","properties":{"displayName":"Azure
@@ -64,7 +63,7 @@ interactions:
         Digital Twins","resourceTypes":["Microsoft.DigitalTwins"]}},{"id":"/providers/Microsoft.Support/services/f0269138-eb6e-a81a-10e9-17965b5683d4","name":"f0269138-eb6e-a81a-10e9-17965b5683d4","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         DNS","resourceTypes":["MICROSOFT.NETWORK/DNSZONES"]}},{"id":"/providers/Microsoft.Support/services/5b807b4a-60ff-3256-faf1-5934bd59b4b9","name":"5b807b4a-60ff-3256-faf1-5934bd59b4b9","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Edge Hardware Center","resourceTypes":["Microsoft.EdgeOrder/OrderItems"]}},{"id":"/providers/Microsoft.Support/services/3b799b70-420a-6397-e69c-853341d0eab5","name":"3b799b70-420a-6397-e69c-853341d0eab5","type":"Microsoft.Support/services","properties":{"displayName":"Azure
-        Firewall","resourceTypes":["Microsoft.Network/azureFirewalls","Microsoft.Network/firewallPolicies"]}},{"id":"/providers/Microsoft.Support/services/f1e803c0-d4aa-156d-8507-3f9e5e4e1504","name":"f1e803c0-d4aa-156d-8507-3f9e5e4e1504","type":"Microsoft.Support/services","properties":{"displayName":"Azure
+        Firewall","resourceTypes":["Microsoft.Network/azureFirewalls","Microsoft.Network/firewallPolicies","Microsoft.Network/ipGroups"]}},{"id":"/providers/Microsoft.Support/services/f1e803c0-d4aa-156d-8507-3f9e5e4e1504","name":"f1e803c0-d4aa-156d-8507-3f9e5e4e1504","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Firewall Manager","resourceTypes":["Microsoft.Network/firewallPolicies","Microsoft.Network/firewallPolicies"]}},{"id":"/providers/Microsoft.Support/services/025f80a1-8242-b74c-6a4a-f01341b8669b","name":"025f80a1-8242-b74c-6a4a-f01341b8669b","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Fluid Relay","resourceTypes":["Microsoft.FluidRelay/fluidRelayServers"]}},{"id":"/providers/Microsoft.Support/services/3d598a6c-5432-adab-e87a-1dfdbb562302","name":"3d598a6c-5432-adab-e87a-1dfdbb562302","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         FXT Edge Filer","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/be63f24b-d7d7-fac8-d753-388658582f99","name":"be63f24b-d7d7-fac8-d753-388658582f99","type":"Microsoft.Support/services","properties":{"displayName":"Azure
@@ -88,7 +87,8 @@ interactions:
         NetApp Files","resourceTypes":["Microsoft.NetApp/netAppAccounts","Microsoft.NetApp/netAppAccounts/capacityPools","Microsoft.NetApp/netAppAccounts/capacityPools/Volumes"]}},{"id":"/providers/Microsoft.Support/services/1d0798a7-8ca0-280e-66d6-bee58f544e67","name":"1d0798a7-8ca0-280e-66d6-bee58f544e67","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Network Function Manager","resourceTypes":["Microsoft.HybridNetwork","Microsoft.HybridNetwork/networkfunctions","Microsoft.HybridNetwork/devices"]}},{"id":"/providers/Microsoft.Support/services/25aa2af2-9b6e-96b5-ce85-d784a0fea138","name":"25aa2af2-9b6e-96b5-ce85-d784a0fea138","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Object Anchors - Preview","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/a59fab92-b420-a3a7-1370-5ca1d19c278a","name":"a59fab92-b420-a3a7-1370-5ca1d19c278a","type":"Microsoft.Support/services","properties":{"displayName":"Azure
-        Operator 5G Core - Preview","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/809bf9f9-cdc2-6547-cbd9-117248bbbe8c","name":"809bf9f9-cdc2-6547-cbd9-117248bbbe8c","type":"Microsoft.Support/services","properties":{"displayName":"Azure
+        Operator 5G Core - Preview","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/0bd6e979-5014-1900-404c-bdae3fa548a5","name":"0bd6e979-5014-1900-404c-bdae3fa548a5","type":"Microsoft.Support/services","properties":{"displayName":"Azure
+        Operator Call Protection","resourceTypes":["Microsoft.VoiceServices"]}},{"id":"/providers/Microsoft.Support/services/809bf9f9-cdc2-6547-cbd9-117248bbbe8c","name":"809bf9f9-cdc2-6547-cbd9-117248bbbe8c","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Operator Insights","resourceTypes":["Microsoft.NetworkAnalytics"]}},{"id":"/providers/Microsoft.Support/services/88f7fa12-ffd2-e080-ab1f-16aa954adbfb","name":"88f7fa12-ffd2-e080-ab1f-16aa954adbfb","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Operator Nexus","resourceTypes":["Microsoft.NetworkCloud","Microsoft.ManagedNetworkFabric"]}},{"id":"/providers/Microsoft.Support/services/376a9fef-266e-08ca-fdd8-e85b43d0b66e","name":"376a9fef-266e-08ca-fdd8-e85b43d0b66e","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Operator Service Manager","resourceTypes":["Microsoft.HybridNetwork/publishers","Microsoft.HybridNetwork/sites","Microsoft.HybridNetwork/configurationGroupValues","Microsoft.HybridNetwork/siteNetworkServices","Microsoft.HybridNetwork/networkFunctions"]}},{"id":"/providers/Microsoft.Support/services/c8be3b31-c407-ee77-e40d-ffa6a39201bd","name":"c8be3b31-c407-ee77-e40d-ffa6a39201bd","type":"Microsoft.Support/services","properties":{"displayName":"Azure
@@ -97,7 +97,8 @@ interactions:
         Percept","resourceTypes":["Microsoft.AzurePercept/accounts"]}},{"id":"/providers/Microsoft.Support/services/10b4ca52-06e3-3064-3788-5b396ae8ff45","name":"10b4ca52-06e3-3064-3788-5b396ae8ff45","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Policy","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/2b3d28b4-4691-86b5-8a82-22f8e26b2e5e","name":"2b3d28b4-4691-86b5-8a82-22f8e26b2e5e","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Private 5G Core","resourceTypes":["Microsoft.MobileNetwork/mobilenetworks"]}},{"id":"/providers/Microsoft.Support/services/50cb0c81-4dee-0e4e-d7bd-caa5560e76af","name":"50cb0c81-4dee-0e4e-d7bd-caa5560e76af","type":"Microsoft.Support/services","properties":{"displayName":"Azure
-        Private Link","resourceTypes":["Microsoft.Network/privateLinkServices","Microsoft.Network/privateEndpoints"]}},{"id":"/providers/Microsoft.Support/services/0dbbd8bb-01d0-3b18-97d8-091ab1b40558","name":"0dbbd8bb-01d0-3b18-97d8-091ab1b40558","type":"Microsoft.Support/services","properties":{"displayName":"Azure
+        Private Link","resourceTypes":["Microsoft.Network/privateLinkServices","Microsoft.Network/privateEndpoints"]}},{"id":"/providers/Microsoft.Support/services/d18affb8-7ce3-f704-a082-5b0fe96068a4","name":"d18affb8-7ce3-f704-a082-5b0fe96068a4","type":"Microsoft.Support/services","properties":{"displayName":"Azure
+        Programmable Connectivity","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/0dbbd8bb-01d0-3b18-97d8-091ab1b40558","name":"0dbbd8bb-01d0-3b18-97d8-091ab1b40558","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         public Multi-Access Edge Compute (MEC)","resourceTypes":["Microsoft.Networking","Microsoft.Compute","Microsoft.Storage"]}},{"id":"/providers/Microsoft.Support/services/c20fd445-607c-6af4-8dff-7e248c950344","name":"c20fd445-607c-6af4-8dff-7e248c950344","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         Quantum - Preview","resourceTypes":["Microsoft.Quantum/Workspaces"]}},{"id":"/providers/Microsoft.Support/services/b701b8d6-fc99-aba8-bab9-bc2e171fa89c","name":"b701b8d6-fc99-aba8-bab9-bc2e171fa89c","type":"Microsoft.Support/services","properties":{"displayName":"Azure
         RedHat OpenShift","resourceTypes":["Microsoft.RedHatOpenShift/OpenShiftClusters"]}},{"id":"/providers/Microsoft.Support/services/cb6b214b-fbeb-8fd1-a055-3d60bbe81c28","name":"cb6b214b-fbeb-8fd1-a055-3d60bbe81c28","type":"Microsoft.Support/services","properties":{"displayName":"Azure
@@ -174,7 +175,7 @@ interactions:
         insights","resourceTypes":["Microsoft.ContainerService/OpenshiftManagedclusters"]}},{"id":"/providers/Microsoft.Support/services/fd718335-8143-4759-bb14-cf7cff4f585e","name":"fd718335-8143-4759-bb14-cf7cff4f585e","type":"Microsoft.Support/services","properties":{"displayName":"Container
         Instances","resourceTypes":["MICROSOFT.CONTAINERINSTANCE/CONTAINERGROUPS"]}},{"id":"/providers/Microsoft.Support/services/f100a6d5-17df-c517-a2bc-ecc2a5bfb975","name":"f100a6d5-17df-c517-a2bc-ecc2a5bfb975","type":"Microsoft.Support/services","properties":{"displayName":"Container
         Registry","resourceTypes":["MICROSOFT.CONTAINERREGISTRY/REGISTRIES"]}},{"id":"/providers/Microsoft.Support/services/201a3899-cb54-d8ec-d02f-7b0a4fd0d67f","name":"201a3899-cb54-d8ec-d02f-7b0a4fd0d67f","type":"Microsoft.Support/services","properties":{"displayName":"Container
-        Registry on Azure Stack Hub - Preview","resourceTypes":["Microsoft.AzureStack/registrations"]}},{"id":"/providers/Microsoft.Support/services/5a2a4812-d5f3-18a2-f6d6-5f847a5a96a1","name":"5a2a4812-d5f3-18a2-f6d6-5f847a5a96a1","type":"Microsoft.Support/services","properties":{"displayName":"Container
+        Registry on Azure Stack Hub","resourceTypes":["Microsoft.AzureStack/registrations"]}},{"id":"/providers/Microsoft.Support/services/5a2a4812-d5f3-18a2-f6d6-5f847a5a96a1","name":"5a2a4812-d5f3-18a2-f6d6-5f847a5a96a1","type":"Microsoft.Support/services","properties":{"displayName":"Container
         Storage - Preview","resourceTypes":["Microsoft.ContainerStorage"]}},{"id":"/providers/Microsoft.Support/services/6c9754aa-1828-2b91-0d32-31f7774af6a7","name":"6c9754aa-1828-2b91-0d32-31f7774af6a7","type":"Microsoft.Support/services","properties":{"displayName":"Content
         Safety","resourceTypes":["Microsoft.Cognitive"]}},{"id":"/providers/Microsoft.Support/services/d9516a10-74b5-45f4-943d-a5281d7cf1bb","name":"d9516a10-74b5-45f4-943d-a5281d7cf1bb","type":"Microsoft.Support/services","properties":{"displayName":"Cosmos
         DB","resourceTypes":["MICROSOFT.DOCUMENTDB/DATABASEACCOUNTS"]}},{"id":"/providers/Microsoft.Support/services/33476b0f-7f52-9f63-56d0-5924636304ff","name":"33476b0f-7f52-9f63-56d0-5924636304ff","type":"Microsoft.Support/services","properties":{"displayName":"Customer
@@ -207,23 +208,24 @@ interactions:
         Hubs","resourceTypes":["MICROSOFT.EVENTHUB/NAMESPACES"]}},{"id":"/providers/Microsoft.Support/services/48ffed53-baf4-c26a-c7a1-4bea807be2a0","name":"48ffed53-baf4-c26a-c7a1-4bea807be2a0","type":"Microsoft.Support/services","properties":{"displayName":"Event
         Hubs on Azure Stack Hub","resourceTypes":["Microsoft.AzureStack/registrations"]}},{"id":"/providers/Microsoft.Support/services/759b4975-eee7-178d-6996-31047d078bf2","name":"759b4975-eee7-178d-6996-31047d078bf2","type":"Microsoft.Support/services","properties":{"displayName":"ExpressRoute","resourceTypes":["MICROSOFT.NETWORK/EXPRESSROUTECIRCUITS"]}},{"id":"/providers/Microsoft.Support/services/74e3c1c3-412f-e934-70c5-24629ea33cf7","name":"74e3c1c3-412f-e934-70c5-24629ea33cf7","type":"Microsoft.Support/services","properties":{"displayName":"ExpressRoute
         Direct","resourceTypes":["Microsoft.Network/expressRoutePorts","MICROSOFT.NETWORKFUNCTION/AZURETRAFFICCOLLECTORS"]}},{"id":"/providers/Microsoft.Support/services/ce989245-7b7b-ab4f-ac5a-a4ca2ee9d2a2","name":"ce989245-7b7b-ab4f-ac5a-a4ca2ee9d2a2","type":"Microsoft.Support/services","properties":{"displayName":"ExpressRoute
-        Service Provider","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/fac12c7e-6522-1af5-3898-a45a905495d5","name":"fac12c7e-6522-1af5-3898-a45a905495d5","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
-        - Synapse Real Time Analytics","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/14ec3ea7-c6ee-6f43-0480-1994e19e2b71","name":"14ec3ea7-c6ee-6f43-0480-1994e19e2b71","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
+        Service Provider","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/14ec3ea7-c6ee-6f43-0480-1994e19e2b71","name":"14ec3ea7-c6ee-6f43-0480-1994e19e2b71","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
         Admin & Management","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/ce616a11-6c3c-3787-e5af-87bd93f057ac","name":"ce616a11-6c3c-3787-e5af-87bd93f057ac","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
         Data Activator (Preview)","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/abe09b55-980d-8005-43d1-3dc68d4e7da2","name":"abe09b55-980d-8005-43d1-3dc68d4e7da2","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
-        Data Factory","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/790e4cf1-2147-6bb2-0f93-b8455e189f22","name":"790e4cf1-2147-6bb2-0f93-b8455e189f22","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
+        Data Factory","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/0d20107a-6793-f1c3-409b-d697e64b6ebb","name":"0d20107a-6793-f1c3-409b-d697e64b6ebb","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
+        Healthcare Data Solutions (Preview)","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/790e4cf1-2147-6bb2-0f93-b8455e189f22","name":"790e4cf1-2147-6bb2-0f93-b8455e189f22","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
         Retail Data Solutions (Preview)","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/d1b45bee-a445-760e-e81e-5c0851cf9fe4","name":"d1b45bee-a445-760e-e81e-5c0851cf9fe4","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
-        Sustainability Data Solutions - Preview","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/84c5d9a0-a381-cbe3-68c4-92d6d031e1d2","name":"84c5d9a0-a381-cbe3-68c4-92d6d031e1d2","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
+        Sustainability Data Solutions (Preview)","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/84c5d9a0-a381-cbe3-68c4-92d6d031e1d2","name":"84c5d9a0-a381-cbe3-68c4-92d6d031e1d2","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
         Synapse Data Engineering","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/5f7c1f86-6c27-9a46-c580-677513de3d8c","name":"5f7c1f86-6c27-9a46-c580-677513de3d8c","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
         Synapse Data Science","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/97d4fe08-885c-2713-8a1c-517a8b2874ac","name":"97d4fe08-885c-2713-8a1c-517a8b2874ac","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
-        Synapse Data Warehouse","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/30dfd88b-b455-1748-a4a0-e4c5aa795663","name":"30dfd88b-b455-1748-a4a0-e4c5aa795663","type":"Microsoft.Support/services","properties":{"displayName":"Files
+        Synapse Data Warehouse","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/fac12c7e-6522-1af5-3898-a45a905495d5","name":"fac12c7e-6522-1af5-3898-a45a905495d5","type":"Microsoft.Support/services","properties":{"displayName":"Fabric
+        Synapse Real-Time Analytics","resourceTypes":["Microsoft.Fabric"]}},{"id":"/providers/Microsoft.Support/services/30dfd88b-b455-1748-a4a0-e4c5aa795663","name":"30dfd88b-b455-1748-a4a0-e4c5aa795663","type":"Microsoft.Support/services","properties":{"displayName":"Files
         Storage","resourceTypes":["MICROSOFT.CLASSICSTORAGE/STORAGEACCOUNTS","MICROSOFT.STORAGE/STORAGEACCOUNTS","MICROSOFT.STORAGESYNC/STORAGESYNCSERVICES"]}},{"id":"/providers/Microsoft.Support/services/fafcf178-45ee-85df-ef14-982729bf2f82","name":"fafcf178-45ee-85df-ef14-982729bf2f82","type":"Microsoft.Support/services","properties":{"displayName":"Front
         Door Service","resourceTypes":["MICROSOFT.NETWORK/FRONTDOORS"]}},{"id":"/providers/Microsoft.Support/services/2a1d6261-5ecd-a128-739f-9bd4f2154ba5","name":"2a1d6261-5ecd-a128-739f-9bd4f2154ba5","type":"Microsoft.Support/services","properties":{"displayName":"Front
         Door Standard and Premium","resourceTypes":["microsoft.cdn/profiles"]}},{"id":"/providers/Microsoft.Support/services/5ce8de69-abba-65a0-e0e4-a684bcbc7931","name":"5ce8de69-abba-65a0-e0e4-a684bcbc7931","type":"Microsoft.Support/services","properties":{"displayName":"Function
         App","resourceTypes":["MICROSOFT.WEB/SITES"]}},{"id":"/providers/Microsoft.Support/services/24629f4c-b450-03f7-aa4f-e2c48f422560","name":"24629f4c-b450-03f7-aa4f-e2c48f422560","type":"Microsoft.Support/services","properties":{"displayName":"Function
         App on Azure Arc","resourceTypes":["Microsoft.Web/Sites"]}},{"id":"/providers/Microsoft.Support/services/93c1bf6f-2816-3f1f-269d-9ee459d000a6","name":"93c1bf6f-2816-3f1f-269d-9ee459d000a6","type":"Microsoft.Support/services","properties":{"displayName":"GitHub
         Advanced Security for Azure DevOps","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/354c8172-2cc3-fef7-ed37-81214a6298a5","name":"354c8172-2cc3-fef7-ed37-81214a6298a5","type":"Microsoft.Support/services","properties":{"displayName":"Global
-        Secure Access","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/e053e63d-7425-0499-485c-4f5ba4b78244","name":"e053e63d-7425-0499-485c-4f5ba4b78244","type":"Microsoft.Support/services","properties":{"displayName":"HDInsight
+        Secure Access (Microsoft Entra Internet and Private Access)","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/e053e63d-7425-0499-485c-4f5ba4b78244","name":"e053e63d-7425-0499-485c-4f5ba4b78244","type":"Microsoft.Support/services","properties":{"displayName":"HDInsight
         on AKS - Preview","resourceTypes":["MICROSOFT.HDINSIGHT/CLUSTERPOOLS","MICROSOFT.HDINSIGHT/CLUSTERPOOLS/CLUSTERS"]}},{"id":"/providers/Microsoft.Support/services/5ffad63a-3267-d6b7-2fa1-6d9134c1fa62","name":"5ffad63a-3267-d6b7-2fa1-6d9134c1fa62","type":"Microsoft.Support/services","properties":{"displayName":"HDInsight
         Service","resourceTypes":["MICROSOFT.HDINSIGHT/CLUSTERS"]}},{"id":"/providers/Microsoft.Support/services/e00b1ed8-fc24-fef4-6f4c-36d963708ae1","name":"e00b1ed8-fc24-fef4-6f4c-36d963708ae1","type":"Microsoft.Support/services","properties":{"displayName":"High
         Performance Computing (HPC)","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/6b415938-2927-0d9d-6c3c-fbacea64e42d","name":"6b415938-2927-0d9d-6c3c-fbacea64e42d","type":"Microsoft.Support/services","properties":{"displayName":"HPC
@@ -249,7 +251,8 @@ interactions:
         App on Azure Arc","resourceTypes":["Microsoft.Logic/integrationServiceEnvironments","Microsoft.Logic/Workflows","MICROSOFT.WEB/SITES"]}},{"id":"/providers/Microsoft.Support/services/65e73690-23aa-be68-83be-a6b9bd188345","name":"65e73690-23aa-be68-83be-a6b9bd188345","type":"Microsoft.Support/services","properties":{"displayName":"Logic
         App-Integration Service Environment (ISE)","resourceTypes":["Microsoft.Logic/integrationServiceEnvironments"]}},{"id":"/providers/Microsoft.Support/services/6a2a5a09-c969-3adc-bc12-bfd87296f968","name":"6a2a5a09-c969-3adc-bc12-bfd87296f968","type":"Microsoft.Support/services","properties":{"displayName":"Logic
         App-Logic App (Standard)","resourceTypes":["Microsoft.Web/sites"]}},{"id":"/providers/Microsoft.Support/services/68ad5d5e-ba0d-c8d9-7642-1278dfc99ad3","name":"68ad5d5e-ba0d-c8d9-7642-1278dfc99ad3","type":"Microsoft.Support/services","properties":{"displayName":"Logz.io
-        on Azure","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/a1799293-1194-133d-4407-156c57152643","name":"a1799293-1194-133d-4407-156c57152643","type":"Microsoft.Support/services","properties":{"displayName":"Machine
+        on Azure","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/81437870-7683-745e-1c1f-7d9e7e2401ef","name":"81437870-7683-745e-1c1f-7d9e7e2401ef","type":"Microsoft.Support/services","properties":{"displayName":"Machine
+        Configuration","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/a1799293-1194-133d-4407-156c57152643","name":"a1799293-1194-133d-4407-156c57152643","type":"Microsoft.Support/services","properties":{"displayName":"Machine
         Learning","resourceTypes":["Microsoft.MachineLearningServices/workspaces","Microsoft.MachineLearningServices"]}},{"id":"/providers/Microsoft.Support/services/afd16b5d-3a02-dd9d-8f7f-9768a7345f81","name":"afd16b5d-3a02-dd9d-8f7f-9768a7345f81","type":"Microsoft.Support/services","properties":{"displayName":"Machine
         Learning Studio (Classic)","resourceTypes":["MICROSOFT.MACHINELEARNING/WORKSPACES","MICROSOFT.MACHINELEARNING/COMMITMENTPLANS","MICROSOFT.MACHINELEARNING/WEBSERVICES","MICROSOFT.MACHINELEARNINGEXPERIMENTATION/ACCOUNTS","MICROSOFT.MACHINELEARNINGMODELMANAGEMENT/ACCOUNTS"]}},{"id":"/providers/Microsoft.Support/services/7fa9504c-364e-66b7-830e-f1333a2e4fe4","name":"7fa9504c-364e-66b7-830e-f1333a2e4fe4","type":"Microsoft.Support/services","properties":{"displayName":"Managed
         Apps Service Catalog","resourceTypes":["Microsoft.Solutions/applicationDefinitions"]}},{"id":"/providers/Microsoft.Support/services/c967e89c-dd01-34fa-231a-5645bdd79459","name":"c967e89c-dd01-34fa-231a-5645bdd79459","type":"Microsoft.Support/services","properties":{"displayName":"Managed
@@ -288,7 +291,7 @@ interactions:
         Entra Workload ID","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/3f816e19-cbf7-f192-a725-63c0ebe7d07d","name":"3f816e19-cbf7-f192-a725-63c0ebe7d07d","type":"Microsoft.Support/services","properties":{"displayName":"Microsoft
         Genomics","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/7a37b2ec-b31a-5ca4-944c-84c916847ba1","name":"7a37b2ec-b31a-5ca4-944c-84c916847ba1","type":"Microsoft.Support/services","properties":{"displayName":"Microsoft
         Graph Advanced APIs","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/e76cbe81-8c12-1f2f-85c7-6064644116a4","name":"e76cbe81-8c12-1f2f-85c7-6064644116a4","type":"Microsoft.Support/services","properties":{"displayName":"Microsoft
-        Graph Authentication and Authorization (Azure AD)","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/437e7d94-a4b3-68bd-a23a-087f528d47dd","name":"437e7d94-a4b3-68bd-a23a-087f528d47dd","type":"Microsoft.Support/services","properties":{"displayName":"Microsoft
+        Graph Authentication and Authorization (Entra ID)","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/437e7d94-a4b3-68bd-a23a-087f528d47dd","name":"437e7d94-a4b3-68bd-a23a-087f528d47dd","type":"Microsoft.Support/services","properties":{"displayName":"Microsoft
         Graph Files, Sites and Lists APIs","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/50a1a89e-a735-61ed-fcf6-770df069182a","name":"50a1a89e-a735-61ed-fcf6-770df069182a","type":"Microsoft.Support/services","properties":{"displayName":"Microsoft
         Graph High-Capacity APIs","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/af52d398-4ddb-1e1d-2c6c-6767634b015e","name":"af52d398-4ddb-1e1d-2c6c-6767634b015e","type":"Microsoft.Support/services","properties":{"displayName":"Microsoft
         Graph Messages, Calendar and Contacts APIs","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/c9a40005-5758-83c0-32b8-9e7910c21595","name":"c9a40005-5758-83c0-32b8-9e7910c21595","type":"Microsoft.Support/services","properties":{"displayName":"Microsoft
@@ -319,7 +322,7 @@ interactions:
         Rendering","resourceTypes":["Microsoft.MixedReality/RemoteRenderingAccounts"]}},{"id":"/providers/Microsoft.Support/services/c2804d27-8e0a-f2a3-8540-f4318f539ff6","name":"c2804d27-8e0a-f2a3-8540-f4318f539ff6","type":"Microsoft.Support/services","properties":{"displayName":"Role
         Based Access Control (RBAC) for Azure Resources (IAM)","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/dd1ed832-cfdd-b06b-d11b-77b590a10d4c","name":"dd1ed832-cfdd-b06b-d11b-77b590a10d4c","type":"Microsoft.Support/services","properties":{"displayName":"SAP
         HANA Large Instance","resourceTypes":["Microsoft.HanaOnAzure/sapMonitors","Microsoft.HanaOnAzure/hanaInstances"]}},{"id":"/providers/Microsoft.Support/services/f90fce27-e23e-9db8-cbf3-0f9a879b3a62","name":"f90fce27-e23e-9db8-cbf3-0f9a879b3a62","type":"Microsoft.Support/services","properties":{"displayName":"SCOM
-        Managed Instance","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/1b9679f1-9cb9-a8db-549e-2fcdfbb89e7c","name":"1b9679f1-9cb9-a8db-549e-2fcdfbb89e7c","type":"Microsoft.Support/services","properties":{"displayName":"Search","resourceTypes":["MICROSOFT.SEARCH/SEARCHSERVICES"]}},{"id":"/providers/Microsoft.Support/services/0abb876a-a5f2-b881-f49e-dc6157fd07bd","name":"0abb876a-a5f2-b881-f49e-dc6157fd07bd","type":"Microsoft.Support/services","properties":{"displayName":"Security
+        Managed Instance","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/0abb876a-a5f2-b881-f49e-dc6157fd07bd","name":"0abb876a-a5f2-b881-f49e-dc6157fd07bd","type":"Microsoft.Support/services","properties":{"displayName":"Security
         Incident Response","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89","name":"06bfd9d3-516b-d5c6-5802-169c800dec89","type":"Microsoft.Support/services","properties":{"displayName":"Service
         and subscription limits (quotas)","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/23e2c469-4b37-ebf5-0a3f-72e8b1407301","name":"23e2c469-4b37-ebf5-0a3f-72e8b1407301","type":"Microsoft.Support/services","properties":{"displayName":"Service
         Bus","resourceTypes":["MICROSOFT.SERVICEBUS/NAMESPACES"]}},{"id":"/providers/Microsoft.Support/services/a730ab7a-33ae-c83a-bca5-4935433e38ff","name":"a730ab7a-33ae-c83a-bca5-4935433e38ff","type":"Microsoft.Support/services","properties":{"displayName":"Service
@@ -329,7 +332,8 @@ interactions:
         Service","resourceTypes":["Microsoft.SignalRService/SignalR"]}},{"id":"/providers/Microsoft.Support/services/e4ddc3b0-1e6d-aaa2-4279-8e5027351d76","name":"e4ddc3b0-1e6d-aaa2-4279-8e5027351d76","type":"Microsoft.Support/services","properties":{"displayName":"Spatial
         Anchors","resourceTypes":["Microsoft.MixedReality"]}},{"id":"/providers/Microsoft.Support/services/95412dd5-f222-a91f-98a6-144a84418c66","name":"95412dd5-f222-a91f-98a6-144a84418c66","type":"Microsoft.Support/services","properties":{"displayName":"SQL
         Database","resourceTypes":["MICROSOFT.SQL/SERVERS","MICROSOFT.SQL/SERVERS/DATABASES","MICROSOFT.SQL/SERVERS/ELASTICPOOLS"]}},{"id":"/providers/Microsoft.Support/services/9b629e89-4ea0-53ec-9409-1579b8c41453","name":"9b629e89-4ea0-53ec-9409-1579b8c41453","type":"Microsoft.Support/services","properties":{"displayName":"SQL
-        Managed Instance","resourceTypes":["MICROSOFT.SQL/MANAGEDINSTANCES"]}},{"id":"/providers/Microsoft.Support/services/40ef020e-8ae7-8d57-b538-9153c47cee69","name":"40ef020e-8ae7-8d57-b538-9153c47cee69","type":"Microsoft.Support/services","properties":{"displayName":"SQL
+        Managed Instance","resourceTypes":["MICROSOFT.SQL/MANAGEDINSTANCES"]}},{"id":"/providers/Microsoft.Support/services/8dfc5d56-9245-222f-19fc-dfafc3fba973","name":"8dfc5d56-9245-222f-19fc-dfafc3fba973","type":"Microsoft.Support/services","properties":{"displayName":"SQL
+        Server enabled by Azure Arc","resourceTypes":["Microsoft.AzureArcData/sqlServerInstances"]}},{"id":"/providers/Microsoft.Support/services/40ef020e-8ae7-8d57-b538-9153c47cee69","name":"40ef020e-8ae7-8d57-b538-9153c47cee69","type":"Microsoft.Support/services","properties":{"displayName":"SQL
         Server in VM - Linux","resourceTypes":["MICROSOFT.CLASSICCOMPUTE/VIRTUALMACHINES","MICROSOFT.COMPUTE/VIRTUALMACHINES"]}},{"id":"/providers/Microsoft.Support/services/53b14ef9-9b69-4d8c-a458-b8e4c132a815","name":"53b14ef9-9b69-4d8c-a458-b8e4c132a815","type":"Microsoft.Support/services","properties":{"displayName":"SQL
         Server in VM - Windows","resourceTypes":["MICROSOFT.CLASSICCOMPUTE/VIRTUALMACHINES","MICROSOFT.COMPUTE/VIRTUALMACHINES","Microsoft.SqlVirtualMachine/sqlVirtualMachines"]}},{"id":"/providers/Microsoft.Support/services/0ef96678-fa9b-9ea2-2cdc-39ee36e1f4db","name":"0ef96678-fa9b-9ea2-2cdc-39ee36e1f4db","type":"Microsoft.Support/services","properties":{"displayName":"Start-Stop
         V2","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/94a7406a-b31a-86f8-49f9-377d30047b25","name":"94a7406a-b31a-86f8-49f9-377d30047b25","type":"Microsoft.Support/services","properties":{"displayName":"Static
@@ -340,7 +344,8 @@ interactions:
         management","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/8418caaf-4634-b4c0-d9b6-27c266b6b67b","name":"8418caaf-4634-b4c0-d9b6-27c266b6b67b","type":"Microsoft.Support/services","properties":{"displayName":"Table
         Storage","resourceTypes":["MICROSOFT.CLASSICSTORAGE/STORAGEACCOUNTS","MICROSOFT.STORAGE/STORAGEACCOUNTS"]}},{"id":"/providers/Microsoft.Support/services/e4d6b9b0-79d5-3133-c4db-460a39e8a622","name":"e4d6b9b0-79d5-3133-c4db-460a39e8a622","type":"Microsoft.Support/services","properties":{"displayName":"Time
         Series Insights","resourceTypes":["MICROSOFT.TIMESERIESINSIGHTS/ENVIRONMENTS"]}},{"id":"/providers/Microsoft.Support/services/66fff2d6-c34e-ac9b-d1ba-6631ab20989e","name":"66fff2d6-c34e-ac9b-d1ba-6631ab20989e","type":"Microsoft.Support/services","properties":{"displayName":"Traffic
-        Manager - DNS based load balancing","resourceTypes":["MICROSOFT.NETWORK/TRAFFICMANAGERPROFILES"]}},{"id":"/providers/Microsoft.Support/services/99dd2657-2a74-8c5a-951f-23abdd7851c6","name":"99dd2657-2a74-8c5a-951f-23abdd7851c6","type":"Microsoft.Support/services","properties":{"displayName":"Universal
+        Manager - DNS based load balancing","resourceTypes":["MICROSOFT.NETWORK/TRAFFICMANAGERPROFILES"]}},{"id":"/providers/Microsoft.Support/services/903c399e-0f94-1b12-3ac3-b87a17707398","name":"903c399e-0f94-1b12-3ac3-b87a17707398","type":"Microsoft.Support/services","properties":{"displayName":"Trusted
+        Signing - Preview","resourceTypes":["Microsoft.CodeSigning/CodeSigningAccounts"]}},{"id":"/providers/Microsoft.Support/services/99dd2657-2a74-8c5a-951f-23abdd7851c6","name":"99dd2657-2a74-8c5a-951f-23abdd7851c6","type":"Microsoft.Support/services","properties":{"displayName":"Universal
         Print","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/722ccc66-c988-d2ac-1ec6-b7aebc857f2d","name":"722ccc66-c988-d2ac-1ec6-b7aebc857f2d","type":"Microsoft.Support/services","properties":{"displayName":"Virtual
         Machine running Citrix","resourceTypes":["MICROSOFT.CLASSICCOMPUTE/VIRTUALMACHINES","MICROSOFT.COMPUTE/VIRTUALMACHINES"]}},{"id":"/providers/Microsoft.Support/services/b6492139-637a-c445-ee02-5dc6749337c3","name":"b6492139-637a-c445-ee02-5dc6749337c3","type":"Microsoft.Support/services","properties":{"displayName":"Virtual
         Machine running Cloud Foundry","resourceTypes":[]}},{"id":"/providers/Microsoft.Support/services/cddd3eb5-1830-b494-44fd-782f691479dc","name":"cddd3eb5-1830-b494-44fd-782f691479dc","type":"Microsoft.Support/services","properties":{"displayName":"Virtual
@@ -367,11 +372,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '101141'
+      - '102324'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:22 GMT
+      - Fri, 19 Apr 2024 01:58:45 GMT
       expires:
       - '-1'
       pragma:
@@ -382,8 +387,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
       x-msedge-ref:
-      - 'Ref A: DA6577E222C2466A838A4C72036DADB5 Ref B: CO6AA3150217051 Ref C: 2024-02-14T22:07:22Z'
+      - 'Ref A: BB3497B3BB7F4FEC81F77F5D6FAA9A7E Ref B: CO6AA3150219021 Ref C: 2024-04-19T01:58:43Z'
     status:
       code: 200
       message: OK
@@ -401,9 +408,9 @@ interactions:
       ParameterSetName:
       - --service-name
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-support/6.0.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea?api-version=2020-04-01
+    uri: https://centraluseuap.management.azure.com/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea?api-version=2024-04-01
   response:
     body:
       string: '{"id":"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea","name":"484e2236-bc6d-b1bb-76d2-7d09278cf9ea","type":"Microsoft.Support/services","properties":{"displayName":"Activity
@@ -416,7 +423,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:24 GMT
+      - Fri, 19 Apr 2024 01:58:48 GMT
       expires:
       - '-1'
       pragma:
@@ -427,8 +434,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
       x-msedge-ref:
-      - 'Ref A: 8613A23A59174573A7192F4519D4EFCE Ref B: CO6AA3150217025 Ref C: 2024-02-14T22:07:24Z'
+      - 'Ref A: 34336BDDCB5649A88134558CBC92CDAB Ref B: CO6AA3150217009 Ref C: 2024-04-19T01:58:46Z'
     status:
       code: 200
       message: OK
@@ -446,51 +455,31 @@ interactions:
       ParameterSetName:
       - --service-name
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-support/6.0.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications?api-version=2020-04-01
+    uri: https://centraluseuap.management.azure.com/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications?api-version=2024-04-01
   response:
     body:
-      string: "{\"value\":[{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/c9805a0b-9410-1708-2989-0befc008e963\"\
-        ,\"name\":\"c9805a0b-9410-1708-2989-0befc008e963\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"Issues with Activity Log Alerts\"}},{\"\
-        id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/9dfa5fc1-4b66-106b-d3f3-453568873162\"\
-        ,\"name\":\"9dfa5fc1-4b66-106b-d3f3-453568873162\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"I can't configure Export of Activity Log\
-        \ / Configuring export in Azure Portal\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/dedd4374-f696-d2a7-5e94-e97af375eb22\"\
-        ,\"name\":\"dedd4374-f696-d2a7-5e94-e97af375eb22\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"I can't configure Export of Activity Log\
-        \ / Configuring export using REST API\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/feb105d8-f457-4af4-c887-ad87f35bd81f\"\
-        ,\"name\":\"feb105d8-f457-4af4-c887-ad87f35bd81f\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"I can't configure Export of Activity Log\
-        \ / Configuring export using PowerShell or CLI\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/a1025835-1fbf-b1f2-f87a-e9d530e2a38d\"\
-        ,\"name\":\"a1025835-1fbf-b1f2-f87a-e9d530e2a38d\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"Issues with Viewing or Querying Activity\
-        \ Log / My logs are not showing up when expected\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/48b8f1d3-a8bc-bdc8-e27f-0196741a0d0a\"\
-        ,\"name\":\"48b8f1d3-a8bc-bdc8-e27f-0196741a0d0a\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"Issues with Viewing or Querying Activity\
-        \ Log / I cannot find the logs for expected event\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/c98da85c-d35d-a0de-66a5-adec086b6b04\"\
-        ,\"name\":\"c98da85c-d35d-a0de-66a5-adec086b6b04\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"Issues with Viewing or Querying Activity\
-        \ Log / Expected information is missing in the log\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/a4816543-0185-1eec-7a4c-cdb1bb8f89a6\"\
-        ,\"name\":\"a4816543-0185-1eec-7a4c-cdb1bb8f89a6\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"Issues with Viewing or Querying Activity\
-        \ Log / I can\u2019t query Activity Log using REST API\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/4ed4f45e-35df-d0b9-721c-87421d9f10c5\"\
-        ,\"name\":\"4ed4f45e-35df-d0b9-721c-87421d9f10c5\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"Issues with Viewing or Querying Activity\
-        \ Log / I can\u2019t query Activity Log using PowerShell\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/2e5a91a4-146b-5521-250b-feb114bb8564\"\
-        ,\"name\":\"2e5a91a4-146b-5521-250b-feb114bb8564\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"Issues with Viewing or Querying Activity\
-        \ Log / I can\u2019t query Activity Log using CLI\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/68a53b41-9db6-818d-868c-819510efe106\"\
-        ,\"name\":\"68a53b41-9db6-818d-868c-819510efe106\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"I can't view Activity Log in Log Analytics\"\
-        }},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/682cdc67-9e71-35b1-2931-d6e691f4eb91\"\
-        ,\"name\":\"682cdc67-9e71-35b1-2931-d6e691f4eb91\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"Integration with 3rd party SIEM tools\"\
-        }},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/bc7be708-930c-b253-7dca-b650006978ea\"\
-        ,\"name\":\"bc7be708-930c-b253-7dca-b650006978ea\",\"type\":\"Microsoft.Support/problemClassifications\"\
-        ,\"properties\":{\"displayName\":\"I need to increase retention of Activity\
-        \ Log\"}}]}"
+      string: "{\"value\":[{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/c9805a0b-9410-1708-2989-0befc008e963\",\"name\":\"c9805a0b-9410-1708-2989-0befc008e963\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"Issues
+        with Activity Log Alerts\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/9dfa5fc1-4b66-106b-d3f3-453568873162\",\"name\":\"9dfa5fc1-4b66-106b-d3f3-453568873162\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"I
+        can't configure Export of Activity Log / Configuring export in Azure Portal\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/dedd4374-f696-d2a7-5e94-e97af375eb22\",\"name\":\"dedd4374-f696-d2a7-5e94-e97af375eb22\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"I
+        can't configure Export of Activity Log / Configuring export using REST API\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/feb105d8-f457-4af4-c887-ad87f35bd81f\",\"name\":\"feb105d8-f457-4af4-c887-ad87f35bd81f\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"I
+        can't configure Export of Activity Log / Configuring export using PowerShell
+        or CLI\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/a1025835-1fbf-b1f2-f87a-e9d530e2a38d\",\"name\":\"a1025835-1fbf-b1f2-f87a-e9d530e2a38d\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"Issues
+        with Viewing or Querying Activity Log / My logs are not showing up when expected\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/48b8f1d3-a8bc-bdc8-e27f-0196741a0d0a\",\"name\":\"48b8f1d3-a8bc-bdc8-e27f-0196741a0d0a\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"Issues
+        with Viewing or Querying Activity Log / I cannot find the logs for expected
+        event\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/c98da85c-d35d-a0de-66a5-adec086b6b04\",\"name\":\"c98da85c-d35d-a0de-66a5-adec086b6b04\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"Issues
+        with Viewing or Querying Activity Log / Expected information is missing in
+        the log\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/a4816543-0185-1eec-7a4c-cdb1bb8f89a6\",\"name\":\"a4816543-0185-1eec-7a4c-cdb1bb8f89a6\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"Issues
+        with Viewing or Querying Activity Log / I can\u2019t query Activity Log using
+        REST API\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/4ed4f45e-35df-d0b9-721c-87421d9f10c5\",\"name\":\"4ed4f45e-35df-d0b9-721c-87421d9f10c5\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"Issues
+        with Viewing or Querying Activity Log / I can\u2019t query Activity Log using
+        PowerShell\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/2e5a91a4-146b-5521-250b-feb114bb8564\",\"name\":\"2e5a91a4-146b-5521-250b-feb114bb8564\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"Issues
+        with Viewing or Querying Activity Log / I can\u2019t query Activity Log using
+        CLI\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/68a53b41-9db6-818d-868c-819510efe106\",\"name\":\"68a53b41-9db6-818d-868c-819510efe106\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"I
+        can't view Activity Log in Log Analytics\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/682cdc67-9e71-35b1-2931-d6e691f4eb91\",\"name\":\"682cdc67-9e71-35b1-2931-d6e691f4eb91\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"Integration
+        with 3rd party SIEM tools\"}},{\"id\":\"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/bc7be708-930c-b253-7dca-b650006978ea\",\"name\":\"bc7be708-930c-b253-7dca-b650006978ea\",\"type\":\"Microsoft.Support/problemClassifications\",\"properties\":{\"displayName\":\"I
+        need to increase retention of Activity Log\"}}]}"
     headers:
       cache-control:
       - no-cache
@@ -499,7 +488,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:25 GMT
+      - Fri, 19 Apr 2024 01:58:50 GMT
       expires:
       - '-1'
       pragma:
@@ -510,8 +499,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
       x-msedge-ref:
-      - 'Ref A: DE56A1E69CE74BBC94BC5EFD7622C834 Ref B: CO6AA3150218023 Ref C: 2024-02-14T22:07:25Z'
+      - 'Ref A: AF9EEE1C91F84F3E80084CFF14FA8A08 Ref B: CO6AA3150220025 Ref C: 2024-04-19T01:58:49Z'
     status:
       code: 200
       message: OK
@@ -529,9 +520,9 @@ interactions:
       ParameterSetName:
       - --service-name --problem-classification-name
       User-Agent:
-      - AZURECLI/2.56.0 azsdk-python-mgmt-support/6.0.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/c9805a0b-9410-1708-2989-0befc008e963?api-version=2020-04-01
+    uri: https://centraluseuap.management.azure.com/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/c9805a0b-9410-1708-2989-0befc008e963?api-version=2024-04-01
   response:
     body:
       string: '{"id":"/providers/Microsoft.Support/services/484e2236-bc6d-b1bb-76d2-7d09278cf9ea/problemClassifications/c9805a0b-9410-1708-2989-0befc008e963","name":"c9805a0b-9410-1708-2989-0befc008e963","type":"Microsoft.Support/problemClassifications","properties":{"displayName":"Issues
@@ -544,7 +535,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:26 GMT
+      - Fri, 19 Apr 2024 01:58:51 GMT
       expires:
       - '-1'
       pragma:
@@ -555,8 +546,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - ''
       x-msedge-ref:
-      - 'Ref A: A0616DE5207741399841FCCAF490AA01 Ref B: CO6AA3150217039 Ref C: 2024-02-14T22:07:26Z'
+      - 'Ref A: E9D0F450324D41389158E42830081140 Ref B: CO6AA3150217053 Ref C: 2024-04-19T01:58:50Z'
     status:
       code: 200
       message: OK
