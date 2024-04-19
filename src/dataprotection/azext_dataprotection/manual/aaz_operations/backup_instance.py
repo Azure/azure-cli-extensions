@@ -146,8 +146,25 @@ class RestoreTrigger(_RestoreTrigger):
             help="Gets or sets the restore request object. Expected value: json-string/@json-file.",
             required=True,
         )
+        args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            help="Tenant ID for cross-tenant calls"
+        )
 
         return args_schema
+
+    def pre_operations(self):
+        # Allow users to enter predefined shorthand instead of the full path, if necessary
+        if has_value(self.ctx.args.resource_guard_operation_requests):
+            self.ctx.args.resource_guard_operation_requests = assign_aaz_list_arg(
+                self.ctx.args.resource_guard_operation_requests,
+                self.ctx.args.resource_guard_operation_requests,
+                element_transformer=lambda _, operation:
+                    transform_resource_guard_operation_request(self, _, operation)
+            )
+        if has_value(self.ctx.args.tenant_id):
+            # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
+            self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))
 
     class BackupInstancesTriggerRestore(_RestoreTrigger.BackupInstancesTriggerRestore):
 
