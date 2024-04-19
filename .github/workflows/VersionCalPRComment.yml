@@ -15,10 +15,13 @@ permissions:
 
 jobs:
   version-cal:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-cal-version') }}
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-cal-version') && (!contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) || github.event.label.name != 'do-not-merge') }}
     runs-on: ubuntu-latest
     steps:
       - name: Set Init Version Message
+        env:
+           action: ${{ toJSON(github.event.action) }}
+           label: ${{ toJSON(github.event.label) }}
         run: |
           echo "message=$(echo 'Suggested init version: 1.0.0b1 for preview release and 1.0.0 for stable release')" >> $GITHUB_ENV
       - name: Set up Python 3.10
@@ -40,6 +43,7 @@ jobs:
           bash_sha: ${{ github.event.pull_request.base.sha }}
           base_branch: ${{ github.event.pull_request.base.ref }}
           base_branch_pre: "upstream"
+          diff_code_file: "diff_codes.txt"
           diff_sha: ${{ github.event.pull_request.head.sha }}
           diff_branch: ${{ github.event.pull_request.head.ref }}
           repo_full_name: ${{ github.event.pull_request.head.repo.full_name }}
@@ -57,13 +61,14 @@ jobs:
             cat changed_files
             cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq > changed_modules
             echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
+            git --no-pager diff --diff-filter=ACMRT ${{ env.base_branch_pre }}/${{ env.base_branch }}...${{ env.diff_branch }} > ${{ env.diff_code_file }}
       - name: Display Diff Modules
         run: |
             for mod in ${{ env.changed_module_list }}
             do
               echo changed module: "${mod}"
             done
-      - name: Checkout CLI main repo 
+      - name: Checkout CLI main repo
         uses: actions/checkout@master
         with:
            repository: Azure/azure-cli
@@ -97,6 +102,7 @@ jobs:
           pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
           base_branch: ${{ github.event.pull_request.base.ref }}
           base_branch_pre: "upstream"
+          diff_code_file: "diff_codes.txt"
           diff_branch: ${{ github.event.pull_request.head.ref }}
           base_meta_path: "./base_meta/"
           diff_meta_path: "./diff_meta/"
@@ -133,3 +139,12 @@ jobs:
             version_update.txt
            message-failure: |
             Please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md) to update release versions.
+      - name: Check output
+        run: |
+           echo steps.get_comment_message.outputs.BlockPR
+           echo ${{ steps.get_comment_message.outputs.BlockPR }}
+      - name: add label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: ${{ steps.get_comment_message.outputs.BlockPR == 1 }}
+        with:
+          labels: do-not-merge
