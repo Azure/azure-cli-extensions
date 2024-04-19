@@ -30,6 +30,8 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 from knack.log import get_logger
@@ -298,6 +300,16 @@ def validate_user(namespace):
             "--user can only be clusterUser or clusterMonitoringUser")
 
 
+def validate_pod_ip_allocation_mode(namespace):
+    """Validates the pod ip allocation mode string."""
+    if namespace.pod_ip_allocation_mode is not None:
+        if namespace.pod_ip_allocation_mode not in (
+            CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
+            CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
+        ):
+            raise InvalidArgumentValueError("--pod-ip-allocation-mode can only be DynamicIndividual or StaticBlock")
+
+
 def validate_vnet_subnet_id(namespace):
     _validate_subnet_id(namespace.vnet_subnet_id, "--vnet-subnet-id")
 
@@ -347,30 +359,6 @@ def validate_node_public_ip_tags(ns):
         for item in ns.node_public_ip_tags:
             tags_dict.update(validate_tag(item))
         ns.node_public_ip_tags = tags_dict
-
-
-def validate_egress_gtw_nodeselector(namespace):
-    """Validates that provided node selector is a valid format"""
-
-    if not hasattr(namespace, 'egx_gtw_nodeselector'):
-        return
-
-    labels = namespace.egx_gtw_nodeselector
-
-    if labels is None:
-        # no specify any labels
-        namespace.egx_gtw_nodeselector = {}
-        return
-
-    if isinstance(labels, list):
-        labels_dict = {}
-        for item in labels:
-            labels_dict.update(validate_label(item))
-        after_validation_labels = labels_dict
-    else:
-        after_validation_labels = validate_label(labels)
-
-    namespace.egx_gtw_nodeselector = after_validation_labels
 
 
 def validate_nodepool_labels(namespace):
@@ -663,6 +651,15 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
 
 
+def validate_bootstrap_container_registry_resource_id(namespace):
+    container_registry_resource_id = namespace.bootstrap_container_registry_resource_id
+    if container_registry_resource_id is None or container_registry_resource_id == '':
+        return
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(container_registry_resource_id):
+        raise InvalidArgumentValueError("--bootstrap-container-registry-resource-id is not a valid Azure resource ID.")
+
+
 def validate_enable_custom_ca_trust(namespace):
     """Validates Custom CA Trust can only be used on Linux."""
     if namespace.enable_custom_ca_trust:
@@ -846,3 +843,14 @@ def validate_artifact_streaming(namespace):
     if namespace.enable_artifact_streaming:
         if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
             raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')
+
+
+def validate_custom_endpoints(namespace):
+    """Validates that custom endpoints do not contain protocol."""
+    if not namespace.custom_endpoints:
+        return
+
+    if isinstance(namespace.custom_endpoints, list):
+        for endpoint in namespace.custom_endpoints:
+            if "://" in endpoint:
+                raise InvalidArgumentValueError(f"Custom endpoint {endpoint} should not contain protocol.")

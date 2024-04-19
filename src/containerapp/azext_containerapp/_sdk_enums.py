@@ -192,6 +192,23 @@ class DnsVerificationTestResult(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     SKIPPED = "Skipped"
 
 
+class DotNetComponentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Provisioning state of the .NET Component."""
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    DELETING = "Deleting"
+    IN_PROGRESS = "InProgress"
+
+
+class DotNetComponentType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of the .NET Component."""
+
+    ASPIRE_DASHBOARD = "AspireDashboard"
+    ASPIRE_RESOURCE_SERVER_API = "AspireResourceServerApi"
+
+
 class EnvironmentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Provisioning state of the Environment."""
 
@@ -232,6 +249,13 @@ class IngressClientCertificateMode(str, Enum, metaclass=CaseInsensitiveEnumMeta)
     REQUIRE = "require"
 
 
+class IngressTargetPortHttpScheme(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Whether an http app listens on http or https."""
+
+    HTTP = "http"
+    HTTPS = "https"
+
+
 class IngressTransportMethod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Ingress transport protocol."""
 
@@ -239,6 +263,24 @@ class IngressTransportMethod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     HTTP = "http"
     HTTP2 = "http2"
     TCP = "tcp"
+
+
+class JavaComponentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Provisioning state of the Java Component."""
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    DELETING = "Deleting"
+    IN_PROGRESS = "InProgress"
+
+
+class JavaComponentType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of the Java Component."""
+
+    SPRING_BOOT_ADMIN = "SpringBootAdmin"
+    SPRING_CLOUD_EUREKA = "SpringCloudEureka"
+    SPRING_CLOUD_CONFIG = "SpringCloudConfig"
 
 
 class JobExecutionRunningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -344,6 +386,7 @@ class StorageType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     AZURE_FILE = "AzureFile"
     EMPTY_DIR = "EmptyDir"
     SECRET = "Secret"
+    NFS_AZURE_FILE = "NfsAzureFile"
 
 
 class TriggerType(str, Enum, metaclass=CaseInsensitiveEnumMeta):

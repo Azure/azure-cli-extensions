@@ -2,6 +2,22 @@
 
 Release History
 ===============
+1.0.3
+++++++
+* Fix no attribute error
+
+1.0.2
+++++++
+* Bypass error of `az postgres flexible-server db show`
+
+1.0.1
+++++++
+* Make some improvements to fix non-json output issue
+
+1.0.0
+++++++
+* Support function app
+
 0.3.13
 ++++++
 * AAD rebranding and make some improvements

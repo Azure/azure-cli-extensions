@@ -152,10 +152,12 @@ class Update(AAZCommand):
         actions = cls._args_schema.access_control.actions
         actions.allowed_caller_ip_addresses = AAZListArg(
             options=["allowed-caller-ip-addresses"],
+            help="The allowed caller IP address ranges.",
             nullable=True,
         )
         actions.open_authentication_policies = AAZObjectArg(
             options=["open-authentication-policies"],
+            help="The authentication policies for workflow.",
             nullable=True,
         )
 
@@ -167,12 +169,14 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.actions.allowed_caller_ip_addresses.Element
         _element.address_range = AAZStrArg(
             options=["address-range"],
+            help="The IP address range.",
             nullable=True,
         )
 
         open_authentication_policies = cls._args_schema.access_control.actions.open_authentication_policies
         open_authentication_policies.policies = AAZDictArg(
             options=["policies"],
+            help="Open authentication policies.",
             nullable=True,
         )
 
@@ -184,10 +188,12 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.actions.open_authentication_policies.policies.Element
         _element.claims = AAZListArg(
             options=["claims"],
+            help="The access policy claims.",
             nullable=True,
         )
         _element.type = AAZStrArg(
             options=["type"],
+            help="Type of provider for OAuth.",
             nullable=True,
             enum={"AAD": "AAD"},
         )
@@ -200,20 +206,24 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.actions.open_authentication_policies.policies.Element.claims.Element
         _element.name = AAZStrArg(
             options=["name"],
+            help="The name of the claim.",
             nullable=True,
         )
         _element.value = AAZStrArg(
             options=["value"],
+            help="The value of the claim.",
             nullable=True,
         )
 
         contents = cls._args_schema.access_control.contents
         contents.allowed_caller_ip_addresses = AAZListArg(
             options=["allowed-caller-ip-addresses"],
+            help="The allowed caller IP address ranges.",
             nullable=True,
         )
         contents.open_authentication_policies = AAZObjectArg(
             options=["open-authentication-policies"],
+            help="The authentication policies for workflow.",
             nullable=True,
         )
 
@@ -225,12 +235,14 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.contents.allowed_caller_ip_addresses.Element
         _element.address_range = AAZStrArg(
             options=["address-range"],
+            help="The IP address range.",
             nullable=True,
         )
 
         open_authentication_policies = cls._args_schema.access_control.contents.open_authentication_policies
         open_authentication_policies.policies = AAZDictArg(
             options=["policies"],
+            help="Open authentication policies.",
             nullable=True,
         )
 
@@ -242,10 +254,12 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.contents.open_authentication_policies.policies.Element
         _element.claims = AAZListArg(
             options=["claims"],
+            help="The access policy claims.",
             nullable=True,
         )
         _element.type = AAZStrArg(
             options=["type"],
+            help="Type of provider for OAuth.",
             nullable=True,
             enum={"AAD": "AAD"},
         )
@@ -258,20 +272,24 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.contents.open_authentication_policies.policies.Element.claims.Element
         _element.name = AAZStrArg(
             options=["name"],
+            help="The name of the claim.",
             nullable=True,
         )
         _element.value = AAZStrArg(
             options=["value"],
+            help="The value of the claim.",
             nullable=True,
         )
 
         triggers = cls._args_schema.access_control.triggers
         triggers.allowed_caller_ip_addresses = AAZListArg(
             options=["allowed-caller-ip-addresses"],
+            help="The allowed caller IP address ranges.",
             nullable=True,
         )
         triggers.open_authentication_policies = AAZObjectArg(
             options=["open-authentication-policies"],
+            help="The authentication policies for workflow.",
             nullable=True,
         )
 
@@ -283,12 +301,14 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.triggers.allowed_caller_ip_addresses.Element
         _element.address_range = AAZStrArg(
             options=["address-range"],
+            help="The IP address range.",
             nullable=True,
         )
 
         open_authentication_policies = cls._args_schema.access_control.triggers.open_authentication_policies
         open_authentication_policies.policies = AAZDictArg(
             options=["policies"],
+            help="Open authentication policies.",
             nullable=True,
         )
 
@@ -300,10 +320,12 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.triggers.open_authentication_policies.policies.Element
         _element.claims = AAZListArg(
             options=["claims"],
+            help="The access policy claims.",
             nullable=True,
         )
         _element.type = AAZStrArg(
             options=["type"],
+            help="Type of provider for OAuth.",
             nullable=True,
             enum={"AAD": "AAD"},
         )
@@ -316,20 +338,24 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.triggers.open_authentication_policies.policies.Element.claims.Element
         _element.name = AAZStrArg(
             options=["name"],
+            help="The name of the claim.",
             nullable=True,
         )
         _element.value = AAZStrArg(
             options=["value"],
+            help="The value of the claim.",
             nullable=True,
         )
 
         workflow_management = cls._args_schema.access_control.workflow_management
         workflow_management.allowed_caller_ip_addresses = AAZListArg(
             options=["allowed-caller-ip-addresses"],
+            help="The allowed caller IP address ranges.",
             nullable=True,
         )
         workflow_management.open_authentication_policies = AAZObjectArg(
             options=["open-authentication-policies"],
+            help="The authentication policies for workflow.",
             nullable=True,
         )
 
@@ -341,12 +367,14 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.workflow_management.allowed_caller_ip_addresses.Element
         _element.address_range = AAZStrArg(
             options=["address-range"],
+            help="The IP address range.",
             nullable=True,
         )
 
         open_authentication_policies = cls._args_schema.access_control.workflow_management.open_authentication_policies
         open_authentication_policies.policies = AAZDictArg(
             options=["policies"],
+            help="Open authentication policies.",
             nullable=True,
         )
 
@@ -358,10 +386,12 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.workflow_management.open_authentication_policies.policies.Element
         _element.claims = AAZListArg(
             options=["claims"],
+            help="The access policy claims.",
             nullable=True,
         )
         _element.type = AAZStrArg(
             options=["type"],
+            help="Type of provider for OAuth.",
             nullable=True,
             enum={"AAD": "AAD"},
         )
@@ -374,10 +404,12 @@ class Update(AAZCommand):
         _element = cls._args_schema.access_control.workflow_management.open_authentication_policies.policies.Element.claims.Element
         _element.name = AAZStrArg(
             options=["name"],
+            help="The name of the claim.",
             nullable=True,
         )
         _element.value = AAZStrArg(
             options=["value"],
+            help="The value of the claim.",
             nullable=True,
         )
 
@@ -396,10 +428,12 @@ class Update(AAZCommand):
         connector = cls._args_schema.endpoints_configuration.connector
         connector.access_endpoint_ip_addresses = AAZListArg(
             options=["access-endpoint-ip-addresses"],
+            help="The access endpoint ip address.",
             nullable=True,
         )
         connector.outgoing_ip_addresses = AAZListArg(
             options=["outgoing-ip-addresses"],
+            help="The outgoing ip address.",
             nullable=True,
         )
 
@@ -411,6 +445,7 @@ class Update(AAZCommand):
         _element = cls._args_schema.endpoints_configuration.connector.access_endpoint_ip_addresses.Element
         _element.address = AAZStrArg(
             options=["address"],
+            help="The address.",
             nullable=True,
         )
 
@@ -422,16 +457,19 @@ class Update(AAZCommand):
         _element = cls._args_schema.endpoints_configuration.connector.outgoing_ip_addresses.Element
         _element.address = AAZStrArg(
             options=["address"],
+            help="The address.",
             nullable=True,
         )
 
         workflow = cls._args_schema.endpoints_configuration.workflow
         workflow.access_endpoint_ip_addresses = AAZListArg(
             options=["access-endpoint-ip-addresses"],
+            help="The access endpoint ip address.",
             nullable=True,
         )
         workflow.outgoing_ip_addresses = AAZListArg(
             options=["outgoing-ip-addresses"],
+            help="The outgoing ip address.",
             nullable=True,
         )
 
@@ -443,6 +481,7 @@ class Update(AAZCommand):
         _element = cls._args_schema.endpoints_configuration.workflow.access_endpoint_ip_addresses.Element
         _element.address = AAZStrArg(
             options=["address"],
+            help="The address.",
             nullable=True,
         )
 
@@ -454,18 +493,21 @@ class Update(AAZCommand):
         _element = cls._args_schema.endpoints_configuration.workflow.outgoing_ip_addresses.Element
         _element.address = AAZStrArg(
             options=["address"],
+            help="The address.",
             nullable=True,
         )
 
         integration_account = cls._args_schema.integration_account
         integration_account.id = AAZStrArg(
             options=["id"],
+            help="The resource id.",
             nullable=True,
         )
 
         integration_service_environment = cls._args_schema.integration_service_environment
         integration_service_environment.id = AAZStrArg(
             options=["id"],
+            help="The resource id.",
             nullable=True,
         )
 

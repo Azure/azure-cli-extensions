@@ -392,7 +392,7 @@ helps[
     'connectedvmware vm create'
 ] = """
     type: command
-    short-summary: "Create vm in vcenter from existing vm template"
+    short-summary: "Create VMInstance resource"
     examples:
       - name: Create vm
         text: |-
@@ -400,6 +400,55 @@ helps[
                --location "location name" --inventory-item "name or id of the inventory item" \
                --name "virtual machine name" --resource-group "resource group name" \
                --vcenter "name or id of the vcenter"
+
+      - name: Enable an exiting VM to azure.
+        text: |-
+               az connectedvmware vm create --subscription contoso-sub \
+               --resource-group contoso-rg --location eastus --custom-location contoso-cl \
+               --inventory-item 01234567-0123-0123-0123-0123456789ab --name contoso-vm
+
+      - name: Link an HCRP Machine to a vCenter in another subscription using the machine id.
+        text: |-
+               az connectedvmware vm create \
+               --machine-id /subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/machines/contoso-vm \
+               --vcenter /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+
+      - name: Link an HCRP Machine to a vCenter in another subscription using the machine name.
+        text: |-
+                az connectedvmware vm create \
+                --resource-group contoso-rg --location eastus --name hcrp-contoso-machine \
+                --vcenter /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+
+      - name: Link an HCRP Machine to a vCenter in the same subscription and resource group.
+        text: |-
+                az connectedvmware vm create \
+                --resource-group contoso-rg --location eastus --name hcrp-contoso-machine \
+                --vcenter contoso-vcenter
+"""
+
+helps[
+    'connectedvmware vm create-from-machines'
+] = """
+    type: command
+    short-summary: "Create VMInstance resource(s) from existing Microsoft.HybridCompute machines."
+    examples:
+      - name: Create VMware resources from the specified Arc for Servers machine in the vCenter
+        text: |-
+                az connectedvmware vm create-from-machines \
+--resource-group contoso-rg --name contoso-vm \
+--vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+
+      - name: Creates VMware resources from all Arc for Servers machines in the specified resource group belonging to that vCenter
+        text: |-
+                az connectedvmware vm create-from-machines \
+--resource-group contoso-rg \
+--vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+
+      - name: Create VMware resources from all Arc for Servers machines in the specified subscription belonging to that vCenter
+        text: |-
+                az connectedvmware vm create-from-machines \
+--subscription contoso-sub \
+--vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
 """
 
 helps[

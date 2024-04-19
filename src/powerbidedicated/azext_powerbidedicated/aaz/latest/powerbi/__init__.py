@@ -9,3 +9,4 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._list_auto_scale_v_core import *

@@ -247,3 +247,135 @@ class LogicManagementClientScenarioTest(ScenarioTest):
                  checks=[
                      self.check('type', None)
                  ])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_integration_account_assembly_', location='eastus')
+    def test_integration_account_assembly(self):
+        self.kwargs.update({
+            'integration_account_name': self.create_random_name('inte', 15),
+            'assembly_name': self.create_random_name('assembly', 15)
+        })
+        self.cmd('logic integration-account create --sku Standard --name {integration_account_name} -g {rg}')
+        self.cmd('logic integration-account assembly create -g {rg} --integration-account-name {integration_account_name} -n {assembly_name} --assembly-name {assembly_name} --content "Base64 encoded Assembly Content" --content-type application/octet-stream', checks=[
+            self.check('name', '{assembly_name}'),
+            self.check('properties.assemblyName', '{assembly_name}'),
+            self.check('properties.assemblyVersion', '0.0.0.0')
+        ])
+        self.cmd('logic integration-account assembly update -g {rg} --integration-account-name {integration_account_name} -n {assembly_name} --assembly-version 1.0.0.0', checks=[
+            self.check('name', '{assembly_name}'),
+            self.check('properties.assemblyName', '{assembly_name}'),
+            self.check('properties.assemblyVersion', '1.0.0.0')
+        ])
+        self.cmd('logic integration-account assembly show -g {rg} --integration-account-name {integration_account_name} -n {assembly_name}', checks=[
+            self.check('name', '{assembly_name}'),
+            self.check('properties.assemblyName', '{assembly_name}'),
+            self.check('properties.assemblyVersion', '1.0.0.0')
+        ])
+        self.cmd('logic integration-account assembly list -g {rg} --integration-account-name {integration_account_name}', checks=[
+            self.check('[0].name', '{assembly_name}'),
+            self.check('[0].properties.assemblyName', '{assembly_name}'),
+            self.check('[0].properties.assemblyVersion', '1.0.0.0')
+        ])
+        self.cmd('logic integration-account assembly delete -g {rg} --integration-account-name {integration_account_name} -n {assembly_name} -y')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_integration_batch_configuration_', location='eastus')
+    def test_integration_account_batch_configuration(self):
+        self.kwargs.update({
+            'integration_account_name': self.create_random_name('inte', 15),
+            'batch_configuration': self.create_random_name('batch', 15)
+        })
+        self.cmd('logic integration-account create --sku Standard --name {integration_account_name} -g {rg}')
+        self.cmd('logic integration-account batch-configuration create -g {rg} -n {batch_configuration} --integration-account-name {integration_account_name} --batch-group-name batchtestgroup --release-criteria {{recurrence:{{frequency:Minute,interval:1}},messageCount:10,batchSize:10000}}', checks=[
+            self.check('name', '{batch_configuration}'),
+            self.check('properties.batchGroupName', 'batchtestgroup'),
+            self.check('properties.releaseCriteria.batchSize', 10000),
+            self.check('properties.releaseCriteria.messageCount', 10),
+            self.check('properties.releaseCriteria.recurrence.frequency', 'Minute'),
+            self.check('properties.releaseCriteria.recurrence.interval', '1')
+        ])
+        self.cmd('logic integration-account batch-configuration update -g {rg} -n {batch_configuration} --integration-account-name {integration_account_name} --release-criteria {{recurrence:{{frequency:Minute,interval:2}},messageCount:20,batchSize:20000}}', checks=[
+            self.check('name', '{batch_configuration}'),
+            self.check('properties.batchGroupName', 'batchtestgroup'),
+            self.check('properties.releaseCriteria.batchSize', 20000),
+            self.check('properties.releaseCriteria.messageCount', 20),
+            self.check('properties.releaseCriteria.recurrence.frequency', 'Minute'),
+            self.check('properties.releaseCriteria.recurrence.interval', 2)
+        ])
+        self.cmd('logic integration-account batch-configuration show -g {rg} -n {batch_configuration} --integration-account-name {integration_account_name}', checks=[
+            self.check('name', '{batch_configuration}'),
+            self.check('properties.batchGroupName', 'batchtestgroup'),
+            self.check('properties.releaseCriteria.batchSize', 20000),
+            self.check('properties.releaseCriteria.messageCount', 20),
+            self.check('properties.releaseCriteria.recurrence.frequency', 'Minute'),
+            self.check('properties.releaseCriteria.recurrence.interval', 2)
+        ])
+        self.cmd('logic integration-account batch-configuration list -g {rg} --integration-account-name {integration_account_name}', checks=[
+            self.check('[0].name', '{batch_configuration}'),
+            self.check('[0].properties.batchGroupName', 'batchtestgroup'),
+            self.check('[0].properties.releaseCriteria.batchSize', 20000),
+            self.check('[0].properties.releaseCriteria.messageCount', 20),
+            self.check('[0].properties.releaseCriteria.recurrence.frequency', 'Minute'),
+            self.check('[0].properties.releaseCriteria.recurrence.interval', 2)
+        ])
+        self.cmd('logic integration-account batch-configuration delete -g {rg} -n {batch_configuration} --integration-account-name {integration_account_name} -y')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_integration_partner_', location='eastus')
+    def test_integration_account_partner(self):
+        self.kwargs.update({
+            'integration_account_name': self.create_random_name('inte', 15),
+            'partner': self.create_random_name('partner', 15)
+        })
+        self.cmd('logic integration-account create --sku Standard --name {integration_account_name} -g {rg}')
+        self.cmd('logic integration-account partner create -g {rg} -n {partner} --integration-account-name {integration_account_name} --content {{b2b:{{businessIdentities:[{{qualifier:AA,value:BB}}]}}}} --partner-type B2B --metadata {{}}', checks=[
+            self.check('name', '{partner}'),
+            self.check('content.b2b.businessIdentities[0].qualifier', 'AA'),
+            self.check('content.b2b.businessIdentities[0].value', 'BB'),
+            self.check('partnerType', 'B2B'),
+            self.check('metadata', {})
+        ])
+        self.cmd('logic integration-account partner update -g {rg} -n {partner} --integration-account-name {integration_account_name} --content {{b2b:{{businessIdentities:[{{qualifier:CC,value:DD}}]}}}}', checks=[
+            self.check('name', '{partner}'),
+            self.check('content.b2b.businessIdentities[0].qualifier', 'CC'),
+            self.check('content.b2b.businessIdentities[0].value', 'DD'),
+            self.check('partnerType', 'B2B'),
+            self.check('metadata', {})
+        ])
+        self.cmd('logic integration-account partner show -g {rg} -n {partner} --integration-account-name {integration_account_name}', checks=[
+            self.check('name', '{partner}'),
+            self.check('content.b2b.businessIdentities[0].qualifier', 'CC'),
+            self.check('content.b2b.businessIdentities[0].value', 'DD'),
+            self.check('partnerType', 'B2B'),
+            self.check('metadata', {})
+        ])
+        self.cmd('logic integration-account partner list -g {rg} --integration-account-name {integration_account_name}', checks=[
+            self.check('[0].name', '{partner}'),
+            self.check('[0].content.b2b.businessIdentities[0].qualifier', 'CC'),
+            self.check('[0].content.b2b.businessIdentities[0].value', 'DD'),
+            self.check('[0].partnerType', 'B2B'),
+            self.check('[0].metadata', {})
+        ])
+        self.cmd('logic integration-account partner delete -g {rg} -n {partner} --integration-account-name {integration_account_name} -y')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_integration_session_', location='eastus')
+    def test_integration_account_session(self):
+        self.kwargs.update({
+            'integration_account_name': self.create_random_name('inte', 15),
+            'session': self.create_random_name('session', 15)
+        })
+        self.cmd('logic integration-account create --sku Standard --name {integration_account_name} -g {rg}')
+        self.cmd('logic integration-account session create -g {rg} -n {session} --integration-account-name {integration_account_name} --content "{{\'controlNumber\':1234}}"', checks=[
+            self.check('name', '{session}'),
+            self.check('content.controlNumber', 1234)
+        ])
+        self.cmd('logic integration-account session update -g {rg} -n {session} --integration-account-name {integration_account_name} --content "{{\'controlNumber\':123456}}"', checks=[
+            self.check('name', '{session}'),
+            self.check('content.controlNumber', 123456)
+        ])
+        self.cmd('logic integration-account session show -g {rg} -n {session} --integration-account-name {integration_account_name}', checks=[
+            self.check('name', '{session}'),
+            self.check('content.controlNumber', 123456)
+        ])
+        self.cmd('logic integration-account session list -g {rg} --integration-account-name {integration_account_name}', checks=[
+            self.check('[0].name', '{session}'),
+            self.check('[0].content.controlNumber', 123456)
+        ])
+        self.cmd('logic integration-account session delete -g {rg} -n {session} --integration-account-name {integration_account_name} -y')

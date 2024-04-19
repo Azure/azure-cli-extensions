@@ -42,6 +42,7 @@ def load_command_table(self, _):
         g.custom_command("list", "list_fleet")
         g.custom_command("delete", "delete_fleet", supports_no_wait=True, confirmation=True)
         g.custom_command("get-credentials", "get_credentials")
+        g.custom_command("reconcile", "reconcile_fleet", supports_no_wait=True)
         g.wait_command("wait")
 
     # fleet members command group
@@ -51,6 +52,7 @@ def load_command_table(self, _):
         g.custom_command("delete", "delete_fleet_member", supports_no_wait=True, confirmation=True)
         g.custom_command("list", "list_fleet_member")
         g.custom_show_command("show", "show_fleet_member")
+        g.custom_command("reconcile", "reconcile_fleet_member", supports_no_wait=True)
         g.wait_command("wait")
 
     # fleet update runs command group
@@ -61,6 +63,7 @@ def load_command_table(self, _):
         g.custom_command("delete", "delete_update_run", supports_no_wait=True, confirmation=True)
         g.custom_command("start", "start_update_run", supports_no_wait=True)
         g.custom_command("stop", "stop_update_run", supports_no_wait=True)
+        g.custom_command("skip", "skip_update_run", supports_no_wait=True)
         g.wait_command("wait")
 
     # fleet update strategies command group

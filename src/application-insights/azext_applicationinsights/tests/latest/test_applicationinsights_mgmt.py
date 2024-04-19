@@ -94,7 +94,10 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
-        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
+        app_config = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()
+
+        app_insights_instrumentation_key = app_config['instrumentationKey']
+        app_insights_connection_string = app_config['connectionString']
 
         # Create web app.
         webapp_name = self.create_random_name('clitestwebapp', 24)
@@ -117,7 +120,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         self.cmd('az webapp config appsettings list -g {resource_group} -n {webapp_name}', checks=[
             self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
             self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
-            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key),
+            self.check("[?name=='APPINSIGHTS_CONNECTIONSTRING']|[0].value", app_insights_connection_string)
         ])
 
     @ResourceGroupPreparer(name_prefix="webapp_cross_rg", parameter_name="resource_group", parameter_name_for_location="location")
@@ -193,7 +197,10 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
-        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
+        app_config = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()
+
+        app_insights_instrumentation_key = app_config['instrumentationKey']
+        app_insights_conenction_string = app_config["connectionString"]
 
         # Create Azure function.
         function_name = self.create_random_name('clitestfunction', 24)
@@ -204,7 +211,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         })
 
         self.cmd('az appservice plan create -g {resource_group} -n {plan}')
-        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa} --functions-version 3 --runtime node', checks=[
+        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa} --functions-version 4 --runtime node', checks=[
             self.check('state', 'Running'),
             self.check('name', function_name)
         ])
@@ -214,7 +221,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         # Check if the settings are updated correctly.
         self.cmd('az webapp config appsettings list -g {resource_group} -n {function_name}', checks=[
-            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key),
+            self.check("[?name=='APPINSIGHTS_CONNECTIONSTRING']|[0].value", app_insights_conenction_string)
         ])
 
     @ResourceGroupPreparer(name_prefix="connect_function_cross_rg", parameter_name="resource_group", parameter_name_for_location="location")
@@ -252,7 +260,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         })
 
         self.cmd('az appservice plan create -g {resource_group2} -n {plan}')
-        self.kwargs['functionapp_id'] = self.cmd('az functionapp create -g {resource_group2} -n {function_name} --plan {plan} -s {sa} --functions-version 3 --runtime node', checks=[
+        self.kwargs['functionapp_id'] = self.cmd('az functionapp create -g {resource_group2} -n {function_name} --plan {plan} -s {sa} --functions-version 4 --runtime node', checks=[
             self.check('state', 'Running'),
             self.check('name', function_name)
         ]).get_output_in_json()['id']
@@ -591,3 +599,94 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         message = "Resource type 'myWorkbooks' of provider namespace 'Microsoft.Insights' was not found in global location for api version '2021-03-08'."
         with self.assertRaisesRegex(ResourceNotFoundError, message):
             self.cmd('monitor app-insights my-workbook list -g {rg} --category performance')
+
+    @ResourceGroupPreparer(name_prefix="cli_test_appinsights_workbook")
+    def test_appinsights_workbook(self, resource_group):
+        self.kwargs.update({
+            'workbook_name': self.create_random_name('workbook', 15)
+        })
+        self.cmd('monitor app-insights workbook create -g {rg} --display-name {workbook_name} -n 00000000-0000-0000-0000-000000000000 --category workbook --serialized-data mydata --kind shared', checks=[
+            self.check('category', 'workbook'),
+            self.check('displayName', '{workbook_name}'),
+            self.check('kind', 'shared'),
+            self.check('name', '00000000-0000-0000-0000-000000000000'),
+            self.check('serializedData', 'mydata')
+        ])
+        self.cmd('monitor app-insights workbook update -g {rg} -n 00000000-0000-0000-0000-000000000000 --tags {{tag:test}}', checks=[
+            self.check('category', 'workbook'),
+            self.check('displayName', '{workbook_name}'),
+            self.check('kind', 'shared'),
+            self.check('name', '00000000-0000-0000-0000-000000000000'),
+            self.check('tags.tag', 'test')
+        ])
+        self.cmd('monitor app-insights workbook show -g {rg} -n 00000000-0000-0000-0000-000000000000', checks=[
+            self.check('category', 'workbook'),
+            self.check('displayName', '{workbook_name}'),
+            self.check('kind', 'shared'),
+            self.check('name', '00000000-0000-0000-0000-000000000000'),
+            self.check('tags.tag', 'test')
+        ])
+        self.cmd('monitor app-insights workbook list -g {rg} --category workbook', checks=[
+            self.check('[0].category', 'workbook'),
+            self.check('[0].displayName', '{workbook_name}'),
+            self.check('[0].kind', 'shared'),
+            self.check('[0].name', '00000000-0000-0000-0000-000000000000'),
+            self.check('[0].tags.tag', 'test')
+        ])
+        self.cmd('monitor app-insights workbook delete -g {rg} -n 00000000-0000-0000-0000-000000000000 -y')
+
+    @ResourceGroupPreparer(name_prefix="cli_test_appinsights_workbook_identity")
+    def test_appinsights_workbook_identity(self, resource_group):
+        self.kwargs.update({
+            'workbook_name': self.create_random_name('workbook', 15),
+            'workbook_name2': self.create_random_name('workbook', 15),
+            'identity1': self.create_random_name('id', 10),
+            'identity2': self.create_random_name('id', 10)
+        })
+        identity1 = self.cmd('identity create --name {identity1} -g {rg}').get_output_in_json()
+        identity2 = self.cmd('identity create --name {identity2} -g {rg}').get_output_in_json()
+        self.kwargs.update({
+            'id1': identity1['id'],
+            'id2': identity2['id']
+        })
+        self.cmd('monitor app-insights workbook create -g {rg} --display-name {workbook_name} -n 00000000-0000-0000-0000-000000000000 --category workbook --kind shared --mi-user-assigned {id1}', checks=[
+            self.check('category', 'workbook'),
+            self.check('displayName', '{workbook_name}'),
+            self.check('kind', 'shared'),
+            self.check('name', '00000000-0000-0000-0000-000000000000'),
+            self.check('identity.type', 'UserAssigned'),
+            self.check('identity.userAssignedIdentities', {identity1['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity assign -g {rg} -n 00000000-0000-0000-0000-000000000000 --user-assigned {id2}', checks=[
+            self.check('type', 'UserAssigned'),
+            self.check('userAssignedIdentities', {identity1['id']: {}, identity2['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity remove -g {rg} -n 00000000-0000-0000-0000-000000000000 --user-assigned {id1}', checks=[
+            self.check('type', 'UserAssigned'),
+            self.check('userAssignedIdentities', {identity2['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity remove -g {rg} -n 00000000-0000-0000-0000-000000000000 --user-assigned {id2}', checks=[
+            self.check('type', None)
+        ])
+
+        self.cmd('monitor app-insights workbook create -g {rg} --display-name {workbook_name2} -n 00000000-0000-0000-0000-000000000001 --category workbook --kind shared', checks=[
+            self.check('category', 'workbook'),
+            self.check('displayName', '{workbook_name2}'),
+            self.check('kind', 'shared'),
+            self.check('name', '00000000-0000-0000-0000-000000000001')
+        ])
+        self.cmd('monitor app-insights workbook identity assign -g {rg} -n 00000000-0000-0000-0000-000000000001 --user-assigned {id1}', checks=[
+            self.check('type', 'UserAssigned'),
+            self.check('userAssignedIdentities', {identity1['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity assign -g {rg} -n 00000000-0000-0000-0000-000000000001 --user-assigned {id2}', checks=[
+            self.check('type', 'UserAssigned'),
+            self.check('userAssignedIdentities', {identity1['id']: {}, identity2['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity remove -g {rg} -n 00000000-0000-0000-0000-000000000001 --user-assigned {id1}', checks=[
+            self.check('type', 'UserAssigned'),
+            self.check('userAssignedIdentities', {identity2['id']: {}})
+        ])
+        self.cmd('monitor app-insights workbook identity remove -g {rg} -n 00000000-0000-0000-0000-000000000001 --user-assigned {id2}', checks=[
+            self.check('type', None)
+        ])

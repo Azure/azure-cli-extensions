@@ -3,6 +3,30 @@
 Release History
 ===============
 
+1.6.8
+++++++
+* Add support for running multiple proxy instances on the same machine using different ports.
+
+1.6.7
+++++++
+* Improve Error logs during Arc Onboarding scenarios, Style fixes.
+
+1.6.6
+++++++
+* Fix proxy live test.
+* Fix unused variable and parameter.
+* Use makedirs instead of mkdir for installing kubectl.
+
+1.6.5
+++++++
+* Fix tenant ID retrieval for proxy command.
+
+1.6.4
+++++++
+* Replace AAD Graph with Microsoft Graph for getting Custom Locations RP service principal application object ID.
+* Will require Application.Read.All permission for Microsoft Graph to activate Custom Locations automatically. See below for work-around:
+https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/custom-locations#enable-custom-locations-on-your-cluster
+
 1.6.3
 ++++++
 * Skip checking operation version support for non-stable release trains.
@@ -18,7 +42,6 @@ Release History
 
 1.6.0
 ++++++
-
 * Updated Helm from 3.6.3 to 3.12.2
 
 1.5.6

@@ -2,94 +2,80 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from ...application_configuration_service import (application_configuration_service_create,
+                                                  application_configuration_service_update)
 
-from azure.cli.testsdk import (ScenarioTest)
-from azure.cli.testsdk.reverse_dependency import (
-    get_dummy_cli,
-)
-from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer, SpringAppNamePreparer,
-                               SpringSubResourceWrapper)
-from .custom_dev_setting_constant import SpringTestEnvironmentEnum
+import unittest
+from argparse import Namespace
+from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError
+from .common.test_utils import get_test_cmd
+from ..._validators_enterprise import validate_refresh_interval
+try:
+    import unittest.mock as mock
+except ImportError:
+    from unittest import mock
 
+from azure.cli.core.mock import DummyCli
+from azure.cli.core import AzCommandsLoader
+from azure.cli.core.commands import AzCliCommand
 
-# pylint: disable=line-too-long
-# pylint: disable=too-many-lines
+from knack.log import get_logger
 
-class TearDown(SpringSubResourceWrapper):
-    def __init__(self,
-                 resource_group_parameter_name='resource_group',
-                 spring_parameter_name='spring'):
-        super(TearDown, self).__init__()
-        self.cli_ctx = get_dummy_cli()
-        self.resource_group_parameter_name = resource_group_parameter_name
-        self.spring_parameter_name = spring_parameter_name
-
-    def create_resource(self, *_, **kwargs):
-        self.resource_group = self._get_resource_group(**kwargs)
-        self.spring = self._get_spring(**kwargs)
-
-    def remove_resource(self, *_, **__):
-        self.live_only_execute(self.cli_ctx,
-                               'spring application-configuration-service delete -g {}  -s {} --yes'.format(
-                                   self.resource_group, self.spring))
-        self.live_only_execute(self.cli_ctx, 'spring application-configuration-service create -g {}  -s {}'.format(
-            self.resource_group, self.spring))
+logger = get_logger(__name__)
+free_mock_client = mock.MagicMock()
 
 
-class ApplicationConfigurationServiceTest(ScenarioTest):
+def _cf_resource_group(cli_ctx, subscription_id=None):
+    client = mock.MagicMock()
+    rg = mock.MagicMock()
+    rg.location = 'east us'
+    client.resource_groups.get.return_value = rg
+    return client
 
-    @SpringResourceGroupPreparer(
-        dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
-    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
-    @SpringAppNamePreparer()
-    @TearDown()
-    def test_application_configuration_service(self, resource_group, spring, app):
-        self.kwargs.update({
-            'serviceName': spring,
-            'rg': resource_group,
-            'repo': "repo1",
-            "label": "main",
-            "patterns": "api-gateway,customers-service",
-            "uri": "https://github.com/spring-petclinic/spring-petclinic-microservices-config",
-            "app": app
-        })
 
-        self.cmd('spring app create -g {rg} -s {serviceName} -n {app}')
+def _get_basic_mock_client(*_):
+    return mock.MagicMock()
 
-        self.cmd('spring application-configuration-service show -g {rg} -s {serviceName}', checks=[
-            self.check('properties.provisioningState', "Succeeded")
-        ])
 
-        self.cmd('spring application-configuration-service git repo add -g {rg} -s {serviceName} '
-                 '-n {repo} --label {label} --patterns {patterns} --uri {uri}',
-                 checks=[self.check('properties.provisioningState', "Succeeded")])
+class BasicTest(unittest.TestCase):
+    def __init__(self, methodName: str = ...):
+        super().__init__(methodName=methodName)
+        self.created_resource = None
 
-        self.cmd('spring application-configuration-service git repo update -g {rg} -s {serviceName} '
-                 '-n {repo} --label {label}',
-                 checks=[self.check('properties.provisioningState', "Succeeded")])
+    def setUp(self):
+        resp = super().setUp()
+        free_mock_client.reset_mock()
+        return resp
 
-        result = self.cmd(
-            'spring application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
-        self.assertTrue(len(result) > 0)
+    @mock.patch('azext_spring._utils.cf_resource_groups', _cf_resource_group)
+    def _execute(self, resource_group, generation, refresh_interval, **kwargs):
+        client = kwargs.pop('client', None) or _get_basic_mock_client()
+        application_configuration_service_create(get_test_cmd(), client, 'myasa',
+                                                 resource_group, generation, refresh_interval)
+        call_args = client.configuration_services.begin_create_or_update.call_args_list
+        self.assertEqual(1, len(call_args))
+        self.assertEqual(4, len(call_args[0][0]))
+        self.assertEqual((resource_group, generation),
+                         (call_args[0][0][0], call_args[0][0][3].properties.generation))
+        self.created_resource = call_args[0][0][3]
 
-        self.cmd('spring application-configuration-service git repo remove --name {repo} -g {rg} -s {serviceName}')
-        result = self.cmd(
-            'spring application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
-        self.assertTrue(len(result) == 0)
 
-        self.cmd('spring application-configuration-service bind --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('properties.addonConfigs.applicationConfigurationService.resourceId',
-                       "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(
-                           self.get_subscription_id(), resource_group, spring))
-        ])
+class TestApplicationConfigurationService(BasicTest):
+    def test_acs_create(self):
+        self._execute('rg', 'Gen1', 120)
+        resource = self.created_resource
+        self.assertIsNotNone(resource.properties)
+        self.assertEqual(120, resource.properties.settings.refresh_interval_in_seconds)
 
-        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
 
-        self.cmd('spring application-configuration-service unbind --app {app} -g {rg} -s {serviceName}')
+class TestApplicationConfigurationServiceValidator(unittest.TestCase):
+    def test_validate_refresh_interval_parameter(self):
+        ns = Namespace(refresh_interval="a")
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            validate_refresh_interval(ns)
+        self.assertEqual("--refresh-interval should be a number.", str(context.exception))
 
-        self.cmd('spring application-configuration-service clear -g {rg} -s {serviceName}', checks=[
-            self.check('properties.provisioningState', "Succeeded")
-        ])
-
-        self.cmd('spring application-configuration-service update -g {rg} -s {serviceName} --generation Gen2',
-                 checks=[self.check('properties.provisioningState', "Succeeded")])
+        ns = Namespace(refresh_interval=-1)
+        with self.assertRaises(ArgumentUsageError) as context:
+            validate_refresh_interval(ns)
+        self.assertEqual("--refresh-interval must be greater than or equal to 0.", str(context.exception))

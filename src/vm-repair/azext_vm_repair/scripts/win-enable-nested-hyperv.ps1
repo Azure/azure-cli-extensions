@@ -105,6 +105,9 @@ if ($hyperv.Installed -and $hypervTools.Installed -and $hypervPowerShell.Install
         # Suppress the prompt for "Do you want to allow your PC to be discoverable by other PCs and devices on this network"
         $return = new-item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network\NewNetworkWindowOff" -Force
         "END: Creating nested guest VM" | out-file -FilePath $logFile -Append
+        $return.ExitCode
+        write-host $return.ExitCode
+        return $STATUS_SUCCESS
     }
     catch {
         throw $_

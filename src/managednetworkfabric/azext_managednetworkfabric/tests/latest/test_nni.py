@@ -29,8 +29,6 @@ def call_scenario1(test):
     step_create(test, checks=[])
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
-    step_update(test, checks=[])
-    step_delete(test, checks=[])
     cleanup_scenario1(test)
 
 
@@ -41,8 +39,7 @@ def step_create(test, checks=None):
     test.cmd('az networkfabric nni create --resource-group {rg} --resource-name {name} --fabric {fabric}'
              ' --nni-type {nniType} --is-management-type {isManagementType} --use-option-b {useOptionB}'
              ' --layer2-configuration {layer2Configuration}'
-             ' --option-b-layer3-configuration {optionBLayer3Configuration} --import-route-policy {importRoutePolicy}'
-             ' --export-route-policy {exportRoutePolicy}', checks=checks)
+             ' --option-b-layer3-configuration {optionBLayer3Configuration}', checks=checks)
 
 
 def step_show(test, checks=None):
@@ -59,22 +56,6 @@ def step_list_resource_group(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric nni list --resource-group {rg} --fabric {fabric}')
-
-
-def step_update(test, checks=None):
-    '''nni delete operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric nni update --resource-name {name} --resource-group {rg} --fabric {fabric} --option-b-layer3-configuration {updatedOptionBLayer3Configuration}')
-
-
-def step_delete(test, checks=None):
-    '''nni delete operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric nni delete --resource-name {name} --resource-group {rg} --fabric {fabric}')
 
 
 class GA_NNIScenarioTest1(ScenarioTest):

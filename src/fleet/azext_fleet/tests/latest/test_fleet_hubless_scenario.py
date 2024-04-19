@@ -67,6 +67,11 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('tags.foo', 'doo')
         ])
 
+        self.cmd('fleet reconcile -g {rg} -n {fleet_name}', checks=[
+            self.check('name', '{fleet_name}'),
+            self.check('tags.foo', 'doo')
+        ])
+
         self.cmd('fleet show -g {rg} -n {fleet_name}', checks=[
             self.check('name', '{fleet_name}')
         ])
@@ -97,6 +102,14 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('group', 'group2')
         ])
 
+        self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --updated', checks=[self.is_empty()])
+        self.cmd('aks wait -g {rg} -n {member_name} --updated', checks=[self.is_empty()])
+
+        self.cmd('fleet member reconcile -g {rg} -f {fleet_name} -n {member_name}', checks=[
+            self.check('name', '{member_name}'),
+            self.check('group', 'group2')
+        ])
+
         self.cmd('fleet member list -g {rg} --fleet-name {fleet_name}', checks=[
             self.check('length([])', 1)
         ])
@@ -105,17 +118,22 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('name', '{member_name}')
         ])
 
-        self.cmd('aks wait -g {rg} -n {member_name} --created', checks=[self.is_empty()])
+        self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --updated', checks=[self.is_empty()])
+        self.cmd('aks wait -g {rg} -n {member_name} --updated', checks=[self.is_empty()])
 
         self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --stages {stages_file}', checks=[
             self.check('name', '{updaterun}')
+        ])
+
+        self.cmd('fleet updaterun skip -g {rg} -n {updaterun} -f {fleet_name} --targets Group:group2', checks=[
+            self.check('status.stages[0].groups[1].status.state', 'Skipped')
         ])
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
 
         update_strategy_name = self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name} --stages {stages_file}', checks=[
             self.check('name', '{updateStrategy_name}')
-        ]).get_output_in_json()['id']
+        ]).get_output_in_json()['name']
 
         self.cmd('fleet updatestrategy show -g {rg} -n {updateStrategy_name} -f {fleet_name}', checks=[
             self.check('name', '{updateStrategy_name}')

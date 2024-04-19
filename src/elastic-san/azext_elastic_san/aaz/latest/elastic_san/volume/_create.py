@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san volume create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Volume.

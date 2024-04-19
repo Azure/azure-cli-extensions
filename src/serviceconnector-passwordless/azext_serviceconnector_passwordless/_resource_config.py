@@ -24,7 +24,8 @@ PASSWORDLESS_SOURCE_RESOURCES = [
     RESOURCE.WebApp,
     RESOURCE.ContainerApp,
     RESOURCE.SpringCloud,
-    RESOURCE.SpringCloudDeprecated
+    RESOURCE.SpringCloudDeprecated,
+    RESOURCE.FunctionApp,
 ]
 
 PASSWORDLESS_TARGET_RESOURCES = [

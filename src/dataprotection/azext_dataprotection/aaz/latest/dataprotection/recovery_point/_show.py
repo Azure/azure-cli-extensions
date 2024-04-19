@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/recoverypoints/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/recoverypoints/{}", "2023-11-01"],
         ]
     }
 
@@ -147,7 +147,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -220,6 +220,9 @@ class Show(AAZCommand):
             )
             disc_azure_backup_discrete_recovery_point.recovery_point_id = AAZStrType(
                 serialized_name="recoveryPointId",
+            )
+            disc_azure_backup_discrete_recovery_point.recovery_point_state = AAZStrType(
+                serialized_name="recoveryPointState",
             )
             disc_azure_backup_discrete_recovery_point.recovery_point_time = AAZStrType(
                 serialized_name="recoveryPointTime",

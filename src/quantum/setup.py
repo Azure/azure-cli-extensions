@@ -17,7 +17,7 @@ except ImportError:
 # This version should match the latest entry in HISTORY.rst
 # Also, when updating this, please review the version used by the extension to
 # submit requests, which can be found at './azext_quantum/__init__.py'
-VERSION = '0.21.0'
+VERSION = '1.0.0b3'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

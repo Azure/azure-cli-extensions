@@ -2,6 +2,29 @@
 
 Release History
 ===============
+6.0.0
+++++++
+* Added device run rw support
+
+5.2.4
+++++++
+* Added device run ro support
+* Allowed null values for acl ids in nni
+
+5.2.1
+++++++
+* Reverted changes to 5.0.0 version
+
+5.2.0
+++++++
+* Added device run ro support
+* Allowed null values for acl ids in nni
+ 
+5.0.0
+++++++
+* Added Resync functionality for Network taps and Network tap rules
+* Added support External Network to patch NNI
+
 4.2.0
 ++++++
 * Added support for upgrading Device and Network Fabric resource.
