@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "standby-container-pool",
+    "standby-container-group-pool",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Standby Container Pool Operations
+    """Standby Container Group Pool Operations
     """
     pass
 

@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-container-pool delete",
+    "standby-container-group-pool delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a standby container pool
+    """Delete a standby container group pool
 
     :example: Delete standby container pool
         az standby-container-pool delete --name mypool --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group
@@ -47,7 +47,6 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(

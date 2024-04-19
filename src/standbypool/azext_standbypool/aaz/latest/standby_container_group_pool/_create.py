@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-container-pool create",
+    "standby-container-group-pool create",
 )
 class Create(AAZCommand):
-    """Create a standby container pool
+    """Create a standby container group pool
 
     :example: Create Standby Container Pool
-        az standby-container-pool create --resource-group myrg --name mypool --subscriptionId 461fa159-654a-415f-853a-40b801021944 --container-profile-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.ContainerInstance/containerGroupProfiles/mycg --profile-revision 1 --subnet-ids [0].id=/subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/ru-cli-test-standbypool/providers/Microsoft.Network/virtualNetworks/ru-cli-test-standbypool-vnet/subnets/testSubnet --max-ready-capacity 1 --location eastus
+        az standby-container-group-pool create --resource-group myrg --name mypool --subscriptionId 461fa159-654a-415f-853a-40b801021944 --container-profile-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.ContainerInstance/containerGroupProfiles/mycg --profile-revision 1 --subnet-ids [0].id=/subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/ru-cli-test-standbypool/providers/Microsoft.Network/virtualNetworks/ru-cli-test-standbypool-vnet/subnets/testSubnet --max-ready-capacity 1 --refill-policy always --location eastus
 
     :example: Create with subscription and resource group set with context
-        az standby-container-pool create --name mypool --container-profile-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.ContainerInstance/containerGroupProfiles/mycg --profile-revision 1 --subnet-ids [0].id=/subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/ru-cli-test-standbypool/providers/Microsoft.Network/virtualNetworks/ru-cli-test-standbypool-vnet/subnets/testSubnet --max-ready-capacity 1 --location eastus
+        az standby-container-group-pool create --name mypool --container-profile-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.ContainerInstance/containerGroupProfiles/mycg --profile-revision 1 --subnet-ids [0].id=/subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/ru-cli-test-standbypool/providers/Microsoft.Network/virtualNetworks/ru-cli-test-standbypool-vnet/subnets/testSubnet --max-ready-capacity 1 --refill-policy always --location eastus
     """
 
     _aaz_info = {
@@ -49,7 +49,6 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
@@ -81,7 +80,7 @@ class Create(AAZCommand):
         _args_schema.subnet_ids = AAZListArg(
             options=["--subnet-ids"],
             arg_group="ContainerGroupProperties",
-            help="Specifies subnet Ids for standby container pool.",
+            help="Specifies subnet Ids for container group.",
         )
 
         subnet_ids = cls._args_schema.subnet_ids
