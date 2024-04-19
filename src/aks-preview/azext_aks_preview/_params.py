@@ -1202,6 +1202,9 @@ def load_arguments(self, _):
             help="Do not prompt for confirmation.",
             action="store_true",
         )
+        c.argument('enable_force_upgrade', action='store_true')
+        c.argument('disable_force_upgrade', action='store_true', validator=validate_force_upgrade_disable_and_enable_parameters)
+        c.argument('upgrade_override_until')
 
     with self.argument_context("aks scale") as c:
         c.argument(
