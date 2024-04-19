@@ -109,7 +109,7 @@ def acr_cache_create(cmd,
         tag = source_repo.split(':')[1]
         source_repo = source_repo.split(':')[0]
 
-    kql_str = f"Tags | Where Name == {tag}" if tag is not None else _create_kql(starts_with, ends_with, contains)
+    kql_str = f"Tags | where Name == '{tag}'" if tag is not None else _create_kql(starts_with, ends_with, contains)
 
     CacheRuleCreateParameters = CacheRule
     cache_rule_create_params = CacheRuleCreateParameters()
