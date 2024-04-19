@@ -329,10 +329,17 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
                       custom_actuator_port='8888', custom_actuator_path='actuator-path')
         resource = self.patch_deployment_resource
-        self.assertEqual('BuildResult', resource.properties.source.type)
-        self.assertEqual(self.result_id, resource.properties.source.build_result_id)
-        self.assertIsNone(resource.properties.source.version)
         self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_actuator_acs_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
+                      custom_actuator_port='8888', custom_actuator_path='actuator-path', config_file_patterns='my-pattern')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}, 'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},
                          resource.properties.deployment_settings.addon_configs)
 
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')

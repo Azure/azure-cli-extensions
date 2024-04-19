@@ -9,6 +9,7 @@ from azure.cli.core.util import get_file_json
 from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._deployment_source_factory import source_selector
 from .custom import format_scale
+from ._utils import _get_value_from_dict
 
 
 APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
@@ -108,21 +109,19 @@ class DefaultDeployment:
         return apms
 
     def _get_addon_configs(self, config_file_patterns=None, custom_actuator_port=None, custom_actuator_path=None, **_):
-        if any([config_file_patterns, custom_actuator_port, custom_actuator_path]):
-            addon_configs = {}
-            if config_file_patterns is not None:
-                addon_configs = {
-                    APPLICATION_CONFIGURATION_SERVICE_NAME: {
-                        APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN: config_file_patterns
-                    }
-                }
-            if any([custom_actuator_port, custom_actuator_path]):
-                addon_configs[APP_LIVE_VIEW] = {
-                    ACTUATOR_PORT: custom_actuator_port,
-                    ACTUATOR_PATH: custom_actuator_path
-                }
-            return addon_configs
-        return None
+        if not any([config_file_patterns, custom_actuator_port, custom_actuator_path]):
+            return None
+        addon_configs = {}
+        if config_file_patterns:
+            addon_configs[APPLICATION_CONFIGURATION_SERVICE_NAME] = {
+                APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN: config_file_patterns
+            }
+        if any([custom_actuator_port, custom_actuator_path]):
+            addon_configs[APP_LIVE_VIEW] = {
+                ACTUATOR_PORT: custom_actuator_port,
+                ACTUATOR_PATH: custom_actuator_path
+            }
+        return addon_configs
 
     def format_source(self, **kwargs):
         return self.source_factory.format_source(**kwargs)
@@ -248,36 +247,13 @@ def deployment_settings_options_from_resource(original):
         'instance_count': original.sku.capacity,
         'sku': original.sku,
         'env': original.properties.deployment_settings.environment_variables,
-        'config_file_patterns': _get_origin_config_file_patterns(original.properties.deployment_settings.addon_configs),
-        'custom_actuator_port': _get_origin_custom_actuator_port(original.properties.deployment_settings.addon_configs),
-        'custom_actuator_path': _get_origin_custom_actuator_path(original.properties.deployment_settings.addon_configs)
+        'config_file_patterns': _get_value_from_dict(original.properties.deployment_settings.addon_configs, APPLICATION_CONFIGURATION_SERVICE_NAME, APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN),
+        'custom_actuator_port': _get_value_from_dict(original.properties.deployment_settings.addon_configs, APP_LIVE_VIEW, ACTUATOR_PORT),
+        'custom_actuator_path': _get_value_from_dict(original.properties.deployment_settings.addon_configs, APP_LIVE_VIEW, ACTUATOR_PATH)
     }
     if original.properties.deployment_settings.container_probe_settings is not None:
         options['disable_probe'] = original.properties.deployment_settings.container_probe_settings.disable_probe
     return options
-
-
-def _get_origin_config_file_patterns(origin_addon_configs):
-    if APPLICATION_CONFIGURATION_SERVICE_NAME in origin_addon_configs:
-        acs_addon = origin_addon_configs.get(APPLICATION_CONFIGURATION_SERVICE_NAME)
-        return acs_addon.get(APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN) if acs_addon is not None else None
-    return None
-
-
-def _get_origin_custom_actuator_port(origin_addon_configs):
-    if APP_LIVE_VIEW in origin_addon_configs:
-        alv_addon = origin_addon_configs.get(APP_LIVE_VIEW)
-        if ACTUATOR_PORT in alv_addon:
-            return alv_addon.get(ACTUATOR_PORT)
-    return None
-
-
-def _get_origin_custom_actuator_path(origin_addon_configs):
-    if APP_LIVE_VIEW in origin_addon_configs:
-        alv_addon = origin_addon_configs.get(APP_LIVE_VIEW)
-        if alv_addon.get(ACTUATOR_PATH):
-            return alv_addon.get(ACTUATOR_PATH)
-    return None
 
 
 def deployment_source_options_from_resource(original):
