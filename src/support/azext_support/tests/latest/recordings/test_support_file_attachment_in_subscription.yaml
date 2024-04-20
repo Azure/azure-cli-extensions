@@ -17,9 +17,9 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --subscription
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
   response:
     body:
       string: '{"nameAvailable":true}'
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:22 GMT
+      - Fri, 19 Apr 2024 01:58:43 GMT
       expires:
       - '-1'
       pragma:
@@ -42,10 +42,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/53c83ab7-eadd-42d0-8cdb-a35d60d2973d
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-msedge-ref:
-      - 'Ref A: CFA594AA086C4472A86C9451F9AB2DEB Ref B: CO6AA3150219035 Ref C: 2024-02-14T22:07:22Z'
+      - 'Ref A: 777CA6F194B8404488510725C8E1D0DB Ref B: CO6AA3150220019 Ref C: 2024-04-19T01:58:43Z'
     status:
       code: 200
       message: OK
@@ -65,12 +67,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --subscription
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001","name":"in_sub_cli_000001","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-02-15T22:07:26Z","createdOn":"2024-02-14T22:07:26Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001","name":"in_sub_cli_000001","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-04-20T01:58:47Z","createdOn":"2024-04-19T01:58:47Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -79,11 +81,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:26 GMT
+      - Fri, 19 Apr 2024 01:58:48 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2022-09-01-preview
+      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2024-04-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -92,10 +94,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/c31d67a6-9075-4f87-9048-9906e8d229b0
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
       x-msedge-ref:
-      - 'Ref A: FCD2D220F3CF46CBBA04452F20F01FF9 Ref B: CO6AA3150218035 Ref C: 2024-02-14T22:07:24Z'
+      - 'Ref A: 4F6BB00F4C4748FFAADDBDF775629497 Ref B: CO6AA3150219035 Ref C: 2024-04-19T01:58:43Z'
     status:
       code: 201
       message: Created
@@ -113,12 +117,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --subscription
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001","name":"in_sub_cli_000001","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-02-15T22:07:26Z","createdOn":"2024-02-14T22:07:26Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001","name":"in_sub_cli_000001","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-04-20T01:58:47Z","createdOn":"2024-04-19T01:58:47Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -127,7 +131,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:29 GMT
+      - Fri, 19 Apr 2024 01:58:52 GMT
       expires:
       - '-1'
       pragma:
@@ -138,8 +142,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/885edf6a-f928-49e8-8af0-eab0234faaea
       x-msedge-ref:
-      - 'Ref A: 8A645A5BE0A347FF910E2259C8A2565C Ref B: CO6AA3150220027 Ref C: 2024-02-14T22:07:28Z'
+      - 'Ref A: 5084A278FE20483BA29A046D33057F23 Ref B: CO6AA3150218049 Ref C: 2024-04-19T01:58:49Z'
     status:
       code: 200
       message: OK
@@ -161,12 +167,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-path --subscription
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-02-14T22:07:35Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-19T01:59:01Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
     headers:
       cache-control:
       - no-cache
@@ -175,11 +181,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:35 GMT
+      - Fri, 19 Apr 2024 01:59:02 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2022-09-01-preview
+      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2024-04-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -188,10 +194,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/99d8dbd8-fd6c-4177-bf0a-a1b3755b9be6
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
       x-msedge-ref:
-      - 'Ref A: 455E7284953E46AFAAB7A6627408F728 Ref B: CO6AA3150220037 Ref C: 2024-02-14T22:07:31Z'
+      - 'Ref A: 977FED0E1A6F4112BC8C8F4A67D79910 Ref B: CO6AA3150219031 Ref C: 2024-04-19T01:58:53Z'
     status:
       code: 201
       message: Created
@@ -213,9 +221,9 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-path --subscription
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt/upload?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt/upload?api-version=2024-04-01
   response:
     body:
       string: ''
@@ -223,7 +231,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Wed, 14 Feb 2024 22:07:43 GMT
+      - Fri, 19 Apr 2024 01:59:12 GMT
       expires:
       - '-1'
       pragma:
@@ -234,10 +242,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/b1435135-8525-483b-b9ac-858b5e865813
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
       x-msedge-ref:
-      - 'Ref A: 98F178DA4C1F466782E37E37C76AE3EA Ref B: CO6AA3150220025 Ref C: 2024-02-14T22:07:37Z'
+      - 'Ref A: E5BF8E7831CB42B5A3562563FC45627C Ref B: CO6AA3150219025 Ref C: 2024-04-19T01:59:03Z'
     status:
       code: 204
       message: No Content
@@ -255,12 +265,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --subscription
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files?api-version=2024-04-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-02-14T22:07:35Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-19T01:59:01Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}]}'
     headers:
       cache-control:
       - no-cache
@@ -269,7 +279,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:49 GMT
+      - Fri, 19 Apr 2024 01:59:16 GMT
       expires:
       - '-1'
       pragma:
@@ -280,8 +290,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/833fa903-84ce-42d5-aefc-fdc475554dd1
       x-msedge-ref:
-      - 'Ref A: 0F0490E8815343A68829C4696E2D86DD Ref B: CO6AA3150217017 Ref C: 2024-02-14T22:07:45Z'
+      - 'Ref A: 9AF4EEDF1C81456D897826695F3616AA Ref B: CO6AA3150219009 Ref C: 2024-04-19T01:59:12Z'
     status:
       code: 200
       message: OK
@@ -299,12 +311,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-name --subscription
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-02-14T22:07:35Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-19T01:59:01Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
     headers:
       cache-control:
       - no-cache
@@ -313,7 +325,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:53 GMT
+      - Fri, 19 Apr 2024 01:59:21 GMT
       expires:
       - '-1'
       pragma:
@@ -324,8 +336,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/55089b21-1a4e-4bd5-931f-3dc8a3d23e57
       x-msedge-ref:
-      - 'Ref A: 5ACD88C5EB7A4DDA901F435AFE9DCD3C Ref B: CO6AA3150220029 Ref C: 2024-02-14T22:07:50Z'
+      - 'Ref A: 0B4FC0E419AD40ECB16F0D18BDF7C54F Ref B: CO6AA3150217033 Ref C: 2024-04-19T01:59:17Z'
     status:
       code: 200
       message: OK
@@ -347,9 +361,9 @@ interactions:
       ParameterSetName:
       - --file-workspace-name
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
   response:
     body:
       string: '{"nameAvailable":true}'
@@ -361,7 +375,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:54 GMT
+      - Fri, 19 Apr 2024 01:59:21 GMT
       expires:
       - '-1'
       pragma:
@@ -372,10 +386,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/1263b6aa-01f8-418b-a578-3218ce5e3023
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
       x-msedge-ref:
-      - 'Ref A: 49D944F35C394EEE9CC862E13DEB1CE3 Ref B: CO6AA3150220053 Ref C: 2024-02-14T22:07:54Z'
+      - 'Ref A: 1E96D6CD67704533AFBE0DAFEDB23E22 Ref B: CO6AA3150217029 Ref C: 2024-04-19T01:59:21Z'
     status:
       code: 200
       message: OK
@@ -395,12 +411,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002","name":"in_sub_account_000002","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-02-15T22:07:57Z","createdOn":"2024-02-14T22:07:57Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002","name":"in_sub_account_000002","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-04-20T01:59:24Z","createdOn":"2024-04-19T01:59:24Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -409,11 +425,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:57 GMT
+      - Fri, 19 Apr 2024 01:59:26 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2022-09-01-preview
+      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2024-04-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -422,10 +438,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/6c4c3234-1ed8-45f2-962d-3fc076598f28
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: E22119AF1EB643DFB7F15A75D6203D88 Ref B: CO6AA3150219051 Ref C: 2024-02-14T22:07:55Z'
+      - 'Ref A: 605FB15475884EF996C5510DC69F4C1B Ref B: CO6AA3150219023 Ref C: 2024-04-19T01:59:22Z'
     status:
       code: 201
       message: Created
@@ -443,12 +461,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002","name":"in_sub_account_000002","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-02-15T22:07:57Z","createdOn":"2024-02-14T22:07:57Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002","name":"in_sub_account_000002","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-04-20T01:59:24Z","createdOn":"2024-04-19T01:59:24Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -457,7 +475,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:07:59 GMT
+      - Fri, 19 Apr 2024 01:59:28 GMT
       expires:
       - '-1'
       pragma:
@@ -468,8 +486,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/054cca79-60bd-425c-8781-58d6b8fe3666
       x-msedge-ref:
-      - 'Ref A: C445E6D6D7444FD18332883A2497F9C9 Ref B: CO6AA3150217045 Ref C: 2024-02-14T22:07:58Z'
+      - 'Ref A: AB8BFFC5D3A04350803C7CC169B47FC3 Ref B: CO6AA3150219029 Ref C: 2024-04-19T01:59:27Z'
     status:
       code: 200
       message: OK
@@ -491,12 +511,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-path
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-02-14T22:08:05Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-19T01:59:36Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
     headers:
       cache-control:
       - no-cache
@@ -505,11 +525,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:08:06 GMT
+      - Fri, 19 Apr 2024 01:59:38 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2022-09-01-preview
+      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2024-04-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -518,10 +538,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/65c4f164-efc2-4d9d-8ced-1bfb606d2477
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
       x-msedge-ref:
-      - 'Ref A: F363B5F5CBC5436382496C7A02BFA22D Ref B: CO6AA3150219023 Ref C: 2024-02-14T22:08:01Z'
+      - 'Ref A: F18F6037D8344D5FB51CF7C76153849C Ref B: CO6AA3150218029 Ref C: 2024-04-19T01:59:29Z'
     status:
       code: 201
       message: Created
@@ -543,9 +565,9 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-path
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt/upload?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt/upload?api-version=2024-04-01
   response:
     body:
       string: ''
@@ -553,7 +575,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Wed, 14 Feb 2024 22:08:13 GMT
+      - Fri, 19 Apr 2024 01:59:48 GMT
       expires:
       - '-1'
       pragma:
@@ -564,10 +586,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/dec7c423-b540-425a-a440-84da4543fb26
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
       x-msedge-ref:
-      - 'Ref A: A19DE16EB3474A9B871697366623F45F Ref B: CO6AA3150220031 Ref C: 2024-02-14T22:08:07Z'
+      - 'Ref A: 0E3EF4268C8A4931B87AB6EBF3E0B77B Ref B: CO6AA3150218045 Ref C: 2024-04-19T01:59:38Z'
     status:
       code: 204
       message: No Content
@@ -585,12 +609,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files?api-version=2024-04-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-02-14T22:08:05Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-19T01:59:36Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}]}'
     headers:
       cache-control:
       - no-cache
@@ -599,7 +623,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:08:17 GMT
+      - Fri, 19 Apr 2024 01:59:53 GMT
       expires:
       - '-1'
       pragma:
@@ -610,8 +634,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/c712c053-fb55-476e-8bb0-c4bc52f7e8c7
       x-msedge-ref:
-      - 'Ref A: A190A3A5741E440287319B5EFF447A61 Ref B: CO6AA3150217045 Ref C: 2024-02-14T22:08:15Z'
+      - 'Ref A: E194D8788FFE40A4B57E7D2112E088A7 Ref B: CO6AA3150219039 Ref C: 2024-04-19T01:59:49Z'
     status:
       code: 200
       message: OK
@@ -629,12 +655,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-name
       User-Agent:
-      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2022-09-01-preview
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-02-14T22:08:05Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-19T01:59:36Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
     headers:
       cache-control:
       - no-cache
@@ -643,7 +669,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Feb 2024 22:08:22 GMT
+      - Fri, 19 Apr 2024 01:59:57 GMT
       expires:
       - '-1'
       pragma:
@@ -654,8 +680,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/c1e29f22-6ad9-48f3-b9c4-c2027088f4e8
       x-msedge-ref:
-      - 'Ref A: 8D5CA32E458E49669258C094BDD66197 Ref B: CO6AA3150219037 Ref C: 2024-02-14T22:08:19Z'
+      - 'Ref A: 2DF761CBEC6A4F60ADA9DF98363D061A Ref B: CO6AA3150219031 Ref C: 2024-04-19T01:59:54Z'
     status:
       code: 200
       message: OK

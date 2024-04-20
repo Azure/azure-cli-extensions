@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "support services list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List all the Azure services available for support ticket creation. Always use the service and problem classifications obtained programmatically. This practice ensures that you always have the most recent set of service and problem classification Ids.
@@ -23,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.support/services", "2022-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.support/services", "2024-04-01"],
         ]
     }
 
@@ -81,7 +80,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }

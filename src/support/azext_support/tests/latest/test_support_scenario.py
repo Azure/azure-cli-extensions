@@ -200,11 +200,11 @@ class SupportScenarioTest(ScenarioTest):
         cmd += "--contact-country 'USA' "
         cmd += "--contact-email 'azengcase@microsoft.com' "
         cmd += "--contact-first-name 'Foo' "
-        cmd += "--contact-language 'en-US' "
+        cmd += "--contact-language 'en-us' "
         cmd += "--contact-last-name 'Bar' "
         cmd += "--contact-method 'email' "
         cmd += "--contact-timezone 'Pacific Standard Time' "
-        cmd += "--diagnostic-consent 'No' "
+        cmd += "--advanced-diagnostic-consent 'No' "
 
         return cmd
 
@@ -261,11 +261,11 @@ class SupportScenarioTest(ScenarioTest):
 
     def _build_support_tickets_communications_create_cmd(self, test_ticket_name, test_communication_name):
         cmd = "support in-subscription communication create --debug "
-        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--communication-name '{0}' ".format(test_communication_name)
-        cmd += "--sender 'rushar@microsoft.com' "
-        cmd += "--subject 'test subject for communication posted from azure python cli' "
-        cmd += "--body 'test body for communication posted from azure python cli' "
+        cmd += "--communication-sender 'rushar@microsoft.com' "
+        cmd += "--communication-subject 'test subject for communication posted from azure python cli' "
+        cmd += "--communication-body  'test body for communication posted from azure python cli' "
 
         return cmd
 
@@ -278,7 +278,7 @@ class SupportScenarioTest(ScenarioTest):
 
     def _build_support_tickets_communications_list_cmd(self, test_ticket_name):
         cmd = "support in-subscription communication list "
-        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
 
         return cmd
 
@@ -299,7 +299,7 @@ class SupportScenarioTest(ScenarioTest):
 
     def _build_support_tickets_communications_show_cmd(self, test_ticket_name, test_communication_name):
         cmd = "support in-subscription communication show "
-        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--communication-name '{0}' ".format(test_communication_name)
 
         return cmd
@@ -373,7 +373,7 @@ class SupportScenarioTest(ScenarioTest):
     def _build_support_tickets_update_cmd3(self, test_ticket_name):
         cmd = "support in-subscription tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
-        cmd += "--diagnostic-consent 'Yes'"
+        cmd += "--advanced-diagnostic-consent 'Yes'"
         
         return cmd
         
@@ -418,7 +418,7 @@ class SupportScenarioTest(ScenarioTest):
 
     def _build_chat_transcript_list_cmd(self, test_ticket_name):
         cmd = "support in-subscription chat-transcript list "
-        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
 
         return cmd
 
@@ -431,7 +431,7 @@ class SupportScenarioTest(ScenarioTest):
 
     def _build_chat_transcript_show_cmd(self, test_ticket_name, test_chat_transcript_name):
         cmd = "support in-subscription chat-transcript show "
-        cmd += "--support-ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--chat-transcript-name '{0}' ".format(test_chat_transcript_name)
 
         return cmd

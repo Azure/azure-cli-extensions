@@ -16,9 +16,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/fileworkspaces/{}/files/{}", "2022-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/fileworkspaces/{}/files/{}", "2024-04-01"],
         ]
     }
 
@@ -54,19 +54,19 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.chunk_size = AAZFloatArg(
+        _args_schema.chunk_size = AAZIntArg(
             options=["--chunk-size"],
             arg_group="Properties",
             help="Size of each chunk",
             nullable=True,
         )
-        _args_schema.file_size = AAZFloatArg(
+        _args_schema.file_size = AAZIntArg(
             options=["--file-size"],
             arg_group="Properties",
             help="Size of the file to be uploaded",
             nullable=True,
         )
-        _args_schema.number_of_chunks = AAZFloatArg(
+        _args_schema.number_of_chunks = AAZIntArg(
             options=["--number-of-chunks"],
             arg_group="Properties",
             help="Number of chunks to be uploaded",
@@ -152,7 +152,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -235,7 +235,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -297,9 +297,9 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("chunkSize", AAZFloatType, ".chunk_size")
-                properties.set_prop("fileSize", AAZFloatType, ".file_size")
-                properties.set_prop("numberOfChunks", AAZFloatType, ".number_of_chunks")
+                properties.set_prop("chunkSize", AAZIntType, ".chunk_size")
+                properties.set_prop("fileSize", AAZIntType, ".file_size")
+                properties.set_prop("numberOfChunks", AAZIntType, ".number_of_chunks")
 
             return _instance_value
 
@@ -348,17 +348,17 @@ class _UpdateHelper:
         )
 
         properties = _schema_file_details_read.properties
-        properties.chunk_size = AAZFloatType(
+        properties.chunk_size = AAZIntType(
             serialized_name="chunkSize",
         )
         properties.created_on = AAZStrType(
             serialized_name="createdOn",
             flags={"read_only": True},
         )
-        properties.file_size = AAZFloatType(
+        properties.file_size = AAZIntType(
             serialized_name="fileSize",
         )
-        properties.number_of_chunks = AAZFloatType(
+        properties.number_of_chunks = AAZIntType(
             serialized_name="numberOfChunks",
         )
 

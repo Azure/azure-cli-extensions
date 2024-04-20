@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "support no-subscription file list",
 )
 class List(AAZCommand):
-    """List all the Files information under a workspace for an Azure subscription.
+    """List all the Files information under a workspace.
 
     :example: List all the files within a file-workspace
         az support no-subscription file list --file-workspace "TestFileWorkspaceName"
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.support/fileworkspaces/{}/files", "2022-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.support/fileworkspaces/{}/files", "2024-04-01"],
         ]
     }
 
@@ -110,7 +110,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -170,17 +170,17 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.chunk_size = AAZFloatType(
+            properties.chunk_size = AAZIntType(
                 serialized_name="chunkSize",
             )
             properties.created_on = AAZStrType(
                 serialized_name="createdOn",
                 flags={"read_only": True},
             )
-            properties.file_size = AAZFloatType(
+            properties.file_size = AAZIntType(
                 serialized_name="fileSize",
             )
-            properties.number_of_chunks = AAZFloatType(
+            properties.number_of_chunks = AAZIntType(
                 serialized_name="numberOfChunks",
             )
 

@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.support/supporttickets/{}/communications", "2022-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.support/supporttickets/{}/communications", "2024-04-01"],
         ]
     }
 
@@ -58,7 +58,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SupportTicketCommunicationsNoSubscriptionList(ctx=self.ctx)()
+        self.CommunicationsNoSubscriptionList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,7 +74,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class SupportTicketCommunicationsNoSubscriptionList(AAZHttpOperation):
+    class CommunicationsNoSubscriptionList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -117,7 +117,7 @@ class List(AAZCommand):
                     "$filter", self.ctx.args.filter,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -166,7 +166,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.type = AAZStrType(
                 flags={"read_only": True},

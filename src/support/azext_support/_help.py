@@ -129,7 +129,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "phone" \\
             --contact-phone-number "123-456-7890" \\
@@ -143,7 +143,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "phone" \\
             --contact-phone-number "123-456-7890" \\
@@ -163,7 +163,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -179,7 +179,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -195,7 +195,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -213,7 +213,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -230,7 +230,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -246,7 +246,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -265,7 +265,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -285,7 +285,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -305,7 +305,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -325,7 +325,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -345,7 +345,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -365,7 +365,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -385,7 +385,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -405,7 +405,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -425,7 +425,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -445,7 +445,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\
@@ -465,7 +465,7 @@ examples:
             --contact-country "USA" \\
             --contact-email "abc@contoso.com" \\
             --contact-first-name "Foo" \\
-            --contact-language "en-US" \\
+            --contact-language "en-us" \\
             --contact-last-name "Bar" \\
             --contact-method "email" \\
             --contact-timezone "Pacific Standard Time" \\

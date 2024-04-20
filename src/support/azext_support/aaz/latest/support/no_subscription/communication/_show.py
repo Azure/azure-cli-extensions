@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.support/supporttickets/{}/communications/{}", "2022-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.support/supporttickets/{}/communications/{}", "2024-04-01"],
         ]
     }
 
@@ -117,7 +117,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -157,7 +157,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},

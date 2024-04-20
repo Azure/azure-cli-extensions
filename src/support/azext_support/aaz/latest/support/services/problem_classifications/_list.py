@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "support services problem-classifications list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List all the problem classifications (categories) available for a specific Azure service. Always use the service and problem classifications obtained programmatically. This practice ensures that you always have the most recent set of service and problem classification Ids.
 
-    :example: Gets list of problemClassifications for a service for which a support ticket can be created.
+    :example: Gets list of problem classifications for a service for which a support ticket can be created.
         az support services problem-classifications list --service-name "ServiceNameGuid"
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.support/services/{}/problemclassifications", "2022-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.support/services/{}/problemclassifications", "2024-04-01"],
         ]
     }
 
@@ -49,7 +48,6 @@ class List(AAZCommand):
             options=["--service-name"],
             help="Name of the Azure service for which the problem classifications need to be retrieved.",
             required=True,
-            is_preview=True,
         )
         return cls._args_schema
 
@@ -110,7 +108,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }

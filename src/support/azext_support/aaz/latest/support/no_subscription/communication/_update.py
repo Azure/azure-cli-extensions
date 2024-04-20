@@ -16,9 +16,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.support/supporttickets/{}/communications/{}", "2022-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.support/supporttickets/{}/communications/{}", "2024-04-01"],
         ]
     }
 
@@ -140,7 +140,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -235,7 +235,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -293,7 +293,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -336,7 +336,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         communication_details_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+            flags={"required": True, "client_flatten": True},
         )
         communication_details_read.type = AAZStrType(
             flags={"read_only": True},

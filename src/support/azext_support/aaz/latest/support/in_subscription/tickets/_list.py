@@ -37,9 +37,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/supporttickets", "2022-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/supporttickets", "2024-04-01"],
         ]
     }
 
@@ -127,7 +127,7 @@ class List(AAZCommand):
                     "$filter", self.ctx.args.filter,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -176,7 +176,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -185,6 +185,7 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.advanced_diagnostic_consent = AAZStrType(
                 serialized_name="advancedDiagnosticConsent",
+                flags={"required": True},
             )
             properties.contact_details = AAZObjectType(
                 serialized_name="contactDetails",
@@ -199,10 +200,13 @@ class List(AAZCommand):
             )
             properties.enrollment_id = AAZStrType(
                 serialized_name="enrollmentId",
-                flags={"read_only": True},
             )
             properties.file_workspace_name = AAZStrType(
                 serialized_name="fileWorkspaceName",
+            )
+            properties.is_temporary_ticket = AAZStrType(
+                serialized_name="isTemporaryTicket",
+                flags={"read_only": True},
             )
             properties.modified_date = AAZStrType(
                 serialized_name="modifiedDate",

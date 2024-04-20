@@ -185,9 +185,6 @@ class TicketCreate(_CreateTicket):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZArgEnum, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.enrollment_id = AAZStrArg(
-            options=["--enrollment-id"],
-            help="Enrollment Id associated with the support ticket.")
         args_schema.contact_language.enum = AAZArgEnum(getLanguage())
         args_schema.contact_timezone.enum = AAZArgEnum(getTimeZone())
         
@@ -209,9 +206,6 @@ class TicketCreate(_CreateTicket):
             from azure.cli.core.aaz import AAZUndefined
             body = super().content
             args = self.ctx.args
-            if args.enrollment_id != AAZUndefined:
-                enrollment_id = str(args.enrollment_id)
-                body["properties"]["enrollmentId"] = enrollment_id
             service_name = parse_support_area_path(body["properties"]["problemClassificationId"])["service_name"]
             body["properties"]["serviceId"] = "/providers/Microsoft.Support/services/{0}".format(service_name)
             if args.start_time == AAZUndefined:
@@ -249,9 +243,6 @@ class TicketCreateNoSubscription(_CreateTicketNoSubscription):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZArgEnum, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.enrollment_id = AAZStrArg(
-            options=["--enrollment-id"],
-            help="Enrollment Id associated with the support ticket.")
         args_schema.contact_language.enum = AAZArgEnum(getLanguage())
         args_schema.contact_timezone.enum = AAZArgEnum(getTimeZone())
 
@@ -274,9 +265,6 @@ class TicketCreateNoSubscription(_CreateTicketNoSubscription):
             from azure.cli.core.aaz import AAZUndefined
             body = super().content
             args = self.ctx.args
-            if args.enrollment_id != AAZUndefined:
-                enrollment_id = str(args.enrollment_id)
-                body["properties"]["enrollmentId"] = enrollment_id
             service_name = parse_support_area_path(body["properties"]["problemClassificationId"])["service_name"]
             body["properties"]["serviceId"] = "/providers/Microsoft.Support/services/{0}".format(service_name)
             if args.start_time == AAZUndefined:

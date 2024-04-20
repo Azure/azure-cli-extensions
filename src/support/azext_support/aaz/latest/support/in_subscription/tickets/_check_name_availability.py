@@ -16,9 +16,9 @@ class CheckNameAvailability(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/supporttickets/{}/checknameavailability", "2022-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.support/supporttickets/{}/checknameavailability", "2024-04-01"],
         ]
     }
 
@@ -42,7 +42,6 @@ class CheckNameAvailability(AAZCommand):
             options=["--support-ticket-name"],
             help="Support ticket name.",
             required=True,
-            id_part="name",
         )
 
         # define Arg Group "CheckNameAvailabilityInput"
@@ -124,7 +123,7 @@ class CheckNameAvailability(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }

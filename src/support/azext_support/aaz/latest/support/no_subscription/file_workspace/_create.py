@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-09-01-preview",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.support/fileworkspaces/{}", "2022-09-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.support/fileworkspaces/{}", "2024-04-01"],
         ]
     }
 
@@ -111,7 +111,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-09-01-preview",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
