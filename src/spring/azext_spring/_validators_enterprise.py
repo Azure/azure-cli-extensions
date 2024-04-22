@@ -717,7 +717,11 @@ def _get_eactly_one_application_configuration_service_resource_id(cmd, resource_
 
 
 def validate_custom_actuator_port(cmd, namespace):
-    only_support_enterprise(cmd, namespace)
     if namespace.custom_actuator_port:
+        only_support_enterprise(cmd, namespace)
         if namespace.custom_actuator_port <= 0:
             raise ArgumentUsageError("--custom-actuator-port must be greater than 0")
+
+def validate_custom_actuator_path(cmd, namespace):
+    if namespace.custom_actuator_path:
+        only_support_enterprise(cmd, namespace)
