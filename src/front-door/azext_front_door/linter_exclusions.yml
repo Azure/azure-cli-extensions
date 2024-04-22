@@ -1,0 +1,6 @@
+---
+network front-door waf-policy:
+    parameters:
+        javascript_challenge_expiration_in_minutes:
+            rule_exclusions:
+            - option_length_too_long

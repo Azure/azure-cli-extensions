@@ -4,7 +4,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines disable=line-too-long
 
 import sys
 from azure.cli.core.commands import cached_get, cached_put
