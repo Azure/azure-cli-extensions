@@ -10,7 +10,6 @@
 
 import os
 import re
-import uuid
 
 from azure.cli.command_modules.keyvault._client_factory import data_plane_azure_keyvault_secret_client
 from azure.cli.core.aaz import *
@@ -28,10 +27,8 @@ class Ingest(AAZCommand):
     """Ingest sample data file into data product.
 
     :example: Ingest sample data file with all parameters
-        az network-analytics data-product ingest --data-product-name <dpname> --resource-group <rg> --data-type <datatype> --file <filepath> --principal-id <userid> --user-name " "
+        az network-analytics data-product ingest --data-product-name <dpname> --resource-group <rg> --data-type <datatype> --srcdir <filepath>
     """
-
-    _aaz_info = {}
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -167,5 +164,10 @@ class Ingest(AAZCommand):
                 container_url=container_url,
                 credential=sas_token
             )
+
+
+class _IngestHelper:
+    """Helper class for Ingest"""
+
 
 __all__ = ["Ingest"]

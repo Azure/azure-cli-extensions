@@ -15,3 +15,5 @@ az network-analytics data-product list-roles-assignment --data-product-name clit
 az network-analytics data-product remove-user-role --data-product-name clitest --resource-group test-RG --data-type-scope " " --principal-id test@microsoft.com --principal-type user --role reader --role-id " " --user-name " " --role-assignment-id " "
 
 az network-analytics data-product delete --name clitest --resource-group test-RG
+
+az network-analytics data-product ingest --data-product-name clitest --resource-group test-RG --data-type MCC --srcdir ./folder1/file2
