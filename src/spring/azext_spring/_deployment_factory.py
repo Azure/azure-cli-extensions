@@ -247,12 +247,13 @@ def deployment_settings_options_from_resource(original):
         'instance_count': original.sku.capacity,
         'sku': original.sku,
         'env': original.properties.deployment_settings.environment_variables,
-        'config_file_patterns': _get_value_from_dict(original.properties.deployment_settings.addon_configs,
-                             APPLICATION_CONFIGURATION_SERVICE_NAME, APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN),
-        'custom_actuator_port': _get_value_from_dict(original.properties.deployment_settings.addon_configs,
-                             APP_LIVE_VIEW, ACTUATOR_PORT),
-        'custom_actuator_path': _get_value_from_dict(original.properties.deployment_settings.addon_configs,
-                             APP_LIVE_VIEW, ACTUATOR_PATH)
+        'config_file_patterns': _get_value_from_dict(
+            original.properties.deployment_settings.addon_configs,
+            APPLICATION_CONFIGURATION_SERVICE_NAME, APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN),
+        'custom_actuator_port': _get_value_from_dict(
+            original.properties.deployment_settings.addon_configs, APP_LIVE_VIEW, ACTUATOR_PORT),
+        'custom_actuator_path': _get_value_from_dict(
+            original.properties.deployment_settings.addon_configs, APP_LIVE_VIEW, ACTUATOR_PATH)
     }
     if original.properties.deployment_settings.container_probe_settings is not None:
         options['disable_probe'] = original.properties.deployment_settings.container_probe_settings.disable_probe
