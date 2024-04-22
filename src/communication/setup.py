@@ -30,7 +30,7 @@ CLASSIFIERS = [
 
 DEPENDENCIES = ['azure-core',
                 'azure-communication-identity >= 1.2.0',
-                'azure-communication-phonenumbers',
+                'azure-communication-phonenumbers >= 1.2.0b3',
                 'azure-communication-sms',
                 'azure-communication-chat >= 1.3.0',
                 'azure-communication-rooms >= 1.1.0',
