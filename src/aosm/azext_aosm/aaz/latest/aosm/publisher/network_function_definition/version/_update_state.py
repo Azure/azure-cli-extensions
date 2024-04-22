@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class UpdateState(AAZCommand):
     """Update network function definition version state.
+
+    :example: Change version 2.0.0 of the 'nginx' network function definition group to 'Active' state
+        az aosm publisher network-function-definition version update-state --resource-group contoso-aosm --publisher-name contoso --group-name nginx --version-name 2.0.0 --version-state Active
     """
 
     _aaz_info = {

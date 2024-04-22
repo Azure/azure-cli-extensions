@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List information about a list of network function definition versions under a network function definition group.
+    """List information about the network function definition versions available in the specified network function definition group.
+
+    :example: List information about the network function definition versions available in the 'nginx' network function definition group
+        az aosm publisher network-function-definition version list --resource-group contoso-aosm --publisher-name contoso --group-name nginx
     """
 
     _aaz_info = {

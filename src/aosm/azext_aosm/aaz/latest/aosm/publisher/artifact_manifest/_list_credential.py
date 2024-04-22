@@ -13,9 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aosm publisher artifact-manifest list-credential",
+    is_preview=True,
 )
 class ListCredential(AAZCommand):
     """List credential for publishing artifacts defined in artifact manifest.
+
+    :example: List credential to use for publishing an artifact from the 'contoso-manifest' manifest
+        az aosm publisher artifact-manifest list-credential --resource-group contoso-aosm --publisher-name contoso --artifact-store-name contoso --name contoso-manifest
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class UpdateState(AAZCommand):
     """Update artifact state defined in artifact store.
+
+    :example: Deprecate the 1.0.0 version of the 'nginx' artifact in the 'contoso' artifact store of the 'contoso' publisher
+        az aosm publisher artifact-store artifact version update-state --resource-group contoso-aosm --publisher-name contoso --artifact-store-name contoso --artifact-name nginx --name 1.0.0 --artifact-state Deprecated
     """
 
     _aaz_info = {

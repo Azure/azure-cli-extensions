@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "aosm publisher artifact-manifest",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Commands to manage artifact manifest resources.

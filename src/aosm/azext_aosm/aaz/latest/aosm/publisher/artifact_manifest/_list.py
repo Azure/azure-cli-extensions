@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List information about the artifact manifest.
+
+    :example: List information about the artifact manifest in the 'contoso' artifact store of the 'contoso' publisher
+        az aosm publisher artifact-manifest list --resource-group contoso-aosm --publisher-name contoso --artifact-store-name contoso
     """
 
     _aaz_info = {

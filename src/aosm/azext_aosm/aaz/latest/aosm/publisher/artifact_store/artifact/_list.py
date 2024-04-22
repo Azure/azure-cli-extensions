@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the available artifacts in the parent Artifact Store.
+
+    :example: List all available artifacts in the 'contoso' artifact store of the 'contoso' publisher
+        az aosm publisher artifact-store artifact list --resource-group contoso-aosm --publisher-name contoso --artifact-store-name contoso
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class UpdateState(AAZCommand):
     """Update state for artifact manifest.
+
+    :example: Update the 'contoso-manifest' artifact manifest's state to 'Uploaded'
+        az aosm publisher artifact-manifest update-state --resource-group contoso-aosm --publisher-name contoso --artifact-store-name contoso --name contoso-manifest --state Uploaded
     """
 
     _aaz_info = {

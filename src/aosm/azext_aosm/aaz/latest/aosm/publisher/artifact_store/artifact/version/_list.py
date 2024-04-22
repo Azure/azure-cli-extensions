@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List a Artifact overview information.
+
+    :example: List overview information for the 'nginx' artifact in the 'contoso' artifact store of the 'contoso' publisher
+        az aosm publisher artifact-store artifact version list --resource-group contoso-aosm --publisher-name contoso --artifact-store-name contoso --artifact-name nginx
     """
 
     _aaz_info = {

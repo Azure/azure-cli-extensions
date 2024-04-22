@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class UpdateState(AAZCommand):
     """Update configuration group schema state.
+
+    :example: Change the 'nginx-cgs' config group schema to 'Active' state
+        az aosm publisher configuration-group-schema update-state --resource-group contoso-aosm --publisher-name contoso --name nginx-cgs --version-state Active
     """
 
     _aaz_info = {

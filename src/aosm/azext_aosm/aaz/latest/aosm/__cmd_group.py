@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "aosm",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Azure Operator Service Manager resources.

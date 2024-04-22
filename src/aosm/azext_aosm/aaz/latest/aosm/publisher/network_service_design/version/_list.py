@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List information about a list of network service design versions under a network service design group.
+    """List information about the network service design versions available under the specified network service design group.
+
+    :example: List information about the network service design versions available in the 'contoso-service' network service design group
+        az aosm publisher network-function-definition version list --resource-group contoso-aosm --publisher-name contoso --group-name contoso-service
     """
 
     _aaz_info = {

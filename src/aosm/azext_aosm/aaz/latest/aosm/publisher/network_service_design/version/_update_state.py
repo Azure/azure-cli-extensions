@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class UpdateState(AAZCommand):
     """Update network service design version state.
+
+    :example: Change version 1.0.0 of the 'contoso-service' network service design group to 'Deprecated' state
+        az aosm publisher network-service-design version update-state --resource-group contoso-aosm --publisher-name contoso --group-name contoso-service --version-name 1.0.0 --version-state Deprecated
     """
 
     _aaz_info = {

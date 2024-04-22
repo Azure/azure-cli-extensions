@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List information of the configuration group schemas under a publisher.
+
+    :example: List the configuration group schemas defined under the contoso publisher
+        az aosm publisher configuration-group-schema list --resource-group contoso-aosm --publisher-name contoso
     """
 
     _aaz_info = {
