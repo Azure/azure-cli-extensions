@@ -73,10 +73,10 @@ class RecoveryPointScenarioTest(ScenarioTest):
                      test.greater_than('length([])', 0)
                  ])
 
-    @AllowLargeResponse
+    @AllowLargeResponse()
     def test_dataprotection_recovery_point_vaulted_blob(test):
         test.kwargs.update({
-            'backupInstanceName': ''
+            'backupInstanceName': 'clitestsavltdonotdelete-clitestsavltdonotdelete-65176b0a-64ad-4247-9866-19204633c0d5'
         })
         test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}"', checks=[
             test.greater_than('length([])', 0)
