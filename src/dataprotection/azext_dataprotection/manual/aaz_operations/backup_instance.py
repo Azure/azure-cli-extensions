@@ -171,7 +171,9 @@ class RestoreTrigger(_RestoreTrigger):
         @property
         def content(self):
             request_body = self.ctx.args.restore_request_object.to_serialized_data()
-            request_body['resourceGuardOperationRequests'] = self.ctx.args.resource_guard_operation_requests.to_serialized_data()
+            resource_guard_operation_requests_deserialized = self.ctx.args.resource_guard_operation_requests.to_serialized_data()
+            if resource_guard_operation_requests_deserialized != AAZUndefined:
+                request_body['resourceGuardOperationRequests'] = resource_guard_operation_requests_deserialized
             request_body = convert_dict_keys_snake_to_camel(request_body)
             return request_body
 
