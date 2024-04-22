@@ -1042,13 +1042,11 @@ def _config_bind_or_unbind_app(cmd, client, service, resource_group, app_name, e
     return client.apps.begin_update(resource_group, service, app_name, app)
 	
 def _get_app_addon_configs_with_config_server(addon_configs):
-    if addon_configs is None:
-        addon_configs = {}
-    if addon_configs.get(CONFIG_SERVER_ADDON_NAME) is None:
-        addon_configs[CONFIG_SERVER_ADDON_NAME] = {}
-    if addon_configs[CONFIG_SERVER_ADDON_NAME].get(RESOURCE_ID_KEY_NAME) is None:
-        addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = ""
+    addon_configs = addon_configs or {}
+    addon_configs.setdefault(CONFIG_SERVER_ADDON_NAME, {})
+    addon_configs[CONFIG_SERVER_ADDON_NAME].setdefault(RESOURCE_ID_KEY_NAME, "")
     return addon_configs
+
 
 def binding_list(cmd, client, resource_group, service, app):
     return client.bindings.list(resource_group, service, app)
