@@ -29,11 +29,13 @@ def load_command_table(self, _):
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
         g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions')
         g.custom_command('update-policy', "dataprotection_backup_instance_update_policy", supports_no_wait=True)
+        g.custom_command('validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True)
 
     with self.command_group('dataprotection backup-instance restore', exception_handler=exception_handler) as g:
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
         g.custom_command('initialize-for-data-recovery-as-files', 'restore_initialize_for_data_recovery_as_files')
         g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery')
+        g.custom_command('trigger', 'dataprotection_backup_instance_restore_trigger')
 
     with self.command_group('dataprotection backup-policy', exception_handler=exception_handler) as g:
         g.custom_command('get-default-policy-template', "dataprotection_backup_policy_get_default_policy_template")
@@ -55,6 +57,8 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection job') as g:
         g.custom_command('list-from-resourcegraph', "dataprotection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
+        g.custom_command('list', "dataprotection_job_list", exception_handler=exception_handler)
+        g.custom_show_command('show', 'dataprotection_job_show', exception_handler=exception_handler)
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler) as g:
         g.custom_command('list-protected-operations', 'dataprotection_resource_guard_list_protected_operations')

@@ -6,7 +6,7 @@
 # pylint: disable=wrong-import-order
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location, register_provider_if_needed)
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool, create_build_service
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights

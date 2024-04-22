@@ -6,7 +6,7 @@
 from azure.cli.core.azclierror import ClientRequestError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import resource_id
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._utils import get_spring_sku
 
 DEFAULT_NAME = "default"

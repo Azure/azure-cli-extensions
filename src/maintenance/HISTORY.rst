@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.6.0
+++++++
+* Added support for approving scheduled events
+
 1.5.0
 ++++++
 * Added support for maintenance configuration canncellation.

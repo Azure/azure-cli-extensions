@@ -28,6 +28,7 @@ class PolicyGeneratingArm(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
+                    "name": "simple-container",
                     "containerImage": "python:3.6.14-slim-buster",
                     "environmentVariables": [
                         {
@@ -1626,7 +1627,7 @@ class PolicyDiff(unittest.TestCase):
         is_valid, diff = self.aci_policy2.validate_cce_policy()
         self.assertFalse(is_valid)
         expected_diff = {
-            "alpine:3.16": {
+            "aci-test": {
                 "values_changed": {
                     "mounts": [
                         {
@@ -1949,6 +1950,97 @@ class MultiplePolicyTemplate(unittest.TestCase):
             }
         },
         {
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2023-05-01",
+            "name": "secret-volume-demo",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "confidentialComputeProperties": {
+                    "isolationType": "SevSnp",
+                    "ccePolicy": ""
+                },
+                "containers": [
+                    {
+                        "name": "aci-test-1",
+                        "properties": {
+                            "image": "[variables('container1image')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "PATH",
+                                    "secureValue": "/customized/path/value"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "aci-test-2",
+                        "properties": {
+                            "image": "[variables('container1image')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "PATH",
+                                    "secureValue": "/customized/different/path/value"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "aci-test-3",
+                        "properties": {
+                            "image": "[variables('container1image')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "PATH",
+                                    "secureValue": "/customized/different/path/value2"
+                                },
+                                {
+                                    "name": "VERSION",
+                                    "value": "1.0"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "osType": "Linux",
+                "ipAddress": {
+                    "type": "Public",
+                    "ports": [
+                        {
+                            "protocol": "tcp",
+                            "port": "80"
+                        }
+                    ]
+                },
+                "volumes": [
+                    {
+                        "name": "azurefile",
+                        "azureFile": {
+                            "key1": "key-3",
+                            "key2": "key-4"
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "type": "Microsoft.Compute/disks",
             "apiVersion": "2018-06-01",
             "name": "my-vm-datadisk1",
@@ -1976,8 +2068,10 @@ class MultiplePolicyTemplate(unittest.TestCase):
         temp_policies = load_policy_from_arm_template_str(cls.custom_json, "")
         cls.aci_policy = temp_policies[0]
         cls.aci_policy2 = temp_policies[1]
+        cls.aci_policy3 = temp_policies[2]
         cls.aci_policy.populate_policy_content_for_all_images(faster_hashing=True)
         cls.aci_policy2.populate_policy_content_for_all_images(faster_hashing=True)
+        cls.aci_policy3.populate_policy_content_for_all_images(faster_hashing=True)
 
     def test_multiple_policies(self):
         container_start = "containers := "
@@ -1987,7 +2081,19 @@ class MultiplePolicyTemplate(unittest.TestCase):
         is_valid, diff = self.aci_policy.validate_cce_policy()
         self.assertFalse(is_valid)
         # just check to make sure the containers in both policies are different
-        expected_diff = {"alpine:3.16": "alpine:3.16 not found in policy"}
+        expected_diff = {"aci-test": "alpine:3.16 not found in policy"}
+        self.assertEqual(diff, expected_diff)
+
+    def test_multiple_diffs(self):
+        container_start = "containers := "
+        policy3_containers = json.loads(extract_containers_from_text(self.aci_policy3.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+
+        self.aci_policy3._existing_cce_policy = policy3_containers
+        is_valid, diff = self.aci_policy3.validate_cce_policy()
+
+        self.assertTrue(is_valid)
+        # just check to make sure the containers in both policies are different
+        expected_diff = {}
         self.assertEqual(diff, expected_diff)
 
 
@@ -2092,7 +2198,7 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
                 ],
                 "initContainers": [
                     {
-                        "name": "init-container",
+                        "name": "init-container-python",
                         "properties": {
                             "image": "python:3.6.14-slim-buster",
                             "environmentVariables": [
@@ -2776,6 +2882,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
+                    "name": "simple-container",
                     "containerImage": "python:3.6.14-slim-buster",
                     "environmentVariables": [
                         {
@@ -3520,6 +3627,11 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
                         "port": "[parameters('port')]"
                         }
                     ],
+                    "configMap": {
+                        "keyValuePairs": {
+                            "key1": "value1"
+                        }
+                    },
                     "command": [
                         "/bin/bash",
                         "-c",
@@ -3581,6 +3693,17 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
         self.assertEqual(env_var, "PORT=parameters('abc')")
         self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "alpine:3.16")
 
+    def test_arm_template_config_map_sidecar(self):
+        regular_image_json = json.loads(
+            self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False
+            )
+        )
+
+        mount_locations = list(map(lambda x: x[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_DESTINATION] ,regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS]))
+
+        self.assertTrue(config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION in mount_locations)
+
 
 class PolicyGeneratingSecurityContext(unittest.TestCase):
     custom_arm_json = """
@@ -3640,7 +3763,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "resources": [
             {
             "name": "[parameters('containergroupname')]",
-            "type": "Microsoft.ContainerInstance/containerGroups",
+            "type": "Microsoft.ContainerInstance/containerGroupProfiles",
             "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new EmailService or update an existing EmailService.
+
+    :example: Create a email resource with tags
+        az communication email create -n ResourceName -g ResourceGroup --location global --data-location unitedstates --tags "{tag:tag}"
     """
 
     _aaz_info = {

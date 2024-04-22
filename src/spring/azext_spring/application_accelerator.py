@@ -6,13 +6,13 @@
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from .dev_tool_portal import (is_updatable as is_dev_tool_portal_updatable,
                               try_get as get_dev_tool_portal,
                               create_or_update as create_or_update_dev_tool_portal,
                               _get_desired_state as get_dev_tool_portal_desired_state)
 from ._utils import (wait_till_end)
-from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType)
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType)
 
 DEFAULT_NAME = "default"
 logger = get_logger(__name__)

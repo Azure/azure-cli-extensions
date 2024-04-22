@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the EmailService and its properties.
+
+    :example: Get a email service's properties
+        az communication email show -n ResourceName -g ResourceGroup
     """
 
     _aaz_info = {
