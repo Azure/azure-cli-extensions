@@ -8,13 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
+import os
 import re
 import uuid
 
 from azure.cli.command_modules.keyvault._client_factory import data_plane_azure_keyvault_secret_client
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import InvalidArgumentValueError, UnauthorizedError
+from azure.core.exceptions import ClientAuthenticationError
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from datetime import date
 from .profiles import DATA_STORAGE_BLOB_CONTAINER
 
 @register_command(
@@ -69,16 +73,10 @@ class Ingest(AAZCommand):
             help="Data Type.",
             required=True,
         )
-        _args_schema.file_path = AAZStrArg(
-            options=["--file-path"],
+        _args_schema.source = AAZStrArg(
+            options=["--srcdir"],
             arg_group="Body",
-            help="File path.",
-            required=True,
-        )
-        _args_schema.principal_id = AAZStrArg(
-            options=["--principal-id"],
-            arg_group="Body",
-            help="Object ID of the AAD principal or security-group.",
+            help="Source directory path.",
             required=True,
         )
 
@@ -104,8 +102,8 @@ class Ingest(AAZCommand):
         return result
     
     class DataProductsIngest(object):
-        SECRETS_USER_ROLE_ID = "providers/Microsoft.Authorization/roleDefinitions/4633458b-17de-408a-b874-0445c86b69e6"
         DATA_PRODUCT_ARM_ID = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.NetworkAnalytics/dataProducts/{}"
+        API_VERSION = "2023-11-15"
         KEYVAULT_NAME = "input-storage-sas"
         KEYVAULT_URI = "https://aoi-{}-kv.vault.azure.net/"
 
@@ -115,10 +113,8 @@ class Ingest(AAZCommand):
             self.resource_group = ctx.args.resource_group
             self.data_product_name = ctx.args.data_product_name
             self.data_type = ctx.args.data_type
-            self.file_path = ctx.args.file_path
-            self.principal_id = ctx.args.principal_id
+            self.source = ctx.args.source
 
-            self.roles_client = get_mgmt_service_client(self.ctx, ResourceType.MGMT_AUTHORIZATION, subscription_id=self.subscription_id).role_assignments
             self.resources_client = get_mgmt_service_client(self.ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=self.subscription_id).resources
             self.container_client = get_mgmt_service_client(self.ctx, DATA_STORAGE_BLOB_CONTAINER)
 
@@ -129,72 +125,47 @@ class Ingest(AAZCommand):
 
         def get_data_product(self):
             arm_id = self.DATA_PRODUCT_ARM_ID.format(self.subscription_id, self.resource_group, self.data_product_name)
-            api_version = self.get_api_version()
-            resource = self.resources_client.get_by_id(arm_id, api_version)
+            resource = self.resources_client.get_by_id(arm_id, self.API_VERSION)
             return resource
-
-        def get_api_version(self):
-            # TODO: get the value dynamically
-            return "2023-11-15"
-        
-        def get_hosted_resources_rg(self, data_product):
-            return data_product.properties.managedResourceGroupConfiguration.name
         
         def get_keyvault_url(self, data_product):
             ingestion_url = data_product.properties.consumptionEndpoints.ingestionUrl
             unique_id = re.search("https://aoiingestion(.*)\.blob\.core\.windows\.net", ingestion_url).group(1)
             vault_base_url = self.KEYVAULT_URI.format(unique_id)
             return vault_base_url
-
-        def create_role_assignment(self, hosted_resources_rg):
-            scope = "/".join(hosted_resources_rg.split('/')[0:5])
-            scoped_role_id = f'{scope}/{self.SECRETS_USER_ROLE_ID}'
-            assignment_name = uuid.uuid4()
-            params_role_assignment = {
-                'role_definition_id': scoped_role_id,
-                'principal_id': self.principal_id
-            }
-            
-            existing_role_assignment = self.check_if_role_exists(scope)
-            if existing_role_assignment is None:
-                self.roles_client.create(scope, assignment_name, params_role_assignment)
-
-        def check_if_role_exists(self, scope):
-            role_definition_id = f'/subscriptions/{self.subscription_id}/{self.SECRETS_USER_ROLE_ID}'
-            existing_role_assignments = list(self.roles_client.role_assignments.list_for_scope(scope))
-            existing_role_assignment = next((x for x in existing_role_assignments
-                                                 if x.principal_id.lower() == self.principal_id.lower() and
-                                                 x.role_definition_id.lower() == role_definition_id.lower() and
-                                                 x.scope.lower() == scope.lower()), None)
-            return existing_role_assignment
         
         def get_key_vault_secret(self, data_product):
-            hosted_resources_rg = self.get_hosted_resources_rg(data_product)
-            self.create_role_assignment(hosted_resources_rg)
             keyvault_url = self.get_keyvault_url(data_product)
             command_args = {'vault_base_url': keyvault_url}
-
             keyvault_client  = data_plane_azure_keyvault_secret_client(self.ctx, command_args)
-            secret = keyvault_client.get_secret(name=self.KEYVAULT_NAME)
+            try:
+                secret = keyvault_client.get_secret(name=self.KEYVAULT_NAME)
+            except ClientAuthenticationError:
+                err_msg = f'You do not have permission to access the key vault of data product {self.data_product_name}'
+                raise UnauthorizedError(err_msg)
             return secret.value
+        
+        def upload_file(self, secret):
+            storage_container = self.get_storage_container(secret)
+            file_name = os.path.basename(self.source)
+            blob_name = "sample_data/{}/{}".format(date.today, file_name)
 
-        def get_storage_url_and_sas_token(self, secret):
+            try:
+                data = open(self.source, "rb")
+                storage_container.upload_blob(name=blob_name, data=data, overwrite=True)
+            except:
+                err_msg = "The source directory provided is invalid or cannot be accessed."
+                raise InvalidArgumentValueError(err_msg)
+
+        def get_storage_container(self, secret):
             result = secret.split("?", 1)
             storage_url = result[0]
             sas_token = result[1]
-            return storage_url, sas_token
-        
-        def upload_file(self, secret):
-            storage_url, sas_token = self.get_storage_url_and_sas_token(secret)
             container_name = self.data_type
             container_url = f'{storage_url}/{container_name}'
-            container_client = container_client.from_container_url(
+            return self.container_client.from_container_url(
                 container_url=container_url,
                 credential=sas_token
             )
-            # TODO: determine naming convention
-            blob_name = ""
-            with open(self.file_path, "rb") as data:
-                container_client.upload_blob(name=blob_name, data=data)
 
 __all__ = ["Ingest"]
