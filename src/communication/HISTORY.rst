@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.10.0
+++++++
+* Update azure-rooms-communication to 1.1.0 (pstn-dial-out GA)
+
 1.9.1
 ++++++
 * Add Email communication Domain resource Initiate and Cancel verification operations
