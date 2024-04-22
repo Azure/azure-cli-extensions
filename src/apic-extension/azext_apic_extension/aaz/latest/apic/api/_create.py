@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic api create",
 )
 class Create(AAZCommand):
-    """Register a new API.
+    """Register a new API or update an existing API.
 
     :example: Create API
         az apic api create -g contoso-resources -s contoso --api-id echo-api --title "Echo API" --type REST

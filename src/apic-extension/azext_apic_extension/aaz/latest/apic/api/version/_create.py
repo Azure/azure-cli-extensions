@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic api version create",
 )
 class Create(AAZCommand):
-    """Create a new API version.
+    """Create a new API version or update an existing API version.
 
     :example: Create API version
         az apic api version create -g api-center-test -s contosoeuap --api-id echo-api --version-id 2023-01-01 --title "2023-01-01"

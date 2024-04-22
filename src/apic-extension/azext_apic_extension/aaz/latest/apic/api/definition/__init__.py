@@ -9,7 +9,6 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._check_exists import *
 from ._create import *
 from ._delete import *
 from ._export_specification import *

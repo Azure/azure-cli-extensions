@@ -18,13 +18,13 @@ class Export(AAZCommand):
     """Exports the metadata schema.
 
     :example: Export Metadata Schema assigned to api
-        az apic metadata export-metadata-schema -g api-center-test -s contosoeuap --assigned-to api --file-name filepath
+        az apic metadata export -g api-center-test -s contosoeuap --assignments api --file-name filepath
 
     :example: Export Metadata Schema assigned to deployment
-        az apic metadata export-metadata-schema -g api-center-test -s contosoeuap --assigned-to deployment --file-name filepath
+        az apic metadata export -g api-center-test -s contosoeuap --assignments deployment --file-name filepath
 
     :example: Export Metadata Schema assigned to environment
-        az apic metadata export-metadata-schema -g api-center-test -s contosoeuap --assigned-to environment --file-name filepath
+        az apic metadata export -g api-center-test -s contosoeuap --assignments environment --file-name filepath
     """
 
     _aaz_info = {
@@ -68,8 +68,8 @@ class Export(AAZCommand):
         # define Arg Group "Payload"
 
         _args_schema = cls._args_schema
-        _args_schema.assigned_to = AAZStrArg(
-            options=["--assigned-to"],
+        _args_schema.assignments = AAZStrArg(
+            options=["--assignments"],
             arg_group="Payload",
             help="An entity the metadata schema is requested for.",
             enum={"api": "api", "deployment": "deployment", "environment": "environment"},
@@ -182,7 +182,7 @@ class Export(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("assignedTo", AAZStrType, ".assigned_to")
+            _builder.set_prop("assignedTo", AAZStrType, ".assignments")
 
             return self.serialize_content(_content_value)
 

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic environment create",
 )
 class Create(AAZCommand):
-    """Create a new environment.
+    """Create a new environment or update an existing environment.
 
     :example: Create environment
         az apic environment create -g api-center-test -s contosoeuap --environment-id public --title "Public cloud" --type "development"

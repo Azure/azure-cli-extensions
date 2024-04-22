@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic service create",
 )
 class Create(AAZCommand):
-    """Creates an instance of an Azure API Center service.
+    """Creates an instance or update an existing instance of an Azure API Center service.
 
     :example: Create service Example 1
         az apic create -g contoso-resources -s contoso -l centraluseuap
@@ -59,17 +59,11 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
-
-        # define Arg Group "Payload"
-
-        _args_schema = cls._args_schema
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
-            arg_group="Payload",
             help="Managed service identity (system assigned and/or user assigned identities)",
         )
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="Payload",
             help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
@@ -78,7 +72,6 @@ class Create(AAZCommand):
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Payload",
             help="Resource tags.",
         )
 

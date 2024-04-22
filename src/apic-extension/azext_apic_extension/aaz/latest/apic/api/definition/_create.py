@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic api definition create",
 )
 class Create(AAZCommand):
-    """Create a new API definition.
+    """Create a new API definition or update an existing API definition.
 
     :example: Create API definition
         az apic api definition create -g api-center-test -s contosoeuap --api-id echo-api --version-id 2023-01-01 --definition-id "openapi" --title "OpenAPI"

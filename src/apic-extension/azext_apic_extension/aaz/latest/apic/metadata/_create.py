@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic metadata create",
 )
 class Create(AAZCommand):
-    """Create a new metadata schema.
+    """Create a new metadata schema or update an existing metadata schema.
 
     :example: Create schema
         az az apic metadata create --resource-group api-center-test --service-name contoso --name "test1" --schema '{\"type\":\"string\", \"title\":\"First name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}'
