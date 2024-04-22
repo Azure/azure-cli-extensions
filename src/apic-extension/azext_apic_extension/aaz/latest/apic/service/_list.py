@@ -151,9 +151,10 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
+                flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
-                flags={"required": True},
+                flags={"required": True, "read_only": True},
             )
 
             value = cls._schema_on_200.value
@@ -323,9 +324,10 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
+                flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
-                flags={"required": True},
+                flags={"required": True, "read_only": True},
             )
 
             value = cls._schema_on_200.value

@@ -55,23 +55,18 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-
-        # define Arg Group "Payload"
-
-        _args_schema = cls._args_schema
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
-            arg_group="Payload",
-            help="Managed service identity (system assigned and/or user assigned identities)",
+            help="The managed service identities assigned to this resource.",
             nullable=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Payload",
             help="Resource tags.",
             nullable=True,
         )

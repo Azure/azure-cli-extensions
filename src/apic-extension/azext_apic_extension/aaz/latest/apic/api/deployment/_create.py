@@ -49,6 +49,7 @@ class Create(AAZCommand):
             help="The id of the API.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -58,6 +59,7 @@ class Create(AAZCommand):
             help="The id of the API deployment.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -70,6 +72,7 @@ class Create(AAZCommand):
             help="The name of the API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -80,6 +83,7 @@ class Create(AAZCommand):
             required=True,
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),

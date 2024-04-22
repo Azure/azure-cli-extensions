@@ -50,6 +50,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -63,6 +64,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -73,6 +75,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_3",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -84,6 +87,7 @@ class Show(AAZCommand):
             id_part="child_name_1",
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -207,7 +211,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",

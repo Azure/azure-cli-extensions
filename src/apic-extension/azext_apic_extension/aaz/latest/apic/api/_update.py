@@ -52,6 +52,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -65,6 +66,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -75,6 +77,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -465,7 +468,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -544,7 +547,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         api_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+            flags={"required": True, "client_flatten": True},
         )
         api_read.system_data = AAZObjectType(
             serialized_name="systemData",

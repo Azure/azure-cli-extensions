@@ -53,6 +53,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
