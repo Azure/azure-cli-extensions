@@ -722,6 +722,7 @@ def validate_custom_actuator_port(cmd, namespace):
         if namespace.custom_actuator_port <= 0:
             raise ArgumentUsageError("--custom-actuator-port must be greater than 0")
 
+
 def validate_custom_actuator_path(cmd, namespace):
     if namespace.custom_actuator_path:
         only_support_enterprise(cmd, namespace)
