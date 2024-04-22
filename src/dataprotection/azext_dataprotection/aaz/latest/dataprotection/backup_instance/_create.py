@@ -62,16 +62,6 @@ class Create(AAZCommand):
         # define Arg Group "Parameters"
 
         # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.resource_guard_operation_requests = AAZListArg(
-            options=["--resource-guard-operation-requests"],
-            arg_group="Properties",
-            help="ResourceGuardOperationRequests on which LAC check will be performed",
-        )
-
-        resource_guard_operation_requests = cls._args_schema.resource_guard_operation_requests
-        resource_guard_operation_requests.Element = AAZStrArg()
         return cls._args_schema
 
     _args_base_resource_properties_create = None
@@ -205,14 +195,6 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
-
-            resource_guard_operation_requests = _builder.get(".properties.resourceGuardOperationRequests")
-            if resource_guard_operation_requests is not None:
-                resource_guard_operation_requests.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 

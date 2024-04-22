@@ -41,7 +41,7 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
                           "DataProtectionSoftDelete": "/write#reduceSoftDeleteSecurity",
                           "DataProtectionStopProtection": "/backupInstances/stopProtection/action",
                           "DataProtectionSuspendBackup": "/backupInstances/suspendBackups/action",
-                          "DataProtectionRestore": "/backupInstances/restore/action",}
+                          "DataProtectionRestore": "/backupInstances/restore/action"}
 
 
 datasource_map = {
@@ -923,7 +923,7 @@ def transform_resource_guard_operation_request(cmd, _, operation):
 
         if formatted_operation is None:
             raise CLIError("Unable to proceed with shorthand argument {}. "
-                            "Please retry the command with the full payload".format(operation))
+                           "Please retry the command with the full payload".format(operation))
 
         return formatted_operation
     return operation
