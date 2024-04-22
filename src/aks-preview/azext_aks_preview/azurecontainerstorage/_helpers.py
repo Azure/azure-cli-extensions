@@ -63,7 +63,7 @@ def perform_role_operations_on_managed_rg(
     assign
 ):
     managed_rg_role_scope = build_role_scope(node_resource_group, None, subscription_id)
-    roles = ["Azure Container Storage Operator", "Reader"]
+    roles = ["Azure Container Storage Operator"]
     result = True
 
     for role in roles:
@@ -354,7 +354,6 @@ def get_desired_resource_value_args(
             updated_memory_value = current_memory_value
             updated_hugepages_value = current_hugepages_value
             updated_hugepages_number = current_hugepages_number
-
         elif is_ephemeral_nvme_disabled_azureDisk_active:
             # If we are disabling Ephemeral NVMe storagepool but azureDisk is
             # still enabled, we will set the azureDisk storagepool type values.

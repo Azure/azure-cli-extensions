@@ -14,8 +14,8 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import (GitImplementation, ConfigurationServiceGeneration)
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import (GitImplementation, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._utils import (get_hostname, get_bearer_auth)
 
 APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"

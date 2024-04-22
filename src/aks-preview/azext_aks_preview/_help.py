@@ -1193,6 +1193,14 @@ helps['aks update'] = """
         - name: --node-init-taints --nodepool-initialization-taints
           type: string
           short-summary: The node initialization taints for all node pools in cluster.
+        - name: --bootstrap-artifact-source
+          type: string
+          short-summary: Configure artifact source when bootstraping the cluster.
+          long-summary: |
+              The artifacts include the addon image. Use "Direct" to download artifacts from MCR, "Cache" to downalod artifacts from Azure Container Registry.
+        - name: --bootstrap-container-registry-resource-id
+          type: string
+          short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
