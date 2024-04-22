@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-vault show",
-    is_experimental=True,
 )
 class Show(AAZCommand):
     """Get a resource belonging to a resource group.

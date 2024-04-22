@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-vault update",
-    is_experimental=True,
 )
 class Update(AAZCommand):
     """Updates a BackupVault resource belonging to a resource group. For example, updating tags for a resource.

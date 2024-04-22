@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance suspend-backup",
-    is_experimental=True,
 )
 class SuspendBackup(AAZCommand):
     """This operation will stop backup for a backup instance and retains the backup data as per the policy (except latest Recovery point, which will be retained forever)

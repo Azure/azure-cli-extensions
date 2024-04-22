@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance create",
-    is_experimental=True,
 )
 class Create(AAZCommand):
     """Configure backup for a resource in a backup vault
@@ -23,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2024-04-01"],
         ]
     }
 
@@ -63,6 +62,16 @@ class Create(AAZCommand):
         # define Arg Group "Parameters"
 
         # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.resource_guard_operation_requests = AAZListArg(
+            options=["--resource-guard-operation-requests"],
+            arg_group="Properties",
+            help="ResourceGuardOperationRequests on which LAC check will be performed",
+        )
+
+        resource_guard_operation_requests = cls._args_schema.resource_guard_operation_requests
+        resource_guard_operation_requests.Element = AAZStrArg()
         return cls._args_schema
 
     _args_base_resource_properties_create = None
@@ -170,7 +179,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -196,6 +205,14 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
+
+            resource_guard_operation_requests = _builder.get(".properties.resourceGuardOperationRequests")
+            if resource_guard_operation_requests is not None:
+                resource_guard_operation_requests.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -272,6 +289,9 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.resource_guard_operation_requests = AAZListType(
+                serialized_name="resourceGuardOperationRequests",
             )
             properties.validation_type = AAZStrType(
                 serialized_name="validationType",
@@ -473,6 +493,9 @@ class Create(AAZCommand):
             )
             _CreateHelper._build_schema_user_facing_error_read(protection_status.error_details)
             protection_status.status = AAZStrType()
+
+            resource_guard_operation_requests = cls._schema_on_200_201.properties.resource_guard_operation_requests
+            resource_guard_operation_requests.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

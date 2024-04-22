@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance stop-protection",
-    is_experimental=True,
 )
 class StopProtection(AAZCommand):
     """This operation will stop protection of a backup instance and data will be held forever.

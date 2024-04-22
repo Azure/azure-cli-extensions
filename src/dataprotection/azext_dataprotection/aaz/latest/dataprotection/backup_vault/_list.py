@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-vault list",
-    is_experimental=True,
 )
 class List(AAZCommand):
     """Gets list of backup vault in a subscription or in a resource group.
