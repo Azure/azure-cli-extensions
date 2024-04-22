@@ -76,9 +76,6 @@ class Ingest(AAZCommand):
             help="Source directory path.",
             required=True,
         )
-
-        data_type_scope = cls._args_schema.data_type_scope
-        data_type_scope.Element = AAZStrArg()
         return cls._args_schema
     
     def _execute_operations(self):
