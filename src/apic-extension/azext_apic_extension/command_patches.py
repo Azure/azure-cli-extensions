@@ -21,10 +21,7 @@ class DefaultWorkspaceParameter:
         args.workspace_name = "default"
 
 # `az apic api` commands
-from .aaz.latest.apic.api import CheckExists as CheckAPIExists, Create as CreateAPI, Delete as DeleteAPI, List as ListAPI, Show as ShowAPI, Update as UpdateAPI
-
-class CheckAPIExistsExtension(DefaultWorkspaceParameter, CheckAPIExists):
-    pass
+from .aaz.latest.apic.api import Create as CreateAPI, Delete as DeleteAPI, List as ListAPI, Show as ShowAPI, Update as UpdateAPI
 
 class CreateAPIExtension(DefaultWorkspaceParameter, CreateAPI):
     pass
@@ -42,10 +39,7 @@ class UpdateAPIExtension(DefaultWorkspaceParameter, UpdateAPI):
     pass
 
 # `az apic api definition` commands
-from .aaz.latest.apic.api.definition import CheckExists as CheckAPIDefinitionExists, Create as CreateAPIDefinition, Delete as DeleteAPIDefinition, ExportSpecification as ExportAPIDefinition, ImportSpecification as ImportAPIDefinition, List as ListAPIDefinition, Show as ShowAPIDefinition, Update as UpdateAPIDefinition
-
-class CheckAPIDefinitionExistsExtension(DefaultWorkspaceParameter, CheckAPIDefinitionExists):
-    pass
+from .aaz.latest.apic.api.definition import Create as CreateAPIDefinition, Delete as DeleteAPIDefinition, ExportSpecification as ExportAPIDefinition, ImportSpecification as ImportAPIDefinition, List as ListAPIDefinition, Show as ShowAPIDefinition, Update as UpdateAPIDefinition
 
 class CreateAPIDefinitionExtension(DefaultWorkspaceParameter, CreateAPIDefinition):
     pass
@@ -70,10 +64,7 @@ class UpdateAPIDefinitionExtension(DefaultWorkspaceParameter, UpdateAPIDefinitio
 
 
 # `az apic api version` commands
-from .aaz.latest.apic.api.version import CheckExists as CheckAPIVersionExists, Create as CreateAPIVersion, Delete as DeleteAPIVersion, List as ListAPIVersion, Show as ShowAPIVersion, Update as UpdateAPIVersion
-
-class CheckAPIVersionExistsExtension(DefaultWorkspaceParameter, CheckAPIVersionExists):
-    pass
+from .aaz.latest.apic.api.version import Create as CreateAPIVersion, Delete as DeleteAPIVersion, List as ListAPIVersion, Show as ShowAPIVersion, Update as UpdateAPIVersion
 
 class CreateAPIVersionExtension(DefaultWorkspaceParameter, CreateAPIVersion):
     pass
@@ -91,10 +82,7 @@ class UpdateAPIVersionExtension(DefaultWorkspaceParameter, UpdateAPIVersion):
     pass
 
 # `az apic api deployment` commands
-from .aaz.latest.apic.api.deployment import CheckExists as CheckAPIDeploymentExists, Create as CreateAPIDeployment, Delete as DeleteAPIDeployment, List as ListAPIDeployment, Show as ShowAPIDeployment, Update as UpdateAPIDeployment
-
-class CheckAPIDeploymentExistsExtension(DefaultWorkspaceParameter, CheckAPIDeploymentExists):
-    pass
+from .aaz.latest.apic.api.deployment import Create as CreateAPIDeployment, Delete as DeleteAPIDeployment, List as ListAPIDeployment, Show as ShowAPIDeployment, Update as UpdateAPIDeployment
 
 class CreateAPIDeploymentExtension(DefaultWorkspaceParameter, CreateAPIDeployment):
     pass
@@ -112,10 +100,7 @@ class UpdateAPIDeploymentExtension(DefaultWorkspaceParameter, UpdateAPIDeploymen
     pass
 
 # `az apic environment` commands
-from .aaz.latest.apic.environment import CheckExists as CheckEnvironmentExists, Create as CreateEnvironment, Delete as DeleteEnvironment, List as ListEnvironment, Show as ShowEnvironment, Update as UpdateEnvironment
-
-class CheckEnvironmentExistsExtension(DefaultWorkspaceParameter, CheckEnvironmentExists):
-    pass
+from .aaz.latest.apic.environment import Create as CreateEnvironment, Delete as DeleteEnvironment, List as ListEnvironment, Show as ShowEnvironment, Update as UpdateEnvironment
 
 class CreateEnvironmentExtension(DefaultWorkspaceParameter, CreateEnvironment):
     pass

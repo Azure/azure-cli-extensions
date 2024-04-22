@@ -39,6 +39,7 @@ class ImportSpecificationExtension(ImportAPIDefinitionExtension):
         return args_schema
 
     def pre_operations(self):
+        super().pre_operations()
         args = self.ctx.args
         data = None
         value = None
