@@ -72,7 +72,6 @@ class Create(AAZCommand):
         _args_schema.identity_validation_id = AAZStrArg(
             options=["--identity-validation-id"],
             arg_group="Properties",
-            required=True,
             help="Identity validation id used for the certificate subject name.",
         )
         _args_schema.include_city = AAZBoolArg(
