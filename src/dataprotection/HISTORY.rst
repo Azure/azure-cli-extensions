@@ -2,16 +2,21 @@
 
 Release History
 ===============
-1.2.0
+1.3.0
 +++++
 * Added support for vaulted blob backup and restore
 * `az dataprotection backup-instance initialize-backupconfig`: Added parameters `--vaulted-backup-containers` to provide list of containers to backup
 * `az dataprotection backup-instance initialize-backupconfig`: Added parameters `--include-all-containers`, `--storage-account-name`, `storage-account-resource-group` to backup all containers in a storage storage-account-resource-group
 
-1.1.0
+1.2.0
 +++++
-* Added dataprotection support for PostgreSQLFlexibleServer and MySQL workloads: new manifests, code cleanup.
-* `az dataprotection backup-instance update-msi-permissions`: New parameter `--target-storage-account-id` for Restore, support Restore for new workloads, code cleanup.
+* The following commands and scenarios now have resourceguard-based MUA protection
+* `az dataprotection backup-vault update` - Modify Soft Delete and Immutability State
+* `az dataprotection backup-instance stop-protection` - Stop Protection
+* `az dataprotection backup-instance suspend-backups` - Suspend Backups
+* `az dataprotection backup-instance restore trigger` - Trigger Restore
+* Also now supporting shorthands for new RecoveryServices critical operations.
+* Also added: code cleanup to reduce complexity of resource guard mapping/unlock code.
 
 1.1.0
 +++++

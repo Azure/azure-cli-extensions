@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 
+import unittest
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from datetime import datetime
@@ -45,6 +46,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
     # Uses a persistent vault and DS
     @AllowLargeResponse()
+    @unittest.skip("Resource setup issue with PGFlex Single Server. Scenarios covered in Cross Region Restore tests.")
     def test_dataprotection_backup_and_restore_oss(test):
         test.kwargs.update({
             'location': 'centraluseuap',
@@ -76,14 +78,14 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         })
 
         # Uncomment if validate-for-backup fails due to permission error. Only uncomment when running live.
-        # test.cmd('az dataprotection backup-instance update-msi-permissions '
-        #          '-g "{rg}" '
-        #          '--vault-name "{vaultName}" '
-        #          '--backup-instance "{backupInstance}" '
-        #          '--datasource-type "{dataSourceType}" '
-        #          '--permissions-scope "{permissionsScope}" '
-        #          '--operation "{operation}" '
-        #          '--keyvault-id "{keyVaultId}" --yes')
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" '
+                 '--vault-name "{vaultName}" '
+                 '--backup-instance "{backupInstance}" '
+                 '--datasource-type "{dataSourceType}" '
+                 '--permissions-scope "{permissionsScope}" '
+                 '--operation "{operation}" '
+                 '--keyvault-id "{keyVaultId}" --yes')
 
         backup_instance_validate_create(test)
 

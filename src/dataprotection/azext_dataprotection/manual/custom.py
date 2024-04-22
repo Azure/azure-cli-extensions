@@ -786,7 +786,8 @@ def dataprotection_recovery_point_list(cmd, backup_instance_name, resource_group
 
 
 def dataprotection_backup_instance_restore_trigger(cmd, vault_name, resource_group_name, backup_instance_name,
-                                                   restore_request_object, use_secondary_region=None, no_wait=False):
+                                                   restore_request_object, use_secondary_region=None, no_wait=False,
+                                                   resource_guard_operation_requests=None, tenant_id=None):
     from .aaz_operations.backup_instance import (
         RestoreTrigger,
         TriggerCRR
@@ -808,11 +809,14 @@ def dataprotection_backup_instance_restore_trigger(cmd, vault_name, resource_gro
             "no_wait": no_wait
         })
 
+    # Resource guard checks only exists for non-CRR restore trigger right now
     return RestoreTrigger(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name,
         "backup_instance_name": backup_instance_name,
         "restore_request_object": restore_request_object,
+        "resource_guard_operation_requests": resource_guard_operation_requests,
+        "tenant_id": tenant_id,
         "no_wait": no_wait
     })
 

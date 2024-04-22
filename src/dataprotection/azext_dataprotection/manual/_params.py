@@ -314,6 +314,9 @@ def load_arguments(self, _):
                    'json-string/@json-file.')
         c.argument('use_secondary_region', arg_type=get_three_state_flag(),
                    help='Use this flag to restore from a recoverypoint in secondary region.')
+        c.argument('resource_guard_operation_requests', options_list=['--resource-guard-operation-requests', '--operation-requests'],
+                   type=str, nargs='+', help='Critical operation request which is protected by the resourceGuard.')
+        c.argument('tenant_id', type=str, help='ID of the tenant if the Resource Guard protecting the vault exists in a different tenant.')
 
     with self.argument_context('dataprotection resource-guard list-protected-operations') as c:
         c.argument('resource_group_name', resource_group_name_type)
