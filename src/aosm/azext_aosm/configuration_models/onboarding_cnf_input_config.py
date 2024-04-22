@@ -68,7 +68,7 @@ class OnboardingCNFInputConfig(OnboardingNFDBaseInputConfig):
         metadata={
             "comment": (
                 "List of registries from which to pull the image(s).\n"
-                "For example [sourceacr.azurecr.io/test, myacr2.azurecr.io, ghcr.io/path].\n"
+                'For example ["sourceacr.azurecr.io/test", "myacr2.azurecr.io", "ghcr.io/path"].\n'
                 "For non Azure Container Registries, ensure you have run a docker login command before running build.\n"
             )
         },
