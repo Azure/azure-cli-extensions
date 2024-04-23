@@ -677,7 +677,6 @@ helps[
                az connectedvmware vm guest-agent enable --username "vm user name" --password "vm password" \
 --resource-group "resource group name" --subscription "Name or ID of subscription" --vm-name "vm name" \
 --private-link-scope "/subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.HybirdCompute/privateLinkScopes/contoso-private-link-scope"
-      
 """
 
 helps[
