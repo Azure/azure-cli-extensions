@@ -359,7 +359,7 @@ def load_arguments(self, _):
                    help='Bind the app to the default Application Configuration Service automatically.')
         c.argument('bind_config_server',
                    action='store_true',
-                   options_list=['--bind-config-server --bind-cs'],
+                   options_list=['--bind-config-server', '--bind-cs'],
                    is_preview=True,
                    validator=validate_create_app_binding_default_config_server,
                    help='Bind the app to the default Config Server automatically.')

@@ -447,7 +447,7 @@ helps['spring config-server set'] = """
     short-summary: Set Config Server from a yaml file.
     examples:
         - name: Load from a yaml file and set the default Config Server in service instance MyService.
-          text: az spring config-server create -s MyService -g MyResourceGroup --config-file MyConfigFile.yaml
+          text: az spring config-server set -s MyService -g MyResourceGroup --config-file MyConfigFile.yaml
 """
 
 helps['spring config-server clear'] = """
@@ -473,7 +473,7 @@ helps['spring config-server git set'] = """
     short-summary: Set git property of Config Server, will totally override the old one.
     examples:
         - name: Set a public git repository without credential for the default Config Server in service instance MyService.
-          text: az spring config-server create -s MyService -g MyResourceGroup --uri UrlOfGitRepository --label LabelOfGitRepository --search-paths "/path1,/path2"
+          text: az spring config-server git set -s MyService -g MyResourceGroup --uri UrlOfGitRepository --label LabelOfGitRepository --search-paths "/path1,/path2"
 """
 
 helps['spring config-server git repo add'] = """
