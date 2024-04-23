@@ -19,6 +19,9 @@ class Create(AAZCommand):
 
     :example: Create API
         az apic api create -g contoso-resources -s contoso --api-id echo-api --title "Echo API" --type REST
+
+    :example: Create API with custom properties
+        az apic api create -g contoso-resources -s contoso --api-id echo-api --title "Echo API" --type REST --custom-properties '{\"public-facing\":true}'
     """
 
     _aaz_info = {

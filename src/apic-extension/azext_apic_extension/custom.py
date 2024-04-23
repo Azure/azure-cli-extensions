@@ -20,9 +20,9 @@ import chardet
 from azure.cli.core.aaz._arg import AAZStrArg
 from .command_patches import ImportAPIDefinitionExtension
 from .command_patches import ExportAPIDefinitionExtension
-from .aaz.latest.apic.metadata import Create as CreateMetadataSchema
+from .command_patches import CreateMetadataExtension
+from .command_patches import ExportMetadataExtension
 from .aaz.latest.apic.metadata import Update as UpdateMetadataSchema
-from .aaz.latest.apic.metadata import Export as ExportMetadataSchema
 
 logger = get_logger(__name__)
 
@@ -133,7 +133,7 @@ class ExportSpecificationExtension(ExportAPIDefinitionExtension):
                     f.write(results)
 
 
-class CreateMetadataSchemaExtension(CreateMetadataSchema):
+class CreateMetadataSchemaExtension(CreateMetadataExtension):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -215,7 +215,7 @@ class UpdateMetadataSchemaExtension(UpdateMetadataSchema):
         self.ctx.args.schema = value
 
 
-class ExportMetadataSchemaExtension(ExportMetadataSchema):
+class ExportMetadataSchemaExtension(ExportMetadataExtension):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):

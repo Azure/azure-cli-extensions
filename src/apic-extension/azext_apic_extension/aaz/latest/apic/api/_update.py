@@ -19,6 +19,9 @@ class Update(AAZCommand):
 
     :example: Update API
         az apic api update -g contoso-resources -s contoso --api-id echo-api --summary "Basic REST API service"
+
+    :example: Update custom properties
+        az apic api update -g contoso-resources -s contoso --api-id echo-api --custom-properties '{\"public-facing\":true}'
     """
 
     _aaz_info = {
