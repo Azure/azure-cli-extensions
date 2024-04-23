@@ -21,6 +21,7 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
+    CONST_MONITORING_ADDON_NAME,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
@@ -2855,6 +2856,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             addon_profiles[
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
+        skuName = self.context.get_sku_name()
+        if skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            addon_profiles[
+                CONST_MONITORING_ADDON_NAME
+            ] = super().build_monitoring_addon_profile()
         mc.addon_profiles = addon_profiles
         return mc
 
