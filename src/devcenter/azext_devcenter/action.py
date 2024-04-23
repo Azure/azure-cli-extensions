@@ -8,7 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=protected-access
-
+# pylint: disable=no-self-use
 
 import argparse
 from collections import defaultdict
