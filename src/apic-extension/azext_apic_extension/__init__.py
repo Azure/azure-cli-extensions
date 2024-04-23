@@ -45,14 +45,16 @@ class ApicExtensionCommandsLoader(AzCommandsLoader):
 def is_aaz_command_subclass(value: Type) -> bool:
     return isinstance(value, type) and issubclass(value, AAZCommand)
 
+
 def load_command_patches(loader: AzCommandsLoader) -> None:
     import inspect
     from azext_apic_extension import command_patches
-    
+
     for _, value in inspect.getmembers(command_patches):
         # Only load custom commands from the command_patches module
         if is_aaz_command_subclass(value) and value.__module__ == command_patches.__name__:
             if value.AZ_NAME:
                 loader.command_table[value.AZ_NAME] = value(loader=loader)
+
 
 COMMAND_LOADER_CLS = ApicExtensionCommandsLoader

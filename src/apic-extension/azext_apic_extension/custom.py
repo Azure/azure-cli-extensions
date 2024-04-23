@@ -26,6 +26,7 @@ from .aaz.latest.apic.metadata import Update as UpdateMetadataSchema
 
 logger = get_logger(__name__)
 
+
 class ImportSpecificationExtension(ImportAPIDefinitionExtension):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
