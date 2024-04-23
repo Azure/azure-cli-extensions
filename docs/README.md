@@ -6,7 +6,7 @@ Information
 Take a look at: [Azure CLI Extensions](https://github.com/Azure/azure-cli/tree/dev/doc/extensions)
 
 Doc Sections
-------------
+------------ 
 
 - [Authoring](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/authoring.md) - How to author and develop an extension
 
