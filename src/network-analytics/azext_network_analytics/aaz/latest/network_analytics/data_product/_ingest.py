@@ -16,7 +16,6 @@ from azure.core.exceptions import ClientAuthenticationError
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from datetime import date
-from .profiles import DATA_STORAGE_BLOB_CONTAINER
 
 @register_command(
     "network-analytics data-product ingest",
