@@ -34,7 +34,7 @@ POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exitin
 POLLING_INTERVAL_FOR_MANAGED_CERTIFICATE = 4  # how many seconds between requests
 HEADER_AZURE_ASYNC_OPERATION = "azure-asyncoperation"
 HEADER_LOCATION = "location"
-
+# management_hostname = "https://capps-azapi-rp-8c722.azurewebsites.net/"
 
 class GitHubActionPreviewClient(GitHubActionClient):
     api_version = PREVIEW_API_VERSION
@@ -257,6 +257,7 @@ class DaprComponentResiliencyPreviewClient():
 
     @classmethod
     def list(cls, cmd, resource_group_name, dapr_component_name, environment_name):
+        logger.warning(f"=== list {management_hostname}")
         policy_list = []
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -344,6 +345,7 @@ class ManagedEnvironmentPreviewClient(ManagedEnvironmentClient):
             resource_group_name,
             name,
             cls.api_version)
+        logger.warning("=== list usage ===")
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -355,7 +357,6 @@ class AuthPreviewClient(AuthClient):
 
 class ConnectedEnvironmentClient():
     api_version = PREVIEW_API_VERSION
-
     @classmethod
     def create(cls, cmd, resource_group_name, name, connected_environment_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -439,6 +440,8 @@ class ConnectedEnvironmentClient():
             resource_group_name,
             name,
             cls.api_version)
+        
+        logger.warning("====GET====")
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -454,6 +457,7 @@ class ConnectedEnvironmentClient():
             sub_id,
             cls.api_version)
 
+        logger.warning(f"=== request_url is {request_url} ===")
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
         for env in j["value"]:
@@ -482,7 +486,7 @@ class ConnectedEnvironmentClient():
             sub_id,
             resource_group_name,
             cls.api_version)
-
+        logger.warning(f"=== list by resource-group, request_url is {request_url} ===")
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
         for env in j["value"]:

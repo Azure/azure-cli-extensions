@@ -684,6 +684,26 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         for k, v in old_command_kwargs.items():
             self.cmd.command_kwargs[k] = v
+    
+    def build_dockerfile_from_acr(self, source, dockerfile, can_create_acr_if_needed, registry_server, image_name_with_tag):
+        logger.warning("Dockerfile detected. Running the build through ACR.")
+        # ACR Task is the only way we have for now to build a Dockerfile using Docker.
+        if can_create_acr_if_needed:
+            self.create_acr_if_needed()
+        elif not registry_server:
+            raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source with a Dockerfile")
+        elif ACR_IMAGE_SUFFIX not in registry_server:
+            raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source with a Dockerfile")
+        self.image = self.registry_server + "/" + image_name_with_tag
+        queue_acr_build(
+            self.cmd,
+            self.acr.resource_group.name,
+            self.acr.name,
+            image_name_with_tag,
+            source,
+            dockerfile,
+            False
+        )
 
     def run_source_to_cloud_flow(self, source, dockerfile, build_env_vars, can_create_acr_if_needed, registry_server):
         image_name = self.image if self.image is not None else self.name
@@ -696,25 +716,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         image_name_with_tag = image_name + ":{}-{}".format(tag_cli_prefix, tag_now_suffix)
         self.image = self.registry_server + "/" + image_name_with_tag
 
-        if _has_dockerfile(source, dockerfile):
-            logger.warning("Dockerfile detected. Running the build through ACR.")
-            # ACR Task is the only way we have for now to build a Dockerfile using Docker.
-            if can_create_acr_if_needed:
-                self.create_acr_if_needed()
-            elif not registry_server:
-                raise RequiredArgumentMissingError("Usage error: --registry-server is required while using --source with a Dockerfile")
-            elif ACR_IMAGE_SUFFIX not in registry_server:
-                raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --source with a Dockerfile")
-            self.image = self.registry_server + "/" + image_name_with_tag
-            queue_acr_build(
-                self.cmd,
-                self.acr.resource_group.name,
-                self.acr.name,
-                image_name_with_tag,
-                source,
-                dockerfile,
-                False
-            )
+        # If the source code has a dockerfile and the environment has workload profile, then use cloud build to build the dockerfile, otherwise, use ACR task to build the dockerfile
+        workload_profile = _get_workload_profile(self.cmd, self.env)
+        if _has_dockerfile(source, dockerfile) and (self.env.resource_type == CONNECTED_ENVIRONMENT_RESOURCE_TYPE or workload_profile is None):
+            self.build_dockerfile_from_acr(source, dockerfile, can_create_acr_if_needed, registry_server, image_name_with_tag)
             return False
 
         location = "eastus"
@@ -739,8 +744,11 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             # Build the app with a constant 'build-cache' tag to leverage the local cache containing build layers
             # NOTE: this 'build-cache' tag will not be pushed to the user's registry, only maintained locally
             build_image_name_with_cache_tag = f"{image_name}:build-cache"
-            self.build_container_from_source_with_buildpack(image_name_with_tag, source, build_image_name_with_cache_tag, build_env_vars)
-            self.image = self.registry_server + "/" + image_name_with_tag
+            if _has_dockerfile(source, dockerfile) :
+                self.build_dockerfile_from_acr(source, dockerfile, can_create_acr_if_needed, registry_server, image_name_with_tag)
+            else:
+                self.build_container_from_source_with_buildpack(image_name_with_tag, source, build_image_name_with_cache_tag, build_env_vars)
+                self.image = self.registry_server + "/" + image_name_with_tag
             return False
 
         # Fall back to ACR Task
@@ -1078,6 +1086,15 @@ def _reformat_image(source, repo, image):
         image = image.replace(":", "")
     return image
 
+def _get_workload_profile(cmd, env):
+    if (not env) or env.resource_type == CONNECTED_ENVIRONMENT_RESOURCE_TYPE:
+        return None
+
+    try:
+        env_def = ManagedEnvironmentPreviewClient.show(cmd, env.resource_group.name, env.name)
+        return safe_get(env_def, "properties", "workloadProfiles")
+    except Exception as e:  # pylint: disable=bare-except
+        handle_non_404_status_code_exception(e)
 
 def _has_dockerfile(source, dockerfile):
     try:
