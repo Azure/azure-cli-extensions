@@ -13,6 +13,10 @@ Pending
 +++++++
 * Minimise the roles needed to introduce for Elastic SAN for enabling Azure Container Storage with elasticSan storagepool type.
 
+3.0.0b6
++++++++
+* Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
+
 3.0.0b5
 +++++++
 * Add `--bootstrap-artifact-source` and `--bootstrap-container-registry-resource-id` to `az aks update`.
