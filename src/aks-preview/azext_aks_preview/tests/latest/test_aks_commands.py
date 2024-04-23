@@ -2663,9 +2663,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
-    def test_aks_nodepool_add_with_ossku_windowsAnnual(
+    def test_aks_nodepool_add_with_ossku_windowsannual(
         self, resource_group, resource_group_location
     ):
         # reset the count so in replay mode the random names will start with 0
