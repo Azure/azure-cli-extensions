@@ -6,6 +6,8 @@ Release History
 ++++++
 * Fix bug in `az connectedvmware create` command when RG of machine is different from RG of vCenter.
 * Update help command for vm create to remove non-required parameters.
+* Bug fix in sample resource id format for vcenter
+* Add --private-link-scope flag to `az connectedvmware vm guest-agent enable` command.
 
 1.0.0
 ++++++

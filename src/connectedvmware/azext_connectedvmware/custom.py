@@ -2092,6 +2092,7 @@ def enable_guest_agent(
     username,
     password,
     https_proxy=None,
+    private_link_scope=None,
     no_wait=False,
 ):
     """
@@ -2118,6 +2119,7 @@ def enable_guest_agent(
 
     guest_agent = GuestAgent(
         credentials=vm_creds,
+        private_link_scope_resource_id=private_link_scope,
         http_proxy_config=https_proxy_config,
         provisioning_action=GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
     )
