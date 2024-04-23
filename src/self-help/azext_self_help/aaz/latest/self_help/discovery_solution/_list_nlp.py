@@ -12,29 +12,29 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "self-help check-name-availability",
+    "self-help discovery-solution list-nlp",
     is_preview=True,
 )
-class CheckNameAvailability(AAZCommand):
-    """This API is used to check the uniqueness of a resource name used for a diagnostic, troubleshooter or solution
+class List_NLP(AAZCommand):
+    """List the relevant Azure diagnostics and solutions using issue summary.
 
-    :example: Check Resource Uniqueness
-        az self-help check-name-availability --scope subscriptions/00000000-0000-0000-0000-000000000000 --name diagnostic-name --type 'Microsoft.Help/diagnostics'
-        az self-help check-name-availability --scope subscriptions/00000000-0000-0000-0000-000000000000 --name solution-name --type 'Microsoft.Help/solutions'
-        az self-help check-name-availability --scope subscriptions/00000000-0000-0000-0000-000000000000 --name 12345678-BBBb-cCCCC-0000-123456789012 --type 'Microsoft.Help/troubleshooters'
+    :example: List DiscoverySolution results for a resource
+        az self-help discovery-solution list-nlp --resource-id resource-id --issue-summary issue-summary
+        --service-id service-id additional-context additional-context" 
     """
 
     _aaz_info = {
         "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/checknameavailability", "2024-03-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.help/discoversolutions", "2024-03-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -48,29 +48,31 @@ class CheckNameAvailability(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.scope = AAZStrArg(
-            options=["--scope"],
-            help="This is an extension resource provider and only resource level extension is supported at the moment.",
-            required=True,
+            options=["--resource-id"],
+            help="Resource Id",
+            required=False,
+        )
+        _args_schema.issue_summary = AAZStrArg(
+            options=["--issue-summary"],
+            help="Issue Summary",
+            required=False,
+        )
+        _args_schema.service_id = AAZStrArg(
+            options=["--service-id"],
+            help="Service Id",
+            required=False,
+        )
+        _args_schema.additional_context = AAZStrArg(
+            options=["--additional-context"],
+            help="Additional Context",
+            required=False,
         )
 
-        # define Arg Group "CheckNameAvailabilityRequest"
-
-        _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name"],
-            arg_group="CheckNameAvailabilityRequest",
-            help="The name of the resource for which availability needs to be checked.",
-        )
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="CheckNameAvailabilityRequest",
-            help="The resource type.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CheckNameAvailabilityPost(ctx=self.ctx)()
+        yield self.DiscoverSolutionList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,24 +84,31 @@ class CheckNameAvailability(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+
         return result
 
-    class CheckNameAvailabilityPost(AAZHttpOperation):
+    class DiscoverSolutionList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/{scope}/providers/Microsoft.Help/checkNameAvailability",
+                "/providers/Microsoft.Help/discoverSolutions",
                 **self.url_parameters
             )
 
@@ -110,17 +119,6 @@ class CheckNameAvailability(AAZCommand):
         @property
         def error_format(self):
             return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "scope", self.ctx.args.scope,
-                    skip_quote=True,
-                    required=True,
-                ),
-            }
-            return parameters
 
         @property
         def query_parameters(self):
@@ -151,8 +149,10 @@ class CheckNameAvailability(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("name", AAZStrType, ".name")
-            _builder.set_prop("type", AAZStrType, ".type")
+            _builder.set_prop("IssueSummary", AAZStrType, ".issue_summary")
+            _builder.set_prop("ResourceId", AAZStrType, ".resource_id")
+            _builder.set_prop("AdditionalContext", AAZStrType, ".additional_context")
+            _builder.set_prop("ServiceId", AAZStrType, ".service_id")
 
             return self.serialize_content(_content_value)
 
@@ -172,19 +172,41 @@ class CheckNameAvailability(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.message = AAZStrType()
-            _schema_on_200.name_available = AAZBoolType(
-                serialized_name="nameAvailable",
+            _schema_on_200 = cls._schema_on_200         
+            _schema_on_200.value = AAZListType()
+           
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
             )
-            _schema_on_200.reason = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType()
+
+            properties = _element.properties
+            properties.problemClassificationId = AAZStrType()
+            properties.problemDescription = AAZStrType()
+            properties.problemTitle = AAZStrType()
+            properties.serviceId = AAZStrType()
+            properties.solutions = AAZListType()
+
+            solutions = properties.solutions
+            solutions.Element = AAZObjectType()
+            solution = solutions.Element
+            solution.solutionId = AAZStrType()
+            solution.solutionType = AAZStrType()
+            solution.description = AAZStrType()
+            solution.requiredInputs = AAZListType()
+
+            requiredInputs = solution.requiredInputs
+            requiredInputs.Element = AAZStrType()
 
             return cls._schema_on_200
-
-
-class _CheckNameAvailabilityHelper:
-    """Helper class for CheckNameAvailability"""
-
-
-__all__ = ["CheckNameAvailability"]
+            
+__all__ = ["List_NLP"]

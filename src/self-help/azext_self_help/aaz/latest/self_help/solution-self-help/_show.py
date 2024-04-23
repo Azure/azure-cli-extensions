@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "self-help troubleshooter restart",
+    "self-help solution-self-help show",
     is_preview=True,
 )
-class Restart(AAZCommand):
-    """Restarts the troubleshooter API using applicable troubleshooter resource name as the input.
+class Show(AAZCommand):
+    """Get the self help solution using the applicable solutionId while creating the solution.
 
-    :example: Restart Troubleshooter at Resource Level
-        az self-help troubleshooter restart --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789123 --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+    :example: Show Solution at Resource Level
+        az self-help solution-self-help show --solution-id solution-id
     """
 
     _aaz_info = {
         "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/troubleshooters/{}/restart", "2024-03-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/SelfHelp/{solution-id}", "2024-03-01-preview"],
         ]
     }
 
@@ -45,17 +45,13 @@ class Restart(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.scope = AAZStrArg(
-            options=["--scope"],
-            help="This is an extension resource provider and only resource level extension is supported at the moment.",
-            required=True,
-        )
-        _args_schema.troubleshooter_name = AAZStrArg(
-            options=["--troubleshooter-name"],
-            help="Troubleshooter resource Name.",
+
+        _args_schema.solutionId = AAZStrArg(
+            options=["--solution-id"],
+            help="Solution Id.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="([A-Za-z0-9]+(-[A-Za-z0-9]+)+)",
+                pattern="^[A-Za-z0-9-+@()_]+$",
                 max_length=100,
                 min_length=1,
             ),
@@ -64,7 +60,7 @@ class Restart(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TroubleshootersRestart(ctx=self.ctx)()
+        self.SolutionGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,7 +75,7 @@ class Restart(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TroubleshootersRestart(AAZHttpOperation):
+    class SolutionGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,13 +89,13 @@ class Restart(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{scope}/providers/Microsoft.Help/troubleshooters/{troubleshooterName}/restart",
+                "/{scope}/providers/Microsoft.Help/selfhelp/{solutionId}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -109,12 +105,7 @@ class Restart(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "scope", self.ctx.args.scope,
-                    skip_quote=True,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "troubleshooterName", self.ctx.args.troubleshooter_name,
+                    "solutionId", self.ctx.args.solutionId,
                     required=True,
                 ),
             }
@@ -157,16 +148,32 @@ class Restart(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.troubleshooter_resource_name = AAZStrType(
-                serialized_name="troubleshooterResourceName",
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
+            properties = cls._schema_on_200.properties
+            properties.content = AAZStrType()
+            properties.parameters = AAZDictType()
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+            )
+            
+            properties.solution_id = AAZStrType(
+                serialized_name="solutionId",
+            )
+            properties.title = AAZStrType()
+
+            parameters = cls._schema_on_200.properties.parameters
+            parameters.Element = AAZStrType()
+
             return cls._schema_on_200
 
-
-class _RestartHelper:
-    """Helper class for Restart"""
-
-
-__all__ = ["Restart"]
+__all__ = ["Show"]

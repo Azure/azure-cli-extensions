@@ -12,27 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "self-help troubleshooter continue",
+    "self-help solution warmup",
     is_preview=True,
 )
-class Continue(AAZCommand):
-    """Uses stepId and responses as the trigger to continue the troubleshooting steps for the respective troubleshooter resource name.
+class Warmup(AAZCommand):
+    """Warmup a solution for the specific Azure resource or subscription using the parameters needed to run the diagnostics in the solution
 
-    :example: Continue Troubleshooter at Resource Level
-        az self-help troubleshooter continue --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789123 --step-id step-id --responses [] --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+    :example: Warmup Solution at Resource Level
+        az self-help solution warmup --solution-name solution-name --parameters {} --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {
         "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/troubleshooters/{}/continue", "2024-03-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/solutions/{solution-name}/warmup", "2024-03-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -50,52 +51,32 @@ class Continue(AAZCommand):
             help="This is an extension resource provider and only resource level extension is supported at the moment.",
             required=True,
         )
-        _args_schema.troubleshooter_name = AAZStrArg(
-            options=["--troubleshooter-name"],
-            help="Troubleshooter resource Name.",
+        _args_schema.solution_name = AAZStrArg(
+            options=["--solution-name"],
+            help="Solution resource Name.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="([A-Za-z0-9]+(-[A-Za-z0-9]+)+)",
+                pattern="^[A-Za-z0-9-+@()_]+$",
                 max_length=100,
                 min_length=1,
             ),
         )
 
-        # define Arg Group "ContinueRequestBody"
-
+        # define Arg Group "Parameters"
         _args_schema = cls._args_schema
-        _args_schema.responses = AAZListArg(
-            options=["--responses"],
-            arg_group="ContinueRequestBody",
-        )
-        _args_schema.step_id = AAZStrArg(
-            options=["--step-id"],
-            arg_group="ContinueRequestBody",
-            help="Unique id of the result.",
+        _args_schema.parameters = AAZDictArg(
+            options=["--parameters"],
+            help="Client input parameters to run Solution",
         )
 
-        responses = cls._args_schema.responses
-        responses.Element = AAZObjectArg()
+        parameters = cls._args_schema.parameters
+        parameters.Element = AAZStrArg()
 
-        _element = cls._args_schema.responses.Element
-        _element.question_id = AAZStrArg(
-            options=["question-id"],
-            help="id of the question.",
-        )
-        _element.question_type = AAZStrArg(
-            options=["question-type"],
-            help="Text Input. Will be a single line input.",
-            enum={"Dropdown": "Dropdown", "MultiLineInfoBox": "MultiLineInfoBox", "RadioButton": "RadioButton", "TextInput": "TextInput"},
-        )
-        _element.response = AAZStrArg(
-            options=["response"],
-            help="Response key for SingleInput. For Multi-line test/open ended question it is free form text",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TroubleshootersContinue(ctx=self.ctx)()
+        yield self.SolutionWarmup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -106,21 +87,28 @@ class Continue(AAZCommand):
     def post_operations(self):
         pass
 
-    class TroubleshootersContinue(AAZHttpOperation):
+    class SolutionWarmup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [204]:
-                return self.on_204(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/{scope}/providers/Microsoft.Help/troubleshooters/{troubleshooterName}/continue",
+                "/{scope}/providers/Microsoft.Help/solutions/{solutionResourceName}/warmup",
                 **self.url_parameters
             )
 
@@ -141,7 +129,7 @@ class Continue(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "troubleshooterName", self.ctx.args.troubleshooter_name,
+                    "solutionResourceName", self.ctx.args.solution_name,
                     required=True,
                 ),
             }
@@ -163,6 +151,9 @@ class Continue(AAZCommand):
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
             }
             return parameters
 
@@ -173,27 +164,16 @@ class Continue(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("responses", AAZListType, ".responses")
-            _builder.set_prop("stepId", AAZStrType, ".step_id")
+            _builder.set_prop("parameters", AAZDictType, ".parameters")
 
-            responses = _builder.get(".responses")
-            if responses is not None:
-                responses.set_elements(AAZObjectType, ".")
+            parameters = _builder.get(".parameters")
 
-            _elements = _builder.get(".responses[]")
-            if _elements is not None:
-                _elements.set_prop("questionId", AAZStrType, ".question_id")
-                _elements.set_prop("questionType", AAZStrType, ".question_type")
-                _elements.set_prop("response", AAZStrType, ".response")
+            if parameters is not None:
+                parameters.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
         def on_204(self, session):
             pass
 
-
-class _ContinueHelper:
-    """Helper class for Continue"""
-
-
-__all__ = ["Continue"]
+__all__ = ["Warmup"]
