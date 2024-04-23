@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update a standby virtual machine pool
 
     :example: Update max ready capacity
-        az standby-vm-pool update 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --max-ready-capacity 3
+        az standby-vm-pool update --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --max-ready-capacity 3
 
     :example: Update virtual machine state
-        az standby-vm-pool update 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --vm-state Deallocate
+        az standby-vm-pool update --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --vm-state Deallocate
 
     :example: Update attached virtual machine scale set
-        az standby-vm-pool update 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --vmss-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.Compute/virtualMachineScaleSets/testvmss
+        az standby-vm-pool update --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool --vmss-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.Compute/virtualMachineScaleSets/testvmss
     """
 
     _aaz_info = {

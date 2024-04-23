@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a standby virtual machine pool
 
     :example: Get standby virtual machine pool
-        az standby-vm-pool show--subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
+        az standby-vm-pool show --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
     """
 
     _aaz_info = {
