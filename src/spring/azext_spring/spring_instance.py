@@ -163,6 +163,8 @@ def spring_create(cmd, client, resource_group, name,
                   vnet=None,
                   service_runtime_subnet=None,
                   app_subnet=None,
+                  service_runtime_aks_id=None,
+                  app_aks_id=None,
                   reserved_cidr_range=None,
                   service_runtime_network_resource_group=None,
                   app_network_resource_group=None,
@@ -216,6 +218,7 @@ def spring_create(cmd, client, resource_group, name,
         'ingress_read_timeout': ingress_read_timeout,
         'sku': sku,
         'tags': tags,
+
         'zone_redundant': zone_redundant,
         'build_pool_size': build_pool_size,
         'disable_build_service': disable_build_service,
@@ -238,6 +241,17 @@ def spring_create(cmd, client, resource_group, name,
         'infra_resource_group': infra_resource_group,
         'no_wait': no_wait
     }
+
+    if tags:
+        kwargs['tags'] = tags
+    else:
+        kwargs['tags'] = {}
+
+    if service_runtime_aks_id:
+        kwargs['tags']['systemClusterId'] = service_runtime_aks_id
+    
+    if app_aks_id:
+        kwargs['tags']['userClusterId'] = app_aks_id
 
     if vnet:
         register_provider_if_needed(cmd, AKS_RP)
