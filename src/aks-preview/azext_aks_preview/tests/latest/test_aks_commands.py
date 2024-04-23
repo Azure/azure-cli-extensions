@@ -5,6 +5,7 @@
 
 import os
 import pty
+import semver
 import subprocess
 import tempfile
 import time
@@ -85,17 +86,31 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         lts_versions = sorted(lts_versions, key=lambda x: list(map(int, x.split("."))), reverse=True)
         return lts_versions[0] if lts_versions else None
 
+    def _sort_revisions(self, revisions):
+        def _convert_revision_to_semver(rev):
+            sr = rev.replace("asm-", "")
+            sv = sr.replace("-", ".", 1)
+            # Add a custom patch version of 0
+            sv += ".0"
+            return semver.VersionInfo.parse(sv)
+
+        sorted_revisions = sorted(revisions, key=_convert_revision_to_semver)
+        return sorted_revisions
+
     def _get_asm_supported_revision(self, location):
-        revisions_cmd = f"aks mesh get-revisions -l {location}"
-        revisions = self.cmd(revisions_cmd).get_output_in_json()
-        assert len(revisions["meshRevisions"]) > 0
-        return revisions['meshRevisions'][0]['revision']
+        mesh_revisions_cmd = f"aks mesh get-revisions -l {location}"
+        mesh_revisions = self.cmd(mesh_revisions_cmd).get_output_in_json()
+        assert len(mesh_revisions["meshRevisions"]) > 0
+        revisions = [r["revision"] for r in mesh_revisions["meshRevisions"]]
+        sorted_revisons = self._sort_revisions(revisions)
+        return sorted_revisons[0]
 
     def _get_asm_upgrade_version(self, resource_group, name):
         get_upgrade_cmd = f"aks mesh get-upgrades --resource-group={resource_group} --name={name}"
-        upgrades = self.cmd(get_upgrade_cmd).get_output_in_json()
-        assert "upgrades" in upgrades and len(upgrades["upgrades"]) > 0
-        return upgrades["upgrades"][0]
+        res = self.cmd(get_upgrade_cmd).get_output_in_json()
+        assert "upgrades" in res and len(res["upgrades"]) > 0
+        sorted_upgrades = self._sort_revisions(res["upgrades"])
+        return sorted_upgrades[0]
 
     @classmethod
     def generate_ssh_keys(cls):
