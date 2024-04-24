@@ -14,7 +14,7 @@ Pending
 
 3.0.0b6
 +++++++
-* support `--yes` for `az aks mesh upgrade rollback` and `az aks mesh upgrade complete` commands.
+* Support `--yes` for `az aks mesh upgrade rollback` and `az aks mesh upgrade complete` commands.
 * Minimise the roles needed to introduce for Elastic SAN for enabling Azure Container Storage with elasticSan storagepool type.
 
 3.0.0b5
