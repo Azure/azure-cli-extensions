@@ -4330,15 +4330,12 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             dec_2.context.get_intermediate("ingress_appgw_addon_enabled"), True
         )
 
-        # automatic sku
+        # pass in sku automatic will enable the monitoring addon name omsagent
         dec_3 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
             {
                 "sku": "automatic",
-                "enable_addons": "monitoring",
-                "workspace_resource_id": "test_workspace_resource_id",
-                "enable_msi_auth_for_monitoring": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -4348,7 +4345,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_mc_sku_3 = dec_3.set_up_sku(mc_3)
         with patch(
             "azure.cli.command_modules.acs.managed_cluster_decorator.ensure_container_insights_for_monitoring",
-            return_value=None,
+            return_value=None), patch(
+            "azure.cli.command_modules.acs.managed_cluster_decorator.ensure_default_log_analytics_workspace_for_monitoring",
+            return_value = "test_workspace_resource_id",
         ):
             dec_mc_3 = dec_3.set_up_addon_profiles(dec_mc_sku_3)
         addon_profiles_3 = {
@@ -4368,11 +4367,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             kind = "Automatic",
         )
         print()
-        # print(vars(dec_mc_3.addon_profiles['omsagent']))
-        print(dec_mc_3)
+        print(dec_mc_3.addon_profiles['omsagent'])
         print()
-        print(ground_truth_mc_3)
-        # print(vars(ground_truth_mc_3.addon_profiles['omsagent']))
+        print(ground_truth_mc_3.addon_profiles['omsagent'])
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
         self.assertEqual(
             dec_3.context.get_intermediate("monitoring_addon_enabled"), True

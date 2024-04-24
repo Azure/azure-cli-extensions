@@ -317,6 +317,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             else:
                 skuName = CONST_MANAGED_CLUSTER_SKU_NAME_BASE
         return skuName
+    
+    def _get_enable_addons(self, enable_validation: bool = False) -> List[str]:
+        enable_addons = super()._get_enable_addons()
+        sku_name = self.raw_param.get("sku")
+        if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            enable_addons.append("monitoring")
+        return enable_addons
+
+    def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
+        enable_msi_auth_for_monitoring = super().get_enable_msi_auth_for_monitoring()
+        sku_name = self.raw_param.get("sku")
+        if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            return True
+        return enable_msi_auth_for_monitoring
 
     def _get_outbound_type(
         self,
@@ -2856,11 +2870,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             addon_profiles[
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
-        skuName = self.context.get_sku_name()
-        if skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-            addon_profiles[
-                CONST_MONITORING_ADDON_NAME
-            ] = super().build_monitoring_addon_profile()
         mc.addon_profiles = addon_profiles
         return mc
 
