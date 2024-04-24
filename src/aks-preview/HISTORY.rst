@@ -17,6 +17,11 @@ Pending
 * Support `--yes` for `az aks mesh upgrade rollback` and `az aks mesh upgrade complete` commands.
 * Minimise the roles needed to introduce for Elastic SAN for enabling Azure Container Storage with elasticSan storagepool type.
 
+3.0.0b6
++++++++
+* Add `--enable-azure-monitor-app-monitoring` to the `az aks create` command.
+* Add `--enable-azure-monitor-app-monitoring` and `--disable-azure-monitor-app-monitoring` to the `az aks update` command.
+
 3.0.0b5
 +++++++
 * Add `--bootstrap-artifact-source` and `--bootstrap-container-registry-resource-id` to `az aks update`.

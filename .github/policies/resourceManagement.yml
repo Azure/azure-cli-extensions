@@ -2840,6 +2840,33 @@ configuration:
           label: AKS
       description: '[aks] Auto assign labels and reviewers based on PR title/description.'
     - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '\b(aosm|Aosm|AOSM)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: az aosm
+            isRegex: True
+      then:
+      - requestReview:
+          reviewer: zhoxing-ms
+      - requestReview:
+          reviewer: yanzhudd
+      - assignTo:
+          users:
+          - zhoxing-ms
+          - yanzhudd
+      - addLabel:
+          label: Auto-Assign
+      - requestReview:
+          reviewer: yonzhan
+      - addLabel:
+          label: AOSM
+      description: '[aosm] Auto assign labels and reviewers based on PR title/description.'
+    - if:
       - payloadType: Issues
       - or:
         - isAction:
