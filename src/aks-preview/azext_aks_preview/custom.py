@@ -618,7 +618,7 @@ def aks_create(
     # azure service mesh
     enable_azure_service_mesh=None,
     revision=None,
-    # azure monitor profile
+    # azure monitor profile - metrics
     enable_azuremonitormetrics=False,
     enable_azure_monitor_metrics=False,
     azure_monitor_workspace_resource_id=None,
@@ -626,6 +626,8 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    # azure monitor profile - app monitoring
+    enable_azure_monitor_app_monitoring=False,
     # metrics profile
     enable_cost_analysis=False,
     # AI toolchain operator
@@ -808,6 +810,9 @@ def aks_update(
     enable_windows_recording_rules=False,
     disable_azuremonitormetrics=False,
     disable_azure_monitor_metrics=False,
+    # azure monitor profile - app monitoring
+    enable_azure_monitor_app_monitoring=False,
+    disable_azure_monitor_app_monitoring=False,
     enable_vpa=False,
     disable_vpa=False,
     enable_addon_autoscaling=False,
@@ -3028,12 +3033,15 @@ def aks_mesh_upgrade_complete(
         cmd,
         client,
         resource_group_name,
-        name):
+        name,
+        yes=False
+):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
+        yes=yes,
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE)
 
 
@@ -3041,13 +3049,15 @@ def aks_mesh_upgrade_rollback(
         cmd,
         client,
         resource_group_name,
-        name
+        name,
+        yes=False
 ):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
+        yes=yes,
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK)
 
 
@@ -3070,6 +3080,7 @@ def _aks_mesh_update(
         enable_egress_gateway=None,
         disable_egress_gateway=None,
         revision=None,
+        yes=False,
         mesh_upgrade_command=None,
 ):
     raw_parameters = locals()
@@ -3083,7 +3094,6 @@ def _aks_mesh_update(
         raw_parameters=raw_parameters,
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
     )
-
     try:
         mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_azure_service_mesh_profile(mc)
