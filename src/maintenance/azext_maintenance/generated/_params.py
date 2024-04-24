@@ -46,12 +46,6 @@ def load_arguments(self, _):
         c.argument('resource_type', type=str, help='Resource type')
         c.argument('resource_name', type=str, help='Resource identifier')
 
-    with self.argument_context('maintenance applyupdate update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('provider_name', type=str, help='Resource provider name')
-        c.argument('resource_type', type=str, help='Resource type')
-        c.argument('resource_name', type=str, help='Resource identifier')
-
     with self.argument_context('maintenance applyupdate create-or-update-parent') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', type=str, help='Resource provider name')

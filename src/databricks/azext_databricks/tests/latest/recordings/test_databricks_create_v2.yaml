@@ -1,0 +1,1393 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-keyvault/10.2.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2023-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"eastus","tags":{},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-05-30T06:56:14.791Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-30T06:56:14.791Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","accessPolicies":[{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","objectId":"674368bb-7eaa-4100-aef7-138f65f50648","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '997'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:56:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.785.0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --object-id -g --key-permissions
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-keyvault/10.2.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2023-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"eastus","tags":{},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-05-30T06:56:14.791Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-30T06:56:14.791Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","accessPolicies":[{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","objectId":"674368bb-7eaa-4100-aef7-138f65f50648","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '997'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:56:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.785.0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "tags": {}, "properties": {"tenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a",
+      "sku": {"family": "A", "name": "standard"}, "accessPolicies": [{"tenantId":
+      "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a", "objectId": "674368bb-7eaa-4100-aef7-138f65f50648",
+      "permissions": {"keys": ["all"], "secrets": ["all"], "certificates": ["all"],
+      "storage": ["all"]}}, {"tenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a", "objectId":
+      "09e25313-21e0-4033-bd7c-179e9e990c73", "permissions": {"keys": ["unwrapKey",
+      "get", "wrapKey"]}}], "vaultUri": "https://clitest000002.vault.azure.net/",
+      "enabledForDeployment": false, "enableSoftDelete": true, "softDeleteRetentionInDays":
+      7, "provisioningState": "Succeeded", "publicNetworkAccess": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '746'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --object-id -g --key-permissions
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-keyvault/10.2.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.KeyVault/vaults/clitest000002?api-version=2023-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.KeyVault/vaults/clitest000002","name":"clitest000002","type":"Microsoft.KeyVault/vaults","location":"eastus","tags":{},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-05-30T06:56:14.791Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-30T06:56:57.819Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","accessPolicies":[{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","objectId":"674368bb-7eaa-4100-aef7-138f65f50648","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}},{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","objectId":"09e25313-21e0-4033-bd7c-179e9e990c73","permissions":{"keys":["unwrapKey","get","wrapKey"]}}],"enabledForDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"vaultUri":"https://clitest000002.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1152'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:56:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 1.5.785.0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-keyvault-keys/4.8.0b2 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://clitest000002.vault.azure.net/keys/testkey/create?api-version=7.4-preview.1
+  response:
+    body:
+      string: '{"error":{"code":"Unauthorized","message":"AKV10000: Request is missing
+        a Bearer or PoP token."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '97'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:57:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      www-authenticate:
+      - Bearer authorization="https://login.microsoftonline.com/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a",
+        resource="https://vault.azure.net"
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-network-info:
+      - conn_type=Ipv4;addr=180.158.12.119;act_addr_fam=InterNetwork;
+      x-ms-keyvault-region:
+      - eastus
+      x-ms-keyvault-service-version:
+      - 1.9.804.1
+    status:
+      code: 401
+      message: Unauthorized
+- request:
+    body: '{"kty": "RSA", "attributes": {"enabled": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '47'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-keyvault-keys/4.8.0b2 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://clitest000002.vault.azure.net/keys/testkey/create?api-version=7.4-preview.1
+  response:
+    body:
+      string: '{"key":{"kid":"https://clitest000002.vault.azure.net/keys/testkey/9cc96bd7ef49422fbc35b368934b927e","kty":"RSA","key_ops":["encrypt","decrypt","sign","verify","wrapKey","unwrapKey"],"n":"yCjjxnr52iQUoInsmMthqIOHaOnfq2jQQKpp0u_T74SdZbPdTVCmma4EMsh6eUwpM1WjcyS6C45eVwRKvE-J6jsMlF5yo9pQ48TWg2t9SADz09Ych5rmyHuGKRwCOM9fXQQmgFmcsbVbkaPe0gZ6RS6-LHV4fUwdFmEHIJ9OrhHHqjTv8Y_FF17Ho4Zj72-Rmn27WhXx2cWiUswrJPxYp1jnHbqE29RtNA4YBn8a0FOG3MB6M1Fiu2CB5KH3J389ZMxmFdpO9ELsyoVCh115e5CdD7IVFxC-TN0Hv1fzn6M-2oAIY7PaHm7T1lpKioTProFmsDoB0ZulXprtYiZOHQ","e":"AQAB"},"attributes":{"enabled":true,"created":1685429820,"updated":1685429820,"recoveryLevel":"CustomizedRecoverable+Purgeable","recoverableDays":7,"exportable":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '704'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:57:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-network-info:
+      - conn_type=Ipv4;addr=180.158.12.119;act_addr_fam=InterNetwork;
+      x-ms-keyvault-region:
+      - eastus
+      x-ms-keyvault-service-version:
+      - 1.9.804.1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"encryption": {"entities": {"managedServices":
+      {"keySource": "Microsoft.Keyvault", "keyVaultProperties": {"keyName": "testkey",
+      "keyVaultUri": "https://clitest000002.vault.azure.net/", "keyVersion": "9cc96bd7ef49422fbc35b368934b927e"}}}},
+      "managedResourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-workspace000003-xvh3r5i4gkdfe",
+      "parameters": {"enableNoPublicIp": {"value": true}}}, "sku": {"name": "premium"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '498'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/workspaces/workspace000003?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"encryption\": {\r\n      \"entities\":
+        {\r\n        \"managedServices\": {\r\n          \"keySource\": \"Microsoft.Keyvault\",\r\n
+        \         \"keyVaultProperties\": {\r\n            \"keyVaultUri\": \"https://clitest000002.vault.azure.net/\",\r\n
+        \           \"keyName\": \"testkey\",\r\n            \"keyVersion\": \"9cc96bd7ef49422fbc35b368934b927e\"\r\n
+        \         }\r\n        }\r\n      }\r\n    },\r\n    \"managedResourceGroupId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-workspace000003-xvh3r5i4gkdfe\",\r\n
+        \   \"provisioningState\": \"Accepted\",\r\n    \"authorizations\": [\r\n
+        \     {\r\n        \"principalId\": \"9a74af6f-d153-4348-988a-e2672920bee9\",\r\n
+        \       \"roleDefinitionId\": \"8e3af657-a8ff-443c-a75c-2fe8c4bcb635\"\r\n
+        \     }\r\n    ],\r\n    \"createdBy\": {\r\n      \"oid\": \"674368bb-7eaa-4100-aef7-138f65f50648\",\r\n
+        \     \"puid\": \"10032001C021F1B6\",\r\n      \"applicationId\": \"04b07795-8ddb-461a-bbee-02f9e1bf7b46\"\r\n
+        \   },\r\n    \"updatedBy\": {\r\n      \"oid\": \"674368bb-7eaa-4100-aef7-138f65f50648\",\r\n
+        \     \"puid\": \"10032001C021F1B6\",\r\n      \"applicationId\": \"04b07795-8ddb-461a-bbee-02f9e1bf7b46\"\r\n
+        \   },\r\n    \"createdDateTime\": \"2023-05-30T06:57:13.9023959Z\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/workspaces/workspace000003\",\r\n
+        \ \"name\": \"workspace000003\",\r\n  \"type\": \"Microsoft.Databricks/workspaces\",\r\n
+        \ \"sku\": {\r\n    \"name\": \"premium\"\r\n  },\r\n  \"location\": \"eastus\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1485'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:57:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '149'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:57:14 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:57:30 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:57:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:58:00 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:58:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:58:31 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:58:47 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:59:02 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:59:17 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VQcm92aXNpb25pbmdKb2I6MkRSR0E6MkRDTEk6M0E1RlRFU1Q6M0E1RkRBVEFCUklDS1M6M0E1RkNSRUFURTozQTVGVjJOQzM0QTNZQVhNOjdDRERBM0FBMDA4RDVEQzUxQToyRFdPUktTUEFDRTNaTTdFNkoifQ?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:59:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --sku --enable-no-public-ip --managed-services-key-vault
+        --managed-services-key-name --managed-services-key-version
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/workspaces/workspace000003?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"encryption\": {\r\n      \"entities\":
+        {\r\n        \"managedServices\": {\r\n          \"keySource\": \"Microsoft.Keyvault\",\r\n
+        \         \"keyVaultProperties\": {\r\n            \"keyVaultUri\": \"https://clitest000002.vault.azure.net/\",\r\n
+        \           \"keyName\": \"testkey\",\r\n            \"keyVersion\": \"9cc96bd7ef49422fbc35b368934b927e\"\r\n
+        \         }\r\n        }\r\n      }\r\n    },\r\n    \"managedResourceGroupId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-workspace000003-xvh3r5i4gkdfe\",\r\n
+        \   \"parameters\": {\r\n      \"enableFedRampCertification\": {\r\n        \"type\":
+        \"Bool\",\r\n        \"value\": false\r\n      },\r\n      \"enableNoPublicIp\":
+        {\r\n        \"type\": \"Bool\",\r\n        \"value\": true\r\n      },\r\n
+        \     \"natGatewayName\": {\r\n        \"type\": \"String\",\r\n        \"value\":
+        \"nat-gateway\"\r\n      },\r\n      \"prepareEncryption\": {\r\n        \"type\":
+        \"Bool\",\r\n        \"value\": false\r\n      },\r\n      \"publicIpName\":
+        {\r\n        \"type\": \"String\",\r\n        \"value\": \"nat-gw-public-ip\"\r\n
+        \     },\r\n      \"requireInfrastructureEncryption\": {\r\n        \"type\":
+        \"Bool\",\r\n        \"value\": false\r\n      },\r\n      \"resourceTags\":
+        {\r\n        \"type\": \"Object\",\r\n        \"value\": {\r\n          \"application\":
+        \"databricks\",\r\n          \"databricks-environment\": \"true\"\r\n        }\r\n
+        \     },\r\n      \"storageAccountName\": {\r\n        \"type\": \"String\",\r\n
+        \       \"value\": \"dbstoragezwxgjnzlebihy\"\r\n      },\r\n      \"storageAccountSkuName\":
+        {\r\n        \"type\": \"String\",\r\n        \"value\": \"Standard_GRS\"\r\n
+        \     },\r\n      \"vnetAddressPrefix\": {\r\n        \"type\": \"String\",\r\n
+        \       \"value\": \"10.139\"\r\n      }\r\n    },\r\n    \"provisioningState\":
+        \"Succeeded\",\r\n    \"authorizations\": [\r\n      {\r\n        \"principalId\":
+        \"9a74af6f-d153-4348-988a-e2672920bee9\",\r\n        \"roleDefinitionId\":
+        \"8e3af657-a8ff-443c-a75c-2fe8c4bcb635\"\r\n      }\r\n    ],\r\n    \"createdBy\":
+        {\r\n      \"oid\": \"674368bb-7eaa-4100-aef7-138f65f50648\",\r\n      \"puid\":
+        \"10032001C021F1B6\",\r\n      \"applicationId\": \"04b07795-8ddb-461a-bbee-02f9e1bf7b46\"\r\n
+        \   },\r\n    \"updatedBy\": {\r\n      \"oid\": \"674368bb-7eaa-4100-aef7-138f65f50648\",\r\n
+        \     \"puid\": \"10032001C021F1B6\",\r\n      \"applicationId\": \"04b07795-8ddb-461a-bbee-02f9e1bf7b46\"\r\n
+        \   },\r\n    \"workspaceId\": \"1763709858321308\",\r\n    \"workspaceUrl\":
+        \"adb-1763709858321308.8.azuredatabricks.net\",\r\n    \"createdDateTime\":
+        \"2023-05-30T06:57:13.9023959Z\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/workspaces/workspace000003\",\r\n
+        \ \"name\": \"workspace000003\",\r\n  \"type\": \"Microsoft.Databricks/workspaces\",\r\n
+        \ \"sku\": {\r\n    \"name\": \"premium\"\r\n  },\r\n  \"location\": \"eastus\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2679'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:59:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1799'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/workspaces/workspace000003?api-version=2023-02-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 30 May 2023 06:59:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:59:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 06:59:58 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 07:00:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 07:00:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 07:00:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 07:00:59 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 07:01:15 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 07:01:30 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 07:01:46 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 07:02:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Accepted\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 07:02:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databricks workspace delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_create_v2000001/providers/Microsoft.Databricks/locations/eastus/operationStatuses/eyJmdWxseVF1YWxpZmllZEFwcGxpYW5jZUlkIjoiL3N1YnNjcmlwdGlvbnMvMGIxZjY0NzEtMWJmMC00ZGRhLWFlYzMtY2I5MjcyZjA5NTkwL3Jlc291cmNlR3JvdXBzL2NsaV90ZXN0X2RhdGFicmlja3NfY3JlYXRlX3YybmMzNGEzeWF4bWFmY3NpbW41bnB5MnB2aHd5bWpsbDJqYm5qbjVvc2h2emo2aC9wcm92aWRlcnMvTWljcm9zb2Z0LkRhdGFicmlja3Mvd29ya3NwYWNlcy93b3Jrc3BhY2Uzem03ZTZqIiwiam9iSWQiOiJBcHBsaWFuY2VEZXByb3Zpc2lvbmluZ0pvYjoyRFJHQToyRENMSTozQTVGVEVTVDozQTVGREFUQUJSSUNLUzozQTVGQ1JFQVRFOjNBNUZWMk5DMzRBM1lBWE06N0NEREEzQUEwMDhENURDNTFBOjJEV09SS1NQQUNFM1pNN0U2SiJ9?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 May 2023 07:02:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

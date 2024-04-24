@@ -13,6 +13,7 @@ from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group,
     validate_file_or_dict
 )
+from ._validators import process_missing_vm_resource_parameters
 from ._actions import VmNicAddAction, VmDiskAddAction
 
 
@@ -107,7 +108,37 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vm-template delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
+    with self.argument_context('connectedvmware vm create-from-machines') as c:
+        c.argument(
+            'rg_name', options_list=['--resource-group', '-g'],
+            help=(
+                "Name of the resource group which will be scanned for HCRP machines. "
+                "NOTE: The default group configured using 'az configure --defaults group=<name>' "
+                "is not used, and it must be specified explicitly."
+            )
+        )
+        c.argument(
+            'resource_name', resource_name, options_list=['--name', '-n'],
+            help="Name of the Microsoft.HybridCompute Machine resource. "
+            "Provide this parameter if you want to "
+            "convert a single machine to VMware VM."
+        )
+        c.argument(
+            'vcenter', vcenter, options_list=['--vcenter-id', '-v'],
+            help="ARM ID of the vCenter to which the machines will be linked."
+        )
+
     with self.argument_context('connectedvmware vm create') as c:
+        c.argument(
+            'resource_name', resource_name, options_list=['--name', '-n'],
+            help="Name of the HCRP Machine resource.",
+        )
+        c.argument(
+            'machine_id',
+            help="ARM ID of the Microsoft.HybridCompute Machine resource which you want to link to vCenter",
+            options_list=['--machine-id', '-m'],
+            validator=process_missing_vm_resource_parameters
+        )
         c.argument(
             'vm_template', help="Name or ID of the vm template for deploying the vm.",
         )
@@ -173,8 +204,8 @@ def load_arguments(self, _):
             action=VmDiskAddAction,
             nargs='+',
             help="Disk overrides for the vm. "
-            "Usage: --disk name=<> disk_size=<> disk_mode=<> controller_key=<> "
-            "device-key=<> unit_number=<>.",
+            "Usage: --disk name=<> disk-size=<> disk-mode=<> controller-key=<> "
+            "device-key=<> unit-number=<>.",
         )
 
     with self.argument_context('connectedvmware vm update') as c:
@@ -200,6 +231,28 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
+        c.argument(
+            'delete_from_host',
+            action='store_true',
+            help='Delete the VM from the VMware host.',
+        )
+        c.argument(
+            'retain_machine',
+            action='store_true',
+            help='Retain the parent Microsoft.HybridCompute Machine resource',
+        )
+        c.argument(
+            'delete_machine',
+            action='store_true',
+            help='Delete the parent Microsoft.HybridCompute Machine resource',
+            deprecate_info=c.deprecate(hide=True),
+        )
+        c.argument(
+            'retain',
+            action='store_true',
+            help='Retain the VM in the VMWare host',
+            deprecate_info=c.deprecate(hide=True),
+        )
 
     with self.argument_context('connectedvmware vm stop') as c:
         c.argument(
@@ -346,6 +399,9 @@ def load_arguments(self, _):
         c.argument(
             'https_proxy', help="HTTPS proxy server url for the VM.",
         )
+        c.argument(
+            'private_link_scope', help="The resource id of the private link scope this machine is assigned to.",
+        )
 
     with self.argument_context('connectedvmware vm guest-agent show') as c:
         c.argument(
@@ -385,6 +441,9 @@ def load_arguments(self, _):
                 'is "CustomScriptExtension".')
             c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
             c.argument(
+                'enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicates whether the extension '
+                'should be automatically upgraded by the platform if there is a newer version available.')
+            c.argument(
                 'auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
                 'use a newer minor version if one is available at deployment time. Once deployed, however, the '
                 'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
@@ -395,14 +454,6 @@ def load_arguments(self, _):
                 'protected_settings', type=validate_file_or_dict, help='The extension can contain either '
                 'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
                 'value: json-string/json-file/@json-file.')
-
-    with self.argument_context('connectedvmware vm extension create') as c:
-        c.argument(
-            'instance_view_type', type=str, help='Specify the type of the extension; an example is '
-            '"CustomScriptExtension".', arg_group='Instance View')
-        c.argument(
-            'inst_handler_version', type=str, help='Specify the version of the script handler.',
-            arg_group='Instance View')
 
     with self.argument_context('connectedvmware vm extension delete') as c:
         c.argument('vm_name', type=str, help='The name of the vm where the extension '

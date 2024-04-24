@@ -313,6 +313,17 @@ az network front-door waf-policy managed-rule-definition list
         self.assertIn('managedRules', result)
         self.assertEqual(len(result['managedRules']['managedRuleSets']), 0)
 
+        type = "Microsoft_DefaultRuleSet"
+        version = "2.0"
+        action = "Block"
+        cmd = 'az network front-door waf-policy managed-rules add -g {resource_group} --policy-name {policyName} --type {type} --version {version} --action {action}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+
+        self.assertIn('managedRules', result)
+        self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetType'], type)
+        self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetVersion'], version)
+        self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetAction'], action)
+
         cmd = 'az network front-door waf-policy managed-rule-definition list'
         result = self.cmd(cmd).get_output_in_json()
         defaultRuleSet = [ruleSet for ruleSet in result if ruleSet['ruleSetType'] == type][0]

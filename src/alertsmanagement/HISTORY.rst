@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.3
+++++++
+* az alerts-management prometheus-rule-group: support prometheus rule group
+
 0.2.2
 ++++++
 Added support for contains and doesNotContain operators for filter-resource-type in create method

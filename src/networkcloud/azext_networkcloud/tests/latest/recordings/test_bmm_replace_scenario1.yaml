@@ -1,0 +1,1744 @@
+interactions:
+- request:
+    body: '{"bmcCredentials": {"password": "password", "username": "ZFhObGNtNWhiV1VL"},
+      "bmcMacAddress": "AA:BB:CC:DD:EE:BB", "bootMacAddress": "52:54:00:68:9b:b1",
+      "machineName": "rack1compute02", "serialNumber": "BM1219XXX"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '223'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02/replace?api-version=2023-10-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:40:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+      mise-correlation-id:
+      - 6f1215b9-819d-4691-9506-df10184e8949
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:40:21 GMT
+      etag:
+      - '"0b02b318-0000-0100-0000-647e1e050000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:40:51 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:41:22 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:41:52 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:42:22 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:42:52 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:43:22 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:43:52 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:44:22 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:44:53 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:45:23 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:45:53 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:46:23 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:46:53 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:47:23 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:47:52 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:48:22 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:48:52 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:49:23 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:49:53 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:50:23 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:50:53 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:51:23 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:51:53 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:52:23 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:52:53 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:53:23 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:53:54 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:54:24 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:54:54 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:55:24 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:55:54 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:56:24 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:56:54 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:57:24 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:57:55 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Accepted","startTime":"2023-06-05T17:40:21.9932871Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:58:25 GMT
+      etag:
+      - '"0b02b518-0000-0100-0000-647e1e080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Succeeded","startTime":"2023-06-05T17:40:21.9932871Z","endTime":"2023-06-05T17:58:38.2627424Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '658'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:58:55 GMT
+      etag:
+      - '"0b020023-0000-0100-0000-647e224e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud baremetalmachine replace
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --bmc-credentials --bmc-mac-address --boot-mac-address
+        --machine-name --serial-number
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1038-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E?api-version=2023-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","name":"589e8e72-fbfd-4312-9080-532ad0529918*4783309B1F7EE70879AEDE380B5A7A093A2D97638FE4BF3090F9FD922D7D479E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/simulator-HostedResources-00245EF8/providers/Microsoft.NetworkCloud/bareMetalMachines/rack1compute02","status":"Succeeded","startTime":"2023-06-05T17:40:21.9932871Z","endTime":"2023-06-05T17:58:38.2627424Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '658'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 05 Jun 2023 17:58:55 GMT
+      etag:
+      - '"0b020023-0000-0100-0000-647e224e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -5,39 +5,57 @@
         ]
     },
     "exclude": {
-        "compatibility issue": [
-            "test_aks_nodepool_add_with_ossku",
-            "test_aks_create_with_ossku"
+        "crg, missing feature registration": [
+            "test_aks_create_with_crg_id"
         ],
-        "need feature registration": [
-            "test_aks_create_with_gitops_addon",
-            "test_aks_enable_addon_with_gitops",
-            "test_aks_disable_addon_gitops",
-            "test_aks_create_with_pod_identity_enabled",
-            "test_aks_create_using_azurecni_with_pod_identity_enabled",
-            "test_aks_pod_identity_usage",
-            "test_aks_nodepool_add_with_workload_runtime",
-            "test_aks_nodepool_add_with_gpu_instance_profile",
-            "test_aks_create_with_crg_id",
-            "test_aks_create_and_update_with_http_proxy_config",
-            "test_aks_snapshot",
-            "test_aks_nodepool_add_with_ossku_windows2022",
-            "test_list_trustedaccess_roles",
-            "test_aks_custom_ca_trust_flow",
+        "csi driver v2, missing feature registration": [
             "test_aks_create_with_csi_driver_v2",
             "test_aks_create_and_update_csi_driver_to_v2"
         ],
-        "toggle": [
-            "test_aks_create_with_azurekeyvaultkms_private_key_vault",
-            "test_aks_update_with_azurekeyvaultkms_private_key_vault",
-            "test_aks_create_with_azurekeyvaultkms_public_key_vault",
-            "test_aks_create_with_azurekeyvaultkms_private_cluster_v1_private_key_vault"
+        "custom ca, missing feature registration": [
+            "test_aks_custom_ca_trust_flow"
         ],
-        "need namespace registration (AME)": [
-            "test_aks_create_with_monitoring_aad_auth_msi",
-            "test_aks_create_with_monitoring_aad_auth_uai",
-            "test_aks_enable_monitoring_with_aad_auth_msi",
-            "test_aks_enable_monitoring_with_aad_auth_uai"
+        "gitops addon, missing feature registration": [
+            "test_aks_create_with_gitops_addon",
+            "test_aks_enable_addon_with_gitops",
+            "test_aks_disable_addon_gitops"
+        ],
+        "gpu, no quota": [
+            "test_aks_nodepool_add_with_gpu_instance_profile"
+        ],
+        "overlay migration, missing toggle": [
+            "test_aks_azure_cni_overlay_migration"
+        ],
+        "pod ip allocation mode static block, missing feature registration": [
+            "test_aks_create_with_pod_ip_allocation_mode_static_block"
+        ],
+        "slb to nat gateway": [
+            "test_aks_update_outbound_from_slb_to_natgateway"
+        ],
+        "v2 monitoring addon, missing namespace registration": [
+            "test_aks_create_with_azuremonitormetrics",
+            "test_aks_update_with_azuremonitormetrics"
+        ],
+        "workload runtime, missing feature registration": [
+            "test_aks_nodepool_add_with_workload_runtime"
+        ],
+        "artifact streaming, missing feature registration & toggle": [
+            "test_aks_nodepool_add_with_artifact_streaming",
+            "test_aks_nodepool_update_with_artifact_streaming"
+        ],
+        "ai toolchain operator, enabled in staging only": [
+            "test_aks_create_with_enable_ai_toolchain_operator",
+            "test_aks_update_with_enable_ai_toolchain_operator"
+        ],
+        "trusted launch, missing feature registration & toggle": [
+            "test_aks_create_update_secure_boot_flow",
+            "test_aks_create_update_vtpm_flow"
+        ],
+        "nodepool permanent and initialization taints, missing feature registration": [
+            "test_aks_create_cluster_with_taints"
+        ],
+        "automatic, missing feature registration & toggle": [
+            "test_aks_automatic_sku"
         ]
     }
 }

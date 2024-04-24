@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"location": "westcentralus", "tags": {"key": "value"}, "sku": {"name":
+    body: '{"tags": {"key": "value"}, "location": "westcentralus", "sku": {"name":
       "Standard_S1", "capacity": 1}, "properties": {"publicNetworkAccess": "Enabled",
       "disableLocalAuth": false, "disableAadAuth": false}}'
     headers:
@@ -19,27 +19,27 @@ interactions:
       ParameterSetName:
       - -g -n --tags -l --sku --unit-count
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Creating","externalIP":null,"hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0-preview","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T07:11:02.337084Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T07:11:02.337084Z"},"location":"westcentralus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
+      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Creating","externalIP":null,"hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0-preview","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"kind":"WebPubSub","location":"westcentralus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub","systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2023-08-01T04:22:44.1282697Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-01T04:22:44.1282697Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/96a0ce46-c5b0-493e-9797-abec87c90424?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/1404ce41-810b-4109-ad1c-f69d0b1df8ee?api-version=2023-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1185'
+      - '1198'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:11:05 GMT
+      - Tue, 01 Aug 2023 04:22:47 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/96a0ce46-c5b0-493e-9797-abec87c90424?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/1404ce41-810b-4109-ad1c-f69d0b1df8ee?api-version=2023-06-01-preview
       pragma:
       - no-cache
       server:
@@ -51,7 +51,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 201
       message: Created
@@ -69,21 +69,21 @@ interactions:
       ParameterSetName:
       - -g -n --tags -l --sku --unit-count
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/96a0ce46-c5b0-493e-9797-abec87c90424?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/1404ce41-810b-4109-ad1c-f69d0b1df8ee?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/96a0ce46-c5b0-493e-9797-abec87c90424","name":"96a0ce46-c5b0-493e-9797-abec87c90424","status":"Running","startTime":"2021-10-21T07:11:04.0094072Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/1404ce41-810b-4109-ad1c-f69d0b1df8ee","name":"1404ce41-810b-4109-ad1c-f69d0b1df8ee","status":"Running","startTime":"2023-08-01T04:22:46.2828789Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '321'
+      - '316'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:11:35 GMT
+      - Tue, 01 Aug 2023 04:22:48 GMT
       expires:
       - '-1'
       pragma:
@@ -99,7 +99,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -117,21 +117,21 @@ interactions:
       ParameterSetName:
       - -g -n --tags -l --sku --unit-count
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/96a0ce46-c5b0-493e-9797-abec87c90424?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/1404ce41-810b-4109-ad1c-f69d0b1df8ee?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/96a0ce46-c5b0-493e-9797-abec87c90424","name":"96a0ce46-c5b0-493e-9797-abec87c90424","status":"Succeeded","startTime":"2021-10-21T07:11:04.0094072Z","endTime":"2021-10-21T07:12:00.8567795Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/1404ce41-810b-4109-ad1c-f69d0b1df8ee","name":"1404ce41-810b-4109-ad1c-f69d0b1df8ee","status":"Running","startTime":"2023-08-01T04:22:46.2828789Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '364'
+      - '316'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:12:06 GMT
+      - Tue, 01 Aug 2023 04:23:18 GMT
       expires:
       - '-1'
       pragma:
@@ -147,7 +147,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -165,21 +165,21 @@ interactions:
       ParameterSetName:
       - -g -n --tags -l --sku --unit-count
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/1404ce41-810b-4109-ad1c-f69d0b1df8ee?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"40.67.122.70","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T07:11:02.337084Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T07:11:02.337084Z"},"location":"westcentralus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/1404ce41-810b-4109-ad1c-f69d0b1df8ee","name":"1404ce41-810b-4109-ad1c-f69d0b1df8ee","status":"Succeeded","startTime":"2023-08-01T04:22:46.2828789Z","endTime":"2023-08-01T04:23:35.0781054Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1188'
+      - '359'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:12:07 GMT
+      - Tue, 01 Aug 2023 04:23:49 GMT
       expires:
       - '-1'
       pragma:
@@ -195,7 +195,55 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - webpubsub create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags -l --sku --unit-count
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2023-06-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"40.67.122.86","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"kind":"WebPubSub","location":"westcentralus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub","systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2023-08-01T04:22:44.1282697Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-01T04:22:44.1282697Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1201'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 01 Aug 2023 04:23:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -218,27 +266,27 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name --event-handler
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T07:12:07.9588974Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T07:12:07.9588974Z"},"properties":{"eventHandlers":[{"urlTemplate":"http://host.com","userEventPattern":"event1,event2","systemEvents":["connect"],"auth":null}],"anonymousConnectPolicy":"deny"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs"}'
+      string: '{"properties":{"eventHandlers":[{"urlTemplate":"http://host.com","userEventPattern":"event1,event2","systemEvents":["connect"],"auth":null}],"eventListeners":null,"anonymousConnectPolicy":"deny"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs","systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2023-08-01T04:23:50.9465479Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-01T04:23:50.9465479Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83856421-b288-46ec-ab9d-cad220df2247?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4b048e4f-5861-420d-95a1-948acb84d762?api-version=2023-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '638'
+      - '655'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:12:07 GMT
+      - Tue, 01 Aug 2023 04:23:51 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/83856421-b288-46ec-ab9d-cad220df2247?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/4b048e4f-5861-420d-95a1-948acb84d762?api-version=2023-06-01-preview
       pragma:
       - no-cache
       server:
@@ -250,7 +298,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 201
       message: Created
@@ -268,21 +316,21 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name --event-handler
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83856421-b288-46ec-ab9d-cad220df2247?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4b048e4f-5861-420d-95a1-948acb84d762?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83856421-b288-46ec-ab9d-cad220df2247","name":"83856421-b288-46ec-ab9d-cad220df2247","status":"Running","startTime":"2021-10-21T07:12:08.7254329Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4b048e4f-5861-420d-95a1-948acb84d762","name":"4b048e4f-5861-420d-95a1-948acb84d762","status":"Running","startTime":"2023-08-01T04:23:51.9376167Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '321'
+      - '316'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:12:39 GMT
+      - Tue, 01 Aug 2023 04:23:51 GMT
       expires:
       - '-1'
       pragma:
@@ -291,10 +339,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -312,21 +364,21 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name --event-handler
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83856421-b288-46ec-ab9d-cad220df2247?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4b048e4f-5861-420d-95a1-948acb84d762?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83856421-b288-46ec-ab9d-cad220df2247","name":"83856421-b288-46ec-ab9d-cad220df2247","status":"Running","startTime":"2021-10-21T07:12:08.7254329Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4b048e4f-5861-420d-95a1-948acb84d762","name":"4b048e4f-5861-420d-95a1-948acb84d762","status":"Succeeded","startTime":"2023-08-01T04:23:51.9376167Z","endTime":"2023-08-01T04:24:11.2181238Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '321'
+      - '359'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:13:09 GMT
+      - Tue, 01 Aug 2023 04:24:22 GMT
       expires:
       - '-1'
       pragma:
@@ -335,10 +387,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -356,21 +412,21 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name --event-handler
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83856421-b288-46ec-ab9d-cad220df2247?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83856421-b288-46ec-ab9d-cad220df2247","name":"83856421-b288-46ec-ab9d-cad220df2247","status":"Succeeded","startTime":"2021-10-21T07:12:08.7254329Z","endTime":"2021-10-21T07:13:22.9923142Z"}'
+      string: '{"properties":{"eventHandlers":[{"urlTemplate":"http://host.com","userEventPattern":"event1,event2","systemEvents":["connect"],"auth":null}],"eventListeners":null,"anonymousConnectPolicy":"deny"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs","systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2023-08-01T04:23:50.9465479Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-01T04:23:50.9465479Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '364'
+      - '655'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:13:39 GMT
+      - Tue, 01 Aug 2023 04:24:23 GMT
       expires:
       - '-1'
       pragma:
@@ -379,54 +435,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - webpubsub hub create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --hub-name --event-handler
-      User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2021-10-01
-  response:
-    body:
-      string: '{"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T07:12:07.9588974Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T07:12:07.9588974Z"},"properties":{"eventHandlers":[{"urlTemplate":"http://host.com","userEventPattern":"event1,event2","systemEvents":["connect"],"auth":null}],"anonymousConnectPolicy":"deny"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '638'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 21 Oct 2021 07:13:39 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -444,21 +460,21 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T07:12:07.9588974Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T07:12:07.9588974Z"},"properties":{"eventHandlers":[{"urlTemplate":"http://host.com","userEventPattern":"event1,event2","systemEvents":["connect"],"auth":null}],"anonymousConnectPolicy":"deny"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs"}'
+      string: '{"properties":{"eventHandlers":[{"urlTemplate":"http://host.com","userEventPattern":"event1,event2","systemEvents":["connect"],"auth":null}],"eventListeners":null,"anonymousConnectPolicy":"deny"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs","systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2023-08-01T04:23:50.9465479Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-01T04:23:50.9465479Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '638'
+      - '655'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:13:40 GMT
+      - Tue, 01 Aug 2023 04:24:24 GMT
       expires:
       - '-1'
       pragma:
@@ -474,7 +490,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -492,21 +508,21 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"value":[{"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T07:12:07.9588974Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T07:12:07.9588974Z"},"properties":{"eventHandlers":[{"urlTemplate":"http://host.com","userEventPattern":"event1,event2","systemEvents":["connect"],"auth":null}],"anonymousConnectPolicy":"deny"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs"}],"nextLink":null}'
+      string: '{"value":[{"properties":{"eventHandlers":[{"urlTemplate":"http://host.com","userEventPattern":"event1,event2","systemEvents":["connect"],"auth":null}],"eventListeners":null,"anonymousConnectPolicy":"deny"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs","systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2023-08-01T04:23:50.9465479Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-01T04:23:50.9465479Z"}}],"nextLink":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '666'
+      - '683'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:13:42 GMT
+      - Tue, 01 Aug 2023 04:24:25 GMT
       expires:
       - '-1'
       pragma:
@@ -522,7 +538,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -540,21 +556,21 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name --allow-anonymous --event-handler
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T07:12:07.9588974Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T07:12:07.9588974Z"},"properties":{"eventHandlers":[{"urlTemplate":"http://host.com","userEventPattern":"event1,event2","systemEvents":["connect"],"auth":null}],"anonymousConnectPolicy":"deny"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs"}'
+      string: '{"properties":{"eventHandlers":[{"urlTemplate":"http://host.com","userEventPattern":"event1,event2","systemEvents":["connect"],"auth":null}],"eventListeners":null,"anonymousConnectPolicy":"deny"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs","systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2023-08-01T04:23:50.9465479Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-01T04:23:50.9465479Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '638'
+      - '655'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:13:43 GMT
+      - Tue, 01 Aug 2023 04:24:27 GMT
       expires:
       - '-1'
       pragma:
@@ -570,7 +586,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -595,27 +611,27 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name --allow-anonymous --event-handler
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T07:13:44.5033237Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T07:13:44.5033237Z"},"properties":{"eventHandlers":[{"urlTemplate":"http://host2.com","userEventPattern":"event3,event4","systemEvents":["disconnect","connected"],"auth":{"type":"ManagedIdentity","managedIdentity":{"resource":"uri://abc"}}}],"anonymousConnectPolicy":"allow"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs"}'
+      string: '{"properties":{"eventHandlers":[{"urlTemplate":"http://host2.com","userEventPattern":"event3,event4","systemEvents":["disconnect","connected"],"auth":{"type":"ManagedIdentity","managedIdentity":{"resource":"uri://abc"}}}],"eventListeners":null,"anonymousConnectPolicy":"allow"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs","systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2023-08-01T04:24:28.5033633Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-01T04:24:28.5033633Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/074f00e6-5467-42da-940a-65ff8e4b8120?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/0a44d44a-f1f4-49de-93f4-135cb30d5006?api-version=2023-06-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '720'
+      - '737'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:13:44 GMT
+      - Tue, 01 Aug 2023 04:24:29 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/074f00e6-5467-42da-940a-65ff8e4b8120?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/0a44d44a-f1f4-49de-93f4-135cb30d5006?api-version=2023-06-01-preview
       pragma:
       - no-cache
       server:
@@ -627,7 +643,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 201
       message: Created
@@ -645,21 +661,21 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name --allow-anonymous --event-handler
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/074f00e6-5467-42da-940a-65ff8e4b8120?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/0a44d44a-f1f4-49de-93f4-135cb30d5006?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/074f00e6-5467-42da-940a-65ff8e4b8120","name":"074f00e6-5467-42da-940a-65ff8e4b8120","status":"Running","startTime":"2021-10-21T07:13:45.3406063Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/0a44d44a-f1f4-49de-93f4-135cb30d5006","name":"0a44d44a-f1f4-49de-93f4-135cb30d5006","status":"Running","startTime":"2023-08-01T04:24:29.4500785Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '321'
+      - '316'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:14:15 GMT
+      - Tue, 01 Aug 2023 04:24:30 GMT
       expires:
       - '-1'
       pragma:
@@ -668,10 +684,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -689,21 +709,21 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name --allow-anonymous --event-handler
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/074f00e6-5467-42da-940a-65ff8e4b8120?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/0a44d44a-f1f4-49de-93f4-135cb30d5006?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/074f00e6-5467-42da-940a-65ff8e4b8120","name":"074f00e6-5467-42da-940a-65ff8e4b8120","status":"Running","startTime":"2021-10-21T07:13:45.3406063Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/0a44d44a-f1f4-49de-93f4-135cb30d5006","name":"0a44d44a-f1f4-49de-93f4-135cb30d5006","status":"Succeeded","startTime":"2023-08-01T04:24:29.4500785Z","endTime":"2023-08-01T04:24:48.6660393Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '321'
+      - '359'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:14:45 GMT
+      - Tue, 01 Aug 2023 04:25:00 GMT
       expires:
       - '-1'
       pragma:
@@ -712,10 +732,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -733,21 +757,21 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name --allow-anonymous --event-handler
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/074f00e6-5467-42da-940a-65ff8e4b8120?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/074f00e6-5467-42da-940a-65ff8e4b8120","name":"074f00e6-5467-42da-940a-65ff8e4b8120","status":"Succeeded","startTime":"2021-10-21T07:13:45.3406063Z","endTime":"2021-10-21T07:14:59.9280892Z"}'
+      string: '{"properties":{"eventHandlers":[{"urlTemplate":"http://host2.com","userEventPattern":"event3,event4","systemEvents":["disconnect","connected"],"auth":{"type":"ManagedIdentity","managedIdentity":{"resource":"uri://abc"}}}],"eventListeners":null,"anonymousConnectPolicy":"allow"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs","systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2023-08-01T04:24:28.5033633Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-01T04:24:28.5033633Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '364'
+      - '737'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:15:15 GMT
+      - Tue, 01 Aug 2023 04:25:00 GMT
       expires:
       - '-1'
       pragma:
@@ -756,54 +780,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - webpubsub hub update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --hub-name --allow-anonymous --event-handler
-      User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2021-10-01
-  response:
-    body:
-      string: '{"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T07:13:44.5033237Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T07:13:44.5033237Z"},"properties":{"eventHandlers":[{"urlTemplate":"http://host2.com","userEventPattern":"event3,event4","systemEvents":["disconnect","connected"],"auth":{"type":"ManagedIdentity","managedIdentity":{"resource":"uri://abc"}}}],"anonymousConnectPolicy":"allow"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/hubs/myHub","name":"myHub","type":"Microsoft.SignalRService/WebPubSub/hubs"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '720'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 21 Oct 2021 07:15:16 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -823,25 +807,25 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs/myHub?api-version=2023-06-01-preview
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc7b609e-f5a8-4411-8e28-1d37b0b698c1?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/94ec1978-eaea-44bd-9ab4-53efb630c1e1?api-version=2023-06-01-preview
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 21 Oct 2021 07:15:17 GMT
+      - Tue, 01 Aug 2023 04:25:02 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/fc7b609e-f5a8-4411-8e28-1d37b0b698c1?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/94ec1978-eaea-44bd-9ab4-53efb630c1e1?api-version=2023-06-01-preview
       pragma:
       - no-cache
       server:
@@ -853,7 +837,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 202
       message: Accepted
@@ -871,21 +855,21 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc7b609e-f5a8-4411-8e28-1d37b0b698c1?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/94ec1978-eaea-44bd-9ab4-53efb630c1e1?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc7b609e-f5a8-4411-8e28-1d37b0b698c1","name":"fc7b609e-f5a8-4411-8e28-1d37b0b698c1","status":"Running","startTime":"2021-10-21T07:15:18.2534397Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/94ec1978-eaea-44bd-9ab4-53efb630c1e1","name":"94ec1978-eaea-44bd-9ab4-53efb630c1e1","status":"Running","startTime":"2023-08-01T04:25:03.1041353Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '321'
+      - '316'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:15:47 GMT
+      - Tue, 01 Aug 2023 04:25:02 GMT
       expires:
       - '-1'
       pragma:
@@ -901,7 +885,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -919,21 +903,21 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc7b609e-f5a8-4411-8e28-1d37b0b698c1?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/94ec1978-eaea-44bd-9ab4-53efb630c1e1?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc7b609e-f5a8-4411-8e28-1d37b0b698c1","name":"fc7b609e-f5a8-4411-8e28-1d37b0b698c1","status":"Running","startTime":"2021-10-21T07:15:18.2534397Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/94ec1978-eaea-44bd-9ab4-53efb630c1e1","name":"94ec1978-eaea-44bd-9ab4-53efb630c1e1","status":"Succeeded","startTime":"2023-08-01T04:25:03.1041353Z","endTime":"2023-08-01T04:25:22.1844603Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '321'
+      - '359'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:16:18 GMT
+      - Tue, 01 Aug 2023 04:25:33 GMT
       expires:
       - '-1'
       pragma:
@@ -949,7 +933,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -967,21 +951,17 @@ interactions:
       ParameterSetName:
       - -g -n --hub-name
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc7b609e-f5a8-4411-8e28-1d37b0b698c1?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/94ec1978-eaea-44bd-9ab4-53efb630c1e1?api-version=2023-06-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc7b609e-f5a8-4411-8e28-1d37b0b698c1","name":"fc7b609e-f5a8-4411-8e28-1d37b0b698c1","status":"Succeeded","startTime":"2021-10-21T07:15:18.2534397Z","endTime":"2021-10-21T07:16:31.891021Z"}'
+      string: ''
     headers:
       cache-control:
       - no-cache
-      content-length:
-      - '363'
-      content-type:
-      - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:16:49 GMT
+      - Tue, 01 Aug 2023 04:25:34 GMT
       expires:
       - '-1'
       pragma:
@@ -990,17 +970,13 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
-      code: 200
-      message: OK
+      code: 204
+      message: No Content
 - request:
     body: null
     headers:
@@ -1015,9 +991,9 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/hubs?api-version=2023-06-01-preview
   response:
     body:
       string: '{"value":[],"nextLink":null}'
@@ -1029,7 +1005,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 07:16:50 GMT
+      - Tue, 01 Aug 2023 04:25:36 GMT
       expires:
       - '-1'
       pragma:
@@ -1045,7 +1021,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 200
       message: OK
@@ -1065,9 +1041,9 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.51.0 azsdk-python-mgmt-webpubsub/2.0.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2023-06-01-preview
   response:
     body:
       string: ''
@@ -1075,7 +1051,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Thu, 21 Oct 2021 07:16:54 GMT
+      - Tue, 01 Aug 2023 04:25:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1089,7 +1065,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-rp-server-mvid:
-      - bd3620f5-b532-4e35-972a-6e9b0ccbed1c
+      - bae67624-1833-4301-8125-55760c1ae1cd
     status:
       code: 204
       message: No Content

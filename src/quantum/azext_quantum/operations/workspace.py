@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements
+# pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements, too-many-nested-blocks
 
 import os.path
 import json
@@ -19,10 +19,11 @@ from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalE
                                        RequiredArgumentMissingError, ResourceNotFoundError)
 
 from msrestazure.azure_exceptions import CloudError
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
+from .._client_factory import cf_workspaces, cf_quotas, cf_workspace, cf_offerings, _get_data_credentials
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
-from ..vendored_sdks.azure_mgmt_quantum.models import Provider
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider, APIKeys, WorkspaceResourceProperties
+from ..vendored_sdks.azure_mgmt_quantum.models._enums import KeyType
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
@@ -50,12 +51,8 @@ class WorkspaceInfo:
 
         # Hierarchically selects the value for the given key.
         # First tries the value provided as argument, as that represents the value from the command line
-        # then it checks if the key exists in the 'quantum' section in config, and uses that if available.
-        # finally, it checks in the 'global' section in the config.
+        # then it checks if the key exists in the [defaults] section in config, and uses that if available.
         def select_value(key, value):
-            if value is not None:
-                return value
-            value = cmd.cli_ctx.config.get('quantum', key, None)
             if value is not None:
                 return value
             value = cmd.cli_ctx.config.get(cmd.cli_ctx.config.defaults_section_name, key, None)
@@ -75,10 +72,11 @@ class WorkspaceInfo:
     def save(self, cmd):
         from azure.cli.core.util import ConfiguredDefaultSetter
 
+        # Save in the global [defaults] section of the .azure\config file
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
-            cmd.cli_ctx.config.set_value('quantum', 'group', self.resource_group)
-            cmd.cli_ctx.config.set_value('quantum', 'workspace', self.name)
-            cmd.cli_ctx.config.set_value('quantum', 'location', self.location)
+            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
+            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
+            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'location', self.location)
 
 
 def _show_tip(msg):
@@ -118,10 +116,10 @@ def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_l
     for provider in providers_in_region:
         for sku in provider.properties.skus:
             if sku.auto_add:
-                # Don't duplicate a provider/sku if it was also specified in the command's -r parameter
+                # Don't duplicate a provider if it was also specified in the command's -r parameter
                 provider_already_added = False
                 for already_selected_provider in providers_selected:
-                    if already_selected_provider['provider_id'] == provider.id and already_selected_provider['sku'] == sku.id:
+                    if already_selected_provider['provider_id'] == provider.id:
                         provider_already_added = True
                         break
                 if not provider_already_added:
@@ -139,16 +137,8 @@ def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_l
                         already_accepted_terms = True
                     providers_selected.append(provider_selected)
 
-    # If there weren't any autoAdd providers and none were specified with the -r parameter, we have a problem...
-    if providers_selected == []:
-        raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs is required.",
-                                           "Supply the missing -r parameter. For example:\n"
-                                           "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
-                                           "To display a list of Provider IDs and their SKUs, use the following command:\n"
-                                           "\taz quantum offerings list -l MyLocation -o table")
 
-
-def _add_quantum_providers(cmd, workspace, providers, auto_accept):
+def _add_quantum_providers(cmd, workspace, providers, auto_accept, skip_autoadd):
     providers_in_region_paged = cf_offerings(cmd.cli_ctx).list(location_name=workspace.location)
     providers_in_region = [item for item in providers_in_region_paged]
     providers_selected = []
@@ -163,7 +153,17 @@ def _add_quantum_providers(cmd, workspace, providers, auto_accept):
             if (offer is None or publisher is None):
                 raise InvalidArgumentValueError(f"Provider '{provider_id}' not found in region {workspace.location}.")
             providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
-    _autoadd_providers(cmd, providers_in_region, providers_selected, workspace.location, auto_accept)
+    if not skip_autoadd:
+        _autoadd_providers(cmd, providers_in_region, providers_selected, workspace.location, auto_accept)
+
+    # If there weren't any autoAdd providers and none were specified with the -r parameter, we have a problem...
+    if not providers_selected:
+        raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs (plans) is required.",
+                                           "Supply the missing -r parameter. For example:\n"
+                                           "\t-r \"Microsoft/Basic, Microsoft.FleetManagement/Basic\"\n"
+                                           "To display a list of Provider IDs and their SKUs, use the following command:\n"
+                                           "\taz quantum offerings list -l MyLocation -o table")
+
     _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
     # Now that the providers have been requested, add each of them into the workspace
     for provider in providers_selected:
@@ -203,15 +203,14 @@ def _create_role_assignment(cmd, quantum_workspace):
 
 def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tiers_or_kinds):
     if tier_or_kind not in supported_tiers_or_kinds:
-        tier_or_kind_list = ''
-        for item in supported_tiers_or_kinds:
-            tier_or_kind_list += f"{item}, "
+        tier_or_kind_list = ', '.join(supported_tiers_or_kinds)
         plural = 's' if len(supported_tiers_or_kinds) != 1 else ''
         raise InvalidArgumentValueError(f"Storage account {tier_or_kind_msg_text} '{tier_or_kind}' is not supported.\n"
-                                        f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list[:-2]}")
+                                        f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list}")
 
 
-def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None, skip_role_assignment=False, provider_sku_list=None, auto_accept=False):
+def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
+           provider_sku_list=None, auto_accept=False, skip_autoadd=False):
     """
     Create a new Azure Quantum workspace.
     """
@@ -229,7 +228,11 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
-        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept)
+        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+        properties = WorkspaceResourceProperties()
+        properties.providers = quantum_workspace.providers
+        properties.api_key_enabled = True
+        quantum_workspace.properties = properties
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)
@@ -242,7 +245,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     with open(template_path, 'r', encoding='utf8') as template_file_fd:
         template = json.load(template_file_fd)
 
-    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept)
+    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
     validated_providers = []
     for provider in quantum_workspace.providers:
         validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
@@ -315,7 +318,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     return quantum_workspace
 
 
-def delete(cmd, resource_group_name=None, workspace_name=None):
+def delete(cmd, resource_group_name, workspace_name):
     """
     Delete the given (or current) Azure Quantum workspace.
     """
@@ -354,7 +357,7 @@ def get(cmd, resource_group_name=None, workspace_name=None):
     return ws
 
 
-def quotas(cmd, resource_group_name=None, workspace_name=None, location=None):
+def quotas(cmd, resource_group_name, workspace_name, location):
     """
     List the quotas for the given (or current) Azure Quantum workspace.
     """
@@ -363,7 +366,7 @@ def quotas(cmd, resource_group_name=None, workspace_name=None, location=None):
     return client.list()
 
 
-def set(cmd, workspace_name, resource_group_name=None, location=None):
+def set(cmd, workspace_name, resource_group_name, location):
     """
     Set the default Azure Quantum workspace.
     """
@@ -382,3 +385,62 @@ def clear(cmd):
     info = WorkspaceInfo(cmd)
     info.clear()
     info.save(cmd)
+
+
+def list_keys(cmd, resource_group_name=None, workspace_name=None):
+    """
+    List Azure Quantum workspace api keys.
+    """
+    client = cf_workspace(cmd.cli_ctx)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    if (not info.resource_group) or (not info.name):
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+
+    keys = client.list_keys(resource_group_name=info.resource_group, workspace_name=info.name)
+    return keys
+
+
+def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type=None):
+    """
+    Regenerate Azure Quantum workspace api keys.
+    """
+    client = cf_workspace(cmd.cli_ctx)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    if (not info.resource_group) or (not info.name):
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+
+    if not key_type:
+        raise RequiredArgumentMissingError("Please select the api key to regenerate.")
+
+    keys = []
+    if key_type is not None:
+        for key in key_type.split(','):
+            keys.append(KeyType[key])
+
+    key_specification = APIKeys(keys=keys)
+    response = client.regenerate_keys(resource_group_name=info.resource_group, workspace_name=info.name, key_specification=key_specification)
+    return response
+
+
+def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=None):
+    """
+    Update the default Azure Quantum workspace.
+    """
+    client = cf_workspaces(cmd.cli_ctx)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    if (not info.resource_group) or (not info.name):
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+
+    if enable_key not in ["True", "true", "False", "false"]:
+        raise InvalidArgumentValueError("Please set –-enable-api-key to be True/true or False/false.")
+
+    ws = client.get(info.resource_group, info.name)
+
+    if (enable_key in ["True", "true"]):
+        ws.properties.api_key_enabled = True
+    elif (enable_key in ["False", "false"]):
+        ws.properties.api_key_enabled = False
+    ws = client.begin_create_or_update(info.resource_group, info.name, ws)
+    if ws:
+        info.save(cmd)
+    return ws

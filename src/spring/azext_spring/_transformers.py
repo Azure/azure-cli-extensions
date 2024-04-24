@@ -159,6 +159,37 @@ def _transform_acs_service_registry_output(result):
     return result if is_list else result[0]
 
 
+def transform_dev_tool_portal_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['cpu'] = item['properties']['resourceRequests']['cpu']
+        item['memory'] = item['properties']['resourceRequests']['memory']
+        item['instance'] = '{}/{}'.format(len(item['properties'].get('instances', [])), item['properties']['resourceRequests']['instanceCount'])
+        item['url'] = item['properties'].get('url', '---')
+    return result if is_list else result[0]
+
+
+def transform_live_view_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Provisioning State'] = item['properties']['provisioningState']
+        for component in item['properties']['components']:
+            item[component['name'] + 'cpu'] = component['resourceRequests']['cpu']
+            item[component['name'] + 'memory'] = component['resourceRequests']['memory']
+            item[component['name'] + 'instance'] = '{}/{}'.format(len(component.get('instances', [])), component['resourceRequests']['instanceCount'])
+
+    return result if is_list else result[0]
+
+
 def transform_spring_cloud_gateway_output(result):
     is_list = isinstance(result, list)
 
@@ -203,5 +234,148 @@ def transform_api_portal_output(result):
         item['Running Instance'] = "{}/{}".format(running_number, instance_count)
         item['CPU'] = item['properties']['resourceRequests']['cpu']
         item['Memory'] = item['properties']['resourceRequests']['memory']
+
+    return result if is_list else result[0]
+
+
+def transform_application_accelerator_output(result):
+    from collections import OrderedDict
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    new_result = []
+    for item in result:
+        for component in item['properties']['components']:
+            new_entry = OrderedDict()
+            new_entry['Name'] = item['name']
+            new_entry['ResourceGroup'] = item['resourceGroup']
+            new_entry['Provisioning State'] = item['properties']['provisioningState']
+            new_entry['Component'] = component['name']
+            instance_count = component['resourceRequests']['instanceCount']
+            instances = component['instances'] or []
+            running_number = len(
+                [x for x in instances if x['status'].upper() == "RUNNING"])
+            new_entry['Running Instance'] = "{}/{}".format(running_number, instance_count)
+            new_entry['CPU'] = component['resourceRequests']['cpu']
+            new_entry['Memory'] = component['resourceRequests']['memory']
+            new_result.append(new_entry)
+
+    return result if is_list else new_result
+
+
+def transform_predefined_accelerator_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Display Name'] = item['properties']['displayName']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['State'] = item['properties']['state']
+
+    return result if is_list else result[0]
+
+
+def transform_customized_accelerator_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Display Name'] = item['properties']['displayName']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Git Url'] = item['properties']['gitRepository']['url']
+        item['Git Interval In Seconds'] = item['properties']['gitRepository']['intervalInSeconds']
+        item['Git branch'] = item['properties']['gitRepository']['branch']
+        item['Git commit'] = item['properties']['gitRepository']['commit']
+        item['Git tag'] = item['properties']['gitRepository']['gitTag']
+        item['Git Auth Type'] = item['properties']['gitRepository']['authSetting']['authType']
+
+    return result if is_list else result[0]
+
+
+def transform_build_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Resource Quota'] = "{}, {}".format(item['properties']['resourceRequests']['cpu'], item['properties']['resourceRequests']['memory'])
+        item['Builder'] = item['properties']['builder']
+
+    return result if is_list else result[0]
+
+
+def transform_build_result_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Image'] = item['properties']['image']
+
+    return result if is_list else result[0]
+
+
+def transform_container_registry_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+        item['Server'] = item['properties']['server']
+        item['Username'] = item['properties']['username']
+
+    return result if is_list else result[0]
+
+
+def transform_apm_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Type'] = item['properties']['type']
+
+    return result if is_list else result[0]
+
+
+def transform_apm_type_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+
+    return result if is_list else result[0]
+
+
+def transform_support_server_versions_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Value'] = item['value']
+        item['Server'] = item['server']
+        item['Version'] = item['version']
 
     return result if is_list else result[0]

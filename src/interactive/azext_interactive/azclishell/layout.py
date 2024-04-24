@@ -30,8 +30,10 @@ MAX_COMPLETION = 16
 class LayoutManager(object):
     """ store information and conditions for the layout """
 
-    def __init__(self, shell_ctx):
+    def __init__(self, shell_ctx, prompt_prefix='', toolbar_hint=''):
         self.shell_ctx = shell_ctx
+        self.prompt_prefix = prompt_prefix
+        self.toolbar_hint = toolbar_hint
 
         @Condition
         def show_default(_):
@@ -76,11 +78,16 @@ class LayoutManager(object):
             prompt = 'az {}>> '.format(self.shell_ctx.default_command)
         else:
             prompt = 'az>> '
-        return [(Token.Az, prompt)]
+        return [(Token.Az, self.prompt_prefix + prompt)]
 
     def create_tutorial_layout(self):
         """ layout for example tutorial """
-        lexer, _, _ = get_lexers(self.shell_ctx.lexer, None, None)
+        lexer, _, _, _ = get_lexers(self.shell_ctx.lexer, None, None, None)
+
+        # Append prompt token, '(prefix) az>>' before prompt
+        if not any(isinstance(processor, DefaultPrompt) for processor in self.input_processors):
+            self.input_processors.append(DefaultPrompt(self.get_prompt_tokens))
+
         layout_full = HSplit([
             FloatContainer(
                 Window(
@@ -109,7 +116,7 @@ class LayoutManager(object):
                     ),
                     Window(
                         TokenListControl(
-                            get_tutorial_tokens,
+                            lambda _: [(Token.Toolbar, self.toolbar_hint)],
                             default_char=Char(' ', Token.Toolbar)),
                         height=LayoutDimension.exact(1)),
                 ]),
@@ -118,19 +125,21 @@ class LayoutManager(object):
         ])
         return layout_full
 
-    def create_layout(self, exam_lex, toolbar_lex):
+    def create_layout(self, exam_lex, toolbar_lex, scenario_lex):
         """ creates the layout """
-        lexer, exam_lex, toolbar_lex = get_lexers(self.shell_ctx.lexer, exam_lex, toolbar_lex)
+        lexer, exam_lex, toolbar_lex, scenario_lex = get_lexers(self.shell_ctx.lexer, exam_lex, toolbar_lex, scenario_lex)
 
         if not any(isinstance(processor, DefaultPrompt) for processor in self.input_processors):
             self.input_processors.append(DefaultPrompt(self.get_prompt_tokens))
 
         layout_lower = ConditionalContainer(
             HSplit([
-                get_anyhline(self.shell_ctx.config),
+                get_any_hline(self.shell_ctx.config),
                 get_descriptions(self.shell_ctx.config, exam_lex, lexer),
-                get_examplehline(self.shell_ctx.config),
+                get_example_hline(self.shell_ctx.config),
                 get_example(self.shell_ctx.config, exam_lex),
+                get_scenario_hline(self.shell_ctx.config),
+                get_scenario(self.shell_ctx.config, scenario_lex),
 
                 ConditionalContainer(
                     get_hline(),
@@ -206,15 +215,10 @@ def get_height(cli):
     return None
 
 
-def get_tutorial_tokens(_):
-    """ tutorial tokens """
-    return [(Token.Toolbar, 'In Tutorial Mode: Press [Enter] after typing each part')]
-
-
-def get_lexers(main_lex, exam_lex, tool_lex):
+def get_lexers(main_lex, exam_lex, tool_lex, scenario_lex):
     """ gets all the lexer wrappers """
     if not main_lex:
-        return None, None, None
+        return None, None, None, None
     lexer = None
     if main_lex:
         if issubclass(main_lex, PromptLex):
@@ -230,10 +234,14 @@ def get_lexers(main_lex, exam_lex, tool_lex):
         if issubclass(tool_lex, PygLex):
             tool_lex = PygmentsLexer(tool_lex)
 
-    return lexer, exam_lex, tool_lex
+    if scenario_lex:
+        if issubclass(scenario_lex, PygLex):
+            scenario_lex = PygmentsLexer(scenario_lex)
+
+    return lexer, exam_lex, tool_lex, scenario_lex
 
 
-def get_anyhline(config):
+def get_any_hline(config):
     """ if there is a line between descriptions and example """
     if config.BOOLEAN_STATES[config.config.get('Layout', 'command_description')] or\
        config.BOOLEAN_STATES[config.config.get('Layout', 'param_description')]:
@@ -270,9 +278,26 @@ def get_example(config, exam_lex):
     return get_empty()
 
 
-def get_examplehline(config):
+def get_example_hline(config):
     """ gets a line if there are examples """
     if config.BOOLEAN_STATES[config.config.get('Layout', 'examples')]:
+        return get_hline()
+    return get_empty()
+
+
+def get_scenario(config, scenario_lex):
+    """ scenario recommendation window """
+    if config.BOOLEAN_STATES[config.config.get('Layout', 'scenarios')]:
+        return Window(
+            content=BufferControl(
+                buffer_name="scenarios",
+                lexer=scenario_lex))
+    return get_empty()
+
+
+def get_scenario_hline(config):
+    """ gets a line if there are examples """
+    if config.BOOLEAN_STATES[config.config.get('Layout', 'scenarios')]:
         return get_hline()
     return get_empty()
 

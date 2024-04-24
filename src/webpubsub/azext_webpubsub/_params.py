@@ -25,6 +25,7 @@ def load_arguments(self, _):
 
     webpubsub_name_type = CLIArgumentType(options_list='--webpubsub-name-name', help='Name of the Webpubsub.', id_part='name')
     webpubsubhub_name_type = CLIArgumentType(help='Name of the hub.', id_part='child_name_1')
+    webpubsub_replica_name_type = CLIArgumentType(help='Name of the replica.', id_part='child_name_1')
 
     with self.argument_context('webpubsub') as c:
         c.argument('tags', tags_type)
@@ -34,6 +35,7 @@ def load_arguments(self, _):
     with self.argument_context('webpubsub create') as c:
         c.argument('sku', help='The sku name of the webpubsub service. Allowed values: Free_F1, Standard_S1, Premium_P1')
         c.argument('unit_count', help='The number of webpubsub service unit count', type=int)
+        c.argument('kind', help='The kind of the webpubsub service. Allowed values: WebPubSub, SocketIO')
 
     with self.argument_context('webpubsub update') as c:
         c.argument('sku', help='The sku name of the webpubsub service. Allowed values: Free_F1, Standard_S1, Premium_P1')
@@ -99,3 +101,23 @@ def load_arguments(self, _):
 
     with self.argument_context('webpubsub service permission') as c:
         c.argument('permission', arg_type=get_enum_type(PERMISSION_TYPE), help='The permission')
+
+    # Replica
+    for scope in ['webpubsub replica create',
+                  'webpubsub replica list',
+                  'webpubsub replica delete',
+                  'webpubsub replica show']:
+        with self.argument_context(scope) as c:
+            c.argument('sku', help='The sku name of the replica. Currently allowed values: Premium_P1')
+            c.argument('unit_count', help='The number of webpubsub service unit count', type=int)
+            c.argument('replica_name', webpubsub_replica_name_type)
+
+    for scope in ['webpubsub replica create',
+                  'webpubsub replica list']:
+        with self.argument_context(scope) as c:
+            c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'], id_part=None)
+
+    for scope in ['webpubsub replica show',
+                  'webpubsub replica delete']:
+        with self.argument_context(scope) as c:
+            c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'])

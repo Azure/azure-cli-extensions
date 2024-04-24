@@ -188,7 +188,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_command', location='eastus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_account_restore_command', location='westcentralus')
     @AllowLargeResponse(size_kb=9999)
     def test_cosmosdb_table_account_restore_command(self, resource_group):
         table = self.create_random_name(prefix='cli', length=15)
@@ -197,7 +197,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'acc': self.create_random_name(prefix='cli', length=15),
             'restored_acc': self.create_random_name(prefix='cli', length=15),
             'table': table,
-            'loc': 'eastus2'
+            'loc': 'westcentralus'
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --capabilities EnableTable')
@@ -216,16 +216,18 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         time.sleep(240)
         restore_ts_string = restore_ts.isoformat()
         self.kwargs.update({
-            'rts': restore_ts_string
+            'rts': restore_ts_string,
+            'dt': True
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc}')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --disable-ttl {dt}')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
 
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
+        assert restored_account['restoreParameters']['restoreWithTtlDisabled'] is True
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_restorable_commands', location='eastus2')
     @AllowLargeResponse(size_kb=9999)
@@ -267,7 +269,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         restorable_resources = self.cmd('az cosmosdb table restorable-resource list --restore-location {loc} -l {loc} --instance-id {ins_id} --restore-timestamp {rts}').get_output_in_json()
         assert len(restorable_resources) == 1
         assert len(restorable_resources) == 1
-        assert restorable_resources[0] == table
+        assert restorable_resources[0]["name"] == table
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_container_backupinfo', location='eastus2')
     def test_cosmosdb_sql_container_backupinfo(self, resource_group):
@@ -286,7 +288,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb sql retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB')
-        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as database doesn't exist
         self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb sql retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
@@ -354,7 +356,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb mongodb retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind MongoDB')
-        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as database doesn't exist
         self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb mongodb retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -c {col} -l {loc}'))
@@ -419,7 +421,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb gremlin retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -n {graph} -l {loc}'))
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --capabilities EnableGremlin')
-        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as database doesn't exist
         self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb gremlin retrieve-latest-backup-time -g {rg} -a {acc} -d {db_name} -n {graph} -l {loc}'))
@@ -484,7 +486,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.assertRaises(Exception, lambda: self.cmd('az cosmosdb table retrieve-latest-backup-time -g {rg} -a {acc} -n {table} -l {loc}'))
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --capabilities EnableTable')
-        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # This should fail as collection doesn't exist
         self.assertRaises(CLIError, lambda: self.cmd('az cosmosdb table retrieve-latest-backup-time -g {rg} -a {acc} -n {table} -l {loc}'))
@@ -674,3 +676,283 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         restorable_database_account = next(acc for acc in restorable_accounts_list if acc['name'] == account['instanceId'])
         account_oldest_restorable_time = restorable_database_account['oldestRestorableTime']
         assert account_oldest_restorable_time is not None
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_system_identity_restore', location='eastus2')
+    def test_cosmosdb_system_identity_restore(self, resource_group):
+        # Source account parameters
+        source_acc = self.create_random_name(prefix='cli-systemid-', length=25)
+        target_acc = source_acc + "-restored"
+        subscription = self.get_subscription_id()
+        col = self.create_random_name(prefix='cli', length=15)
+        db_name = self.create_random_name(prefix='cli', length=15)
+
+        self.kwargs.update({
+            'acc': source_acc,
+            'restored_acc': target_acc,
+            'db_name': db_name,
+            'col': col,
+            'loc': 'eastus2',
+            'subscriptionid': subscription
+        })
+
+        self.kwargs.update({
+            'user1': self.create_random_name(prefix='user1-', length=10),
+            'user2': self.create_random_name(prefix='user2-', length=10)
+        })
+
+        # Create new User Identity 1
+        uid1 = self.cmd('az identity create -g {rg} -n {user1}').get_output_in_json()
+        user_id_1 = uid1['id']
+        user_principal_1 = uid1['principalId']
+        default_id1 = 'UserAssignedIdentity=' + user_id_1
+
+        # Create new User Identity 2
+        uid2 = self.cmd('az identity create -g {rg} -n {user2}').get_output_in_json()
+        user_id_2 = uid2['id']
+        user_principal_2 = uid2['principalId']
+        default_id2 = 'UserAssignedIdentity=' + user_id_2
+
+        # Keyvault and identity parameters
+        keyVaultName = self.create_random_name(prefix='clikeyvault-', length=20)
+        keyName = self.create_random_name(prefix='clikey-', length=12)
+        keyVaultKeyUri = "https://{}.vault.azure.net/keys/{}".format(keyVaultName, keyName)
+
+        self.kwargs.update({
+            'keyVaultName': keyVaultName,
+            'keyName': keyName,
+            'keyVaultKeyUri': keyVaultKeyUri,
+            'user_id_1': user_id_1,
+            'user_id_2': user_id_2,
+            'user_principal_1': user_principal_1,
+            'user_principal_2': user_principal_2,
+            'default_id1': default_id1,
+            'default_id2': default_id2
+        })
+
+        # Create new keyvault
+        self.cmd('az keyvault create --location {loc} --name {keyVaultName} --resource-group {rg}')
+
+        # Enable purge protection for keyvault
+        self.cmd('az keyvault update --subscription {subscriptionid} -g {rg} -n {keyVaultName} --enable-purge-protection true')
+
+        # Create new key inside keyvault
+        self.cmd('az keyvault key create --vault-name {keyVaultName} -n {keyName} --kty RSA --size 3072')
+
+        # Grant key access to user1 and user2
+        self.cmd('az keyvault set-policy --name {keyVaultName} --resource-group {rg} --object-id {user_principal_1} --key-permissions get unwrapKey wrapKey')
+        self.cmd('az keyvault set-policy --name {keyVaultName} --resource-group {rg} --object-id {user_principal_2} --key-permissions get unwrapKey wrapKey')
+
+        print('Finished setting up new KeyVault')
+
+        # Create PITR account with User Identity 1
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --locations regionName={loc} --kind GlobalDocumentDB --key-uri {keyVaultKeyUri} --assign-identity {user_id_1} --default-identity {default_id1}')
+        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        print(account)
+
+        print('Finished creating source account ' + account['id'])
+
+        account_keyvault_uri = account['keyVaultKeyUri']
+        assert keyVaultKeyUri in account_keyvault_uri
+
+        account_defaultIdentity = account['defaultIdentity']
+        assert user_id_1 in account_defaultIdentity
+
+        self.kwargs.update({
+            'ins_id': account['instanceId']
+        })
+
+        # Create database
+        self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
+
+        # Create container
+        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk ').get_output_in_json()
+
+        print('Update the source account to use System Identity')
+
+        # Assign system identity to source account
+        sysid = self.cmd('az cosmosdb identity assign -n {acc} -g {rg}').get_output_in_json()
+
+        self.kwargs.update({
+            'system_id_principal': sysid['principalId']
+        })
+
+        # Grant KeyVault permission to the source account's system identity
+        self.cmd('az keyvault set-policy --name {keyVaultName} --resource-group {rg} --object-id {system_id_principal} --key-permissions get unwrapKey wrapKey')
+
+        # Set source account default identity to system identity
+        account = self.cmd('az cosmosdb update -n {acc} -g {rg} --default-identity "SystemAssignedIdentity"').get_output_in_json()
+
+        print('Done updating the source account to use System Identity')
+
+        account_defaultIdentity = account['defaultIdentity']
+        assert 'SystemAssignedIdentity' in account_defaultIdentity
+
+        print('Done setting up source account with System Identity.  Starting to perform restore.')
+
+        restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
+
+        account_creation_time = restorable_database_account['creationTime']
+        creation_timestamp_datetime = parser.parse(account_creation_time)
+        restore_ts = creation_timestamp_datetime + timedelta(minutes=4)
+        import time
+        time.sleep(240)
+        restore_ts_string = restore_ts.isoformat()
+        self.kwargs.update({
+            'rts': restore_ts_string
+        })
+
+        self.kwargs.update({
+            'rts': restore_ts_string,
+            'loc': 'eastus2',
+            'user_id_2': user_id_2,
+            'default_id2': default_id2
+        })
+
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --assign-identity {user_id_2} --default-identity {default_id2} --public-network-access Disabled')
+        restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
+            self.check('restoreParameters.restoreMode', 'PointInTime')
+        ]).get_output_in_json()
+
+        print(restored_account)
+        print('Finished restoring account ' + restored_account['id'])
+
+        restored_account_keyvault_uri = restored_account['keyVaultKeyUri']
+        assert keyVaultKeyUri in restored_account_keyvault_uri
+
+        restored_account_defaultIdentity = restored_account['defaultIdentity']
+        assert user_id_2 in restored_account_defaultIdentity
+
+        public_network_access = restored_account['publicNetworkAccess']
+        assert public_network_access == 'Disabled'
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cross_region_restore', location='westcentralus')
+    def test_cosmosdb_xrr(self, resource_group):
+        col = self.create_random_name(prefix='cli-xrr', length=15)
+        db_name = self.create_random_name(prefix='cli-xrr', length=15)
+        source_acc = self.create_random_name(prefix='cli-xrr-', length=25)
+        target_acc = source_acc + "-restored"
+        loc = 'westcentralus'
+
+        # This is a multi region account cross region test, for this test account will also exist in the target region
+        target_loc = 'northcentralus'
+
+        # For this new parameter source_backup_location we need to wired in the handler to understand `eastus` means `East US`.
+        # Until that fix is added we have to send the location in this way for a clean run.
+        source_loc_for_xrr = 'West Central US'
+
+        self.kwargs.update({
+            'acc': source_acc,
+            'db_name': db_name,
+            'restored_acc': target_acc,
+            'col': col,
+            'loc': loc,
+            'target_loc': target_loc
+        })
+
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} failoverPriority=0 isZoneRedundant=False --locations regionName={target_loc} failoverPriority=1 isZoneRedundant=False --kind GlobalDocumentDB')
+        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        print(account)
+
+        assert account['location'] == source_loc_for_xrr
+
+        self.kwargs.update({
+            'ins_id': account['instanceId']
+        })
+
+        # Create database
+        self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
+
+        # Create container
+        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk ').get_output_in_json()
+
+        restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
+        print(restorable_database_account)
+
+        # As of now cross region restore does not have forced master backup during restore.
+        # So, we need to wait one hour in order to get the master backup for a restore to be performed.
+        account_creation_time = restorable_database_account['creationTime']
+        creation_timestamp_datetime = parser.parse(account_creation_time)
+        restore_ts = creation_timestamp_datetime + timedelta(minutes=61)
+        import time
+        time.sleep(3662)
+        restore_ts_string = restore_ts.isoformat()
+        self.kwargs.update({
+            'rts': restore_ts_string,
+            'source_loc_for_xrr': source_loc_for_xrr
+        })
+
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location "{source_loc_for_xrr}" --location {target_loc}')
+        restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
+            self.check('restoreParameters.restoreMode', 'PointInTime')
+        ]).get_output_in_json()
+
+        assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
+        assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
+        assert restored_account['writeLocations'][0]['locationName'] == 'North Central US'
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cross_region_restore', location='westcentralus')
+    def test_cosmosdb_xrr_single_region_account(self, resource_group):
+        col = self.create_random_name(prefix='cli-xrr', length=15)
+        db_name = self.create_random_name(prefix='cli-xrr', length=15)
+        source_acc = self.create_random_name(prefix='cli-xrr-', length=25)
+        target_acc = source_acc + "-restored"
+        loc = 'westcentralus'
+        target_loc = 'northcentralus'
+
+        # For this new parameter source_backup_location we need to wired in the handler to understand `eastus` means `East US`.
+        # Until that fix is added we have to send the location in this way for a clean run.
+        source_loc_for_xrr = 'West Central US'
+
+        self.kwargs.update({
+            'acc': source_acc,
+            'db_name': db_name,
+            'restored_acc': target_acc,
+            'col': col,
+            'loc': loc,
+            'target_loc': target_loc
+        })
+
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} failoverPriority=0 isZoneRedundant=False --kind GlobalDocumentDB')
+        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        print(account)
+
+        assert account['location'] == source_loc_for_xrr
+
+        self.kwargs.update({
+            'ins_id': account['instanceId']
+        })
+
+        # Create database
+        self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
+
+        # Create container
+        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk ').get_output_in_json()
+
+        restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
+        print(restorable_database_account)
+
+        # As of now cross region restore does not have forced master backup during restore.
+        # So, we need to wait one hour in order to get the master backup for a restore to be performed.
+        account_creation_time = restorable_database_account['creationTime']
+        creation_timestamp_datetime = parser.parse(account_creation_time)
+        restore_ts = creation_timestamp_datetime + timedelta(minutes=61)
+        import time
+        time.sleep(3662)
+        restore_ts_string = restore_ts.isoformat()
+        self.kwargs.update({
+            'rts': restore_ts_string,
+            'source_loc_for_xrr': source_loc_for_xrr
+        })
+
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location "{source_loc_for_xrr}" --location {target_loc}')
+        restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
+            self.check('restoreParameters.restoreMode', 'PointInTime')
+        ]).get_output_in_json()
+
+        assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
+        assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
+        assert restored_account['restoreParameters']['sourceBackupLocation'] == source_loc_for_xrr
+        assert restored_account['writeLocations'][0]['locationName'] == 'North Central US'

@@ -3,6 +3,36 @@
 Release History
 ===============
 
+0.5.3
++++++
+* Optimize the visualization of help text when the window is reduced horizontally
+
+0.5.2
++++++
+* Add command skipped message in Scenario Execution Mode
+* Fix Scenario Idx out of bound when selecting recommended scenario
+* Fix `KeyError` when entering param not in sample in scenario mode
+
+0.5.1
++++++
+* Fix bugs to prevent users from exiting the entire az interactive by using Ctrl+C during command execution
+* Fix confusing error message caused by uncompleted command loading and param update
+
+0.5.0
++++++
+* Support command recommendations that predicts the next commands users might need.
+* Support scenario recommendations to help users complete the complex scenarios more smoothly and simply.
+* Support new config `az config set interactive.enable_recommender=False` to disable these new recommenders.
+* Fix display offset in toolbar.
+* Add loading bar to avoid command execution errors caused by uncompleted command loading and param update. User can use CTRL+C to cancel the loading bar.
+* Add value completion mechanism for parameter value in scenarios
+* Support searching ability for scenarios
+* Optimize parameter completion mechanism to recommend one parameter at a time
+
+0.4.6
++++++
+* Compatible with argcomplete 2.0.0
+
 0.4.5
 +++++
 * Fix #17740: `az interactive` fails with `progress_patch() got an unexpected keyword argument 'det'`

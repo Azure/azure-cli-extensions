@@ -13,24 +13,22 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.22.1
-      accept-language:
-      - en-US
+      - AZURECLI/2.49.0 (PIP) azsdk-python-azure-mgmt-resource/23.0.1 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2021-04-28T07:54:58Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","test":"test_remote_rendering_account_scenario","date":"2023-06-28T03:55:10Z","module":"mixed-reality"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '429'
+      - '384'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:55:03 GMT
+      - Wed, 28 Jun 2023 03:55:14 GMT
       expires:
       - '-1'
       pragma:
@@ -45,7 +43,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus2", "identity": {"type": "SystemAssigned"}}'
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2"}'
     headers:
       Accept:
       - application/json
@@ -62,27 +60,27 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name?api-version=2021-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name","name":"remote-rendering-account-name","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"67599c65-1619-4410-916f-35d68394ece4","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"eastus2.mixedreality.azure.com","accountId":"0c447d6c-6503-478d-81a8-e257c792e96c"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name","name":"remote-rendering-account-name","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"93c02df3-a821-41b1-bf71-75768c3ba7a5","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"eastus2.mixedreality.azure.com","accountId":"01ebe302-0fdf-4dd5-b7c7-fc3fa111a6f1"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '595'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:55:25 GMT
+      - Wed, 28 Jun 2023 03:55:24 GMT
       expires:
       - '-1'
       location:
-      - subscriptions/92f95d8f-3c67-4124-91c7-8cf07cdbf241/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name
+      - subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name
       ms-cv:
-      - WcZOo0ZIuUKsrcncDJljJg.0
+      - dar1aJT+xUmiNuSyt2pm2A.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -106,26 +104,24 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --storage-account-name --tag
+      - -g -n --storage-account-name --tag --kind
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.22.1
-      accept-language:
-      - en-US
+      - AZURECLI/2.49.0 (PIP) azsdk-python-azure-mgmt-resource/23.0.1 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2021-04-28T07:54:58Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","test":"test_remote_rendering_account_scenario","date":"2023-06-28T03:55:10Z","module":"mixed-reality"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '429'
+      - '384'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:55:26 GMT
+      - Wed, 28 Jun 2023 03:55:24 GMT
       expires:
       - '-1'
       pragma:
@@ -140,8 +136,9 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"tags": {"tag": "tag"}, "location": "eastus2", "identity": {"type": "SystemAssigned"},
-      "properties": {"storageAccountName": "storage_account_name"}}'
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2", "properties":
+      {"storageAccountName": "storage_account_name"}, "sku": {"name": "P3"}, "tags":
+      {"tag": "tag"}}'
     headers:
       Accept:
       - application/json
@@ -152,33 +149,33 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '149'
+      - '172'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n --storage-account-name --tag
+      - -g -n --storage-account-name --tag --kind
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name1?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name1?api-version=2021-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name1","name":"remote-rendering-account-name1","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"da58d2dc-46d1-4138-9962-60548f616306","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{"tag":"tag"},"properties":{"storageAccountName":"storage_account_name","accountDomain":"eastus2.mixedreality.azure.com","accountId":"cf861564-75bb-4456-a9e5-da616a0e325c"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name1","name":"remote-rendering-account-name1","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"4b8e044c-9978-4a80-bf79-c72aaf5ce4f2","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{"tag":"tag"},"properties":{"storageAccountName":"storage_account_name","accountDomain":"eastus2.mixedreality.azure.com","accountId":"87166169-9b62-46eb-ad55-e594f3dd679e"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '711'
+      - '652'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:55:40 GMT
+      - Wed, 28 Jun 2023 03:55:39 GMT
       expires:
       - '-1'
       location:
-      - subscriptions/92f95d8f-3c67-4124-91c7-8cf07cdbf241/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name1
+      - subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name1
       ms-cv:
-      - PK29LVeGrUSd4HswRaMWWA.0
+      - RTIYbVXdjkeWPf2YISxHjA.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -186,58 +183,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - remote-rendering-account update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --storage-account-name
-      User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.22.1
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2020-10-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2021-04-28T07:54:58Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '429'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 28 Apr 2021 07:55:42 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "eastus2", "identity": {"type": "SystemAssigned"}, "properties":
-      {"storageAccountName": "storage_account_name1"}}'
+    body: '{"properties": {"storageAccountName": "storage_account_name1"}}'
     headers:
       Accept:
       - application/json
@@ -248,31 +199,31 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '126'
+      - '63'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --storage-account-name
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name?api-version=2021-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name","name":"remote-rendering-account-name","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"67599c65-1619-4410-916f-35d68394ece4","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"eastus2.mixedreality.azure.com","accountId":"0c447d6c-6503-478d-81a8-e257c792e96c"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name","name":"remote-rendering-account-name","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"93c02df3-a821-41b1-bf71-75768c3ba7a5","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"eastus2.mixedreality.azure.com","accountId":"01ebe302-0fdf-4dd5-b7c7-fc3fa111a6f1"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '699'
+      - '640'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:55:52 GMT
+      - Wed, 28 Jun 2023 03:55:40 GMT
       expires:
       - '-1'
       ms-cv:
-      - KO04GHsWS0Caye/cm31rHA.0
+      - cEjp1E1sH0Gd9ZvfaEbU3A.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -284,7 +235,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -302,25 +253,25 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name?api-version=2021-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name","name":"remote-rendering-account-name","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"67599c65-1619-4410-916f-35d68394ece4","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"eastus2.mixedreality.azure.com","accountId":"0c447d6c-6503-478d-81a8-e257c792e96c"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name","name":"remote-rendering-account-name","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"93c02df3-a821-41b1-bf71-75768c3ba7a5","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"eastus2.mixedreality.azure.com","accountId":"01ebe302-0fdf-4dd5-b7c7-fc3fa111a6f1"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '699'
+      - '640'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:55:54 GMT
+      - Wed, 28 Jun 2023 03:55:43 GMT
       expires:
       - '-1'
       ms-cv:
-      - pK8shtwsnUKCmnhJycWnkw.0
+      - TUb2T8dxe0G7GRZRGZ7UFg.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -348,25 +299,25 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts?api-version=2021-03-01-preview
   response:
     body:
-      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name","name":"remote-rendering-account-name","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"67599c65-1619-4410-916f-35d68394ece4","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"eastus2.mixedreality.azure.com","accountId":"0c447d6c-6503-478d-81a8-e257c792e96c"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name1","name":"remote-rendering-account-name1","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"da58d2dc-46d1-4138-9962-60548f616306","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{"tag":"tag"},"properties":{"storageAccountName":"storage_account_name","accountDomain":"eastus2.mixedreality.azure.com","accountId":"cf861564-75bb-4456-a9e5-da616a0e325c"}}]}'
+      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name","name":"remote-rendering-account-name","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"93c02df3-a821-41b1-bf71-75768c3ba7a5","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"eastus2.mixedreality.azure.com","accountId":"01ebe302-0fdf-4dd5-b7c7-fc3fa111a6f1"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name1","name":"remote-rendering-account-name1","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"4b8e044c-9978-4a80-bf79-c72aaf5ce4f2","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{"tag":"tag"},"properties":{"storageAccountName":"storage_account_name","accountDomain":"eastus2.mixedreality.azure.com","accountId":"87166169-9b62-46eb-ad55-e594f3dd679e"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1439'
+      - '1321'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:56:03 GMT
+      - Wed, 28 Jun 2023 03:55:47 GMT
       expires:
       - '-1'
       ms-cv:
-      - 3TCH+kXRhEC3Xe/l3mpNOQ.0
+      - F8eGNICBRE6sTx32xayJng.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -384,7 +335,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -396,9 +347,9 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name1?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name1?api-version=2021-03-01-preview
   response:
     body:
       string: ''
@@ -408,11 +359,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 28 Apr 2021 07:56:12 GMT
+      - Wed, 28 Jun 2023 03:55:53 GMT
       expires:
       - '-1'
       ms-cv:
-      - /5q0rQBKG0u2iP2brOJnjQ.0
+      - 4KLByxqhwE6MoO9YdVfPeA.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -438,25 +389,25 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts?api-version=2021-03-01-preview
   response:
     body:
-      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name","name":"remote-rendering-account-name","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"67599c65-1619-4410-916f-35d68394ece4","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"eastus2.mixedreality.azure.com","accountId":"0c447d6c-6503-478d-81a8-e257c792e96c"}}]}'
+      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name","name":"remote-rendering-account-name","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"SystemAssigned","principalId":"93c02df3-a821-41b1-bf71-75768c3ba7a5","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"eastus2.mixedreality.azure.com","accountId":"01ebe302-0fdf-4dd5-b7c7-fc3fa111a6f1"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '727'
+      - '668'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:56:19 GMT
+      - Wed, 28 Jun 2023 03:55:57 GMT
       expires:
       - '-1'
       ms-cv:
-      - z7vmyWz8NUqNxXOR+Qc0yg.0
+      - s8JxaDcDIkepC3law9r+qg.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -486,9 +437,9 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name/listKeys?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name/listKeys?api-version=2021-03-01-preview
   response:
     body:
       string: '{"primaryKey":"mock_key","secondaryKey":"mock_key"}'
@@ -496,15 +447,15 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '123'
+      - '51'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:56:22 GMT
+      - Wed, 28 Jun 2023 03:55:59 GMT
       expires:
       - '-1'
       ms-cv:
-      - pCzSmYX/uE+dJYcMFZJFRg.0
+      - uMOxo2McakO5ZHIBD/d0mQ.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -516,7 +467,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -538,9 +489,9 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name/regenerateKeys?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name/regenerateKeys?api-version=2021-03-01-preview
   response:
     body:
       string: '{"primaryKey":"mock_key","secondaryKey":"mock_key"}'
@@ -548,15 +499,15 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '123'
+      - '51'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:56:24 GMT
+      - Wed, 28 Jun 2023 03:56:01 GMT
       expires:
       - '-1'
       ms-cv:
-      - 1nVE4AimDkWAzg16NxWFVA.0
+      - Z6qqpRFpJUmTVgiJkqU9Ag.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -568,7 +519,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -590,9 +541,9 @@ interactions:
       ParameterSetName:
       - -g -n -k
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name/regenerateKeys?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name/regenerateKeys?api-version=2021-03-01-preview
   response:
     body:
       string: '{"primaryKey":"mock_key","secondaryKey":"mock_key"}'
@@ -600,15 +551,15 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '123'
+      - '51'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:56:26 GMT
+      - Wed, 28 Jun 2023 03:56:03 GMT
       expires:
       - '-1'
       ms-cv:
-      - U+oHoZVWZUGScSVcNA4LQw.0
+      - jTPhbgRCik60MlN+ecsTYA.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -620,7 +571,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -642,9 +593,9 @@ interactions:
       ParameterSetName:
       - -g -n -k
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name/regenerateKeys?api-version=2021-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/remote-rendering-account-name/regenerateKeys?api-version=2021-03-01-preview
   response:
     body:
       string: '{"primaryKey":"mock_key","secondaryKey":"mock_key"}'
@@ -652,15 +603,15 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '123'
+      - '51'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Apr 2021 07:56:29 GMT
+      - Wed, 28 Jun 2023 03:56:04 GMT
       expires:
       - '-1'
       ms-cv:
-      - 2Y6Al2Jnf0ikbgcvaHsWQA.0
+      - qAr9tTNp5UyLGLj16aAOJw.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -672,7 +623,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 200
       message: OK

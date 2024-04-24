@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import unittest
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 POOL_DEFAULT = "--service-level 'Premium' --size 4398046511104"
@@ -33,6 +34,7 @@ class AzureNetAppFilesExtMountTargetServiceScenarioTest(ScenarioTest):
 
         return volume1
 
+    @unittest.skip('This command is deprecated')
     @ResourceGroupPreparer()
     def test_ext_list_mount_targets(self):
         account_name = "cli-acc-lefr-01"

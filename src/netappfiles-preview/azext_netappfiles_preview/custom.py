@@ -3,11 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
+# pylint: disable=protected-access,line-too-long
 
-import json
 from knack.log import get_logger
-from azext_netappfiles_preview.vendored_sdks.models import ActiveDirectory, NetAppAccount, NetAppAccountPatch, CapacityPool, Volume, VolumePatch, VolumePropertiesExportPolicy, ExportPolicyRule, Snapshot
+from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.aaz import has_value
+from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from .aaz.latest.netappfiles.volume import Create as _VolumeCreate, Update as _VolumeUpdate
+
 
 logger = get_logger(__name__)
 
@@ -28,125 +31,134 @@ def generate_tags(tag):
             tags[parts[0]] = ""
     return tags
 
+# def create_volume(cmd, client, account_name, pool_name, volume_name, resource_group_name, location, service_level, creation_token, usage_threshold, subnet_id, tag=None, export_policy=None):
+#     rules = build_export_policy_rules(export_policy)
+#     volume_export_policy = VolumePropertiesExportPolicy(rules=rules) if rules != [] else None
 
-def _update_mapper(existing, new, keys):
-    for key in keys:
-        existing_value = getattr(existing, key)
-        new_value = getattr(new, key)
-        setattr(new, key, new_value if new_value is not None else existing_value)
+#     body = Volume(
+#         usage_threshold=int(usage_threshold),
+#         creation_token=creation_token,
+#         service_level=service_level,
+#         location=location,
+#         subnet_id=subnet_id,
+#         tags=generate_tags(tag),
+#         export_policy=volume_export_policy)
 
-
-def build_active_directories(active_directories=None):
-    acc_active_directories = None
-
-    if active_directories:
-        acc_active_directories = []
-        ad_list = json.loads(active_directories)
-        for ad in ad_list:
-            username = ad['username'] if 'username' in ad else None
-            password = ad['password'] if 'password' in ad else None
-            domain = ad['domain'] if 'domain' in ad else None
-            dns = ad['dns'] if 'dns' in ad else None
-            smbservername = ad['smbservername'] if 'smbservername' in ad else None
-            organizational_unit = ad['organizational_unit'] if 'organizational_unit' in ad else None
-            active_directory = ActiveDirectory(username=username, password=password, domain=domain, dns=dns, smb_server_name=smbservername, organizational_unit=organizational_unit)
-            acc_active_directories.append(active_directory)
-
-    return acc_active_directories
+#     return client.create_or_update(body, resource_group_name, account_name, pool_name, volume_name)
 
 
-# pylint: disable=unused-argument
-def create_account(cmd, client, account_name, resource_group_name, location, tag=None, active_directories=None):
-    acc_active_directories = build_active_directories(active_directories)
-    body = NetAppAccount(location=location, tags=generate_tags(tag), active_directories=acc_active_directories)
-    return client.create_or_update(body, resource_group_name, account_name)
+# region volume
+class VolumeCreate(_VolumeCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZIntArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.vnet = AAZStrArg(
+            options=["--vnet"],
+            arg_group="Properties",
+            help="Name or Resource ID of the vnet. If you want to use a vnet in other resource group or subscription, please provide the Resource ID instead of the name of the vnet.",
+            required=True,
+        )
+
+        args_schema.usage_threshold._fmt = AAZIntArgFormat(
+            maximum=500,
+            minimum=100,
+        )
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        # RP expects bytes but CLI allows integer TiBs for ease of use
+        logger.debug("ANF-Extension log: usage_threshold: %s", args.usage_threshold)
+        if args.usage_threshold is not None:
+            gib_scale = 1024 * 1024 * 1024
+            args.usage_threshold = int(args.usage_threshold.to_serialized_data()) * gib_scale
+
+        # default the resource group of the subnet to the volume's rg unless the subnet is specified by id
+        subnet_rg = args.resource_group
+        subs_id = self.ctx.subscription_id
+        vnetArg = args.vnet.to_serialized_data()
+        # determine vnet - supplied value can be name or ARM resource Id
+        if is_valid_resource_id(vnetArg):
+            resource_parts = parse_resource_id(vnetArg)
+            vnetArg = resource_parts['resource_name']
+            subnet_rg = resource_parts['resource_group']
+
+        # determine subnet - supplied value can be name or ARM resource Id
+        if is_valid_resource_id(args.subnet_id.to_serialized_data()):
+            resource_parts = parse_resource_id(args.subnet_id.to_serialized_data())
+            subnet = resource_parts['resource_name']
+            subnet_rg = resource_parts['resource_group']
+
+        args.subnet_id = f"/subscriptions/{subs_id}/resourceGroups/{subnet_rg}/providers/Microsoft.Network/virtualNetworks/{vnetArg}/subnets/{subnet}"
+
+        # if NFSv4 is specified then the export policy must reflect this
+        # the RP ordinarily only creates a default setting NFSv3.
+        logger.debug("ANF-Extension log: ProtocolTypes rules len:%s", len(args.protocol_types))
+
+        for protocl in args.protocol_types:
+            logger.debug("ANF-Extension log: ProtocolType: %s", protocl)
+
+        logger.debug("ANF-Extension log: exportPolicy rules len:%s", len(args.rules))
+
+        for rule in args.rules:
+            logger.debug("ANF-Extension log: rule: %s", rule)
+
+        if (has_value(args.protocol_types) and any(x in ['NFSv3', 'NFSv4.1'] for x in args.protocol_types) and len(args.rules) == 0)\
+                and not ((len(args.protocol_types) == 1 and all(elem == "NFSv3" for elem in args.protocol_types)) and len(args.rules) == 0):
+            isNfs41 = False
+            isNfs3 = False
+            cifs = False
+            rule_index = 1
+            if "NFSv4.1" in args.protocol_types:
+                isNfs41 = True
+                if not has_value(args.rules["allowed_clients"]):
+                    raise ValidationError("Parameter allowed-clients needs to be set when protocol-type is NFSv4.1")
+            if "NFSv3" in args.protocol_types:
+                isNfs3 = True
+            if "CIFS" in args.protocol_types:
+                cifs = True
+
+            logger.debug("ANF-Extension log: Setting exportPolicy rule index: %s, %s, %s, %s", rule_index, isNfs3, isNfs41, cifs)
+
+            args.rules[0]["rule_index"] = rule_index
+            args.rules[0]["nfsv3"] = isNfs3
+            args.rules[0]["nfsv41"] = isNfs41
+            args.rules[0]["cifs"] = cifs
+        else:
+            logger.debug("Don't create export policy")
+
+# todo create export policy note no longer flatteneded
+
+# check if flattening dataprotection works
 
 
-# pylint: disable=unused-argument
-def update_account(cmd, client, account_name, resource_group_name, location, tag=None, active_directories=None):
-    # Note: this set command is required in addition to the update
-    # The RP implementation is such that patch of active directories provides an addition type amendment, i.e.
-    # absence of an AD does not remove the ADs already present. To perform this a set command is required that
-    # asserts exactly the content provided, replacing whatever is already present including removing it if none
-    # is present
-    acc_active_directories = build_active_directories(active_directories)
-    body = NetAppAccountPatch(location=location, tags=generate_tags(tag), active_directories=acc_active_directories)
-    return client.create_or_update(body, resource_group_name, account_name)
+class VolumeUpdate(_VolumeUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZIntArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.vnet = AAZStrArg(
+            options=["--vnet"],
+            arg_group="Properties",
+            help="Name or Resource ID of the vnet. If you want to use a vnet in other resource group or subscription, please provide the Resource ID instead of the name of the vnet.",
+            required=False,
+        )
+        args_schema.usage_threshold._fmt = AAZIntArgFormat(
+            maximum=500,
+            minimum=100,
+        )
 
+        return args_schema
 
-def patch_account(cmd, instance, account_name, resource_group_name, location, tag=None, active_directories=None):
-    # parameters for active directory here will add to the existing ADs but cannot remove them
-    # current limitation however is 1 AD/subscription
-    acc_active_directories = build_active_directories(active_directories)
-    body = NetAppAccountPatch(location=location, tags=generate_tags(tag), active_directories=acc_active_directories)
-    _update_mapper(instance, body, ['location', 'active_directories', 'tags'])
-    return body
+    def pre_operations(self):
+        args = self.ctx.args
+        # RP expects bytes but CLI allows integer TiBs for ease of use
+        logger.debug("ANF-Extension log: VolumeUpdate")
+        logger.debug("ANF-Extension log: usage_threshold: %s", args.usage_threshold)
+        if has_value(args.usage_threshold) and args.usage_threshold.to_serialized_data() is not None:
+            gib_scale = 1024 * 1024 * 1024
+            args.usage_threshold = int(args.usage_threshold.to_serialized_data()) * gib_scale
 
-
-def create_pool(cmd, client, account_name, pool_name, resource_group_name, location, size, service_level, tag=None):
-    body = CapacityPool(service_level=service_level, size=int(size), location=location, tags=generate_tags(tag))
-    return client.create_or_update(body, resource_group_name, account_name, pool_name)
-
-
-def patch_pool(cmd, instance, location=None, size=None, service_level=None, tag=None):
-    # put operation to update the record
-    if size is not None:
-        size = int(size)
-    body = CapacityPool(service_level=service_level, size=size, location=location, tags=generate_tags(tag))
-    _update_mapper(instance, body, ['location', 'service_level', 'size', 'tags'])
-    return body
-
-
-def build_export_policy_rules(export_policy=None):
-    rules = []
-
-    if export_policy:
-        ep_list = json.loads(export_policy)
-        for ep in ep_list:
-            rule_index = ep['rule_index'] if 'rule_index' in ep else None
-            unix_read_only = ep['unix_read_only'] if 'unix_read_only' in ep else None
-            unix_read_write = ep['unix_read_write'] if 'unix_read_write' in ep else None
-            cifs = ep['cifs'] if 'cifs' in ep else None
-            nfsv3 = ep['nfsv3'] if 'nfsv3' in ep else None
-            nfsv4 = ep['nfsv4'] if 'nfsv4' in ep else None
-            allowed_clients = ep['allowed_clients'] if 'allowed_clients' in ep else None
-            export_policy = ExportPolicyRule(rule_index=rule_index, unix_read_only=unix_read_only, unix_read_write=unix_read_write, cifs=cifs, nfsv3=nfsv3, nfsv4=nfsv4, allowed_clients=allowed_clients)
-            rules.append(export_policy)
-
-    return rules
-
-
-def create_volume(cmd, client, account_name, pool_name, volume_name, resource_group_name, location, service_level, creation_token, usage_threshold, subnet_id, tag=None, export_policy=None):
-    rules = build_export_policy_rules(export_policy)
-    volume_export_policy = VolumePropertiesExportPolicy(rules=rules) if rules != [] else None
-
-    body = Volume(
-        usage_threshold=int(usage_threshold),
-        creation_token=creation_token,
-        service_level=service_level,
-        location=location,
-        subnet_id=subnet_id,
-        tags=generate_tags(tag),
-        export_policy=volume_export_policy)
-
-    return client.create_or_update(body, resource_group_name, account_name, pool_name, volume_name)
-
-
-def patch_volume(cmd, instance, service_level=None, usage_threshold=None, tag=None, export_policy=None):
-
-    # the export policy provided replaces any existing eport policy
-    rules = build_export_policy_rules(export_policy)
-    volume_export_policy = VolumePropertiesExportPolicy(rules=rules) if rules != [] else None
-
-    params = VolumePatch(
-        usage_threshold=None if usage_threshold is None else int(usage_threshold),
-        service_level=service_level,
-        tags=generate_tags(tag),
-        export_policy=volume_export_policy)
-    _update_mapper(instance, params, ['service_level', 'usage_threshold', 'tags', 'export_policy'])
-    return params
-
-
-def create_snapshot(cmd, client, account_name, pool_name, volume_name, snapshot_name, resource_group_name, location, file_system_id=None):
-    body = Snapshot(location=location, file_system_id=file_system_id)
-    return client.create(body, resource_group_name, account_name, pool_name, volume_name, snapshot_name)
+# endregion

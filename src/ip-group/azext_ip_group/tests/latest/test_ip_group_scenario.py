@@ -37,6 +37,6 @@ class IpGroupScenarioTest(ScenarioTest):
             self.check('resourceGroup', '{rg}'),
             self.check('tags.foo', 'boo')
         ])
-        self.cmd('network ip-group delete -g {rg} -n {name}')
+        self.cmd('network ip-group delete -g {rg} -n {name} -y')
         final_count = len(self.cmd('network ip-group list').get_output_in_json())
         self.assertTrue(final_count, count - 1)

@@ -9,29 +9,34 @@
 # --------------------------------------------------------------------------
 # pylint: disable=unused-import
 
-import azext_datafactory._help
 from azure.cli.core import AzCommandsLoader
+import azext_datafactory._help
 
 
 class DataFactoryManagementClientCommandsLoader(AzCommandsLoader):
-
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         from azext_datafactory.generated._client_factory import cf_datafactory_cl
+
         datafactory_custom = CliCommandType(
-            operations_tmpl='azext_datafactory.custom#{}',
-            client_factory=cf_datafactory_cl)
-        parent = super(DataFactoryManagementClientCommandsLoader, self)
+            operations_tmpl="azext_datafactory.custom#{}",
+            client_factory=cf_datafactory_cl,
+        )
+        parent = super()
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=datafactory_custom)
 
     def load_command_table(self, args):
         from azext_datafactory.generated.commands import load_command_table
+
         load_command_table(self, args)
         try:
-            from azext_datafactory.manual.commands import load_command_table as load_command_table_manual
+            from azext_datafactory.manual.commands import (
+                load_command_table as load_command_table_manual,
+            )
+
             load_command_table_manual(self, args)
         except ImportError as e:
-            if e.name.endswith('manual.commands'):
+            if e.name.endswith("manual.commands"):
                 pass
             else:
                 raise e
@@ -39,12 +44,16 @@ class DataFactoryManagementClientCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, command):
         from azext_datafactory.generated._params import load_arguments
+
         load_arguments(self, command)
         try:
-            from azext_datafactory.manual._params import load_arguments as load_arguments_manual
+            from azext_datafactory.manual._params import (
+                load_arguments as load_arguments_manual,
+            )
+
             load_arguments_manual(self, command)
         except ImportError as e:
-            if e.name.endswith('manual._params'):
+            if e.name.endswith("manual._params"):
                 pass
             else:
                 raise e

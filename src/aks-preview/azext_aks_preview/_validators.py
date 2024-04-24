@@ -11,18 +11,30 @@ import re
 from ipaddress import ip_network
 from math import isclose, isnan
 
-import azure.cli.core.keys as keys
+from azure.cli.core import keys
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
     InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
 )
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
-from knack.log import get_logger
-
-from azext_aks_preview._consts import ADDONS
+from azext_aks_preview._consts import (
+    ADDONS,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+    CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
+    CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_CBLMARINER,
+    CONST_OS_SKU_MARINER,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
+    CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
+)
 from azext_aks_preview._helpers import _fuzzy_match
+from knack.log import get_logger
 
 logger = get_logger(__name__)
 
@@ -35,7 +47,7 @@ def validate_ssh_key(namespace):
     content = string_or_file
     if os.path.exists(string_or_file):
         logger.info('Use existing SSH public key file: %s', string_or_file)
-        with open(string_or_file, 'r') as f:
+        with open(string_or_file, 'r', encoding="utf-8") as f:
             content = f.read()
     elif not keys.is_valid_ssh_rsa_public_key(content):
         if namespace.generate_ssh_keys:
@@ -56,6 +68,20 @@ def validate_ssh_key(namespace):
         else:
             raise CLIError('An RSA key file or key value must be supplied to SSH Key Value. '
                            'You can use --generate-ssh-keys to let CLI generate one for you')
+    namespace.ssh_key_value = content
+
+
+def validate_ssh_key_for_update(namespace):
+    string_or_file = namespace.ssh_key_value
+    if not string_or_file:
+        return
+    content = string_or_file
+    if os.path.exists(string_or_file):
+        logger.info('Use existing SSH public key file: %s', string_or_file)
+        with open(string_or_file, 'r', encoding="utf-8") as f:
+            content = f.read()
+    elif not keys.is_valid_ssh_rsa_public_key(content):
+        raise InvalidArgumentValueError('An RSA key file or key value must be supplied to SSH Key Value')
     namespace.ssh_key_value = content
 
 
@@ -134,18 +160,29 @@ def validate_ip_ranges(namespace):
                 raise CLIError(
                     "--api-server-authorized-ip-ranges cannot be IPv6 addresses")
         except ValueError:
+            # pylint: disable=raise-missing-from
             raise CLIError(
-                "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs")
+                "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs"
+            )
+
+
+def _validate_nodepool_name(nodepool_name):
+    """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
+    if nodepool_name != "":
+        if len(nodepool_name) > 12:
+            raise InvalidArgumentValueError('--nodepool-name can contain at most 12 characters')
+        if not nodepool_name.isalnum():
+            raise InvalidArgumentValueError('--nodepool-name should contain only alphanumeric characters')
 
 
 def validate_nodepool_name(namespace):
     """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
-    if namespace.nodepool_name != "":
-        if len(namespace.nodepool_name) > 12:
-            raise CLIError('--nodepool-name can contain atmost 12 characters')
-        if not namespace.nodepool_name.isalnum():
-            raise CLIError(
-                '--nodepool-name should only contain alphanumeric characters')
+    _validate_nodepool_name(namespace.nodepool_name)
+
+
+def validate_agent_pool_name(namespace):
+    """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
+    _validate_nodepool_name(namespace.agent_pool_name)
 
 
 def validate_vm_set_type(namespace):
@@ -154,9 +191,10 @@ def validate_vm_set_type(namespace):
         if namespace.vm_set_type == '':
             return
         if namespace.vm_set_type.lower() != "availabilityset" and \
+            namespace.vm_set_type.lower() != "virtualmachines" and \
                 namespace.vm_set_type.lower() != "virtualmachinescalesets":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets or AvailabilitySet")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)")
 
 
 def validate_load_balancer_sku(namespace):
@@ -168,39 +206,44 @@ def validate_load_balancer_sku(namespace):
             raise CLIError("--load-balancer-sku can only be standard or basic")
 
 
-def validate_load_balancer_outbound_ips(namespace):
-    """validate load balancer profile outbound IP ids"""
-    if namespace.load_balancer_outbound_ips is not None:
-        ip_id_list = [x.strip()
-                      for x in namespace.load_balancer_outbound_ips.split(',')]
-        if not all(ip_id_list):
-            raise CLIError(
-                "--load-balancer-outbound-ips cannot contain whitespace")
+def validate_sku_tier(namespace):
+    """Validates the sku tier string."""
+    if namespace.tier is not None:
+        if namespace.tier == '':
+            return
+        if namespace.tier.lower() not in (
+            CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
+            CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+            CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
+        ):
+            raise InvalidArgumentValueError("--tier can only be free, standard, or premium")
 
 
-def validate_load_balancer_outbound_ip_prefixes(namespace):
-    """validate load balancer profile outbound IP prefix ids"""
-    if namespace.load_balancer_outbound_ip_prefixes is not None:
-        ip_prefix_id_list = [
-            x.strip() for x in namespace.load_balancer_outbound_ip_prefixes.split(',')]
-        if not all(ip_prefix_id_list):
-            raise CLIError(
-                "--load-balancer-outbound-ip-prefixes cannot contain whitespace")
+def validate_nodepool_taints(namespace):
+    """Validates that provided node taints is a valid format"""
+    if hasattr(namespace, 'nodepool_taints'):
+        taintsStr = namespace.nodepool_taints
+    else:
+        taintsStr = namespace.node_taints
+
+    if taintsStr is None or taintsStr == '':
+        return
+
+    for taint in taintsStr.split(','):
+        validate_taint(taint)
 
 
-def validate_taints(namespace):
+def validate_taint(taint):
     """Validates that provided taint is a valid format"""
 
     regex = re.compile(
         r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
 
-    if namespace.node_taints is not None and namespace.node_taints != '':
-        for taint in namespace.node_taints.split(','):
-            if taint == "":
-                continue
-            found = regex.findall(taint)
-            if not found:
-                raise CLIError('Invalid node taint: %s' % taint)
+    if taint == "":
+        return
+    found = regex.findall(taint)
+    if not found:
+        raise ArgumentUsageError(f'Invalid node taint: {taint}')
 
 
 def validate_priority(namespace):
@@ -208,8 +251,7 @@ def validate_priority(namespace):
     if namespace.priority is not None:
         if namespace.priority == '':
             return
-        if namespace.priority != "Spot" and \
-                namespace.priority != "Regular":
+        if namespace.priority not in ("Spot", "Regular"):
             raise CLIError("--priority can only be Spot or Regular")
 
 
@@ -218,10 +260,8 @@ def validate_eviction_policy(namespace):
     if namespace.eviction_policy is not None:
         if namespace.eviction_policy == '':
             return
-        if namespace.eviction_policy != "Delete" and \
-                namespace.eviction_policy != "Deallocate":
-            raise CLIError(
-                "--eviction-policy can only be Delete or Deallocate")
+        if namespace.eviction_policy not in ("Delete", "Deallocate"):
+            raise CLIError("--eviction-policy can only be Delete or Deallocate")
 
 
 def validate_spot_max_price(namespace):
@@ -260,6 +300,16 @@ def validate_user(namespace):
             "--user can only be clusterUser or clusterMonitoringUser")
 
 
+def validate_pod_ip_allocation_mode(namespace):
+    """Validates the pod ip allocation mode string."""
+    if namespace.pod_ip_allocation_mode is not None:
+        if namespace.pod_ip_allocation_mode not in (
+            CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
+            CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
+        ):
+            raise InvalidArgumentValueError("--pod-ip-allocation-mode can only be DynamicIndividual or StaticBlock")
+
+
 def validate_vnet_subnet_id(namespace):
     _validate_subnet_id(namespace.vnet_subnet_id, "--vnet-subnet-id")
 
@@ -280,39 +330,17 @@ def _validate_subnet_id(subnet_id, name):
         raise CLIError(name + " is not a valid Azure resource ID.")
 
 
-def validate_load_balancer_outbound_ports(namespace):
-    """validate load balancer profile outbound allocated ports"""
-    if namespace.load_balancer_outbound_ports is not None:
-        if namespace.load_balancer_outbound_ports % 8 != 0:
-            raise CLIError(
-                "--load-balancer-allocated-ports must be a multiple of 8")
-        if namespace.load_balancer_outbound_ports < 0 or namespace.load_balancer_outbound_ports > 64000:
-            raise CLIError(
-                "--load-balancer-allocated-ports must be in the range [0,64000]")
-
-
-def validate_load_balancer_idle_timeout(namespace):
-    """validate load balancer profile idle timeout"""
-    if namespace.load_balancer_idle_timeout is not None:
-        if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 100:
-            raise CLIError(
-                "--load-balancer-idle-timeout must be in the range [4,100]")
-
-
-def validate_nat_gateway_managed_outbound_ip_count(namespace):
-    """validate NAT gateway profile managed outbound IP count"""
-    if namespace.nat_gateway_managed_outbound_ip_count is not None:
-        if namespace.nat_gateway_managed_outbound_ip_count < 1 or namespace.nat_gateway_managed_outbound_ip_count > 16:
+def validate_load_balancer_backend_pool_type(namespace):
+    """validate load balancer backend pool type"""
+    if namespace.load_balancer_backend_pool_type is not None:
+        if namespace.load_balancer_backend_pool_type not in [
+            CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+            CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+        ]:
             raise InvalidArgumentValueError(
-                "--nat-gateway-managed-outbound-ip-count must be in the range [1,16]")
-
-
-def validate_nat_gateway_idle_timeout(namespace):
-    """validate NAT gateway profile idle timeout"""
-    if namespace.nat_gateway_idle_timeout is not None:
-        if namespace.nat_gateway_idle_timeout < 4 or namespace.nat_gateway_idle_timeout > 120:
-            raise InvalidArgumentValueError(
-                "--nat-gateway-idle-timeout must be in the range [4,120]")
+                f"Invalid Load Balancer Backend Pool Type {namespace.load_balancer_backend_pool_type}, "
+                "supported values are nodeIP and nodeIPConfiguration"
+            )
 
 
 def validate_nodepool_tags(ns):
@@ -322,6 +350,15 @@ def validate_nodepool_tags(ns):
         for item in ns.nodepool_tags:
             tags_dict.update(validate_tag(item))
         ns.nodepool_tags = tags_dict
+
+
+def validate_node_public_ip_tags(ns):
+    """ Extracts multiple space-separated tags in key[=value] format """
+    if isinstance(ns.node_public_ip_tags, list):
+        tags_dict = {}
+        for item in ns.node_public_ip_tags:
+            tags_dict.update(validate_tag(item))
+        ns.node_public_ip_tags = tags_dict
 
 
 def validate_nodepool_labels(namespace):
@@ -361,7 +398,8 @@ def validate_label(label):
     kv = label.split('=')
     if len(kv) != 2:
         raise CLIError(
-            "Invalid label: %s. Label definition must be of format name=value." % label)
+            f"Invalid label: {label}. Label definition must be of format name=value."
+        )
     name_parts = kv[0].split('/')
     if len(name_parts) == 1:
         name = name_parts[0]
@@ -369,34 +407,45 @@ def validate_label(label):
         prefix = name_parts[0]
         if not prefix or len(prefix) > 253:
             raise CLIError(
-                "Invalid label: %s. Label prefix can't be empty or more than 253 chars." % label)
+                f"Invalid label: {label}. Label prefix can't be empty or more than 253 chars."
+            )
         if not prefix_regex.match(prefix):
-            raise CLIError("Invalid label: %s. Prefix part a DNS-1123 label must consist of lower case alphanumeric "
-                           "characters or '-', and must start and end with an alphanumeric character" % label)
+            raise CLIError(
+                f"Invalid label: {label}. Prefix part a DNS-1123 label must consist of lower case alphanumeric "
+                "characters or '-', and must start and end with an alphanumeric character"
+            )
         name = name_parts[1]
     else:
-        raise CLIError("Invalid label: %s. A qualified name must consist of alphanumeric characters, '-', '_' "
-                       "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
-                       "'my.name',  or '123-abc') with an optional DNS subdomain prefix and '/' "
-                       "(e.g. 'example.com/MyName')" % label)
+        raise CLIError(
+            f"Invalid label: {label}. A qualified name must consist of alphanumeric characters, '-', '_' "
+            "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
+            "'my.name',  or '123-abc') with an optional DNS subdomain prefix and '/' "
+            "(e.g. 'example.com/MyName')"
+        )
 
     # validate label name
     if not name or len(name) > 63:
         raise CLIError(
-            "Invalid label: %s. Label name can't be empty or more than 63 chars." % label)
+            f"Invalid label: {label}. Label name can't be empty or more than 63 chars."
+        )
     if not name_regex.match(name):
-        raise CLIError("Invalid label: %s. A qualified name must consist of alphanumeric characters, '-', '_' "
-                       "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
-                       "'my.name',  or '123-abc') with an optional DNS subdomain prefix and '/' (e.g. "
-                       "'example.com/MyName')" % label)
+        raise CLIError(
+            f"Invalid label: {label}. A qualified name must consist of alphanumeric characters, '-', '_' "
+            "or '.', and must start and end with an alphanumeric character (e.g. 'MyName',  or "
+            "'my.name',  or '123-abc') with an optional DNS subdomain prefix and '/' (e.g. "
+            "'example.com/MyName')"
+        )
 
     # validate label value
     if len(kv[1]) > 63:
         raise CLIError(
-            "Invalid label: %s. Label must be more than 63 chars." % label)
+            f"Invalid label: {label}. Label must be more than 63 chars."
+        )
     if not value_regex.match(kv[1]):
-        raise CLIError("Invalid label: %s. A valid label must be an empty string or consist of alphanumeric "
-                       "characters, '-', '_' or '.', and must start and end with an alphanumeric character" % label)
+        raise CLIError(
+            f"Invalid label: {label}. A valid label must be an empty string or consist of alphanumeric "
+            "characters, '-', '_' or '.', and must start and end with an alphanumeric character"
+        )
 
     return {kv[0]: kv[1]}
 
@@ -413,6 +462,7 @@ def validate_max_surge(namespace):
         if int(int_or_percent) < 0:
             raise CLIError("--max-surge must be positive")
     except ValueError:
+        # pylint: disable=raise-missing-from
         raise CLIError("--max-surge should be an int or percentage")
 
 
@@ -578,8 +628,10 @@ def validate_crg_id(namespace):
 def validate_azure_keyvault_kms_key_id(namespace):
     key_id = namespace.azure_keyvault_kms_key_id
     if key_id:
-        err_msg = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
-                  'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+        err_msg = (
+            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
+        )
 
         https_prefix = "https://"
         if not key_id.startswith(https_prefix):
@@ -599,12 +651,37 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
 
 
+def validate_bootstrap_container_registry_resource_id(namespace):
+    container_registry_resource_id = namespace.bootstrap_container_registry_resource_id
+    if container_registry_resource_id is None or container_registry_resource_id == '':
+        return
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(container_registry_resource_id):
+        raise InvalidArgumentValueError("--bootstrap-container-registry-resource-id is not a valid Azure resource ID.")
+
+
 def validate_enable_custom_ca_trust(namespace):
     """Validates Custom CA Trust can only be used on Linux."""
     if namespace.enable_custom_ca_trust:
         if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
             raise ArgumentUsageError(
                 '--enable_custom_ca_trust can only be set for Linux nodepools')
+
+
+def validate_custom_ca_trust_certificates(namespace):
+    """Validates Custom CA Trust Certificates can only be used on Linux."""
+    if namespace.custom_ca_trust_certificates is not None and namespace.custom_ca_trust_certificates != "":
+        if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
+            raise ArgumentUsageError(
+                '--custom-ca-trust-certificates can only be set for linux nodepools')
+
+
+def validate_disable_windows_outbound_nat(namespace):
+    """Validates disable_windows_outbound_nat can only be used on Windows."""
+    if namespace.disable_windows_outbound_nat:
+        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() != "windows":
+            raise ArgumentUsageError(
+                '--disable-windows-outbound-nat can only be set for Windows nodepools')
 
 
 def validate_defender_config_parameter(namespace):
@@ -615,3 +692,165 @@ def validate_defender_config_parameter(namespace):
 def validate_defender_disable_and_enable_parameters(namespace):
     if namespace.disable_defender and namespace.enable_defender:
         raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
+
+
+def validate_force_upgrade_disable_and_enable_parameters(namespace):
+    if namespace.disable_force_upgrade and namespace.enable_force_upgrade:
+        raise MutuallyExclusiveArgumentError(
+            'Providing both --disable-force-upgrade and --enable-force-upgrade flags is invalid'
+        )
+
+
+def sanitize_resource_id(resource_id):
+    resource_id = resource_id.strip()
+    if not resource_id.startswith("/"):
+        resource_id = "/" + resource_id
+    if resource_id.endswith("/"):
+        resource_id = resource_id.rstrip("/")
+    return resource_id.lower()
+
+
+def validate_azuremonitorworkspaceresourceid(namespace):
+    resource_id = namespace.azure_monitor_workspace_resource_id
+    if resource_id is None:
+        return
+    resource_id = sanitize_resource_id(resource_id)
+    if (
+        bool(
+            re.match(
+                r"/subscriptions/.*/resourcegroups/.*/providers/microsoft.monitor/accounts/.*",
+                resource_id,
+            )
+        )
+    ) is False:
+        raise ArgumentUsageError(
+            "--azure-monitor-workspace-resource-id not in the correct format. It should match "
+            "`/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.monitor/accounts/<resourceName>`"  # pylint: disable=line-too-long
+        )
+
+
+def validate_grafanaresourceid(namespace):
+    resource_id = namespace.grafana_resource_id
+    if resource_id is None:
+        return
+    resource_id = sanitize_resource_id(resource_id)
+    if (
+        bool(
+            re.match(
+                r"/subscriptions/.*/resourcegroups/.*/providers/microsoft.dashboard/grafana/.*",
+                resource_id,
+            )
+        )
+    ) is False:
+        raise ArgumentUsageError(
+            "--grafana-resource-id not in the correct format. It should match "
+            "`/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`"  # pylint: disable=line-too-long
+        )
+
+
+def validate_allowed_host_ports(namespace):
+    if hasattr(namespace, "nodepool_allowed_host_ports"):
+        host_ports = namespace.nodepool_allowed_host_ports
+    else:
+        host_ports = namespace.allowed_host_ports
+    if not host_ports:
+        return
+
+    regex = re.compile(r'^((\d+)|(\d+-\d+))/(tcp|udp)$')
+    for port_range in host_ports.split(","):
+        found = regex.findall(port_range)
+        if found:
+            continue
+        raise InvalidArgumentValueError(
+            "--allowed-host-ports must be a comma-separated list of port ranges "
+            "in the format of <port-range>/<protocol>"
+        )
+
+
+def validate_application_security_groups(namespace):
+    if hasattr((namespace), "nodepool_asg_ids"):
+        asg_ids = namespace.nodepool_asg_ids
+    else:
+        asg_ids = namespace.asg_ids
+    if not asg_ids:
+        return
+
+    from msrestazure.tools import is_valid_resource_id
+    for asg in asg_ids.split(","):
+        if not is_valid_resource_id(asg):
+            raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")
+
+
+def validate_utc_offset(namespace):
+    """Validates --utc-offset for aks maintenanceconfiguration add/update commands."""
+    if namespace.utc_offset is None:
+        return
+    utc_offset_regex = re.compile(r'^[+-]\d{2}:\d{2}$')
+    found = utc_offset_regex.findall(namespace.utc_offset)
+    if not found:
+        raise InvalidArgumentValueError(
+            '--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".'
+        )
+
+
+def validate_start_date(namespace):
+    """Validates --start-date for aks maintenanceconfiguration add/update commands."""
+    if namespace.start_date is None:
+        return
+    start_dt_regex = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+    found = start_dt_regex.findall(namespace.start_date)
+    if not found:
+        raise InvalidArgumentValueError('--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".')
+
+
+def validate_start_time(namespace):
+    """Validates --start-time for aks maintenanceconfiguration add/update commands."""
+    if namespace.start_time is None:
+        return
+    start_time_regex = re.compile(r'^\d{2}:\d{2}$')
+    found = start_time_regex.findall(namespace.start_time)
+    if not found:
+        raise InvalidArgumentValueError('--start-time must be in format "HH:mm". For example, "09:30" and "17:00".')
+
+
+def validate_os_sku(namespace):
+    os_sku = namespace.os_sku
+    if os_sku in [CONST_OS_SKU_MARINER, CONST_OS_SKU_CBLMARINER]:
+        logger.warning(
+            'The osSKU "%s" should be used going forward instead of "%s" or "%s". '
+            'The osSKUs "%s" and "%s" will eventually be deprecated.',
+            CONST_OS_SKU_AZURELINUX,
+            CONST_OS_SKU_CBLMARINER,
+            CONST_OS_SKU_MARINER,
+            CONST_OS_SKU_CBLMARINER,
+            CONST_OS_SKU_MARINER,
+        )
+
+
+def validate_azure_service_mesh_revision(namespace):
+    """Validates the user provided revision parameter for azure service mesh commands."""
+    if namespace.revision is None:
+        return
+    revision = namespace.revision
+    asm_revision_regex = re.compile(r'^asm-\d+-\d+$')
+    found = asm_revision_regex.findall(revision)
+    if not found:
+        raise InvalidArgumentValueError(f"Revision {revision} is not supported by the service mesh add-on.")
+
+
+def validate_artifact_streaming(namespace):
+    """Validates that artifact streaming enablement can only be used on Linux."""
+    if namespace.enable_artifact_streaming:
+        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
+            raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')
+
+
+def validate_custom_endpoints(namespace):
+    """Validates that custom endpoints do not contain protocol."""
+    if not namespace.custom_endpoints:
+        return
+
+    if isinstance(namespace.custom_endpoints, list):
+        for endpoint in namespace.custom_endpoints:
+            if "://" in endpoint:
+                raise InvalidArgumentValueError(f"Custom endpoint {endpoint} should not contain protocol.")

@@ -15,454 +15,521 @@ from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
 
 
-def datafactory_list(client,
-                     resource_group_name=None):
+def datafactory_list(client, resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
     return client.list()
 
 
-def datafactory_show(client,
-                     resource_group_name,
-                     factory_name,
-                     if_none_match=None):
-    return client.get(resource_group_name=resource_group_name,
-                      factory_name=factory_name,
-                      if_none_match=if_none_match)
+def datafactory_show(client, resource_group_name, factory_name, if_none_match=None):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        if_none_match=if_none_match,
+    )
 
 
-def datafactory_create(client,
-                       resource_group_name,
-                       factory_name,
-                       if_match=None,
-                       location=None,
-                       tags=None,
-                       factory_vsts_configuration=None,
-                       factory_git_hub_configuration=None,
-                       global_parameters=None):
+def datafactory_create(
+    client,
+    resource_group_name,
+    factory_name,
+    if_match=None,
+    location=None,
+    tags=None,
+    factory_vsts_configuration=None,
+    factory_git_hub_configuration=None,
+    global_parameters=None,
+):
     all_repo_configuration = []
     if factory_vsts_configuration is not None:
         all_repo_configuration.append(factory_vsts_configuration)
     if factory_git_hub_configuration is not None:
         all_repo_configuration.append(factory_git_hub_configuration)
     if len(all_repo_configuration) > 1:
-        raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for '
-                       'repo_configuration!')
-    repo_configuration = all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
+        raise CLIError(
+            "at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for "
+            "repo_configuration!"
+        )
+    repo_configuration = (
+        all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
+    )
     factory = {}
     if location is not None:
-        factory['location'] = location
+        factory["location"] = location
     if tags is not None:
-        factory['tags'] = tags
+        factory["tags"] = tags
     if repo_configuration is not None:
-        factory['repo_configuration'] = repo_configuration
+        factory["repo_configuration"] = repo_configuration
     if global_parameters is not None:
-        factory['global_parameters'] = global_parameters
-    factory['encryption'] = {}
-    if len(factory['encryption']) == 0:
-        del factory['encryption']
-    factory['identity'] = {}
-    if len(factory['identity']) == 0:
-        del factory['identity']
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   if_match=if_match,
-                                   factory=factory)
+        factory["global_parameters"] = global_parameters
+    factory["encryption"] = {}
+    if len(factory["encryption"]) == 0:
+        del factory["encryption"]
+    factory["identity"] = {}
+    if len(factory["identity"]) == 0:
+        del factory["identity"]
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        if_match=if_match,
+        factory=factory,
+    )
 
 
-def datafactory_update(client,
-                       resource_group_name,
-                       factory_name,
-                       tags=None):
+def datafactory_update(client, resource_group_name, factory_name, tags=None):
     factory_update_parameters = {}
     if tags is not None:
-        factory_update_parameters['tags'] = tags
-    factory_update_parameters['identity'] = {}
-    if len(factory_update_parameters['identity']) == 0:
-        del factory_update_parameters['identity']
-    return client.update(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         factory_update_parameters=factory_update_parameters)
+        factory_update_parameters["tags"] = tags
+    factory_update_parameters["identity"] = {}
+    if len(factory_update_parameters["identity"]) == 0:
+        del factory_update_parameters["identity"]
+    return client.update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        factory_update_parameters=factory_update_parameters,
+    )
 
 
-def datafactory_delete(client,
-                       resource_group_name,
-                       factory_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         factory_name=factory_name)
+def datafactory_delete(client, resource_group_name, factory_name):
+    return client.delete(
+        resource_group_name=resource_group_name, factory_name=factory_name
+    )
 
 
-def datafactory_configure_factory_repo(client,
-                                       location,
-                                       factory_resource_id=None,
-                                       factory_vsts_configuration=None,
-                                       factory_git_hub_configuration=None):
+def datafactory_configure_factory_repo(
+    client,
+    location,
+    factory_resource_id=None,
+    factory_vsts_configuration=None,
+    factory_git_hub_configuration=None,
+):
     all_repo_configuration = []
     if factory_vsts_configuration is not None:
         all_repo_configuration.append(factory_vsts_configuration)
     if factory_git_hub_configuration is not None:
         all_repo_configuration.append(factory_git_hub_configuration)
     if len(all_repo_configuration) > 1:
-        raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for '
-                       'repo_configuration!')
-    repo_configuration = all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
+        raise CLIError(
+            "at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for "
+            "repo_configuration!"
+        )
+    repo_configuration = (
+        all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
+    )
     factory_repo_update = {}
     if factory_resource_id is not None:
-        factory_repo_update['factory_resource_id'] = factory_resource_id
+        factory_repo_update["factory_resource_id"] = factory_resource_id
     if repo_configuration is not None:
-        factory_repo_update['repo_configuration'] = repo_configuration
-    return client.configure_factory_repo(location_id=location,
-                                         factory_repo_update=factory_repo_update)
+        factory_repo_update["repo_configuration"] = repo_configuration
+    return client.configure_factory_repo(
+        location_id=location, factory_repo_update=factory_repo_update
+    )
 
 
-def datafactory_get_data_plane_access(client,
-                                      resource_group_name,
-                                      factory_name,
-                                      permissions=None,
-                                      access_resource_path=None,
-                                      profile_name=None,
-                                      start_time=None,
-                                      expire_time=None):
+def datafactory_get_data_plane_access(
+    client,
+    resource_group_name,
+    factory_name,
+    permissions=None,
+    access_resource_path=None,
+    profile_name=None,
+    start_time=None,
+    expire_time=None,
+):
     policy = {}
     if permissions is not None:
-        policy['permissions'] = permissions
+        policy["permissions"] = permissions
     if access_resource_path is not None:
-        policy['access_resource_path'] = access_resource_path
+        policy["access_resource_path"] = access_resource_path
     if profile_name is not None:
-        policy['profile_name'] = profile_name
+        policy["profile_name"] = profile_name
     if start_time is not None:
-        policy['start_time'] = start_time
+        policy["start_time"] = start_time
     if expire_time is not None:
-        policy['expire_time'] = expire_time
-    return client.get_data_plane_access(resource_group_name=resource_group_name,
-                                        factory_name=factory_name,
-                                        policy=policy)
+        policy["expire_time"] = expire_time
+    return client.get_data_plane_access(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        policy=policy,
+    )
 
 
-def datafactory_get_git_hub_access_token(client,
-                                         resource_group_name,
-                                         factory_name,
-                                         git_hub_access_code,
-                                         git_hub_access_token_base_url,
-                                         git_hub_client_id=None):
+def datafactory_get_git_hub_access_token(
+    client,
+    resource_group_name,
+    factory_name,
+    git_hub_access_code,
+    git_hub_access_token_base_url,
+    git_hub_client_id=None,
+):
     git_hub_access_token_request = {}
-    git_hub_access_token_request['git_hub_access_code'] = git_hub_access_code
+    git_hub_access_token_request["git_hub_access_code"] = git_hub_access_code
     if git_hub_client_id is not None:
-        git_hub_access_token_request['git_hub_client_id'] = git_hub_client_id
-    git_hub_access_token_request['git_hub_access_token_base_url'] = git_hub_access_token_base_url
-    return client.get_git_hub_access_token(resource_group_name=resource_group_name,
-                                           factory_name=factory_name,
-                                           git_hub_access_token_request=git_hub_access_token_request)
+        git_hub_access_token_request["git_hub_client_id"] = git_hub_client_id
+    git_hub_access_token_request[
+        "git_hub_access_token_base_url"
+    ] = git_hub_access_token_base_url
+    return client.get_git_hub_access_token(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        git_hub_access_token_request=git_hub_access_token_request,
+    )
 
 
-def datafactory_integration_runtime_list(client,
-                                         resource_group_name,
-                                         factory_name):
-    return client.list_by_factory(resource_group_name=resource_group_name,
-                                  factory_name=factory_name)
+def datafactory_integration_runtime_list(client, resource_group_name, factory_name):
+    return client.list_by_factory(
+        resource_group_name=resource_group_name, factory_name=factory_name
+    )
 
 
-def datafactory_integration_runtime_show(client,
-                                         resource_group_name,
-                                         factory_name,
-                                         integration_runtime_name,
-                                         if_none_match=None):
-    return client.get(resource_group_name=resource_group_name,
-                      factory_name=factory_name,
-                      integration_runtime_name=integration_runtime_name,
-                      if_none_match=if_none_match)
+def datafactory_integration_runtime_show(
+    client,
+    resource_group_name,
+    factory_name,
+    integration_runtime_name,
+    if_none_match=None,
+):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        if_none_match=if_none_match,
+    )
 
 
-def datafactory_integration_runtime_linked_integration_runtime_create(client,
-                                                                      resource_group_name,
-                                                                      factory_name,
-                                                                      integration_runtime_name,
-                                                                      name=None,
-                                                                      subscription_id=None,
-                                                                      data_factory_name=None,
-                                                                      location=None):
+def datafactory_integration_runtime_linked_integration_runtime_create(
+    client,
+    resource_group_name,
+    factory_name,
+    integration_runtime_name,
+    name=None,
+    subscription_id=None,
+    data_factory_name=None,
+    location=None,
+):
     create_linked_integration_runtime_request = {}
     if name is not None:
-        create_linked_integration_runtime_request['name'] = name
+        create_linked_integration_runtime_request["name"] = name
     if subscription_id is not None:
-        create_linked_integration_runtime_request['subscription_id'] = subscription_id
+        create_linked_integration_runtime_request["subscription_id"] = subscription_id
     if data_factory_name is not None:
-        create_linked_integration_runtime_request['data_factory_name'] = data_factory_name
+        create_linked_integration_runtime_request[
+            "data_factory_name"
+        ] = data_factory_name
     if location is not None:
-        create_linked_integration_runtime_request['data_factory_location'] = location
-    return client.create_linked_integration_runtime(resource_group_name=resource_group_name,
-                                                    factory_name=factory_name,
-                                                    integration_runtime_name=integration_runtime_name,
-                                                    create_linked_integration_runtime_request=create_linked_integration_runtime_request)
+        create_linked_integration_runtime_request["data_factory_location"] = location
+    return client.create_linked_integration_runtime(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        create_linked_integration_runtime_request=create_linked_integration_runtime_request,
+    )
 
 
-def datafactory_integration_runtime_managed_create(client,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   integration_runtime_name,
-                                                   if_match=None,
-                                                   description=None,
-                                                   compute_properties=None,
-                                                   ssis_properties=None):
+def datafactory_integration_runtime_managed_create(
+    client,
+    resource_group_name,
+    factory_name,
+    integration_runtime_name,
+    if_match=None,
+    description=None,
+    compute_properties=None,
+    ssis_properties=None,
+):
     integration_runtime = {}
-    integration_runtime['properties'] = {}
-    integration_runtime['properties']['type'] = 'Managed'
+    integration_runtime["properties"] = {}
+    integration_runtime["properties"]["type"] = "Managed"
     if description is not None:
-        integration_runtime['properties']['description'] = description
+        integration_runtime["properties"]["description"] = description
     if compute_properties is not None:
-        integration_runtime['properties']['compute_properties'] = compute_properties
+        integration_runtime["properties"]["compute_properties"] = compute_properties
     if ssis_properties is not None:
-        integration_runtime['properties']['ssis_properties'] = ssis_properties
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   integration_runtime_name=integration_runtime_name,
-                                   if_match=if_match,
-                                   integration_runtime=integration_runtime)
+        integration_runtime["properties"]["ssis_properties"] = ssis_properties
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        if_match=if_match,
+        integration_runtime=integration_runtime,
+    )
 
 
-def datafactory_integration_runtime_self_hosted_create(client,
-                                                       resource_group_name,
-                                                       factory_name,
-                                                       integration_runtime_name,
-                                                       if_match=None,
-                                                       description=None,
-                                                       linked_info=None):
+def datafactory_integration_runtime_self_hosted_create(
+    client,
+    resource_group_name,
+    factory_name,
+    integration_runtime_name,
+    if_match=None,
+    description=None,
+    linked_info=None,
+    enableselfcontainedia=None,
+):
     integration_runtime = {}
-    integration_runtime['properties'] = {}
-    integration_runtime['properties']['type'] = 'SelfHosted'
+    integration_runtime["properties"] = {}
+    integration_runtime["properties"]["type"] = "SelfHosted"
     if description is not None:
-        integration_runtime['properties']['description'] = description
+        integration_runtime["properties"]["description"] = description
     if linked_info is not None:
-        integration_runtime['properties']['linked_info'] = linked_info
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   integration_runtime_name=integration_runtime_name,
-                                   if_match=if_match,
-                                   integration_runtime=integration_runtime)
+        integration_runtime["properties"]["linked_info"] = linked_info
+    if enableselfcontainedia is not None:
+        integration_runtime["properties"]["selfContainedInteractiveAuthoringEnabled"] = enableselfcontainedia
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        if_match=if_match,
+        integration_runtime=integration_runtime,
+    )
 
 
-def datafactory_integration_runtime_update(client,
-                                           resource_group_name,
-                                           factory_name,
-                                           integration_runtime_name,
-                                           auto_update=None,
-                                           update_delay_offset=None):
+def datafactory_integration_runtime_update(
+    client,
+    resource_group_name,
+    factory_name,
+    integration_runtime_name,
+    auto_update=None,
+    update_delay_offset=None,
+):
     update_integration_runtime_request = {}
     if auto_update is not None:
-        update_integration_runtime_request['auto_update'] = auto_update
+        update_integration_runtime_request["auto_update"] = auto_update
     if update_delay_offset is not None:
-        update_integration_runtime_request['update_delay_offset'] = update_delay_offset
-    return client.update(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         integration_runtime_name=integration_runtime_name,
-                         update_integration_runtime_request=update_integration_runtime_request)
+        update_integration_runtime_request["update_delay_offset"] = update_delay_offset
+    return client.update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        update_integration_runtime_request=update_integration_runtime_request,
+    )
 
 
-def datafactory_integration_runtime_delete(client,
-                                           resource_group_name,
-                                           factory_name,
-                                           integration_runtime_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         integration_runtime_name=integration_runtime_name)
+def datafactory_integration_runtime_delete(
+    client, resource_group_name, factory_name, integration_runtime_name
+):
+    return client.delete(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+    )
 
 
-def datafactory_integration_runtime_get_connection_info(client,
-                                                        resource_group_name,
-                                                        factory_name,
-                                                        integration_runtime_name):
-    return client.get_connection_info(resource_group_name=resource_group_name,
-                                      factory_name=factory_name,
-                                      integration_runtime_name=integration_runtime_name)
+def datafactory_integration_runtime_get_connection_info(
+    client, resource_group_name, factory_name, integration_runtime_name
+):
+    return client.get_connection_info(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+    )
 
 
-def datafactory_integration_runtime_get_monitoring_data(client,
-                                                        resource_group_name,
-                                                        factory_name,
-                                                        integration_runtime_name):
-    return client.get_monitoring_data(resource_group_name=resource_group_name,
-                                      factory_name=factory_name,
-                                      integration_runtime_name=integration_runtime_name)
+def datafactory_integration_runtime_get_monitoring_data(
+    client, resource_group_name, factory_name, integration_runtime_name
+):
+    return client.get_monitoring_data(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+    )
 
 
-def datafactory_integration_runtime_get_status(client,
-                                               resource_group_name,
-                                               factory_name,
-                                               integration_runtime_name):
-    return client.get_status(resource_group_name=resource_group_name,
-                             factory_name=factory_name,
-                             integration_runtime_name=integration_runtime_name)
+def datafactory_integration_runtime_get_status(
+    client, resource_group_name, factory_name, integration_runtime_name
+):
+    return client.get_status(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+    )
 
 
-def datafactory_integration_runtime_list_auth_key(client,
-                                                  resource_group_name,
-                                                  factory_name,
-                                                  integration_runtime_name):
-    return client.list_auth_keys(resource_group_name=resource_group_name,
-                                 factory_name=factory_name,
-                                 integration_runtime_name=integration_runtime_name)
+def datafactory_integration_runtime_list_auth_key(
+    client, resource_group_name, factory_name, integration_runtime_name
+):
+    return client.list_auth_keys(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+    )
 
 
-def datafactory_integration_runtime_regenerate_auth_key(client,
-                                                        resource_group_name,
-                                                        factory_name,
-                                                        integration_runtime_name,
-                                                        key_name=None):
+def datafactory_integration_runtime_regenerate_auth_key(
+    client, resource_group_name, factory_name, integration_runtime_name, key_name=None
+):
     regenerate_key_parameters = {}
     if key_name is not None:
-        regenerate_key_parameters['key_name'] = key_name
-    return client.regenerate_auth_key(resource_group_name=resource_group_name,
-                                      factory_name=factory_name,
-                                      integration_runtime_name=integration_runtime_name,
-                                      regenerate_key_parameters=regenerate_key_parameters)
+        regenerate_key_parameters["key_name"] = key_name
+    return client.regenerate_auth_key(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        regenerate_key_parameters=regenerate_key_parameters,
+    )
 
 
-def datafactory_integration_runtime_remove_link(client,
-                                                resource_group_name,
-                                                factory_name,
-                                                integration_runtime_name,
-                                                linked_factory_name):
+def datafactory_integration_runtime_remove_link(
+    client,
+    resource_group_name,
+    factory_name,
+    integration_runtime_name,
+    linked_factory_name,
+):
     linked_integration_runtime_request = {}
-    linked_integration_runtime_request['linked_factory_name'] = linked_factory_name
-    return client.remove_links(resource_group_name=resource_group_name,
-                               factory_name=factory_name,
-                               integration_runtime_name=integration_runtime_name,
-                               linked_integration_runtime_request=linked_integration_runtime_request)
+    linked_integration_runtime_request["linked_factory_name"] = linked_factory_name
+    return client.remove_links(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        linked_integration_runtime_request=linked_integration_runtime_request,
+    )
 
 
-def datafactory_integration_runtime_start(client,
-                                          resource_group_name,
-                                          factory_name,
-                                          integration_runtime_name,
-                                          no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_start,
-                       resource_group_name=resource_group_name,
-                       factory_name=factory_name,
-                       integration_runtime_name=integration_runtime_name)
+def datafactory_integration_runtime_start(
+    client, resource_group_name, factory_name, integration_runtime_name, no_wait=False
+):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_start,
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+    )
 
 
-def datafactory_integration_runtime_stop(client,
-                                         resource_group_name,
-                                         factory_name,
-                                         integration_runtime_name,
-                                         no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_stop,
-                       resource_group_name=resource_group_name,
-                       factory_name=factory_name,
-                       integration_runtime_name=integration_runtime_name)
+def datafactory_integration_runtime_stop(
+    client, resource_group_name, factory_name, integration_runtime_name, no_wait=False
+):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_stop,
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+    )
 
 
-def datafactory_integration_runtime_sync_credentials(client,
-                                                     resource_group_name,
-                                                     factory_name,
-                                                     integration_runtime_name):
-    return client.sync_credentials(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   integration_runtime_name=integration_runtime_name)
+def datafactory_integration_runtime_sync_credentials(
+    client, resource_group_name, factory_name, integration_runtime_name
+):
+    return client.sync_credentials(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+    )
 
 
-def datafactory_integration_runtime_upgrade(client,
-                                            resource_group_name,
-                                            factory_name,
-                                            integration_runtime_name):
-    return client.upgrade(resource_group_name=resource_group_name,
-                          factory_name=factory_name,
-                          integration_runtime_name=integration_runtime_name)
+def datafactory_integration_runtime_upgrade(
+    client, resource_group_name, factory_name, integration_runtime_name
+):
+    return client.upgrade(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+    )
 
 
-def datafactory_integration_runtime_node_show(client,
-                                              resource_group_name,
-                                              factory_name,
-                                              integration_runtime_name,
-                                              node_name):
-    return client.get(resource_group_name=resource_group_name,
-                      factory_name=factory_name,
-                      integration_runtime_name=integration_runtime_name,
-                      node_name=node_name)
+def datafactory_integration_runtime_node_show(
+    client, resource_group_name, factory_name, integration_runtime_name, node_name
+):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        node_name=node_name,
+    )
 
 
-def datafactory_integration_runtime_node_update(client,
-                                                resource_group_name,
-                                                factory_name,
-                                                integration_runtime_name,
-                                                node_name,
-                                                concurrent_jobs_limit=None):
+def datafactory_integration_runtime_node_update(
+    client,
+    resource_group_name,
+    factory_name,
+    integration_runtime_name,
+    node_name,
+    concurrent_jobs_limit=None,
+):
     update_integration_runtime_node_request = {}
     if concurrent_jobs_limit is not None:
-        update_integration_runtime_node_request['concurrent_jobs_limit'] = concurrent_jobs_limit
-    return client.update(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         integration_runtime_name=integration_runtime_name,
-                         node_name=node_name,
-                         update_integration_runtime_node_request=update_integration_runtime_node_request)
+        update_integration_runtime_node_request[
+            "concurrent_jobs_limit"
+        ] = concurrent_jobs_limit
+    return client.update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        node_name=node_name,
+        update_integration_runtime_node_request=update_integration_runtime_node_request,
+    )
 
 
-def datafactory_integration_runtime_node_delete(client,
-                                                resource_group_name,
-                                                factory_name,
-                                                integration_runtime_name,
-                                                node_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         integration_runtime_name=integration_runtime_name,
-                         node_name=node_name)
+def datafactory_integration_runtime_node_delete(
+    client, resource_group_name, factory_name, integration_runtime_name, node_name
+):
+    return client.delete(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        node_name=node_name,
+    )
 
 
-def datafactory_integration_runtime_node_get_ip_address(client,
-                                                        resource_group_name,
-                                                        factory_name,
-                                                        integration_runtime_name,
-                                                        node_name):
-    return client.get_ip_address(resource_group_name=resource_group_name,
-                                 factory_name=factory_name,
-                                 integration_runtime_name=integration_runtime_name,
-                                 node_name=node_name)
+def datafactory_integration_runtime_node_get_ip_address(
+    client, resource_group_name, factory_name, integration_runtime_name, node_name
+):
+    return client.get_ip_address(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        integration_runtime_name=integration_runtime_name,
+        node_name=node_name,
+    )
 
 
-def datafactory_linked_service_list(client,
-                                    resource_group_name,
-                                    factory_name):
-    return client.list_by_factory(resource_group_name=resource_group_name,
-                                  factory_name=factory_name)
+def datafactory_linked_service_list(client, resource_group_name, factory_name):
+    return client.list_by_factory(
+        resource_group_name=resource_group_name, factory_name=factory_name
+    )
 
 
-def datafactory_linked_service_show(client,
-                                    resource_group_name,
-                                    factory_name,
-                                    linked_service_name,
-                                    if_none_match=None):
-    return client.get(resource_group_name=resource_group_name,
-                      factory_name=factory_name,
-                      linked_service_name=linked_service_name,
-                      if_none_match=if_none_match)
+def datafactory_linked_service_show(
+    client, resource_group_name, factory_name, linked_service_name, if_none_match=None
+):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        linked_service_name=linked_service_name,
+        if_none_match=if_none_match,
+    )
 
 
-def datafactory_linked_service_create(client,
-                                      resource_group_name,
-                                      factory_name,
-                                      linked_service_name,
-                                      properties,
-                                      if_match=None):
+def datafactory_linked_service_create(
+    client,
+    resource_group_name,
+    factory_name,
+    linked_service_name,
+    properties,
+    if_match=None,
+):
     linked_service = {}
-    linked_service['properties'] = properties
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   linked_service_name=linked_service_name,
-                                   if_match=if_match,
-                                   linked_service=linked_service)
+    linked_service["properties"] = properties
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        linked_service_name=linked_service_name,
+        if_match=if_match,
+        linked_service=linked_service,
+    )
 
 
-def datafactory_linked_service_update(instance,
-                                      resource_group_name,
-                                      factory_name,
-                                      linked_service_name,
-                                      if_match=None,
-                                      connect_via=None,
-                                      description=None,
-                                      parameters=None,
-                                      annotations=None):
+def datafactory_linked_service_update(
+    instance,
+    resource_group_name,
+    factory_name,
+    linked_service_name,
+    if_match=None,
+    connect_via=None,
+    description=None,
+    parameters=None,
+    annotations=None,
+):
     if connect_via is not None:
         instance.properties.connect_via = connect_via
     if description is not None:
@@ -474,60 +541,61 @@ def datafactory_linked_service_update(instance,
     return instance
 
 
-def datafactory_linked_service_delete(client,
-                                      resource_group_name,
-                                      factory_name,
-                                      linked_service_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         linked_service_name=linked_service_name)
+def datafactory_linked_service_delete(
+    client, resource_group_name, factory_name, linked_service_name
+):
+    return client.delete(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        linked_service_name=linked_service_name,
+    )
 
 
-def datafactory_dataset_list(client,
-                             resource_group_name,
-                             factory_name):
-    return client.list_by_factory(resource_group_name=resource_group_name,
-                                  factory_name=factory_name)
+def datafactory_dataset_list(client, resource_group_name, factory_name):
+    return client.list_by_factory(
+        resource_group_name=resource_group_name, factory_name=factory_name
+    )
 
 
-def datafactory_dataset_show(client,
-                             resource_group_name,
-                             factory_name,
-                             dataset_name,
-                             if_none_match=None):
-    return client.get(resource_group_name=resource_group_name,
-                      factory_name=factory_name,
-                      dataset_name=dataset_name,
-                      if_none_match=if_none_match)
+def datafactory_dataset_show(
+    client, resource_group_name, factory_name, dataset_name, if_none_match=None
+):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        dataset_name=dataset_name,
+        if_none_match=if_none_match,
+    )
 
 
-def datafactory_dataset_create(client,
-                               resource_group_name,
-                               factory_name,
-                               dataset_name,
-                               properties,
-                               if_match=None):
+def datafactory_dataset_create(
+    client, resource_group_name, factory_name, dataset_name, properties, if_match=None
+):
     dataset = {}
-    dataset['properties'] = properties
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   dataset_name=dataset_name,
-                                   if_match=if_match,
-                                   dataset=dataset)
+    dataset["properties"] = properties
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        dataset_name=dataset_name,
+        if_match=if_match,
+        dataset=dataset,
+    )
 
 
-def datafactory_dataset_update(instance,
-                               resource_group_name,
-                               factory_name,
-                               dataset_name,
-                               linked_service_name,
-                               if_match=None,
-                               description=None,
-                               structure=None,
-                               schema=None,
-                               parameters=None,
-                               annotations=None,
-                               folder=None):
+def datafactory_dataset_update(
+    instance,
+    resource_group_name,
+    factory_name,
+    dataset_name,
+    linked_service_name,
+    if_match=None,
+    description=None,
+    structure=None,
+    schema=None,
+    parameters=None,
+    annotations=None,
+    folder=None,
+):
     if description is not None:
         instance.properties.description = description
     if structure is not None:
@@ -544,60 +612,70 @@ def datafactory_dataset_update(instance,
     return instance
 
 
-def datafactory_dataset_delete(client,
-                               resource_group_name,
-                               factory_name,
-                               dataset_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         dataset_name=dataset_name)
+def datafactory_dataset_delete(client, resource_group_name, factory_name, dataset_name):
+    return client.delete(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        dataset_name=dataset_name,
+    )
 
 
-def datafactory_pipeline_list(client,
-                              resource_group_name,
-                              factory_name):
-    return client.list_by_factory(resource_group_name=resource_group_name,
-                                  factory_name=factory_name)
+def datafactory_data_flow_show(
+    client, resource_group_name, factory_name, data_flow_name, if_none_match=None
+):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        data_flow_name=data_flow_name,
+        if_none_match=if_none_match,
+    )
 
 
-def datafactory_pipeline_show(client,
-                              resource_group_name,
-                              factory_name,
-                              pipeline_name,
-                              if_none_match=None):
-    return client.get(resource_group_name=resource_group_name,
-                      factory_name=factory_name,
-                      pipeline_name=pipeline_name,
-                      if_none_match=if_none_match)
+def datafactory_pipeline_list(client, resource_group_name, factory_name):
+    return client.list_by_factory(
+        resource_group_name=resource_group_name, factory_name=factory_name
+    )
 
 
-def datafactory_pipeline_create(client,
-                                resource_group_name,
-                                factory_name,
-                                pipeline_name,
-                                pipeline,
-                                if_match=None):
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   pipeline_name=pipeline_name,
-                                   if_match=if_match,
-                                   pipeline=pipeline)
+def datafactory_pipeline_show(
+    client, resource_group_name, factory_name, pipeline_name, if_none_match=None
+):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        pipeline_name=pipeline_name,
+        if_none_match=if_none_match,
+    )
 
 
-def datafactory_pipeline_update(instance,
-                                resource_group_name,
-                                factory_name,
-                                pipeline_name,
-                                if_match=None,
-                                description=None,
-                                activities=None,
-                                parameters=None,
-                                variables=None,
-                                concurrency=None,
-                                annotations=None,
-                                run_dimensions=None,
-                                duration=None,
-                                folder_name=None):
+def datafactory_pipeline_create(
+    client, resource_group_name, factory_name, pipeline_name, pipeline, if_match=None
+):
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        pipeline_name=pipeline_name,
+        if_match=if_match,
+        pipeline=pipeline,
+    )
+
+
+def datafactory_pipeline_update(
+    instance,
+    resource_group_name,
+    factory_name,
+    pipeline_name,
+    if_match=None,
+    description=None,
+    activities=None,
+    parameters=None,
+    variables=None,
+    concurrency=None,
+    annotations=None,
+    run_dimensions=None,
+    duration=None,
+    folder_name=None,
+):
     if description is not None:
         instance.description = description
     if activities is not None:
@@ -619,140 +697,152 @@ def datafactory_pipeline_update(instance,
     return instance
 
 
-def datafactory_pipeline_delete(client,
-                                resource_group_name,
-                                factory_name,
-                                pipeline_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         pipeline_name=pipeline_name)
+def datafactory_pipeline_delete(
+    client, resource_group_name, factory_name, pipeline_name
+):
+    return client.delete(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        pipeline_name=pipeline_name,
+    )
 
 
-def datafactory_pipeline_create_run(client,
-                                    resource_group_name,
-                                    factory_name,
-                                    pipeline_name,
-                                    reference_pipeline_run_id=None,
-                                    is_recovery=None,
-                                    start_activity_name=None,
-                                    start_from_failure=None,
-                                    parameters=None):
-    return client.create_run(resource_group_name=resource_group_name,
-                             factory_name=factory_name,
-                             pipeline_name=pipeline_name,
-                             reference_pipeline_run_id=reference_pipeline_run_id,
-                             is_recovery=is_recovery,
-                             start_activity_name=start_activity_name,
-                             start_from_failure=start_from_failure,
-                             parameters=parameters)
+def datafactory_pipeline_create_run(
+    client,
+    resource_group_name,
+    factory_name,
+    pipeline_name,
+    reference_pipeline_run_id=None,
+    is_recovery=None,
+    start_activity_name=None,
+    start_from_failure=None,
+    parameters=None,
+):
+    return client.create_run(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        pipeline_name=pipeline_name,
+        reference_pipeline_run_id=reference_pipeline_run_id,
+        is_recovery=is_recovery,
+        start_activity_name=start_activity_name,
+        start_from_failure=start_from_failure,
+        parameters=parameters,
+    )
 
 
-def datafactory_pipeline_run_show(client,
-                                  resource_group_name,
-                                  factory_name,
-                                  run_id):
-    return client.get(resource_group_name=resource_group_name,
-                      factory_name=factory_name,
-                      run_id=run_id)
+def datafactory_pipeline_run_show(client, resource_group_name, factory_name, run_id):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        run_id=run_id,
+    )
 
 
-def datafactory_pipeline_run_cancel(client,
-                                    resource_group_name,
-                                    factory_name,
-                                    run_id,
-                                    is_recursive=None):
-    return client.cancel(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         run_id=run_id,
-                         is_recursive=is_recursive)
+def datafactory_pipeline_run_cancel(
+    client, resource_group_name, factory_name, run_id, is_recursive=None
+):
+    return client.cancel(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        run_id=run_id,
+        is_recursive=is_recursive,
+    )
 
 
-def datafactory_pipeline_run_query_by_factory(client,
-                                              resource_group_name,
-                                              factory_name,
-                                              last_updated_after,
-                                              last_updated_before,
-                                              continuation_token=None,
-                                              filters=None,
-                                              order_by=None):
+def datafactory_pipeline_run_query_by_factory(
+    client,
+    resource_group_name,
+    factory_name,
+    last_updated_after,
+    last_updated_before,
+    continuation_token=None,
+    filters=None,
+    order_by=None,
+):
     filter_parameters = {}
     if continuation_token is not None:
-        filter_parameters['continuation_token'] = continuation_token
-    filter_parameters['last_updated_after'] = last_updated_after
-    filter_parameters['last_updated_before'] = last_updated_before
+        filter_parameters["continuation_token"] = continuation_token
+    filter_parameters["last_updated_after"] = last_updated_after
+    filter_parameters["last_updated_before"] = last_updated_before
     if filters is not None:
-        filter_parameters['filters'] = filters
+        filter_parameters["filters"] = filters
     if order_by is not None:
-        filter_parameters['order_by'] = order_by
-    return client.query_by_factory(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   filter_parameters=filter_parameters)
+        filter_parameters["order_by"] = order_by
+    return client.query_by_factory(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        filter_parameters=filter_parameters,
+    )
 
 
-def datafactory_activity_run_query_by_pipeline_run(client,
-                                                   resource_group_name,
-                                                   factory_name,
-                                                   run_id,
-                                                   last_updated_after,
-                                                   last_updated_before,
-                                                   continuation_token=None,
-                                                   filters=None,
-                                                   order_by=None):
+def datafactory_activity_run_query_by_pipeline_run(
+    client,
+    resource_group_name,
+    factory_name,
+    run_id,
+    last_updated_after,
+    last_updated_before,
+    continuation_token=None,
+    filters=None,
+    order_by=None,
+):
     filter_parameters = {}
     if continuation_token is not None:
-        filter_parameters['continuation_token'] = continuation_token
-    filter_parameters['last_updated_after'] = last_updated_after
-    filter_parameters['last_updated_before'] = last_updated_before
+        filter_parameters["continuation_token"] = continuation_token
+    filter_parameters["last_updated_after"] = last_updated_after
+    filter_parameters["last_updated_before"] = last_updated_before
     if filters is not None:
-        filter_parameters['filters'] = filters
+        filter_parameters["filters"] = filters
     if order_by is not None:
-        filter_parameters['order_by'] = order_by
-    return client.query_by_pipeline_run(resource_group_name=resource_group_name,
-                                        factory_name=factory_name,
-                                        run_id=run_id,
-                                        filter_parameters=filter_parameters)
+        filter_parameters["order_by"] = order_by
+    return client.query_by_pipeline_run(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        run_id=run_id,
+        filter_parameters=filter_parameters,
+    )
 
 
-def datafactory_trigger_list(client,
-                             resource_group_name,
-                             factory_name):
-    return client.list_by_factory(resource_group_name=resource_group_name,
-                                  factory_name=factory_name)
+def datafactory_trigger_list(client, resource_group_name, factory_name):
+    return client.list_by_factory(
+        resource_group_name=resource_group_name, factory_name=factory_name
+    )
 
 
-def datafactory_trigger_show(client,
-                             resource_group_name,
-                             factory_name,
-                             trigger_name,
-                             if_none_match=None):
-    return client.get(resource_group_name=resource_group_name,
-                      factory_name=factory_name,
-                      trigger_name=trigger_name,
-                      if_none_match=if_none_match)
+def datafactory_trigger_show(
+    client, resource_group_name, factory_name, trigger_name, if_none_match=None
+):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        trigger_name=trigger_name,
+        if_none_match=if_none_match,
+    )
 
 
-def datafactory_trigger_create(client,
-                               resource_group_name,
-                               factory_name,
-                               trigger_name,
-                               properties,
-                               if_match=None):
+def datafactory_trigger_create(
+    client, resource_group_name, factory_name, trigger_name, properties, if_match=None
+):
     trigger = {}
-    trigger['properties'] = properties
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   trigger_name=trigger_name,
-                                   if_match=if_match,
-                                   trigger=trigger)
+    trigger["properties"] = properties
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        trigger_name=trigger_name,
+        if_match=if_match,
+        trigger=trigger,
+    )
 
 
-def datafactory_trigger_update(instance,
-                               resource_group_name,
-                               factory_name,
-                               trigger_name,
-                               if_match=None,
-                               description=None,
-                               annotations=None):
+def datafactory_trigger_update(
+    instance,
+    resource_group_name,
+    factory_name,
+    trigger_name,
+    if_match=None,
+    description=None,
+    annotations=None,
+):
     if description is not None:
         instance.properties.description = description
     if annotations is not None:
@@ -760,229 +850,259 @@ def datafactory_trigger_update(instance,
     return instance
 
 
-def datafactory_trigger_delete(client,
-                               resource_group_name,
-                               factory_name,
-                               trigger_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         trigger_name=trigger_name)
+def datafactory_trigger_delete(client, resource_group_name, factory_name, trigger_name):
+    return client.delete(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        trigger_name=trigger_name,
+    )
 
 
-def datafactory_trigger_get_event_subscription_status(client,
-                                                      resource_group_name,
-                                                      factory_name,
-                                                      trigger_name):
-    return client.get_event_subscription_status(resource_group_name=resource_group_name,
-                                                factory_name=factory_name,
-                                                trigger_name=trigger_name)
+def datafactory_trigger_get_event_subscription_status(
+    client, resource_group_name, factory_name, trigger_name
+):
+    return client.get_event_subscription_status(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        trigger_name=trigger_name,
+    )
 
 
-def datafactory_trigger_query_by_factory(client,
-                                         resource_group_name,
-                                         factory_name,
-                                         continuation_token=None,
-                                         parent_trigger_name=None):
+def datafactory_trigger_query_by_factory(
+    client,
+    resource_group_name,
+    factory_name,
+    continuation_token=None,
+    parent_trigger_name=None,
+):
     filter_parameters = {}
     if continuation_token is not None:
-        filter_parameters['continuation_token'] = continuation_token
+        filter_parameters["continuation_token"] = continuation_token
     if parent_trigger_name is not None:
-        filter_parameters['parent_trigger_name'] = parent_trigger_name
-    return client.query_by_factory(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   filter_parameters=filter_parameters)
+        filter_parameters["parent_trigger_name"] = parent_trigger_name
+    return client.query_by_factory(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        filter_parameters=filter_parameters,
+    )
 
 
-def datafactory_trigger_start(client,
-                              resource_group_name,
-                              factory_name,
-                              trigger_name,
-                              no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_start,
-                       resource_group_name=resource_group_name,
-                       factory_name=factory_name,
-                       trigger_name=trigger_name)
+def datafactory_trigger_start(
+    client, resource_group_name, factory_name, trigger_name, no_wait=False
+):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_start,
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        trigger_name=trigger_name,
+    )
 
 
-def datafactory_trigger_stop(client,
-                             resource_group_name,
-                             factory_name,
-                             trigger_name,
-                             no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_stop,
-                       resource_group_name=resource_group_name,
-                       factory_name=factory_name,
-                       trigger_name=trigger_name)
+def datafactory_trigger_stop(
+    client, resource_group_name, factory_name, trigger_name, no_wait=False
+):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_stop,
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        trigger_name=trigger_name,
+    )
 
 
-def datafactory_trigger_subscribe_to_event(client,
-                                           resource_group_name,
-                                           factory_name,
-                                           trigger_name,
-                                           no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_subscribe_to_events,
-                       resource_group_name=resource_group_name,
-                       factory_name=factory_name,
-                       trigger_name=trigger_name)
+def datafactory_trigger_subscribe_to_event(
+    client, resource_group_name, factory_name, trigger_name, no_wait=False
+):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_subscribe_to_events,
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        trigger_name=trigger_name,
+    )
 
 
-def datafactory_trigger_unsubscribe_from_event(client,
-                                               resource_group_name,
-                                               factory_name,
-                                               trigger_name,
-                                               no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_unsubscribe_from_events,
-                       resource_group_name=resource_group_name,
-                       factory_name=factory_name,
-                       trigger_name=trigger_name)
+def datafactory_trigger_unsubscribe_from_event(
+    client, resource_group_name, factory_name, trigger_name, no_wait=False
+):
+    return sdk_no_wait(
+        no_wait,
+        client.begin_unsubscribe_from_events,
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        trigger_name=trigger_name,
+    )
 
 
-def datafactory_trigger_run_cancel(client,
-                                   resource_group_name,
-                                   factory_name,
-                                   trigger_name,
-                                   run_id):
-    return client.cancel(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         trigger_name=trigger_name,
-                         run_id=run_id)
+def datafactory_trigger_run_cancel(
+    client, resource_group_name, factory_name, trigger_name, run_id
+):
+    return client.cancel(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        trigger_name=trigger_name,
+        run_id=run_id,
+    )
 
 
-def datafactory_trigger_run_query_by_factory(client,
-                                             resource_group_name,
-                                             factory_name,
-                                             last_updated_after,
-                                             last_updated_before,
-                                             continuation_token=None,
-                                             filters=None,
-                                             order_by=None):
+def datafactory_trigger_run_query_by_factory(
+    client,
+    resource_group_name,
+    factory_name,
+    last_updated_after,
+    last_updated_before,
+    continuation_token=None,
+    filters=None,
+    order_by=None,
+):
     filter_parameters = {}
     if continuation_token is not None:
-        filter_parameters['continuation_token'] = continuation_token
-    filter_parameters['last_updated_after'] = last_updated_after
-    filter_parameters['last_updated_before'] = last_updated_before
+        filter_parameters["continuation_token"] = continuation_token
+    filter_parameters["last_updated_after"] = last_updated_after
+    filter_parameters["last_updated_before"] = last_updated_before
     if filters is not None:
-        filter_parameters['filters'] = filters
+        filter_parameters["filters"] = filters
     if order_by is not None:
-        filter_parameters['order_by'] = order_by
-    return client.query_by_factory(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   filter_parameters=filter_parameters)
+        filter_parameters["order_by"] = order_by
+    return client.query_by_factory(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        filter_parameters=filter_parameters,
+    )
 
 
-def datafactory_trigger_run_rerun(client,
-                                  resource_group_name,
-                                  factory_name,
-                                  trigger_name,
-                                  run_id):
-    return client.rerun(resource_group_name=resource_group_name,
-                        factory_name=factory_name,
-                        trigger_name=trigger_name,
-                        run_id=run_id)
+def datafactory_trigger_run_rerun(
+    client, resource_group_name, factory_name, trigger_name, run_id
+):
+    return client.rerun(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        trigger_name=trigger_name,
+        run_id=run_id,
+    )
 
 
-def datafactory_managed_virtual_network_list(client,
-                                             resource_group_name,
-                                             factory_name):
-    return client.list_by_factory(resource_group_name=resource_group_name,
-                                  factory_name=factory_name)
+def datafactory_managed_virtual_network_list(client, resource_group_name, factory_name):
+    return client.list_by_factory(
+        resource_group_name=resource_group_name, factory_name=factory_name
+    )
 
 
-def datafactory_managed_virtual_network_show(client,
-                                             resource_group_name,
-                                             factory_name,
-                                             managed_virtual_network_name,
-                                             if_none_match=None):
-    return client.get(resource_group_name=resource_group_name,
-                      factory_name=factory_name,
-                      managed_virtual_network_name=managed_virtual_network_name,
-                      if_none_match=if_none_match)
+def datafactory_managed_virtual_network_show(
+    client,
+    resource_group_name,
+    factory_name,
+    managed_virtual_network_name,
+    if_none_match=None,
+):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        managed_virtual_network_name=managed_virtual_network_name,
+        if_none_match=if_none_match,
+    )
 
 
-def datafactory_managed_virtual_network_create(client,
-                                               resource_group_name,
-                                               factory_name,
-                                               managed_virtual_network_name,
-                                               if_match=None):
+def datafactory_managed_virtual_network_create(
+    client,
+    resource_group_name,
+    factory_name,
+    managed_virtual_network_name,
+    if_match=None,
+):
     managed_virtual_network = {}
-    managed_virtual_network['properties'] = {}
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   managed_virtual_network_name=managed_virtual_network_name,
-                                   if_match=if_match,
-                                   managed_virtual_network=managed_virtual_network)
+    managed_virtual_network["properties"] = {}
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        managed_virtual_network_name=managed_virtual_network_name,
+        if_match=if_match,
+        managed_virtual_network=managed_virtual_network,
+    )
 
 
-def datafactory_managed_virtual_network_update(instance,
-                                               resource_group_name,
-                                               factory_name,
-                                               managed_virtual_network_name,
-                                               if_match=None):
+def datafactory_managed_virtual_network_update(
+    instance,
+    resource_group_name,
+    factory_name,
+    managed_virtual_network_name,
+    if_match=None,
+):
     return instance
 
 
-def datafactory_managed_private_endpoint_list(client,
-                                              resource_group_name,
-                                              factory_name,
-                                              managed_virtual_network_name):
-    return client.list_by_factory(resource_group_name=resource_group_name,
-                                  factory_name=factory_name,
-                                  managed_virtual_network_name=managed_virtual_network_name)
+def datafactory_managed_private_endpoint_list(
+    client, resource_group_name, factory_name, managed_virtual_network_name
+):
+    return client.list_by_factory(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        managed_virtual_network_name=managed_virtual_network_name,
+    )
 
 
-def datafactory_managed_private_endpoint_show(client,
-                                              resource_group_name,
-                                              factory_name,
-                                              managed_virtual_network_name,
-                                              managed_private_endpoint_name,
-                                              if_none_match=None):
-    return client.get(resource_group_name=resource_group_name,
-                      factory_name=factory_name,
-                      managed_virtual_network_name=managed_virtual_network_name,
-                      managed_private_endpoint_name=managed_private_endpoint_name,
-                      if_none_match=if_none_match)
+def datafactory_managed_private_endpoint_show(
+    client,
+    resource_group_name,
+    factory_name,
+    managed_virtual_network_name,
+    managed_private_endpoint_name,
+    if_none_match=None,
+):
+    return client.get(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        managed_virtual_network_name=managed_virtual_network_name,
+        managed_private_endpoint_name=managed_private_endpoint_name,
+        if_none_match=if_none_match,
+    )
 
 
-def datafactory_managed_private_endpoint_create(client,
-                                                resource_group_name,
-                                                factory_name,
-                                                managed_virtual_network_name,
-                                                managed_private_endpoint_name,
-                                                if_match=None,
-                                                fqdns=None,
-                                                group_id=None,
-                                                private_link_resource_id=None):
+def datafactory_managed_private_endpoint_create(
+    client,
+    resource_group_name,
+    factory_name,
+    managed_virtual_network_name,
+    managed_private_endpoint_name,
+    if_match=None,
+    fqdns=None,
+    group_id=None,
+    private_link_resource_id=None,
+):
     managed_private_endpoint = {}
-    managed_private_endpoint['properties'] = {}
+    managed_private_endpoint["properties"] = {}
     if fqdns is not None:
-        managed_private_endpoint['properties']['fqdns'] = fqdns
+        managed_private_endpoint["properties"]["fqdns"] = fqdns
     if group_id is not None:
-        managed_private_endpoint['properties']['group_id'] = group_id
+        managed_private_endpoint["properties"]["group_id"] = group_id
     if private_link_resource_id is not None:
-        managed_private_endpoint['properties']['private_link_resource_id'] = private_link_resource_id
-    if len(managed_private_endpoint['properties']) == 0:
-        del managed_private_endpoint['properties']
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   factory_name=factory_name,
-                                   managed_virtual_network_name=managed_virtual_network_name,
-                                   managed_private_endpoint_name=managed_private_endpoint_name,
-                                   if_match=if_match,
-                                   managed_private_endpoint=managed_private_endpoint)
+        managed_private_endpoint["properties"][
+            "private_link_resource_id"
+        ] = private_link_resource_id
+    if len(managed_private_endpoint["properties"]) == 0:
+        del managed_private_endpoint["properties"]
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        managed_virtual_network_name=managed_virtual_network_name,
+        managed_private_endpoint_name=managed_private_endpoint_name,
+        if_match=if_match,
+        managed_private_endpoint=managed_private_endpoint,
+    )
 
 
-def datafactory_managed_private_endpoint_update(instance,
-                                                resource_group_name,
-                                                factory_name,
-                                                managed_virtual_network_name,
-                                                managed_private_endpoint_name,
-                                                if_match=None,
-                                                fqdns=None,
-                                                group_id=None,
-                                                private_link_resource_id=None):
+def datafactory_managed_private_endpoint_update(
+    instance,
+    resource_group_name,
+    factory_name,
+    managed_virtual_network_name,
+    managed_private_endpoint_name,
+    if_match=None,
+    fqdns=None,
+    group_id=None,
+    private_link_resource_id=None,
+):
     if fqdns is not None:
         instance.properties.fqdns = fqdns
     if group_id is not None:
@@ -992,12 +1112,16 @@ def datafactory_managed_private_endpoint_update(instance,
     return instance
 
 
-def datafactory_managed_private_endpoint_delete(client,
-                                                resource_group_name,
-                                                factory_name,
-                                                managed_virtual_network_name,
-                                                managed_private_endpoint_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         factory_name=factory_name,
-                         managed_virtual_network_name=managed_virtual_network_name,
-                         managed_private_endpoint_name=managed_private_endpoint_name)
+def datafactory_managed_private_endpoint_delete(
+    client,
+    resource_group_name,
+    factory_name,
+    managed_virtual_network_name,
+    managed_private_endpoint_name,
+):
+    return client.delete(
+        resource_group_name=resource_group_name,
+        factory_name=factory_name,
+        managed_virtual_network_name=managed_virtual_network_name,
+        managed_private_endpoint_name=managed_private_endpoint_name,
+    )

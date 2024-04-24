@@ -64,7 +64,7 @@ class DnsResolverClientTest(ScenarioTest):
 
         self.cmd(
             'dns-resolver inbound-endpoint create -n {endpoint_name} -g {rg} --dns-resolver-name {dns_resolver_name} '
-            '--ip-configurations private-ip-address="" private-ip-allocation-method=Dynamic id={subnet_id} '
+            '--ip-configurations \"[{{private-ip-address:\'\',private-ip-allocation-method:Dynamic,id:{subnet_id}}}]\" '
             '--tags key=value1',
             checks=[
                 self.check('name', '{endpoint_name}'),
@@ -147,7 +147,7 @@ class DnsResolverClientTest(ScenarioTest):
 
         self.cmd(
             'dns-resolver forwarding-ruleset create -n {ruleset_name} -g {rg} '
-            '--outbound-endpoints id={outbound_id} --tags key=value1',
+            '--outbound-endpoints [{{id:{outbound_id}}}] --tags key=value1',
             checks=[
                 self.check('name', '{ruleset_name}'),
                 self.check('type', 'Microsoft.Network/dnsForwardingRulesets')
@@ -187,12 +187,12 @@ class DnsResolverClientTest(ScenarioTest):
         self.kwargs['subnet_id'] = self.cmd('network vnet subnet show -n {subnet_name} -g {rg} --vnet-name {vnet_name}').get_output_in_json()['id']
         self.cmd('dns-resolver create -n {dns_resolver_name} -g {rg} --id {vnet_id}')
         self.kwargs['outbound_id'] = self.cmd('dns-resolver outbound-endpoint create -n {endpoint_name} -g {rg} --dns-resolver-name {dns_resolver_name} --id={subnet_id}').get_output_in_json()['id']
-        self.cmd('dns-resolver forwarding-ruleset create -n {ruleset_name} -g {rg} --outbound-endpoints id={outbound_id}')
+        self.cmd('dns-resolver forwarding-ruleset create -n {ruleset_name} -g {rg} --outbound-endpoints [{{id:{outbound_id}}}]')
 
         self.cmd(
             'dns-resolver forwarding-rule create -n {rule_name} -g {rg} --ruleset-name {ruleset_name} '
             '--domain-name contoso.com. --forwarding-rule-state Enabled --metadata additionalProp=value1 '
-            '--target-dns-servers ip-address=10.0.0.1 port=53',
+            '--target-dns-servers [{{ip-address:10.0.0.1,port:53}}]',
             checks=[
                 self.check('name', '{rule_name}'),
                 self.check('type', 'Microsoft.Network/dnsForwardingRulesets/forwardingRules')
@@ -232,7 +232,7 @@ class DnsResolverClientTest(ScenarioTest):
         self.kwargs['subnet_id'] = self.cmd('network vnet subnet show -n {subnet_name} -g {rg} --vnet-name {vnet_name}').get_output_in_json()['id']
         self.cmd('dns-resolver create -n {dns_resolver_name} -g {rg} --id {vnet_id}')
         self.kwargs['outbound_id'] = self.cmd('dns-resolver outbound-endpoint create -n {endpoint_name} -g {rg} --dns-resolver-name {dns_resolver_name} --id={subnet_id}').get_output_in_json()['id']
-        self.cmd('dns-resolver forwarding-ruleset create -n {ruleset_name} -g {rg} --outbound-endpoints id={outbound_id}')
+        self.cmd('dns-resolver forwarding-ruleset create -n {ruleset_name} -g {rg} --outbound-endpoints [{{id:{outbound_id}}}]')
 
         self.cmd(
             'dns-resolver vnet-link create -n {link_name} -g {rg} --ruleset-name {ruleset_name} '

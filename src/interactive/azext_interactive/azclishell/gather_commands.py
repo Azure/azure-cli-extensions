@@ -65,7 +65,7 @@ def add_new_lines(long_phrase, line_min=None, tolerance=TOLERANCE):
     for loc in nl_loc:
         long_phrase = long_phrase[:loc + counter] + '\n' + long_phrase[loc + counter:]
         counter += 1
-    return long_phrase + "\n"
+    return long_phrase.strip()
 
 
 # pylint: disable=too-many-instance-attributes

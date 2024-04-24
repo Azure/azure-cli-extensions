@@ -42,16 +42,8 @@ def cf_components(cli_ctx, _):
     return applicationinsights_mgmt_plane_client(cli_ctx, api_version='2018-05-01-preview').components
 
 
-def cf_component_billing(cli_ctx, _):
-    return applicationinsights_mgmt_plane_client(cli_ctx).component_current_billing_features
-
-
 def cf_api_key(cli_ctx, _):
     return applicationinsights_mgmt_plane_client(cli_ctx).api_keys
-
-
-def cf_component_linked_storage_accounts(cli_ctx, _):
-    return applicationinsights_mgmt_plane_client(cli_ctx).component_linked_storage_accounts
 
 
 def cf_export_configuration(cli_ctx, _):
@@ -59,4 +51,4 @@ def cf_export_configuration(cli_ctx, _):
 
 
 def cf_web_test(cli_ctx, _):
-    return applicationinsights_mgmt_plane_client(cli_ctx, api_version='2018-05-01-preview').web_tests
+    return applicationinsights_mgmt_plane_client(cli_ctx, api_version='2022-06-15').web_tests

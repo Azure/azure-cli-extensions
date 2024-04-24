@@ -7,171 +7,75 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-import json
-from ._client_factory import cf_spatial_anchor_account, cf_remote_rendering_account
+from azure.cli.core.aaz import has_value
+from .aaz.latest.spatial_anchors_account import Create as _SpatialAnchorsCreate
+from .aaz.latest.spatial_anchors_account.key import Renew as _SpatialAnchorsKeyRenew
+from .aaz.latest.remote_rendering_account import Create as _RemoteRenderingCreate
+from .aaz.latest.remote_rendering_account.key import Renew as _RemoteRenderingKeyRenew
+from knack.log import get_logger
 
 
-def spatial_anchor_account_list(cmd,
-                                resource_group_name=None):
-    client = cf_spatial_anchor_account(cmd.cli_ctx)
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
+logger = get_logger(__name__)
 
 
-def spatial_anchor_account_show(cmd,
-                                resource_group_name,
-                                account_name):
-    client = cf_spatial_anchor_account(cmd.cli_ctx)
-    return client.get(resource_group_name=resource_group_name,
-                      account_name=account_name)
+class SpatialAnchorsCreate(_SpatialAnchorsCreate):
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.kind):
+            args.sku = args.kind
+            del args.kind
 
 
-def spatial_anchor_account_create(cmd,
-                                  resource_group_name,
-                                  account_name,
-                                  location=None,
-                                  tags=None,
-                                  sku=None,
-                                  kind=None,
-                                  storage_account_name=None):
-    spatial_anchors_account = {}
-    spatial_anchors_account['tags'] = tags
-    spatial_anchors_account['location'] = location
-    spatial_anchors_account['sku'] = sku
-    spatial_anchors_account['kind'] = kind
-    spatial_anchors_account['storage_account_name'] = storage_account_name
-    client = cf_spatial_anchor_account(cmd.cli_ctx)
-    return client.create(resource_group_name=resource_group_name,
-                         account_name=account_name,
-                         spatial_anchors_account=spatial_anchors_account)
+class RemoteRenderingCreate(_RemoteRenderingCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.identity._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.kind):
+            args.sku = args.kind
+            del args.kind
+        args.identity = {"type": "SystemAssigned"}
 
 
-def spatial_anchor_account_update(cmd,
-                                  instance,
-                                  location=None,
-                                  tags=None,
-                                  sku=None,
-                                  kind=None,
-                                  storage_account_name=None):
-    with cmd.update_context(instance) as c:
-        c.set_param('tags', tags)
-        c.set_param('location', location)
-        c.set_param('sku', sku)
-        c.set_param('kind', kind)
-        c.set_param('storage_account_name', storage_account_name)
-    return instance
+class SpatialAnchorsKeyRenew(_SpatialAnchorsKeyRenew):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZArgEnum
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.key = AAZStrArg(
+            options=["--key", "-k"],
+            help="Key to be regenerated.",
+            default="primary",
+            enum={"primary": "primary", "secondary": "secondary"}
+        )
+        args_schema.serial._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.key):
+            args.serial = 1 if str(args.key).lower() == 'primary' else 2
 
 
-def spatial_anchor_account_delete(cmd,
-                                  resource_group_name,
-                                  account_name):
-    client = cf_spatial_anchor_account(cmd.cli_ctx)
-    return client.delete(resource_group_name=resource_group_name,
-                         account_name=account_name)
+class RemoteRenderingKeyRenew(_RemoteRenderingKeyRenew):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZArgEnum
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.key = AAZStrArg(
+            options=["--key", "-k"],
+            help="Key to be regenerated.",
+            default="primary",
+            enum={"primary": "primary", "secondary": "secondary"}
+        )
+        args_schema.serial._registered = False
+        return args_schema
 
-
-def spatial_anchor_account_list_key(cmd,
-                                    resource_group_name,
-                                    account_name):
-    client = cf_spatial_anchor_account(cmd.cli_ctx)
-    return client.list_keys(resource_group_name=resource_group_name,
-                            account_name=account_name)
-
-
-def spatial_anchor_account_regenerate_key(cmd,
-                                          resource_group_name,
-                                          account_name,
-                                          key=None):
-    regenerate = {}
-    regenerate['serial'] = ['primary', 'secondary'].index(key) + 1
-    client = cf_spatial_anchor_account(cmd.cli_ctx)
-    return client.regenerate_keys(resource_group_name=resource_group_name,
-                                  account_name=account_name,
-                                  regenerate=regenerate)
-
-
-def remote_rendering_account_list(cmd,
-                                  resource_group_name=None):
-    client = cf_remote_rendering_account(cmd.cli_ctx)
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
-
-
-def remote_rendering_account_show(cmd,
-                                  resource_group_name,
-                                  account_name):
-    client = cf_remote_rendering_account(cmd.cli_ctx)
-    return client.get(resource_group_name=resource_group_name,
-                      account_name=account_name)
-
-
-def remote_rendering_account_create(cmd,
-                                    resource_group_name,
-                                    account_name,
-                                    location=None,
-                                    tags=None,
-                                    sku=None,
-                                    kind=None,
-                                    storage_account_name=None):
-    remote_rendering_account = {}
-    remote_rendering_account['tags'] = tags
-    remote_rendering_account['location'] = location
-    remote_rendering_account['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
-    remote_rendering_account['sku'] = sku
-    remote_rendering_account['kind'] = kind
-    remote_rendering_account['storage_account_name'] = storage_account_name
-    client = cf_remote_rendering_account(cmd.cli_ctx)
-    return client.create(resource_group_name=resource_group_name,
-                         account_name=account_name,
-                         remote_rendering_account=remote_rendering_account)
-
-
-def remote_rendering_account_update(cmd,
-                                    resource_group_name,
-                                    account_name,
-                                    location=None,
-                                    tags=None,
-                                    sku=None,
-                                    kind=None,
-                                    storage_account_name=None):
-    remote_rendering_account = {}
-    remote_rendering_account['tags'] = tags
-    remote_rendering_account['location'] = location
-    remote_rendering_account['identity'] = json.loads("{\"type\": \"SystemAssigned\"}")
-    remote_rendering_account['sku'] = sku
-    remote_rendering_account['kind'] = kind
-    remote_rendering_account['storage_account_name'] = storage_account_name
-    client = cf_remote_rendering_account(cmd.cli_ctx)
-    return client.update(resource_group_name=resource_group_name,
-                         account_name=account_name,
-                         remote_rendering_account=remote_rendering_account)
-
-
-def remote_rendering_account_delete(cmd,
-                                    resource_group_name,
-                                    account_name):
-    client = cf_remote_rendering_account(cmd.cli_ctx)
-    return client.delete(resource_group_name=resource_group_name,
-                         account_name=account_name)
-
-
-def remote_rendering_account_list_key(cmd,
-                                      resource_group_name,
-                                      account_name):
-    client = cf_remote_rendering_account(cmd.cli_ctx)
-    return client.list_keys(resource_group_name=resource_group_name,
-                            account_name=account_name)
-
-
-def remote_rendering_account_regenerate_key(cmd,
-                                            resource_group_name,
-                                            account_name,
-                                            key=None):
-    regenerate = {}
-    regenerate['serial'] = ['primary', 'secondary'].index(key) + 1
-    client = cf_remote_rendering_account(cmd.cli_ctx)
-    return client.regenerate_keys(resource_group_name=resource_group_name,
-                                  account_name=account_name,
-                                  regenerate=regenerate)
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.key):
+            args.serial = 1 if str(args.key).lower() == 'primary' else 2

@@ -26,22 +26,23 @@ class QuotaScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='test_quota', location='eastus')
     def test_quota_crud(self, resource_group):
         self.kwargs.update({
-            'resource_name': 'StandardSkuPublicIpAddresses',
-            'resource_type': 'PublicIPAddresses',
-            'sub':  '/subscriptions/{}/providers/Microsoft.Network/locations/eastus'.format(self.get_subscription_id())
+            'resource_name': 'standardFSv2Family',
+            'resource_type': 'dedicated',
+            'sub':  '/subscriptions/{}/providers/Microsoft.Compute/locations/eastus'.format(self.get_subscription_id())
         })
 
         quota = self.cmd('quota show --resource-name {resource_name} --scope {sub}').get_output_in_json()
-        self.kwargs['value'] = quota['properties']['limit']['value']
+        self.kwargs['value'] = quota['properties']['limit']['value'] + 1
+        self.kwargs['new_value'] = quota['properties']['limit']['value'] + 2
 
         self.cmd('quota create --resource-name {resource_name} --scope {sub} --resource-type {resource_type} --limit-object value={value}',
                  checks=[self.check('properties.limit.value', '{value}')]).get_output_in_json()
 
-        self.cmd('quota update --resource-name {resource_name} --scope {sub} --resource-type {resource_type} --limit-object value={value}',
-                 checks=[self.check('properties.limit.value', '{value}')])
+        self.cmd('quota update --resource-name {resource_name} --scope {sub} --resource-type {resource_type} --limit-object value={new_value}',
+                 checks=[self.check('properties.limit.value', '{new_value}')])
         self.cmd('quota list --scope {sub}')
         self.cmd('quota show --resource-name {resource_name} --scope {sub}',
-                 checks=[self.check('properties.limit.value', '{value}')])
+                 checks=[self.check('properties.limit.value', '{new_value}')])
 
         self.cmd('quota usage show --resource-name {resource_name} --scope {sub}')
         self.cmd('quota usage list --scope {sub}')
@@ -51,3 +52,19 @@ class QuotaScenarioTest(ScenarioTest):
         self.cmd('quota request status show --scope {sub} --name {name}')
 
         self.cmd('quota operation list')
+
+    def test_quota_request(self):
+        self.kwargs.update({
+            'resource_name': 'StandardSkuPublicIpAddresses',
+            'resource_type': 'PublicIPAddresses',
+            'sub': '/subscriptions/{}/providers/Microsoft.Network/locations/eastus'.format(self.get_subscription_id())
+        })
+        self.cmd('quota request list --scope {sub} --top 3', checks=[
+            self.check('length(@)', 3)
+        ])
+        quota_request = self.cmd('quota request list --scope {sub}').get_output_in_json()
+        quota_request_ids = [request['name'] for request in quota_request if request['provisioningState'] == 'Succeeded']
+        self.kwargs.update({
+            'quota_request_id': quota_request_ids[0]
+        })
+        self.cmd('quota request show --scope {sub} --id {quota_request_id}')

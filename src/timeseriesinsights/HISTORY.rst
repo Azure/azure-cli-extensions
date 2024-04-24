@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b1
+++++++
+* Migrate `az tsi access-policy/environment/reference-data-set` to CodeGen
+
 0.2.1
 ++++++
 * Command group ``az tsi`` GA

@@ -1,0 +1,150 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric npb show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers/lab100gfabnf-eus-npb?api-version=2024-02-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/microsoft.managednetworkfabric/networkpacketbrokers/lab100gfabnf-eus-npb","name":"lab100gfabnf-eus-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2024-01-25T10:25:39.9492021Z","lastModifiedBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T11:14:13.9293576Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-NPB1"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '979'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 03 Feb 2024 20:00:05 GMT
+      etag:
+      - '"5c00aad7-0000-0100-0000-65b242860000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: A0F130DFF2C04750B1775A49E10816BB Ref B: MAA201060515037 Ref C: 2024-02-03T20:00:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric npb list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers?api-version=2024-02-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/microsoft.managednetworkfabric/networkpacketbrokers/lab100gfabnf-eus-npb","name":"lab100gfabnf-eus-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2024-01-25T10:25:39.9492021Z","lastModifiedBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T11:14:13.9293576Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-NPB1"]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stg02lab-nf01/providers/microsoft.managednetworkfabric/networkpacketbrokers/stg02labnf001-npb","name":"stg02labnf001-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2024-01-25T16:14:11.8151244Z","lastModifiedBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T16:14:11.8151244Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stg02lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkFabrics/stg02labnf001","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stg02lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkDevices/stg02labnf001-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stg02lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkDevices/stg02labnf001-AggrRack-NPB2"]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2120'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 03 Feb 2024 20:00:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 58188e9a-03cd-4c30-91b3-6a2f468a3669
+      - c2a7f1c6-c73a-4b15-9d07-8298bbafa4df
+      - 2cb097ce-14bd-4219-b664-6688ee0e1202
+      - a79b3e5b-a0fb-44c1-a391-cfb6fb63e655
+      - dcdc0496-1cc8-4d82-9d48-147c3e27b78f
+      - 7027c5fb-1b0d-446f-9224-70f182ab8271
+      x-msedge-ref:
+      - 'Ref A: 606A5E5B1B3A4D4C8FCD2CEB7307A52A Ref B: MAA201060515009 Ref C: 2024-02-03T20:00:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric npb list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.29.7 Python/3.8.10 (Linux-5.15.133.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers?api-version=2024-02-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/microsoft.managednetworkfabric/networkpacketbrokers/lab100gfabnf-eus-npb","name":"lab100gfabnf-eus-npb","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2024-01-25T10:25:39.9492021Z","lastModifiedBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","lastModifiedByType":"Application","lastModifiedAt":"2024-01-25T11:14:13.9293576Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkFabrics/Lab100GFABNF-eus","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/100GFABNFRG-eus/providers/Microsoft.ManagedNetworkFabric/networkDevices/Lab100GFABNF-eus-AggrRack-NPB1"]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '991'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 03 Feb 2024 20:00:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 841cf5af-cbb9-44d6-8107-060cb46b5f2c
+      - be713784-c4d6-4dcd-909c-28d6ade465a1
+      - 323e15f2-a6c5-4360-907b-5f6056ab82f6
+      - 598acdca-d87b-444e-a7b5-13fe3781615f
+      - b7617560-45a8-408b-84a3-f8b778086f59
+      - 6d3d0ce1-60be-452a-8565-ec8a438f75f7
+      x-msedge-ref:
+      - 'Ref A: D469AE958162488FB35DA75430721C46 Ref B: MAA201060516019 Ref C: 2024-02-03T20:00:13Z'
+    status:
+      code: 200
+      message: OK
+version: 1

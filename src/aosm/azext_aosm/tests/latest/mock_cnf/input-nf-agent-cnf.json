@@ -1,0 +1,19 @@
+{
+    "publisher_name": "sunnyclipub",
+    "publisher_resource_group_name": "sunny-uksouth",
+    "nf_name": "nf-agent-cnf",
+    "version": "0.1.0",
+    "acr_artifact_store_name": "sunny-nfagent-acr-2",
+    "location": "uksouth",
+    "images": {
+        "source_registry": "--this was copied here and renamed from https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/4a0479c0-b795-4d0f-96fd-c7edd2a2928f/resourceGroups/pez-nfagent-pipelines/providers/Microsoft.ContainerRegistry/registries/peznfagenttemp/overview new one was /subscriptions/c7bd9d96-70dd-4f61-af56-6e0abd8d80b5/resourceGroups/sunny-nfagent-acr-HostedResources-4CDE264A/providers/Microsoft.ContainerRegistry/registries/SunnyclipubSunnyNfagentAcre00abc1832"
+    },
+    "helm_packages": [
+        {
+            "name": "nf-agent-cnf",
+            "path_to_chart": "helm-charts/nf-agent-cnf-0.1.0.tgz",
+            "path_to_mappings": "",
+            "depends_on": []
+        }
+    ]
+}

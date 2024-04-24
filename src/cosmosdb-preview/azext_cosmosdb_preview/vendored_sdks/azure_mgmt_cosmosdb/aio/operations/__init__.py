@@ -29,6 +29,7 @@ from ._locations_operations import LocationsOperations
 from ._data_transfer_jobs_operations import DataTransferJobsOperations
 from ._cassandra_clusters_operations import CassandraClustersOperations
 from ._cassandra_data_centers_operations import CassandraDataCentersOperations
+from ._mongo_clusters_operations import MongoClustersOperations
 from ._notebook_workspaces_operations import NotebookWorkspacesOperations
 from ._private_endpoint_connections_operations import PrivateEndpointConnectionsOperations
 from ._private_link_resources_operations import PrivateLinkResourcesOperations
@@ -45,45 +46,60 @@ from ._restorable_gremlin_resources_operations import RestorableGremlinResources
 from ._restorable_tables_operations import RestorableTablesOperations
 from ._restorable_table_resources_operations import RestorableTableResourcesOperations
 from ._service_operations import ServiceOperations
+from ._throughput_pools_operations import ThroughputPoolsOperations
+from ._throughput_pool_operations import ThroughputPoolOperations
+from ._throughput_pool_accounts_operations import ThroughputPoolAccountsOperations
+from ._throughput_pool_account_operations import ThroughputPoolAccountOperations
+
+from ._patch import __all__ as _patch_all
+from ._patch import *  # pylint: disable=unused-wildcard-import
+from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
-    'DatabaseAccountsOperations',
-    'Operations',
-    'DatabaseOperations',
-    'CollectionOperations',
-    'CollectionRegionOperations',
-    'DatabaseAccountRegionOperations',
-    'PercentileSourceTargetOperations',
-    'PercentileTargetOperations',
-    'PercentileOperations',
-    'CollectionPartitionRegionOperations',
-    'CollectionPartitionOperations',
-    'PartitionKeyRangeIdOperations',
-    'PartitionKeyRangeIdRegionOperations',
-    'GraphResourcesOperations',
-    'SqlResourcesOperations',
-    'MongoDBResourcesOperations',
-    'TableResourcesOperations',
-    'CassandraResourcesOperations',
-    'GremlinResourcesOperations',
-    'LocationsOperations',
-    'DataTransferJobsOperations',
-    'CassandraClustersOperations',
-    'CassandraDataCentersOperations',
-    'NotebookWorkspacesOperations',
-    'PrivateEndpointConnectionsOperations',
-    'PrivateLinkResourcesOperations',
-    'RestorableDatabaseAccountsOperations',
-    'RestorableSqlDatabasesOperations',
-    'RestorableSqlContainersOperations',
-    'RestorableSqlResourcesOperations',
-    'RestorableMongodbDatabasesOperations',
-    'RestorableMongodbCollectionsOperations',
-    'RestorableMongodbResourcesOperations',
-    'RestorableGremlinDatabasesOperations',
-    'RestorableGremlinGraphsOperations',
-    'RestorableGremlinResourcesOperations',
-    'RestorableTablesOperations',
-    'RestorableTableResourcesOperations',
-    'ServiceOperations',
+    "DatabaseAccountsOperations",
+    "Operations",
+    "DatabaseOperations",
+    "CollectionOperations",
+    "CollectionRegionOperations",
+    "DatabaseAccountRegionOperations",
+    "PercentileSourceTargetOperations",
+    "PercentileTargetOperations",
+    "PercentileOperations",
+    "CollectionPartitionRegionOperations",
+    "CollectionPartitionOperations",
+    "PartitionKeyRangeIdOperations",
+    "PartitionKeyRangeIdRegionOperations",
+    "GraphResourcesOperations",
+    "SqlResourcesOperations",
+    "MongoDBResourcesOperations",
+    "TableResourcesOperations",
+    "CassandraResourcesOperations",
+    "GremlinResourcesOperations",
+    "LocationsOperations",
+    "DataTransferJobsOperations",
+    "CassandraClustersOperations",
+    "CassandraDataCentersOperations",
+    "MongoClustersOperations",
+    "NotebookWorkspacesOperations",
+    "PrivateEndpointConnectionsOperations",
+    "PrivateLinkResourcesOperations",
+    "RestorableDatabaseAccountsOperations",
+    "RestorableSqlDatabasesOperations",
+    "RestorableSqlContainersOperations",
+    "RestorableSqlResourcesOperations",
+    "RestorableMongodbDatabasesOperations",
+    "RestorableMongodbCollectionsOperations",
+    "RestorableMongodbResourcesOperations",
+    "RestorableGremlinDatabasesOperations",
+    "RestorableGremlinGraphsOperations",
+    "RestorableGremlinResourcesOperations",
+    "RestorableTablesOperations",
+    "RestorableTableResourcesOperations",
+    "ServiceOperations",
+    "ThroughputPoolsOperations",
+    "ThroughputPoolOperations",
+    "ThroughputPoolAccountsOperations",
+    "ThroughputPoolAccountOperations",
 ]
+__all__.extend([p for p in _patch_all if p not in __all__])
+_patch_sdk()

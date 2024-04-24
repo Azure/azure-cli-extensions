@@ -36,15 +36,20 @@ class MicrosoftSerialConsoleClient(MicrosoftSerialConsoleClientOperationsMixin):
     """
 
     def __init__(
-        self,
-        credential,  # type: "TokenCredential"
-        subscription_id,  # type: str
-        base_url=None,  # type: Optional[str]
-        **kwargs  # type: Any
+            self,
+            credential,  # type: "TokenCredential"
+            subscription_id,  # type: str
+            base_url=None,  # type: Optional[str]
+            **kwargs  # type: Any
     ):
         # type: (...) -> None
+        
+        if len(kwargs) > 0 and kwargs.get('storage_account_region') is not None:
+            base_url = 'https://{}.management.azure.com'.format(kwargs['storage_account_region'])
+
         if not base_url:
             base_url = 'https://management.azure.com'
+            
         self._config = MicrosoftSerialConsoleClientConfiguration(credential, subscription_id, **kwargs)
         self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 

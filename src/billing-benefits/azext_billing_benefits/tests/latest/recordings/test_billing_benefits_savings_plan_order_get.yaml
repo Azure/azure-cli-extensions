@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits savings-plan-order show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --savings-plan-order-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/savingsPlanOrders/91636c5c-051b-4c19-afd7-2b774259d49f?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.billingbenefits/savingsPlanOrders/91636c5c-051b-4c19-afd7-2b774259d49f","name":"91636c5c-051b-4c19-afd7-2b774259d49f","type":"microsoft.billingbenefits/savingsPlanOrders","properties":{"billingScopeId":"eef82110-c91b-4395-9420-fcfcbefc5a47","savingsPlans":["/providers/Microsoft.BillingBenefits/savingsPlanOrders/91636c5c-051b-4c19-afd7-2b774259d49f/savingsPlans/21adf2a7-70e4-4ff2-a011-cc111adafb0f"],"billingPlan":"P1M","term":"P3Y","displayName":"Compute_SavingsPlan_12-01-2022_23-49","benefitStartTime":"2022-12-02T07:52:45.4795490Z","provisioningState":"Succeeded","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31/billingProfiles/KPSV-DWNE-BG7-TGB","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31","expiryDateTime":"2025-12-02T07:52:45.4795490Z"},"sku":{"name":"Compute_Savings_Plan"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1021'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:38:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits savings-plan-order show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --savings-plan-order-id --expand
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/savingsPlanOrders/91636c5c-051b-4c19-afd7-2b774259d49f?$expand=schedule&api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.billingbenefits/savingsPlanOrders/91636c5c-051b-4c19-afd7-2b774259d49f","name":"91636c5c-051b-4c19-afd7-2b774259d49f","type":"microsoft.billingbenefits/savingsPlanOrders","properties":{"billingScopeId":"eef82110-c91b-4395-9420-fcfcbefc5a47","savingsPlans":["/providers/Microsoft.BillingBenefits/savingsPlanOrders/91636c5c-051b-4c19-afd7-2b774259d49f/savingsPlans/21adf2a7-70e4-4ff2-a011-cc111adafb0f"],"billingPlan":"P1M","term":"P3Y","displayName":"Compute_SavingsPlan_12-01-2022_23-49","benefitStartTime":"2022-12-02T07:52:45.4795490Z","provisioningState":"Succeeded","planInformation":{"pricingCurrencyTotal":{"currencyCode":"USD","amount":26.28},"startDate":"2022-12-02","nextPaymentDueDate":"2023-01-02","transactions":[{"dueDate":"2022-12-02","paymentDate":"2022-12-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"billingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Completed"},{"dueDate":"2023-01-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-02-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-03-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-04-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-05-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-06-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-07-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-08-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-09-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-10-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-11-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2023-12-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-01-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-02-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-03-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-04-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-05-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-06-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-07-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-08-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-09-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-10-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-11-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2024-12-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-01-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-02-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-03-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-04-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-05-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-06-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-07-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-08-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-09-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-10-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"},{"dueDate":"2025-11-02","pricingCurrencyTotal":{"currencyCode":"USD","amount":0.73},"status":"Scheduled"}]},"billingProfileId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31/billingProfiles/KPSV-DWNE-BG7-TGB","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31","expiryDateTime":"2025-12-02T07:52:45.4795490Z"},"sku":{"name":"Compute_Savings_Plan"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5081'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 03:38:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+version: 1

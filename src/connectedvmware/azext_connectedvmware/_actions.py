@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable= protected-access, too-few-public-methods, raise-missing-from, no-self-use, consider-using-f-string
+# pylint: disable= protected-access, too-few-public-methods, raise-missing-from, consider-using-f-string
 
 """
 This file contains actions for parsing complex arguments.
@@ -10,8 +10,8 @@ This file contains actions for parsing complex arguments.
 
 import argparse
 from collections import defaultdict
-from azext_connectedvmware.vmware_utils import create_dictionary_from_arg_string
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from azext_connectedvmware.vmware_utils import create_dictionary_from_arg_string
 
 
 class VmNicAddAction(argparse._AppendAction):

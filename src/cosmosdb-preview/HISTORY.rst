@@ -2,6 +2,57 @@
 
 Release History
 ===============
+1.0.0
+* Add support for Per-Region Per-Partition Autoscale. '--enable-prpp-autoscale' parameter can be used during account create/update.
+* Add support for Restore with Time-To-Live Disabled. '--disable-ttl' parameter can be used during restore.
+* Add support for online mode in container copy job.
+* Add support for minimum allowed TLS version configuration
+* BREAKING CHANGE: az cosmosdb create/update: Rename --enable-public-network true/false to --public-network-access ENABLED/DISABLED/SECUREDBYPERIMETER
+* BREAKING CHANGE: az cosmosdb restore: Rename --enable-public-network true/false to --public-network-access ENABLED/DISABLED
+
+++++++
+0.26.0
+* Add '--enable-priority-based-execution' and '--default-priority-level' parameter for create/update database account.
+* Add support for cross account container copy
+* Add Non-CMK to CMK support
+* Removed preview tag from CMK related properties
+
+++++++
+0.25.0
+* Add support for performing database merge for Sql and MongoDB database account.
+
+++++++
+0.24.0
+* Create and manage mongo clusters.
+* Add 'source_backup_location' parameter to 'cosmosdb restore' command
+* Add support for performing in-account restore of deleted databases and graphs in a Gremlin account.
+* Add support for performing in-account restore of deleted tables in a Table account.
+* Add `--enable-burst-capacity` parameter for create/update database account.
+
+++++++
+0.23.0
+* Add 'enable_public_network' param to 'cosmosdb restore' command
+
+++++++
+0.22.0
+* Add fix for restorable resources APIs.
+
+++++++
+0.21.0
+* Add support for mongo data transfer jobs.
+
+++++++
+0.20.0
+* Add support for Continuous mode restore with user provided identity.
+
+0.19.0
+++++++
+* Add support for performing in-account restore of deleted databases and containers for a Sql database account.
+* Add support for performing in-account restore of deleted databases and collections for a MongoDB database account.
+
+0.18.1
+++++++
+* Modify parameter for Managed Identity name.
 
 0.18.0
 ++++++

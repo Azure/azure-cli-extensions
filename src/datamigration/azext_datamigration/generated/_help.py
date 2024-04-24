@@ -38,7 +38,7 @@ helps['datamigration sql-db show'] = """
 
 helps['datamigration sql-db create'] = """
     type: command
-    short-summary: "Create a new database migration to a given SQL DB."
+    short-summary: "Create a new database migration to a given SQL Db. This command can migrate data from the selected source database tables to the target database tables. If the target database have no table existing, please use New-AzDataMigrationSqlServerSchema command to migrate schema objects from source database to target databse. The link of New-AzDataMigrationSqlServerSchema is https://learn.microsoft.com/cli/azure/datamigration?view=azure-cli-latest#az-datamigration-sql-server-schema"
     parameters:
       - name: --source-sql-connection
         short-summary: "Source SQL Server connection details."

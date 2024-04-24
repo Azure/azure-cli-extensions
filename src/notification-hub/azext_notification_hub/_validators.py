@@ -4,16 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 
-def validate_cert_file(namespace):
-    """Validate the give cert file existing"""
-    try:
-        if namespace.apns_certificate is not None:
-            with open(namespace.apns_certificate, "rb"):
-                pass
-    except EnvironmentError:
-        raise ValueError("Cannot access certificate file: " + namespace.apns_certificate)
-
-
 def validate_notification_message(namespace):
     """Validate message or payload to send"""
     from knack.util import CLIError

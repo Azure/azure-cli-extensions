@@ -22,7 +22,7 @@ class TestTermAcceptFlow(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_term_accept_basic_flow', location='eastus2euap')
     @AllowLargeResponse()
     def test_term_accept_basic_flow(self, resource_group):
-        
+
         self.kwargs.update({
             'rg': resource_group,
             'offerId': 'confluent-cloud-azure-stag',
@@ -59,4 +59,3 @@ class TestTermAcceptFlow(ScenarioTest):
                          '--tags environment="Dev" '
                          '--name "{organizationName}" '
                          '--resource-group "{rg}"')
-

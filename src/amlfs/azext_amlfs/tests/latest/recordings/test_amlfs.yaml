@@ -1,0 +1,2339 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_amlfs","date":"2023-07-04T04:50:34Z","module":"amlfs"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '347'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:50:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-msi/7.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005?api-version=2023-01-31
+  response:
+    body:
+      string: '{"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005","name":"id000005","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"2ec3797f-c485-4fc4-9673-10787186708d","clientId":"c2fc9f1c-c0a8-477d-b0ce-e1ef898074e0"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '434'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:50:42 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --address-prefix
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_amlfs","date":"2023-07-04T04:50:34Z","module":"amlfs"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '347'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:50:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"addressSpace": {"addressPrefixes":
+      ["20.0.0.0/24"]}, "enableDdosProtection": false, "enableVmProtection": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '152'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --address-prefix
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vnet000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002\",\r\n
+        \ \"etag\": \"W/\\\"1d15fef3-f8e0-4c66-9dee-47eca78e6c35\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\":
+        \"25f705e1-ae9d-4d62-bc19-cb93eca68214\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"20.0.0.0/24\"\r\n      ]\r\n    },\r\n    \"subnets\": [],\r\n
+        \   \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\": false\r\n
+        \ }\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/d8e7d2c6-d614-40d1-a92e-217f215e859f?api-version=2022-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '614'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:50:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - dee4b8ed-5b8e-47e5-a09c-79422f9007f8
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --address-prefix
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/d8e7d2c6-d614-40d1-a92e-217f215e859f?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:50:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - c5dab705-91ad-4d24-a760-4364b9888f23
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --address-prefix
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/d8e7d2c6-d614-40d1-a92e-217f215e859f?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:51:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 6633f801-3f01-44f9-b6a9-f920ceded647
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --address-prefix
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vnet000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002\",\r\n
+        \ \"etag\": \"W/\\\"3d72b725-f157-4b65-a3ba-3113a51b10df\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"25f705e1-ae9d-4d62-bc19-cb93eca68214\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"20.0.0.0/24\"\r\n      ]\r\n    },\r\n    \"subnets\": [],\r\n
+        \   \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\": false\r\n
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '615'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:51:03 GMT
+      etag:
+      - W/"3d72b725-f157-4b65-a3ba-3113a51b10df"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 532dabc8-0294-476b-90de-72d4b684093a
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "subnet000003", "properties": {"addressPrefix": "20.0.0.0/24",
+      "delegations": [{"name": "0", "properties": {"serviceName": "Qumulo.Storage/fileSystems"}}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '165'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --address-prefix --vnet-name --delegations
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"subnet000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\",\r\n
+        \ \"etag\": \"W/\\\"13e04c0f-a097-4ac4-9a08-5f7db0fd0f49\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"addressPrefix\": \"20.0.0.0/24\",\r\n
+        \   \"delegations\": [\r\n      {\r\n        \"name\": \"0\",\r\n        \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003/delegations/0\",\r\n
+        \       \"etag\": \"W/\\\"13e04c0f-a097-4ac4-9a08-5f7db0fd0f49\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"serviceName\": \"Qumulo.Storage/fileSystems\",\r\n          \"actions\":
+        [\r\n            \"Microsoft.Network/virtualNetworks/subnets/join/action\"\r\n
+        \         ]\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets/delegations\"\r\n
+        \     }\r\n    ],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
+        \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/52acb785-d94c-46af-baa4-4a55b7fd285a?api-version=2022-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1160'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:51:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - fbded447-96eb-48c4-ad07-48e9f29b8361
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --address-prefix --vnet-name --delegations
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/52acb785-d94c-46af-baa4-4a55b7fd285a?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:51:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - e7cf440f-735a-4af9-9764-fd6bfe59eef3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --address-prefix --vnet-name --delegations
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"subnet000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\",\r\n
+        \ \"etag\": \"W/\\\"0fc667be-d735-40a2-a679-3c738e4914b7\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"20.0.0.0/24\",\r\n
+        \   \"delegations\": [\r\n      {\r\n        \"name\": \"0\",\r\n        \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003/delegations/0\",\r\n
+        \       \"etag\": \"W/\\\"0fc667be-d735-40a2-a679-3c738e4914b7\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"serviceName\": \"Qumulo.Storage/fileSystems\",\r\n          \"actions\":
+        [\r\n            \"Microsoft.Network/virtualNetworks/subnets/join/action\"\r\n
+        \         ]\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets/delegations\"\r\n
+        \     }\r\n    ],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
+        \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1161'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:51:06 GMT
+      etag:
+      - W/"0fc667be-d735-40a2-a679-3c738e4914b7"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - f90f184b-995e-4acf-add2-40d25bf4dc7c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_amlfs","date":"2023-07-04T04:50:34Z","module":"amlfs"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '347'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:51:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005":
+      {}}}, "location": "eastus", "properties": {"filesystemSubnet": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003",
+      "maintenanceWindow": {"dayOfWeek": "Friday", "timeOfDayUTC": "22:00"}, "storageCapacityTiB":
+      16.0}, "sku": {"name": "AMLFS-Durable-Premium-250"}, "zones": ["1"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '607'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"sys000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004\",\r\n
+        \ \"type\": \"Microsoft.StorageCache/amlFilesystems\",\r\n  \"location\":
+        \"eastus\",\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\":
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\":
+        {}\r\n    }\r\n  },\r\n  \"properties\": {\r\n    \"storageCapacityTiB\":
+        16.0,\r\n    \"health\": {\r\n      \"state\": \"Transitioning\",\r\n      \"statusDescription\":
+        \"The cluster is in the process of changing states\"\r\n    },\r\n    \"provisioningState\":
+        \"Creating\",\r\n    \"clientInfo\": {\r\n      \"mgsAddress\": \"\",\r\n
+        \     \"mountCommand\": \"\",\r\n      \"lustreVersion\": \"\",\r\n      \"containerStorageInterface\":
+        {\r\n        \"persistentVolumeClaim\": \"\",\r\n        \"persistentVolume\":
+        \"\",\r\n        \"storageClass\": \"\"\r\n      }\r\n    },\r\n    \"throughputProvisionedMBps\":
+        4000,\r\n    \"maintenanceWindow\": {\r\n      \"dayOfWeek\": \"Friday\",\r\n
+        \     \"timeOfDayUTC\": \"22:00\"\r\n    },\r\n    \"hsm\": {},\r\n    \"filesystemSubnet\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\"\r\n
+        \ },\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n    \"name\":
+        \"AMLFS-Durable-Premium-250\"\r\n  },\r\n  \"systemData\": {\r\n    \"createdBy\":
+        \"v-jingszhang@microsoft.com\",\r\n    \"createdByType\": \"User\",\r\n    \"createdAt\":
+        \"2023-07-04T04:51:12.3448953Z\",\r\n    \"lastModifiedBy\": \"v-jingszhang@microsoft.com\",\r\n
+        \   \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\": \"2023-07-04T04:51:12.3448953Z\"\r\n
+        \ }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1726'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:51:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:51:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;238
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:51:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;236
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:52:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;234
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:52:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;234
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:53:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;235
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:53:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;234
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:54:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;234
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:54:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;235
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:55:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;235
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:55:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;234
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:56:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;234
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:56:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;235
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:57:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;235
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:57:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;235
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:58:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;233
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:58:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;233
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:59:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;235
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 04:59:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;235
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T04:51:15.9526091+00:00\",\r\n  \"endTime\":
+        \"2023-07-04T05:00:25.8763497+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"name\": \"5b8756a4-d4dc-4d3f-9fd6-c4dc0f1509e1\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '184'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:00:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;235
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku --storage-capacity --zones --maintenance-window --filesystem-subnet
+        --mi-user-assigned
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"sys000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004\",\r\n
+        \ \"type\": \"Microsoft.StorageCache/amlFilesystems\",\r\n  \"location\":
+        \"eastus\",\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\":
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\":
+        {}\r\n    }\r\n  },\r\n  \"properties\": {\r\n    \"storageCapacityTiB\":
+        16.0,\r\n    \"health\": {\r\n      \"state\": \"Available\",\r\n      \"statusDescription\":
+        \"The cluster is available\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"clientInfo\": {\r\n      \"mgsAddress\": \"20.0.0.8\",\r\n      \"mountCommand\":
+        \"mount -t lustre -o noatime,user_xattr 20.0.0.8@tcp0:/lustrefs /<local path>\",\r\n
+        \     \"lustreVersion\": \"2.15\",\r\n      \"containerStorageInterface\":
+        {\r\n        \"persistentVolumeClaim\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lQ2xhaW0KbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgUFZDCiAgbmFtZTogcHZjLWx1c3RyZQpzcGVjOgogIGFjY2Vzc01vZGVzOgogICAgLSBSZWFkV3JpdGVNYW55CiAgcmVzb3VyY2VzOgogICAgcmVxdWVzdHM6CiAgICAgICMgVGhlIHJlYWwgc3RvcmFnZSBjYXBhY2l0eSBpbiB0aGUgY2xhaW0KICAgICAgc3RvcmFnZTogMTYuMFRpCiAgIyBUaGlzIGZpZWxkIG11c3QgYmUgdGhlIHNhbWUgYXMgdGhlIHN0b3JhZ2UgY2xhc3MgbmFtZSBpbiBTdG9yYWdlQ2xhc3MKICBzdG9yYWdlQ2xhc3NOYW1lOiBzYy5henVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCg==\",\r\n
+        \       \"persistentVolume\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lCm1ldGFkYXRhOgogICMgVGhlIG5hbWUgb2YgdGhlIFBWCiAgbmFtZTogcHYtbHVzdHJlCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU1hbnkKICBjYXBhY2l0eToKICAgICMgVGhpcyBmaWVsZCBzaG91bGQgYmUgdGhlIHRydWUgc2l6ZSBvZiB0aGUgQXp1cmUgTHVzdHJlIHlvdSB3YW50CiAgICAjIHRvIHVzZWQuIFNvIHRoYXQsIGs4cyBjYW4gYWxsb2NhdGUgcmVzb3VyY2VzIGJldHRlci4KICAgIHN0b3JhZ2U6IDE2LjBUaQogIGNzaToKICAgIGRyaXZlcjogYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQogICAgdm9sdW1lQXR0cmlidXRlczoKICAgICAgIyBUaGUgZmlsZSBzeXN0ZW0gbmFtZSBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIGZzLW5hbWU6IHRjcDAKICAgICAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIG1ncy1pcC1hZGRyZXNzOiAyMC4wLjAuOAogICAgIyBNYWtlIHN1cmUgdGhpcyBWb2x1bWVJRCBpcyB1bmlxdWUgaW4gdGhlIGNsdXN0ZXIKICAgIHZvbHVtZUhhbmRsZTogMTkwZjI1NWUtYWQ2Ny00ZmRhLWJmYzktOGYyODhmZjM0MTliCiAgIyAiRGVsZXRlIiBpcyBub3Qgc3VwcG9ydGVkIGluIHN0YXRpYyBwcm92aXNpb25pbmcgUFYKICBtb3VudE9wdGlvbnM6CiAgICAtIG5vYXRpbWUKICAgIC0gZmxvY2sKICBwZXJzaXN0ZW50Vm9sdW1lUmVjbGFpbVBvbGljeTogUmV0YWluCiAgc3RvcmFnZUNsYXNzTmFtZTogc2MuYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQo=\",\r\n
+        \       \"storageClass\": \"Ci0tLQphcGlWZXJzaW9uOiBzdG9yYWdlLms4cy5pby92MQpraW5kOiBTdG9yYWdlQ2xhc3MKbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgU3RvcmFnZUNsYXNzLgogIG5hbWU6IHNjLmF6dXJlbHVzdHJlLmNzaS5henVyZS5jb20KcGFyYW1ldGVyczoKICAjIFRoZSBmaWxlIHN5c3RlbSBuYW1lIG9mIHRoZSBleGlzdGluZyBMdXN0cmUsICJsdXN0cmVmcyIgaW4gY29tbW9uIGNhc2UKICBmcy1uYW1lOiB0Y3AwCiAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgbWdzLWlwLWFkZHJlc3M6IDIwLjAuMC44CnByb3Zpc2lvbmVyOiBhenVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCiMgQXp1cmUgTHVzdHJlIENsdXN0ZXIgaXMgcmVtb3ZlZCBhZnRlciBQVkMgZGVsZXRpb24gaWYgcmVjbGFpbVBvbGljeSBpcyB0aGUgZGVmYXVsdCB2YWx1ZSAiRGVsZXRlIi4KcmVjbGFpbVBvbGljeTogUmV0YWluCnZvbHVtZUJpbmRpbmdNb2RlOiBJbW1lZGlhdGUKbW91bnRPcHRpb25zOgogIC0gbm9hdGltZQogIC0gZmxvY2sK\"\r\n
+        \     }\r\n    },\r\n    \"throughputProvisionedMBps\": 4000,\r\n    \"maintenanceWindow\":
+        {\r\n      \"dayOfWeek\": \"Friday\",\r\n      \"timeOfDayUTC\": \"22:00\"\r\n
+        \   },\r\n    \"hsm\": {},\r\n    \"filesystemSubnet\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\"\r\n
+        \ },\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n    \"name\":
+        \"AMLFS-Durable-Premium-250\"\r\n  },\r\n  \"systemData\": {\r\n    \"createdBy\":
+        \"v-jingszhang@microsoft.com\",\r\n    \"createdByType\": \"User\",\r\n    \"createdAt\":
+        \"2023-07-04T04:51:12.3448953Z\",\r\n    \"lastModifiedBy\": \"v-jingszhang@microsoft.com\",\r\n
+        \   \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\": \"2023-07-04T04:51:12.3448953Z\"\r\n
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4062'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:00:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"sys000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004\",\r\n
+        \ \"type\": \"Microsoft.StorageCache/amlFilesystems\",\r\n  \"location\":
+        \"eastus\",\r\n  \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\":
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\":
+        {}\r\n    }\r\n  },\r\n  \"properties\": {\r\n    \"storageCapacityTiB\":
+        16.0,\r\n    \"health\": {\r\n      \"state\": \"Available\",\r\n      \"statusDescription\":
+        \"The cluster is available\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"clientInfo\": {\r\n      \"mgsAddress\": \"20.0.0.8\",\r\n      \"mountCommand\":
+        \"mount -t lustre -o noatime,user_xattr 20.0.0.8@tcp0:/lustrefs /<local path>\",\r\n
+        \     \"lustreVersion\": \"2.15\",\r\n      \"containerStorageInterface\":
+        {\r\n        \"persistentVolumeClaim\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lQ2xhaW0KbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgUFZDCiAgbmFtZTogcHZjLWx1c3RyZQpzcGVjOgogIGFjY2Vzc01vZGVzOgogICAgLSBSZWFkV3JpdGVNYW55CiAgcmVzb3VyY2VzOgogICAgcmVxdWVzdHM6CiAgICAgICMgVGhlIHJlYWwgc3RvcmFnZSBjYXBhY2l0eSBpbiB0aGUgY2xhaW0KICAgICAgc3RvcmFnZTogMTYuMFRpCiAgIyBUaGlzIGZpZWxkIG11c3QgYmUgdGhlIHNhbWUgYXMgdGhlIHN0b3JhZ2UgY2xhc3MgbmFtZSBpbiBTdG9yYWdlQ2xhc3MKICBzdG9yYWdlQ2xhc3NOYW1lOiBzYy5henVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCg==\",\r\n
+        \       \"persistentVolume\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lCm1ldGFkYXRhOgogICMgVGhlIG5hbWUgb2YgdGhlIFBWCiAgbmFtZTogcHYtbHVzdHJlCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU1hbnkKICBjYXBhY2l0eToKICAgICMgVGhpcyBmaWVsZCBzaG91bGQgYmUgdGhlIHRydWUgc2l6ZSBvZiB0aGUgQXp1cmUgTHVzdHJlIHlvdSB3YW50CiAgICAjIHRvIHVzZWQuIFNvIHRoYXQsIGs4cyBjYW4gYWxsb2NhdGUgcmVzb3VyY2VzIGJldHRlci4KICAgIHN0b3JhZ2U6IDE2LjBUaQogIGNzaToKICAgIGRyaXZlcjogYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQogICAgdm9sdW1lQXR0cmlidXRlczoKICAgICAgIyBUaGUgZmlsZSBzeXN0ZW0gbmFtZSBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIGZzLW5hbWU6IHRjcDAKICAgICAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIG1ncy1pcC1hZGRyZXNzOiAyMC4wLjAuOAogICAgIyBNYWtlIHN1cmUgdGhpcyBWb2x1bWVJRCBpcyB1bmlxdWUgaW4gdGhlIGNsdXN0ZXIKICAgIHZvbHVtZUhhbmRsZTogMTkwZjI1NWUtYWQ2Ny00ZmRhLWJmYzktOGYyODhmZjM0MTliCiAgIyAiRGVsZXRlIiBpcyBub3Qgc3VwcG9ydGVkIGluIHN0YXRpYyBwcm92aXNpb25pbmcgUFYKICBtb3VudE9wdGlvbnM6CiAgICAtIG5vYXRpbWUKICAgIC0gZmxvY2sKICBwZXJzaXN0ZW50Vm9sdW1lUmVjbGFpbVBvbGljeTogUmV0YWluCiAgc3RvcmFnZUNsYXNzTmFtZTogc2MuYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQo=\",\r\n
+        \       \"storageClass\": \"Ci0tLQphcGlWZXJzaW9uOiBzdG9yYWdlLms4cy5pby92MQpraW5kOiBTdG9yYWdlQ2xhc3MKbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgU3RvcmFnZUNsYXNzLgogIG5hbWU6IHNjLmF6dXJlbHVzdHJlLmNzaS5henVyZS5jb20KcGFyYW1ldGVyczoKICAjIFRoZSBmaWxlIHN5c3RlbSBuYW1lIG9mIHRoZSBleGlzdGluZyBMdXN0cmUsICJsdXN0cmVmcyIgaW4gY29tbW9uIGNhc2UKICBmcy1uYW1lOiB0Y3AwCiAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgbWdzLWlwLWFkZHJlc3M6IDIwLjAuMC44CnByb3Zpc2lvbmVyOiBhenVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCiMgQXp1cmUgTHVzdHJlIENsdXN0ZXIgaXMgcmVtb3ZlZCBhZnRlciBQVkMgZGVsZXRpb24gaWYgcmVjbGFpbVBvbGljeSBpcyB0aGUgZGVmYXVsdCB2YWx1ZSAiRGVsZXRlIi4KcmVjbGFpbVBvbGljeTogUmV0YWluCnZvbHVtZUJpbmRpbmdNb2RlOiBJbW1lZGlhdGUKbW91bnRPcHRpb25zOgogIC0gbm9hdGltZQogIC0gZmxvY2sK\"\r\n
+        \     }\r\n    },\r\n    \"throughputProvisionedMBps\": 4000,\r\n    \"maintenanceWindow\":
+        {\r\n      \"dayOfWeek\": \"Friday\",\r\n      \"timeOfDayUTC\": \"22:00\"\r\n
+        \   },\r\n    \"hsm\": {},\r\n    \"filesystemSubnet\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\"\r\n
+        \ },\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n    \"name\":
+        \"AMLFS-Durable-Premium-250\"\r\n  },\r\n  \"systemData\": {\r\n    \"createdBy\":
+        \"v-jingszhang@microsoft.com\",\r\n    \"createdByType\": \"User\",\r\n    \"createdAt\":
+        \"2023-07-04T04:51:12.3448953Z\",\r\n    \"lastModifiedBy\": \"v-jingszhang@microsoft.com\",\r\n
+        \   \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\": \"2023-07-04T04:51:12.3448953Z\"\r\n
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4062'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:00:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005":
+      {}}}, "location": "eastus", "properties": {"filesystemSubnet": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003",
+      "hsm": {}, "maintenanceWindow": {"dayOfWeek": "Friday", "timeOfDayUTC": "22:00"},
+      "storageCapacityTiB": 16.0}, "sku": {"name": "AMLFS-Durable-Premium-250"}, "tags":
+      {"tag": "test"}, "zones": ["1"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '643'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"sys000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004\",\r\n
+        \ \"type\": \"Microsoft.StorageCache/amlFilesystems\",\r\n  \"location\":
+        \"eastus\",\r\n  \"tags\": {\r\n    \"tag\": \"test\"\r\n  },\r\n  \"identity\":
+        {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\": {\r\n
+        \     \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\":
+        {}\r\n    }\r\n  },\r\n  \"properties\": {\r\n    \"storageCapacityTiB\":
+        16.0,\r\n    \"health\": {\r\n      \"state\": \"Available\",\r\n      \"statusDescription\":
+        \"The cluster is available\"\r\n    },\r\n    \"provisioningState\": \"Creating\",\r\n
+        \   \"clientInfo\": {\r\n      \"mgsAddress\": \"20.0.0.8\",\r\n      \"mountCommand\":
+        \"mount -t lustre -o noatime,user_xattr 20.0.0.8@tcp0:/lustrefs /<local path>\",\r\n
+        \     \"lustreVersion\": \"2.15\",\r\n      \"containerStorageInterface\":
+        {\r\n        \"persistentVolumeClaim\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lQ2xhaW0KbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgUFZDCiAgbmFtZTogcHZjLWx1c3RyZQpzcGVjOgogIGFjY2Vzc01vZGVzOgogICAgLSBSZWFkV3JpdGVNYW55CiAgcmVzb3VyY2VzOgogICAgcmVxdWVzdHM6CiAgICAgICMgVGhlIHJlYWwgc3RvcmFnZSBjYXBhY2l0eSBpbiB0aGUgY2xhaW0KICAgICAgc3RvcmFnZTogMTYuMFRpCiAgIyBUaGlzIGZpZWxkIG11c3QgYmUgdGhlIHNhbWUgYXMgdGhlIHN0b3JhZ2UgY2xhc3MgbmFtZSBpbiBTdG9yYWdlQ2xhc3MKICBzdG9yYWdlQ2xhc3NOYW1lOiBzYy5henVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCg==\",\r\n
+        \       \"persistentVolume\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lCm1ldGFkYXRhOgogICMgVGhlIG5hbWUgb2YgdGhlIFBWCiAgbmFtZTogcHYtbHVzdHJlCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU1hbnkKICBjYXBhY2l0eToKICAgICMgVGhpcyBmaWVsZCBzaG91bGQgYmUgdGhlIHRydWUgc2l6ZSBvZiB0aGUgQXp1cmUgTHVzdHJlIHlvdSB3YW50CiAgICAjIHRvIHVzZWQuIFNvIHRoYXQsIGs4cyBjYW4gYWxsb2NhdGUgcmVzb3VyY2VzIGJldHRlci4KICAgIHN0b3JhZ2U6IDE2LjBUaQogIGNzaToKICAgIGRyaXZlcjogYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQogICAgdm9sdW1lQXR0cmlidXRlczoKICAgICAgIyBUaGUgZmlsZSBzeXN0ZW0gbmFtZSBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIGZzLW5hbWU6IHRjcDAKICAgICAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIG1ncy1pcC1hZGRyZXNzOiAyMC4wLjAuOAogICAgIyBNYWtlIHN1cmUgdGhpcyBWb2x1bWVJRCBpcyB1bmlxdWUgaW4gdGhlIGNsdXN0ZXIKICAgIHZvbHVtZUhhbmRsZTogMTkwZjI1NWUtYWQ2Ny00ZmRhLWJmYzktOGYyODhmZjM0MTliCiAgIyAiRGVsZXRlIiBpcyBub3Qgc3VwcG9ydGVkIGluIHN0YXRpYyBwcm92aXNpb25pbmcgUFYKICBtb3VudE9wdGlvbnM6CiAgICAtIG5vYXRpbWUKICAgIC0gZmxvY2sKICBwZXJzaXN0ZW50Vm9sdW1lUmVjbGFpbVBvbGljeTogUmV0YWluCiAgc3RvcmFnZUNsYXNzTmFtZTogc2MuYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQo=\",\r\n
+        \       \"storageClass\": \"Ci0tLQphcGlWZXJzaW9uOiBzdG9yYWdlLms4cy5pby92MQpraW5kOiBTdG9yYWdlQ2xhc3MKbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgU3RvcmFnZUNsYXNzLgogIG5hbWU6IHNjLmF6dXJlbHVzdHJlLmNzaS5henVyZS5jb20KcGFyYW1ldGVyczoKICAjIFRoZSBmaWxlIHN5c3RlbSBuYW1lIG9mIHRoZSBleGlzdGluZyBMdXN0cmUsICJsdXN0cmVmcyIgaW4gY29tbW9uIGNhc2UKICBmcy1uYW1lOiB0Y3AwCiAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgbWdzLWlwLWFkZHJlc3M6IDIwLjAuMC44CnByb3Zpc2lvbmVyOiBhenVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCiMgQXp1cmUgTHVzdHJlIENsdXN0ZXIgaXMgcmVtb3ZlZCBhZnRlciBQVkMgZGVsZXRpb24gaWYgcmVjbGFpbVBvbGljeSBpcyB0aGUgZGVmYXVsdCB2YWx1ZSAiRGVsZXRlIi4KcmVjbGFpbVBvbGljeTogUmV0YWluCnZvbHVtZUJpbmRpbmdNb2RlOiBJbW1lZGlhdGUKbW91bnRPcHRpb25zOgogIC0gbm9hdGltZQogIC0gZmxvY2sK\"\r\n
+        \     }\r\n    },\r\n    \"throughputProvisionedMBps\": 4000,\r\n    \"maintenanceWindow\":
+        {\r\n      \"dayOfWeek\": \"Friday\",\r\n      \"timeOfDayUTC\": \"22:00\"\r\n
+        \   },\r\n    \"hsm\": {},\r\n    \"filesystemSubnet\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\"\r\n
+        \ },\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n    \"name\":
+        \"AMLFS-Durable-Premium-250\"\r\n  },\r\n  \"systemData\": {\r\n    \"createdBy\":
+        \"v-jingszhang@microsoft.com\",\r\n    \"createdByType\": \"User\",\r\n    \"createdAt\":
+        \"2023-07-04T04:51:12.3448953Z\",\r\n    \"lastModifiedBy\": \"v-jingszhang@microsoft.com\",\r\n
+        \   \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\": \"2023-07-04T05:00:32.3548741Z\"\r\n
+        \ }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/a6a80467-1cf2-4241-b3e1-1c74d34dcd61?api-version=2023-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4099'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:00:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/a6a80467-1cf2-4241-b3e1-1c74d34dcd61?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T05:00:33.6017851+00:00\",\r\n  \"endTime\":
+        \"2023-07-04T05:00:38.0079763+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"name\": \"a6a80467-1cf2-4241-b3e1-1c74d34dcd61\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '184'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:00:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;233
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"sys000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004\",\r\n
+        \ \"type\": \"Microsoft.StorageCache/amlFilesystems\",\r\n  \"location\":
+        \"eastus\",\r\n  \"tags\": {\r\n    \"tag\": \"test\"\r\n  },\r\n  \"identity\":
+        {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\": {\r\n
+        \     \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\":
+        {}\r\n    }\r\n  },\r\n  \"properties\": {\r\n    \"storageCapacityTiB\":
+        16.0,\r\n    \"health\": {\r\n      \"state\": \"Available\",\r\n      \"statusDescription\":
+        \"The cluster is available\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"clientInfo\": {\r\n      \"mgsAddress\": \"20.0.0.8\",\r\n      \"mountCommand\":
+        \"mount -t lustre -o noatime,user_xattr 20.0.0.8@tcp0:/lustrefs /<local path>\",\r\n
+        \     \"lustreVersion\": \"2.15\",\r\n      \"containerStorageInterface\":
+        {\r\n        \"persistentVolumeClaim\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lQ2xhaW0KbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgUFZDCiAgbmFtZTogcHZjLWx1c3RyZQpzcGVjOgogIGFjY2Vzc01vZGVzOgogICAgLSBSZWFkV3JpdGVNYW55CiAgcmVzb3VyY2VzOgogICAgcmVxdWVzdHM6CiAgICAgICMgVGhlIHJlYWwgc3RvcmFnZSBjYXBhY2l0eSBpbiB0aGUgY2xhaW0KICAgICAgc3RvcmFnZTogMTYuMFRpCiAgIyBUaGlzIGZpZWxkIG11c3QgYmUgdGhlIHNhbWUgYXMgdGhlIHN0b3JhZ2UgY2xhc3MgbmFtZSBpbiBTdG9yYWdlQ2xhc3MKICBzdG9yYWdlQ2xhc3NOYW1lOiBzYy5henVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCg==\",\r\n
+        \       \"persistentVolume\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lCm1ldGFkYXRhOgogICMgVGhlIG5hbWUgb2YgdGhlIFBWCiAgbmFtZTogcHYtbHVzdHJlCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU1hbnkKICBjYXBhY2l0eToKICAgICMgVGhpcyBmaWVsZCBzaG91bGQgYmUgdGhlIHRydWUgc2l6ZSBvZiB0aGUgQXp1cmUgTHVzdHJlIHlvdSB3YW50CiAgICAjIHRvIHVzZWQuIFNvIHRoYXQsIGs4cyBjYW4gYWxsb2NhdGUgcmVzb3VyY2VzIGJldHRlci4KICAgIHN0b3JhZ2U6IDE2LjBUaQogIGNzaToKICAgIGRyaXZlcjogYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQogICAgdm9sdW1lQXR0cmlidXRlczoKICAgICAgIyBUaGUgZmlsZSBzeXN0ZW0gbmFtZSBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIGZzLW5hbWU6IHRjcDAKICAgICAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIG1ncy1pcC1hZGRyZXNzOiAyMC4wLjAuOAogICAgIyBNYWtlIHN1cmUgdGhpcyBWb2x1bWVJRCBpcyB1bmlxdWUgaW4gdGhlIGNsdXN0ZXIKICAgIHZvbHVtZUhhbmRsZTogMTkwZjI1NWUtYWQ2Ny00ZmRhLWJmYzktOGYyODhmZjM0MTliCiAgIyAiRGVsZXRlIiBpcyBub3Qgc3VwcG9ydGVkIGluIHN0YXRpYyBwcm92aXNpb25pbmcgUFYKICBtb3VudE9wdGlvbnM6CiAgICAtIG5vYXRpbWUKICAgIC0gZmxvY2sKICBwZXJzaXN0ZW50Vm9sdW1lUmVjbGFpbVBvbGljeTogUmV0YWluCiAgc3RvcmFnZUNsYXNzTmFtZTogc2MuYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQo=\",\r\n
+        \       \"storageClass\": \"Ci0tLQphcGlWZXJzaW9uOiBzdG9yYWdlLms4cy5pby92MQpraW5kOiBTdG9yYWdlQ2xhc3MKbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgU3RvcmFnZUNsYXNzLgogIG5hbWU6IHNjLmF6dXJlbHVzdHJlLmNzaS5henVyZS5jb20KcGFyYW1ldGVyczoKICAjIFRoZSBmaWxlIHN5c3RlbSBuYW1lIG9mIHRoZSBleGlzdGluZyBMdXN0cmUsICJsdXN0cmVmcyIgaW4gY29tbW9uIGNhc2UKICBmcy1uYW1lOiB0Y3AwCiAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgbWdzLWlwLWFkZHJlc3M6IDIwLjAuMC44CnByb3Zpc2lvbmVyOiBhenVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCiMgQXp1cmUgTHVzdHJlIENsdXN0ZXIgaXMgcmVtb3ZlZCBhZnRlciBQVkMgZGVsZXRpb24gaWYgcmVjbGFpbVBvbGljeSBpcyB0aGUgZGVmYXVsdCB2YWx1ZSAiRGVsZXRlIi4KcmVjbGFpbVBvbGljeTogUmV0YWluCnZvbHVtZUJpbmRpbmdNb2RlOiBJbW1lZGlhdGUKbW91bnRPcHRpb25zOgogIC0gbm9hdGltZQogIC0gZmxvY2sK\"\r\n
+        \     }\r\n    },\r\n    \"throughputProvisionedMBps\": 4000,\r\n    \"maintenanceWindow\":
+        {\r\n      \"dayOfWeek\": \"Friday\",\r\n      \"timeOfDayUTC\": \"22:00\"\r\n
+        \   },\r\n    \"hsm\": {},\r\n    \"filesystemSubnet\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\"\r\n
+        \ },\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n    \"name\":
+        \"AMLFS-Durable-Premium-250\"\r\n  },\r\n  \"systemData\": {\r\n    \"createdBy\":
+        \"v-jingszhang@microsoft.com\",\r\n    \"createdByType\": \"User\",\r\n    \"createdAt\":
+        \"2023-07-04T04:51:12.3448953Z\",\r\n    \"lastModifiedBy\": \"v-jingszhang@microsoft.com\",\r\n
+        \   \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\": \"2023-07-04T05:00:32.3548741Z\"\r\n
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4100'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:00:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"sys000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004\",\r\n
+        \ \"type\": \"Microsoft.StorageCache/amlFilesystems\",\r\n  \"location\":
+        \"eastus\",\r\n  \"tags\": {\r\n    \"tag\": \"test\"\r\n  },\r\n  \"identity\":
+        {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\": {\r\n
+        \     \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\":
+        {}\r\n    }\r\n  },\r\n  \"properties\": {\r\n    \"storageCapacityTiB\":
+        16.0,\r\n    \"health\": {\r\n      \"state\": \"Available\",\r\n      \"statusDescription\":
+        \"The cluster is available\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"clientInfo\": {\r\n      \"mgsAddress\": \"20.0.0.8\",\r\n      \"mountCommand\":
+        \"mount -t lustre -o noatime,user_xattr 20.0.0.8@tcp0:/lustrefs /<local path>\",\r\n
+        \     \"lustreVersion\": \"2.15\",\r\n      \"containerStorageInterface\":
+        {\r\n        \"persistentVolumeClaim\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lQ2xhaW0KbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgUFZDCiAgbmFtZTogcHZjLWx1c3RyZQpzcGVjOgogIGFjY2Vzc01vZGVzOgogICAgLSBSZWFkV3JpdGVNYW55CiAgcmVzb3VyY2VzOgogICAgcmVxdWVzdHM6CiAgICAgICMgVGhlIHJlYWwgc3RvcmFnZSBjYXBhY2l0eSBpbiB0aGUgY2xhaW0KICAgICAgc3RvcmFnZTogMTYuMFRpCiAgIyBUaGlzIGZpZWxkIG11c3QgYmUgdGhlIHNhbWUgYXMgdGhlIHN0b3JhZ2UgY2xhc3MgbmFtZSBpbiBTdG9yYWdlQ2xhc3MKICBzdG9yYWdlQ2xhc3NOYW1lOiBzYy5henVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCg==\",\r\n
+        \       \"persistentVolume\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lCm1ldGFkYXRhOgogICMgVGhlIG5hbWUgb2YgdGhlIFBWCiAgbmFtZTogcHYtbHVzdHJlCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU1hbnkKICBjYXBhY2l0eToKICAgICMgVGhpcyBmaWVsZCBzaG91bGQgYmUgdGhlIHRydWUgc2l6ZSBvZiB0aGUgQXp1cmUgTHVzdHJlIHlvdSB3YW50CiAgICAjIHRvIHVzZWQuIFNvIHRoYXQsIGs4cyBjYW4gYWxsb2NhdGUgcmVzb3VyY2VzIGJldHRlci4KICAgIHN0b3JhZ2U6IDE2LjBUaQogIGNzaToKICAgIGRyaXZlcjogYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQogICAgdm9sdW1lQXR0cmlidXRlczoKICAgICAgIyBUaGUgZmlsZSBzeXN0ZW0gbmFtZSBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIGZzLW5hbWU6IHRjcDAKICAgICAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIG1ncy1pcC1hZGRyZXNzOiAyMC4wLjAuOAogICAgIyBNYWtlIHN1cmUgdGhpcyBWb2x1bWVJRCBpcyB1bmlxdWUgaW4gdGhlIGNsdXN0ZXIKICAgIHZvbHVtZUhhbmRsZTogMTkwZjI1NWUtYWQ2Ny00ZmRhLWJmYzktOGYyODhmZjM0MTliCiAgIyAiRGVsZXRlIiBpcyBub3Qgc3VwcG9ydGVkIGluIHN0YXRpYyBwcm92aXNpb25pbmcgUFYKICBtb3VudE9wdGlvbnM6CiAgICAtIG5vYXRpbWUKICAgIC0gZmxvY2sKICBwZXJzaXN0ZW50Vm9sdW1lUmVjbGFpbVBvbGljeTogUmV0YWluCiAgc3RvcmFnZUNsYXNzTmFtZTogc2MuYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQo=\",\r\n
+        \       \"storageClass\": \"Ci0tLQphcGlWZXJzaW9uOiBzdG9yYWdlLms4cy5pby92MQpraW5kOiBTdG9yYWdlQ2xhc3MKbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgU3RvcmFnZUNsYXNzLgogIG5hbWU6IHNjLmF6dXJlbHVzdHJlLmNzaS5henVyZS5jb20KcGFyYW1ldGVyczoKICAjIFRoZSBmaWxlIHN5c3RlbSBuYW1lIG9mIHRoZSBleGlzdGluZyBMdXN0cmUsICJsdXN0cmVmcyIgaW4gY29tbW9uIGNhc2UKICBmcy1uYW1lOiB0Y3AwCiAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgbWdzLWlwLWFkZHJlc3M6IDIwLjAuMC44CnByb3Zpc2lvbmVyOiBhenVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCiMgQXp1cmUgTHVzdHJlIENsdXN0ZXIgaXMgcmVtb3ZlZCBhZnRlciBQVkMgZGVsZXRpb24gaWYgcmVjbGFpbVBvbGljeSBpcyB0aGUgZGVmYXVsdCB2YWx1ZSAiRGVsZXRlIi4KcmVjbGFpbVBvbGljeTogUmV0YWluCnZvbHVtZUJpbmRpbmdNb2RlOiBJbW1lZGlhdGUKbW91bnRPcHRpb25zOgogIC0gbm9hdGltZQogIC0gZmxvY2sK\"\r\n
+        \     }\r\n    },\r\n    \"throughputProvisionedMBps\": 4000,\r\n    \"maintenanceWindow\":
+        {\r\n      \"dayOfWeek\": \"Friday\",\r\n      \"timeOfDayUTC\": \"22:00\"\r\n
+        \   },\r\n    \"hsm\": {},\r\n    \"filesystemSubnet\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\"\r\n
+        \ },\r\n  \"zones\": [\r\n    \"1\"\r\n  ],\r\n  \"sku\": {\r\n    \"name\":
+        \"AMLFS-Durable-Premium-250\"\r\n  },\r\n  \"systemData\": {\r\n    \"createdBy\":
+        \"v-jingszhang@microsoft.com\",\r\n    \"createdByType\": \"User\",\r\n    \"createdAt\":
+        \"2023-07-04T04:51:12.3448953Z\",\r\n    \"lastModifiedBy\": \"v-jingszhang@microsoft.com\",\r\n
+        \   \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\": \"2023-07-04T05:00:32.3548741Z\"\r\n
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4100'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:00:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"sys000004\",\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLITEST.RG6BN7VRZ5NF63WHDYAEDHNLW3NK6R4QZUFCRW2SJOGRFPWFTUG6HIVYWK3EQTUYYVN/providers/Microsoft.StorageCache/amlFilesystems/sys000004\",\r\n
+        \     \"type\": \"Microsoft.StorageCache/amlFilesystems\",\r\n      \"location\":
+        \"eastus\",\r\n      \"tags\": {\r\n        \"tag\": \"test\"\r\n      },\r\n
+        \     \"identity\": {\r\n        \"type\": \"UserAssigned\",\r\n        \"userAssignedIdentities\":
+        {\r\n          \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000005\":
+        {}\r\n        }\r\n      },\r\n      \"properties\": {\r\n        \"storageCapacityTiB\":
+        16.0,\r\n        \"health\": {\r\n          \"state\": \"Available\",\r\n
+        \         \"statusDescription\": \"The cluster is available\"\r\n        },\r\n
+        \       \"provisioningState\": \"Succeeded\",\r\n        \"clientInfo\": {\r\n
+        \         \"mgsAddress\": \"20.0.0.8\",\r\n          \"mountCommand\": \"mount
+        -t lustre -o noatime,user_xattr 20.0.0.8@tcp0:/lustrefs /<local path>\",\r\n
+        \         \"lustreVersion\": \"2.15\",\r\n          \"containerStorageInterface\":
+        {\r\n            \"persistentVolumeClaim\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lQ2xhaW0KbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgUFZDCiAgbmFtZTogcHZjLWx1c3RyZQpzcGVjOgogIGFjY2Vzc01vZGVzOgogICAgLSBSZWFkV3JpdGVNYW55CiAgcmVzb3VyY2VzOgogICAgcmVxdWVzdHM6CiAgICAgICMgVGhlIHJlYWwgc3RvcmFnZSBjYXBhY2l0eSBpbiB0aGUgY2xhaW0KICAgICAgc3RvcmFnZTogMTYuMFRpCiAgIyBUaGlzIGZpZWxkIG11c3QgYmUgdGhlIHNhbWUgYXMgdGhlIHN0b3JhZ2UgY2xhc3MgbmFtZSBpbiBTdG9yYWdlQ2xhc3MKICBzdG9yYWdlQ2xhc3NOYW1lOiBzYy5henVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCg==\",\r\n
+        \           \"persistentVolume\": \"Ci0tLQphcGlWZXJzaW9uOiB2MQpraW5kOiBQZXJzaXN0ZW50Vm9sdW1lCm1ldGFkYXRhOgogICMgVGhlIG5hbWUgb2YgdGhlIFBWCiAgbmFtZTogcHYtbHVzdHJlCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU1hbnkKICBjYXBhY2l0eToKICAgICMgVGhpcyBmaWVsZCBzaG91bGQgYmUgdGhlIHRydWUgc2l6ZSBvZiB0aGUgQXp1cmUgTHVzdHJlIHlvdSB3YW50CiAgICAjIHRvIHVzZWQuIFNvIHRoYXQsIGs4cyBjYW4gYWxsb2NhdGUgcmVzb3VyY2VzIGJldHRlci4KICAgIHN0b3JhZ2U6IDE2LjBUaQogIGNzaToKICAgIGRyaXZlcjogYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQogICAgdm9sdW1lQXR0cmlidXRlczoKICAgICAgIyBUaGUgZmlsZSBzeXN0ZW0gbmFtZSBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIGZzLW5hbWU6IHRjcDAKICAgICAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgICAgIG1ncy1pcC1hZGRyZXNzOiAyMC4wLjAuOAogICAgIyBNYWtlIHN1cmUgdGhpcyBWb2x1bWVJRCBpcyB1bmlxdWUgaW4gdGhlIGNsdXN0ZXIKICAgIHZvbHVtZUhhbmRsZTogMTkwZjI1NWUtYWQ2Ny00ZmRhLWJmYzktOGYyODhmZjM0MTliCiAgIyAiRGVsZXRlIiBpcyBub3Qgc3VwcG9ydGVkIGluIHN0YXRpYyBwcm92aXNpb25pbmcgUFYKICBtb3VudE9wdGlvbnM6CiAgICAtIG5vYXRpbWUKICAgIC0gZmxvY2sKICBwZXJzaXN0ZW50Vm9sdW1lUmVjbGFpbVBvbGljeTogUmV0YWluCiAgc3RvcmFnZUNsYXNzTmFtZTogc2MuYXp1cmVsdXN0cmUuY3NpLmF6dXJlLmNvbQo=\",\r\n
+        \           \"storageClass\": \"Ci0tLQphcGlWZXJzaW9uOiBzdG9yYWdlLms4cy5pby92MQpraW5kOiBTdG9yYWdlQ2xhc3MKbWV0YWRhdGE6CiAgIyBUaGUgbmFtZSBvZiB0aGUgU3RvcmFnZUNsYXNzLgogIG5hbWU6IHNjLmF6dXJlbHVzdHJlLmNzaS5henVyZS5jb20KcGFyYW1ldGVyczoKICAjIFRoZSBmaWxlIHN5c3RlbSBuYW1lIG9mIHRoZSBleGlzdGluZyBMdXN0cmUsICJsdXN0cmVmcyIgaW4gY29tbW9uIGNhc2UKICBmcy1uYW1lOiB0Y3AwCiAgIyBUaGUgSVAgYWRkcmVzcyBvZiB0aGUgZXhpc3RpbmcgTHVzdHJlCiAgbWdzLWlwLWFkZHJlc3M6IDIwLjAuMC44CnByb3Zpc2lvbmVyOiBhenVyZWx1c3RyZS5jc2kuYXp1cmUuY29tCiMgQXp1cmUgTHVzdHJlIENsdXN0ZXIgaXMgcmVtb3ZlZCBhZnRlciBQVkMgZGVsZXRpb24gaWYgcmVjbGFpbVBvbGljeSBpcyB0aGUgZGVmYXVsdCB2YWx1ZSAiRGVsZXRlIi4KcmVjbGFpbVBvbGljeTogUmV0YWluCnZvbHVtZUJpbmRpbmdNb2RlOiBJbW1lZGlhdGUKbW91bnRPcHRpb25zOgogIC0gbm9hdGltZQogIC0gZmxvY2sK\"\r\n
+        \         }\r\n        },\r\n        \"throughputProvisionedMBps\": 4000,\r\n
+        \       \"maintenanceWindow\": {\r\n          \"dayOfWeek\": \"Friday\",\r\n
+        \         \"timeOfDayUTC\": \"22:00\"\r\n        },\r\n        \"hsm\": {},\r\n
+        \       \"filesystemSubnet\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\"\r\n
+        \     },\r\n      \"zones\": [\r\n        \"1\"\r\n      ],\r\n      \"sku\":
+        {\r\n        \"name\": \"AMLFS-Durable-Premium-250\"\r\n      },\r\n      \"systemData\":
+        {\r\n        \"createdBy\": \"v-jingszhang@microsoft.com\",\r\n        \"createdByType\":
+        \"User\",\r\n        \"createdAt\": \"2023-07-04T04:51:12.3448953Z\",\r\n
+        \       \"lastModifiedBy\": \"v-jingszhang@microsoft.com\",\r\n        \"lastModifiedByType\":
+        \"User\",\r\n        \"lastModifiedAt\": \"2023-07-04T05:00:32.3548741Z\"\r\n
+        \     }\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4400'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:00:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageCache/amlFilesystems/sys000004?api-version=2023-05-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/ee4afec3-0895-470c-8e28-971c8c031c11?api-version=2023-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 04 Jul 2023 05:00:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/ee4afec3-0895-470c-8e28-971c8c031c11?monitor=true&api-version=2023-05-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/ee4afec3-0895-470c-8e28-971c8c031c11?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T05:00:50.7965278+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"ee4afec3-0895-470c-8e28-971c8c031c11\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:00:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;233
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/ee4afec3-0895-470c-8e28-971c8c031c11?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T05:00:50.7965278+00:00\",\r\n  \"status\":
+        \"InProgress\",\r\n  \"name\": \"ee4afec3-0895-470c-8e28-971c8c031c11\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '134'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:01:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;234
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/ee4afec3-0895-470c-8e28-971c8c031c11?api-version=2023-05-01
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2023-07-04T05:00:50.7965278+00:00\",\r\n  \"endTime\":
+        \"2023-07-04T05:09:10.6742451+00:00\",\r\n  \"status\": \"Succeeded\",\r\n
+        \ \"name\": \"ee4afec3-0895-470c-8e28-971c8c031c11\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '184'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jul 2023 05:14:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;239
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - amlfs delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageCache/locations/eastus/ascOperations/ee4afec3-0895-470c-8e28-971c8c031c11?monitor=true&api-version=2023-05-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 04 Jul 2023 05:14:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus1Min;238
+    status:
+      code: 200
+      message: OK
+version: 1

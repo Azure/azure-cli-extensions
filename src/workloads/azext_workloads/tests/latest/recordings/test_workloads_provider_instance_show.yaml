@@ -1,0 +1,50 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor provider-instance show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --monitor-name -g -n
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor/providerInstances/os-cli?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor/providerInstances/os-cli","name":"os-cli","type":"microsoft.workloads/monitors/providerinstances","systemData":{"createdBy":"srivastavap@microsoft.com","createdByType":"User","createdAt":"2023-04-17T09:35:42.131097Z","lastModifiedBy":"srivastavap@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-17T09:35:42.131097Z"},"properties":{"providerSettings":{"prometheusUrl":"http://10.1.0.4:9100/metrics","sslPreference":"Disabled","providerType":"PrometheusOS"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '656'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 10:58:32 GMT
+      etag:
+      - '"0a00a9e1-0000-3400-0000-643d13840000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1

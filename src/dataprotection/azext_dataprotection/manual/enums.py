@@ -66,7 +66,7 @@ def get_secret_store_type_values():
 
 
 def get_backup_operation_values():
-    return ['Backup']
+    return ['Backup', 'Restore']
 
 
 def get_permission_scope_values():
@@ -84,3 +84,11 @@ def get_critical_operation_values():
 def get_datasource_types():
     from azext_dataprotection.manual import helpers
     return helpers.get_supported_datasource_types()
+
+
+def get_persistent_volume_restore_mode_values():
+    return ['RestoreWithVolumeData', 'RestoreWithoutVolumeData']
+
+
+def get_conflict_policy_values():
+    return ['Skip', 'Patch']

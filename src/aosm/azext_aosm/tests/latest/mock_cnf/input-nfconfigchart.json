@@ -1,0 +1,21 @@
+{
+    "publisher_name": "sunnyclipub",
+    "publisher_resource_group_name": "sunny-uksouth",
+    "nf_name": "nginx-basic-test",
+    "version": "0.1.0",
+    "acr_artifact_store_name": "sunny-nfagent-acr-2",
+    "location": "uksouth",
+    "images":
+    {
+        "source_registry": "this was nonsense just put something in to stop CLI complaining. The image was manually uploaded. /subscriptions/c7bd9d96-70dd-4f61-af56-6e0abd8d80b5/resourceGroups/SIMPLVM-team-CI/providers/Microsoft.ContainerRegistry/registries/a4oSIMPL"
+    },
+    "helm_packages": [
+        {
+            "name": "nfconfigchart",
+            "path_to_chart": "helm-charts/nfconfigchart-0.1.0.tgz",
+            "path_to_mappings": "helm-charts/nfconfigchart/nfconfigchartvalues.mappings.yaml",
+            "depends_on": [
+            ]
+        }
+    ]
+}

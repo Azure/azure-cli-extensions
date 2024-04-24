@@ -27,3 +27,10 @@ def load_command_table(self, _):
         client_factory=cf_tenants)
     with self.command_group('account tenant', account_tenants, client_factory=cf_tenants, is_experimental=True) as g:
         g.custom_command('list', 'account_tenant_list')
+
+    from azext_account.manual._client_factory import cf_subscription
+    account_subscription = CliCommandType(
+        operations_tmpl='azext_account.vendored_sdks.subscription.operations._subscription_operations#SubscriptionOperations.{}',
+        client_factory=cf_subscription)
+    with self.command_group('account', account_subscription, client_factory=cf_subscription) as g:
+        g.command('accept-ownership-status', 'accept_ownership_status')

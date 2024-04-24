@@ -3,7 +3,7 @@ name: $(Date:yyyyMMdd)$(Rev:.r-)-CleanUp
 trigger: none
 
 pool:
-  name: 1ES-AKS-Elastic-DevInfra-Auto-TearDown-Pool
+  name: $(1ES_DevInfra_Auto_TearDown_Pool_Name)
 
 variables:
   - group: azcli-aks-tool

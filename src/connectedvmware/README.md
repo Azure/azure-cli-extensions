@@ -105,7 +105,7 @@ az connectedvmware virtual-network create \
     --name resourceName
 ```
 
-##### Create Virtual Machine Resource
+##### Create Virtual Machine Instance Resource
 
 ```
 az connectedvmware vm create \

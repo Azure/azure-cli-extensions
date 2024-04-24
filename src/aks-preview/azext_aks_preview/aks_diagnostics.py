@@ -3,35 +3,44 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import colorama
 import datetime
 import json
 import os
 import subprocess
 import tempfile
 import time
+from enum import Flag, auto
 
-from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+import colorama
+from azext_aks_preview._client_factory import cf_agent_pools, get_storage_client
+from azext_aks_preview._consts import (
+    CONST_CONTAINER_NAME_MAX_LENGTH,
+    CONST_PERISCOPE_CONTAINER_REGISTRY,
+    CONST_PERISCOPE_IMAGE_VERSION,
+    CONST_PERISCOPE_NAMESPACE,
+    CONST_PERISCOPE_RELEASE_TAG,
+    CONST_PERISCOPE_REPO_ORG,
+)
+from azext_aks_preview._helpers import print_or_merge_credentials, which
+from azure.cli.command_modules.acs._params import _get_default_install_location
+from azure.cli.command_modules.acs.custom import k8s_install_kubelogin
+from azure.cli.core.commands.client_factory import (
+    get_mgmt_service_client,
+    get_subscription_id,
+)
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
+from packaging import version
 from tabulate import tabulate
 
-from azext_aks_preview._client_factory import get_storage_client
-
-from azext_aks_preview._consts import (
-    CONST_CONTAINER_NAME_MAX_LENGTH,
-    CONST_PERISCOPE_REPO_ORG,
-    CONST_PERISCOPE_CONTAINER_REGISTRY,
-    CONST_PERISCOPE_RELEASE_TAG,
-    CONST_PERISCOPE_IMAGE_VERSION,
-    CONST_PERISCOPE_NAMESPACE,
-)
-
-from azext_aks_preview._helpers import which, print_or_merge_credentials
-
 logger = get_logger(__name__)
+
+
+class ClusterFeatures(Flag):
+    NONE = 0
+    WIN_HPC = auto()
 
 
 # pylint: disable=line-too-long
@@ -78,9 +87,9 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
         try:
             parsed_storage_account = parse_resource_id(storage_account_id)
         except CloudError as ex:
-            raise CLIError(ex.message)
+            raise CLIError(ex.message) from ex
     else:
-        raise CLIError("Invalid storage account id %s" % storage_account_id)
+        raise CLIError(f"Invalid storage account id {storage_account_id}")
 
     storage_account_name = parsed_storage_account['name']
 
@@ -124,20 +133,20 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
         return
 
     print()
-    print("Getting credentials for cluster %s " % name)
-    _, temp_kubeconfig_path = tempfile.mkstemp()
-    credentialResults = client.list_cluster_admin_credentials(resource_group_name, name, None)
-    kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
-    print_or_merge_credentials(temp_kubeconfig_path, kubeconfig, False, None)
+    print(f"Getting credentials for cluster {name}")
+    temp_kubeconfig_path = _get_temp_kubeconfig_path(cmd, client, resource_group_name, name, mc.aad_profile is not None)
 
     print()
-    print("Starts collecting diag info for cluster %s " % name)
+    print(f"Starts collecting diag info for cluster {name}")
 
     # Base the container name on the fqdn (or private fqdn) of the managed cluster
     container_name = _generate_container_name(mc.fqdn, mc.private_fqdn)
     sas_token = sas_token.strip('?')
 
-    kustomize_yaml = _get_kustomize_yaml(storage_account_name, sas_token, container_name, container_logs, kube_objects, node_logs, node_logs_windows)
+    cluster_features = _get_cluster_features(cmd.cli_ctx, resource_group_name, name)
+
+    run_id = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
+    kustomize_yaml = _get_kustomize_yaml(storage_account_name, sas_token, container_name, run_id, cluster_features, container_logs, kube_objects, node_logs, node_logs_windows)
     kustomize_folder = tempfile.mkdtemp()
     kustomize_file_path = os.path.join(kustomize_folder, "kustomization.yaml")
     try:
@@ -184,7 +193,7 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
             subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-k",
                                      kustomize_folder, "-n", CONST_PERISCOPE_NAMESPACE], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
-            raise CLIError(err.output)
+            raise CLIError(err.output) from err
     finally:
         os.remove(kustomize_file_path)
         os.rmdir(kustomize_folder)
@@ -211,27 +220,59 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
         _display_diagnostics_report(temp_kubeconfig_path)
 
 
-def aks_kanalyze_cmd(client, resource_group_name: str, name: str) -> None:
+def aks_kanalyze_cmd(cmd, client, resource_group_name: str, name: str) -> None:
     colorama.init()
 
-    client.get(resource_group_name, name)
+    mc = client.get(resource_group_name, name)
 
+    temp_kubeconfig_path = _get_temp_kubeconfig_path(cmd, client, resource_group_name, name, mc.aad_profile is not None)
+
+    _display_diagnostics_report(temp_kubeconfig_path)
+
+
+def _get_temp_kubeconfig_path(cmd, client, resource_group_name: str, name: str, has_aad_profile: bool) -> str:
     _, temp_kubeconfig_path = tempfile.mkstemp()
-    credentialResults = client.list_cluster_admin_credentials(resource_group_name, name, None)
+
+    # Use normal user credentials, not admin credentials (admin creds will not be supplied if local accounts are disabled).
+    credentialResults = client.list_cluster_user_credentials(resource_group_name, name, None)
     kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
     print_or_merge_credentials(temp_kubeconfig_path, kubeconfig, False, None)
 
-    _display_diagnostics_report(temp_kubeconfig_path)
+    if has_aad_profile:
+        # The current credentials require interactive login. We need to use kubelogin to update the kubeconfig credential.
+        if not which('kubelogin'):
+            # No kubelogin found...but we can install it if the user wants.
+            if not prompt_y_n('Can not find kubelogin executable in PATH. Install now?', default="y"):
+                # The user doesn't want us to install kubelogin automatically, so we cannot continue.
+                raise CLIError('kubelogin not found. Use az aks install-cli to install.')
+
+            # Install kubelogin
+            kubelogin_install_location = _get_default_install_location('kubelogin')
+            k8s_install_kubelogin(cmd, 'latest', kubelogin_install_location)
+
+        # kubelogin is installed. Run it to populate user credentials that don't require interactive login.
+        subprocess.check_output(["kubelogin", "convert-kubeconfig", "--kubeconfig", temp_kubeconfig_path, "--login", "azurecli"], stderr=subprocess.STDOUT)
+
+    return temp_kubeconfig_path
 
 
 def _get_kustomize_yaml(storage_account_name,
                         sas_token,
                         container_name,
+                        run_id,
+                        cluster_features,
                         container_logs=None,
                         kube_objects=None,
                         node_logs_linux=None,
                         node_logs_windows=None):
+    components = {
+        'win-hpc': bool(cluster_features & ClusterFeatures.WIN_HPC)
+    }
+
+    component_content = "\n".join(f'- https://github.com/{CONST_PERISCOPE_REPO_ORG}/aks-periscope//deployment/components/{c}?ref={CONST_PERISCOPE_RELEASE_TAG}' for c, enabled in components.items() if enabled)
+
     diag_config_vars = {
+        'DIAGNOSTIC_RUN_ID': run_id,
         'DIAGNOSTIC_CONTAINERLOGS_LIST': container_logs,
         'DIAGNOSTIC_KUBEOBJECTS_LIST': kube_objects,
         'DIAGNOSTIC_NODELOGS_LIST_LINUX': node_logs_linux,
@@ -246,6 +287,9 @@ def _get_kustomize_yaml(storage_account_name,
     return f"""
 resources:
 - https://github.com/{CONST_PERISCOPE_REPO_ORG}/aks-periscope//deployment/base?ref={CONST_PERISCOPE_RELEASE_TAG}
+
+components:
+{component_content}
 
 namespace: {CONST_PERISCOPE_NAMESPACE}
 
@@ -278,9 +322,10 @@ def _get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
     diag_settings_client = get_mgmt_service_client(
         cli_ctx, MonitorManagementClient).diagnostic_settings
     subscription_id = get_subscription_id(cli_ctx)
-    aks_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService' \
-        '/managedClusters/{2}'.format(subscription_id,
-                                      resource_group_name, name)
+    aks_resource_id = (
+        f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/"
+        f"Microsoft.ContainerService/managedClusters/{name}"
+    )
     diag_settings = diag_settings_client.list(aks_resource_id)
     for _, diag_setting in enumerate(diag_settings):
         if diag_setting:
@@ -311,6 +356,26 @@ def _generate_container_name(fqdn: str, private_fqdn: str) -> str:
     container_name = container_name.replace('.', '-')
     container_name = container_name[:CONST_CONTAINER_NAME_MAX_LENGTH].rstrip('-')
     return container_name
+
+
+def _get_cluster_features(cli_ctx, resource_group_name, cluster_name):
+    agent_pool_client = cf_agent_pools(cli_ctx)
+    agent_pool_items = agent_pool_client.list(resource_group_name, cluster_name)
+    agent_pools = list(agent_pool_items)
+
+    features = ClusterFeatures.NONE
+    if _is_windows_hpc_supported(agent_pools):
+        features |= ClusterFeatures.WIN_HPC
+
+    return features
+
+
+def _is_windows_hpc_supported(agent_pools):
+    # https://docs.microsoft.com/en-us/rest/api/aks/agent-pools/list?tabs=HTTP#agentpool
+    # The full (major.minor.patch) version *may* be stored in currentOrchestratorVersion.
+    # If not, it'll be in orchestratorVersion.
+    windows_k8s_versions = [p.current_orchestrator_version or p.orchestrator_version for p in agent_pools if p.os_type.casefold() == "Windows".casefold()]
+    return all((version.parse(v) >= version.parse("1.23.0") for v in windows_k8s_versions))
 
 
 def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-many-statements
@@ -356,17 +421,15 @@ def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-m
             if apd_lines and 'No resources found' in apd_lines[0]:
                 apd_lines.pop(0)
 
-            print("Got {} diagnostic results for {} ready nodes{}\r".format(len(apd_lines),
-                                                                            len(ready_nodes),
-                                                                            '.' * retry), end='')
+            print(f"Got {len(apd_lines)} diagnostic results for {len(ready_nodes)} ready nodes{'.' * retry}\r", end='')
             if len(apd_lines) < len(ready_nodes):
                 time.sleep(3)
             else:
                 apds_created = True
                 print()
         else:
-            for node_name in ready_nodes:
-                if ready_nodes[node_name]:
+            for node_name, node_ready in ready_nodes.items():
+                if node_ready:
                     continue
                 apdName = "aks-periscope-diagnostic-" + node_name
                 try:
@@ -386,8 +449,10 @@ def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-m
                                  node_name, network_status)
 
                     if not network_config or not network_status:
-                        print("The diagnostics information for node {} is not ready yet. "
-                              "Will try again in 10 seconds.".format(node_name))
+                        print(
+                            f"The diagnostics information for node {node_name} is not ready yet. "
+                            "Will try again in 10 seconds."
+                        )
                         time.sleep(10)
                         break
 
@@ -398,7 +463,7 @@ def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-m
                         network_status_object)
                     ready_nodes[node_name] = True
                 except subprocess.CalledProcessError as err:
-                    raise CLIError(err.output)
+                    raise CLIError(err.output) from err
 
     print()
     if network_config_array:

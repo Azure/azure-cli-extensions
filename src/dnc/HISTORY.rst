@@ -2,6 +2,13 @@
 
 Release History
 ===============
+0.2.1
+++++++
+* Add optional "allocationBlockPrefixSize" parameter for subnet delegation
+
+0.2.0
+++++++
+* Add optional "purpose" parameter for controller creation
 
 0.1.3
 ++++++

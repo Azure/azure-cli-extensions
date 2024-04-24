@@ -95,6 +95,44 @@ def validate_repository_ref(repository_ref):
     )
 
 
+def validate_azure_blob_auth(azure_blob):
+    if azure_blob.service_principal:
+        sp = azure_blob.service_principal
+        if not ((sp.client_id and sp.tenant_id) and (sp.client_secret or sp.client_certificate)):
+            raise RequiredArgumentMissingError(
+                consts.REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_VALUES_MISSING_ERROR,
+                consts.REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_VALUES_MISSING_HELP,
+            )
+
+        if sp.client_secret and sp.client_certificate:
+            raise MutuallyExclusiveArgumentError(
+                consts.REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_AUTH_ERROR,
+                consts.REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_AUTH_HELP,
+            )
+
+        if sp.client_certificate_password and not sp.client_certificate:
+            raise RequiredArgumentMissingError(
+                consts.REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_CERT_VALUES_MISSING_ERROR,
+                consts.REQUIRED_AZURE_BLOB_SERVICE_PRINCIPAL_CERT_VALUES_MISSING_HELP,
+            )
+
+    auth_count = 0
+    for auth in [
+        azure_blob.service_principal,
+        azure_blob.account_key,
+        azure_blob.sas_token,
+        azure_blob.local_auth_ref,
+        azure_blob.managed_identity
+    ]:
+        if auth:
+            auth_count += 1
+    if auth_count > 1:
+        raise MutuallyExclusiveArgumentError(
+            consts.REQUIRED_AZURE_BLOB_AUTH_ERROR,
+            consts.REQUIRED_AZURE_BLOB_AUTH_HELP,
+        )
+
+
 def validate_duration(arg_name: str, duration: str):
     if not duration:
         return

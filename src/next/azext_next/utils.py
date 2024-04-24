@@ -2,24 +2,50 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from colorama import Fore
-import os
 import json
+import os
+
+from azure.cli.core.style import print_styled_text, Style
 
 
-def read_int(default_value=0):
+def input_int(default_value=0):
+    """Read an int from `stdin`. Retry if input is not a number"""
     ret = input()
     if ret == '' or ret is None:
         return default_value
     while not ret.isnumeric():
-        ret = input("Please input a legal number: ")
+        ret = input("Please input a valid number: ")
         if ret == '' or ret is None:
             return default_value
     return int(ret)
 
 
-def get_yes_or_no_option(option_description):
-    print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
+def input_combined_option(group_range, default_value=(None, 0)):
+    """
+    Read combined option from stdin, ensure the group_name is in range or be None and option is a valid number
+    :param group_range: the range a valid group name should be in
+    :param default_value:
+    :return: the combined option read from stdin
+    :rtype: tuple[str|None, int]
+    """
+    ret = input()
+    if ret == '' or ret is None:
+        return default_value
+    if ret.isnumeric():
+        return None, int(ret)
+    while True:
+        group = ret[:1]
+        option = ret[1:]
+        if group not in group_range:
+            ret = input("The option should start with " + " or ".join(group_range) + ":")
+        elif not option.isnumeric():
+            ret = input("The option should end with a valid number: ")
+        else:
+            return group, int(option)
+
+
+def get_yes_or_no_option(option_msg):
+    print_styled_text([(Style.ACTION, " ? ")] + option_msg, end='')
     option = input()
     yes_options = ["y", "yes", "Y", "Yes", "YES"]
     no_options = ["n", "no", "N", "No", "NO"]
@@ -28,12 +54,54 @@ def get_yes_or_no_option(option_description):
     return option in yes_options
 
 
-def get_int_option(option_description, min_option, max_option, default_option):
-    print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
-    option = read_int(default_option)
+class OptionRange:  # pylint: disable=too-few-public-methods
+    def __init__(self, min_option, max_option):
+        self.min_option = min_option
+        self.max_option = max_option
+
+    def __contains__(self, item):
+        return self.min_option <= item <= self.max_option
+
+
+def select_combined_option(option_msg, valid_groups, default_option):
+    """
+    Read a combined option from stdin.
+    Request user to re-enter if not in valid_group or range
+
+    :param option_msg: styled description to display
+    :param valid_groups: a dict for valid group name and option range
+    :type valid_groups: dict[str, OptionRange]
+    :param default_option: default option if users input empty str
+    :type default_option: tuple[str|None, int]
+    :return: the group name and option the user input, which is ensured in valid groups or be (None, 0)
+    :rtype: tuple[str|None, int]
+    """
+    print_styled_text([(Style.ACTION, " ? ")] + option_msg, end='')
+    group, option = input_combined_option(valid_groups.keys(), default_option)
+    while True:
+        if group is None:
+            if option == 0:
+                return group, option
+            print("The option should start with \"a\" for scenario, \"b\" for commands or be \"0\": ", end='')
+            group, option = input_combined_option(valid_groups.keys(), default_option)
+        elif option not in valid_groups[group]:
+            print(f"The option should end with a valid option "
+                  f"({group}{valid_groups[group].min_option}-{group}{valid_groups[group].max_option}): ", end='')
+            group, option = input_combined_option(valid_groups.keys(), default_option)
+        else:
+            return group, option
+
+
+def select_option(option_msg, min_option, max_option, default_option):
+    """Read an option from `stdin` ranging from `min_option` to `max_option`.
+    Retry if input is out of range.
+    """
+    print_styled_text([(Style.ACTION, " ? ")] + option_msg, end='')
+    option = input_int(default_option)
     while option < min_option or option > max_option:
-        print("Please enter a valid option ({}-{}): ".format(min_option, max_option), end='')
-        option = read_int(default_option)
+        print_styled_text([(Style.PRIMARY, f"Please enter a valid option ({min_option}-{max_option}): ")],
+                          end='')
+        option = input_int(default_option)
     return option
 
 
@@ -42,7 +110,7 @@ def get_command_list(cmd, num=2):
     history_file_name = os.path.join(cmd.cli_ctx.config.config_dir, 'recommendation', 'cmd_history.log')
     if not os.path.exists(history_file_name):
         return _get_command_list_from_core(cmd, num)
-    with open(history_file_name, "r") as f:
+    with open(history_file_name, "r", encoding="utf-8") as f:
         lines = f.read().splitlines()
         lines = [x for x in lines if x != 'next']
         return lines[-num:]
@@ -77,7 +145,7 @@ def _parse_command_file(command_file_path):
     if not os.path.exists(command_file_path):
         return ""
 
-    with open(command_file_path, "r") as f:
+    with open(command_file_path, "r", encoding="utf-8") as f:
         first_line = f.readline()
         if not first_line:
             return ""
@@ -126,12 +194,11 @@ def get_last_exception(cmd, latest_command):
     if not cmd.cli_ctx.config.getboolean('core', 'collect_telemetry', fallback=True):
         return ''
 
-    import os
     telemetry_cache_file = os.path.join(cmd.cli_ctx.config.config_dir, 'telemetry', 'cache')
     if not os.path.exists(telemetry_cache_file):
         return ''
 
-    with open(telemetry_cache_file, "r") as f:
+    with open(telemetry_cache_file, "r", encoding="utf-8") as f:
         lines = f.read().splitlines()
         history_data_list = reversed(lines)
         for history_data_item in history_data_list:
@@ -145,11 +212,11 @@ def get_last_exception(cmd, latest_command):
             import ast
             data_dict = ast.literal_eval(record_data[1])
             if not data_dict or len(data_dict) != 1:
-                return
+                return ''
 
-            data_item = [item for item in data_dict.values()][0][0]
+            data_item = list(data_dict.values())[0][0]
             if not data_item or 'properties' not in data_item:
-                return
+                return ''
             properties = data_item['properties']
 
             command_key = 'Context.Default.AzureCLI.RawCommand'
@@ -177,26 +244,26 @@ def get_last_exception(cmd, latest_command):
     return ''
 
 
-def get_title_case(str):
-    if not str:
-        return str
-    str = str.strip()
-    return str[0].upper() + str[1:]
+def capitalize_first_char(string):
+    if not string:
+        return string
+    string = string.strip()
+    return string[0].upper() + string[1:]
 
 
 def print_successful_styled_text(message):
-    from azure.cli.core.style import print_styled_text, Style, is_modern_terminal
+    from azure.cli.core.style import (Style, is_modern_terminal,
+                                      print_styled_text)
 
-    prefix_text = '\nDone: '
+    prefix_text = 'Done: '
     if is_modern_terminal():
-        prefix_text = '\n(✓ )Done: '
+        prefix_text = '(✓)Done: '
     print_styled_text([(Style.SUCCESS, prefix_text), (Style.PRIMARY, message)])
 
 
 def log_command_history(command, args):
-    import os
-    from knack.util import ensure_dir
     from azure.cli.core._environment import get_config_dir
+    from knack.util import ensure_dir
 
     if not args or '--no-log' in args:
         return
@@ -209,15 +276,15 @@ def log_command_history(command, args):
 
     file_path = os.path.join(base_dir, 'cmd_history.log')
     if not os.path.exists(file_path):
-        with open(file_path, 'w') as fd:
+        with open(file_path, 'w', encoding='utf-8') as fd:
             fd.write('')
 
     lines = []
-    with open(file_path, 'r') as fd:
+    with open(file_path, 'r', encoding='utf-8') as fd:
         lines = fd.readlines()
         lines = [x.strip('\n') for x in lines if x]
 
-    with open(file_path, 'w') as fd:
+    with open(file_path, 'w', encoding='utf-8') as fd:
         command_info = {'command': command}
         params = []
         for arg in args:

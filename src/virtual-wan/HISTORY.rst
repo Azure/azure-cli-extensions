@@ -3,6 +3,45 @@
 Release History
 ===============
 
+1.0.0
+++++++
+* add new command: `az network p2s-vpn-gateway disconnect`.
+* add new command: `az network p2s-vpn-gateway reset`.
+* add new command: `az network vpn-gateway connection packet-capture start`.
+* add new command group: `az network vpn-gateway nat-rule`.
+
+0.3.0
+++++++
+* `az network vhub connection`: Fix cross-tenant connection cannot be created.
+
+0.2.17
+++++++
+* `az network vhub create`: Add new parameter `allow-b2b-traffic` and `auto-scale-config`.
+* `az network vhub update`: Add new parameter `allow-b2b-traffic` and `auto-scale-config`.
+
+0.2.16
+++++++
+* `az network vhub`: Add new subgroup `route-map` to support managing virtual hub route map.
+* `az network vhub connection create`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+* `az network vhub connection update`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+* `az network p2s-vpn-gateway create`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+* `az network p2s-vpn-gateway update`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+* `az network vpn-gateway connection create`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+* `az network vpn-gateway connection update`: Add new parameter `associated_inbound_routemap` and `associated_outbound_routemap`.
+
+0.2.15
+++++++
+* Deprecate route table v2 parameters.
+
+0.2.14
+++++++
+* `az network vhub create`: Add new parameter `--asn`.
+* `az network vhub update`: Add new parameter `--asn`.
+
+0.2.13
+++++++
+* add new command group: `az network vhub routing-intent`.
+
 0.2.12
 ++++++
 * `az network vhub create`: Add new parameter `--hub-routing-preference`.

@@ -14,10 +14,7 @@ from azure.cli.core.commands import CliCommandType
 from azure.cli.command_modules.resource._validators import _validate_deployment_name
 from knack.util import CLIError
 from ._client_factory import (cf_mesh_deployments,
-                              cf_mesh_application, cf_mesh_service,
-                              cf_mesh_service_replica, cf_mesh_code_package, cf_mesh_network,
-                              cf_mesh_volume, cf_mesh_secret, cf_mesh_secret_value,
-                              cf_mesh_gateway)
+                              cf_mesh_volume, cf_mesh_secret_value)
 from ._exception_handler import resource_exception_handler
 
 #
@@ -177,38 +174,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
         exception_handler=resource_exception_handler
     )
 
-    mesh_service_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.service_operations#ServiceOperations.{}',
-        exception_handler=resource_exception_handler
-    )
-
-    mesh_service_replica_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.service_replica_operations#ServiceReplicaOperations.{}',
-        exception_handler=resource_exception_handler
-    )
-
-    mesh_cp_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.code_package_operations#CodePackageOperations.{}',
-        exception_handler=resource_exception_handler
-    )
-
-    mesh_network_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.network_operations#NetworkOperations.{}',
-        exception_handler=resource_exception_handler
-    )
-
-    mesh_secret_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.secret_operations#SecretOperations.{}',
-        exception_handler=resource_exception_handler
-    )
-
     mesh_secret_value_util = CliCommandType(
         operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.secret_value_operations#SecretValueOperations.{}',
-        exception_handler=resource_exception_handler
-    )
-
-    mesh_gateway_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.gateway_operations#GatewayOperations.{}',
         exception_handler=resource_exception_handler
     )
 
@@ -225,53 +192,53 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
     with self.command_group('mesh generate', resource_deployment_sdk) as g:
         g.custom_command('armtemplate', 'generate_arm_template')
 
-    with self.command_group('mesh app', cmd_util) as g:
-        g.custom_command('list', 'list_application', client_factory=cf_mesh_application, table_transformer=transform_application_list, exception_handler=resource_exception_handler)
-        g.custom_show_command('show', 'show_application', client_factory=cf_mesh_application, table_transformer=transform_application, exception_handler=resource_exception_handler)
-        g.custom_command('delete', 'delete_application', client_factory=cf_mesh_application, confirmation=True)
+    with self.command_group('mesh app'):
+        from .aaz.latest.mesh.app import Show, List
+        self.command_table['mesh app show'] = Show(loader=self, table_transformer=transform_application)
+        self.command_table['mesh app list'] = List(loader=self, table_transformer=transform_application_list)
 
-    with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
-        g.command('list', 'list', table_transformer=transform_service_list)
-        g.show_command('show', 'get', table_transformer=transform_service)
+    with self.command_group('mesh service'):
+        from .aaz.latest.mesh.service import Show, List
+        self.command_table['mesh service show'] = Show(loader=self, table_transformer=transform_service)
+        self.command_table['mesh service list'] = List(loader=self, table_transformer=transform_service_list)
 
-    with self.command_group('mesh service-replica', mesh_service_replica_util, client_factory=cf_mesh_service_replica) as g:
-        g.command('list', 'list', table_transformer=transform_service_replica_list)
-        g.show_command('show', 'get', table_transformer=transform_service_replica)
+    with self.command_group('mesh service-replica'):
+        from .aaz.latest.mesh.service_replica import Show, List
+        self.command_table['mesh service-replica show'] = Show(loader=self, table_transformer=transform_service_replica)
+        self.command_table['mesh service-replica list'] = List(loader=self, table_transformer=transform_service_replica_list)
 
-    with self.command_group('mesh code-package-log', mesh_cp_util, client_factory=cf_mesh_code_package) as g:
-        g.command('get', 'get_container_logs', transform=transform_log_output)
+    with self.command_group('mesh code-package-log'):
+        from .aaz.latest.mesh.code_package_log import Get
+        self.command_table['mesh code-package-log get'] = Get(loader=self, transform=transform_log_output)
 
-    with self.command_group('mesh network', mesh_network_util, client_factory=cf_mesh_network) as g:
-        g.show_command('show', 'get', table_transformer=transform_network)
-        g.command('delete', 'delete', confirmation=True)
-
-    with self.command_group('mesh network', cmd_util) as g:
-        g.custom_command('list', 'list_networks', client_factory=cf_mesh_network, table_transformer=transform_network_list)
+    with self.command_group('mesh network'):
+        from .aaz.latest.mesh.network import Show, List
+        self.command_table['mesh network show'] = Show(loader=self, table_transformer=transform_network)
+        self.command_table['mesh network list'] = List(loader=self, table_transformer=transform_network_list)
 
     with self.command_group('mesh volume', cmd_util) as g:
         g.custom_command('create', 'create_volume', client_factory=cf_mesh_volume, table_transformer=transform_volume_list)
-        g.custom_command('list', 'list_volumes', client_factory=cf_mesh_volume, table_transformer=transform_volume_list)
-        g.custom_show_command('show', 'show_volume', client_factory=cf_mesh_volume, exception_handler=resource_exception_handler, table_transformer=transform_volume)
-        g.custom_command('delete', 'delete_volume', client_factory=cf_mesh_volume, confirmation=True)
 
-    with self.command_group('mesh secret', mesh_secret_util, client_factory=cf_mesh_secret) as g:
-        g.show_command('show', 'get')
-        g.command('delete', 'delete', confirmation=True)
+    with self.command_group('mesh volume'):
+        from .aaz.latest.mesh.volume import Show, List
+        self.command_table['mesh volume show'] = Show(loader=self, table_transformer=transform_volume)
+        self.command_table['mesh volume list'] = List(loader=self, table_transformer=transform_volume_list)
 
-    with self.command_group('mesh secret', cmd_util) as g:
-        g.custom_command('list', 'list_secrets', client_factory=cf_mesh_secret, table_transformer=transform_secret_list)
+    with self.command_group('mesh secret'):
+        from .aaz.latest.mesh.secret import List
+        self.command_table['mesh secret list'] = List(loader=self, table_transformer=transform_secret_list)
 
     with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value) as g:
         g.show_command('show', 'get')
-        g.command('delete', 'delete', confirmation=True)
 
     with self.command_group('mesh secretvalue', cmd_util, client_factory=cf_mesh_secret_value) as g:
         g.custom_show_command('show', 'secret_show')
-        g.custom_command('list', 'list_secret_values', table_transformer=transform_secretvalue_list)
 
-    with self.command_group('mesh gateway', mesh_gateway_util, client_factory=cf_mesh_gateway) as g:
-        g.show_command('show', 'get', table_transformer=transform_gateway)
-        g.command('delete', 'delete', confirmation=True)
+    with self.command_group('mesh secretvalue'):
+        from .aaz.latest.mesh.secretvalue import List
+        self.command_table['mesh secretvalue list'] = List(loader=self, table_transformer=transform_secretvalue_list)
 
-    with self.command_group('mesh gateway', cmd_util, client_factory=cf_mesh_gateway) as g:
-        g.command('list', 'list_secrets', table_transformer=transform_gateway_list)
+    with self.command_group('mesh gateway'):
+        from .aaz.latest.mesh.gateway import Show, List
+        self.command_table['mesh gateway show'] = Show(loader=self, table_transformer=transform_gateway)
+        self.command_table['mesh gateway list'] = List(loader=self, table_transformer=transform_gateway_list)

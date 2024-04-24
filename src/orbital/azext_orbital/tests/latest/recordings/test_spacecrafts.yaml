@@ -1,0 +1,1078 @@
+interactions:
+- request:
+    body: '{"location": "westus", "properties": {"links": [{"bandwidthMHz": 15.0,
+      "centerFrequencyMHz": 8160.0, "direction": "downlink", "name": "downlink", "polarization":
+      "RHCP"}], "noradId": "27424", "titleLine": "AQUA", "tleLine1": "1 27424U 02022A   21354.42153147  .00000392  00000-0  97092-4
+      0  9992", "tleLine2": "2 27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586
+      44117"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '383'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name -l --norad-id --title-line --tle-line1 --tle-line2 --links
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA?api-version=2022-03-01
+  response:
+    body:
+      string: '{"location":"westus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992","tleLine2":"2
+        27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586 44117","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '616'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --tags
+      User-Agent:
+      - AZURECLI/2.39.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/orbital_cli000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001","name":"orbital_cli000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2022-08-10T16:28:59Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '312'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --tags
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA?api-version=2022-03-01
+  response:
+    body:
+      string: '{"location":"westus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992","tleLine2":"2
+        27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586 44117","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '616'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"links": [{"bandwidthMHz": 15.0,
+      "centerFrequencyMHz": 8160.0, "direction": "Downlink", "name": "downlink", "polarization":
+      "RHCP"}], "noradId": "27424", "titleLine": "AQUA", "tleLine1": "1 27424U 02022A   21354.42153147  .00000392  00000-0  97092-4
+      0  9992", "tleLine2": "2 27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586
+      44117"}, "tags": {"tag1": "value1", "tag2": "value2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '429'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --tags
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA?api-version=2022-03-01
+  response:
+    body:
+      string: '{"location":"westus","tags":{"tag1":"value1","tag2":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992","tleLine2":"2
+        27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586 44117","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA?api-version=2022-03-01
+  response:
+    body:
+      string: '{"location":"westus","tags":{"tag1":"value1","tag2":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992","tleLine2":"2
+        27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586 44117","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Rgp/providers/Microsoft.Orbital/spacecrafts/Sat-1","name":"Sat-1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"25544","titleLine":"ISS
+        (ZARYA)","tleLine1":"1 25544U 98067A   08264.51782528 -.00002182  00000-0
+        -11606-4 0  2927","tleLine2":"2 25544  51.6416 247.4627 0006703 130.5360 325.0288
+        15.72125391563537","links":[{"name":null,"centerFrequencyMHz":1234.0,"bandwidthMHz":23.0,"direction":"Uplink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Orbital-mikailasmith/providers/Microsoft.Orbital/spacecrafts/spacecraft-mikailasmith","name":"spacecraft-mikailasmith","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"12345","titleLine":null,"tleLine1":"123456789098765432123456789098765432123456789098765432123456789098765","tleLine2":"123456789098765432123456789098765432123456789098765432123456789098765","links":[{"name":null,"centerFrequencyMHz":1.0,"bandwidthMHz":1.0,"direction":"Uplink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/orbital-ignite-yochahib-rg/providers/Microsoft.Orbital/spacecrafts/good-tle","name":"good-tle","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"12345","titleLine":"good-tle","tleLine1":"1
+        45132U 20008B   21259.38659601 -.00000016  00000-0 -81951-4 0  9999","tleLine2":"2
+        45132  87.8920  21.1323 0001815 112.9313 247.2006 13.10375835 80755","links":[{"name":null,"centerFrequencyMHz":43543.0,"bandwidthMHz":45353.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/orbital-jimharris/providers/Microsoft.Orbital/spacecrafts/jimtest2","name":"jimtest2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"asdfa","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":null,"centerFrequencyMHz":1.0,"bandwidthMHz":1.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-orbital-portal-nonprod/providers/Microsoft.Orbital/spacecrafts/multiplelinkstest","name":"multiplelinkstest","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"test","tleLine1":"1
+        27424U 02022A   20195.59202355  .00000039  00000-0  18634-4 0  9991","tleLine2":"2
+        27424  98.2098 135.8486 0000176  28.4050 144.5909 14.57108832967671","links":[{"name":"LHCP_Uplink_0","centerFrequencyMHz":55.0,"bandwidthMHz":55.0,"direction":"Uplink","polarization":"LHCP","authorizations":[]},{"name":"RHCP_Downlink_1","centerFrequencyMHz":56.0,"bandwidthMHz":56.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]},{"name":"RHCP_Uplink_2","centerFrequencyMHz":57.0,"bandwidthMHz":57.0,"direction":"Uplink","polarization":"RHCP","authorizations":[]}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/hrishitest/providers/Microsoft.Orbital/spacecrafts/Deimos-2","name":"Deimos-2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"40013","titleLine":"Deimos-2","tleLine1":"1
+        40013U 14033D   21056.56407284  .00000180  00000-0  27360-4 0  9990","tleLine2":"2
+        40013  97.8013 319.9017 0000617 108.8320 251.2975 14.84775551362429","links":[{"name":null,"centerFrequencyMHz":8090.0,"bandwidthMHz":160.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8220.0,"bandwidthMHz":160.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/orbital-sample-customer/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   22166.59210928  .00000592  00000+0  14089-3 0  9998","tleLine2":"2
+        27424  98.2477 108.4999 0000923  92.1973  80.7435 14.57299957 69913","links":[{"name":"LHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-15"},{"groundStation":"SVALSAT","expirationDate":"2023-06-15"},{"groundStation":"AWARUA","expirationDate":"2023-06-15"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-15"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-15"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-15"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-inmarsat-4f3","name":"jim-inmarsat-4f3","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"23839","titleLine":"INMARSAT
+        4-F3","tleLine1":"1 33278U 08039A   21033.53836686 -.00000140  00000-0  00000+0
+        0  9992","tleLine2":"2 33278   3.1771  14.6888 0002535 298.1584 275.8766  1.00271256
+        45601","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21113.18542993  .00000116  00000-0  35877-4 0  9996","tleLine2":"2
+        27424  98.2057  55.3137 0002439  90.1611  21.8497 14.57115395  9025","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/AQUA-00","name":"AQUA-00","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21117.59187615  .00000134  00000-0  39803-4 0  9994","tleLine2":"2
+        27424  98.2063  59.6547 0002484  84.3447  88.5288 14.57117084  9627","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-inmarsat-4f3-westus-test","name":"jim-inmarsat-4f3-westus-test","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"23839","titleLine":"INMARSAT
+        4-F3","tleLine1":"1 33278U 08039A   21033.53836686 -.00000140  00000-0  00000+0
+        0  9992","tleLine2":"2 33278   3.1771  14.6888 0002535 298.1584 275.8766  1.00271256
+        45601","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus","tags":{"tag1":"value1","tag2":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992","tleLine2":"2
+        27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586 44117","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Rgp/providers/Microsoft.Orbital/spacecrafts/2022SC1","name":"2022SC1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"Test","tleLine1":"1
+        36411U 10008A   21243.68348880  .00000053  00000-0  00000-0 0  9999","tleLine2":"2
+        36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367 42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":437.0,"bandwidthMHz":0.01,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Rgp/providers/Microsoft.Orbital/spacecrafts/2022SC2","name":"2022SC2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"Test","tleLine1":"1
+        36411U 10008A   21243.68348880  .00000053  00000-0  00000-0 0  9999","tleLine2":"2
+        36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367 42128","links":[{"name":"link1","centerFrequencyMHz":437.0,"bandwidthMHz":0.01,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-1","name":"jim-goes15-rhcp-eastus-1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-2","name":"jim-goes15-rhcp-eastus-2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-3","name":"jim-goes15-rhcp-eastus-3","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-4","name":"jim-goes15-rhcp-eastus-4","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-5","name":"jim-goes15-rhcp-eastus-5","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-6","name":"jim-goes15-rhcp-eastus-6","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-7","name":"jim-goes15-rhcp-eastus-7","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-8","name":"jim-goes15-rhcp-eastus-8","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sweden-test/providers/Microsoft.Orbital/spacecrafts/NOAA18","name":"NOAA18","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"28654","titleLine":"INTELSAT
+        26","tleLine1":"1 24732U 97007A   21321.00347920  .00000076  00000+0  00000+0
+        0  9996","tleLine2":"2 24732   9.7683  39.9662 0000262  38.6058  24.1611  0.99250057
+        90504","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/portal-integration-test/providers/Microsoft.Orbital/spacecrafts/TERRA_SWEDEN","name":"TERRA_SWEDEN","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"25994","titleLine":"TERRA","tleLine1":"1
+        25994U 99068A   22025.50699286  .00000112  00000+0  34868-4 0  9993","tleLine2":"2
+        25994  98.1541 100.6008 0001275  91.2169 326.4363 14.57135106175684","links":[{"name":null,"centerFrequencyMHz":8212.5,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/Eutelsat-sweden","name":"Eutelsat-sweden","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"37836U","titleLine":"20220413","tleLine1":"1
+        35491U 09033A   22103.53270451 -.00000091  00000-0  00000-0 0  9993","tleLine2":"2
+        35491   0.1657  91.0440 0011466 131.4010  66.5376  1.00272024 46819","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":10.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":10.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":20.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":20.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/Eutelsat2-sweden","name":"Eutelsat2-sweden","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"37836U","titleLine":"Eutelsat
+        W3C","tleLine1":"1 37836U 11057A   21327.32904439  .00000121  00000-0  00000-0
+        0  9994","tleLine2":"2 37836   0.0689  10.2182 0005074 237.8545 308.9131  1.00270969
+        29253","links":[{"name":null,"centerFrequencyMHz":2025.5,"bandwidthMHz":1.0,"direction":"Uplink","polarization":"RHCP","authorizations":null}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/GOES15-2","name":"GOES15-2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":null,"centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/GOES15-4","name":"GOES15-4","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 27424U 02022A   22043.10206772  .00000483  00000+0  11723-3
+        0  9992","tleLine2":"2 27424  98.2354 346.2886 0000649  75.4597 295.2323 14.57137989
+        51977","links":[{"name":null,"centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/GOES15-5","name":"GOES15-5","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   22180.59486649  .00000065  00000+0  00000+0
+        0  9997","tleLine2":"2 36411   0.3199 101.9306 0001931  15.8085 245.5728  1.00271763
+        45144","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-30"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-30"}]},{"name":"LHCP_Downlink_1","centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-30"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-30"}]},{"name":"RHCP_Downlink_2","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-30"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-30"}]},{"name":"LHCP_Downlink_3","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-30"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-30"}]},{"name":"RHCP_Downlink_4","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-30"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-30"}]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgp/providers/Microsoft.Orbital/spacecrafts/Eutelsat","name":"Eutelsat","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"37836U","titleLine":"Eutelsat
+        W3C","tleLine1":"1 37836U 11057A   21327.32904439  .00000121  00000-0  00000-0
+        0  9994","tleLine2":"2 37836   0.0689  10.2182 0005074 237.8545 308.9131  1.00270969
+        29253","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":2247.5,"bandwidthMHz":10.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-13"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-13"}]},{"name":"LHCP_Downlink_1","centerFrequencyMHz":2247.5,"bandwidthMHz":10.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-13"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-13"}]},{"name":"RHCP_Downlink_2","centerFrequencyMHz":8200.0,"bandwidthMHz":20.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-13"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-13"}]},{"name":"LHCP_Downlink_3","centerFrequencyMHz":8200.0,"bandwidthMHz":20.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-13"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-13"}]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/Eutelsat-duplex","name":"Eutelsat-duplex","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"37836U","titleLine":"Eutelsat
+        W3C","tleLine1":"1 37836U 11057A   21327.32904439  .00000121  00000-0  00000-0
+        0  9994","tleLine2":"2 37836   0.0689  10.2182 0005074 237.8545 308.9131  1.00270969
+        29253","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-13"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-13"}]},{"name":"LHCP_Downlink_1","centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-13"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-13"}]},{"name":"RHCP_Downlink_2","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-13"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-13"}]},{"name":"LHCP_Downlink_3","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-13"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-13"}]},{"name":"RHCP_Uplink_4","centerFrequencyMHz":2025.5,"bandwidthMHz":1.0,"direction":"Uplink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-13"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-13"}]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jimTestTleUpdateBug","name":"jimTestTleUpdateBug","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"12345","titleLine":"YAOGAN
+        9A","tleLine1":"1 36413U 10009A   22108.38364652 -.00000050  00000+0  42076-4
+        0  9995","tleLine2":"2 36413  63.3839 325.5389 0405647  11.7523 158.3230 13.45220493595353","links":[{"name":null,"centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=5VTRTtswFP2XaNnT0qRO0oRKaHKTVGPL0jbNVuDNMW5rtbEz2y3dEPt2bGgB8cA0theE5Ydzfc69vr468pXFyE7llK2k1b%2byZtm0%2bjYFVt9aKtXKvus2iKEFaQhTHfRrI0gH86YfBL4rN7XEgraKcibdIDzqxjj2HQQAcgISXTixB3oOxgQHdd3zw%2fjIbQXf0gsipPuVYsEln6vOSNRUobUrW6SlAs2V%2fIha6my1TFc%2bBh4Ajuc7Xvf9O7mibcVXhB3b0cAGoNCtj5FQ1PTwhfzUR7YP2Wa9tkGy50t%2bec8YXieGhlOmzh3UOXsABuVJqsPfuOBnsMhP2%2b2uhBO4X7avydQGfllpUVeDqkwM8jQ8mX7XEBiUjTTqhWFoJJNkqKP4cENyBwRiC%2fJw%2faGrhj7tCUTDZ9eTug3aPVS9fSh4Nn043Muj1NZbD%2bh%2bchWq16RADTGnj8daIbEgKucYmbk%2fYqPU%2bmBl0FjozTtottx9guP55%2fHZAB38A%2bHfOqgX%2fbuD%2fuiQ%2f%2b%2bB6SxLsyLJiqqE%2bZu3wo9yeQlzNhmMiuy8jF%2f4mbxKK1xf3wA%3d"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '27457'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
+      - ''
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=5VTRTtswFP2XaNnT0qRO0oRKaHKTVGPL0jbNVuDNMW5rtbEz2y3dEPt2bGgB8cA0theE5Ydzfc69vr468pXFyE7llK2k1b%2ByZtm0%2BjYFVt9aKtXKvus2iKEFaQhTHfRrI0gH86YfBL4rN7XEgraKcibdIDzqxjj2HQQAcgISXTixB3oOxgQHdd3zw%2FjIbQXf0gsipPuVYsEln6vOSNRUobUrW6SlAs2V%2FIha6my1TFc%2BBh4Ajuc7Xvf9O7mibcVXhB3b0cAGoNCtj5FQ1PTwhfzUR7YP2Wa9tkGy50t%2Bec8YXieGhlOmzh3UOXsABuVJqsPfuOBnsMhP2%2B2uhBO4X7avydQGfllpUVeDqkwM8jQ8mX7XEBiUjTTqhWFoJJNkqKP4cENyBwRiC%2FJw%2FaGrhj7tCUTDZ9eTug3aPVS9fSh4Nn043Muj1NZbD%2Bh%2BchWq16RADTGnj8daIbEgKucYmbk%2FYqPU%2BmBl0FjozTtottx9guP55%2FHZAB38A%2BHfOqgX%2FbuD%2FuiQ%2F%2B%2BB6SxLsyLJiqqE%2BZu3wo9yeQlzNhmMiuy8jF%2F4mbxKK1xf3wA%3D
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/AQUA-01","name":"AQUA-01","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   21132.48834302  .00000098  00000-0  31849-4 0  9992","tleLine2":"2
+        27424  98.2079  74.3319 0002322  64.4545  83.3062 14.57111714 11837","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/INMARSAT-4F3-0520","name":"INMARSAT-4F3-0520","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"33278","titleLine":"INMARSAT
+        4-F3","tleLine1":"1 33278U 08039A   21139.61347846 -.00000134  00000-0  00000-0
+        0  9997","tleLine2":"2 33278   3.2015  15.7471 0002693  51.9593 292.6287  1.00270132
+        27958","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/AQUA-03","name":"AQUA-03","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"33278","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21146.14229031  .00000094  00000-0  30890-4 0  9998","tleLine2":"2
+        27424  98.2088  87.7872 0001897  48.0631  40.6183 14.57116170 13821","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/AQUAv2","name":"AQUAv2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   21146.47856853  .00000081  00000-0  27922-4 0  9990","tleLine2":"2
+        27424  98.2088  88.1186 0001882  47.5862   4.0385 14.57116175 13832","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hrishitest/providers/Microsoft.Orbital/spacecrafts/AQUA-03","name":"AQUA-03","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"33278","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21146.14229031  .00000094  00000-0  30890-4 0  9998","tleLine2":"2
+        27424  98.2088  87.7872 0001897  48.0631  40.6183 14.57116170 13821","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/AQUA-05-007","name":"AQUA-05-007","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"33278","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21148.35323142  .00000025  00000-0  15561-4 0  9993","tleLine2":"2
+        27424  98.2089  89.9661 0001771  45.1708 114.3538 14.57108413 14146","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/AQUA_rainbow","name":"AQUA_rainbow","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   21147.31548950  .00000083  00000-0  28469-4 0  9999","tleLine2":"2
+        27424  98.2089  88.9433 0001814  46.8312  72.3445 14.57107944 13999","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/AQUA_kbr","name":"AQUA_kbr","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   21181.59181219  .00000104  00000-0  33072-4 0  9998","tleLine2":"2
+        27424  98.2099 122.7280 0000494 106.3021  66.6137 14.57117437 18941","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/NOAA18","name":"NOAA18","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"28654","titleLine":"20220404","tleLine1":"1
+        28654U 05018A   22094.83204536  .00000212  00000-0  13848-3 0  9999","tleLine2":"2
+        28654  98.9545 165.3116 0014548 175.6459 184.4841 14.12707814869670","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/GOES15","name":"GOES15","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-9","name":"jim-goes15-rhcp-eastus-9","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-10","name":"jim-goes15-rhcp-eastus-10","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-11","name":"jim-goes15-rhcp-eastus-11","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-12","name":"jim-goes15-rhcp-eastus-12","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/devasingh-rg/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22192.74014189  .00000435  00000+0  10624-3 0  9992","tleLine2":"2
+        27424  98.2482 134.4016 0001650 100.5984  12.3416 14.57323336 73769","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/devanshu-test/providers/Microsoft.Orbital/spacecrafts/powerShellSpacecraft","name":"powerShellSpacecraft","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"12345","titleLine":"ISS
+        (ZARYA)","tleLine1":"1 25544U 98067A   08264.51782528 -.00002182  00000-0
+        -11606-4 0  2927","tleLine2":"2 25544  51.6416 247.4627 0006703 130.5360 325.0288
+        15.72125391563537","links":[{"name":"spacecraftlink","centerFrequencyMHz":50.0,"bandwidthMHz":50.0,"direction":"Uplink","polarization":"LHCP","authorizations":[]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ashish-test/providers/Microsoft.Orbital/spacecrafts/ash-test","name":"ash-test","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"12345","titleLine":"asda","tleLine1":"1
+        25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927","tleLine2":"2
+        25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537","links":[{"name":null,"centerFrequencyMHz":20.0,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-ascii-demo/providers/Microsoft.Orbital/spacecrafts/AQUA-sw","name":"AQUA-sw","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   22139.12846065  .00001093  00000+0  25178-3 0  9992","tleLine2":"2
+        27424  98.2460  81.3002 0001349  59.5439 117.9890 14.57265691 65952","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-22"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-22"}]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-ascii-demo/providers/Microsoft.Orbital/spacecrafts/AQUA-sw-g","name":"AQUA-sw-g","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        37836U 11057A   21327.32904439  .00000121  00000-0  00000-0 0  9994","tleLine2":"2
+        37836   0.0689  10.2182 0005074 237.8545 308.9131  1.00270969 29253","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-22"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-22"}]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-ascii-demo/providers/Microsoft.Orbital/spacecrafts/AQUA-sw-gs","name":"AQUA-sw-gs","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        37836U 11057A   21327.32904439  .00000121  00000-0  00000-0 0  9994","tleLine2":"2
+        37836   0.0689  10.2182 0005074 237.8545 308.9131  1.00270969 29253","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-06-23"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-06-23"}]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/Eutelsat-duplex1","name":"Eutelsat-duplex1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"37836U","titleLine":"Eutelsat
+        W3C","tleLine1":"1 37836U 11057A   21327.32904439  .00000121  00000-0  00000-0
+        0  9994","tleLine2":"2 37836   0.0689  10.2182 0005074 237.8545 308.9131  1.00270969
+        29253","links":[{"name":"link1","centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-14"}]},{"name":"link2","centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-14"}]},{"name":"link3","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-14"}]},{"name":"link4","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-14"}]},{"name":"link5","centerFrequencyMHz":2025.5,"bandwidthMHz":1.0,"direction":"Uplink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-14"}]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/Eutelsat1","name":"Eutelsat1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"37836U","titleLine":"Eutelsat
+        W3C","tleLine1":"1 37836U 11057A   21327.32904439  .00000121  00000-0  00000-0
+        0  9994","tleLine2":"2 37836   0.0689  10.2182 0005074 237.8545 308.9131  1.00270969
+        29253","links":[{"name":"link1","centerFrequencyMHz":2247.5,"bandwidthMHz":10.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-14"}]},{"name":"link2","centerFrequencyMHz":2247.5,"bandwidthMHz":10.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-14"}]},{"name":"link3","centerFrequencyMHz":8200.0,"bandwidthMHz":20.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-14"}]},{"name":"link4","centerFrequencyMHz":8200.0,"bandwidthMHz":20.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-14"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-14"}]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fai-test-rg/providers/Microsoft.Orbital/spacecrafts/AQUA-Sweden","name":"AQUA-Sweden","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22211.81118208  .00000210  00000+0  56491-4 0  9993","tleLine2":"2
+        27424  98.2484 153.2950 0002007  86.5730 301.6073 14.57342219 76549","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-20"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-20"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-20"}]}]}},{"location":"swedencentral","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fai-test-rg/providers/Microsoft.Orbital/spacecrafts/GEO-Sweden","name":"GEO-Sweden","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"37836U","titleLine":"Eutelsat
+        W3C","tleLine1":"1 37836U 11057A   21327.32904439  .00000121  00000-0  00000-0
+        0  9994","tleLine2":"2 37836   0.0689  10.2182 0005074 237.8545 308.9131  1.00270969
+        29253","links":[{"name":"downlink_rhcp","centerFrequencyMHz":8160.0,"bandwidthMHz":350.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-20"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-20"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-20"}]},{"name":"downlink_lhcp","centerFrequencyMHz":8160.0,"bandwidthMHz":350.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"2023-07-20"},{"groundStation":"SWEDENCENTRAL_0","expirationDate":"2023-07-20"},{"groundStation":"SWEDENCENTRAL_1","expirationDate":"2023-07-20"}]}]}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fVDbboJAEP0XUvqG4AKCJKZB0NTUaov09risq90oLNldra2x396h4iU%2bONmHM%2bfMnJmdrVbQjRqyYiG1YKu99SbpywRpgfapVCkD08xxgec0p4Vq4J%2bVoA3C88BxbFOuMkkEKxXjhTQdt930iW8bGCFsONSbGr6FWgYhlDhZ1rJdv22Wgq%2fZlAppPjIiuOQz1RiLjCm8NGWJoVTgmZJ3uGTGGsrAuYMshAzLNqzm7Y1csDLlC1p0dK%2brIzSC1Z%2bwUKza4YF%2bA6XbYbFaLnUU1XrCv45KpUOjW2mq8tlD6KkB6iaDGNJfMuIf4Wj4Xq439%2bE8rEO3QYx1ZCcpFCEAaRJVyAI4mLzW5KA3BtRyXbcJ%2fHPUh8w%2fTIj2QOBiTk%2fjD1vl7HIn5PWvxoVvjjcn1%2f%2bPoqvt%2fX5d7sU6PDjQ8XIpzpZ0hHNasednTbGYUzXkBFd3P1O9WNvt%2fgA%3d"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20855'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fVDbboJAEP0XUvqG4AKCJKZB0NTUaov09risq90oLNldra2x396h4iU%2BONmHM%2BfMnJmdrVbQjRqyYiG1YKu99SbpywRpgfapVCkD08xxgec0p4Vq4J%2BVoA3C88BxbFOuMkkEKxXjhTQdt930iW8bGCFsONSbGr6FWgYhlDhZ1rJdv22Wgq%2FZlAppPjIiuOQz1RiLjCm8NGWJoVTgmZJ3uGTGGsrAuYMshAzLNqzm7Y1csDLlC1p0dK%2BrIzSC1Z%2BwUKza4YF%2BA6XbYbFaLnUU1XrCv45KpUOjW2mq8tlD6KkB6iaDGNJfMuIf4Wj4Xq439%2BE8rEO3QYx1ZCcpFCEAaRJVyAI4mLzW5KA3BtRyXbcJ%2FHPUh8w%2FTIj2QOBiTk%2FjD1vl7HIn5PWvxoVvjjcn1%2F%2BPoqvt%2FX5d7sU6PDjQ8XIpzpZ0hHNasednTbGYUzXkBFd3P1O9WNvt%2FgA%3D
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992","tleLine2":"2
+        27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586 44117","links":[{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/AURA","name":"AURA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"28376","titleLine":"AURA","tleLine1":"1
+        28376U 04026A   21245.08378370  .00000119  00000-0  36497-4 0  9992","tleLine2":"2
+        28376  98.2130 187.4827 0001341  71.0379 289.0965 14.57098924911283","links":[{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/TERRA","name":"TERRA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"25994","titleLine":"TERRA","tleLine1":"1
+        25994U 99068A   22152.48024389  .00000234  00000-0  61649-4 0  9990","tleLine2":"2
+        25994  98.1371 224.7664 0001447  94.8074 354.0577 14.57171833194295","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8212.5,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-01"},{"groundStation":"SVALSAT","expirationDate":"2023-06-01"},{"groundStation":"AWARUA","expirationDate":"2023-06-01"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-01"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-01"}]},{"name":"RHCP_Downlink_1","centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-01"},{"groundStation":"SVALSAT","expirationDate":"2023-06-01"},{"groundStation":"AWARUA","expirationDate":"2023-06-01"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-01"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-01"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/SNPP","name":"SNPP","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"37849","titleLine":"SUOMI
+        NPP","tleLine1":"1 37849U 11061A   21266.43136872  .00000010  00000-0  25674-4
+        0  9990","tleLine2":"2 37849  98.7417 203.8165 0001364  67.6118  70.3442 14.19543549513304","links":[{"name":null,"centerFrequencyMHz":7812.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2245.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/NOAA20","name":"NOAA20","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"43013","titleLine":"NOAA
+        20","tleLine1":"1 43013U 17073A   21246.06926854  .00000001  00000-0  21293-4
+        0  9996","tleLine2":"2 43013  98.7227 183.5414 0001315  96.1118 264.0208 14.19552568196453","links":[{"name":null,"centerFrequencyMHz":7812.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/CALIPSO","name":"CALIPSO","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"29108","titleLine":"CALIPSO","tleLine1":"1
+        29108U 06016B   21263.54000883  .00000155  00000-0  39967-4 0  9994","tleLine2":"2
+        29108  98.2845 216.5633 0001338  83.4244 276.7110 14.62592603819565","links":[{"name":null,"centerFrequencyMHz":2267.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2267.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/AIM","name":"AIM","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"31304","titleLine":"AIM","tleLine1":"1
+        31304U 07015A   21308.45719065  .00008856  00000-0  47781-3 0  9992","tleLine2":"2
+        31304  97.8574 214.8010 0006687  73.6414 286.5552 15.14988859797106","links":[{"name":null,"centerFrequencyMHz":2267.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2267.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/AQUA_kbr","name":"AQUA_kbr","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   21181.59181219  .00000104  00000-0  33072-4 0  9998","tleLine2":"2
+        27424  98.2099 122.7280 0000494 106.3021  66.6137 14.57117437 18941","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18test/providers/Microsoft.Orbital/spacecrafts/AQUA_testforpostman","name":"AQUA_testforpostman","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21259.45143715  .00000131  00000-0  39210-4 0  9998","tleLine2":"2
+        27424  98.2138 199.4906 0001886  51.3958  60.0011 14.57112434 30322","links":[{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/_GOES15","name":"_GOES15","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZBbb4IwFMe%2fCxl7Q7CAIIlZEDQxc7ohuz2WWl2jUNLWy2bcZ99h4iU%2beNKH3zn%2fc%2bvZaQXdqiErFlILdtp7b5K%2bTpAWaF9KlTIwzRwXeE5zWqgG%2flkJ2iA8DxzHNuUqk0SwUjFeSNNx202f%2bLaBEcKGQ72p4VuoZRBCiZNlLdv122Yp%2bJpNqZDmEyOCSz5TjbHImMJLU5YYUgWeKfmAS2asIQ06d5CFkGHZhtW8v5MLVqZ8QYuO7nV1hEaw%2bjMWilU7PNJvCOl2WKyWSx1FtZ7wzUmpdCh0K01VfQ4INTWgbjKIwf0lI%2f4ZjoYf5XpLw01Ym26DGOvITlJIsgHSJKrIAhxM3gBRRb0xUMt13SZ4L1EfPP84ITqAwMWcnscft8rZ9U7I69%2b0q7453p67%2fn8U3Szv9%2bt0L9bhwYFOl0txtqQjnNMqennWFIs5VUNOcHX3C9WLtf3%2bDw%3d%3d"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '8734'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZBbb4IwFMe%2FCxl7Q7CAIIlZEDQxc7ohuz2WWl2jUNLWy2bcZ99h4iU%2BeNKH3zn%2Fc%2BvZaQXdqiErFlILdtp7b5K%2BTpAWaF9KlTIwzRwXeE5zWqgG%2FlkJ2iA8DxzHNuUqk0SwUjFeSNNx202f%2BLaBEcKGQ72p4VuoZRBCiZNlLdv122Yp%2BJpNqZDmEyOCSz5TjbHImMJLU5YYUgWeKfmAS2asIQ06d5CFkGHZhtW8v5MLVqZ8QYuO7nV1hEaw%2BjMWilU7PNJvCOl2WKyWSx1FtZ7wzUmpdCh0K01VfQ4INTWgbjKIwf0lI%2F4ZjoYf5XpLw01Ym26DGOvITlJIsgHSJKrIAhxM3gBRRb0xUMt13SZ4L1EfPP84ITqAwMWcnscft8rZ9U7I69%2B0q7453p67%2Fn8U3Szv9%2Bt0L9bhwYFOl0txtqQjnNMqennWFIs5VUNOcHX3C9WLtf3%2BDw%3D%3D
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/GOES15","name":"GOES15","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/csmrg5847/providers/Microsoft.Orbital/spacecrafts/azsmnet2608","name":"azsmnet2608","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"25544","titleLine":"ISS","tleLine1":"1
+        25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927","tleLine2":"2
+        25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537","links":[{"name":null,"centerFrequencyMHz":45.0,"bandwidthMHz":45.0,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":55.0,"bandwidthMHz":55.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/csmrg3945/providers/Microsoft.Orbital/spacecrafts/azsmnet112","name":"azsmnet112","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"25544","titleLine":"ISS","tleLine1":"1
+        25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927","tleLine2":"2
+        25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537","links":[{"name":null,"centerFrequencyMHz":45.0,"bandwidthMHz":45.0,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":55.0,"bandwidthMHz":55.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/csmrg4927/providers/Microsoft.Orbital/spacecrafts/azsmnet9150","name":"azsmnet9150","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"25544","titleLine":"ISS","tleLine1":"1
+        25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927","tleLine2":"2
+        25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537","links":[{"name":null,"centerFrequencyMHz":45.0,"bandwidthMHz":45.0,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":55.0,"bandwidthMHz":55.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/csmrg8057/providers/Microsoft.Orbital/spacecrafts/azsmnet1071","name":"azsmnet1071","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"25544","titleLine":"ISS","tleLine1":"1
+        25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927","tleLine2":"2
+        25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537","links":[{"name":null,"centerFrequencyMHz":45.0,"bandwidthMHz":45.0,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":55.0,"bandwidthMHz":55.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":{"kgf":"fkg"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/devanshu-test/providers/Microsoft.Orbital/spacecrafts/testSatellite","name":"testSatellite","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"23839","titleLine":"INMARSAT
+        3-F5","tleLine1":"1 25153U 98006B   20307.41066869 -.00000276  00000-0  00000+0
+        0  9996","tleLine2":"2 25153   5.1045  69.4753 0005228 155.7065 270.8365  1.00274776
+        83302","links":[{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-inmarsat-4f3-westus-test9","name":"jim-inmarsat-4f3-westus-test9","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"23839","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   22108.53254775  .00000059  00000+0  00000+0
+        0  9997","tleLine2":"2 36411   0.1507 105.2231 0002251 331.8033 192.9543  1.00274166
+        44429","links":[{"name":null,"centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/portal-integration-test/providers/Microsoft.Orbital/spacecrafts/TERRA_TEST","name":"TERRA_TEST","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"25994","titleLine":"TERRA","tleLine1":"1
+        25994U 99068A   22067.46941671  .00000256  00000+0  66653-4 0  9998","tleLine2":"2
+        25994  98.1463 141.6656 0001294  97.9698 351.7991 14.57139117181919","links":[{"name":null,"centerFrequencyMHz":8212.5,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/MSORBITALTESTSAT","name":"MSORBITALTESTSAT","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"99994","titleLine":"MSORBITALTESTSAT","tleLine1":"1
+        99994U 02022A   21312.45991296  .00000324  00000-0  81975-4 0  9993","tleLine2":"2
+        99994  98.2214 244.8835 0000812 112.9657 357.1615 14.57098207 37027","links":[{"name":"RHCP_Uplink_0","centerFrequencyMHz":2106.4063,"bandwidthMHz":0.036,"direction":"Uplink","polarization":"RHCP","authorizations":[]},{"name":"RHCP_Downlink_1","centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgp/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21259.45143715  .00000131  00000-0  39210-4 0  9998","tleLine2":"2
+        27424  98.2138 199.4906 0001886  51.3958  60.0011 14.57112434 30322","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-13"},{"groundStation":"SVALSAT","expirationDate":"2023-06-13"},{"groundStation":"AWARUA","expirationDate":"2023-06-13"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-13"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-13"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-13"}]},{"name":"RHCP_Downlink_1","centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-13"},{"groundStation":"SVALSAT","expirationDate":"2023-06-13"},{"groundStation":"AWARUA","expirationDate":"2023-06-13"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-13"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-13"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-13"}]}]}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZBbb4IwFMe%2fCxl7Q7CAoIlZFDUxc7ghuz2WWl0jtKStTmfcZ99hXuODJ334nfM%2ft56twelajxhfKKO1Nd77k%2fR1goyW8aV1qVq2XWCO57SgXNfwz1LSGhFFy%2fNcWy0zRSQrNRNc2Z7frIckdC2MELY8Gkyt0EENixBKvCxruH7YtEspVmxKpbKfGJFCiZmujWXGNM5tVWJIlXim1QMumbWCNOjcRg5CluNaTv3%2bTi1YmYoF5W0z6JoIxbD6M5aaVTs80g2ETLfDl3luouigJ%2bL7pFQ6FPqVpqs%2be4SaA6BuMuyB%2b0ti8dmJRx%2flalO3OkczXRB7JnKTFJI8gDSJKnIAh5M3QFRRfwzU8H2%2fDt5LNAAvPE6I9iAxn9Pz%2bONWBbveCQWDm3bVt8Drc9f%2fj6Kb5YPBIT3omfDgQKfLpTjLaYwLWkUvz5piOad6JAiu7n6hBj1jt%2fsD"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '8841'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZBbb4IwFMe%2FCxl7Q7CAoIlZFDUxc7ghuz2WWl0jtKStTmfcZ99hXuODJ334nfM%2Ft56twelajxhfKKO1Nd77k%2FR1goyW8aV1qVq2XWCO57SgXNfwz1LSGhFFy%2FNcWy0zRSQrNRNc2Z7frIckdC2MELY8Gkyt0EENixBKvCxruH7YtEspVmxKpbKfGJFCiZmujWXGNM5tVWJIlXim1QMumbWCNOjcRg5CluNaTv3%2BTi1YmYoF5W0z6JoIxbD6M5aaVTs80g2ETLfDl3luouigJ%2BL7pFQ6FPqVpqs%2Be4SaA6BuMuyB%2B0ti8dmJRx%2FlalO3OkczXRB7JnKTFJI8gDSJKnIAh5M3QFRRfwzU8H2%2FDt5LNAAvPE6I9iAxn9Pz%2BONWBbveCQWDm3bVt8Drc9f%2Fj6Kb5YPBIT3omfDgQKfLpTjLaYwLWkUvz5piOad6JAiu7n6hBj1jt%2FsD
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Orbital-mikailasmith/providers/Microsoft.Orbital/spacecrafts/Spacecraft-tel","name":"Spacecraft-tel","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"Spacecraft-mik","tleLine1":"1
+        36411U 10008A   21243.68348880  .00000053  00000-0  00000-0 0  9999","tleLine2":"2
+        36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367 42128","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/GOES14","name":"GOES14","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"35491","titleLine":"GOES14","tleLine1":"1
+        35491U 09033A   21333.62109227 -.00000075  00000+0  00000+0 0  9999","tleLine2":"2
+        35491   0.1991 286.1984 0015604 296.2600 325.5819  1.00270640 45465","links":[{"name":null,"centerFrequencyMHz":2025.5,"bandwidthMHz":1.0,"direction":"Uplink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-aqua","name":"jim-aqua","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21347.41709747  .00000140  00000+0  41085-4 0  9997","tleLine2":"2
+        27424  98.2287 286.3152 0001841  84.3028  24.9995 14.57091933 43099","links":[{"name":null,"centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/fai-test-rg/providers/Microsoft.Orbital/spacecrafts/fai-test-AQUA","name":"fai-test-AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"title","tleLine1":"1
+        27424U 02022A   21349.47829292  .00000145  00000-0  42381-4 0  9999","tleLine2":"2
+        27424  98.2290 288.3514 0001840  81.8960  33.0821 14.57092765 43434","links":[{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":0.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2010.0,"bandwidthMHz":1.0,"direction":"Uplink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":5000.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/junieto-test/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21259.45143715  .00000131  00000-0  39210-4 0  9998","tleLine2":"2
+        27424  98.2138 199.4906 0001886  51.3958  60.0011 14.57112434 30322","links":[{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-aqua-rhcp-westus2","name":"jim-aqua-rhcp-westus2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22026.43464250  .00000257  00000+0  67207-4 0  9994","tleLine2":"2
+        27424  98.2339 329.8118 0001027  50.0758  60.5538 14.57122062 49541","links":[{"name":null,"centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-westus2","name":"jim-goes15-rhcp-westus2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":null,"centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/AQUA_kbr2","name":"AQUA_kbr2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"20220121","tleLine1":"1
+        27424U 02022A   22021.42160056  .00000306  00000-0  77952-4 0  9999","tleLine2":"2
+        27424  98.2335 324.8568 0001209  50.8066  58.7844 14.57118749 48773","links":[{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA1","name":"AQUA1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22110.88288741  .00000640  00000+0  15175-3 0  9998","tleLine2":"2
+        27424  98.2432  53.3365 0001939  73.8097 332.9534 14.57219527 61841","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-13"},{"groundStation":"SVALSAT","expirationDate":"2023-06-13"},{"groundStation":"AWARUA","expirationDate":"2023-06-13"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-13"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-13"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-13"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/NOAA18_5MHz","name":"NOAA18_5MHz","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"28654","titleLine":"20220216","tleLine1":"1
+        28654U 05018A   22047.44950308  .00000131  00000-0  94980-4 0  9996","tleLine2":"2
+        28654  98.9637 117.9188 0013446 315.8011  44.2085 14.12688733862980","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZDJbsIwEIbfJWp6CwlOQkIkVEECEi2FAul2dIyhFsSObLO0iD57J2UVB0Y%2bfDP%2fbJ6twelG9xifKyPaGu%2ftcfo6RkZkfGldqMi2c8zxjOaU6wr%2bWUpaISKPPM%2b11TJTRLJCM8GV7fn1akhC18IIYcujwcQKHVSzCKHEy7Ka64d1u5BixSZUKvuZESmUmOrKQGZM44WtCgypEk%2b1esAFs1aQBp0byEHIclzLqd7fqTkrUjGnvGEGLROhPqz%2bgqVm5Q5P9BtCptvky8XCRPFBH4n1SSl1KPRLTZd99gg1B0CtUTcB95f0xWez3%2fsoVutHPmzubWi6ICYmckcpJPkA6SguyQHsjt8AUUntAVDN9%2f0qeMO4A154nBDvQWI%2bo%2bfxx61ydr0TCjo37apvjjfnrv8fRTfLO51DepCY8OBAp8ulOFvQPs5pGb08a4rljOqeILi8%2b4UaJMZu9wc%3d"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7792'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZDJbsIwEIbfJWp6CwlOQkIkVEECEi2FAul2dIyhFsSObLO0iD57J2UVB0Y%2BfDP%2FbJ6twelG9xifKyPaGu%2Ftcfo6RkZkfGldqMi2c8zxjOaU6wr%2BWUpaISKPPM%2B11TJTRLJCM8GV7fn1akhC18IIYcujwcQKHVSzCKHEy7Ka64d1u5BixSZUKvuZESmUmOrKQGZM44WtCgypEk%2B1esAFs1aQBp0byEHIclzLqd7fqTkrUjGnvGEGLROhPqz%2BgqVm5Q5P9BtCptvky8XCRPFBH4n1SSl1KPRLTZd99gg1B0CtUTcB95f0xWez3%2FsoVutHPmzubWi6ICYmckcpJPkA6SguyQHsjt8AUUntAVDN9%2F0qeMO4A154nBDvQWI%2Bo%2Bfxx61ydr0TCjo37apvjjfnrv8fRTfLO51DepCY8OBAp8ulOFvQPs5pGb08a4rljOqeILi8%2B4UaJMZu9wc%3D
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/GOES14_5MHz","name":"GOES14_5MHz","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"35491","titleLine":"GOES14","tleLine1":"1
+        35491U 09033A   21333.62109227 -.00000075  00000+0  00000+0 0  9999","tleLine2":"2
+        35491   0.1991 286.1984 0015604 296.2600 325.5819  1.00270640 45465","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/GOES15-1","name":"GOES15-1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-13"},{"groundStation":"SVALSAT","expirationDate":"2023-06-13"},{"groundStation":"AWARUA","expirationDate":"2023-06-13"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-13"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-13"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-13"}]},{"name":"LHCP_Downlink_1","centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-13"},{"groundStation":"SVALSAT","expirationDate":"2023-06-13"},{"groundStation":"AWARUA","expirationDate":"2023-06-13"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-13"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-13"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-13"}]},{"name":"RHCP_Downlink_2","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-13"},{"groundStation":"SVALSAT","expirationDate":"2023-06-13"},{"groundStation":"AWARUA","expirationDate":"2023-06-13"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-13"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-13"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-13"}]},{"name":"LHCP_Downlink_3","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-13"},{"groundStation":"SVALSAT","expirationDate":"2023-06-13"},{"groundStation":"AWARUA","expirationDate":"2023-06-13"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-13"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-13"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-13"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/GOES15-3","name":"GOES15-3","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":null,"centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/GOES15-duplex","name":"GOES15-duplex","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2025.5,"bandwidthMHz":1.0,"direction":"Uplink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/NOAA18_5MHzDown_1MHzUp","name":"NOAA18_5MHzDown_1MHzUp","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"28654","titleLine":"20220406","tleLine1":"1
+        28654U 05018A   22096.46103111  .00000220  00000-0  14290-3 0  9998","tleLine2":"2
+        28654  98.9542 166.9402 0014620 171.1723 188.9709 14.12708784869903","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2026.0,"bandwidthMHz":1.0,"direction":"Uplink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/GOES14_5MHzDown_1MHzUp","name":"GOES14_5MHzDown_1MHzUp","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"28654","titleLine":"GOES14","tleLine1":"1
+        35491U 09033A   21333.62109227 -.00000075  00000+0  00000+0 0  9999","tleLine2":"2
+        35491   0.1991 286.1984 0015604 296.2600 325.5819  1.00270640 45465","links":[{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2026.0,"bandwidthMHz":1.0,"direction":"Uplink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/mablonde-rg/providers/Microsoft.Orbital/spacecrafts/GOES-14-100MHz","name":"GOES-14-100MHz","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"35491","titleLine":"20220223","tleLine1":"1
+        35491U 09033A   22054.62793380 -.00000093  00000-0  00000-0 0  9991","tleLine2":"2
+        35491   0.0454  71.0410 0012714 156.0454  47.9416  1.00270796 46328","links":[{"name":null,"centerFrequencyMHz":8200.0,"bandwidthMHz":100.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azeez-test-rg/providers/Microsoft.Orbital/spacecrafts/azeez-testcraft-AIM1","name":"azeez-testcraft-AIM1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"31304","titleLine":"AIM","tleLine1":"1
+        31304U 07015A   22067.19981933  .00006266  00000+0  33027-3 0  9991","tleLine2":"2
+        31304  97.8576 342.7586 0005599  23.2774 336.8710 15.15953884815846","links":[{"name":null,"centerFrequencyMHz":2267.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2267.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"LHCP","authorizations":null}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/prerit-testrg/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22067.83165161  .00000526  00000+0  12665-3 0  9998","tleLine2":"2
+        27424  98.2381  10.7421 0001228 108.1128 310.7313 14.57159540 55538","links":[{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/NOAA18Test/providers/Microsoft.Orbital/spacecrafts/uplink-testsat","name":"uplink-testsat","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"35491","titleLine":"20220310","tleLine1":"1
+        35491U 09033A   22069.52536248 -.00000094  00000-0  00000-0 0  9995","tleLine2":"2
+        35491   0.0822  83.7520 0012563 143.6944  25.3286  1.00272435 46470","links":[{"name":null,"centerFrequencyMHz":437.0,"bandwidthMHz":0.01,"direction":"Downlink","polarization":"linearVertical","authorizations":null}]}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fVDJbsIwEP2XqOktJDgJCUioggRUWgoF0u3oGEMtSBzZZimIfnvH7OqBkQ9v5r1Z%2fLZGTteqy%2fKZNGpb46M1St5GyKgZ30oVsmbbGc7xlGY0VyW8WQhaIjyreZ5ry0UqiWCFYjyXtudXyyEJXQsjhC2PBmMrdFDFIoQSL00rrh9W7ULwJRtTIe0XRgSXfKJKfZEyhee2LDBIBZ4o%2bYALZi1BBpPryEHIclzLKd%2ffyRkrEj6jed0MmiZCPTj9FQvF9A3P9AdKptvIF%2fO5iaIjP%2bSrM6N5aPQ1p%2fScA4SeI0DNYSeG9Jf0%2bFej1%2f0slpvHp1WrsY%2bB6QIZm8gdJiCqAEiGkUYOwM7oHSDSqNXXRd%2f3y5ANojZk4WlDdAAC51N6WX%2b6KmP%2fb0JB%2b2b8m5vh9WXq%2fqPoZnu7fZQHsQkPDDo7l%2bB0Tns4o7p6bWuCxZSqLidY%2b37FBrGx2%2f0B"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '10247'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fVDJbsIwEP2XqOktJDgJCUioggRUWgoF0u3oGEMtSBzZZimIfnvH7OqBkQ9v5r1Z%2FLZGTteqy%2FKZNGpb46M1St5GyKgZ30oVsmbbGc7xlGY0VyW8WQhaIjyreZ5ry0UqiWCFYjyXtudXyyEJXQsjhC2PBmMrdFDFIoQSL00rrh9W7ULwJRtTIe0XRgSXfKJKfZEyhee2LDBIBZ4o%2BYALZi1BBpPryEHIclzLKd%2FfyRkrEj6jed0MmiZCPTj9FQvF9A3P9AdKptvIF%2FO5iaIjP%2BSrM6N5aPQ1p%2FScA4SeI0DNYSeG9Jf0%2BFej1%2F0slpvHp1WrsY%2BB6QIZm8gdJiCqAEiGkUYOwM7oHSDSqNXXRd%2F3y5ANojZk4WlDdAAC51N6WX%2B6KmP%2Fb0JB%2B2b8m5vh9WXq%2FqPoZnu7fZQHsQkPDDo7l%2BB0Tns4o7p6bWuCxZSqLidY%2B37FBrGx2%2F0B
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/jamatest/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   22024.44307998  .00000249  00000+0  65335-4 0  9999","tleLine2":"2
+        27424  98.2338 327.8433 0001115  50.4090  59.3806 14.57120646 49257","links":[{"name":null,"centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2247.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/hrishitest/providers/Microsoft.Orbital/spacecrafts/Rainbow-loopSC","name":"Rainbow-loopSC","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"12345","titleLine":"initial","tleLine1":"1
+        35491U 09033A   22096.62838286 -.00000094  00000-0  00000-0 0  9993","tleLine2":"2
+        35491   0.1499  90.2073 0011751 133.7617  92.6378  1.00272553 46742","links":[{"name":null,"centerFrequencyMHz":2250.0,"bandwidthMHz":10.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2050.0,"bandwidthMHz":10.0,"direction":"Uplink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital-sample-customer/providers/Microsoft.Orbital/spacecrafts/GOES15-1","name":"GOES15-1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azeez-test-rg/providers/Microsoft.Orbital/spacecrafts/azeez-test-sp100","name":"azeez-test-sp100","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"25544","titleLine":"ISS
+        [ZARYA]* - 2020_&_2021","tleLine1":"1 25544U 98067A   22166.98291539  .00007389  00000-0  13721-3
+        0  9997","tleLine2":"2 25544  51.6447 342.5501 0004194 242.9750 255.0959 15.50021518344998","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":4422.0,"bandwidthMHz":4422.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-16"},{"groundStation":"SVALSAT","expirationDate":"2023-06-16"},{"groundStation":"AWARUA","expirationDate":"2023-06-16"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-16"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-16"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-16"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/manju-test/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21259.45143715  .00000131  00000-0  39210-4 0  9998","tleLine2":"2
+        27424  98.2138 199.4906 0001886  51.3958  60.0011 14.57112434 30322","links":[{"name":null,"centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":null},{"name":null,"centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":null}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azeez-test-rg/providers/Microsoft.Orbital/spacecrafts/azeez-test-sc101","name":"azeez-test-sc101","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"25544","titleLine":"ISS
+        (ZARYA) TEST* [2021_&_2022]","tleLine1":"1 25544U 98067A   22166.98291539  .00007389  00000-0  13721-3
+        0  9997","tleLine2":"2 25544  51.6447 342.5501 0004194 242.9750 255.0959 15.50021518344998","links":[{"name":"GANG*1","centerFrequencyMHz":4422.0,"bandwidthMHz":4422.0,"direction":"Uplink","polarization":"RHCP","authorizations":[]},{"name":"GANG*2","centerFrequencyMHz":2244.0,"bandwidthMHz":2244.0,"direction":"Downlink","polarization":"linearVertical","authorizations":[]},{"name":"XBOX","centerFrequencyMHz":2000.0,"bandwidthMHz":2000.0,"direction":"Downlink","polarization":"linearVertical","authorizations":[]},{"name":"XBOX
+        360","centerFrequencyMHz":3000.0,"bandwidthMHz":3000.0,"direction":"Downlink","polarization":"LHCP","authorizations":[]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-goes15-rhcp-eastus-13","name":"jim-goes15-rhcp-eastus-13","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":1200.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-05-12"},{"groundStation":"SVALSAT","expirationDate":"2023-05-12"},{"groundStation":"AWARUA","expirationDate":"2023-05-12"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-05-12"},{"groundStation":"LONG_BEACH","expirationDate":"2023-05-12"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-eastus-e2e/providers/Microsoft.Orbital/spacecrafts/GOES15-1","name":"GOES15-1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        36411U 10008A   21243.68348880  .00000053  00000-0  00000-0 0  9999","tleLine2":"2
+        36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367 42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-05-19"},{"groundStation":"SVALSAT","expirationDate":"2023-05-19"},{"groundStation":"AWARUA","expirationDate":"2023-05-19"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-05-19"},{"groundStation":"LONG_BEACH","expirationDate":"2023-05-19"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-eastus-e2e/providers/Microsoft.Orbital/spacecrafts/GOES15-1-real","name":"GOES15-1-real","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   22139.12846065  .00001093  00000+0  25178-3 0  9992","tleLine2":"2
+        27424  98.2460  81.3002 0001349  59.5439 117.9890 14.57265691 65952","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8125.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-05-19"},{"groundStation":"SVALSAT","expirationDate":"2023-05-19"},{"groundStation":"AWARUA","expirationDate":"2023-05-19"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-05-19"},{"groundStation":"LONG_BEACH","expirationDate":"2023-05-19"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-eastus-e2e/providers/Microsoft.Orbital/spacecrafts/GOES15-1-w","name":"GOES15-1-w","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        36411U 10008A   21243.68348880  .00000053  00000-0  00000-0 0  9999","tleLine2":"2
+        36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367 42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-05-26"},{"groundStation":"SVALSAT","expirationDate":"2023-05-26"},{"groundStation":"AWARUA","expirationDate":"2023-05-26"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-05-26"},{"groundStation":"LONG_BEACH","expirationDate":"2023-05-26"}]}]}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZBbb4IwFMe%2fCxl7Q7CAoIlZUCQx8zKRXXwstbpGoaStzmncZ9%2fBe3zwpA%2b%2fc%2f7n1rPTcrpRPZYvpNbYaZ%2bdcfI%2bRlpD%2b1aqkA3TzHCO5zSjuarg7UrQCuFZw3FsU65SSQQrFOO5NB23XvWJbxsYIWw41JsavoVqBiGUOGlas12%2fbhaCr9mUCmn2GRFc8pmqDEXKFF6assCQKvBMyRdcMGMNadC5iSyEDMs2rOrzk1ywIuELmjd1r6UjNIDV37BQrNzhlf5CSLeDfLVc6qh90mP%2bc1FKHQrdUlNlnyNCzQlQK%2b6G4P6RAZ8Eg95Xsd5mk6AfHGyk2yCGOrLjBJI8gCRul2QBdscfgKikzhCo5rpuFbxROwLPP09oH0HgfE6v489bZex%2bJ%2bRFD%2b2ub4Y3166Hj6KH5VF0SvdCHR4c6HK5BKdLOsAZLaO3Z02wmFPV4wSXd79RvVDb7%2f8B"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9430'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZBbb4IwFMe%2FCxl7Q7CAoIlZUCQx8zKRXXwstbpGoaStzmncZ9%2FBe3zwpA%2B%2Fc%2F7n1rPTcrpRPZYvpNbYaZ%2BdcfI%2BRlpD%2B1aqkA3TzHCO5zSjuarg7UrQCuFZw3FsU65SSQQrFOO5NB23XvWJbxsYIWw41JsavoVqBiGUOGlas12%2FbhaCr9mUCmn2GRFc8pmqDEXKFF6assCQKvBMyRdcMGMNadC5iSyEDMs2rOrzk1ywIuELmjd1r6UjNIDV37BQrNzhlf5CSLeDfLVc6qh90mP%2Bc1FKHQrdUlNlnyNCzQlQK%2B6G4P6RAZ8Eg95Xsd5mk6AfHGyk2yCGOrLjBJI8gCRul2QBdscfgKikzhCo5rpuFbxROwLPP09oH0HgfE6v489bZex%2BJ%2BRFD%2B2ub4Y3166Hj6KH5VF0SvdCHR4c6HK5BKdLOsAZLaO3Z02wmFPV4wSXd79RvVDb7%2F8B
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-eastus-e2e/providers/Microsoft.Orbital/spacecrafts/GOES15-1-realw","name":"GOES15-1-realw","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   22139.12846065  .00001093  00000+0  25178-3 0  9992","tleLine2":"2
+        27424  98.2460  81.3002 0001349  59.5439 117.9890 14.57265691 65952","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-05-20"},{"groundStation":"SVALSAT","expirationDate":"2023-05-20"},{"groundStation":"AWARUA","expirationDate":"2023-05-20"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-05-20"},{"groundStation":"LONG_BEACH","expirationDate":"2023-05-20"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-ascii-demo/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   22139.12846065  .00001093  00000+0  25178-3 0  9992","tleLine2":"2
+        27424  98.2460  81.3002 0001349  59.5439 117.9890 14.57265691 65952","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-08"},{"groundStation":"SVALSAT","expirationDate":"2023-07-08"},{"groundStation":"AWARUA","expirationDate":"2023-07-08"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-08"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-08"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-08"},{"groundStation":"ATHENS","expirationDate":"2023-07-08"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-west-central-test/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   22139.12846065  .00001093  00000+0  25178-3 0  9992","tleLine2":"2
+        27424  98.2460  81.3002 0001349  59.5439 117.9890 14.57265691 65952","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-05-26"},{"groundStation":"SVALSAT","expirationDate":"2023-05-26"},{"groundStation":"AWARUA","expirationDate":"2023-05-26"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-05-26"},{"groundStation":"LONG_BEACH","expirationDate":"2023-05-26"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-ascii-demo/providers/Microsoft.Orbital/spacecrafts/GOES15-1","name":"GOES15-1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        36411U 10008A   21243.68348880  .00000053  00000-0  00000-0 0  9999","tleLine2":"2
+        36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367 42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-05-27"},{"groundStation":"SVALSAT","expirationDate":"2023-05-27"},{"groundStation":"AWARUA","expirationDate":"2023-05-27"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-05-27"},{"groundStation":"LONG_BEACH","expirationDate":"2023-05-27"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital-sample-customer/providers/Microsoft.Orbital/spacecrafts/AQUA-hamide","name":"AQUA-hamide","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        27424U 02022A   22167.05119303  .00000638  00000+0  15103-3 0  9994","tleLine2":"2
+        27424  98.2477 108.9546 0000928  92.9194 327.0802 14.57300770 69982","links":[{"name":"LHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":50.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-15"},{"groundStation":"SVALSAT","expirationDate":"2023-06-15"},{"groundStation":"AWARUA","expirationDate":"2023-06-15"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-15"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-15"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-15"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-ascii-demo/providers/Microsoft.Orbital/spacecrafts/GOES15-1-uhf","name":"GOES15-1-uhf","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        36411U 10008A   21243.68348880  .00000053  00000-0  00000-0 0  9999","tleLine2":"2
+        36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367 42128","links":[{"name":"LinearVertical_Downlink_0","centerFrequencyMHz":401.7,"bandwidthMHz":1.0,"direction":"Downlink","polarization":"linearVertical","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-17"},{"groundStation":"SVALSAT","expirationDate":"2023-06-17"},{"groundStation":"AWARUA","expirationDate":"2023-06-17"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-17"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-17"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-17"}]}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/hrishitest/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA
+        20220628","tleLine1":"1 27424U 02022A   22179.49278524  .00000300  00000-0  76496-4
+        0  9996","tleLine2":"2 27424  98.2480 121.2786 0001262 104.2446  29.5850 14.57312895
+        71834","links":[{"name":"Public broadcast","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-28"},{"groundStation":"SVALSAT","expirationDate":"2023-06-28"},{"groundStation":"AWARUA","expirationDate":"2023-06-28"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-28"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-28"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-28"}]}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/jimtest/providers/Microsoft.Orbital/spacecrafts/AQUA-jimrepro","name":"AQUA-jimrepro","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22179.14822267  .00000301  00000+0  76527-4 0  9992","tleLine2":"2
+        27424  98.2480 120.9372 0001253 104.2472  22.9627 14.57312606 71783","links":[{"name":"X-Band","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-28"},{"groundStation":"SVALSAT","expirationDate":"2023-06-28"},{"groundStation":"AWARUA","expirationDate":"2023-06-28"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-28"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-28"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-28"}]}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-aqua-repro2","name":"jim-aqua-repro2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22179.14822267  .00000301  00000+0  76527-4 0  9992","tleLine2":"2
+        27424  98.2480 120.9372 0001253 104.2472  22.9627 14.57312606 71783","links":[{"name":"X-Band","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-28"},{"groundStation":"SVALSAT","expirationDate":"2023-06-28"},{"groundStation":"AWARUA","expirationDate":"2023-06-28"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-28"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-28"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-28"}]}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/jimtest/providers/Microsoft.Orbital/spacecrafts/jim-repro-aqua-3","name":"jim-repro-aqua-3","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22179.14822267  .00000301  00000+0  76527-4 0  9992","tleLine2":"2
+        27424  98.2480 120.9372 0001253 104.2472  22.9627 14.57312606 71783","links":[{"name":"X-Band","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-28"},{"groundStation":"SVALSAT","expirationDate":"2023-06-28"},{"groundStation":"AWARUA","expirationDate":"2023-06-28"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-28"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-28"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-28"}]}]}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZBdb4IwFIb%2fCxm7Q7CAoIlZVCQxczoV93FZanWNQklbPzbjfvtOGX5kF2t68bTve855c45GTg9qyPK1NFpH47U%2fS%2bYzZLSMD6UK2bLtDOd4RTOaqxr%2b2gpaIzxreZ5ry20qiWCFYjyXtuc36yEJXQsjhC2PBgsrdFDDIoQSL00brh827ULwHVtQIe0nRgSXfKlqY5EyhTe2LDBYBV4q%2bYALZu3ABp3byEHIclzLqd%2ffyTUrEr6medsMuiZCI4j%2bjIViOsMj%2fYQv0%2b3k283GRL1Kn%2fL9RdE6FPpaU7rPL0JNBag7HUTw%2fCYj%2ft4ZDd%2bK3Z529%2fNOeSamC2JkIneagCkESKY9TQ7gYPYCiDT1x0AN3%2ffr8Jr04tJcTtW5ShA4X9Hr%2bHOqjP3NhIL433NOXvXN8OHatZyE%2fi2P48oeRCZcWNBlcwlON3SEM6p%2fb9eaYLGiasgJ1nu%2fUYPIOJ1%2bAA%3d%3d"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '10541'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZBdb4IwFIb%2FCxm7Q7CAoIlZVCQxczoV93FZanWNQklbPzbjfvtOGX5kF2t68bTve855c45GTg9qyPK1NFpH47U%2FS%2BYzZLSMD6UK2bLtDOd4RTOaqxr%2B2gpaIzxreZ5ry20qiWCFYjyXtuc36yEJXQsjhC2PBgsrdFDDIoQSL00brh827ULwHVtQIe0nRgSXfKlqY5EyhTe2LDBYBV4q%2BYALZu3ABp3byEHIclzLqd%2FfyTUrEr6medsMuiZCI4j%2BjIViOsMj%2FYQv0%2B3k283GRL1Kn%2FL9RdE6FPpaU7rPL0JNBag7HUTw%2FCYj%2Ft4ZDd%2BK3Z529%2FNOeSamC2JkIneagCkESKY9TQ7gYPYCiDT1x0AN3%2Ffr8Jr04tJcTtW5ShA4X9Hr%2BHOqjP3NhIL433NOXvXN8OHatZyE%2Fi2P48oeRCZcWNBlcwlON3SEM6p%2Fb9eaYLGiasgJ1nu%2FUYPIOJ1%2BAA%3D%3D
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp1/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21259.45143715  .00000131  00000-0  39210-4 0  9998","tleLine2":"2
+        27424  98.2138 199.4906 0001886  51.3958  60.0011 14.57112434 30322","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-30"},{"groundStation":"SVALSAT","expirationDate":"2023-06-30"},{"groundStation":"AWARUA","expirationDate":"2023-06-30"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-30"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-30"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-30"}]},{"name":"RHCP_Downlink_1","centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-06-30"},{"groundStation":"SVALSAT","expirationDate":"2023-06-30"},{"groundStation":"AWARUA","expirationDate":"2023-06-30"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-06-30"},{"groundStation":"LONG_BEACH","expirationDate":"2023-06-30"},{"groundStation":"WESTUS2_1","expirationDate":"2023-06-30"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp1/providers/Microsoft.Orbital/spacecrafts/GOES15-1","name":"GOES15-1","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-01"},{"groundStation":"SVALSAT","expirationDate":"2023-07-01"},{"groundStation":"AWARUA","expirationDate":"2023-07-01"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-01"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-01"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-01"}]},{"name":"LHCP_Downlink_1","centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-01"},{"groundStation":"SVALSAT","expirationDate":"2023-07-01"},{"groundStation":"AWARUA","expirationDate":"2023-07-01"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-01"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-01"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-01"}]},{"name":"RHCP_Downlink_2","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-01"},{"groundStation":"SVALSAT","expirationDate":"2023-07-01"},{"groundStation":"AWARUA","expirationDate":"2023-07-01"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-01"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-01"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-01"}]},{"name":"LHCP_Downlink_3","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-01"},{"groundStation":"SVALSAT","expirationDate":"2023-07-01"},{"groundStation":"AWARUA","expirationDate":"2023-07-01"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-01"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-01"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-01"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital-sample-customer/providers/Microsoft.Orbital/spacecrafts/CONTOSO_SAT","name":"CONTOSO_SAT","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"33278","titleLine":"GOES-15","tleLine1":"1
+        36411U 10008A   21243.68348880  .00000053  00000-0  00000-0 0  9999","tleLine2":"2
+        36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367 42128","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-01"},{"groundStation":"SVALSAT","expirationDate":"2023-07-01"},{"groundStation":"AWARUA","expirationDate":"2023-07-01"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-01"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-01"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-01"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fai-test-rg/providers/Microsoft.Orbital/spacecrafts/GOES-15","name":"GOES-15","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"33278","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"downlink_rhcp","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-01"},{"groundStation":"SVALSAT","expirationDate":"2023-07-01"},{"groundStation":"AWARUA","expirationDate":"2023-07-01"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-01"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-01"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-01"}]},{"name":"downlink_lhcp","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-01"},{"groundStation":"SVALSAT","expirationDate":"2023-07-01"},{"groundStation":"AWARUA","expirationDate":"2023-07-01"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-01"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-01"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-01"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/mablonde-loft/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"(AQUA)","tleLine1":"1
+        37836U 11057A   21327.32904439  .00000121  00000-0  00000-0 0  9994","tleLine2":"2
+        37836   0.0689  10.2182 0005074 237.8545 308.9131  1.00270969 29253","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-05"},{"groundStation":"SVALSAT","expirationDate":"2023-07-05"},{"groundStation":"AWARUA","expirationDate":"2023-07-05"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-05"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-05"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-05"}]}]}},{"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Rgp/providers/Microsoft.Orbital/spacecrafts/AQUA3","name":"AQUA3","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22187.11161535  .00000299  00000+0  76112-4 0  9998","tleLine2":"2
+        27424  98.2480 128.8258 0001495 103.3343  17.8132 14.57318050 72940","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-15"},{"groundStation":"SVALSAT","expirationDate":"2023-07-15"},{"groundStation":"AWARUA","expirationDate":"2023-07-15"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-15"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-15"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-15"},{"groundStation":"ATHENS","expirationDate":"2023-07-15"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Rgp/providers/Microsoft.Orbital/spacecrafts/GOES15-duplex3","name":"GOES15-duplex3","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-15"},{"groundStation":"SVALSAT","expirationDate":"2023-07-15"},{"groundStation":"AWARUA","expirationDate":"2023-07-15"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-15"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-15"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-15"},{"groundStation":"ATHENS","expirationDate":"2023-07-15"}]},{"name":"LHCP_Downlink_1","centerFrequencyMHz":2247.5,"bandwidthMHz":5.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-15"},{"groundStation":"SVALSAT","expirationDate":"2023-07-15"},{"groundStation":"AWARUA","expirationDate":"2023-07-15"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-15"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-15"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-15"},{"groundStation":"ATHENS","expirationDate":"2023-07-15"}]},{"name":"RHCP_Downlink_2","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-15"},{"groundStation":"SVALSAT","expirationDate":"2023-07-15"},{"groundStation":"AWARUA","expirationDate":"2023-07-15"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-15"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-15"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-15"},{"groundStation":"ATHENS","expirationDate":"2023-07-15"}]},{"name":"LHCP_Downlink_3","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-15"},{"groundStation":"SVALSAT","expirationDate":"2023-07-15"},{"groundStation":"AWARUA","expirationDate":"2023-07-15"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-15"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-15"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-15"},{"groundStation":"ATHENS","expirationDate":"2023-07-15"}]},{"name":"RHCP_Uplink_4","centerFrequencyMHz":2025.5,"bandwidthMHz":1.0,"direction":"Uplink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-15"},{"groundStation":"SVALSAT","expirationDate":"2023-07-15"},{"groundStation":"AWARUA","expirationDate":"2023-07-15"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-15"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-15"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-15"},{"groundStation":"ATHENS","expirationDate":"2023-07-15"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-ascii-demo/providers/Microsoft.Orbital/spacecrafts/AQUA-GEO","name":"AQUA-GEO","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-15"},{"groundStation":"SVALSAT","expirationDate":"2023-07-15"},{"groundStation":"AWARUA","expirationDate":"2023-07-15"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-15"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-15"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-15"},{"groundStation":"ATHENS","expirationDate":"2023-07-15"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mablonde-ascii-demo/providers/Microsoft.Orbital/spacecrafts/AQUA-GEO2","name":"AQUA-GEO2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"RHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-16"},{"groundStation":"SVALSAT","expirationDate":"2023-07-16"},{"groundStation":"AWARUA","expirationDate":"2023-07-16"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-16"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-16"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-16"},{"groundStation":"ATHENS","expirationDate":"2023-07-16"}]},{"name":"LHCP_Downlink_0","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-16"},{"groundStation":"SVALSAT","expirationDate":"2023-07-16"},{"groundStation":"AWARUA","expirationDate":"2023-07-16"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-16"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-16"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-16"},{"groundStation":"ATHENS","expirationDate":"2023-07-16"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fai-test-rg/providers/Microsoft.Orbital/spacecrafts/GOES-15-350MHZ","name":"GOES-15-350MHZ","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"33278","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"downlink_rhcp","centerFrequencyMHz":8160.0,"bandwidthMHz":350.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-16"},{"groundStation":"SVALSAT","expirationDate":"2023-07-16"},{"groundStation":"AWARUA","expirationDate":"2023-07-16"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-16"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-16"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-16"},{"groundStation":"ATHENS","expirationDate":"2023-07-16"}]},{"name":"downlink_lhcp","centerFrequencyMHz":8160.0,"bandwidthMHz":350.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-16"},{"groundStation":"SVALSAT","expirationDate":"2023-07-16"},{"groundStation":"AWARUA","expirationDate":"2023-07-16"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-16"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-16"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-16"},{"groundStation":"ATHENS","expirationDate":"2023-07-16"}]}]}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZDJbsIwEIbfJWp6CwlOQgISqtgioVIoIXQ5OsZQiySObENpEX32jtnFgZEP38w%2fm2drFHSjBqxYSqOxNd57k2Q6QUbD%2bFKqlA3bznGBFzSnharg35WgFcLzhue5tlylkghWKsYLaXt%2bvRqS0LUwQtjyaDCzQgfVLEIo8dK05vph3S4FX7MZFdJ%2bYURwyeeqMhIpUzizZYkhVeC5kk%2b4ZNYa0qBzEzkIWY5rOdXHB7lkZcKXtGiaQdtEaAirv2KhmN7hmf5AyHRbxSrLTNQ56jH%2fPitah0Jfa0r3OSDUHAG1434X3D8y5J%2bt4eCjXH%2fHYWva2tvYdEHsmsiNE0iqAyRxR5MD2J%2b8ASJNvRFQzff9KnjjTgReeJrQOYDAxYJexp%2b2ytntTiiI7tpN3xxvLl33H0V3y6PomB50TXhwoPPlEpxmdIhzqqPXZ02wWFA14ATru1%2bpQdfY7f4B"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '16706'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01&%24skiptoken=fZDJbsIwEIbfJWp6CwlOQgISqtgioVIoIXQ5OsZQiySObENpEX32jtnFgZEP38w%2Fm2drFHSjBqxYSqOxNd57k2Q6QUbD%2BFKqlA3bznGBFzSnharg35WgFcLzhue5tlylkghWKsYLaXt%2BvRqS0LUwQtjyaDCzQgfVLEIo8dK05vph3S4FX7MZFdJ%2BYURwyeeqMhIpUzizZYkhVeC5kk%2B4ZNYa0qBzEzkIWY5rOdXHB7lkZcKXtGiaQdtEaAirv2KhmN7hmf5AyHRbxSrLTNQ56jH%2FPitah0Jfa0r3OSDUHAG1434X3D8y5J%2Bt4eCjXH%2FHYWva2tvYdEHsmsiNE0iqAyRxR5MD2J%2B8ASJNvRFQzff9KnjjTgReeJrQOYDAxYJexp%2B2ytntTiiI7tpN3xxvLl33H0V3y6PomB50TXhwoPPlEpxmdIhzqqPXZ02wWFA14ATru1%2BpQdfY7f4B
+  response:
+    body:
+      string: '{"value":[{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fai-test-rg/providers/Microsoft.Orbital/spacecrafts/AQUA-Prod","name":"AQUA-Prod","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22211.81118208  .00000210  00000+0  56491-4 0  9993","tleLine2":"2
+        27424  98.2484 153.2950 0002007  86.5730 301.6073 14.57342219 76549","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-16"},{"groundStation":"SVALSAT","expirationDate":"2023-07-16"},{"groundStation":"AWARUA","expirationDate":"2023-07-16"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-16"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-16"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-16"},{"groundStation":"ATHENS","expirationDate":"2023-07-16"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fai-test-rg/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   22202.75939897  .00000546  00000+0  13064-3 0  9991","tleLine2":"2
+        27424  98.2482 144.3274 0001880  93.7831 352.9835 14.57335658 75225","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":150.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-07-20"},{"groundStation":"SVALSAT","expirationDate":"2023-07-20"},{"groundStation":"AWARUA","expirationDate":"2023-07-20"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-07-20"},{"groundStation":"LONG_BEACH","expirationDate":"2023-07-20"},{"groundStation":"WESTUS2_1","expirationDate":"2023-07-20"},{"groundStation":"ATHENS","expirationDate":"2023-07-20"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgp/providers/Microsoft.Orbital/spacecrafts/Eutelsat-westus2","name":"Eutelsat-westus2","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"37836U","titleLine":"Eutelsat
+        W3C","tleLine1":"1 37836U 11057A   21327.32904439  .00000121  00000-0  00000-0
+        0  9994","tleLine2":"2 37836   0.0689  10.2182 0005074 237.8545 308.9131  1.00270969
+        29253","links":[{"name":"link0","centerFrequencyMHz":2247.5,"bandwidthMHz":10.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-08-09"},{"groundStation":"SVALSAT","expirationDate":"2023-08-09"},{"groundStation":"AWARUA","expirationDate":"2023-08-09"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-08-09"},{"groundStation":"LONG_BEACH","expirationDate":"2023-08-09"},{"groundStation":"ATHENS","expirationDate":"2023-08-09"},{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"3022-08-10"}]},{"name":"link1","centerFrequencyMHz":2247.5,"bandwidthMHz":10.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-08-09"},{"groundStation":"SVALSAT","expirationDate":"2023-08-09"},{"groundStation":"AWARUA","expirationDate":"2023-08-09"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-08-09"},{"groundStation":"LONG_BEACH","expirationDate":"2023-08-09"},{"groundStation":"ATHENS","expirationDate":"2023-08-09"},{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"3022-08-10"}]},{"name":"link2","centerFrequencyMHz":8200.0,"bandwidthMHz":20.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-08-09"},{"groundStation":"SVALSAT","expirationDate":"2023-08-09"},{"groundStation":"AWARUA","expirationDate":"2023-08-09"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-08-09"},{"groundStation":"LONG_BEACH","expirationDate":"2023-08-09"},{"groundStation":"ATHENS","expirationDate":"2023-08-09"},{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"3022-08-10"}]},{"name":"link3","centerFrequencyMHz":8200.0,"bandwidthMHz":20.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-08-09"},{"groundStation":"SVALSAT","expirationDate":"2023-08-09"},{"groundStation":"AWARUA","expirationDate":"2023-08-09"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-08-09"},{"groundStation":"LONG_BEACH","expirationDate":"2023-08-09"},{"groundStation":"ATHENS","expirationDate":"2023-08-09"},{"groundStation":"MICROSOFT_SWEDEN","expirationDate":"3022-08-10"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fastpace/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21259.45143715  .00000131  00000-0  39210-4 0  9998","tleLine2":"2
+        27424  98.2138 199.4906 0001886  51.3958  60.0011 14.57112434 30322","links":[{"name":"link1","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-08-10"},{"groundStation":"SVALSAT","expirationDate":"2023-08-10"},{"groundStation":"AWARUA","expirationDate":"2023-08-10"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-08-10"},{"groundStation":"LONG_BEACH","expirationDate":"2023-08-10"},{"groundStation":"ATHENS","expirationDate":"2023-08-10"}]},{"name":"link2","centerFrequencyMHz":2287.5,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-08-10"},{"groundStation":"SVALSAT","expirationDate":"2023-08-10"},{"groundStation":"AWARUA","expirationDate":"2023-08-10"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-08-10"},{"groundStation":"LONG_BEACH","expirationDate":"2023-08-10"},{"groundStation":"ATHENS","expirationDate":"2023-08-10"}]}]}},{"location":"westus2","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fastpace/providers/Microsoft.Orbital/spacecrafts/GOES","name":"GOES","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"36411","titleLine":"GOES
+        15","tleLine1":"1 36411U 10008A   21243.68348880  .00000053  00000-0  00000-0
+        0  9999","tleLine2":"2 36411   0.4565 275.4851 0002515 165.8877  16.4988  1.00273367
+        42128","links":[{"name":"link1","centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-08-10"},{"groundStation":"SVALSAT","expirationDate":"2023-08-10"},{"groundStation":"AWARUA","expirationDate":"2023-08-10"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-08-10"},{"groundStation":"LONG_BEACH","expirationDate":"2023-08-10"},{"groundStation":"ATHENS","expirationDate":"2023-08-10"}]},{"name":"link2","centerFrequencyMHz":2250.0,"bandwidthMHz":2.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-08-10"},{"groundStation":"SVALSAT","expirationDate":"2023-08-10"},{"groundStation":"AWARUA","expirationDate":"2023-08-10"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-08-10"},{"groundStation":"LONG_BEACH","expirationDate":"2023-08-10"},{"groundStation":"ATHENS","expirationDate":"2023-08-10"}]},{"name":"link3","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-08-10"},{"groundStation":"SVALSAT","expirationDate":"2023-08-10"},{"groundStation":"AWARUA","expirationDate":"2023-08-10"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-08-10"},{"groundStation":"LONG_BEACH","expirationDate":"2023-08-10"},{"groundStation":"ATHENS","expirationDate":"2023-08-10"}]},{"name":"link4","centerFrequencyMHz":8200.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"LHCP","authorizations":[{"groundStation":"WESTUS2_0","expirationDate":"2023-08-10"},{"groundStation":"SVALSAT","expirationDate":"2023-08-10"},{"groundStation":"AWARUA","expirationDate":"2023-08-10"},{"groundStation":"HARTEBEESTHOEK","expirationDate":"2023-08-10"},{"groundStation":"LONG_BEACH","expirationDate":"2023-08-10"},{"groundStation":"ATHENS","expirationDate":"2023-08-10"}]}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '8696'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts?api-version=2022-03-01
+  response:
+    body:
+      string: '{"nextLink":null,"value":[{"location":"westus","tags":{"tag1":"value1","tag2":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA","name":"AQUA","type":"Microsoft.Orbital/spacecrafts","properties":{"provisioningState":"succeeded","noradId":"27424","titleLine":"AQUA","tleLine1":"1
+        27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992","tleLine2":"2
+        27424  98.2297 293.2348 0001819  76.6594  32.9430 14.57096586 44117","links":[{"name":"downlink","centerFrequencyMHz":8160.0,"bandwidthMHz":15.0,"direction":"Downlink","polarization":"RHCP","authorizations":[]}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '673'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 10 Aug 2022 16:29:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - orbital spacecraft delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group --yes
+      User-Agent:
+      - AZURECLI/2.39.0 (AAZ) azsdk-python-core/1.24.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/orbital_cli000001/providers/Microsoft.Orbital/spacecrafts/AQUA?api-version=2022-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 10 Aug 2022 16:29:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 200
+      message: OK
+version: 1

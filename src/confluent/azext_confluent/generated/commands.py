@@ -37,6 +37,3 @@ def load_command_table(self, _):
         g.custom_command('update', 'confluent_organization_update')
         g.custom_command('delete', 'confluent_organization_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'confluent_organization_show')
-
-    with self.command_group('confluent', is_experimental=True):
-        pass

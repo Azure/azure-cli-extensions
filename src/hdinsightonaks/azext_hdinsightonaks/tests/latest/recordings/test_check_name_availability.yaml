@@ -1,0 +1,56 @@
+interactions:
+- request:
+    body: '{"name": "hilopool-000001/hilo-000002", "type": "Microsoft.HDInsight/clusterPools/clusters"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - hdinsight-on-aks check-name-availability
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -l --name --type
+      User-Agent:
+      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HDInsight/locations/westus3/checkNameAvailability?api-version=2023-11-01-preview
+  response:
+    body:
+      string: '{"nameAvailable":true}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 11 Mar 2024 03:53:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2a8bc1be-cff9-454f-aa65-60b8982e2bb7
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 9D073B80A97D40DB9F212ACDAC54E23F Ref B: TYO201100114021 Ref C: 2024-03-11T03:53:43Z'
+    status:
+      code: 200
+      message: OK
+version: 1

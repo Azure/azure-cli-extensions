@@ -1,0 +1,891 @@
+interactions:
+- request:
+    body: client_id=04b07795-8ddb-461a-bbee-02f9e1bf7b46&grant_type=refresh_token&client_info=1&claims=%7B%22access_token%22%3A+%7B%22xms_cc%22%3A+%7B%22values%22%3A+%5B%22CP1%22%5D%7D%7D%7D&refresh_token=0.AQEAv4j5cvGGr0GRqy180BHbR5V3sATbjRpGu-4C-eG_e0YaAAg.AgABAAEAAAAtyolDObpQQ5VtlI4uGjEPAgDs_wUA9P-F9AOvTqZBjaWFGkXfzk6kJM9paK6fG16eIhFdn37Mcc9KLBb48cD3M8JoeDziZQTp3rw7lOAF2zI3uh_OCzNNzlQYnGrYj7cx-qiLJaPeTtLfO0YoOKI3DNlRe5LsVSWHI1Sn6GtxVc48SC0mHDKq2WbpbnL5A3wEzcJrXlM2z-jcDRiwMIGAfqF-5S1mbRB9r-nXpqspAhpiv5_yzrz4aatzi9NZ3IRjVCNCIU-XCEdJQ4DmtmNBYTv2NjwOaGcnhLzp4pvPEQ-QXXI7NCrBPmCfZ0kzQVhv7K3lSXtAeuER6LJ7qouAos58KAaN54v2zgVTJvkAsXW3z-uJX0WCH6TIgh1c6ng7-3D8eB4zSu6WbRoH8ncFSmMyFQXesedtWaQDR5xXJr9h27RhDThRwBkBWTWQNkZqXtgqrSeikOzRieqNQWmh5ybk-9W8LyISxPgkShA6pXeQUOZ6KtjT2swaalOznrAeWJNXRg-tKhIqOhn85M3tEsBgKgv-yAURnwXBG0o3mqxlheB43YXeSJPANAPldhMSUVgIjVzVtGaL8ghQKI73B1sbhZyIuyxhnXCcXaeCSVJJlIVNWEvV_KEtcaEPHguTHSfxOYaEJ9WbN_px_m58RDPOgirSyXkdIEK3zBnVKl6vqEisXoqaOPNlDPxr2B2s93f-cQsblkSDo6DC9YzxtDbrINm37COw4_gxkBFyZDyc_rKpF7r6FdRW9iHvKGCrMXSdpktvuVvWm8DyC-z_7x1OqrHydSK3OXYbg5RJ7iOeBSIQNKig8ZebQ3HYWeF2pbj_4Txt8YzcCGi-oBUaexRoIzgR4wgQsMSlDL64Y0Alm_iFFmCgC9nQdoCisjmO8kauGVqwgAW9OJvT3y-dK5gGsnPN3tVhcXzZKz6R5XpnD4EHSTNdIR7w2IYIiOM&scope=https%3A%2F%2Fmanagement.core.windows.net%2F%2F.default+offline_access+openid+profile
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1312'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - python-requests/2.25.1
+      X-AnchorMailbox:
+      - Oid:ebd55869-8a4a-4708-9fa1-04413ec063c7@72f988bf-86f1-41af-91ab-2d7cd011db47
+      x-client-cpu:
+      - x64
+      x-client-current-telemetry:
+      - 4|84,3|
+      x-client-last-telemetry:
+      - 4|0|||
+      x-client-os:
+      - win32
+      x-client-sku:
+      - MSAL.Python
+      x-client-ver:
+      - 1.24.0b1
+      x-ms-lib-capability:
+      - retry-after, h429
+    method: POST
+    uri: https://localhost:8888/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token
+  response:
+    body:
+      string: '{"token_type":"Bearer","scope":"https://management.core.windows.net//user_impersonation
+        https://management.core.windows.net//.default","expires_in":5053,"ext_expires_in":5053,"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjk1MTM0OTM5LCJuYmYiOjE2OTUxMzQ5MzksImV4cCI6MTY5NTE0MDI5MywiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2ViZDU1ODY5LThhNGEtNDcwOC05ZmExLTA0NDEzZWMwNjNjNy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVlRQWUvOFVBQUFBSVpBNVdDbnB6aHVpdFZaODg4dSs2bFpxQ0tvbTNzRUllbHdKSkJxMzRIWEgxTzU2ZE1veXRJTFhjKytMRFFaUWRNUjJTenZTOUtlVXFNMFhoU3lqb3puS2lzMUZ2L0FZUzFoRWhON2F6aTk1dlZlU3BxTVBWRzRpNzI4MWFsemllV1dkV2RSR0JYUk50WFV3c2thbk9Kek0vdHNRSmpHQTdPZnlnc0gwY2JVPSIsImFtciI6WyJmaWRvIiwibWZhIl0sImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2IiwiYXBwaWRhY3IiOiIwIiwiZmFtaWx5X25hbWUiOiJIZSIsImdpdmVuX25hbWUiOiJKb25hdGhhbiIsImlwYWRkciI6IjIwMDE6NDg5ODphODAwOjEwMTI6OGM5ODozNmMzOjU4MGU6NTEzYSIsIm5hbWUiOiJKb25hdGhhbiBIZSIsIm9pZCI6ImViZDU1ODY5LThhNGEtNDcwOC05ZmExLTA0NDEzZWMwNjNjNyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0xMjQ1MjUwOTUtNzA4MjU5NjM3LTE1NDMxMTkwMjEtMjA1Njg0MSIsInB1aWQiOiIxMDAzMjAwMTYxNzdDRDI2IiwicmgiOiIwLkFRRUF2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFBZy4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJadUNCd3ZuekFHU0dYZEoyN0lLakpUeGNSMmV4aVJXV3NfbjlhUWVTcnNrIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJqb25hdGhhbmhlQG1pY3Jvc29mdC5jb20iLCJ1cG4iOiJqb25hdGhhbmhlQG1pY3Jvc29mdC5jb20iLCJ1dGkiOiItUjNyQTJFcWNrLXJ1THNQSlozeEFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX2NjIjpbIkNQMSJdLCJ4bXNfdGNkdCI6MTI4OTI0MTU0N30.e2Xk2mR7l0cXaFW5Pe_g8Ug1D1SHH2FKPNy_umIct1XvlBzTfuw-eAwvSxQXvaevapZtiaPULi0VKnm_NVKcOl8KvrYMRtxu5jNPyQ6yIYwGQ-OEF-H_lJMh5VX7fGhWREMD4NHOX4AV4-UNi1nHQUUAFvgPcl0jVaa2EjYgLx2Lvd8_NinPYIRQYaPo5RoAjxECdoJGyR8ly9OtsQs-RRHcj3_K59OZ-TqwDu9wsVNVkSQnn67FpaQ6BBeclbGA5XuBO7MBH6CYiuSVu0DspfRPeb2OBHYnEDOVeUBZNFkY9P9F3J5ZLiAA4nGyNtztzhy6IIhrOo2bNgufYLr9UA","refresh_token":"0.AQEAv4j5cvGGr0GRqy180BHbR5V3sATbjRpGu-4C-eG_e0YaAAg.AgABAAEAAAAtyolDObpQQ5VtlI4uGjEPAgDs_wUA9P_b6sPoIOH3TIzMUQaP1vDdai9d-yv92tuPwmESm5hDpO6ogboFCWI4QhbmeoWYoQiEgKcEZbK9qsu1S8o2UmELG67WcXpesNuNE_b_sEqLTRaheUqWd8xS7gGrTUDAWD9MU-rjB9zNeFJtoC07eGP8mlgGAqo4Ry__Tl_mbTQ9urrxxEkuvCuHjpYwEessJf1lCXlX0FqgY5Gupwile6VqBhXmRuc25sq33SvjKX2-a425Q9HhWS08Hp_WT_6EBdOlQ2ja8FxLbbVH5zhoSOjxquUUZrRedWed6DdqrcCxGydbxkgR3MwyD8k7BMenF0xkYoo0ru8ifGf2G8aiRHuRsrTRCAX0bsdu6HsWOh9SP_gBuzZK0JIP_oq8gm-l9Ac_WvW6w1TmwcM1EqH1bVfEWdbuzweK6vIMKjjFfZj4-WArVmiasP45Ag7n1aLgHaU499u-lWqag3Nx4nMUluhYy-PIv1b7SnrsBt-uzt_kn5_Xl4SZGCwHUjxwqeq_0vWFFcHaR1tf8KAvEqJn2P7Ocs10Ry_t33e7bqcXJb9lAfVpCdKcm9tODmhw68o6Uh5SQvEM7HDqjI4G470q930zC4iAl2pR0om_Sf8LhLQQT73_TnA13V5n9LpBOBiLEmOOQh-6uUZj1W5eETKNSdbTJEQ7VGe1-ZjEpThl7dXgn-vn6oGCbzCYHlG1s8Dos3EIwaDTQovuN15WPgbdafSHrjyB4JlZe14lIXlJzm4l6b1AHRRxgCzX-e38sK9-Om0vfEsDVH-QmLgMeb4mKCcAzT435vyC4IawHHJ7Bwg0YnqizKg0pXYMbBMxTGj70i0hRv-kx7R2o9Ay8JcoTqmu1LEk_O4TmvfEk8D6c24e9xbAtp-MnFUD_dpUzXJERSOpSLWG0fnzN8xZxy-Vd5v8KyXNntfWlTKw","foci":"1","id_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiIwNGIwNzc5NS04ZGRiLTQ2MWEtYmJlZS0wMmY5ZTFiZjdiNDYiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3YyLjAiLCJpYXQiOjE2OTUxMzQ5MzksIm5iZiI6MTY5NTEzNDkzOSwiZXhwIjoxNjk1MTM4ODM5LCJhaW8iOiJBWlFBYS84VUFBQUFlUVh6N0VGVDljd3lVcEVjbWtTLytIQzhBb045UExpVDRaVzdRZnVCTStjQTQ2eUFJTEkxVzltU0c0WXA1d001eENSSTl1YVhlak1PbGNsWUVKdDB5ZlhtejVPRkpxVm1hdUxjbEdtUk5od1dPdDdyOXlRN0dZOXpOMGgvSEZ5T1p1cnRhSFZLVW1QdGx0YXBMckJaMVVzY1pNem9neDhaWHZBOTJiY0FIdmF2V0E2enV3eVBwL20yd2hnWTJxclAiLCJuYW1lIjoiSm9uYXRoYW4gSGUiLCJvaWQiOiJlYmQ1NTg2OS04YTRhLTQ3MDgtOWZhMS0wNDQxM2VjMDYzYzciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJqb25hdGhhbmhlQG1pY3Jvc29mdC5jb20iLCJwdWlkIjoiMTAwMzIwMDE2MTc3Q0QyNiIsInJoIjoiMC5BUUVBdjRqNWN2R0dyMEdScXkxODBCSGJSNVYzc0FUYmpScEd1LTRDLWVHX2UwWWFBQWcuIiwic3ViIjoicHoyVnJrNVFvc05GRHRHOXJvckNlN05DQldwanlhal9xZE9LaXhNWVVDOCIsInRpZCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInV0aSI6Ii1SM3JBMkVxY2stcnVMc1BKWjN4QUEiLCJ2ZXIiOiIyLjAifQ.fIV7o8vuvEz8cqW3qsZUM-l_a-LTElyO_6wsZ_wI_lKFwddgavLjW_b1LfU07ngp1JpzHaY18x5tz_Q5V9QiFl-iqOhFMIGC8nk3mnOAZvPvVRb6yj9ic995dDKm7tLw31YpzL7HSvfKYcidIIvk44jOmPdzkx2zTYH1f7iM-4NHB1PkkUH_PMdp6XQ_lpKJBRUrQDiBihZii1gWe3btezM6W32dGqhi8aaRAWMW-JaZhreIQtTTgm5whPa38bGGZ8U9qR4Tg_s1P7GMoIsqXw2pcvU-bRoVEDGNwPk9Oz9Y_KtFRlVYaVTV6N-Iu9ZePKu7YfX9MDDkc8vlMs7I0Q","client_info":"eyJ1aWQiOiJlYmQ1NTg2OS04YTRhLTQ3MDgtOWZhMS0wNDQxM2VjMDYzYzciLCJ1dGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3In0"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '5008'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Sep 2023 14:53:59 GMT
+      expires:
+      - '-1'
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      pragma:
+      - no-cache
+      set-cookie:
+      - fpc=An7botyZRKRGjYv2kEVaH3vRypnyAQAAAAatm9wOAAAA; expires=Thu, 19-Oct-2023
+        14:53:59 GMT; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-clitelem:
+      - 1,0,0,4512641.6536,
+      x-ms-ests-server:
+      - 2.1.16368.8 - NCUS ProdSlices
+      x-xss-protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "brazilsouth"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '27'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_vmwarepc?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group","name":"my-resource-group","properties":{"provisioningState":"Succeeded"},"location":"eastus"}'
+    headers:
+      content-length:
+      - '187'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:03 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware location check-quota-availability
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --location
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AVS/locations/brazilsouth/checkQuotaAvailability?api-version=2023-03-01
+  response:
+    body:
+      string: '{"hostsRemaining":{"AV20":0,"AV36":999},"quotaEnabled":"Enabled"}'
+    headers:
+      content-length:
+      - '65'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:08 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "av36"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware location check-trial-availability
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '16'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --sku
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AVS/locations/brazilsouth/checkTrialAvailability?api-version=2023-03-01
+  response:
+    body:
+      string: '{"status":"TrialAvailable","availableHosts":4}'
+    headers:
+      content-length:
+      - '46'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:12 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "None"}, "location": "brazilsouth", "properties":
+      {"internet": "Disabled", "managementCluster": {"clusterSize": 4}, "networkBlock":
+      "192.168.48.0/22", "nsxtPassword": "5rqdLj4GF3cePUe6(", "vcenterPassword": "UpfBXae9ZquZSDXk("},
+      "sku": {"name": "av36"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '275'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
+    headers:
+      content-length:
+      - '1377'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:16 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds?api-version=2023-03-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt42-cust-p01-dmo01/providers/Microsoft.Network/expressroutecircuits/tnt42-cust-p01-dmo01-er/peerings/AzurePrivatePeering"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/","hcxCloudManager":"https://192.168.50.4/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}]}'
+    headers:
+      content-length:
+      - '1654'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:20 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --cluster-size
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"encryption":{"status":"Enabled","keyVaultProperties":{"keyName":"keyname1","keyVersion":"ver1.0","keyVaultUrl":"https://keyvault1-kmip-kvault.vault.azure.net/","keyState":"Connected","versionType":"Fixed"}},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt42-cust-p01-dmo01/providers/Microsoft.Network/expressroutecircuits/tnt42-cust-p01-dmo01-er/peerings/AzurePrivatePeering"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/","hcxCloudManager":"https://192.168.50.4/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"identity":{"principalId":"881e5573-063f-49e4-8c08-79d7df0169d8","tenantId":"881e5573-063f-49e4-8c08-79d7df0169d8","type":"SystemAssigned"}}'
+    headers:
+      content-length:
+      - '1990'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:25 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2", "properties":
+      {"availability": {"strategy": "SingleZone", "zone": 1}, "circuit": {}, "encryption":
+      {"keyVaultProperties": {"keyName": "keyname1", "keyVaultUrl": "https://keyvault1-kmip-kvault.vault.azure.net/",
+      "keyVersion": "ver1.0"}, "status": "Enabled"}, "endpoints": {}, "identitySources":
+      [{"alias": "groupAlias", "baseGroupDN": "ou=baseGroup", "baseUserDN": "ou=baseUser",
+      "domain": "domain1", "name": "group1", "primaryServer": "ldaps://1.1.1.1:636/",
+      "secondaryServer": "ldaps://1.1.1.2:636/", "ssl": "Enabled"}], "internet": "Disabled",
+      "managementCluster": {"clusterSize": 3, "hosts": ["fakehost18.nyc1.kubernetes.center",
+      "fakehost19.nyc1.kubernetes.center", "fakehost20.nyc1.kubernetes.center", "fakehost21.nyc1.kubernetes.center"]},
+      "networkBlock": "192.168.48.0/22"}, "sku": {"name": "AV36"}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '882'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --cluster-size
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
+    headers:
+      content-length:
+      - '1377'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:25 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --internet
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"encryption":{"status":"Enabled","keyVaultProperties":{"keyName":"keyname1","keyVersion":"ver1.0","keyVaultUrl":"https://keyvault1-kmip-kvault.vault.azure.net/","keyState":"Connected","versionType":"Fixed"}},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt42-cust-p01-dmo01/providers/Microsoft.Network/expressroutecircuits/tnt42-cust-p01-dmo01-er/peerings/AzurePrivatePeering"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/","hcxCloudManager":"https://192.168.50.4/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"identity":{"principalId":"881e5573-063f-49e4-8c08-79d7df0169d8","tenantId":"881e5573-063f-49e4-8c08-79d7df0169d8","type":"SystemAssigned"}}'
+    headers:
+      content-length:
+      - '1990'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:30 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2", "properties":
+      {"availability": {"strategy": "SingleZone", "zone": 1}, "circuit": {}, "encryption":
+      {"keyVaultProperties": {"keyName": "keyname1", "keyVaultUrl": "https://keyvault1-kmip-kvault.vault.azure.net/",
+      "keyVersion": "ver1.0"}, "status": "Enabled"}, "endpoints": {}, "identitySources":
+      [{"alias": "groupAlias", "baseGroupDN": "ou=baseGroup", "baseUserDN": "ou=baseUser",
+      "domain": "domain1", "name": "group1", "primaryServer": "ldaps://1.1.1.1:636/",
+      "secondaryServer": "ldaps://1.1.1.2:636/", "ssl": "Enabled"}], "internet": "Enabled",
+      "managementCluster": {"clusterSize": 4, "hosts": ["fakehost18.nyc1.kubernetes.center",
+      "fakehost19.nyc1.kubernetes.center", "fakehost20.nyc1.kubernetes.center", "fakehost21.nyc1.kubernetes.center"]},
+      "networkBlock": "192.168.48.0/22"}, "sku": {"name": "AV36"}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '881'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --internet
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
+    headers:
+      content-length:
+      - '1377'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:30 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware authorization create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -c -n
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1/authorizations/myauthname?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/authorizations/authorization1","name":"authorization1","type":"Microsoft.AVS/privateClouds/authorizations","properties":{"provisioningState":"Succeeded","expressRouteAuthorizationId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt34-cust-mockp02-spearj2dev/providers/Microsoft.Network/expressroutecircuits/tnt34-cust-mockp02-spearj2dev-er/authorizations/myauth","expressRouteAuthorizationKey":"37b0db3b-3b17-4c7b-bf76-bf13b01bcadc","expressRouteId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"}}'
+    headers:
+      content-length:
+      - '829'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:34 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware authorization delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -c -n --yes
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1/authorizations/myauthname?api-version=2023-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Tue, 19 Sep 2023 14:54:39 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --ext-nw-blocks
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"encryption":{"status":"Enabled","keyVaultProperties":{"keyName":"keyname1","keyVersion":"ver1.0","keyVaultUrl":"https://keyvault1-kmip-kvault.vault.azure.net/","keyState":"Connected","versionType":"Fixed"}},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt42-cust-p01-dmo01/providers/Microsoft.Network/expressroutecircuits/tnt42-cust-p01-dmo01-er/peerings/AzurePrivatePeering"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/","hcxCloudManager":"https://192.168.50.4/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"identity":{"principalId":"881e5573-063f-49e4-8c08-79d7df0169d8","tenantId":"881e5573-063f-49e4-8c08-79d7df0169d8","type":"SystemAssigned"}}'
+    headers:
+      content-length:
+      - '1990'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:44 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2", "properties":
+      {"availability": {"strategy": "SingleZone", "zone": 1}, "circuit": {}, "encryption":
+      {"keyVaultProperties": {"keyName": "keyname1", "keyVaultUrl": "https://keyvault1-kmip-kvault.vault.azure.net/",
+      "keyVersion": "ver1.0"}, "status": "Enabled"}, "endpoints": {}, "extendedNetworkBlocks":
+      ["10.0.8.0/23", "10.1.8.0/23"], "identitySources": [{"alias": "groupAlias",
+      "baseGroupDN": "ou=baseGroup", "baseUserDN": "ou=baseUser", "domain": "domain1",
+      "name": "group1", "primaryServer": "ldaps://1.1.1.1:636/", "secondaryServer":
+      "ldaps://1.1.1.2:636/", "ssl": "Enabled"}], "internet": "Disabled", "managementCluster":
+      {"clusterSize": 4, "hosts": ["fakehost18.nyc1.kubernetes.center", "fakehost19.nyc1.kubernetes.center",
+      "fakehost20.nyc1.kubernetes.center", "fakehost21.nyc1.kubernetes.center"]},
+      "networkBlock": "192.168.48.0/22"}, "sku": {"name": "AV36"}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '939'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --ext-nw-blocks
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
+    headers:
+      content-length:
+      - '1377'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:44 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --ext-nw-blocks
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"encryption":{"status":"Enabled","keyVaultProperties":{"keyName":"keyname1","keyVersion":"ver1.0","keyVaultUrl":"https://keyvault1-kmip-kvault.vault.azure.net/","keyState":"Connected","versionType":"Fixed"}},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt42-cust-p01-dmo01/providers/Microsoft.Network/expressroutecircuits/tnt42-cust-p01-dmo01-er/peerings/AzurePrivatePeering"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/","hcxCloudManager":"https://192.168.50.4/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"identity":{"principalId":"881e5573-063f-49e4-8c08-79d7df0169d8","tenantId":"881e5573-063f-49e4-8c08-79d7df0169d8","type":"SystemAssigned"}}'
+    headers:
+      content-length:
+      - '1990'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:48 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2", "properties":
+      {"availability": {"strategy": "SingleZone", "zone": 1}, "circuit": {}, "encryption":
+      {"keyVaultProperties": {"keyName": "keyname1", "keyVaultUrl": "https://keyvault1-kmip-kvault.vault.azure.net/",
+      "keyVersion": "ver1.0"}, "status": "Enabled"}, "endpoints": {}, "extendedNetworkBlocks":
+      ["10.2.8.0/23"], "identitySources": [{"alias": "groupAlias", "baseGroupDN":
+      "ou=baseGroup", "baseUserDN": "ou=baseUser", "domain": "domain1", "name": "group1",
+      "primaryServer": "ldaps://1.1.1.1:636/", "secondaryServer": "ldaps://1.1.1.2:636/",
+      "ssl": "Enabled"}], "internet": "Disabled", "managementCluster": {"clusterSize":
+      4, "hosts": ["fakehost18.nyc1.kubernetes.center", "fakehost19.nyc1.kubernetes.center",
+      "fakehost20.nyc1.kubernetes.center", "fakehost21.nyc1.kubernetes.center"]},
+      "networkBlock": "192.168.48.0/22"}, "sku": {"name": "AV36"}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '924'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --ext-nw-blocks
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
+    headers:
+      content-length:
+      - '1377'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:48 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --ext-nw-blocks
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"encryption":{"status":"Enabled","keyVaultProperties":{"keyName":"keyname1","keyVersion":"ver1.0","keyVaultUrl":"https://keyvault1-kmip-kvault.vault.azure.net/","keyState":"Connected","versionType":"Fixed"}},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt42-cust-p01-dmo01/providers/Microsoft.Network/expressroutecircuits/tnt42-cust-p01-dmo01-er/peerings/AzurePrivatePeering"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/","hcxCloudManager":"https://192.168.50.4/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"identity":{"principalId":"881e5573-063f-49e4-8c08-79d7df0169d8","tenantId":"881e5573-063f-49e4-8c08-79d7df0169d8","type":"SystemAssigned"}}'
+    headers:
+      content-length:
+      - '1990'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:53 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2", "properties":
+      {"availability": {"strategy": "SingleZone", "zone": 1}, "circuit": {}, "encryption":
+      {"keyVaultProperties": {"keyName": "keyname1", "keyVaultUrl": "https://keyvault1-kmip-kvault.vault.azure.net/",
+      "keyVersion": "ver1.0"}, "status": "Enabled"}, "endpoints": {}, "identitySources":
+      [{"alias": "groupAlias", "baseGroupDN": "ou=baseGroup", "baseUserDN": "ou=baseUser",
+      "domain": "domain1", "name": "group1", "primaryServer": "ldaps://1.1.1.1:636/",
+      "secondaryServer": "ldaps://1.1.1.2:636/", "ssl": "Enabled"}], "internet": "Disabled",
+      "managementCluster": {"clusterSize": 4, "hosts": ["fakehost18.nyc1.kubernetes.center",
+      "fakehost19.nyc1.kubernetes.center", "fakehost20.nyc1.kubernetes.center", "fakehost21.nyc1.kubernetes.center"]},
+      "networkBlock": "192.168.48.0/22"}, "sku": {"name": "AV36"}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '882'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --ext-nw-blocks
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
+    headers:
+      content-length:
+      - '1377'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:53 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --ext-nw-blocks
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"encryption":{"status":"Enabled","keyVaultProperties":{"keyName":"keyname1","keyVersion":"ver1.0","keyVaultUrl":"https://keyvault1-kmip-kvault.vault.azure.net/","keyState":"Connected","versionType":"Fixed"}},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt42-cust-p01-dmo01/providers/Microsoft.Network/expressroutecircuits/tnt42-cust-p01-dmo01-er/peerings/AzurePrivatePeering"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/","hcxCloudManager":"https://192.168.50.4/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"identity":{"principalId":"881e5573-063f-49e4-8c08-79d7df0169d8","tenantId":"881e5573-063f-49e4-8c08-79d7df0169d8","type":"SystemAssigned"}}'
+    headers:
+      content-length:
+      - '1990'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:58 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2", "properties":
+      {"availability": {"strategy": "SingleZone", "zone": 1}, "circuit": {}, "encryption":
+      {"keyVaultProperties": {"keyName": "keyname1", "keyVaultUrl": "https://keyvault1-kmip-kvault.vault.azure.net/",
+      "keyVersion": "ver1.0"}, "status": "Enabled"}, "endpoints": {}, "identitySources":
+      [{"alias": "groupAlias", "baseGroupDN": "ou=baseGroup", "baseUserDN": "ou=baseUser",
+      "domain": "domain1", "name": "group1", "primaryServer": "ldaps://1.1.1.1:636/",
+      "secondaryServer": "ldaps://1.1.1.2:636/", "ssl": "Enabled"}], "internet": "Disabled",
+      "managementCluster": {"clusterSize": 4, "hosts": ["fakehost18.nyc1.kubernetes.center",
+      "fakehost19.nyc1.kubernetes.center", "fakehost20.nyc1.kubernetes.center", "fakehost21.nyc1.kubernetes.center"]},
+      "networkBlock": "192.168.48.0/22"}, "sku": {"name": "AV36"}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '882'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --ext-nw-blocks
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
+    headers:
+      content-length:
+      - '1377'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:54:58 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c --system-assigned
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"encryption":{"status":"Enabled","keyVaultProperties":{"keyName":"keyname1","keyVersion":"ver1.0","keyVaultUrl":"https://keyvault1-kmip-kvault.vault.azure.net/","keyState":"Connected","versionType":"Fixed"}},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt42-cust-p01-dmo01/providers/Microsoft.Network/expressroutecircuits/tnt42-cust-p01-dmo01-er/peerings/AzurePrivatePeering"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/","hcxCloudManager":"https://192.168.50.4/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"identity":{"principalId":"881e5573-063f-49e4-8c08-79d7df0169d8","tenantId":"881e5573-063f-49e4-8c08-79d7df0169d8","type":"SystemAssigned"}}'
+    headers:
+      content-length:
+      - '1990'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:55:03 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2", "properties":
+      {"availability": {"strategy": "SingleZone", "zone": 1}, "circuit": {}, "encryption":
+      {"keyVaultProperties": {"keyName": "keyname1", "keyVaultUrl": "https://keyvault1-kmip-kvault.vault.azure.net/",
+      "keyVersion": "ver1.0"}, "status": "Enabled"}, "endpoints": {}, "identitySources":
+      [{"alias": "groupAlias", "baseGroupDN": "ou=baseGroup", "baseUserDN": "ou=baseUser",
+      "domain": "domain1", "name": "group1", "primaryServer": "ldaps://1.1.1.1:636/",
+      "secondaryServer": "ldaps://1.1.1.2:636/", "ssl": "Enabled"}], "internet": "Disabled",
+      "managementCluster": {"clusterSize": 4, "hosts": ["fakehost18.nyc1.kubernetes.center",
+      "fakehost19.nyc1.kubernetes.center", "fakehost20.nyc1.kubernetes.center", "fakehost21.nyc1.kubernetes.center"]},
+      "networkBlock": "192.168.48.0/22"}, "sku": {"name": "AV36"}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud identity assign
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '882'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -c --system-assigned
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
+    headers:
+      content-length:
+      - '1377'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:55:03 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud identity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"encryption":{"status":"Enabled","keyVaultProperties":{"keyName":"keyname1","keyVersion":"ver1.0","keyVaultUrl":"https://keyvault1-kmip-kvault.vault.azure.net/","keyState":"Connected","versionType":"Fixed"}},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt42-cust-p01-dmo01/providers/Microsoft.Network/expressroutecircuits/tnt42-cust-p01-dmo01-er/peerings/AzurePrivatePeering"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/","hcxCloudManager":"https://192.168.50.4/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"identity":{"principalId":"881e5573-063f-49e4-8c08-79d7df0169d8","tenantId":"881e5573-063f-49e4-8c08-79d7df0169d8","type":"SystemAssigned"}}'
+    headers:
+      content-length:
+      - '1990'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 14:55:08 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+version: 1

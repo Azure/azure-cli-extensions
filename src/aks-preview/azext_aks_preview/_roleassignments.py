@@ -5,95 +5,42 @@
 
 import time
 import uuid
-from azure.graphrbac.models import GetObjectsParameters
+
+from azure.cli.command_modules.acs._client_factory import (
+    get_auth_management_client,
+)
+from azure.cli.command_modules.acs._graph import resolve_object_id
+from azure.cli.command_modules.acs._roleassignments import build_role_scope, resolve_role_id
+from azure.cli.core.azclierror import AzCLIError
+from azure.cli.core.profiles import ResourceType, get_sdk
+from azure.core.exceptions import HttpResponseError, ResourceExistsError
 from knack.log import get_logger
-from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
-from azext_aks_preview._client_factory import get_auth_management_client, get_graph_rbac_management_client
 
 logger = get_logger(__name__)
 
-
-def _get_object_stubs(graph_client, assignees):
-    params = GetObjectsParameters(include_directory_object_references=True,
-                                  object_ids=assignees)
-    return list(graph_client.objects.get_objects_by_object_ids(params))
+# pylint: disable=protected-access
 
 
-def resolve_object_id(cli_ctx, assignee):
-    client = get_graph_rbac_management_client(cli_ctx)
-    result = None
-    if assignee is None:
-        raise ValueError('Inputted parameter "assignee" is None.')
-    if assignee.find('@') >= 0:  # looks like a user principal name
-        result = list(client.users.list(
-            filter="userPrincipalName eq '{}'".format(assignee)))
-    if not result:
-        result = list(client.service_principals.list(
-            filter="servicePrincipalNames/any(c:c eq '{}')".format(assignee)))
-    if not result:  # assume an object id, let us verify it
-        result = _get_object_stubs(client, [assignee])
-
-    # 2+ matches should never happen, so we only check 'no match' here
-    if not result:
-        raise CLIError(
-            "No matches in graph database for '{}'".format(assignee))
-
-    return result[0].object_id
+# temp workaround for the breaking change caused by default API version bump of the auth SDK
+def add_role_assignment(cmd, role, service_principal_msi_id, is_service_principal=True, delay=2, scope=None):
+    from azure.cli.core import __version__ as core_version
+    if core_version <= "2.45.0":
+        return _add_role_assignment_old(cmd, role, service_principal_msi_id, is_service_principal, delay, scope)
+    return _add_role_assignment_new(cmd, role, service_principal_msi_id, is_service_principal, delay, scope)
 
 
-def resolve_role_id(role, scope, definitions_client):
-    role_id = None
-    try:
-        uuid.UUID(role)
-        role_id = role
-    except ValueError:
-        pass
-    if not role_id:  # retrieve role id
-        role_defs = list(definitions_client.list(
-            scope, "roleName eq '{}'".format(role)))
-        if len(role_defs) == 0:
-            raise CLIError("Role '{}' doesn't exist.".format(role))
-        if len(role_defs) > 1:
-            ids = [r.id for r in role_defs]
-            err = "More than one role matches the given name '{}'. Please pick a value from '{}'"
-            raise CLIError(err.format(role, ids))
-        role_id = role_defs[0].id
-    return role_id
-
-
-def build_role_scope(resource_group_name: str, scope: str, subscription_id):
-    subscription_scope = '/subscriptions/' + subscription_id
-    if scope is not None:
-        if resource_group_name:
-            err = 'Resource group "{}" is redundant because scope is supplied'
-            raise CLIError(err.format(resource_group_name))
-    elif resource_group_name:
-        scope = subscription_scope + '/resourceGroups/' + resource_group_name
-    else:
-        scope = subscription_scope
-    return scope
-
-
-def create_role_assignment(cli_ctx, role, assignee,
-                           is_service_principal=True, resource_group_name=None, scope=None, resolve_assignee=True):
-    return _create_role_assignment(cli_ctx,
-                                   role, assignee, resource_group_name,
-                                   scope, resolve_assignee=(is_service_principal and resolve_assignee))
-
-
-def _create_role_assignment(cli_ctx, role, assignee,
-                            resource_group_name=None, scope=None, resolve_assignee=True):
-    from azure.cli.core.profiles import ResourceType, get_sdk
-    factory = get_auth_management_client(cli_ctx, scope)
+# TODO(fuming): remove and replaced by import from azure.cli.command_modules.acs once dependency bumped to 2.47.0
+def _add_role_assignment_executor_new(cmd, role, assignee, resource_group_name=None, scope=None, resolve_assignee=True):
+    factory = get_auth_management_client(cmd.cli_ctx, scope)
     assignments_client = factory.role_assignments
     definitions_client = factory.role_definitions
 
-    if assignments_client.config is None:
-        raise CLIError("Assignments client config is undefined.")
+    # FIXME: is this necessary?
+    if assignments_client._config is None:
+        raise AzCLIError("Assignments client config is undefined.")
 
-    scope = build_role_scope(
-        resource_group_name, scope, assignments_client.config.subscription_id)
+    scope = build_role_scope(resource_group_name, scope, assignments_client._config.subscription_id)
 
     # XXX: if role is uuid, this function's output cannot be used as role assignment defintion id
     # ref: https://github.com/Azure/azure-cli/issues/2458
@@ -101,41 +48,140 @@ def _create_role_assignment(cli_ctx, role, assignee,
 
     # If the cluster has service principal resolve the service principal client id to get the object id,
     # if not use MSI object id.
-    object_id = resolve_object_id(
-        cli_ctx, assignee) if resolve_assignee else assignee
-    RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                             'RoleAssignmentCreateParameters', mod='models',
-                                             operation_group='role_assignments')
-    parameters = RoleAssignmentCreateParameters(
-        role_definition_id=role_id, principal_id=object_id)
+    object_id = resolve_object_id(cmd.cli_ctx, assignee) if resolve_assignee else assignee
+
     assignment_name = uuid.uuid4()
     custom_headers = None
-    return assignments_client.create(scope, assignment_name, parameters, custom_headers=custom_headers)
+
+    RoleAssignmentCreateParameters = get_sdk(
+        cmd.cli_ctx,
+        ResourceType.MGMT_AUTHORIZATION,
+        "RoleAssignmentCreateParameters",
+        mod="models",
+        operation_group="role_assignments",
+    )
+    if cmd.supported_api_version(min_api="2018-01-01-preview", resource_type=ResourceType.MGMT_AUTHORIZATION):
+        parameters = RoleAssignmentCreateParameters(role_definition_id=role_id, principal_id=object_id,
+                                                    principal_type=None)
+        return assignments_client.create(scope, assignment_name, parameters, headers=custom_headers)
+
+    # for backward compatibility
+    RoleAssignmentProperties = get_sdk(
+        cmd.cli_ctx,
+        ResourceType.MGMT_AUTHORIZATION,
+        "RoleAssignmentProperties",
+        mod="models",
+        operation_group="role_assignments",
+    )
+    properties = RoleAssignmentProperties(role_definition_id=role_id, principal_id=object_id)
+    return assignments_client.create(scope, assignment_name, properties, headers=custom_headers)
 
 
-def add_role_assignment(cli_ctx, role, service_principal_msi_id, is_service_principal=True, delay=2, scope=None):
+# TODO(fuming): remove and replaced by import from azure.cli.command_modules.acs once dependency bumped to 2.47.0
+def _add_role_assignment_new(cmd, role, service_principal_msi_id, is_service_principal=True, delay=2, scope=None):
     # AAD can have delays in propagating data, so sleep and retry
-    hook = cli_ctx.get_progress_controller(True)
-    hook.add(message='Waiting for AAD role to propagate',
-             value=0, total_val=1.0)
-    logger.info('Waiting for AAD role to propagate')
+    hook = cmd.cli_ctx.get_progress_controller(True)
+    hook.add(message="Waiting for AAD role to propagate", value=0, total_val=1.0)
+    logger.info("Waiting for AAD role to propagate")
     for x in range(0, 10):
-        hook.add(message='Waiting for AAD role to propagate',
-                 value=0.1 * x, total_val=1.0)
+        hook.add(message="Waiting for AAD role to propagate", value=0.1 * x, total_val=1.0)
         try:
             # TODO: break this out into a shared utility library
-            create_role_assignment(
-                cli_ctx, role, service_principal_msi_id, is_service_principal, scope=scope)
+            _add_role_assignment_executor_new(
+                cmd,
+                role,
+                service_principal_msi_id,
+                scope=scope,
+                resolve_assignee=is_service_principal,
+            )
             break
-        except CloudError as ex:
-            if ex.message == 'The role assignment already exists.':
+        except (CloudError, HttpResponseError) as ex:
+            if isinstance(ex, ResourceExistsError) or "The role assignment already exists." in ex.message:
                 break
             logger.info(ex.message)
-        except:  # pylint: disable=bare-except
-            pass
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.error(str(ex))
         time.sleep(delay + delay * x)
     else:
         return False
-    hook.add(message='AAD role propagation done', value=1.0, total_val=1.0)
-    logger.info('AAD role propagation done')
+    hook.add(message="AAD role propagation done", value=1.0, total_val=1.0)
+    logger.info("AAD role propagation done")
+    return True
+
+
+# TODO(fuming): remove this once dependency bumped to 2.47.0
+def _add_role_assignment_executor_old(cmd, role, assignee, resource_group_name=None, scope=None, resolve_assignee=True):
+    factory = get_auth_management_client(cmd.cli_ctx, scope)
+    assignments_client = factory.role_assignments
+    definitions_client = factory.role_definitions
+
+    # FIXME: is this necessary?
+    if assignments_client.config is None:
+        raise AzCLIError("Assignments client config is undefined.")
+
+    scope = build_role_scope(resource_group_name, scope, assignments_client.config.subscription_id)
+
+    # XXX: if role is uuid, this function's output cannot be used as role assignment defintion id
+    # ref: https://github.com/Azure/azure-cli/issues/2458
+    role_id = resolve_role_id(role, scope, definitions_client)
+
+    # If the cluster has service principal resolve the service principal client id to get the object id,
+    # if not use MSI object id.
+    object_id = resolve_object_id(cmd.cli_ctx, assignee) if resolve_assignee else assignee
+
+    assignment_name = uuid.uuid4()
+    custom_headers = None
+
+    RoleAssignmentCreateParameters = get_sdk(
+        cmd.cli_ctx,
+        ResourceType.MGMT_AUTHORIZATION,
+        "RoleAssignmentCreateParameters",
+        mod="models",
+        operation_group="role_assignments",
+    )
+    if cmd.supported_api_version(min_api="2018-01-01-preview", resource_type=ResourceType.MGMT_AUTHORIZATION):
+        parameters = RoleAssignmentCreateParameters(role_definition_id=role_id, principal_id=object_id)
+        return assignments_client.create(scope, assignment_name, parameters, custom_headers=custom_headers)
+
+    # for backward compatibility
+    RoleAssignmentProperties = get_sdk(
+        cmd.cli_ctx,
+        ResourceType.MGMT_AUTHORIZATION,
+        "RoleAssignmentProperties",
+        mod="models",
+        operation_group="role_assignments",
+    )
+    properties = RoleAssignmentProperties(role_definition_id=role_id, principal_id=object_id)
+    return assignments_client.create(scope, assignment_name, properties, custom_headers=custom_headers)
+
+
+# TODO(fuming): remove this once dependency bumped to 2.47.0
+def _add_role_assignment_old(cmd, role, service_principal_msi_id, is_service_principal=True, delay=2, scope=None):
+    # AAD can have delays in propagating data, so sleep and retry
+    hook = cmd.cli_ctx.get_progress_controller(True)
+    hook.add(message="Waiting for AAD role to propagate", value=0, total_val=1.0)
+    logger.info("Waiting for AAD role to propagate")
+    for x in range(0, 10):
+        hook.add(message="Waiting for AAD role to propagate", value=0.1 * x, total_val=1.0)
+        try:
+            # TODO: break this out into a shared utility library
+            _add_role_assignment_executor_old(
+                cmd,
+                role,
+                service_principal_msi_id,
+                scope=scope,
+                resolve_assignee=is_service_principal,
+            )
+            break
+        except (CloudError, HttpResponseError) as ex:
+            if ex.message == "The role assignment already exists.":
+                break
+            logger.info(ex.message)
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.error(str(ex))
+        time.sleep(delay + delay * x)
+    else:
+        return False
+    hook.add(message="AAD role propagation done", value=1.0, total_val=1.0)
+    logger.info("AAD role propagation done")
     return True

@@ -17,11 +17,13 @@ from .. import try_manual
 def step_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory create '
-             '--location "East US" '
-             '--name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory create "
+        '--location "East US" '
+        '--name "{myFactory}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Factories/get/Factories_Get
@@ -29,10 +31,10 @@ def step_create(test, checks=None):
 def step_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory show '
-             '--name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory show " '--name "{myFactory}" ' '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Factories/get/Factories_List
@@ -40,9 +42,7 @@ def step_show(test, checks=None):
 def step_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory list '
-             '-g ""',
-             checks=checks)
+    test.cmd("az datafactory list " '-g ""', checks=checks)
 
 
 # EXAMPLE: /Factories/get/Factories_ListByResourceGroup
@@ -50,9 +50,7 @@ def step_list(test, checks=None):
 def step_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory list '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd("az datafactory list " '--resource-group "{rg}"', checks=checks)
 
 
 # EXAMPLE: /Factories/patch/Factories_Update
@@ -60,11 +58,13 @@ def step_list2(test, checks=None):
 def step_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory update '
-             '--name "{myFactory}" '
-             '--tags exampleTag="exampleValue" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory update "
+        '--name "{myFactory}" '
+        '--tags exampleTag="exampleValue" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Factories/post/Factories_ConfigureFactoryRepo
@@ -72,13 +72,15 @@ def step_update(test, checks=None):
 def step_configure_factory_repo(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory configure-factory-repo '
-             '--factory-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataFacto'
-             'ry/factories/{myFactory}" '
-             '--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" '
-             'project-name="project" repository-name="repo" root-folder="/" tenant-id="" '
-             '--location "East US"',
-             checks=checks)
+    test.cmd(
+        "az datafactory configure-factory-repo "
+        '--factory-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataFacto'
+        'ry/factories/{myFactory}" '
+        '--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" '
+        'project-name="project" repository-name="repo" root-folder="/" tenant-id="" '
+        '--location "East US"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Factories/post/Factories_GetDataPlaneAccess
@@ -86,15 +88,17 @@ def step_configure_factory_repo(test, checks=None):
 def step_get_data_plane_access(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory get-data-plane-access '
-             '--name "{myFactory}" '
-             '--access-resource-path "" '
-             '--expire-time "2018-11-10T09:46:20.2659347Z" '
-             '--permissions "r" '
-             '--profile-name "DefaultProfile" '
-             '--start-time "2018-11-10T02:46:20.2659347Z" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory get-data-plane-access "
+        '--name "{myFactory}" '
+        '--access-resource-path "" '
+        '--expire-time "2018-11-10T09:46:20.2659347Z" '
+        '--permissions "r" '
+        '--profile-name "DefaultProfile" '
+        '--start-time "2018-11-10T02:46:20.2659347Z" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Factories/post/Factories_GetGitHubAccessToken
@@ -102,13 +106,15 @@ def step_get_data_plane_access(test, checks=None):
 def step_get_git_hub_access_token(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory get-git-hub-access-token '
-             '--name "{myFactory}" '
-             '--git-hub-access-code "some" '
-             '--git-hub-access-token-base-url "some" '
-             '--git-hub-client-id "some" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory get-git-hub-access-token "
+        '--name "{myFactory}" '
+        '--git-hub-access-code "some" '
+        '--git-hub-access-token-base-url "some" '
+        '--git-hub-client-id "some" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /ActivityRuns/post/ActivityRuns_QueryByPipelineRun
@@ -116,13 +122,15 @@ def step_get_git_hub_access_token(test, checks=None):
 def step_activity_run_query_by_pipeline_run(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory activity-run query-by-pipeline-run '
-             '--factory-name "{myFactory}" '
-             '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
-             '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
-             '--resource-group "{rg}" '
-             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
-             checks=checks)
+    test.cmd(
+        "az datafactory activity-run query-by-pipeline-run "
+        '--factory-name "{myFactory}" '
+        '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
+        '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
+        '--resource-group "{rg}" '
+        '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Datasets/put/Datasets_Create
@@ -130,16 +138,18 @@ def step_activity_run_query_by_pipeline_run(test, checks=None):
 def step_dataset_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory dataset create '
-             '--properties "{{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceReference'
-             '\\",\\"referenceName\\":\\"{myLinkedService}\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Str'
-             'ing\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"type\\'
-             '":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"'
-             '}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
-             '--name "{myDataset}" '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory dataset create "
+        '--properties "{{\\"type\\":\\"AzureBlob\\",\\"linkedServiceName\\":{{\\"type\\":\\"LinkedServiceReference'
+        '\\",\\"referenceName\\":\\"{myLinkedService}\\"}},\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Str'
+        'ing\\"}},\\"MyFolderPath\\":{{\\"type\\":\\"String\\"}}}},\\"typeProperties\\":{{\\"format\\":{{\\"type\\'
+        '":\\"TextFormat\\"}},\\"fileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFileName\\"'
+        '}},\\"folderPath\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}}}}" '
+        '--name "{myDataset}" '
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Datasets/get/Datasets_Get
@@ -147,11 +157,13 @@ def step_dataset_create(test, checks=None):
 def step_dataset_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory dataset show '
-             '--name "{myDataset}" '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory dataset show "
+        '--name "{myDataset}" '
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Datasets/get/Datasets_ListByFactory
@@ -159,10 +171,12 @@ def step_dataset_show(test, checks=None):
 def step_dataset_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory dataset list '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory dataset list "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Datasets/delete/Datasets_Delete
@@ -170,11 +184,13 @@ def step_dataset_list(test, checks=None):
 def step_dataset_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory dataset delete -y '
-             '--name "{myDataset}" '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory dataset delete -y "
+        '--name "{myDataset}" '
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/put/IntegrationRuntimes_Create
@@ -182,12 +198,14 @@ def step_dataset_delete(test, checks=None):
 def step_integration_runtime_self_hosted_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime self-hosted create '
-             '--factory-name "{myFactory}" '
-             '--description "A selfhosted integration runtime" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime self-hosted create "
+        '--factory-name "{myFactory}" '
+        '--description "A selfhosted integration runtime" '
+        '--name "{myIntegrationRuntime}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/get/IntegrationRuntimes_Get
@@ -195,11 +213,13 @@ def step_integration_runtime_self_hosted_create(test, checks=None):
 def step_integration_runtime_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime show '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime show "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/get/IntegrationRuntimes_ListByFactory
@@ -207,10 +227,12 @@ def step_integration_runtime_show(test, checks=None):
 def step_integration_runtime_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime list '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime list "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/patch/IntegrationRuntimes_Update
@@ -218,13 +240,15 @@ def step_integration_runtime_list(test, checks=None):
 def step_integration_runtime_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime update '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}" '
-             '--auto-update "Off" '
-             '--update-delay-offset "\\"PT3H\\""',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime update "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime}" '
+        '--resource-group "{rg}" '
+        '--auto-update "Off" '
+        '--update-delay-offset "\\"PT3H\\""',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_CreateLinkedIntegrationRuntime
@@ -232,15 +256,17 @@ def step_integration_runtime_update(test, checks=None):
 def step_integration_runtime_linked(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime linked-integration-runtime create '
-             '--name "bfa92911-9fb6-4fbe-8f23-beae87bc1c83" '
-             '--location "West US" '
-             '--data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" '
-             '--subscription-id "061774c7-4b5a-4159-a55b-365581830283" '
-             '--factory-name "{myFactory}" '
-             '--integration-runtime-name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime linked-integration-runtime create "
+        '--name "bfa92911-9fb6-4fbe-8f23-beae87bc1c83" '
+        '--location "West US" '
+        '--data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" '
+        '--subscription-id "061774c7-4b5a-4159-a55b-365581830283" '
+        '--factory-name "{myFactory}" '
+        '--integration-runtime-name "{myIntegrationRuntime}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_GetConnectionInfo
@@ -248,11 +274,13 @@ def step_integration_runtime_linked(test, checks=None):
 def step_integration_runtime_get_connection_info(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime get-connection-info '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime get-connection-info "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_GetMonitoringData
@@ -260,11 +288,13 @@ def step_integration_runtime_get_connection_info(test, checks=None):
 def step_integration_runtime_get_monitoring_data(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime get-monitoring-data '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime get-monitoring-data "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_GetStatus
@@ -272,11 +302,13 @@ def step_integration_runtime_get_monitoring_data(test, checks=None):
 def step_integration_runtime_get_status(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime get-status '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime get-status "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_ListAuthKeys
@@ -284,11 +316,13 @@ def step_integration_runtime_get_status(test, checks=None):
 def step_integration_runtime_list_auth_key(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime list-auth-key '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime list-auth-key "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_RegenerateAuthKey
@@ -296,12 +330,14 @@ def step_integration_runtime_list_auth_key(test, checks=None):
 def step_integration_runtime_regenerate_auth_key(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime regenerate-auth-key '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime}" '
-             '--key-name "authKey2" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime regenerate-auth-key "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime}" '
+        '--key-name "authKey2" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Start
@@ -309,11 +345,13 @@ def step_integration_runtime_regenerate_auth_key(test, checks=None):
 def step_integration_runtime_start(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime start '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime2}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime start "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime2}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Stop
@@ -321,11 +359,13 @@ def step_integration_runtime_start(test, checks=None):
 def step_integration_runtime_stop(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime stop '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime2}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime stop "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime2}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_SyncCredentials
@@ -333,11 +373,13 @@ def step_integration_runtime_stop(test, checks=None):
 def step_integration_runtime_sync_credentials(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime sync-credentials '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime sync-credentials "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/post/IntegrationRuntimes_Upgrade
@@ -345,12 +387,14 @@ def step_integration_runtime_sync_credentials(test, checks=None):
 def step_integration_runtime_remove_link(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime remove-link '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime}" '
-             '--linked-factory-name "exampleFactoryName-linked" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime remove-link "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime}" '
+        '--linked-factory-name "exampleFactoryName-linked" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimeNodes/get/IntegrationRuntimeNodes_Get
@@ -358,12 +402,14 @@ def step_integration_runtime_remove_link(test, checks=None):
 def step_integration_runtime_node_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime-node show '
-             '--factory-name "{myFactory}" '
-             '--integration-runtime-name "{myIntegrationRuntime}" '
-             '--node-name "Node_1" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime-node show "
+        '--factory-name "{myFactory}" '
+        '--integration-runtime-name "{myIntegrationRuntime}" '
+        '--node-name "Node_1" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimeNodes/patch/IntegrationRuntimeNodes_Update
@@ -371,13 +417,15 @@ def step_integration_runtime_node_show(test, checks=None):
 def step_integration_runtime_node_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime-node update '
-             '--factory-name "{myFactory}" '
-             '--integration-runtime-name "{myIntegrationRuntime}" '
-             '--node-name "Node_1" '
-             '--resource-group "{rg}" '
-             '--concurrent-jobs-limit 2',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime-node update "
+        '--factory-name "{myFactory}" '
+        '--integration-runtime-name "{myIntegrationRuntime}" '
+        '--node-name "Node_1" '
+        '--resource-group "{rg}" '
+        "--concurrent-jobs-limit 2",
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimeNodes/post/IntegrationRuntimeNodes_GetIpAddress
@@ -385,12 +433,14 @@ def step_integration_runtime_node_update(test, checks=None):
 def step_integration_runtime_node_get_ip_address(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime-node get-ip-address '
-             '--factory-name "{myFactory}" '
-             '--integration-runtime-name "{myIntegrationRuntime}" '
-             '--node-name "Node_1" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime-node get-ip-address "
+        '--factory-name "{myFactory}" '
+        '--integration-runtime-name "{myIntegrationRuntime}" '
+        '--node-name "Node_1" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimeNodes/delete/IntegrationRuntimesNodes_Delete
@@ -398,12 +448,14 @@ def step_integration_runtime_node_get_ip_address(test, checks=None):
 def step_integration_runtime_node_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime-node delete -y '
-             '--factory-name "{myFactory}" '
-             '--integration-runtime-name "{myIntegrationRuntime}" '
-             '--node-name "Node_1" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime-node delete -y "
+        '--factory-name "{myFactory}" '
+        '--integration-runtime-name "{myIntegrationRuntime}" '
+        '--node-name "Node_1" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /IntegrationRuntimes/delete/IntegrationRuntimes_Delete
@@ -411,11 +463,13 @@ def step_integration_runtime_node_delete(test, checks=None):
 def step_integration_runtime_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory integration-runtime delete -y '
-             '--factory-name "{myFactory}" '
-             '--name "{myIntegrationRuntime}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory integration-runtime delete -y "
+        '--factory-name "{myFactory}" '
+        '--name "{myIntegrationRuntime}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /LinkedServices/put/LinkedServices_Create
@@ -423,14 +477,16 @@ def step_integration_runtime_delete(test, checks=None):
 def step_linked_service_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory linked-service create '
-             '--factory-name "{myFactory}" '
-             '--properties "{{\\"type\\":\\"AzureStorage\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":'
-             '\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;Accoun'
-             'tKey=<storage key>\\"}}}}}}" '
-             '--name "{myLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory linked-service create "
+        '--factory-name "{myFactory}" '
+        '--properties "{{\\"type\\":\\"AzureStorage\\",\\"typeProperties\\":{{\\"connectionString\\":{{\\"type\\":'
+        '\\"SecureString\\",\\"value\\":\\"DefaultEndpointsProtocol=https;AccountName=examplestorageaccount;Accoun'
+        'tKey=<storage key>\\"}}}}}}" '
+        '--name "{myLinkedService}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /LinkedServices/get/LinkedServices_Get
@@ -438,11 +494,13 @@ def step_linked_service_create(test, checks=None):
 def step_linked_service_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory linked-service show '
-             '--factory-name "{myFactory}" '
-             '--name "{myLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory linked-service show "
+        '--factory-name "{myFactory}" '
+        '--name "{myLinkedService}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /LinkedServices/get/LinkedServices_ListByFactory
@@ -450,10 +508,12 @@ def step_linked_service_show(test, checks=None):
 def step_linked_service_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory linked-service list '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory linked-service list "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /LinkedServices/delete/LinkedServices_Delete
@@ -461,11 +521,13 @@ def step_linked_service_list(test, checks=None):
 def step_linked_service_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory linked-service delete -y '
-             '--factory-name "{myFactory}" '
-             '--name "{myLinkedService}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory linked-service delete -y "
+        '--factory-name "{myFactory}" '
+        '--name "{myLinkedService}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /ManagedVirtualNetworks/put/ManagedVirtualNetworks_Create
@@ -473,11 +535,13 @@ def step_linked_service_delete(test, checks=None):
 def step_managed_virtual_network_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory managed-virtual-network create '
-             '--factory-name "{myFactory}" '
-             '--name "{myManagedVirtualNetwork}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory managed-virtual-network create "
+        '--factory-name "{myFactory}" '
+        '--name "{myManagedVirtualNetwork}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /ManagedVirtualNetworks/get/ManagedVirtualNetworks_Get
@@ -485,11 +549,13 @@ def step_managed_virtual_network_create(test, checks=None):
 def step_managed_virtual_network_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory managed-virtual-network show '
-             '--factory-name "{myFactory}" '
-             '--name "{myManagedVirtualNetwork}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory managed-virtual-network show "
+        '--factory-name "{myFactory}" '
+        '--name "{myManagedVirtualNetwork}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /ManagedVirtualNetworks/get/ManagedVirtualNetworks_ListByFactory
@@ -497,10 +563,12 @@ def step_managed_virtual_network_show(test, checks=None):
 def step_managed_virtual_network_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory managed-virtual-network list '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory managed-virtual-network list "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /ManagedPrivateEndpoints/put/ManagedPrivateEndpoints_Create
@@ -508,15 +576,17 @@ def step_managed_virtual_network_list(test, checks=None):
 def step_managed_private_endpoint_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory managed-private-endpoint create '
-             '--factory-name "{myFactory}" '
-             '--group-id "blob" '
-             '--private-link-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Stor'
-             'age/storageAccounts/{sa}" '
-             '--name "{myManagedPrivateEndpoint}" '
-             '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory managed-private-endpoint create "
+        '--factory-name "{myFactory}" '
+        '--group-id "blob" '
+        '--private-link-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Stor'
+        'age/storageAccounts/{sa}" '
+        '--name "{myManagedPrivateEndpoint}" '
+        '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /ManagedPrivateEndpoints/get/ManagedPrivateEndpoints_Get
@@ -524,12 +594,14 @@ def step_managed_private_endpoint_create(test, checks=None):
 def step_managed_private_endpoint_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory managed-private-endpoint show '
-             '--factory-name "{myFactory}" '
-             '--name "{myManagedPrivateEndpoint}" '
-             '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory managed-private-endpoint show "
+        '--factory-name "{myFactory}" '
+        '--name "{myManagedPrivateEndpoint}" '
+        '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /ManagedPrivateEndpoints/get/ManagedPrivateEndpoints_ListByFactory
@@ -537,11 +609,13 @@ def step_managed_private_endpoint_show(test, checks=None):
 def step_managed_private_endpoint_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory managed-private-endpoint list '
-             '--factory-name "{myFactory}" '
-             '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory managed-private-endpoint list "
+        '--factory-name "{myFactory}" '
+        '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /ManagedPrivateEndpoints/delete/ManagedPrivateEndpoints_Delete
@@ -549,12 +623,14 @@ def step_managed_private_endpoint_list(test, checks=None):
 def step_managed_private_endpoint_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory managed-private-endpoint delete -y '
-             '--factory-name "{myFactory}" '
-             '--name "{myManagedPrivateEndpoint}" '
-             '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory managed-private-endpoint delete -y "
+        '--factory-name "{myFactory}" '
+        '--name "{myManagedPrivateEndpoint}" '
+        '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /PipelineRuns/get/PipelineRuns_Get
@@ -562,11 +638,13 @@ def step_managed_private_endpoint_delete(test, checks=None):
 def step_pipeline_run_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory pipeline-run show '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
-             checks=checks)
+    test.cmd(
+        "az datafactory pipeline-run show "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /PipelineRuns/post/PipelineRuns_Cancel
@@ -574,11 +652,13 @@ def step_pipeline_run_show(test, checks=None):
 def step_pipeline_run_cancel(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory pipeline-run cancel '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"',
-             checks=checks)
+    test.cmd(
+        "az datafactory pipeline-run cancel "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--run-id "16ac5348-ff82-4f95-a80d-638c1d47b721"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /PipelineRuns/post/PipelineRuns_QueryByFactory
@@ -586,13 +666,15 @@ def step_pipeline_run_cancel(test, checks=None):
 def step_pipeline_run_query_by_factory(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory pipeline-run query-by-factory '
-             '--factory-name "{myFactory}" '
-             '--filters operand="PipelineName" operator="Equals" values="{myPipeline}" '
-             '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
-             '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory pipeline-run query-by-factory "
+        '--factory-name "{myFactory}" '
+        '--filters operand="PipelineName" operator="Equals" values="{myPipeline}" '
+        '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
+        '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Pipelines/put/Pipelines_Create
@@ -600,23 +682,25 @@ def step_pipeline_run_query_by_factory(test, checks=None):
 def step_pipeline_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory pipeline create '
-             '--factory-name "{myFactory}" '
-             '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typ'
-             'eProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs'
-             '\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",'
-             '\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"{myDataset}\\"}}],\\"outputs\\":[{{\\"'
-             'type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"value'
-             '\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"{myDataset}\\"}}],'
-             '\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\'
-             '":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",'
-             '\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}],\\"parameters\\":{{\\"JobId\\":{{\\"ty'
-             'pe\\":\\"String\\"}},\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}},\\"variables\\":{{\\"TestVaria'
-             'bleArray\\":{{\\"type\\":\\"Array\\"}}}},\\"runDimensions\\":{{\\"JobId\\":{{\\"type\\":\\"Expression\\",'
-             '\\"value\\":\\"@pipeline().parameters.JobId\\"}}}},\\"duration\\":\\"0.00:10:00\\"}}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory pipeline create "
+        '--factory-name "{myFactory}" '
+        '--pipeline "{{\\"activities\\":[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typ'
+        'eProperties\\":{{\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs'
+        '\\":[{{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",'
+        '\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"{myDataset}\\"}}],\\"outputs\\":[{{\\"'
+        'type\\":\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"value'
+        '\\":\\"@item()\\"}},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"{myDataset}\\"}}],'
+        '\\"typeProperties\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\'
+        '":{{\\"type\\":\\"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",'
+        '\\"value\\":\\"@pipeline().parameters.OutputBlobNameList\\"}}}}}}],\\"parameters\\":{{\\"JobId\\":{{\\"ty'
+        'pe\\":\\"String\\"}},\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}},\\"variables\\":{{\\"TestVaria'
+        'bleArray\\":{{\\"type\\":\\"Array\\"}}}},\\"runDimensions\\":{{\\"JobId\\":{{\\"type\\":\\"Expression\\",'
+        '\\"value\\":\\"@pipeline().parameters.JobId\\"}}}},\\"duration\\":\\"0.00:10:00\\"}}" '
+        '--name "{myPipeline}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Pipelines/put/Pipelines_Update
@@ -624,23 +708,25 @@ def step_pipeline_create(test, checks=None):
 def step_pipeline_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory pipeline update '
-             '--factory-name "{myFactory}" '
-             '--description "Example description" '
-             '--activities "[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{'
-             '\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\"'
-             ':\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\"'
-             ':\\"examplecontainer\\"}},\\"referenceName\\":\\"{myDataset}\\"}}],\\"outputs\\":[{{\\"type\\":\\"Dataset'
-             'Reference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}'
-             '},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"{myDataset}\\"}}],\\"typeProperties'
-             '\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\'
-             '"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@p'
-             'ipeline().parameters.OutputBlobNameList\\"}}}}}}]" '
-             '--parameters "{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}" '
-             '--duration "0.00:10:00" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory pipeline update "
+        '--factory-name "{myFactory}" '
+        '--description "Example description" '
+        '--activities "[{{\\"name\\":\\"ExampleForeachActivity\\",\\"type\\":\\"ForEach\\",\\"typeProperties\\":{{'
+        '\\"activities\\":[{{\\"name\\":\\"ExampleCopyActivity\\",\\"type\\":\\"Copy\\",\\"inputs\\":[{{\\"type\\"'
+        ':\\"DatasetReference\\",\\"parameters\\":{{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\"'
+        ':\\"examplecontainer\\"}},\\"referenceName\\":\\"{myDataset}\\"}}],\\"outputs\\":[{{\\"type\\":\\"Dataset'
+        'Reference\\",\\"parameters\\":{{\\"MyFileName\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@item()\\"}'
+        '},\\"MyFolderPath\\":\\"examplecontainer\\"}},\\"referenceName\\":\\"{myDataset}\\"}}],\\"typeProperties'
+        '\\":{{\\"dataIntegrationUnits\\":32,\\"sink\\":{{\\"type\\":\\"BlobSink\\"}},\\"source\\":{{\\"type\\":\\'
+        '"BlobSource\\"}}}}}}],\\"isSequential\\":true,\\"items\\":{{\\"type\\":\\"Expression\\",\\"value\\":\\"@p'
+        'ipeline().parameters.OutputBlobNameList\\"}}}}}}]" '
+        '--parameters "{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}" '
+        '--duration "0.00:10:00" '
+        '--name "{myPipeline}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Pipelines/get/Pipelines_Get
@@ -648,11 +734,13 @@ def step_pipeline_update(test, checks=None):
 def step_pipeline_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory pipeline show '
-             '--factory-name "{myFactory}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory pipeline show "
+        '--factory-name "{myFactory}" '
+        '--name "{myPipeline}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Pipelines/get/Pipelines_ListByFactory
@@ -660,10 +748,12 @@ def step_pipeline_show(test, checks=None):
 def step_pipeline_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory pipeline list '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory pipeline list "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Pipelines/post/Pipelines_CreateRun
@@ -671,12 +761,14 @@ def step_pipeline_list(test, checks=None):
 def step_pipeline_create_run(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory pipeline create-run '
-             '--factory-name "{myFactory}" '
-             '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory pipeline create-run "
+        '--factory-name "{myFactory}" '
+        '--parameters "{{\\"OutputBlobNameList\\":[\\"exampleoutput.csv\\"]}}" '
+        '--name "{myPipeline}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Pipelines/delete/Pipelines_Delete
@@ -684,11 +776,13 @@ def step_pipeline_create_run(test, checks=None):
 def step_pipeline_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory pipeline delete -y '
-             '--factory-name "{myFactory}" '
-             '--name "{myPipeline}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory pipeline delete -y "
+        '--factory-name "{myFactory}" '
+        '--name "{myPipeline}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Triggers/put/Triggers_Create
@@ -696,16 +790,18 @@ def step_pipeline_delete(test, checks=None):
 def step_trigger_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger create '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
-             'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
-             'nceName\\":\\"{myPipeline}\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T'
-             '00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13'
-             '.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
-             '--name "{myTrigger}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger create "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--properties "{{\\"type\\":\\"ScheduleTrigger\\",\\"pipelines\\":[{{\\"parameters\\":{{\\"OutputBlobNameL'
+        'ist\\":[\\"exampleoutput.csv\\"]}},\\"pipelineReference\\":{{\\"type\\":\\"PipelineReference\\",\\"refere'
+        'nceName\\":\\"{myPipeline}\\"}}}}],\\"typeProperties\\":{{\\"recurrence\\":{{\\"endTime\\":\\"2018-06-16T'
+        '00:55:13.8441801Z\\",\\"frequency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13'
+        '.8441801Z\\",\\"timeZone\\":\\"UTC\\"}}}}}}" '
+        '--name "{myTrigger}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Triggers/get/Triggers_Get
@@ -713,11 +809,13 @@ def step_trigger_create(test, checks=None):
 def step_trigger_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger show '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger show "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--name "{myTrigger}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Triggers/get/Triggers_ListByFactory
@@ -725,10 +823,12 @@ def step_trigger_show(test, checks=None):
 def step_trigger_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger list '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger list "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Triggers/post/Triggers_GetEventSubscriptionStatus
@@ -736,11 +836,13 @@ def step_trigger_list(test, checks=None):
 def step_trigger_get_event_subscription_status(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger get-event-subscription-status '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger get-event-subscription-status "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--name "{myTrigger}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Triggers/post/Triggers_QueryByFactory
@@ -748,11 +850,13 @@ def step_trigger_get_event_subscription_status(test, checks=None):
 def step_trigger_query_by_factory(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger query-by-factory '
-             '--factory-name "{myFactory}" '
-             '--parent-trigger-name "{myTrigger}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger query-by-factory "
+        '--factory-name "{myFactory}" '
+        '--parent-trigger-name "{myTrigger}" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Triggers/post/Triggers_Start
@@ -760,11 +864,13 @@ def step_trigger_query_by_factory(test, checks=None):
 def step_trigger_start(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger start '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger start "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--name "{myTrigger}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Triggers/post/Triggers_Stop
@@ -772,11 +878,13 @@ def step_trigger_start(test, checks=None):
 def step_trigger_stop(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger stop '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger stop "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--name "{myTrigger}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Triggers/post/Triggers_SubscribeToEvents
@@ -784,11 +892,13 @@ def step_trigger_stop(test, checks=None):
 def step_trigger_subscribe_to_event(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger subscribe-to-event '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger subscribe-to-event "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--name "{myTrigger}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Triggers/post/Triggers_UnsubscribeFromEvents
@@ -796,11 +906,13 @@ def step_trigger_subscribe_to_event(test, checks=None):
 def step_trigger_unsubscribe_from_event(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger unsubscribe-from-event '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger unsubscribe-from-event "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--name "{myTrigger}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /TriggerRuns/post/TriggerRuns_QueryByFactory
@@ -808,13 +920,15 @@ def step_trigger_unsubscribe_from_event(test, checks=None):
 def step_trigger_run_query_by_factory(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger-run query-by-factory '
-             '--factory-name "{myFactory}" '
-             '--filters operand="TriggerName" operator="Equals" values="{myTrigger}" '
-             '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
-             '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger-run query-by-factory "
+        '--factory-name "{myFactory}" '
+        '--filters operand="TriggerName" operator="Equals" values="{myTrigger}" '
+        '--last-updated-after "2018-06-16T00:36:44.3345758Z" '
+        '--last-updated-before "2018-06-16T00:49:48.3686473Z" '
+        '--resource-group "{rg}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /TriggerRuns/post/Triggers_Cancel
@@ -822,12 +936,14 @@ def step_trigger_run_query_by_factory(test, checks=None):
 def step_trigger_run_cancel(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger-run cancel '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" '
-             '--trigger-name "{myTrigger}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger-run cancel "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" '
+        '--trigger-name "{myTrigger}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /TriggerRuns/post/Triggers_Rerun
@@ -835,12 +951,14 @@ def step_trigger_run_cancel(test, checks=None):
 def step_trigger_run_rerun(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger-run rerun '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" '
-             '--trigger-name "{myTrigger}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger-run rerun "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" '
+        '--trigger-name "{myTrigger}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Triggers/delete/Triggers_Delete
@@ -848,11 +966,13 @@ def step_trigger_run_rerun(test, checks=None):
 def step_trigger_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory trigger delete -y '
-             '--factory-name "{myFactory}" '
-             '--resource-group "{rg}" '
-             '--name "{myTrigger}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory trigger delete -y "
+        '--factory-name "{myFactory}" '
+        '--resource-group "{rg}" '
+        '--name "{myTrigger}"',
+        checks=checks,
+    )
 
 
 # EXAMPLE: /Factories/delete/Factories_Delete
@@ -860,7 +980,7 @@ def step_trigger_delete(test, checks=None):
 def step_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az datafactory delete -y '
-             '--name "{myFactory}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+    test.cmd(
+        "az datafactory delete -y " '--name "{myFactory}" ' '--resource-group "{rg}"',
+        checks=checks,
+    )

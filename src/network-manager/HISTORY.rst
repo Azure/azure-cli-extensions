@@ -2,6 +2,38 @@
 
 Release History
 ===============
+1.0.1
++++++
+* `az network manager connect-config`: Fix cross-tenant resource id for `--hubs`
+
+1.0.0
++++++
+* Fix example and help info (Fix #6788)
+* BREAKING CHANGE: Make params required and remove non-updatable params (Fix #6786)
+* Fix `az network manager security-admin-config rule-collection rule update`: Fix to respect params provided. (Fix #6787)
+
+1.0.0b2
++++++
+* `az network manager group static-member create`: Fix cross-tenant --resource-id
+* `az network manager post-commit`: Fix when no response body is returned
+
+1.0.0b1
++++++
+* Migrate to CodeGen V2
+
+0.6.0
++++++
+* `az network manager security-admin-config`: Upgrade API version from 2022-01-01 to 2022-05-01.
+* Deprecate parameter `--display-name`.
+
+0.5.3
++++++
+* Fix force delete behavior.
+
+0.5.2
++++++
+* 'az network manager connection management-group': reopen the set of commands.
+
 0.5.1
 +++++
 * 'az network manager group': remove parameters '--member-type' and '--display-name'

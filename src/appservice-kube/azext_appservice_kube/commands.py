@@ -68,6 +68,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_app_service_plans')
 
     with self.command_group('webapp') as g:
+        g.custom_command('list-runtimes', 'list_runtimes_kube')
         g.custom_command('create', 'create_webapp', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_webapp', table_transformer=transform_web_output)
         g.custom_command('scale', 'scale_webapp')

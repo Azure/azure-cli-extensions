@@ -1,0 +1,165 @@
+interactions:
+- request:
+    body: '{"location": "westus", "properties": {"appliedScopeType": "Shared", "billingPlan":
+      "Monthly", "billingScopeId": "b0f278e1-1f18-4378-84d7-b44dfa708665", "displayName":
+      "clitest2", "quantity": 2, "renew": false, "reservedResourceType": "VirtualMachines",
+      "term": "P1Y"}, "sku": {"name": "standard_b1ls"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order calculate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '302'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sku --location --reserved-resource-type --billing-scope --term --billing-plan
+        --display-name --quantity --applied-scope-type
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/calculatePrice?api-version=2022-11-01
+  response:
+    body:
+      string: '{"properties":{"billingCurrencyTotal":{"currencyCode":"GBP","amount":48.0},"netTotal":0.0,"taxTotal":0.0,"grandTotal":0.0,"paymentSchedule":[{"dueDate":"2023-03-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"billingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-04-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-05-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-06-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-07-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-08-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-09-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-10-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-11-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-12-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2024-01-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2024-02-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"}],"reservationOrderId":"dbbcc369-214d-44e3-bd7f-d019c07e9eea","skuTitle":"Reserved
+        VM Instance, Standard_B1ls, US West, 1 Year","skuDescription":"standard_b1ls","pricingCurrencyTotal":{"currencyCode":"GBP","amount":48.0}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 23:08:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"sagirees","scenarios":"NewReservationTypeScenario,TestInProduction","retention":"6/4/2023
+        11:08:46 PM"}'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"appliedScopeType": "Shared", "billingPlan":
+      "Monthly", "billingScopeId": "b0f278e1-1f18-4378-84d7-b44dfa708665", "displayName":
+      "clitest2", "quantity": 2, "renew": false, "reservedResourceType": "VirtualMachines",
+      "term": "P1Y"}, "sku": {"name": "standard_b1ls"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order purchase
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '302'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --sku --location --reserved-resource-type --billing-scope
+        --term --billing-plan --display-name --quantity --applied-scope-type
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea","name":"dbbcc369-214d-44e3-bd7f-d019c07e9eea","type":"microsoft.capacity/reservationOrders","etag":1,"properties":{"originalQuantity":2,"requestDateTime":"2023-03-06T23:08:54.9810417Z","billingPlan":"Monthly","reservations":[{"id":"/providers/Microsoft.Capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea/reservations/29632bdc-66c0-4d16-b74a-034b505c89b2"}],"term":"P1Y","displayName":"clitest2","provisioningState":"Creating","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/61e667a1-0558-45a2-b21a-57fa7893951d"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '636'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 23:08:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea?api-version=2022-11-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-version:
+      - 1.0.2252.117
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order purchase
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id --sku --location --reserved-resource-type --billing-scope
+        --term --billing-plan --display-name --quantity --applied-scope-type
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea","name":"dbbcc369-214d-44e3-bd7f-d019c07e9eea","type":"microsoft.capacity/reservationOrders","etag":4,"properties":{"originalQuantity":2,"requestDateTime":"2023-03-06T23:08:54.9810417Z","billingPlan":"Monthly","reservations":[{"id":"/providers/Microsoft.Capacity/reservationOrders/dbbcc369-214d-44e3-bd7f-d019c07e9eea/reservations/29632bdc-66c0-4d16-b74a-034b505c89b2"}],"term":"P1Y","displayName":"clitest2","provisioningState":"PendingCapacity","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/61e667a1-0558-45a2-b21a-57fa7893951d"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '643'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 23:11:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2252.117
+    status:
+      code: 200
+      message: OK
+version: 1

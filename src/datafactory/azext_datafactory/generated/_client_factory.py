@@ -12,8 +12,8 @@
 def cf_datafactory_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_datafactory.vendored_sdks.datafactory import DataFactoryManagementClient
-    return get_mgmt_service_client(cli_ctx,
-                                   DataFactoryManagementClient)
+
+    return get_mgmt_service_client(cli_ctx, DataFactoryManagementClient)
 
 
 def cf_factory(cli_ctx, *_):
@@ -34,6 +34,10 @@ def cf_linked_service(cli_ctx, *_):
 
 def cf_dataset(cli_ctx, *_):
     return cf_datafactory_cl(cli_ctx).datasets
+
+
+def cf_data_flow(cli_ctx, *_):
+    return cf_datafactory_cl(cli_ctx).data_flows
 
 
 def cf_pipeline(cli_ctx, *_):

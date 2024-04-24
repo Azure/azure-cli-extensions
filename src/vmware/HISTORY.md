@@ -1,5 +1,52 @@
 # Release History
 
+## 6.0.1 (2023-12)
+
+- Fix `az vmware private-cloud list-admin-credentials` not returning `nsxtPassword` and `vcenterPassword`
+
+## 6.0.0 (2023-09)
+
+- Update to AVS 2023-03-01 API
+- Add `--ext-nw-blocks` argument to `az vmware private-cloud create`
+- Add `--ext-nw-blocks` argument to `az vmware private-cloud update`
+- Add `az vmware private-cloud identity-source` command group
+- Deprecate `az vmware private-cloud add-identity-source` command
+- Deprecate `az vmware private-cloud delete-identity-source` command
+- Fix `--out` argument for `az vmware script-execution create` to accept a list of string values
+- [BREAKING CHANGE] Remove `--port-name argument` argument from `az vmware workload-network segment create` as it is used by a read-only property
+- [BREAKING CHANGE] Remove `--affinity-strength` and `--azure-hybrid-benefit` argument from `az vmware placement-policy vm update` as they are only used for `az vmware placement-policy vm-host update`
+
+## 5.0.3 (2023-07)
+
+- Fix the mandatory flag of `--hosts` for `az vmware cluster create` [#26653](https://github.com/Azure/azure-cli/issues/26653)
+
+## 5.0.2 (2023-05)
+
+- Update `az vmware cluster` subcommand descriptions
+
+## 5.0.1 (2022-12)
+
+- Update to AVS 2022-05-01 API
+- Add `az vmware cluster list-zones`
+- Add `--affinity-strength` and `--azure-hybrid-benefit-type` parameters to `az vmware placement-policy vm-host create`
+- Add `--affinity-strength` and `--azure-hybrid-benefit-type` parameters to `az vmware placement-policy vm-host update`
+- Add `--express-route-id` parameter to `az vmware authorization create`
+- Add `vmware addon arc` command group
+- Add `az vmware location check-trial-availability`
+- Add `az vmware location check-quota-availability`
+- Deprecate `az vmware location checktrialavailability`
+- Deprecate `az vmware location checkquotaavailability`
+- [BREAKING CHANGE] `az vmware private-cloud add-availability-zone` has been removed. Availability zone cannot be modified after private cloud creation
+- [BREAKING CHANGE] `az vmware private-cloud delete-availability-zone` has been removed. Availability zone cannot be modified after private cloud creation.
+
+## 4.1.0 (2022-07)
+
+- Add `az vmware private-cloud enable-cmk-encryption`
+- Add `az vmware private-cloud disable-cmk-encryption`
+- Deprecate `az vmware private-cloud add-cmk-encryption`
+- Deprecate `az vmware private-cloud delete-cmk-encryption`
+- Add `--system-assigned` parameter to `az vmware private-cloud identity remove`
+
 ## 4.0.2 (2022-02)
 
 - Update `az vmware datastore disk-pool-volume create` to only accept one argument for --mount-option

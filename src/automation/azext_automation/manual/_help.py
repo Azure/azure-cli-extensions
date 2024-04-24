@@ -224,3 +224,157 @@ helps['automation job suspend'] = """
                az automation job suspend --automation-account-name "myAutomationAccount" --name "foo" \
                --resource-group "rg"
 """
+
+helps['automation schedule'] = """
+    type: group
+    short-summary: Automation Schedule
+"""
+
+helps['automation schedule list'] = """
+    type: command
+    short-summary: "Retrieve a list of schedules."
+    examples:
+      - name: List schedules by automation account
+        text: |-
+               az automation schedule list --automation-account-name "myAutomationAccount" --resource-group "rg"
+"""
+
+helps['automation schedule show'] = """
+    type: command
+    short-summary: "Retrieve the schedule identified by schedule name."
+    examples:
+      - name: Get schedule
+        text: |-
+               az automation schedule show --automation-account-name "myAutomationAccount" --resource-group "rg" \
+               --name "mySchedule"
+"""
+
+helps['automation schedule create'] = """
+    type: command
+    short-summary: "Create automation schedule."
+    examples:
+      - name: Create an automation schedule
+        text: |-
+               az automation schedule create --automation-account-name "myAutomationAccount"  --resource-group "rg" \
+               -n mySchedule --frequency Hour --interval 1 --start-time 2022-08-10 18:00:00 --time-zone UTC+08:00
+
+"""
+
+helps['automation schedule update'] = """
+    type: command
+    short-summary: "Update an automation schedule."
+    examples:
+      - name: Update an automation schedule
+        text: |-
+               az automation schedule update --automation-account-name "myAutomationAccount" --description test \
+               -n mySchedule --resource-group "rg" --is-enabled false
+"""
+
+helps['automation schedule delete'] = """
+    type: command
+    short-summary: "Delete an automation schedule."
+    examples:
+      - name: Delete automation schedule
+        text: |-
+               az automation schedule delete --name "myAutomationSchedule" --resource-group "rg" \
+               --automation-account-name "myAutomationAccount"
+"""
+
+helps['automation software-update-configuration'] = """
+    type: group
+    short-summary: Automation software-update-configuration
+"""
+
+helps['automation software-update-configuration list'] = """
+    type: command
+    short-summary: "List all software-update-configurations for the account."
+    examples:
+      - name: List software-update-configurations by automation account
+        text: |-
+               az automation software-update-configuration list --automation-account-name "myAutomationAccount" \
+                --resource-group "rg"
+"""
+
+helps['automation software-update-configuration show'] = """
+    type: command
+    short-summary: "Get a single software-update-configuration by name."
+    examples:
+      - name: Get software-update-configuration
+        text: |-
+               az automation software-update-configuration show --automation-account-name "myAutomationAccount" \
+               --resource-group "rg" --name "mySoftwareUpdateConfiguration"
+"""
+
+helps['automation software-update-configuration create'] = """
+    type: command
+    short-summary: "Create automation software-update-configuration."
+    examples:
+      - name: Create an automation software-update-configuration
+        text: |-
+               az automation software-update-configuration create --automation-account-name "myAutomationAccount" \
+                 --resource-group "rg" -n mySoftwareUpdateConfiguration --frequency Hour --interval 1 \
+                 --operating-system windows --excluded-kb-numbers 16800,16800 -n confgname \
+                 --included-update-classifications Critical --duration pT2H0M --azure-virtual-machines \
+                 /subscriptions/{subid}/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/myVM
+"""
+
+helps['automation software-update-configuration delete'] = """
+    type: command
+    short-summary: "Delete an automation software-update-configuration."
+    examples:
+      - name: Delete automation software-update-configuration
+        text: |-
+               az automation software-update-configuration delete --name "mySoftwareUpdateConfiguration" \
+               --resource-group "rg" --automation-account-name "myAutomationAccount"
+"""
+
+helps['automation software-update-configuration runs'] = """
+    type: group
+    short-summary: "Software Update Configuration Runs."
+"""
+
+helps['automation software-update-configuration runs list'] = """
+    type: command
+    short-summary: "Return list of software update configuration runs."
+    examples:
+      - name: List software-update-configurations by automation account
+        text: |-
+               az automation software-update-configuration runs list --automation-account-name "myAutomationAccount" \
+                --resource-group "rg"
+"""
+
+helps['automation software-update-configuration runs show'] = """
+    type: command
+    short-summary: "Get a single software update configuration runs by Id."
+    examples:
+      - name: List software-update-configurations runs by Id
+        text: |-
+               az automation software-update-configuration runs show --automation-account-name \
+               "myAutomationAccount" --resource-group "rg" --software-update-configuration-run-id \
+               "MyconfigurationRunId"
+"""
+helps['automation software-update-configuration machine-runs'] = """
+    type: group
+    short-summary: "Software Update Configuration Machine Runs."
+"""
+
+helps['automation software-update-configuration machine-runs list'] = """
+    type: command
+    short-summary: "List software update configuration machine-runs."
+    examples:
+      - name: List software-update-configurations machine-runs by automation account
+        text: |-
+               az automation software-update-configuration machine-runs list --automation-account-name \
+               "myAutomationAccount" --resource-group "rg"
+"""
+
+helps['automation software-update-configuration machine-runs show'] = """
+    type: command
+    short-summary: "Get a single software update configuration machine runs by Id."
+    examples:
+      - name: List software-update-configurations machine-runs by Id
+        text: |-
+               az automation software-update-configuration machine-runs show --automation-account-name \
+               "myAutomationAccount" --resource-group "rg" --software-update-configuration-machine-run-id \
+               "MyconfigurationMachineRunId"
+"""

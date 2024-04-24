@@ -9,20 +9,65 @@
 from copy import deepcopy
 from typing import Any, TYPE_CHECKING
 
-from msrest import Deserializer, Serializer
-
 from azure.core.rest import HttpRequest, HttpResponse
 from azure.mgmt.core import ARMPipelineClient
 
-from . import models
+from . import models as _models
 from ._configuration import CosmosDBManagementClientConfiguration
-from .operations import CassandraClustersOperations, CassandraDataCentersOperations, CassandraResourcesOperations, CollectionOperations, CollectionPartitionOperations, CollectionPartitionRegionOperations, CollectionRegionOperations, DataTransferJobsOperations, DatabaseAccountRegionOperations, DatabaseAccountsOperations, DatabaseOperations, GraphResourcesOperations, GremlinResourcesOperations, LocationsOperations, MongoDBResourcesOperations, NotebookWorkspacesOperations, Operations, PartitionKeyRangeIdOperations, PartitionKeyRangeIdRegionOperations, PercentileOperations, PercentileSourceTargetOperations, PercentileTargetOperations, PrivateEndpointConnectionsOperations, PrivateLinkResourcesOperations, RestorableDatabaseAccountsOperations, RestorableGremlinDatabasesOperations, RestorableGremlinGraphsOperations, RestorableGremlinResourcesOperations, RestorableMongodbCollectionsOperations, RestorableMongodbDatabasesOperations, RestorableMongodbResourcesOperations, RestorableSqlContainersOperations, RestorableSqlDatabasesOperations, RestorableSqlResourcesOperations, RestorableTableResourcesOperations, RestorableTablesOperations, ServiceOperations, SqlResourcesOperations, TableResourcesOperations
+from ._serialization import Deserializer, Serializer
+from .operations import (
+    CassandraClustersOperations,
+    CassandraDataCentersOperations,
+    CassandraResourcesOperations,
+    CollectionOperations,
+    CollectionPartitionOperations,
+    CollectionPartitionRegionOperations,
+    CollectionRegionOperations,
+    DataTransferJobsOperations,
+    DatabaseAccountRegionOperations,
+    DatabaseAccountsOperations,
+    DatabaseOperations,
+    GraphResourcesOperations,
+    GremlinResourcesOperations,
+    LocationsOperations,
+    MongoClustersOperations,
+    MongoDBResourcesOperations,
+    NotebookWorkspacesOperations,
+    Operations,
+    PartitionKeyRangeIdOperations,
+    PartitionKeyRangeIdRegionOperations,
+    PercentileOperations,
+    PercentileSourceTargetOperations,
+    PercentileTargetOperations,
+    PrivateEndpointConnectionsOperations,
+    PrivateLinkResourcesOperations,
+    RestorableDatabaseAccountsOperations,
+    RestorableGremlinDatabasesOperations,
+    RestorableGremlinGraphsOperations,
+    RestorableGremlinResourcesOperations,
+    RestorableMongodbCollectionsOperations,
+    RestorableMongodbDatabasesOperations,
+    RestorableMongodbResourcesOperations,
+    RestorableSqlContainersOperations,
+    RestorableSqlDatabasesOperations,
+    RestorableSqlResourcesOperations,
+    RestorableTableResourcesOperations,
+    RestorableTablesOperations,
+    ServiceOperations,
+    SqlResourcesOperations,
+    TableResourcesOperations,
+    ThroughputPoolAccountOperations,
+    ThroughputPoolAccountsOperations,
+    ThroughputPoolOperations,
+    ThroughputPoolsOperations,
+)
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials import TokenCredential
 
-class CosmosDBManagementClient:    # pylint: disable=too-many-instance-attributes
+
+class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-keyword,too-many-instance-attributes
     """Azure Cosmos DB Database Service Resource Provider REST API.
 
     :ivar database_accounts: DatabaseAccountsOperations operations
@@ -75,6 +120,8 @@ class CosmosDBManagementClient:    # pylint: disable=too-many-instance-attribute
     :vartype cassandra_clusters: azure.mgmt.cosmosdb.operations.CassandraClustersOperations
     :ivar cassandra_data_centers: CassandraDataCentersOperations operations
     :vartype cassandra_data_centers: azure.mgmt.cosmosdb.operations.CassandraDataCentersOperations
+    :ivar mongo_clusters: MongoClustersOperations operations
+    :vartype mongo_clusters: azure.mgmt.cosmosdb.operations.MongoClustersOperations
     :ivar notebook_workspaces: NotebookWorkspacesOperations operations
     :vartype notebook_workspaces: azure.mgmt.cosmosdb.operations.NotebookWorkspacesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
@@ -119,13 +166,23 @@ class CosmosDBManagementClient:    # pylint: disable=too-many-instance-attribute
      azure.mgmt.cosmosdb.operations.RestorableTableResourcesOperations
     :ivar service: ServiceOperations operations
     :vartype service: azure.mgmt.cosmosdb.operations.ServiceOperations
-    :param credential: Credential needed for the client to connect to Azure.
+    :ivar throughput_pools: ThroughputPoolsOperations operations
+    :vartype throughput_pools: azure.mgmt.cosmosdb.operations.ThroughputPoolsOperations
+    :ivar throughput_pool: ThroughputPoolOperations operations
+    :vartype throughput_pool: azure.mgmt.cosmosdb.operations.ThroughputPoolOperations
+    :ivar throughput_pool_accounts: ThroughputPoolAccountsOperations operations
+    :vartype throughput_pool_accounts:
+     azure.mgmt.cosmosdb.operations.ThroughputPoolAccountsOperations
+    :ivar throughput_pool_account: ThroughputPoolAccountOperations operations
+    :vartype throughput_pool_account:
+     azure.mgmt.cosmosdb.operations.ThroughputPoolAccountOperations
+    :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The ID of the target subscription.
+    :param subscription_id: The ID of the target subscription. Required.
     :type subscription_id: str
     :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2022-02-15-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2024-02-15-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -139,59 +196,127 @@ class CosmosDBManagementClient:    # pylint: disable=too-many-instance-attribute
         base_url: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
-        self._config = CosmosDBManagementClientConfiguration(credential=credential, subscription_id=subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._config = CosmosDBManagementClientConfiguration(
+            credential=credential, subscription_id=subscription_id, **kwargs
+        )
+        self._client: ARMPipelineClient = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
-        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        client_models = {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.database_accounts = DatabaseAccountsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.database_accounts = DatabaseAccountsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
         self.database = DatabaseOperations(self._client, self._config, self._serialize, self._deserialize)
         self.collection = CollectionOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.collection_region = CollectionRegionOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.database_account_region = DatabaseAccountRegionOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.percentile_source_target = PercentileSourceTargetOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.percentile_target = PercentileTargetOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.collection_region = CollectionRegionOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.database_account_region = DatabaseAccountRegionOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.percentile_source_target = PercentileSourceTargetOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.percentile_target = PercentileTargetOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.percentile = PercentileOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.collection_partition_region = CollectionPartitionRegionOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.collection_partition = CollectionPartitionOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.partition_key_range_id = PartitionKeyRangeIdOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.partition_key_range_id_region = PartitionKeyRangeIdRegionOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.collection_partition_region = CollectionPartitionRegionOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.collection_partition = CollectionPartitionOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.partition_key_range_id = PartitionKeyRangeIdOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.partition_key_range_id_region = PartitionKeyRangeIdRegionOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.graph_resources = GraphResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
         self.sql_resources = SqlResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.mongo_db_resources = MongoDBResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.mongo_db_resources = MongoDBResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.table_resources = TableResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.cassandra_resources = CassandraResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.gremlin_resources = GremlinResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.cassandra_resources = CassandraResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.gremlin_resources = GremlinResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.locations = LocationsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.data_transfer_jobs = DataTransferJobsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.cassandra_clusters = CassandraClustersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.cassandra_data_centers = CassandraDataCentersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.notebook_workspaces = NotebookWorkspacesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.private_endpoint_connections = PrivateEndpointConnectionsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.private_link_resources = PrivateLinkResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_database_accounts = RestorableDatabaseAccountsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_sql_databases = RestorableSqlDatabasesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_sql_containers = RestorableSqlContainersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_sql_resources = RestorableSqlResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_mongodb_databases = RestorableMongodbDatabasesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_mongodb_collections = RestorableMongodbCollectionsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_mongodb_resources = RestorableMongodbResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_gremlin_databases = RestorableGremlinDatabasesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_gremlin_graphs = RestorableGremlinGraphsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_gremlin_resources = RestorableGremlinResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_tables = RestorableTablesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.restorable_table_resources = RestorableTableResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.data_transfer_jobs = DataTransferJobsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.cassandra_clusters = CassandraClustersOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.cassandra_data_centers = CassandraDataCentersOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.mongo_clusters = MongoClustersOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.notebook_workspaces = NotebookWorkspacesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.private_endpoint_connections = PrivateEndpointConnectionsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.private_link_resources = PrivateLinkResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_database_accounts = RestorableDatabaseAccountsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_sql_databases = RestorableSqlDatabasesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_sql_containers = RestorableSqlContainersOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_sql_resources = RestorableSqlResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_mongodb_databases = RestorableMongodbDatabasesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_mongodb_collections = RestorableMongodbCollectionsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_mongodb_resources = RestorableMongodbResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_gremlin_databases = RestorableGremlinDatabasesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_gremlin_graphs = RestorableGremlinGraphsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_gremlin_resources = RestorableGremlinResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_tables = RestorableTablesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.restorable_table_resources = RestorableTableResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.service = ServiceOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.throughput_pools = ThroughputPoolsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.throughput_pool = ThroughputPoolOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.throughput_pool_accounts = ThroughputPoolAccountsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.throughput_pool_account = ThroughputPoolAccountOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
 
-
-    def _send_request(
-        self,
-        request: HttpRequest,
-        **kwargs: Any
-    ) -> HttpResponse:
+    def _send_request(self, request: HttpRequest, **kwargs: Any) -> HttpResponse:
         """Runs the network request through the client's chained policies.
 
         >>> from azure.core.rest import HttpRequest
@@ -200,7 +325,7 @@ class CosmosDBManagementClient:    # pylint: disable=too-many-instance-attribute
         >>> response = client._send_request(request)
         <HttpResponse: 200 OK>
 
-        For more information on this code flow, see https://aka.ms/azsdk/python/protocol/quickstart
+        For more information on this code flow, see https://aka.ms/azsdk/dpcodegen/python/send_request
 
         :param request: The network request you want to make. Required.
         :type request: ~azure.core.rest.HttpRequest
@@ -213,15 +338,12 @@ class CosmosDBManagementClient:    # pylint: disable=too-many-instance-attribute
         request_copy.url = self._client.format_url(request_copy.url)
         return self._client.send_request(request_copy, **kwargs)
 
-    def close(self):
-        # type: () -> None
+    def close(self) -> None:
         self._client.close()
 
-    def __enter__(self):
-        # type: () -> CosmosDBManagementClient
+    def __enter__(self) -> "CosmosDBManagementClient":
         self._client.__enter__()
         return self
 
-    def __exit__(self, *exc_details):
-        # type: (Any) -> None
+    def __exit__(self, *exc_details: Any) -> None:
         self._client.__exit__(*exc_details)

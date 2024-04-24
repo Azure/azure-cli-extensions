@@ -57,6 +57,45 @@ helps['datamigration get-sku-recommendation'] = """
                az datamigration get-sku-recommendation --config-file-path "C:\\Users\\user\\document\\config.json"
 """
 
+helps['datamigration login-migration'] = """
+    type: command
+    short-summary: Migrate logins from the source Sql Servers to the target Azure Sql Servers.
+    examples:
+      - name: Run Migrate logins from the source Sql Servers to the target Azure Sql Servers using Parameters.
+        text: |-
+               az datamigration login-migration --src-sql-connection-str  "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --tgt-sql-connection-str  "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --csv-file-path "C:\\CSVFile" --list-of-login "loginname1" "loginname2" --output-folder "C:\\OutputFolder" --aad-domain-name "AADDomainName"
+      - name: Run Migrate logins from the source Sql Servers to the target Azure Sql Servers using config file.
+        text: |-
+               az datamigration login-migration --config-file-path "C:\\Users\\user\\document\\config.json"
+"""
+
+helps['datamigration tde-migration'] = """
+    type: command
+    short-summary: Migrate TDE certificate from source SQL Server to the target Azure SQL Server.
+    examples:
+      - name: Migrate TDE certificate from source SQL Server to the target Azure SQL Server.
+        text: |-
+               az datamigration tde-migration --source-sql-connection-string "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --target-subscription-id "00000000-0000-0000-0000-000000000000" --target-resource-group-name "ResourceGroupName" --target-managed-instance-name "TargetManagedInstanceName" --network-share-path "\\NetworkShare\Folder" --network-share-domain "NetworkShare" --network-share-user-name "NetworkShareUserName" --network-share-password "" --database-name "TdeDb_0" "TdeDb_1" "TdeDb_2"
+"""
+
+helps['datamigration sql-server-schema'] = """
+    type: command
+    short-summary: Migrate schema from the source Sql Servers to the target Azure Sql Servers.
+    examples:
+      - name: Run Migrate database objects from the source SQL Server to the target Azure SQL Database using Parameters.
+        text: |-
+               az datamigration sql-server-schema --action "MigrateSchema" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="
+      - name: Run Generate TSQL schema script from the source SQL Server using Parameters.
+        text: |-
+               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --output-folder "C:\OutputFolder"
+      - name: Run Deploy TSQL script to the target Azure SQL Database using Parameters.
+        text: |-
+               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --input-script-file-path "C:\OutputFolder\script.sql"
+      - name: Run Migrate database objects from the source SQL Server to the target Azure SQL Database using ConfigFile.
+        text: |-
+               az datamigration sql-server-schema --config-file-path "C:\configfile.json"
+"""
+
 helps['datamigration register-integration-runtime'] = """
     type: command
     short-summary: Register Database Migration Service on Integration Runtime

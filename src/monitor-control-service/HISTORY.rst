@@ -2,6 +2,26 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Normalization module name in setup
+
+1.0.0
+++++++
+* Enable all of the facilities of `data-collection` in stable version `2022-06-01`
+* Remove `id_part` of subcommands `data-flow`, `log-analytics`, `performance-counter`, `windows-event-log` and `syslog` for `az monitor data-collection rule`
+
+0.4.1
+++++++
+* `az monitor data-collection rule association create/update`: Add parameter --endpoint-id.
+
+0.4.0
+++++++
+* Bump api version to `2022-06-01`
+
+0.3.1
+++++++
+* `az monitor data-collection rule create`: Add json file example for parameter --rule-file.
 
 0.3.0
 ++++++

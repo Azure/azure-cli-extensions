@@ -14,6 +14,7 @@ import os
 from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer, SMSResponseReplacerProcessor
 from .preparers import CommunicationResourcePreparer
 
+
 class CommunicationSmsScenarios(ScenarioTest):
 
     def __init__(self, method_name):
@@ -42,7 +43,7 @@ class CommunicationSmsScenarios(ScenarioTest):
             'sender': sender,
             'recipient': recipient})
 
-        self.cmd('az communication sms send-sms --sender \"{sender}\" \
+        self.cmd('az communication sms send --sender \"{sender}\" \
         --recipient \"{recipient}\" --message "Hello there!!"', checks=[
             self.check("[0].errorMessage", None),
             self.check("[0].httpStatusCode", "202"),
@@ -73,7 +74,64 @@ class CommunicationSmsScenarios(ScenarioTest):
             'recipient1': recipient1,
             'recipient2': recipient2})
 
-        self.cmd('az communication sms send-sms --sender \"{sender}\" \
+        self.cmd('az communication sms send --sender \"{sender}\" \
+        --recipient \"{recipient1}\" \"{recipient2}\" --message "Hello there!!"', checks=[
+            self.check("[0].errorMessage", None),
+            self.check("[0].httpStatusCode", "202"),
+            self.check("[0].successful", "True")
+        ])
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_sms_send(self, communication_resource_info):
+
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+
+        sender = get_test_source_phonenumber(self.is_live, self.in_recording)
+        recipient = get_test_recipient_phonenumber(self.is_live, self.in_recording)
+
+        if sender is None:
+            sender = get_new_phonenumber(communication_resource_info[1])
+
+        if recipient is None:
+            recipient = sender
+
+        self.kwargs.update({
+            'sender': sender,
+            'recipient': recipient})
+
+        self.cmd('az communication sms send --sender \"{sender}\" \
+        --recipient \"{recipient}\" --message "Hello there!!"', checks=[
+            self.check("[0].errorMessage", None),
+            self.check("[0].httpStatusCode", "202"),
+            self.check("[0].successful", "True")
+        ])
+
+    @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
+    @CommunicationResourcePreparer(resource_group_parameter_name='rg')
+    def test_sms_send_n_recipients(self, communication_resource_info):
+
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+
+        sender = get_test_source_phonenumber(self.is_live, self.in_recording)
+        recipient1 = get_test_recipient_phonenumber(self.is_live, self.in_recording)
+        recipient2 = get_test_recipient_phonenumber(self.is_live, self.in_recording)
+
+        if sender is None:
+            sender = get_new_phonenumber(communication_resource_info[1])
+
+        if recipient1 is None:
+            recipient1 = get_new_phonenumber(communication_resource_info[1])
+
+        if recipient2 is None:
+            recipient2 = get_new_phonenumber(communication_resource_info[1])
+
+        self.kwargs.update({
+            'sender': sender,
+            'recipient1': recipient1,
+            'recipient2': recipient2})
+
+        self.cmd('az communication sms send --sender \"{sender}\" \
         --recipient \"{recipient1}\" \"{recipient2}\" --message "Hello there!!"', checks=[
             self.check("[0].errorMessage", None),
             self.check("[0].httpStatusCode", "202"),

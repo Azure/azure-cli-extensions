@@ -34,6 +34,15 @@ def handle_raw_exception(e):
 
     stringErr = str(e)
 
+    if "WorkloadProfileNameRequired" in stringErr:
+        raise CLIInternalError("Workload profile name is required. Please provide --workload-profile-name.")
+
+    if "Unknown properties Name in Microsoft.ContainerApps.WebApi.Views.Version20221101Preview.WorkloadProfile are not supported" in stringErr:
+        raise CLIInternalError("Bad Request: Workload profile name is not yet supported in this region.")
+
+    if "Error starting job" in stringErr:
+        raise CLIInternalError("There was an error starting the job execution. Please check input parameters and try again.")
+
     if "{" in stringErr and "}" in stringErr:
         jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
         jsonError = json.loads(jsonError)
@@ -50,6 +59,56 @@ def handle_raw_exception(e):
             raise CLIInternalError(message)
         elif "message" in jsonError:
             message = jsonError["message"]
+            raise CLIInternalError(message)
+    raise e
+
+
+def handle_non_404_exception(e):
+    import json
+
+    stringErr = str(e)
+
+    if "{" in stringErr and "}" in stringErr:
+        jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
+        jsonError = json.loads(jsonError)
+
+        if 'error' in jsonError:
+            jsonError = jsonError['error']
+
+            if 'code' in jsonError and 'message' in jsonError:
+                code = jsonError['code']
+                message = jsonError['message']
+                if code != "ResourceNotFound":
+                    raise CLIInternalError('({}) {}'.format(code, message))
+                return jsonError
+        elif "Message" in jsonError:
+            message = jsonError["Message"]
+            raise CLIInternalError(message)
+        elif "message" in jsonError:
+            message = jsonError["message"]
+            raise CLIInternalError(message)
+    raise e
+
+
+def handle_non_404_status_code_exception(e):
+    import json
+
+    if (hasattr(e, 'status_code') and e.status_code == 404) or (hasattr(e, 'response') and hasattr(e.response, 'status_code') and e.response.status_code == 404):
+        return e
+
+    string_err = str(e)
+    if "{" in string_err and "}" in string_err:
+        json_error = string_err[string_err.index("{"):string_err.rindex("}") + 1]
+        json_error = json.loads(json_error)
+        if 'error' in json_error:
+            json_error = json_error['error']
+            if 'code' in json_error and 'message' in json_error:
+                return json_error
+        elif "Message" in json_error:
+            message = json_error["Message"]
+            raise CLIInternalError(message)
+        elif "message" in json_error:
+            message = json_error["message"]
             raise CLIInternalError(message)
     raise e
 
@@ -73,3 +132,25 @@ def log_analytics_shared_key_client_factory(cli_ctx):
     from azure.mgmt.loganalytics import LogAnalyticsManagementClient
 
     return get_mgmt_service_client(cli_ctx, LogAnalyticsManagementClient).shared_keys
+
+
+def custom_location_client_factory(cli_ctx, api_version=None, subscription_id=None, **_):
+    from azure.cli.core.profiles import ResourceType
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_CUSTOMLOCATION, api_version=api_version,
+                                   subscription_id=subscription_id).custom_locations
+
+
+def k8s_extension_client_factory(cli_ctx, subscription_id=None):
+    from .vendored_sdks.kubernetesconfiguration import SourceControlConfigurationClient
+
+    r = get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient, subscription_id=subscription_id)
+    return r.extensions
+
+
+def connected_k8s_client_factory(cli_ctx, subscription_id=None):
+    from .vendored_sdks.hybridkubernetes import ConnectedKubernetesClient
+
+    r = get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient, subscription_id=subscription_id)
+    return r.connected_cluster

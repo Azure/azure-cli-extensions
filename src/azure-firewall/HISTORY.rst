@@ -2,6 +2,45 @@
 
 Release History
 ===============
+
+1.0.1
+++++++
+* `az network firewall policy create/update`: Add parameter `--explicit-proxy`
+
+1.0.0
+++++++
+* [Fix] `az network firewall threat-intel-allowlist create/update/delete`: Remove the argument `--ids` as sub command should not support it.
+* Make extension from preview to stable.
+
+0.14.8
+++++++
+* `az network firewall policy`: Fix unhashable `--identity`
+
+0.14.7
+++++++
+* `az network firewall policy create/update`: Add parameters `--private-ranges` and `--learn-ranges`
+
+0.14.6
+++++++
+* `az network firewall create/update`: Add parameter `--route-server-id`
+* Add command `az network firewall learned-ip-prefix`
+
+0.14.5
+++++++
+* Fix `az network firewall create`: Creation fails with AZFW_Hub SKU
+
+0.14.4
+++++++
+* `az network firewall create/update`: Add parameter `--udp-log-optimization`
+
+0.14.3
+++++++
+* `az network firewall create`: Support Basic SKU creation with management IP configuration
+
+0.14.2
+++++++
+* `az network firewall create/update`: add parameter `--fat-flow-logging`
+
 0.14.1
 ++++++
 * `az network firewall policy`: add parameter `sql`

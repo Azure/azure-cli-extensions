@@ -38,7 +38,7 @@ az dns-resolver delete --name "sampleDnsResolver" --resource-group "sampleResour
 ```
 az dns-resolver inbound-endpoint create --dns-resolver-name "sampleDnsResolver" --name "sampleInboundEndpoint" \
     --location "westus2" \
-    --ip-configurations private-ip-address="" private-ip-allocation-method="Dynamic" id="/subscriptions/0403cfa9-9659-4f33-9f30-1f191c51d111/resourceGroups/sampleVnetResourceGroupName/providers/Microsoft.Network/virtualNetworks/sampleVirtualNetwork/subnets/sampleSubnet" \
+    --ip-configurations "[{private-ip-address:'',private-ip-allocation-method:Dynamic,id:/subscriptions/0403cfa9-9659-4f33-9f30-1f191c51d111/resourceGroups/sampleVnetResourceGroupName/providers/Microsoft.Network/virtualNetworks/sampleVirtualNetwork/subnets/sampleSubnet}]" \
     --tags key1="value1" --resource-group "sampleResourceGroup" 
 
 az dns-resolver inbound-endpoint wait --created --dns-resolver-name "{myDnsResolver}" --name "{myInboundEndpoint}" \

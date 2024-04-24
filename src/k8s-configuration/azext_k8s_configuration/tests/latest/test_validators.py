@@ -3,15 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from typing import Any
 import unittest
 import base64
 from azext_k8s_configuration.providers.SourceControlConfigurationProvider import get_protected_settings
-from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusiveArgumentError
+from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError
 from azext_k8s_configuration.validators import (
     validate_configuration_name,
     validate_known_hosts,
     validate_operator_instance_name,
     validate_operator_namespace,
+    validate_azure_blob_auth,
     validate_private_key,
     validate_url_with_params,
 )
@@ -114,6 +116,56 @@ class TestValidateK8sNaming(unittest.TestCase):
         self.assertEqual(str(cm.exception), err)
 
 
+class TestValidateAzureBlobAuth(unittest.TestCase):
+    def test_valid_service_principal(self):
+        sp = ServicePrincipal("tenantid","clientid","mysecret")
+        azblob = AzureBlob(sp)
+        validate_azure_blob_auth(azblob)
+    
+    def test_missing_client_id_service_principal(self):
+        sp = ServicePrincipal("tenantid",None,"mysecret")
+        azblob = AzureBlob(sp)
+        err = 'Error! Service principal is invalid because it is missing value(s)'
+        with self.assertRaises(RequiredArgumentMissingError) as cm:
+            validate_azure_blob_auth(azblob)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_missing_secret_service_principal(self):
+        sp = ServicePrincipal("tenantid","clientid")
+        azblob = AzureBlob(sp)
+        err = 'Error! Service principal is invalid because it is missing value(s)'
+        with self.assertRaises(RequiredArgumentMissingError) as cm:
+            validate_azure_blob_auth(azblob)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_too_many_auth_service_principal(self):
+        sp = ServicePrincipal("tenantid","clientid","mysecret","mycert")
+        azblob = AzureBlob(sp)
+        err = 'Error! Too many authentication methods provided for service principal'
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validate_azure_blob_auth(azblob)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_missing_cert_service_principal(self):
+        sp = ServicePrincipal("tenantid","clientid","mysecret",None,"mycertpass")
+        azblob = AzureBlob(sp)
+        err = 'Error! Service principal certificate password is invalid'
+        with self.assertRaises(RequiredArgumentMissingError) as cm:
+            validate_azure_blob_auth(azblob)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_too_many_auth_azure_blob(self):
+        azblob = AzureBlob(None,"myaccountkey", "mylocalauthref")
+        err = 'Error! Too many authentication methods provided for Azure Blob'
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validate_azure_blob_auth(azblob)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_valid_one_auth_azure_blob(self):
+        azblob = AzureBlob(None,"myaccountkey", None)
+        validate_azure_blob_auth(azblob)
+
+
 class TestValidateURLWithParams(unittest.TestCase):
     def test_ssh_private_key_with_ssh_url(self):
         validate_url_with_params('git@github.com:jonathan-innis/helm-operator-get-started-private.git', True, False, False, False, False, False)
@@ -171,6 +223,24 @@ class TestValidateKnownHosts(unittest.TestCase):
 class OperatorNamespace:
     def __init__(self, operator_namespace):
         self.operator_namespace = operator_namespace
+
+
+class ServicePrincipal:
+    def __init__(self, tenant_id = None, client_id = None, client_secret = None, client_certificate = None, client_certificate_password = None):
+        self.tenant_id = tenant_id
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.client_certificate = client_certificate
+        self.client_certificate_password = client_certificate_password
+
+
+class AzureBlob:
+    def __init__(self, service_principal = None, account_key = None, local_auth_ref = None):
+        self.service_principal = service_principal
+        self.account_key = account_key
+        self.local_auth_ref = local_auth_ref
+        self.sas_token = None
+        self.managed_identity = None
 
 
 class OperatorInstanceName:

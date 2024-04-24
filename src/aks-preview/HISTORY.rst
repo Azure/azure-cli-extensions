@@ -7,17 +7,583 @@ Guidance
 ++++++++
 If there is no rush to release a new version, please just add a description of the modification under the *Pending* section.
 
-To release a new version, please select a new version number (usually plus 1 to the minor of the current latest version number), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` in `setup.py` with this new version number.
+To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
 Pending
 +++++++
+
+3.0.0b7
++++++++
+* Support `--yes` for `az aks mesh upgrade rollback` and `az aks mesh upgrade complete` commands.
+* Correct the property disable_outbound_nat in windows_profile and add UT.
+* Minimise the roles needed to introduce for Elastic SAN for enabling Azure Container Storage with elasticSan storagepool type.
+
+3.0.0b6
++++++++
+* Add `--enable-azure-monitor-app-monitoring` to the `az aks create` command.
+* Add `--enable-azure-monitor-app-monitoring` and `--disable-azure-monitor-app-monitoring` to the `az aks update` command.
+
+3.0.0b5
++++++++
+* Add `--bootstrap-artifact-source` and `--bootstrap-container-registry-resource-id` to `az aks update`.
+
+3.0.0b4
++++++++
+* Fix the issue that option `--uptime-sla` is ignored in command `az aks create`.
+* Fix the issue that option `--uptime-sla` and `--no-uptime-sla` are ignored in command `az aks update`.
+
+3.0.0b3
++++++++
+* Add `--nodepool-initialization-taints` to `az aks create` and `az aks update`.
+* Add `--bootstrap-artifact-source` and `--bootstrap-container-registry-resource-id` to `az aks create`.
+
+3.0.0b2
++++++++
+* Add `--sku` to the `az aks create` command.
+* Add `--sku` to the `az aks update` command.
+* Support cluster service health probe mode by `--cluster-service-load-balancer-health-probe-mode {Shared, Servicenodeport}`
+
+
+3.0.0b1
++++++++
+* [BREAKING CHANGE] Remove support for nodeSelector for egress gateway for `az aks mesh` command.
+
+2.0.0b8
++++++++
+* Add `az aks check-network outbound` command to check outbound network from nodes.
+* Update the minimum required cli core version to `2.56.0` (actually since `2.0.0b7`).
+
+2.0.0b7
++++++++
+* Support reset default value for loadbalancer profile and natgateway profile
+* Vendor new SDK and bump API version to 2024-02-02-preview.
+
+2.0.0b6
++++++++
+* Fix the resource allocated after disabling ephemeralDisk storagepool type for option `all` in azure container storage.
+
+2.0.0b5
++++++++
+* Add support to enable and disable a single type of storagepool using `--enable-azure-container-storage` and `--disable-azure-container-storage` respectively.
+* Add support to define the resource allocation to Azure Container Storage applications based on the type of node pools used and storagepools enabled.
+
+2.0.0b4
++++++++
+* Add `--enable-vtpm` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-vtpm` to the `az aks nodepool update` command.
+* Add `--enable-secure-boot` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-secure-boot` to the `az aks nodepool update` command.
+
+2.0.0b3
++++++++
+* Add parameter to set revision `--revision` for the Azure Service Mesh addon while creating AKS cluster.
+* Fix for `az aks mesh get-upgrades` command panic response when ASM addon is not enabled.
+
+2.0.0b2
++++++++
+* Add `--pod-ip-allocation-mode` to `az aks create` and `az aks nodepool` commands.
+
+2.0.0b1
++++++++
+* [BREAKING CHANGE] Replace `guardrails` parameters with `safeguards`.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
+* Add `az aks nodepool delete-machines` command.
+* Update `az aks approuting zone` command to support private dns zones.
+* Vendor new SDK and bump API version to 2024-01-02-preview.
+
+1.0.0b6
++++++++
+* Vendor new SDK and bump API version to 2023-11-02-preview.
+* Add `--ssh-access` to the `az aks create` command.
+* Add `--ssh-access` to the `az aks update` command.
+* Add `--ssh-access` to the `az aks nodepool add` command.
+* Add `--ssh-access` to the `az aks nodepool update` command.
+* Implicitly enable istio when ingress or egress gateway is enabled for Azure Service Mesh.
+* Add `az aks nodepool delete-machines` command.
+
+1.0.0b5
++++++++
+* Add `--enable-ai-toolchain-operator` to `az aks create` and `az aks update`.
+* Add `--disable-ai-toolchain-operator` to the `az aks update` command.
+* Refactor azure service mesh related code to meet cli style requirements.
+
+1.0.0b4
++++++++
+* Fix for `az aks approuting update` command not working when `monitoring` addon is enabled.
+
+1.0.0b3
++++++++
+* Change the format for az aks machine commands to separate the ipv4, ipv6 columns
+* Deprecate the alias "-r" of parameter --source-resource-id in `az aks trustedaccess rolebinding create`
+
+1.0.0b2
++++++++
+* Add --skip-gpu-driver-install option to node pool property in `az aks nodepool add`.
+
+1.0.0b1
++++++++
+* Add `--enable-addon-autoscaling` and `--disable-addon-autoscaling` to the `az aks update` command.
+* Add `--enable-addon-autoscaling` to the `az aks create` command.
+* Add `--ip-families` to the `az aks update` command.
+
+0.5.174
++++++++
+* Fix the response format for `az aks mesh get-revisions` and `az aks mesh get-upgrades`.
+* Fix for `az aks approuting update` command failing on granting keyvault permissions to managed identity.
+* Replace Workload Identity related functions with stable version.
+
+0.5.173
++++++++
+* Add warning when stopping a private link cluster.
+
+0.5.172
++++++++
+* Fix for regression issue with `az aks create --enable-addon` command for enabling App Routing
+* Vendor new SDK and bump API version to 2023-10-02-preview.
+* Update the enum for `--os-sku` in command `az aks nodepool update` to only accept the expected Ubuntu and AzureLinux OSSKUs.
+* Update description `az aks update` and remove description about outbound ip limit.
+
+0.5.171
++++++++
+* Fix the issue that the value passed by option `--os-sku` in command `az aks nodepool update` is not processed.
+
+0.5.170
++++++++
+* Add `az aks approuting` and `az aks approuting zone` commands for managing App Routing.
+* Add `--os-sku` to the `az aks nodepool update` command.
+* Add `--node-provisioning-mode` to the `az aks update` command.
+* Add `--node-provisioning-mode` to the `az aks create` command.
+* Add Artifact Streaming enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+* fix a bug in --support-plan handling when doing `az aks update`
+
+0.5.169
++++++++
+* Add `--network-plugin` to the `az aks update` command.
+* Add the KataCcIsolation option to --workload-runtime.
+* Update "VirtualMachines" agent pool type as Public Preview feature.
+* Add --disable-network-observability to `az aks update` cluster command.
+* Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
+* Add `--drain-timeout` to the `az aks nodepool add/update/upgrade` commands (already in [azure-cli](https://github.com/Azure/azure-cli/pull/27475)).
+
+
+0.5.168
++++++++
+* Add `--enable-image-integrity` to the `az aks update` command.
+
+0.5.167
++++++++
+* Vendor new SDK and bump API version to 2023-09-02-preview.
+* Fix the default storagepool name value created for Azure Container Storage.
+* Ensure the correct nodepool name is picked and labelled by Azure Container Storage while installing with `az aks create`.
+
+0.5.166
++++++++
+* Add `--network-policy` to the `az aks update` command.
+
+0.5.165
++++++++
+* Rearrange the storagepool SKU related helm values set for Azure Container Storage.
+
+0.5.164
++++++++
+* Add option `--enable-azure-container-storage` and supporting options `--storage-pool-name`, `--storage-pool-type`, `--storage-pool-sku`, `--storage-pool-size` for `az aks create` and `az aks update`. `az aks update` also supports `--azure-container-storage-nodepools` option.
+* Add option `--disable-azure-container-storage` to `az aks create` and `az aks update`.
+
+0.5.163
++++++++
+* Add `get-upgrades` and `get-revisions` to the `az aks mesh` command.
+* Add `az aks mesh upgrade` commands to manage upgrades for Azure Service Mesh.
+
+0.5.162
++++++++
+* Replace Image Cleaner related functions with stable version.
+* Vendor new SDK and bump API version to 2023-08-02-preview.
+* Update the operation/method used in following commands as the put/delete operations have been changed to long running operations
+    * `az aks trustedaccess rolebinding create`
+    * `az aks trustedaccess rolebinding update`
+    * `az aks trustedaccess rolebinding delete`
+
+0.5.161
++++++++
+* Support `premium` cluster sku tier in `az aks create` and `az aks update` commands
+* Add option `--k8s-support-plan` to `az aks create` and `az aks update` commands
+* Add `az aks machine list` command to fetch list of machines in an agentpool.
+* Add `az aks machine show` command to fetch information about a specific machine in an agentpool.
+
+0.5.160
++++++++
+* Custom ips and managed ips can be assigned to aks cluster outbound resources
+
+0.5.159
++++++++
+* Revert `az aks copilot` Command
+
+0.5.158
++++++++
+* Add `enable-egress-gateway` and `disable-egress-gateway` to the `az aks mesh` command.
+
+0.5.157
++++++++
+* Add `--disable-workload-identity` to the `az aks update` command.
+
+0.5.156
++++++++
+* Add `az aks copilot` command to start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.
+
+0.5.155
++++++++
+* Add `--enable-cost-analysis` and `--disable-cost-analysis` to the `az aks update` command.
+* Add `--enable-cost-analysis` to the `az aks create` command.
+
+0.5.154
++++++++
+* Vendor new SDK and bump API version to 2023-07-02-preview.
+* [Breaking Change] Remove option `--upgrade-settings` from `az aks update` command, use option `--enable-force-upgrade` and `--disable-force-upgrade` instead.
+* [Breaking Change] Deprecate option `--dns-zone-resource-id` from `az aks create`, `az aks addon enable`, `az aks addon update` and `az aks enable-addons` commands, use option `--dns-zone-resource-ids` instead.
+
+0.5.153
+++++++
+* outbound ip, ipprefix and managed ips in loadbalancerProfile should be mutually exclusive
+
+0.5.152
+++++++
+* move loadbalancer/natgateway util functions to azure-cli and update reference in aks-preview project.
+* Update the minimum required cli core version to `2.49.0`.
+* Add plugin CA support for `az aks mesh enable` commands for Azure Service Mesh.
+
+0.5.151
++++++++
+* Add `--disable-image-integrity` to the `az aks update` command.
+
+0.5.150
++++++++
+* Vendor new SDK and bump API version to 2023-06-02-preview.
+* Add `--network-dataplane` to the `az aks update` command.
+* Support "VirtualMachines" agent pool type to `az aks create --vm-set-type` and `az aks nodepool add --vm-set-type`. This is internal use only, not for public preview.
+
+0.5.149
++++++++
+* `az aks addon update`: Fix unexpected error 'Addon "web_application_routing" is not enabled in this cluster' when trying to update the web app routing addon for an managed cluster that already has it enabled.
+
+0.5.148
++++++++
+* Add support for option --nodepool-taints to some aks commands
+  * aks create
+  * aks update
+
+0.5.147
++++++++
+* Extend containerinsights --data-collection-settings with new fields "streams" and containerlogv2
+
+0.5.146
++++++++
+* Add support for new snapshot command `az aks nodepool snapshot update`
+
+0.5.145
++++++++
+* Add support for option --aks-custom-headers to some aks commands
+  * aks get-credentials
+  * aks nodepool scale
+  * aks nodepool update
+  * aks enable-addons
+  * aks show
+  * aks scale
+
+0.5.144
++++++++
+* Fix setup network profile with network observability due to incorrect property
+
+0.5.143
++++++++
+* Vendor new SDK and bump API version to 2023-05-02-preview.
+* Add `--enable-network-observability` flag to `az aks create` and `az aks update`.
+
+0.5.142
++++++++
+* Deprecate option names `--enable-azuremonitormetrics` and `--disable-azuremonitormetrics`, use `--enable-azure-monitor-metrics` and `--disable-azure-monitor-metrics` instead, so as to be consistent with the option names in official azure-cli. Fix issue `\#26600 <https://github.com/Azure/azure-cli/issues/26600>`_.
+
+0.5.141
++++++++
+* Fix `az aks get-credentials` not using the value set by environment variable `KUBECONFIG`, see issue `\#26444 <https://github.com/Azure/azure-cli-extensions/issues/26444>`_.
+* Allow options for specifying guardrails profile arguments
+
+0.5.140
++++++++
+* Vendor new SDK and bump API version to 2023-04-02-preview.
+* `az aks create` and `az aks enable-addons`: Change the default value of `--enable-msi-auth-for-monitoring` to `true` and add check for airgap clouds for monitoring addon
+
+0.5.139
++++++++
+* `az aks create` and `az aks nodepool add`: Add warning message when specifying `--os-sku` to `Mariner` or `CBLMariner`.
+
+0.5.138
++++++++
+* Vendor new SDK and bump API version to 2023-03-02-preview.
+* fix: don't use current kube_proxy_config on UPDATE
+* GA update for Azure Monitor Metrics Addon (managed prometheus metrics) for AKS
+
+0.5.137
++++++++
+* Fix role assignment failure caused by the breaking change of default API version bump of the auth SDK
+
+0.5.136
++++++++
+* fix: remove uneeded location check for DCR, DCRA in azure monitor metrics addon (aks)
+* Refactor: use decorator mode in pod_cidr and network_plugin_mode getters to read from mc only during CREATE
+
+0.5.135
++++++++
+* Add `--network-dataplane` flag to `az aks create`.
+* Allow updating the pod CIDR and network plugin mode to migrate clusters to Azure CNI Overlay.
+
+0.5.134
++++++++
+* Add cluster upgrade settings options `--upgrade-settings`, and `--upgrade-override-until`.
+
+0.5.133
++++++++
+* Add `az aks mesh` commands for Azure Service Mesh.
+* `az aks create/update`: Replace `--uptime-sla` and `--no-uptime-sla` argument with `--tier` argument.
+* Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
+* Vendor new SDK and bump API version to 2023-02-02-preview.
+
+0.5.132
++++++++
+* Change the short name of option `--source-resource-id` in command `az aks trustedaccess rolebinding create` from `-s` to `-r`.
+* Add parameter to enable windows recording rules `--enable-windows-recording-rules` for the Azure Monitor Metrics addon
+
+0.5.131
++++++++
+* Allow updating the ssh key value if cluster was created without ssh key
+
+0.5.130
++++++++
+* Enable outbound migration from/to udr
+* Update description after Azure Keyvault Secrets Provider addon is GA
+
+0.5.129
++++++++
+* Vendor new SDK and bump API version to 2023-01-02-preview.
+* Mark AAD-legacy properties `--aad-client-app-id`, `--aad-server-app-id` and `--aad-server-app-secret` deprecated
+
+0.5.128
++++++++
+* Fix option name `--duration` for command group `az aks maintenanceconfiguration`
+
+0.5.127
++++++++
+* Add `--node-os-upgrade-channel <node os upgrade channel>` option for specifying the manner in which the OS on your nodes is updated in `aks create` and `aks update`
+
+0.5.126
++++++++
+* Add `--nrg-lockdown-restriction-level <restriction level>` option for chosing the node resource group restriction level in `aks create` and `aks update`
+* Raise InvalidArgumentValueError for azure cni + pod_cidr without overlay.
+
+0.5.125
++++++++
+* Update the minimum required cli core version to `2.44.0`.
+* Support for data collection settings to the AKS Monitoring addon
+* Add `--data-collection-settings` option in aks create and aks enable-addons
+
+0.5.124
++++++++
+* Update command group `az aks maintenanceconfiguration` to support the creation of dedicated maintenance configurations:
+  * *aksManagedAutoUpgradeSchedule* for scheduled cluster auto-upgrade
+  * *aksManagedNodeOSUpgradeSchedule* for scheduled node os auto-upgrade
+
+0.5.123
++++++++
+* Add the KataMshvVmIsolation option to --workload-runtime.
+
+0.5.122
++++++++
+* Vendor new SDK and bump API version to 2022-11-02-preview.
+* Remove the error prompt about "no argument specified" when `--enable-workload-identity=False` is specified.
+
+0.5.121
++++++++
+* Remove defender related code after GA, reuse the implementation in azure-cli/acs.
+* Remove check_raw_parameters in update code path, reuse the implementation in azure-cli/acs.
+* Remove oidc issuer related code after GA, reuse the implementation in azure-cli/acs.
+* Fix monitoring addon option `--enable-syslog` for `aks addon enable`.
+* Remove deprecated option `--node-zones`, use `--zones` instead.
+* Remove gpu instance profile related code after GA, reuse the implementation in azure-cli/acs.
+* Remove http proxy config related code after GA, reuse the implementation in azure-cli/acs.
+
+0.5.120
++++++++
+
+* Remove file, blob csi driver and snapshot controller related CSI driver code after GA, reuse the implementation in azure-cli/acs.
+* Remove Azure Dedicated Host related code after GA, reuse the implementation in azure-cli/acs.
+* Remove KMS related code after GA, reuse the implementation in azure-cli/acs.
+
+0.5.119
++++++++
+
+* Add `--custom-ca-trust-certificates` option for custom CA in aks create and aks update
+* Update the minimum required cli core version to `2.43.0`.
+
+0.5.118
++++++++
+
+* Support enabling syslog collection in monitoring on AKS clusters with msi auth
+* Add `--enable-syslog` option in aks create and aks enable-addons
+
+0.5.117
++++++++
+
+* Add custom transform for custom CA
+* Support updating kube-proxy configuration with `az aks update --kube-proxy-config file.json`.
+
+0.5.116
++++++++
+
+* Fix `az aks update` command failing on updating the ssh key value if cluster was created without ssh key, see issue `\#5559 <https://github.com/Azure/azure-cli-extensions/issues/5559>`_.
+* Mark "--enable-pod-security-policy" deprecated.
+* Deny create request if binding existed for command "trustedaccess rolebinding create".
+* Support AAD clusters for "az aks kollect".
+* Vendor new SDK and bump API version to 2022-10-02-preview.
+
+0.5.115
++++++++
+
+* Support node public IPTags by `az aks create` and `az aks nodepool add`.
+
+0.5.114
++++++++
+
+* Fix `az aks create` and `az aks nodepool add` commands failing on adding nodepool with managed ApplicationSecurityGroups.
+
+0.5.113
++++++++
+
+* Fix workload identity update error after oidc issure GA in azure-cli.
+* Fix `az aks update` command failing on SP-based cluster blocked by validation in AzureMonitorMetrics Addon, see issue `\#5488 <https://github.com/Azure/azure-cli-extensions/issues/5488>`_.
+* Fix `az aks update` command failing on changes not related to outbound type conversion, see issue `\#24430 https://github.com/Azure/azure-cli/issues/24430>`_.
+
+0.5.112
++++++++
+
+* Add `--outbound-type` to update managed cluster command.
+
+0.5.111
++++++++
+
+* Support updating SSH public key with `az aks update --ssh-key-value`.
+
+0.5.110
++++++++
+
+* Add `--nodepool-asg-ids` and `--nodepool-allowed-host-ports` flags for enabling NSGControl. Related commands:
+  * `az aks create`
+  * `az aks nodepool add`
+  * `az aks nodepool update`
+
+0.5.109
++++++++
+
+* Add --enable-cilium-dataplane flag for creating a cluster that uses Cilium as the networking dataplane.
+
+0.5.108
++++++++
+
+* Vendor new SDK and bump API version to 2022-09-02-preview.
+
+0.5.107
++++++++
+
+* Add `--disable-windows-outbound-nat` for `az aks nodepool add` to add a Windows agent pool which the Windows OutboundNAT is disabled.
+
+0.5.106
++++++++
+
+* Add support for AzureMonitorMetrics Addon (managed prometheus metrics in public preview) for AKS
+
+0.5.105
++++++++
+
+* Add support to create cluster with kube-proxy configuration via `az aks create --kube-proxy-config file.json`
+* Update to use 2022-08-03-preview api version.
+
+0.5.104
++++++++
+
+* Add support to upgrade or update cluster with managed cluster snapshot. Command is
+    * `az aks upgrade --cluster-snapshot-id <snapshot-id>`
+    * `az aks update --cluster-snapshot-id <snapshot-id>`
+
+0.5.103
++++++++
+
+* Add load-balancer-backend-pool-type to create and update api.
+
+0.5.102
++++++++
+
+* Add --enable-vpa/--disable-vpa to enable/disable vertical pod autoscaler feature.
+
+0.5.101
++++++++
+
+* Fix `az aks draft` command crashed on windows during binary check, see issue `\#5336 <https://github.com/Azure/azure-cli-extensions/issues/5336>`_.
+* Vendor new SDK and bump API version to 2022-08-02-preview.
+
+0.5.100
++++++++
+
+* Remove unused import to avoid failure in Python3.6, see issue `\#5303 <https://github.com/Azure/azure-cli-extensions/issues/5303>`_.
+
+0.5.99
+++++++
+
+* Fix DRAFT CLI to 0.0.22.
+* Fix the URL for Download.
+
+0.5.98
+++++++
+
+* Fix auto download issue for Draft CLI.
+* Remove host and certificates as draft tools update command no longer uses it.
+
+0.5.97
+++++++
+
+* Add support for apiserver vnet integration public cluster.
+
+0.5.96
+++++++
+
+* Add support for enabling ImageCleaner with `--enable-image-cleaner` flag.
+* Add sub-command `operation-abort` for `az aks` and `az aks nodepool` to support canceling the previous operation.
+
+0.5.95
+++++++
+
+* Add `--enable-node-restriction`/`--disable-node-restriction` to enable/disable node restriction feature
+* Update the minimum required cli core version to `2.38.0` (actually since `0.5.92`).
+* Add new value `Mariner` for option `--os-sku` in `az aks create` and `az aks nodepool add`.
+
+0.5.94
+++++++
+
+* [BREAKING CHANGE] Since the service no longer supports updating source resource id for role binding, so remove --source-resource-id of `aks trustedaccess rolebinding update` command.
+* Change the acceptable values of the `--roles` option to comma-seperated.
+    * az aks trustedaccess rolebinding create
+    * az aks trustedaccess rolebinding update
+* Upgrade `az aks kollect` command to use Periscope version 0.0.10 supporting enhanced Windows log collection.
+* Vendor new SDK and bump API version to 2022-07-02-preview.
+
+0.5.93
+++++++
+
+* Fix for "'Namespace' object has no attribute 'nodepool_name' error" in command `az aks nodepool wait`, see issue `\#23468 <https://github.com/Azure/azure-cli/issues/23468>`_.
 
 0.5.92
 ++++++
 
 * Move Azure KeyVault KMS to GA.
 * Support disabling Azure KeyVault KMS.
-* Update to use 2022-06-02-preview api version.
+* Vendor new SDK and bump API version to 2022-06-02-preview.
 
 0.5.91
 ++++++
@@ -95,7 +661,7 @@ Pending
 
 * Add support for KEDA workload auto-scaler.
 * Fix `az aks addon list`, `az aks addon list-available` and `az aks addon show` commands when dealing with the web application routing addon.
-* Update to use 2022-05-02-preview api version.
+* Vendor new SDK and bump API version to 2022-05-02-preview.
 
 0.5.78
 ++++++
@@ -161,7 +727,7 @@ Pending
 +++++++++++++++++++++
 
 * Update the minimum required cli core version to `2.35.0`.
-* Update to use 2022-04-02-preview api version.
+* Vendor new SDK and bump API version to 2022-04-02-preview.
 * Add support for csi drivers extensibility.
 * Add support for apiserver vnet integration.
 
@@ -195,7 +761,7 @@ Pending
 0.5.61
 ++++++
 
-* Update to use 2022-03-02-preview api version.
+* Vendor new SDK and bump API version to 2022-03-02-preview.
 * Add support for `--format` parameter in `az aks get-credentials` command.
 
 0.5.60
@@ -233,7 +799,7 @@ Pending
 0.5.58
 ++++++
 
-* Update to use 2022-02-02-preview api version.
+* Vendor new SDK and bump API version to 2022-02-02-preview.
 * Add support for enabling Azure KeyVault KMS with `--enable-azure-keyvault-kms` flag.
 
 0.5.57
@@ -262,7 +828,7 @@ Pending
 ++++++
 
 * Update the minimum required cli core version to `2.32.0`.
-* Update to use 2022-01-02-preview api version.
+* Vendor new SDK and bump API version to 2022-01-02-preview.
 * Add support for cluster creating with Capacity Reservation Group.
     * `az aks create --crg-id`
 * Add support for nodepool adding with Capacity Reservation Group.
@@ -290,6 +856,7 @@ Pending
 0.5.49
 ++++++
 
+* Vendor new SDK and bump API version to 2021-11-01-preview.
 * Update the minimum required cli core version to `2.31.0`.
 * Add support for Alias Minor Version.
 
@@ -307,7 +874,7 @@ Pending
 0.5.46
 ++++++
 
-* Update to use 2021-10-01 api-version.
+* Vendor new SDK and bump API version to 2021-10-01.
 
 0.5.45
 ++++++
@@ -368,7 +935,7 @@ Pending
 0.5.36
 ++++++
 
-* Update to use 2021-09-01 api-version.
+* Vendor new SDK and bump API version to 2021-09-01.
 
 0.5.35
 ++++++
@@ -416,7 +983,7 @@ Pending
 0.5.28
 ++++++
 
-* Update to adopt 2021-07-01 api-version.
+* Vendor new SDK and bump API version to 2021-07-01.
 
 0.5.27
 ++++++
@@ -483,7 +1050,7 @@ Pending
 0.5.15
 ++++++
 
-* Update to use 2021-05-01 api-version.
+* Vendor new SDK and bump API version to 2021-05-01.
 
 0.5.14
 ++++++
@@ -525,7 +1092,7 @@ Pending
 0.5.8
 +++++
 
-* Update to use 2021-03-01 api-version
+* Vendor new SDK and bump API version to 2021-03-01.
 
 0.5.7
 +++++
@@ -561,7 +1128,7 @@ Pending
 0.5.1
 +++++
 
-* Update to use 2021-02-01 api-version
+* Vendor new SDK and bump API version to 2021-02-01.
 
 0.5.0
 +++++
@@ -573,7 +1140,7 @@ Pending
 0.4.73
 ++++++
 
-* Update to use 2020-12-01 api-version
+* Vendor new SDK and bump API version to 2020-12-01.
 * Add argument '--enable-encryption-at-host'
 
 0.4.72
@@ -607,6 +1174,7 @@ Pending
 
 * Add support for node configuration when creating cluster or agent pool.
 * Support private DNS zone for AKS private cluster.
+* Vendor new SDK and bump API version to 2020-11-01.
 
 0.4.66
 ++++++
@@ -630,7 +1198,7 @@ Pending
 0.4.63
 ++++++
 
-* Enable the September (2020-09-01) for use with the AKS commands
+* Vendor new SDK and bump API version to 2020-09-01.
 * Support Start/Stop cluster feature in preview
 * Support ephemeral OS functionality
 * Add new properties to the autoscaler profile: max-empty-bulk-delete, skip-nodes-with-local-storage, skip-nodes-with-system-pods, expander, max-total-unready-percentage, ok-total-unready-count and new-pod-scale-up-delay
@@ -688,6 +1256,7 @@ Pending
 ++++++
 
 * Add --ppg for "az aks create" and "az aks nodepool add"
+* Vendor new SDK and bump API version to 2020-06-01.
 
 0.4.52
 ++++++

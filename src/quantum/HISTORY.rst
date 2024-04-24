@@ -3,6 +3,51 @@
 Release History
 ===============
 
+1.0.0b3
+++++++
+* [2024-04-11] Version intended to work with QDK version 0.29.0
+* Change role assignment for new Workspaces to linked Storage Accounts from Contributor to Storage Account Contributor.
+
+1.0.0b2
+++++++
+* [2024-02-14] Version intended to work with QDK version 0.29.0
+* Add azure quantum connection string/ api key functionalities.
+
+1.0.0b1
+++++++
+* [2024-02-08] Version intended to work with QDK version 0.29.0
+* Updated documentations and messages.
+
+0.21.0
+++++++
+* [2024-01-10] Version intended to work with QDK version 0.29.0
+* Updated documentation to support the Modern QDK. Users can now utilize the Modern QDK to generate QIR in human-readable LLVM code and submit it using CLI. For detailed instructions, please refer to: https://github.com/microsoft/qsharp/wiki/Differences-from-the-previous-QDK#qir-generation.
+* Added a message to warn users that the Classic QDK is on its way to deprecation.
+
+0.20.0
+++++++
+* [2023-12-13] Version intended to work with QDK version 0.29.0
+* Adding an ability to get a job output (for certain targets) even if the job is in `Failed` state.
+
+0.19.0
+++++++
+* [2023-02-27] Version intended to work with QDK version 0.27.253010
+* You can specify --skip-autoadd when creating a workspace to only add the providers listed after the -r parameter, so provider plans in the "Credits for All" program will not be automatically added.
+* Adding resource estimator batching job support to az quantum.
+
+0.18.0
+++++++
+* [2023-02-08] Version intended to work with QDK version 0.27.253010 and Azure CLI 2.41.0 or greater.
+* You can now submit QIR and pass-through jobs using the CLI.
+* Fixed Azure/azure-cli-extensions Issue #5831 to eliminate some workspace creation errors.
+
+0.17.0
+++++++
+* [2022-11-02] Update default QDK version to latest 0.27.238334 - See https://learn.microsoft.com/azure/quantum/release-notes.
+* [2022-10-14] [Edited] The 0.17.0 release was originally intended to work with QDK version 0.26.233415, however additional functionality has been added to QDK version to 0.27.238334 that can be accessed by CLI extension 0.17.0.
+* The `az quantum` reference documentation now indicates which command parameters are required, and missing-parameter error messages are more informative. See https://learn.microsoft.com/cli/azure/quantum
+* You can submit jobs to the microsoft.simulator.resources-estimator target using the CLI.
+
 0.16.0
 ++++++
 * [2022-06-30] Version intended to work with QDK version 0.25.218240

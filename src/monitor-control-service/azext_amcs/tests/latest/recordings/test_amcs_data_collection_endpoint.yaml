@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -g -n --public-network-access
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.53.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_amcs_endpoints000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_amcs_endpoints000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001","name":"clitest_amcs_endpoints000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-04-21T09:49:54Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001","name":"clitest_amcs_endpoints000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_amcs_data_collection_endpoint","date":"2023-11-01T05:42:34Z","module":"monitor-control-service"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '339'
+      - '418'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Apr 2022 09:50:00 GMT
+      - Wed, 01 Nov 2023 05:42:45 GMT
       expires:
       - '-1'
       pragma:
@@ -60,23 +60,23 @@ interactions:
       ParameterSetName:
       - -g -n --public-network-access
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1?api-version=2021-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1?api-version=2022-06-01
   response:
     body:
-      string: '{"properties":{"immutableId":"dce-6bf72b1e442446c9b5f294a243f33c11","configurationAccess":{"endpoint":"https://endpoint1-cdsd.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint1-cdsd.eastus2euap-1.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Disabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1","name":"endpoint1","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"00001c76-0000-3300-0000-626128cf0000\"","systemData":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-04-21T09:50:05.1808069Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-21T09:50:05.1808069Z"}}'
+      string: '{"properties":{"immutableId":"dce-9059a399c1fb4b40b0f56765874e813c","configurationAccess":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.canary.ingest.monitor.azure.com"},"metricsIngestion":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.metrics.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Disabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1","name":"endpoint1","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"0d00db53-0000-3300-0000-6541e55a0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:47.4170324Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:47.4170324Z"}}'
     headers:
       api-supported-versions:
-      - 2021-04-01, 2021-09-01-preview
+      - 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
       cache-control:
       - no-cache
       content-length:
-      - '915'
+      - '1022'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Apr 2022 09:50:09 GMT
+      - Wed, 01 Nov 2023 05:42:51 GMT
       expires:
       - '-1'
       pragma:
@@ -112,23 +112,23 @@ interactions:
       ParameterSetName:
       - -g -n --public-network-access --kind
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1?api-version=2021-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1?api-version=2022-06-01
   response:
     body:
-      string: '{"properties":{"immutableId":"dce-6bf72b1e442446c9b5f294a243f33c11","configurationAccess":{"endpoint":"https://endpoint1-cdsd.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint1-cdsd.eastus2euap-1.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Disabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1","name":"endpoint1","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"00001c76-0000-3300-0000-626128cf0000\"","systemData":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-04-21T09:50:05.1808069Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-21T09:50:05.1808069Z"}}'
+      string: '{"properties":{"immutableId":"dce-9059a399c1fb4b40b0f56765874e813c","configurationAccess":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.canary.ingest.monitor.azure.com"},"metricsIngestion":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.metrics.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Disabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1","name":"endpoint1","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"0d00db53-0000-3300-0000-6541e55a0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:47.4170324Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:47.4170324Z"}}'
     headers:
       api-supported-versions:
-      - 2021-04-01, 2021-09-01-preview
+      - 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
       cache-control:
       - no-cache
       content-length:
-      - '915'
+      - '1022'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Apr 2022 09:50:12 GMT
+      - Wed, 01 Nov 2023 05:42:53 GMT
       expires:
       - '-1'
       pragma:
@@ -150,7 +150,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "eastus2euap", "kind": "Windows", "properties": {"immutableId":
-      "dce-6bf72b1e442446c9b5f294a243f33c11", "configurationAccess": {}, "logsIngestion":
+      "dce-9059a399c1fb4b40b0f56765874e813c", "configurationAccess": {}, "logsIngestion":
       {}, "networkAcls": {"publicNetworkAccess": "Enabled"}}}'
     headers:
       Accept:
@@ -168,23 +168,23 @@ interactions:
       ParameterSetName:
       - -g -n --public-network-access --kind
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1?api-version=2021-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1?api-version=2022-06-01
   response:
     body:
-      string: '{"properties":{"immutableId":"dce-6bf72b1e442446c9b5f294a243f33c11","configurationAccess":{"endpoint":"https://endpoint1-cdsd.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint1-cdsd.eastus2euap-1.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Windows","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1","name":"endpoint1","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"00002576-0000-3300-0000-626128d60000\"","systemData":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-04-21T09:50:05.1808069Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-21T09:50:14.0042181Z"}}'
+      string: '{"properties":{"immutableId":"dce-9059a399c1fb4b40b0f56765874e813c","configurationAccess":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.canary.ingest.monitor.azure.com"},"metricsIngestion":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.metrics.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Windows","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1","name":"endpoint1","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"0d00ec53-0000-3300-0000-6541e55f0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:47.4170324Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:55.1671698Z"}}'
     headers:
       api-supported-versions:
-      - 2021-04-01, 2021-09-01-preview
+      - 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
       cache-control:
       - no-cache
       content-length:
-      - '931'
+      - '1038'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Apr 2022 09:50:16 GMT
+      - Wed, 01 Nov 2023 05:42:55 GMT
       expires:
       - '-1'
       pragma:
@@ -220,21 +220,21 @@ interactions:
       ParameterSetName:
       - -g -n --public-network-access --kind
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-azure-mgmt-resource/20.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.53.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_amcs_endpoints000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_amcs_endpoints000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001","name":"clitest_amcs_endpoints000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2022-04-21T09:49:54Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001","name":"clitest_amcs_endpoints000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_amcs_data_collection_endpoint","date":"2023-11-01T05:42:34Z","module":"monitor-control-service"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '339'
+      - '418'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Apr 2022 09:50:17 GMT
+      - Wed, 01 Nov 2023 05:42:56 GMT
       expires:
       - '-1'
       pragma:
@@ -267,23 +267,23 @@ interactions:
       ParameterSetName:
       - -g -n --public-network-access --kind
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2?api-version=2021-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2?api-version=2022-06-01
   response:
     body:
-      string: '{"properties":{"immutableId":"dce-b364c0e7c86d47af830514c42083fdca","configurationAccess":{"endpoint":"https://endpoint2-cc4j.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint2-cc4j.eastus2euap-1.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Linux","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2","name":"endpoint2","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"00003476-0000-3300-0000-626128e30000\"","systemData":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-04-21T09:50:25.0754476Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-21T09:50:25.0754476Z"}}'
+      string: '{"properties":{"immutableId":"dce-9427f98801d94ef88719a02bda5d097a","configurationAccess":{"endpoint":"https://endpoint2-gkd5.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint2-gkd5.eastus2euap-1.canary.ingest.monitor.azure.com"},"metricsIngestion":{"endpoint":"https://endpoint2-gkd5.eastus2euap-1.metrics.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Linux","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2","name":"endpoint2","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"0d00fc53-0000-3300-0000-6541e5660000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:59.3841595Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:59.3841595Z"}}'
     headers:
       api-supported-versions:
-      - 2021-04-01, 2021-09-01-preview
+      - 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
       cache-control:
       - no-cache
       content-length:
-      - '929'
+      - '1036'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Apr 2022 09:50:29 GMT
+      - Wed, 01 Nov 2023 05:43:03 GMT
       expires:
       - '-1'
       pragma:
@@ -319,23 +319,23 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2?api-version=2021-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2?api-version=2022-06-01
   response:
     body:
-      string: '{"properties":{"immutableId":"dce-b364c0e7c86d47af830514c42083fdca","configurationAccess":{"endpoint":"https://endpoint2-cc4j.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint2-cc4j.eastus2euap-1.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Linux","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2","name":"endpoint2","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"00003476-0000-3300-0000-626128e30000\"","systemData":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-04-21T09:50:25.0754476Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-21T09:50:25.0754476Z"}}'
+      string: '{"properties":{"immutableId":"dce-9427f98801d94ef88719a02bda5d097a","configurationAccess":{"endpoint":"https://endpoint2-gkd5.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint2-gkd5.eastus2euap-1.canary.ingest.monitor.azure.com"},"metricsIngestion":{"endpoint":"https://endpoint2-gkd5.eastus2euap-1.metrics.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Linux","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2","name":"endpoint2","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"0d00fc53-0000-3300-0000-6541e5660000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:59.3841595Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:59.3841595Z"}}'
     headers:
       api-supported-versions:
-      - 2021-04-01, 2021-09-01-preview
+      - 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
       cache-control:
       - no-cache
       content-length:
-      - '929'
+      - '1036'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Apr 2022 09:50:32 GMT
+      - Wed, 01 Nov 2023 05:43:05 GMT
       expires:
       - '-1'
       pragma:
@@ -369,23 +369,23 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints?api-version=2021-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints?api-version=2022-06-01
   response:
     body:
-      string: '{"value":[{"properties":{"immutableId":"dce-6bf72b1e442446c9b5f294a243f33c11","configurationAccess":{"endpoint":"https://endpoint1-cdsd.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint1-cdsd.eastus2euap-1.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Windows","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1","name":"endpoint1","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"00002576-0000-3300-0000-626128d60000\"","systemData":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-04-21T09:50:05.1808069Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-21T09:50:14.0042181Z"}},{"properties":{"immutableId":"dce-b364c0e7c86d47af830514c42083fdca","configurationAccess":{"endpoint":"https://endpoint2-cc4j.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint2-cc4j.eastus2euap-1.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Linux","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2","name":"endpoint2","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"00003476-0000-3300-0000-626128e30000\"","systemData":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-04-21T09:50:25.0754476Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-21T09:50:25.0754476Z"}}],"nextLink":null}'
+      string: '{"value":[{"properties":{"immutableId":"dce-9059a399c1fb4b40b0f56765874e813c","configurationAccess":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.canary.ingest.monitor.azure.com"},"metricsIngestion":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.metrics.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Windows","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1","name":"endpoint1","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"0d00ec53-0000-3300-0000-6541e55f0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:47.4170324Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:55.1671698Z"}},{"properties":{"immutableId":"dce-9427f98801d94ef88719a02bda5d097a","configurationAccess":{"endpoint":"https://endpoint2-gkd5.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint2-gkd5.eastus2euap-1.canary.ingest.monitor.azure.com"},"metricsIngestion":{"endpoint":"https://endpoint2-gkd5.eastus2euap-1.metrics.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Linux","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2","name":"endpoint2","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"0d00fc53-0000-3300-0000-6541e5660000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:59.3841595Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:59.3841595Z"}}],"nextLink":null}'
     headers:
       api-supported-versions:
-      - 2021-04-01, 2021-09-01-preview
+      - 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
       cache-control:
       - no-cache
       content-length:
-      - '1889'
+      - '2103'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Apr 2022 09:50:32 GMT
+      - Wed, 01 Nov 2023 05:43:07 GMT
       expires:
       - '-1'
       pragma:
@@ -421,75 +421,21 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2?api-version=2021-09-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"ProcessingError","message":"The scope ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-amcs-canary-eeap/providers/Microsoft.Network/dnsZones/eastus2euap-1.handler.canary.control.monitor.azure.com/CNAME/endpoint2-cc4j''
-        cannot perform delete operation because following scope(s) are locked: ''/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-amcs-canary-eeap/providers/Microsoft.Network/DNSZones/eastus2euap-1.handler.canary.control.monitor.azure.com''.
-        Please remove the lock and try again."}}'
-    headers:
-      api-supported-versions:
-      - 2021-04-01, 2021-09-01-preview
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '551'
-      content-type:
-      - application/json
-      date:
-      - Thu, 21 Apr 2022 09:50:35 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:2bbfbac8-e1b0-44af-b9c6-3a40669d37e3
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
-    status:
-      code: 500
-      message: Internal Server Error
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - monitor data-collection endpoint delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -g -n -y
-      User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2?api-version=2021-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint2?api-version=2022-06-01
   response:
     body:
       string: ''
     headers:
       api-supported-versions:
-      - 2021-04-01, 2021-09-01-preview
+      - 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
       cache-control:
       - no-cache
+      content-length:
+      - '0'
       date:
-      - Thu, 21 Apr 2022 09:50:40 GMT
+      - Wed, 01 Nov 2023 05:43:19 GMT
       expires:
       - '-1'
       pragma:
@@ -505,8 +451,8 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
     status:
-      code: 204
-      message: No Content
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
@@ -521,23 +467,23 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.35.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints?api-version=2021-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints?api-version=2022-06-01
   response:
     body:
-      string: '{"value":[{"properties":{"immutableId":"dce-6bf72b1e442446c9b5f294a243f33c11","configurationAccess":{"endpoint":"https://endpoint1-cdsd.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint1-cdsd.eastus2euap-1.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Windows","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1","name":"endpoint1","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"00002576-0000-3300-0000-626128d60000\"","systemData":{"createdBy":"ethanyang@microsoft.com","createdByType":"User","createdAt":"2022-04-21T09:50:05.1808069Z","lastModifiedBy":"ethanyang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-21T09:50:14.0042181Z"}}],"nextLink":null}'
+      string: '{"value":[{"properties":{"immutableId":"dce-9059a399c1fb4b40b0f56765874e813c","configurationAccess":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.handler.canary.control.monitor.azure.com"},"logsIngestion":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.canary.ingest.monitor.azure.com"},"metricsIngestion":{"endpoint":"https://endpoint1-1gzf.eastus2euap-1.metrics.canary.ingest.monitor.azure.com"},"networkAcls":{"publicNetworkAccess":"Enabled"},"provisioningState":"Succeeded"},"location":"eastus2euap","kind":"Windows","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_endpoints000001/providers/Microsoft.Insights/dataCollectionEndpoints/endpoint1","name":"endpoint1","type":"Microsoft.Insights/dataCollectionEndpoints","etag":"\"0d00ec53-0000-3300-0000-6541e55f0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:47.4170324Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:55.1671698Z"}}],"nextLink":null}'
     headers:
       api-supported-versions:
-      - 2021-04-01, 2021-09-01-preview
+      - 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
       cache-control:
       - no-cache
       content-length:
-      - '959'
+      - '1066'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Apr 2022 09:50:41 GMT
+      - Wed, 01 Nov 2023 05:43:23 GMT
       expires:
       - '-1'
       pragma:

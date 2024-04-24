@@ -608,6 +608,11 @@ helps[
         text: |-
                 az scvmm vm delete --subscription contoso-sub \
 --resource-group contoso-rg --name contoso-avset --force
+
+      - name: Delete the VM from SCVMM
+        text: |-
+                az scvmm vm delete --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-avset --deleteFromHost
 """
 
 helps[
@@ -682,6 +687,43 @@ helps[
         text: |-
                az scvmm vm restart --subscription contoso-sub \
 --resource-group contoso-rg --name contoso-vm
+"""
+
+helps[
+    'scvmm vm create-checkpoint'
+] = """
+    type: command
+    short-summary: Create a VM checkpoint
+    examples:
+      - name: Create VM checkpoint
+        text: |-
+               az scvmm vm create-checkpoint --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm --checkpoint-name contoso-chkpt-name \
+--checkpoint-description contoso-chkpt-description
+"""
+
+helps[
+    'scvmm vm delete-checkpoint'
+] = """
+    type: command
+    short-summary: Delete the specified VM checkpoint
+    examples:
+      - name: Delete VM checkpoint
+        text: |-
+               az scvmm vm delete-checkpoint --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm --checkpoint-id checkpoint-guid
+"""
+
+helps[
+    'scvmm vm restore-checkpoint'
+] = """
+    type: command
+    short-summary: Restore VM checkpoint
+    examples:
+      - name: Restore VM checkpoint
+        text: |-
+               az scvmm vm restore-checkpoint --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm --checkpoint-id checkpoint-guid
 """
 
 helps[
@@ -869,6 +911,104 @@ helps[
 ] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the vm nic is met.
+"""
+
+# endregion
+
+# region vm guest-agent
+
+helps[
+    'scvmm vm guest-agent'
+] = """
+    type: group
+    short-summary: vm guest agent.
+"""
+
+helps[
+    'scvmm vm guest-agent enable'
+] = """
+    type: command
+    short-summary: "Enable guest agent on the vm"
+    examples:
+      - name: Enable guest agent on the vm
+        text: |-
+               az scvmm vm guest-agent enable --username contoso-user --password contoso-pass \
+               --resource-group contoso-rg --subscription contoso-sub \
+               --vm-name contoso-vm
+"""
+
+helps[
+    'scvmm vm guest-agent show'
+] = """
+    type: command
+    short-summary: "Get details of a guest agent by guest agent name, resource-group and vm name."
+    examples:
+      - name: Get details of a guest agent
+        text: |-
+               az scvmm vm guest-agent show --resource-group contoso-rg \
+               --vm-name contoso-vm
+"""
+
+# endregion
+
+# region vm extension
+
+helps['scvmm vm extension'] = """
+    type: group
+    short-summary: Manage vm extension with scvmm
+"""
+
+helps['scvmm vm extension list'] = """
+    type: command
+    short-summary: "The operation to get all extensions of a non-Azure vm."
+    examples:
+      - name: Get all VM Extensions
+        text: |-
+               az scvmm vm extension list --vm-name contoso-vm --resource-group contoso-rg
+"""
+
+helps['scvmm vm extension show'] = """
+    type: command
+    short-summary: "The operation to get the extension."
+    examples:
+      - name: Get VM Extension
+        text: |-
+               az scvmm vm extension show --name contoso-extension --vm-name contoso-vm \
+--resource-group contoso-rg
+"""
+
+helps['scvmm vm extension create'] = """
+    type: command
+    short-summary: "The operation to create the extension."
+    examples:
+      - name: Create a VM Extension
+        text: |-
+               az scvmm vm extension create --name contoso-extension --location eastus2euap --type \
+CustomScriptExtension --publisher Microsoft.Compute --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
+\\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version 1.10 --vm-name \
+contoso-vm --resource-group contoso-rg
+"""
+
+helps['scvmm vm extension update'] = """
+    type: command
+    short-summary: "The operation to update the extension."
+    examples:
+      - name: Update a VM Extension
+        text: |-
+               az scvmm vm extension update --name contoso-extension --type CustomScriptExtension \
+--publisher Microsoft.Compute --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | \
+Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version 1.10 --vm-name contoso-vm --resource-group \
+contoso-rg
+"""
+
+helps['scvmm vm extension delete'] = """
+    type: command
+    short-summary: "The operation to delete the extension."
+    examples:
+      - name: Delete a VM Extension
+        text: |-
+               az scvmm vm extension delete --name contoso-extension --vm-name contoso-vm --resource-group \
+contoso-rg
 """
 
 # endregion

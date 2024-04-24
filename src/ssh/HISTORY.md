@@ -1,5 +1,43 @@
 Release History
 ===============
+2.0.3
+-----
+* [Bug Fix] Ensure that certificate validity value is always an integer when retrieving relay information for connecting to Arc Machines.
+* Add support to ARM64 clients when connecting to Arc Machines. Connect proxy now available for ARM64 architecture.
+
+2.0.2
+-----
+* [Bug Fix] Fix logic that checks for the OS of the target machine to avoid "cannot unpack non-iterable NoneType object" error
+
+2.0.1
+-----
+* [Bug fix] For connections to arc resources, stop attempting to create new service configuration if user has no permission to read service configuration.
+
+2.0.0
+-----
+* [BREAKING CHANGE] Update Microsoft.HybridConnectivity SDK to stable version, which adds functionality to enable SSH connections on specified ports in your Arc Server using an API, instead of enabling ports for connection locally in the Arc Agent running in the target machine. New connections might fail after updating the extension, since the port for connection will need to be enabled at the HybridConnectivity Resource Provider at the first connection attempt. This change doesn't affect those who use this extension to connect to Azure Virtual Machines.
+* Move Microsoft.HybridCompute, Microsoft.HybridConnectivity, and Microsoft.ConnectedVMwarevSphere SDKs to AAZ
+* Add support to update Service Configuration at runtime
+* Add --yes-without-prompt parameter for updating Service Configuration in automation scenarios
+
+1.1.6
+-----
+* Fix issue of getting `publicIPAddress` error for `az ssh vm` CLI command  
+
+1.1.5
+-----
+* Fix issue of getting vm network interface `publicIPAddress` ref 
+
+1.1.4
+-----
+* Remove dependency to NETWORK SDK
+
+1.1.3
+-----
+* Add support to Microsoft.ConnectedVMwarevSphere/virtualMachines Resource Type.
+* Correct the format of expected input for --resource-type parameter. From Resource Provider name (e.g. "Microsoft.HybridCompute") to Resource Type name (e.g. "Microsoft.HybridCompute/machines").
+* [bug fix] SSH Banners are printed before authentication.
+
 1.1.2
 -----
 * Remove dependency to cryptography (Az CLI core alredy has cryptography)

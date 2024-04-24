@@ -10,13 +10,5 @@ def cf_notificationhubs(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, NotificationHubsManagementClient)
 
 
-def cf_operations(cli_ctx, *_):
-    return cf_notificationhubs(cli_ctx).operations
-
-
-def cf_namespaces(cli_ctx, *_):
-    return cf_notificationhubs(cli_ctx).namespaces
-
-
 def cf_notification_hubs(cli_ctx, *_):
     return cf_notificationhubs(cli_ctx).notification_hubs

@@ -1,0 +1,59 @@
+interactions:
+- request:
+    body: '{"destinationTenantId": "4adcf5e7-539d-451c-85d5-b6c3b47335d7"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order change-directory
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '63'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --destination-tenant-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/e346ad58-5aa6-41ff-bac6-9ce2740ecf17/changeDirectory?api-version=2022-11-01
+  response:
+    body:
+      string: '{"reservationOrder":{"id":"e346ad58-5aa6-41ff-bac6-9ce2740ecf17","name":"VM_RI_02-10-2023_15-15","isSucceeded":true},"reservations":[{"id":"6e367b50-24a9-435a-b7d2-9b653c2c44fe","name":"VM_RI_02-10-2023_15-15","isSucceeded":true},{"id":"9a56e083-483e-45c8-b7a8-f2becb9088b5","name":"VM_RI_02-10-2023_15-15","isSucceeded":true},{"id":"d5349ba1-ffbc-4147-b89c-b0e5a3b125ba","name":"VM_RI_02-10-2023_15-15","isSucceeded":true},{"id":"4e374a5f-4872-4337-a853-e4651391de8e","name":"VM_RI_02-10-2023_15-15","isSucceeded":true},{"id":"fc947363-5366-4525-ab56-9ff460cd7db7","name":"VM_RI_02-10-2023_15-15","isSucceeded":true},{"id":"e6b5ff59-d588-4f77-9a76-81c5c5bc00dc","name":"VM_RI_02-10-2023_15-15","isSucceeded":true},{"id":"74a308fd-863a-4fc3-81c9-c2c90b8715c7","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"0739549e-ef6c-4dae-93b5-bba1e06bbe1e","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"9237ae61-24df-44b9-a214-5f9a3604ae69","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"79a9d1b3-118c-42e0-b9de-c6bf7d451509","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"ad5e10d6-7130-4947-8561-c098ea5cc6ba","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"53d4a704-e27e-456e-8686-ccf6befe3077","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"ae5d82ad-bb61-4569-acb8-96da79c61036","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"a0a9ff3d-459b-4d82-adb5-41eb8108c713","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"365ba8ef-bf84-4c1c-9550-84174aa0f30e","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"67eb1bb1-7474-41d5-95b5-d5f60e80efe8","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"a6bcd94d-abb6-490d-a349-3bdd06331ad6","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"f2d7377f-b4a7-4fa6-b9cc-b4086cfdb8ff","name":"VM_RI_02-10-2023_15-155","isSucceeded":true},{"id":"7a3f0aff-3ce9-42e4-bf56-71e57d959f44","name":"VM_RI_02-10-2023_15-155","isSucceeded":true}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1990'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 23:22:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1198'
+      x-ms-test:
+      - '{"contact":"sornaks","scenarios":"MultiCurrencyTesting","retention":"5/11/2023
+        11:15:36 PM"}'
+    status:
+      code: 200
+      message: OK
+version: 1
