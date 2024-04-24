@@ -21,7 +21,6 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
-    CONST_MONITORING_ADDON_NAME,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
@@ -317,7 +316,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             else:
                 skuName = CONST_MANAGED_CLUSTER_SKU_NAME_BASE
         return skuName
-    
+
     def _get_enable_addons(self, enable_validation: bool = False) -> List[str]:
         enable_addons = super()._get_enable_addons()
         sku_name = self.raw_param.get("sku")
