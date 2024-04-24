@@ -14,7 +14,8 @@ Pending
 
 3.0.0b8
 +++++++
-* Support to enable azure container insight monitoring when the sku name is automatic. 
+* Support to enable azure container insight monitoring when the sku name is automatic.
+* Add AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview to test_aks_automatic_sku.
 
 3.0.0b7
 +++++++
