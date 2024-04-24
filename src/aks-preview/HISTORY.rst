@@ -12,7 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-3.0.0b6
+3.0.0b7
 +++++++
 * Support `--yes` for `az aks mesh upgrade rollback` and `az aks mesh upgrade complete` commands.
 * Minimise the roles needed to introduce for Elastic SAN for enabling Azure Container Storage with elasticSan storagepool type.
