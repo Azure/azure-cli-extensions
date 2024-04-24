@@ -4366,10 +4366,6 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             addon_profiles=addon_profiles_3,
             kind = "Automatic",
         )
-        print()
-        print(dec_mc_3.addon_profiles['omsagent'])
-        print()
-        print(ground_truth_mc_3.addon_profiles['omsagent'])
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
         self.assertEqual(
             dec_3.context.get_intermediate("monitoring_addon_enabled"), True
