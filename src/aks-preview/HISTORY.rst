@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+3.0.0b8
++++++++
+* Support to enable azure container insight monitoring when the sku name is automatic. 
+
 3.0.0b7
 +++++++
 * Support `--yes` for `az aks mesh upgrade rollback` and `az aks mesh upgrade complete` commands.
