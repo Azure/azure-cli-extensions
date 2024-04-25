@@ -8,8 +8,8 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag, tags_type
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
-                          validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
-                          validate_log_limit, validate_log_since, validate_sku, normalize_sku, validate_jvm_options,
+                          validate_name, validate_app_name, validate_deployment_name, validate_sku,
+                          normalize_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
@@ -34,17 +34,20 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
                                      validate_build_cert_reference, validate_acs_create, not_support_enterprise,
-                                     validate_create_app_binding_default_application_configuration_service, validate_create_app_binding_default_service_registry)
+                                     validate_create_app_binding_default_application_configuration_service,
+                                     validate_create_app_binding_default_config_server,
+                                     validate_create_app_binding_default_service_registry)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
                              fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
+from .log_stream.log_stream_validators import (validate_log_lines, validate_log_limit, validate_log_since)
 from ._app_managed_identity_validator import (validate_create_app_with_user_identity_or_warning,
                                               validate_create_app_with_system_identity_or_warning,
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType, ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType, ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -64,6 +67,9 @@ cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 250m
 memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi, 1536Mi, 2560Mi, 3584Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
 build_cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_build_cpu)
 build_memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_build_memory)
+acs_configs_export_path_type = CLIArgumentType(nargs='?',
+                                               const='.',
+                                               help='The path of directory to export the configuration files. Default to the current folder if no value provided.')
 
 
 # pylint: disable=too-many-statements
@@ -167,6 +173,12 @@ def load_arguments(self, _):
                    options_list=['--application-configuration-service-generation', '--acs-gen'],
                    validator=validate_acs_create,
                    help='(Enterprise Tier Only) Application Configuration Service Generation to enable.')
+        c.argument('enable_config_server',
+                   action='store_true',
+                   options_list=['--enable-config-server', '--enable-cs'],
+                   is_preview=True,
+                   arg_group="Config Server",
+                   help='(Enterprise Tier Only) Enable Config Server.')
         c.argument('enable_application_live_view',
                    action='store_true',
                    options_list=['--enable-application-live-view', '--enable-alv'],
@@ -345,6 +357,12 @@ def load_arguments(self, _):
                    options_list=['--bind-application-configuration-service', '--bind-acs'],
                    validator=validate_create_app_binding_default_application_configuration_service,
                    help='Bind the app to the default Application Configuration Service automatically.')
+        c.argument('bind_config_server',
+                   action='store_true',
+                   options_list=['--bind-config-server', '--bind-cs'],
+                   is_preview=True,
+                   validator=validate_create_app_binding_default_config_server,
+                   help='Bind the app to the default Config Server automatically.')
         c.argument('cpu', arg_type=cpu_type)
         c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int,
@@ -659,6 +677,19 @@ def load_arguments(self, _):
         c.argument('config_file',
                    help='A yaml file path for the configuration of Spring Cloud config server')
 
+    with self.argument_context('spring config-server'.format(scope)) as c:
+        c.argument('service', options_list=['--service', '-s', c.deprecate(target='--name', redirect='--service', hide=True), 
+                    c.deprecate(target='-n', redirect='-s', hide=True)],
+                    help="The name of Azure Spring Apps instance.")
+
+    for scope in ['bind', 'unbind', 'create', 'delete']:
+        with self.argument_context('spring config-server {}'.format(scope)) as c:
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['bind', 'unbind']:
+        with self.argument_context('spring config-server {}'.format(scope)) as c:
+            c.argument('app', help='Name of app.', validator=validate_app_name)
+
     for scope in ['spring config-server git set', 'spring config-server git repo add', 'spring config-server git repo update']:
         with self.argument_context(scope) as c:
             c.argument('uri', help='Uri of the added config.')
@@ -892,6 +923,13 @@ def load_arguments(self, _):
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('name', help="Required unique name to label each item of git configs.")
 
+    with self.argument_context('spring application-configuration-service config show') as c:
+        c.argument('config_file_pattern',
+                   options_list=['--config-file-pattern', '--pattern'],
+                   help='Case sensitive. Set the config file pattern in the formats like {application} or {application}/{profile} '
+                        'instead of {application}-{profile}.yml')
+        c.argument('export_path', arg_type=acs_configs_export_path_type)
+
     for scope in ['gateway create', 'api-portal create']:
         with self.argument_context('spring {}'.format(scope)) as c:
             c.argument('instance_count', type=int, help='Number of instance.')
@@ -1105,6 +1143,20 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('service', service_name_type)
 
+    def prepare_common_logs_argument(c):
+        c.argument('follow',
+                   options_list=['--follow ', '-f'],
+                   help='The flag to indicate logs should be streamed.',
+                   action='store_true')
+        c.argument('lines',
+                   type=int,
+                   help='Number of lines to show. Maximum is 10000.')
+        c.argument('since',
+                   help='Only return logs newer than a relative duration like 5s, 2m, or 1h. Maximum is 1h')
+        c.argument('limit',
+                   type=int,
+                   help='Maximum kibibyte of logs to return. Ceiling number is 2048.')
+
     with self.argument_context('spring component logs') as c:
         c.argument('name', options_list=['--name', '-n'],
                    help="Name of the component. Find component names from command `az spring component list`")
@@ -1114,21 +1166,10 @@ def load_arguments(self, _):
         c.argument('instance',
                    options_list=['--instance', '-i'],
                    help='Name of an existing instance of the component.')
-        c.argument('follow',
-                   options_list=['--follow ', '-f'],
-                   help='The flag to indicate logs should be streamed.',
-                   action='store_true')
-        c.argument('lines',
-                   type=int,
-                   help='Number of lines to show. Maximum is 10000. Default is 50.')
-        c.argument('since',
-                   help='Only return logs newer than a relative duration like 5s, 2m, or 1h. Maximum is 1h')
-        c.argument('limit',
-                   type=int,
-                   help='Maximum kibibyte of logs to return. Ceiling number is 2048.')
         c.argument('max_log_requests',
                    type=int,
                    help="Specify maximum number of concurrent logs to follow when get logs by all-instances.")
+        prepare_common_logs_argument(c)
 
     with self.argument_context('spring component instance') as c:
         c.argument('component', options_list=['--component', '-c'],

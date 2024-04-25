@@ -17,8 +17,8 @@ from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 class TearDown(SpringSubResourceWrapper):
     def __init__(self,
-                 resource_group_parameter_name='resource_group',
-                 spring_parameter_name='spring'):
+                resource_group_parameter_name='resource_group',
+                spring_parameter_name='spring'):
         super(TearDown, self).__init__()
         self.cli_ctx = get_dummy_cli()
         self.resource_group_parameter_name = resource_group_parameter_name
@@ -27,13 +27,15 @@ class TearDown(SpringSubResourceWrapper):
     def create_resource(self, *_, **kwargs):
         self.resource_group = self._get_resource_group(**kwargs)
         self.spring = self._get_spring(**kwargs)
-
+        try:
+            self.live_only_execute(self.cli_ctx, 'spring application-configuration-service create -g {} -s {}'
+                .format(self.resource_group, self.spring))
+        except:
+            pass
+        
     def remove_resource(self, *_, **__):
-        self.live_only_execute(self.cli_ctx,
-                               'spring application-configuration-service delete -g {}  -s {} --yes'.format(
-                                   self.resource_group, self.spring))
-        self.live_only_execute(self.cli_ctx, 'spring application-configuration-service create -g {}  -s {}'.format(
-            self.resource_group, self.spring))
+        self.live_only_execute(self.cli_ctx, 'spring application-configuration-service delete -g {} -s {} --yes'
+            .format(self.resource_group, self.spring))
 
 
 class ApplicationConfigurationServiceTest(ScenarioTest):
@@ -61,12 +63,12 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
         ])
 
         self.cmd('spring application-configuration-service git repo add -g {rg} -s {serviceName} '
-                 '-n {repo} --label {label} --patterns {patterns} --uri {uri}',
-                 checks=[self.check('properties.provisioningState', "Succeeded")])
+                '-n {repo} --label {label} --patterns {patterns} --uri {uri}',
+                checks=[self.check('properties.provisioningState', "Succeeded")])
 
         self.cmd('spring application-configuration-service git repo update -g {rg} -s {serviceName} '
-                 '-n {repo} --label {label}',
-                 checks=[self.check('properties.provisioningState', "Succeeded")])
+                '-n {repo} --label {label}',
+                checks=[self.check('properties.provisioningState', "Succeeded")])
 
         result = self.cmd(
             'spring application-configuration-service git repo list -g {rg} -s {serviceName}').get_output_in_json()
@@ -79,29 +81,29 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
 
         self.cmd('spring application-configuration-service bind --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('properties.addonConfigs.applicationConfigurationService.resourceId',
-                       "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(
-                           self.get_subscription_id(), resource_group, spring))
+                "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(
+                self.get_subscription_id(), resource_group, spring))
         ])
 
         self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
 
-        self.cmd('spring application-configuration-service unbind --app {app} -g {rg} -s {serviceName}')
+        #self.cmd('spring application-configuration-service unbind --app {app} -g {rg} -s {serviceName}')
 
         self.cmd('spring application-configuration-service clear -g {rg} -s {serviceName}', checks=[
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring application-configuration-service update -g {rg} -s {serviceName} '
-                 '--generation Gen2 --refresh-interval 10',
-                 checks=[
-                     self.check('properties.provisioningState', "Succeeded"),
-                     self.check('properties.generation', "Gen2"),
-                     self.check('properties.settings.refreshIntervalInSeconds', 10)])
+        self.cmd('spring application-configuration-service update -g {rg} -s {serviceName} --generation Gen2 --refresh-interval 10',
+                checks=[
+                    self.check('properties.provisioningState', "Succeeded"),
+                    self.check('properties.generation', "Gen2"),
+                    self.check('properties.settings.refreshIntervalInSeconds', 10)])
 
+        self.cmd('spring app delete -n {app} -g {rg} -s {serviceName}')
         self.cmd('spring application-configuration-service delete -g {rg} -s {serviceName} --yes')
-        self.cmd('spring application-configuration-service create -g {rg} -s {serviceName} '
-                 '--generation Gen1 --refresh-interval 20',
-                 checks=[
-                     self.check('properties.provisioningState', "Succeeded"),
-                     self.check('properties.generation', "Gen1"),
-                     self.check('properties.settings.refreshIntervalInSeconds', 20)])
+
+        self.cmd('spring application-configuration-service create -g {rg} -s {serviceName} --generation Gen1 --refresh-interval 20',
+                checks=[
+                    self.check('properties.provisioningState', "Succeeded"),
+                    self.check('properties.generation', "Gen1"),
+                    self.check('properties.settings.refreshIntervalInSeconds', 20)])

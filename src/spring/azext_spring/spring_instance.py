@@ -6,12 +6,13 @@
 # pylint: disable=wrong-import-order
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location, register_provider_if_needed)
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool, create_build_service
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
 from .apm import create_default_apm_for_application_insights
 from ._tanzu_component import (create_application_configuration_service,
+                               create_config_server,
                                create_application_live_view,
                                create_dev_tool_portal,
                                create_service_registry,
@@ -140,6 +141,7 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
                 self.cmd, self.client, self.resource_group, self.name, kwargs['build_pool_size']),
             _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs),
             create_application_configuration_service(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_config_server(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_application_live_view(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_dev_tool_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_service_registry(self.cmd, self.client, self.resource_group, self.name, **kwargs),
@@ -181,6 +183,7 @@ def spring_create(cmd, client, resource_group, name,
                   registry_username=None,
                   registry_password=None,
                   enable_application_configuration_service=False,
+                  enable_config_server=False,
                   application_configuration_service_generation=None,
                   enable_application_live_view=False,
                   enable_service_registry=False,
@@ -223,6 +226,7 @@ def spring_create(cmd, client, resource_group, name,
         'registry_username': registry_username,
         'registry_password': registry_password,
         'enable_application_configuration_service': enable_application_configuration_service,
+        'enable_config_server': enable_config_server,
         'application_configuration_service_generation': application_configuration_service_generation,
         'enable_application_live_view': enable_application_live_view,
         'enable_service_registry': enable_service_registry,

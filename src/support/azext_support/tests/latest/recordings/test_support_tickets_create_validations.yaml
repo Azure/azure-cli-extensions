@@ -19,7 +19,7 @@ interactions:
         --contact-email --contact-first-name --contact-language --contact-last-name
         --contact-method --contact-timezone --problem-classification
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-support/6.0.0 Python/3.8.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.56.0 azsdk-python-mgmt-support/6.0.0 Python/3.11.8 (Windows-10-10.0.22631-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2020-04-01
   response:
@@ -27,7 +27,7 @@ interactions:
       string: '{"message":"Name 12345 is invalid. The name cannot include: ''<'',
         ''>'', ''%'', ''&'', '':'', '''', ''?'', ''/'' or any control characters.
         It cannot be all digits and cannot start with ''tmp-''. The max length is
-        260 characters.","nameAvailable":false,"reason":"Invalid"}'
+        255 characters.","nameAvailable":false,"reason":"Invalid"}'
     headers:
       cache-control:
       - no-cache
@@ -36,23 +36,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 20 Oct 2021 18:53:55 GMT
+      - Mon, 25 Mar 2024 06:30:56 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 24D45F7FB24843A6B9AA06F73F7F7AEF Ref B: CO6AA3150218039 Ref C: 2024-03-25T06:30:56Z'
     status:
       code: 200
       message: OK

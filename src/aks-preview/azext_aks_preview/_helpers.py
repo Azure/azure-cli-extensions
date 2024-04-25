@@ -321,3 +321,12 @@ def setup_common_safeguards_profile(level, version, excludedNamespaces, mc: Mana
             excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
 
     return mc
+
+
+def process_message_for_run_command(message):
+    result = message.split("\n")
+    if result[-2] != "[stderr]":
+        raise CLIError("Error: " + result[-2])
+
+    for line in result[2:len(result) - 2]:
+        print(line)

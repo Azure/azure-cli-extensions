@@ -169,3 +169,22 @@ def validate_build_env_vars(cmd, namespace):
                 "Duplicate build environment variable {env} found, environment variable names must be unique.".format(
                     env=key_val[0]))
         env_pairs[key_val[0]] = key_val[1]
+
+def validate_otlp_headers(cmd, namespace):
+    headers = namespace.headers
+
+    if not headers:
+        return
+
+    header_pairs = {}
+
+    for pair in headers:
+        key_val = pair.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Otlp headers must be in the format \"<key>=<value>\".")
+        if key_val[0] in header_pairs:
+            raise ValidationError(
+                "Duplicate headers {header} found, header names must be unique.".format(
+                    header=key_val[0]))
+        header_pairs[key_val[0]] = key_val[1]
+

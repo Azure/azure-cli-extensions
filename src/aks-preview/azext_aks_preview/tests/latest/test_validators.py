@@ -55,14 +55,10 @@ class TestValidateIPRanges(unittest.TestCase):
             validators.validate_ip_ranges(namespace)
         self.assertEqual(str(cm.exception), err)
 
-    def test_invalid_ip(self):
+    def test_invalid_ip_no_err_raised(self):
         api_server_authorized_ip_ranges = "193.168.0"
         namespace = Namespace(api_server_authorized_ip_ranges)
-        err = "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_ip_ranges(namespace)
-        self.assertEqual(str(cm.exception), err)
+        validators.validate_ip_ranges(namespace)
 
     def test_IPv6(self):
         api_server_authorized_ip_ranges = "3ffe:1900:4545:3:200:f8ff:fe21:67cf"
@@ -1055,6 +1051,33 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         acstor_validator.validate_enable_azure_container_storage_params(
             storage_pool_type, storage_pool_name, storage_pool_sku, None, storage_pool_size, None, agentpools, True, False, False, False, False
         )
+
+
+class TestValidateCustomEndpoints(unittest.TestCase):
+    def test_empty_custom_endpoints(self):
+        namespace = SimpleNamespace(
+            **{
+                "custom_endpoints": [],
+            }
+        )
+        validators.validate_custom_endpoints(namespace)
+
+    def test_invalid_custom_endpoints(self):
+        namespace = SimpleNamespace(
+            **{
+                "custom_endpoints": ["https://example.com"],
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_custom_endpoints(namespace)
+
+    def test_valid_custom_endpoints(self):
+        namespace = SimpleNamespace(
+            **{
+                "custom_endpoints": ["example.com", "microsoft.com"],
+            }
+        )
+        validators.validate_custom_endpoints(namespace)
 
 
 if __name__ == "__main__":

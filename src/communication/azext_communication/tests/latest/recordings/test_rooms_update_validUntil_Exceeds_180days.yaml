@@ -13,52 +13,54 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Fri, 15 Dec 2023 10:35:52 GMT
+      - Mon, 22 Apr 2024 16:32:18 GMT
       Repeatability-Request-Id:
-      - b845d979-9b35-11ee-a224-a497b10aa3d0
+      - e2a4309f-00c5-11ef-b824-e4fd45a09c30
       User-Agent:
-      - AzureCli/1.8.1 azsdk-python-communication-rooms/1.1.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.10.0 azsdk-python-communication-rooms/1.1.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
       - 2xVVJJKx5brgL5bSWgeu9hhccJP/PkHHEzXUfUClsMI=
       x-ms-date:
-      - Fri, 15 Dec 2023 10:35:52 GMT
+      - Mon, 22 Apr 2024 16:32:18 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-10-30-preview
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2024-04-15
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2023-12-15T10:35:53.2044726+00:00",
-        "validFrom": "2023-12-15T10:35:53.0069573+00:00", "validUntil": "2024-06-12T10:35:53.0069573+00:00",
+      string: '{"id": "sanitized", "createdAt": "2024-04-22T16:32:19.0975834+00:00",
+        "validFrom": "2024-04-22T16:32:18.991995+00:00", "validUntil": "2024-10-19T16:32:18.991995+00:00",
         "pstnDialOutEnabled": false}'
     headers:
       api-deprecated-versions:
       - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview
+      - 2023-03-31-preview, 2023-06-14, 2023-10-30-preview, 2024-04-15
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:35:53 GMT
+      - Mon, 22 Apr 2024 16:32:18 GMT
       location:
-      - '99488076369717287'
+      - '99436507601305141'
       ms-cv:
-      - XlOc/jH4fkGeq2uFzD2tPQ.0
+      - J8Xe8v4lQkiRELJE95BHQg.0
       repeatability-result:
       - accepted
       request-context:
       - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0CCx8ZQAAAABpBLE3yirzTp9ggVUBCpN5RE9IMzBFREdFMDIxNgA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0EpEmZgAAAADg3LYKqNzZSbo7AQW/lYcwU04xRURHRTMxMTYAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
     status:
       code: 201
       message: Created
 - request:
-    body: '{"validFrom": "2023-12-15T11:35:54.068813", "validUntil": "2024-07-02T10:35:54.068813",
+    body: '{"validFrom": "2024-04-22T17:32:18.908531", "validUntil": "2024-11-08T16:32:18.908531",
       "pstnDialOutEnabled": null}'
     headers:
       Accept:
@@ -72,15 +74,15 @@ interactions:
       Content-Type:
       - application/merge-patch+json
       User-Agent:
-      - AzureCli/1.8.1 azsdk-python-communication-rooms/1.1.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.10.0 azsdk-python-communication-rooms/1.1.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
-      - AswGxHGxaDsE0ZXTWQhlQJRkhE7/e0c2l0S2G6G3s9w=
+      - iU6DbF+UGdmFny75E5ioKCipj51o9Y87JyPOmHhVd3U=
       x-ms-date:
-      - Fri, 15 Dec 2023 10:35:54 GMT
+      - Mon, 22 Apr 2024 16:32:18 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: PATCH
-    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2023-10-30-preview
+    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2024-04-15
   response:
     body:
       string: '{"error": {"code": "BadRequest", "message": "The request could not
@@ -91,15 +93,17 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:35:53 GMT
+      - Mon, 22 Apr 2024 16:32:18 GMT
       ms-cv:
-      - DBG4jQ/GikWNw5KtHC7xOQ.0
+      - B9MFt2+dR0y2+L/eZ0GaSw.0
       request-context:
       - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0Cix8ZQAAAAAZptg5pjyHQ5aw9gKj6G74SFlEMzBFREdFMDQxNQA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0E5EmZgAAAADzP+mzg6LiRp6OWuBnMk6FU04xRURHRTMwMTcAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-ms-error-code:
