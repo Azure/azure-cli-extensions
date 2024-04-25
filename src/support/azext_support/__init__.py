@@ -5,9 +5,6 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_support._help import helps  # pylint: disable=unused-import
-
-
 class SupportCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
