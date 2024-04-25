@@ -2,6 +2,10 @@
 
 Release History
 ===============
+6.0.0
+++++++
+* Added device run rw support
+
 5.2.4
 ++++++
 * Added device run ro support

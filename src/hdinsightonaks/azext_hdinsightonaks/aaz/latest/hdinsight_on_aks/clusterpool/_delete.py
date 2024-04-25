@@ -20,13 +20,13 @@ class Delete(AAZCommand):
     """Delete a Cluster Pool.
 
     :example: Deletes a Cluster Pool.
-        az hdinsight-on-aks clusterpool delete -g RG -n testcluster
+        az hdinsight-on-aks clusterpool delete -g {RG} -n {poolName}
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-11-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2023-11-01-preview"],
         ]
     }
 
@@ -144,7 +144,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }

@@ -192,9 +192,18 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
         location = "eastus"
 
-        self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env, location))
+        containerapp_env = self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env, location)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        time.sleep(60)
 
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env), checks=[
+            JMESPathCheck('name', env),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
+        ]).get_output_in_json()
 
         workload_profile_name = "my-e16"
 
@@ -206,6 +215,13 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
         time.sleep(30)
+
+        self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env), checks=[
+            JMESPathCheck('name', env),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
+        ]).get_output_in_json()
 
         self.cmd("az containerapp env workload-profile show -g {} -n {} --workload-profile-name my-e16 ".format(resource_group, env), checks=[
             JMESPathCheck("properties.name", workload_profile_name),

@@ -33,6 +33,22 @@ manifest = '''
         "type": "SnapshotRG"
     }
   ],
+  "backupVaultRestorePermissions": [
+    {
+        "roleDefinitionName": "Reader",
+        "type": "DataSource"
+    },
+    {
+        "roleDefinitionName": "Reader",
+        "type": "SnapshotRG"
+    }
+  ],
+  "dataSourceRestorePermissions": [
+    {
+        "roleDefinitionName": "Contributor",
+        "type": "SnapshotRG"
+    }
+  ],
   "policySettings": {
     "supportedRetentionTags": [ "Daily", "Weekly" ],
     "supportedDatastoreTypes": [ "OperationalStore" ],

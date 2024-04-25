@@ -13,11 +13,11 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.8.1 azsdk-python-communication-identity/1.4.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.9.2 azsdk-python-communication-identity/1.4.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
       - kWpGozyV35fifbpKdY8mbdG64VG0Pdq5upzo7YKAFM0=
       x-ms-date:
-      - Fri, 15 Dec 2023 10:19:22 GMT
+      - Mon, 22 Apr 2024 17:35:51 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
@@ -25,7 +25,7 @@ interactions:
   response:
     body:
       string: '{"identity": {"id": "sanitized"}, "accessToken": {"token": "sanitized",
-        "expiresOn": "2023-12-16T10:19:22.6698599+00:00"}}'
+        "expiresOn": "2024-04-23T17:35:52.3938175+00:00"}}'
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
@@ -35,19 +35,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:19:22 GMT
+      - Mon, 22 Apr 2024 17:35:52 GMT
       ms-cv:
-      - UfGE7PqEOkiHZYjfqgoVyQ.2.0
+      - 8jvC4T8xjEmsn7k89AhBQg.0
       request-context:
       - appId=
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 0Kih8ZQAAAACKmYUV5POHQ4RnN7W1y+XdSFlEMzBFREdFMDYyMAA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0+J8mZgAAAAAnkAl9eDKwQoAYYjU2ljIeU04xRURHRTMxMTAAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 25ms
+      - 100ms
     status:
       code: 201
       message: Created
@@ -65,40 +65,40 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.8.1 azsdk-python-communication-chat/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AzureCli/1.9.2 azsdk-python-communication-chat/1.3.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
       repeatability-request-id:
-      - ce37b155-c840-4889-987d-432ba5a3cc98
+      - b9bde080-e7ff-4975-aef0-9ccae967eca3
     method: POST
-    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2023-11-07
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2024-03-07
   response:
     body:
       string: '{"chatThread": {"id": "sanitized", "topic": "some-topic", "createdOn":
-        "2023-12-15T10:19:23Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "2024-04-22T17:35:53Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
         "communicationUser": {"id": "sanitized"}}}}'
     headers:
       access-control-expose-headers:
       - '*'
       api-supported-versions:
       - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2023-04-01-preview, 2023-07-01-preview,
-        2023-11-07, 2023-11-15-preview
+        2023-11-07, 2023-11-15-preview, 2024-03-01-preview, 2024-03-07, 2024-03-15-preview
       content-length:
       - '197'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Dec 2023 10:19:23 GMT
+      - Mon, 22 Apr 2024 17:35:52 GMT
       location:
-      - https://clitest000002.communication.azure.com/chat/threads/19%3Ag0bcW8dXseIqLC-hvVcWw10oHj9_KHTDmDgKGIi1wHI1@thread.v2
+      - https://clitest000002.unitedstates.communication.azure.com/chat/threads/19%3AwW8T0Rndv7qB3p2wAo7izQglCX7r6ToU-2p1TFa-S9A1@thread.v2
       ms-cv:
-      - 76/vlVR6/kSgFN/aydCXmQ.0
+      - y9YhgiF1yEiQ2bqBQ89LaA.0
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 0Kyh8ZQAAAADXaukp6oknT6W+Vm7q2G9fSFlEMzBFREdFMDYyMQA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0+J8mZgAAAABsHKe1I5jVSZbfbROcSe6uU04xRURHRTIxMDYAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 910ms
+      - 583ms
     status:
       code: 201
       message: Created

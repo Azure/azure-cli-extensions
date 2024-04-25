@@ -30,7 +30,7 @@ SCG = "spring-cloud-gateway"
 SCG_OPERATOR = "spring-cloud-gateway-operator"
 
 
-class ManagedComponentInstance:
+class ManagedComponentInstance:  # pylint: disable=too-few-public-methods
     def __init__(self, name):
         self.name = name
 

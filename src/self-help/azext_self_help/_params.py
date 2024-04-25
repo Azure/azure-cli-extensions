@@ -8,6 +8,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.argument_context('self-help discovery-solution list') as c:
+        c.argument('scope', help='Field will be deprecated', deprecate_info=c.deprecate(expiration='0.4.0'))
