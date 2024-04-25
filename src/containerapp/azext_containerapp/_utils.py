@@ -737,7 +737,10 @@ def get_subscription_cloud_name(cli_ctx):
 
 def is_cloud_supported_by_connected_env(cli_ctx):
     from azure.cli.core.cloud import CloudNameEnum
-    cloud_name = get_subscription_cloud_name(cli_ctx)
+    try:
+        cloud_name = get_subscription_cloud_name(cli_ctx)
+    except CLIError:
+        return True
     if cloud_name == CloudNameEnum.AzureChinaCloud or cloud_name == CloudNameEnum.AzureUSGovernment:
         return False
 
