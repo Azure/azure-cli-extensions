@@ -28,10 +28,12 @@ from azext_confcom.template_util import (
     compare_containers,
     get_values_for_params,
     process_mounts,
+    process_configmap,
     extract_probe,
     process_env_vars_from_template,
     get_image_info,
-    get_tar_location_from_mapping
+    get_tar_location_from_mapping,
+    get_diff_size
 )
 from azext_confcom.rootfs_proxy import SecurityPolicyProxy
 
@@ -241,7 +243,15 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
     def validate(self, policy, sidecar_validation=False) -> Tuple[bool, Dict]:
         """Utility method: general method to compare two policies.
-        One being the current object and the other is passed in as a parameter"""
+        One being the current object and the other is passed in as a parameter.
+
+        This is done by comparing first the container names (IDs) and then
+        the contents of the containers with special logic for environment variables,
+        since they can use regular expressions.
+
+        The minimum difference is used to match up the containers in the policy vs
+        the containers in the ARM template. Afterwards, the differences are compiled
+        and returned as a dictionary organized by container name."""
         if not policy:
             eprint("Policy is not in the expected form to validate against")
 
@@ -261,56 +271,75 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             # see if the IDs match with any container in the policy
 
             id_val = case_insensitive_dict_get(container, config.ACI_FIELD_CONTAINERS_ID)
-
-            idx = policy_ids.index(id_val) if id_val in policy_ids else None
-
-            if idx is None:
-                reason_list[id_val] = f"{id_val} not found in policy"
-                continue
-            matching_policy_container = policy[idx]
-
-            # copy so we can delete fields and not affect the original data
-            # structure
-            container1 = copy.deepcopy(matching_policy_container)
-            container2 = copy.deepcopy(container)
-
-            # the ID does not matter so delete them from comparison
-            container1.pop(config.POLICY_FIELD_CONTAINERS_ID, None)
-            container2.pop(config.POLICY_FIELD_CONTAINERS_ID, None)
-            # env vars will be compared later so delete them from this
-            # comparison
-            container1.pop(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS, None)
-            container2.pop(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS, None)
-
-            container_diff = compare_containers(container1, container2)
-
-            # for sidecar validation, it's fine if the policy has
-            # more things defined than the image, so we can take
-            # those out of the diff because it would not hinder deployment
-            if sidecar_validation:
-                for k in list(container_diff.keys()):
-                    if "removed" in k:
-                        container_diff.pop(k)
-            if container_diff != {}:
-                reason_list[id_val] = container_diff
-
-            env_reason_list = compare_env_vars(
-                id_val,
-                case_insensitive_dict_get(
-                    matching_policy_container,
-                    config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS,
-                ),
-                case_insensitive_dict_get(
-                    container, config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
-                ),
+            container_name = case_insensitive_dict_get(
+                container,
+                config.ACI_FIELD_CONTAINERS_NAME
             )
 
-            # merge the output of checking env vars with the original reason
-            # list
-            for key, value in env_reason_list.items():
-                if key not in reason_list:
-                    reason_list[key] = {}
-                reason_list[key].update(value)
+            # idx = policy_ids.index(id_val) if id_val in policy_ids else None
+            idx_arr = [i for i, item in enumerate(policy_ids) if item == id_val]
+
+            if idx_arr == []:
+                reason_list[container_name] = f"{id_val} not found in policy"
+                continue
+
+            temp_diff_list = []
+            for idx in idx_arr:
+                temp_diff = {}
+                matching_policy_container = policy[idx]
+
+                # copy so we can delete fields and not affect the original data
+                # structure
+                container1 = copy.deepcopy(matching_policy_container)
+                container2 = copy.deepcopy(container)
+
+                # the ID does not matter so delete them from comparison
+                container1.pop(config.POLICY_FIELD_CONTAINERS_ID, None)
+                container2.pop(config.POLICY_FIELD_CONTAINERS_ID, None)
+                # env vars will be compared later so delete them from this
+                # comparison
+                container1.pop(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS, None)
+                container2.pop(config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS, None)
+
+                diff_values = compare_containers(container1, container2)
+                # label the diff with the ID so it can be merged
+                # with the env vars and other container diffs
+                temp_diff[container_name] = diff_values
+                # for sidecar validation, it's fine if the policy has
+                # more things defined than the image, so we can take
+                # those out of the diff because it would not hinder deployment
+                if sidecar_validation:
+                    for k in list(temp_diff.keys()):
+                        if "removed" in k:
+                            temp_diff.pop(k)
+
+                env_reason_list = compare_env_vars(
+                    container_name,
+                    case_insensitive_dict_get(
+                        matching_policy_container,
+                        config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS,
+                    ),
+                    case_insensitive_dict_get(
+                        container, config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS
+                    ),
+                )
+
+                # merge the output of checking env vars with the original reason
+                # list
+                for key, value in env_reason_list.items():
+                    if key not in temp_diff:
+                        temp_diff[key] = {}
+                    temp_diff[key].update(value)
+
+                temp_diff_list.append(copy.deepcopy(temp_diff))
+
+            diff_sizes = [get_diff_size(diff) for diff in copy.deepcopy(temp_diff_list)]
+
+            if diff_sizes.count(0) >= 1:
+                continue
+
+            reason_list.update(temp_diff_list[diff_sizes.index(min(diff_sizes))])
+
         is_valid = not bool(reason_list)
         return is_valid, reason_list
 
@@ -440,7 +469,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
                     if (
                         not deepdiff.DeepDiff(image.get_user(), config.DEFAULT_USER, ignore_order=True)
-                        and image_info.get("User") != ""
+                        and (image_info.get("User") != "" and image_info.get("User") is not None)
                     ):
                         # valid values are in the form "user", "user:group", "uid", "uid:gid", "user:gid", "uid:group"
                         # where each entry is either a string or an unsigned integer
@@ -490,6 +519,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         return client.images.pull(image.base, image.tag)
 
 
+# pylint: disable=R0914,
 def load_policy_from_arm_template_str(
     template_data: str,
     parameter_data: str,
@@ -516,12 +546,12 @@ def load_policy_from_arm_template_str(
     aci_list = [
         item
         for item in arm_resources
-        if item["type"] == config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL
+        if item["type"] in config.ACI_FIELD_SUPPORTED_RESOURCES
     ]
 
     if not aci_list:
         eprint(
-            f'Field ["type"] must contain value of ["{config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL}"]'
+            f'Field ["type"] must contain one of {config.ACI_FIELD_SUPPORTED_RESOURCES}'
         )
 
     # extract variables and parameters in case we need to do substitutions
@@ -594,6 +624,11 @@ def load_policy_from_arm_template_str(
                 image_properties, config.ACI_FIELD_TEMPLATE_IMAGE
             )
 
+            # this is guaranteed unique for a valid ARM template
+            container_name = case_insensitive_dict_get(
+                container, config.ACI_FIELD_CONTAINERS_NAME
+            )
+
             if not image_name:
                 eprint(
                     f'Field ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"] is empty or cannot be found'
@@ -606,6 +641,7 @@ def load_policy_from_arm_template_str(
             containers.append(
                 {
                     config.ACI_FIELD_CONTAINERS_ID: image_name,
+                    config.ACI_FIELD_CONTAINERS_NAME: container_name,
                     config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE: image_name,
                     config.ACI_FIELD_CONTAINERS_ENVS: process_env_vars_from_template(
                         AciPolicy.all_params, AciPolicy.all_vars, image_properties, approve_wildcards),
@@ -613,7 +649,8 @@ def load_policy_from_arm_template_str(
                         image_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                     )
                     or [],
-                    config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes),
+                    config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes)
+                    + process_configmap(image_properties),
                     config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
                     + config.DEBUG_MODE_SETTINGS.get("execProcesses")
                     if debug_mode
@@ -688,6 +725,7 @@ def load_policy_from_image_name(
 
         # assign image name to ID field
         container[config.ACI_FIELD_CONTAINERS_ID] = image_name
+        container[config.ACI_FIELD_CONTAINERS_NAME] = image_name
 
         container[config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE] = image_name
         container[config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = not disable_stdio
@@ -779,11 +817,16 @@ def load_policy_from_str(data: str, debug_mode: bool = False) -> AciPolicy:
             container, config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE
         )
 
+        container_name = case_insensitive_dict_get(
+            container, config.ACI_FIELD_CONTAINERS_NAME
+        ) or image_name
+
         if not image_name:
             eprint(
                 f'Field ["{config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE}"] is empty or can not be found.'
             )
         container[config.ACI_FIELD_CONTAINERS_ID] = image_name
+        container[config.ACI_FIELD_CONTAINERS_NAME] = container_name
 
         # set the fields that are present in the container but not in the
         # config

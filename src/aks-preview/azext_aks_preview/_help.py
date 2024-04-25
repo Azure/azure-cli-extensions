@@ -581,6 +581,9 @@ helps['aks create'] = f"""
         - name: --enable-windows-recording-rules
           type: bool
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
+        - name: --enable-azure-monitor-app-monitoring
+          type: bool
+          short-summary: Enable Azure Monitor Application Monitoring
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
@@ -698,6 +701,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh
         - name: Create a kubernetes cluster with Azure Monitor Metrics enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azuremonitormetrics
+        - name: Create a kubernetes cluster with Azure Monitor App Monitoring enabled
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-app-monitoring
         - name: Create a kubernetes cluster with a nodepool having ip allocation mode set to "StaticBlock"
           text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu --max-pods MaxPodsPerNode --network-plugin azure --vnet-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/NodeSubnet --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/PodSubnet --pod-ip-allocation-mode StaticBlock
 
@@ -1113,6 +1118,12 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-metrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
+        - name: --enable-azure-monitor-app-monitoring
+          type: bool
+          short-summary: Enable Azure Monitor Application Monitoring
+        - name: --disable-azure-monitor-app-monitoring
+          type: bool
+          short-summary: Disable Azure Monitor Application Monitoring
         - name: --enable-node-restriction
           type: bool
           short-summary: Enable node restriction option on cluster.
@@ -1193,6 +1204,14 @@ helps['aks update'] = """
         - name: --node-init-taints --nodepool-initialization-taints
           type: string
           short-summary: The node initialization taints for all node pools in cluster.
+        - name: --bootstrap-artifact-source
+          type: string
+          short-summary: Configure artifact source when bootstraping the cluster.
+          long-summary: |
+              The artifacts include the addon image. Use "Direct" to download artifacts from MCR, "Cache" to downalod artifacts from Azure Container Registry.
+        - name: --bootstrap-container-registry-resource-id
+          type: string
+          short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
