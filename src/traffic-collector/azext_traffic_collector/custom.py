@@ -9,6 +9,67 @@
 # pylint: disable=too-many-statements
 
 from knack.log import get_logger
+from .aaz.latest.network_function.traffic_collector.collector_policy import (
+    Create as _CollectorPolicyCreate,
+    Update as _CollectorPolicyUpdate,
+    ShowER as _ShowER,
+)
 
-
+from azure.cli.core.azclierror import (
+    InvalidArgumentValueError,
+)
+from azure.cli.core.aaz import has_value
 logger = get_logger(__name__)
+
+class CollectorPolicyCreate(_CollectorPolicyCreate):
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.ingestion_policy) and has_value(args.ingestion_policy.ingestion_sources):
+            ingestionsources = args.ingestion_policy.ingestion_sources
+            for source in ingestionsources:
+                # Get ExpressRoute Circuit
+                subscription, resourceGroup, circuitName = parseResourceId(str(source.resource_id))
+                circuit = _ShowER(self)(command_args={
+                    "subscription": subscription,
+                    "resource_group": resourceGroup,
+                    "name": circuitName
+                })
+                # Throw error if bandwidth less than 1G
+                err_msg = "CollectorPolicy can not be created because circuit has bandwidth less than 1G. Circuit size with a bandwidth of 1G or more is supported."
+                
+                ## Provider Port Circuits
+                if 'serviceProviderProperties' in circuit and circuit['serviceProviderProperties']['bandwidthInMbps'] and circuit['serviceProviderProperties']['bandwidthInMbps'] < 1000:
+                    raise InvalidArgumentValueError(err_msg)
+                ## Direct Port Circuits
+                elif 'bandwidthInGbps' in circuit and circuit['bandwidthInGbps'] < 1:
+                    raise InvalidArgumentValueError(err_msg)
+
+class CollectorPolicyUpdate(_CollectorPolicyUpdate):
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.ingestion_policy) and has_value(args.ingestion_policy.ingestion_sources):
+            ingestionsources = args.ingestion_policy.ingestion_sources
+            for source in ingestionsources:
+                # Get ExpressRoute Circuit
+                subscription, resourceGroup, circuitName = parseResourceId(str(source.resource_id))
+                circuit = _ShowER(self)(command_args={
+                    "subscription": subscription,
+                    "resource_group": resourceGroup,
+                    "name": circuitName
+                })
+
+                # Throw error if bandwidth less than 1G
+                err_msg = "CollectorPolicy can not be updated because circuit has bandwidth less than 1G. Circuit size with a bandwidth of 1G or more is supported."
+                
+                ## Provider Port Circuits
+                if 'serviceProviderProperties' in circuit and circuit['serviceProviderProperties']['bandwidthInMbps'] and circuit['serviceProviderProperties']['bandwidthInMbps'] < 1000:
+                    raise InvalidArgumentValueError(err_msg)
+                ## Direct Port Circuits
+                elif 'bandwidthInGbps' in circuit and circuit['bandwidthInGbps'] < 1:
+                    raise InvalidArgumentValueError(err_msg)
+
+def parseResourceId(resourceId):
+    subscription = resourceId[resourceId.find('subscriptions/')+len('subscriptions/'):resourceId.rfind('/resourceGroups')]
+    resourceGroupName = resourceId[resourceId.find('resourceGroups/')+len('resourceGroups/'):resourceId.rfind('/providers/Microsoft.Network')]
+    circuitName = resourceId[resourceId.find('Microsoft.Network/expressRouteCircuits/')+len('Microsoft.Network/expressRouteCircuits/'):]
+    return subscription, resourceGroupName, circuitName
