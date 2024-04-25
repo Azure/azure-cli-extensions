@@ -319,14 +319,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def _get_enable_addons(self, enable_validation: bool = False) -> List[str]:
         enable_addons = super()._get_enable_addons()
-        sku_name = self.raw_param.get("sku")
+        sku_name = self.get_sku_name()
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             enable_addons.append("monitoring")
         return enable_addons
 
     def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
         enable_msi_auth_for_monitoring = super().get_enable_msi_auth_for_monitoring()
-        sku_name = self.raw_param.get("sku")
+        sku_name = self.get_sku_name()
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             return True
         return enable_msi_auth_for_monitoring
