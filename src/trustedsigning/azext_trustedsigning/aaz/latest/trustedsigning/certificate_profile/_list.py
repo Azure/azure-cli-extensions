@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List certificate profiles under a trusted signing account.
 
     :example: Lists certificate profile under a trusted signing account
-        az trustedsigning certificate-profile list -g MyResourceGroup --account-name
+        az trustedsigning certificate-profile list -g MyResourceGroup --account-name MyAccount
     """
 
     _aaz_info = {

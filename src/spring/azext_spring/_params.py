@@ -34,7 +34,9 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
                                      validate_build_cert_reference, validate_acs_create, not_support_enterprise,
-                                     validate_create_app_binding_default_application_configuration_service, validate_create_app_binding_default_service_registry)
+                                     validate_create_app_binding_default_application_configuration_service,
+                                     validate_create_app_binding_default_config_server,
+                                     validate_create_app_binding_default_service_registry)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -177,6 +179,12 @@ def load_arguments(self, _):
                    options_list=['--application-configuration-service-generation', '--acs-gen'],
                    validator=validate_acs_create,
                    help='(Enterprise Tier Only) Application Configuration Service Generation to enable.')
+        c.argument('enable_config_server',
+                   action='store_true',
+                   options_list=['--enable-config-server', '--enable-cs'],
+                   is_preview=True,
+                   arg_group="Config Server",
+                   help='(Enterprise Tier Only) Enable Config Server.')
         c.argument('enable_application_live_view',
                    action='store_true',
                    options_list=['--enable-application-live-view', '--enable-alv'],
@@ -362,6 +370,12 @@ def load_arguments(self, _):
                    options_list=['--bind-application-configuration-service', '--bind-acs'],
                    validator=validate_create_app_binding_default_application_configuration_service,
                    help='Bind the app to the default Application Configuration Service automatically.')
+        c.argument('bind_config_server',
+                   action='store_true',
+                   options_list=['--bind-config-server', '--bind-cs'],
+                   is_preview=True,
+                   validator=validate_create_app_binding_default_config_server,
+                   help='Bind the app to the default Config Server automatically.')
         c.argument('cpu', arg_type=cpu_type)
         c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int,
@@ -675,6 +689,19 @@ def load_arguments(self, _):
     with self.argument_context('spring config-server set') as c:
         c.argument('config_file',
                    help='A yaml file path for the configuration of Spring Cloud config server')
+
+    with self.argument_context('spring config-server'.format(scope)) as c:
+        c.argument('service', options_list=['--service', '-s', c.deprecate(target='--name', redirect='--service', hide=True), 
+                    c.deprecate(target='-n', redirect='-s', hide=True)],
+                    help="The name of Azure Spring Apps instance.")
+
+    for scope in ['bind', 'unbind', 'create', 'delete']:
+        with self.argument_context('spring config-server {}'.format(scope)) as c:
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['bind', 'unbind']:
+        with self.argument_context('spring config-server {}'.format(scope)) as c:
+            c.argument('app', help='Name of app.', validator=validate_app_name)
 
     for scope in ['spring config-server git set', 'spring config-server git repo add', 'spring config-server git repo update']:
         with self.argument_context(scope) as c:

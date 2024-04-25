@@ -2,7 +2,15 @@ Release History
 ===============
 1.21.0
 ---
-* Command `az spring create` and `az spring update` include a new argument "--enable-private-storage-access" to set whether private network access to backend storage in vnet injection instance.
+* Add argument `--enable-config-server` to `az spring create` to create Spring Cloud Config Server in enterprise tier during creating service instance.
+* Add new command `az spring config-server create` to create Spring Cloud Config Server in enterprise tier.
+* Add new command `az spring config-server delete` to delete Spring Cloud Config Server in enterprise tier.
+* Add new command `az spring config-server bind` to bind an app to Spring Cloud Config Server in enterprise tier.
+* Add new command `az spring config-server unbind` to unbind an app with Spring Cloud Config Server in enterprise tier.
+* Add argument `--bind-config-server` to `az spring app create` bind with default config server during creation automatically.
+* Update commands `az spring config-server clear` and `az spring config-server git repo remove` to require confirmation before running the command.
+* Add more samples for `az spring config-server` sub commands.
+* Update commands `az spring create` and `az spring update` to include a new argument "--enable-private-storage-access" to set whether private network access to backend storage in vnet injection instance.
 
 1.20.1
 ---
