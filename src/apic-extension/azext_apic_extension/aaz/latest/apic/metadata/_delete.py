@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete specified metadata schema.
 
     :example: Delete Metadata Schema
-        az az apic metadata delete --resource-group api-center-test --service-name contoso --name "test1"
+        az apic metadata delete --resource-group api-center-test --service-name contoso --name "test1"
 
     :example: Delete schema
         az apic metadata delete -g api-center-test -s contosoeuap --name "approver"

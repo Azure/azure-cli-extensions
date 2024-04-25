@@ -21,7 +21,7 @@ class ImportSpecification(AAZCommand):
         az apic api definition import-specification -g api-center-test -s contosoeuap --api-id echo-api-2 --version-id 2023-08-01 --definition-id openapi3 --format "inline" --value '{"openapi":"3.0.1","info":{"title":"httpbin.org","description":"API Management facade for a very handy and free online HTTP tool.","version":"1.0"}}' --specification '{"name":"openapi","version":"3.0.0"}'
 
     :example: Import Specification from a file
-        az apic api definition import-specification -g api-center-test -s contosoeuap --api-id echo-api-2 --version-id 2023-11-01 --definition-id openapi8 --format "link" --value 'https://alzaslonaztest.blob.core.windows.net/arpitestblobs/importspec4.txt' --specification '{"name":"openapi","version":"3.0.0"}'
+        az apic api definition import-specification -g api-center-test -s contosoeuap --api-id echo-api-2 --version-id 2023-11-01 --definition-id openapi8 --format "link" --value 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json' --specification '{"name":"openapi","version":"3.0.0"}'
     """
 
     _aaz_info = {

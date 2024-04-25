@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update existing metadata schema.
 
     :example: Update schema
-        az az apic metadata update --resource-group api-center-test --service-name contoso --name "test1" --schema '{\"type\":\"string\", \"title\":\"Last name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}'
+        az apic metadata update --resource-group api-center-test --service-name contoso --name "test1" --schema '{\"type\":\"string\", \"title\":\"Last name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}'
     """
 
     _aaz_info = {

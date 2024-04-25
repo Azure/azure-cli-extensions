@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update an instance of an Azure API Center service.
 
     :example: Update service details
-        az apic update -g contoso-resources -s contoso
+        az apic service update -g contoso-resources -s contoso
     """
 
     _aaz_info = {

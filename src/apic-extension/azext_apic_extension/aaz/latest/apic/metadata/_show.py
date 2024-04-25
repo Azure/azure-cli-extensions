@@ -21,7 +21,7 @@ class Show(AAZCommand):
         az apic metadata show -g api-center-test -s contosoeuap --name approver
 
     :example: Show schema details 2
-        az az apic metadata show --resource-group api-center-test --service-name contoso --name "testchoices"
+        az apic metadata show --resource-group api-center-test --service-name contoso --name "testchoices"
     """
 
     _aaz_info = {

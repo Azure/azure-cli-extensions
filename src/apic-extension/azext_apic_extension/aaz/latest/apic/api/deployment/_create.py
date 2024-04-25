@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a new API deployment or update an existing API deployment.
 
     :example: Create deployment
-        az apic api deployment create -g api-center-test -s contoso --deployment-id production --title "Production deployment" --description "Public cloud production deployment." --api-id echo-api --environment-id "/workspaces/default/environments/production" --definition-id "/workspaces/default/apis/echo-api/versions/2023-01-01/definitions/openapi"
+        az apic api deployment create -g api-center-test -s contoso --deployment-id production --title "Production deployment" --description "Public cloud production deployment." --api-id echo-api --environment-id "/workspaces/default/environments/production" --definition-id "/workspaces/default/apis/echo-api/versions/2023-01-01/definitions/openapi" --server '{\"runtimeUri\":[\"https://example.com\"]}'
     """
 
     _aaz_info = {

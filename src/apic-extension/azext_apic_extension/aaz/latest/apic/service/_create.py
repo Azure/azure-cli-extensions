@@ -18,10 +18,10 @@ class Create(AAZCommand):
     """Creates an instance or update an existing instance of an Azure API Center service.
 
     :example: Create service Example 1
-        az apic create -g contoso-resources -s contoso -l centraluseuap
+        az apic service create -g contoso-resources -s contoso -l eastus
 
     :example: Create Service Example 2
-        az apic create --resource-group contoso-resources --name contoso --locationcentraluseuap
+        az apic service create --resource-group contoso-resources --name contoso --location eastus
     """
 
     _aaz_info = {

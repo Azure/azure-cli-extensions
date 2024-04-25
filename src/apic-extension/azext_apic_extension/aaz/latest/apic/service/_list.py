@@ -18,7 +18,7 @@ class List(AAZCommand):
     """Lists Azure API Center services within an Azure subscription.
 
     :example: List services in resource group
-        az apic list -g contoso-resources
+        az apic service list -g contoso-resources
     """
 
     _aaz_info = {
