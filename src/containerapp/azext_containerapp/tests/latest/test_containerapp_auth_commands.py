@@ -18,10 +18,11 @@ class ContainerAppAuthTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_auth_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
         app = self.create_random_name(prefix='containerapp-auth', length=24)
 
-        env = prepare_containerapp_env_for_app_e2e_tests(self)
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, app, env))
 
