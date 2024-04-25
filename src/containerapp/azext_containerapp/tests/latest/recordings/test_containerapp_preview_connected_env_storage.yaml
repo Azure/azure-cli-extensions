@@ -1873,10 +1873,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/storage000003/fileServices/default/shares/share000002?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/storage000003/fileServices/default/shares/share000004?api-version=2023-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/storage000003/fileServices/default/shares/share000002","name":"share000002","type":"Microsoft.Storage/storageAccounts/fileServices/shares","properties":{"accessTier":"TransactionOptimized","shareQuota":1024}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/storage000003/fileServices/default/shares/share000004","name":"share000004","type":"Microsoft.Storage/storageAccounts/fileServices/shares","properties":{"accessTier":"TransactionOptimized","shareQuota":1024}}'
     headers:
       cache-control:
       - no-cache
@@ -2286,7 +2286,7 @@ interactions:
       message: Not Found
 - request:
     body: '{"properties": {"azureFile": {"accountName": "storage000003", "accountKey":
-      "veryFakedStorageAccountKey==", "accessMode": "ReadOnly", "shareName": "share000002"}}}'
+      "veryFakedStorageAccountKey==", "accessMode": "ReadOnly", "shareName": "share000004"}}}'
     headers:
       Accept:
       - '*/*'
@@ -2309,7 +2309,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/connectedEnvironments/my-connected-env/storages/storage000003?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/connectedEnvironments/my-connected-env/storages/storage000003","name":"storage000003","type":"Microsoft.App/connectedEnvironments/storages","properties":{"azureFile":{"accountName":"storage000003","shareName":"share000002","accessMode":"ReadOnly"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/connectedEnvironments/my-connected-env/storages/storage000003","name":"storage000003","type":"Microsoft.App/connectedEnvironments/storages","properties":{"azureFile":{"accountName":"storage000003","shareName":"share000004","accessMode":"ReadOnly"}}}'
     headers:
       api-supported-versions:
       - 2022-06-01-preview, 2022-10-01, 2022-11-01-preview, 2023-04-01-preview, 2023-05-01,
@@ -2641,7 +2641,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/connectedEnvironments/my-connected-env/storages/storage000003?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/connectedEnvironments/my-connected-env/storages/storage000003","name":"storage000003","type":"Microsoft.App/connectedEnvironments/storages","properties":{"azureFile":{"accountName":"storage000003","shareName":"share000002","accessMode":"ReadOnly"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/connectedEnvironments/my-connected-env/storages/storage000003","name":"storage000003","type":"Microsoft.App/connectedEnvironments/storages","properties":{"azureFile":{"accountName":"storage000003","shareName":"share000004","accessMode":"ReadOnly"}}}'
     headers:
       api-supported-versions:
       - 2022-06-01-preview, 2022-10-01, 2022-11-01-preview, 2023-04-01-preview, 2023-05-01,
@@ -2971,7 +2971,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/connectedEnvironments/my-connected-env/storages?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/connectedEnvironments/my-connected-env/storages/storage000003","name":"storage000003","type":"Microsoft.App/connectedEnvironments/storages","properties":{"azureFile":{"accountName":"storage000003","shareName":"share000002","accessMode":"ReadOnly"}}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/connectedEnvironments/my-connected-env/storages/storage000003","name":"storage000003","type":"Microsoft.App/connectedEnvironments/storages","properties":{"azureFile":{"accountName":"storage000003","shareName":"share000004","accessMode":"ReadOnly"}}}]}'
     headers:
       api-supported-versions:
       - 2022-06-01-preview, 2022-10-01, 2022-11-01-preview, 2023-04-01-preview, 2023-05-01,
