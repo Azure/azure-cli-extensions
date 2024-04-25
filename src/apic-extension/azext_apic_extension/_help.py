@@ -16,7 +16,7 @@ helps['apic api register'] = """
     parameters:
       - name: --api-location -l
         type: string
-        short-summary: Location of spec file  .
+        short-summary: Location of spec file.
       - name: --resource-group -g
         type: string
         short-summary: Resource group name.
