@@ -38,7 +38,7 @@ helps['spring create'] = """
       text: |
         az provider register -n Microsoft.SaaS
         az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
-        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-service-registry --enable-gateway --enable-api-portal --enable-application-live-view  --enable-application-accelerator
+        az spring create -n MyService -g MyResourceGroup --sku Enterprise --enable-application-configuration-service --enable-config-server --enable-service-registry --enable-gateway --enable-api-portal --enable-application-live-view  --enable-application-accelerator
 """
 
 helps['spring list-marketplace-plan'] = """
@@ -190,8 +190,8 @@ helps['spring app create'] = """
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
       text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --assign-endpoint true --cpu 2 --memory 3 --instance-count 3
-    - name: Create an app binding to the default Service Registry and Application Configuration Service.
-      text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --bind-service-registry --bind-application-configuration-service
+    - name: Create an app binding to the default Service Registry, Application Configuration Service and Spring Cloud Config Server.
+      text: az spring app create -n MyApp -s MyCluster -g MyResourceGroup --bind-service-registry --bind-application-configuration-service --bind-config-server
 """
 
 helps['spring app append-persistent-storage'] = """
@@ -437,16 +437,25 @@ helps['spring config-server'] = """
 helps['spring config-server show'] = """
     type: command
     short-summary: Show Config Server.
+    examples:
+        - name: Show the metadata for the default Config Server in service instance MyService.
+          text: az spring config-server show -s MyService -g MyResourceGroup
 """
 
 helps['spring config-server set'] = """
     type: command
     short-summary: Set Config Server from a yaml file.
+    examples:
+        - name: Load from a yaml file and set the default Config Server in service instance MyService.
+          text: az spring config-server set -s MyService -g MyResourceGroup --config-file MyConfigFile.yaml
 """
 
 helps['spring config-server clear'] = """
     type: command
     short-summary: Erase all settings in Config Server.
+    examples:
+        - name: Update the settings for the default Config Server in service instance MyService to empty.
+          text: az spring config-server clear -s MyService -g MyResourceGroup
 """
 
 helps['spring config-server git'] = """
@@ -462,36 +471,83 @@ helps['spring config-server git repo'] = """
 helps['spring config-server git set'] = """
     type: command
     short-summary: Set git property of Config Server, will totally override the old one.
+    examples:
+        - name: Set a public git repository without credential for the default Config Server in service instance MyService.
+          text: az spring config-server git set -s MyService -g MyResourceGroup --uri UrlOfGitRepository --label LabelOfGitRepository --search-paths "/path1,/path2"
 """
 
 helps['spring config-server git repo add'] = """
     type: command
     short-summary: Add a new repository of git property of Config Server.
+    examples:
+        - name: Add a new public git repository without credential for the default Config Server in service instance MyService.
+          text: az spring config-server git repo add -s MyService -g MyResourceGroup --uri UrlOfGitRepository --repo-name GitRepoName
 """
 
 helps['spring config-server git repo remove'] = """
     type: command
     short-summary: Remove an existing repository of git property of Config Server.
+    examples:
+        - name: Remove an existing repository for the default Config Server in service instance MyService.
+          text: az spring config-server git repo remove -s MyService -g MyResourceGroup --repo-name GitRepoName
 """
 
 helps['spring config-server git repo update'] = """
     type: command
     short-summary: Override an existing repository of git property of Config Server, will totally override the old one.
+    examples:
+        - name: Update one of the additional repositories for the default Config Server in service instance MyService.
+          text: az spring config-server git repo update -s MyService -g MyResourceGroup --uri UrlOfGitRepository --repo-name GitRepoName --label LabelOfGitRepository
 """
 
 helps['spring config-server git repo list'] = """
     type: command
     short-summary: List all repositories of git property of Config Server.
+    examples:
+        - name: List all repositories for the default Config Server in service instance MyService.
+          text: az spring config-server git repo list -s MyService -g MyResourceGroup
 """
 
 helps['spring config-server enable'] = """
     type: command
-    short-summary: (Support Standard consumption Tier) Enable Config Server.
+    short-summary: (Standard consumption Tier Only) Enable Config Server.
 """
 
 helps['spring config-server disable'] = """
     type: command
-    short-summary: (Support Standard consumption Tier) Disable Config Server.
+    short-summary: (Standard consumption Tier Only) Disable Config Server.
+"""
+
+helps['spring config-server create'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Create Config Server.
+    examples:
+        - name: Create a Config Server without repository settings in service instance MyService.
+          text: az spring config-server create -s MyService -g MyResourceGroup
+"""
+
+helps['spring config-server delete'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Delete Config Server.
+    examples:
+        - name: Delete the default Config Server in service instance MyService.
+          text: az spring config-server delete -s MyService -g MyResourceGroup
+"""
+
+helps['spring config-server bind'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Bind an app to Config Server.
+    examples:
+        - name: Bind an app to the default Config Server in service instance MyService.
+          text: az spring config-server bind --app MyApp -s MyService -g MyResourceGroup
+"""
+
+helps['spring config-server unbind'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Unbind an app from Config Server.
+    examples:
+        - name: Unbind an app from the default Config Server in service instance MyService.
+          text: az spring config-server unbind --app MyApp -s MyService -g MyResourceGroup
 """
 
 helps['spring eureka-server'] = """

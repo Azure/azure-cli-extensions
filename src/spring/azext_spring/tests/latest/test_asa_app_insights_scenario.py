@@ -334,8 +334,10 @@ class AzureSpringCloudCreateTests(ScenarioTest):
                 break
             elif result['properties']['provisioningState'] == "Failed":
                 exit(1)
-            sleep_in_seconds = 30
-            time.sleep(sleep_in_seconds)
+
+            if (self.is_live):
+                sleep_in_seconds = 30
+                time.sleep(sleep_in_seconds)
 
     def _test_asc_update_with_suffix(self, rg, service_name, target_ai_status, cmd_suffix):
         self._asc_update_disable_ai(rg, service_name)
@@ -371,8 +373,10 @@ class AzureSpringCloudCreateTests(ScenarioTest):
                 break
             elif result == "Failed":
                 exit(1)
-            sleep_in_seconds = 3
-            time.sleep(sleep_in_seconds)
+
+            if (self.is_live):
+                sleep_in_seconds = 3
+                time.sleep(sleep_in_seconds)
 
     '''
     Hard-code the information of application insights.
