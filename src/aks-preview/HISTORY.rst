@@ -11,10 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
 
 3.0.0b9
 +++++++
-* Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
+* Support to enable azure container insight monitoring when the sku name is automatic.
+* Add AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview to test_aks_automatic_sku.
 
 3.0.0b8
 +++++++
