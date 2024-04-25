@@ -14,8 +14,7 @@ Pending
 
 3.0.0b8
 +++++++
-* Support to enable azure container insight monitoring when the sku name is automatic.
-* Add AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview to test_aks_automatic_sku.
+* Ignore invalid ip error for `--api-server-authorized-ip-ranges`.
 
 3.0.0b7
 +++++++
