@@ -726,3 +726,19 @@ def parse_build_env_vars(env_list):
         })
 
     return env_var_def
+
+
+def get_subscription_cloud_name(cli_ctx):
+    from azure.cli.core._profile import (Profile, _ENVIRONMENT_NAME)
+    subscription_id = get_subscription_id(cli_ctx)
+
+    return Profile(cli_ctx=cli_ctx).get_subscription(subscription=subscription_id)[_ENVIRONMENT_NAME]
+
+
+def is_cloud_supported_by_connected_env(cli_ctx):
+    from azure.cli.core.cloud import CloudNameEnum
+    cloud_name = get_subscription_cloud_name(cli_ctx)
+    if cloud_name == CloudNameEnum.AzureChinaCloud or cloud_name == CloudNameEnum.AzureUSGovernment:
+        return False
+
+    return True
