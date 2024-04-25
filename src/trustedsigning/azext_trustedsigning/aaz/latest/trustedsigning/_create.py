@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a trusted Signing Account.
 
     :example: Create an account
-        az trustedsigning create -n MyAccount -l westus -g MyResourceGroup  -sku Basic
+        az trustedsigning create -n MyAccount -l westus -g MyResourceGroup --sku Basic
     """
 
     _aaz_info = {
