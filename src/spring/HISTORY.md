@@ -8,7 +8,7 @@ Release History
 * Add new command `az spring config-server bind` to bind an app to Spring Cloud Config Server in enterprise tier.
 * Add new command `az spring config-server unbind` to unbind an app with Spring Cloud Config Server in enterprise tier.
 * Add argument `--bind-config-server` to `az spring app create` bind with default config server during creation automatically.
-* Update commands `az spring config-server clear` and `az spring config-server git repo remove` to require confirmation before running the clear operation.
+* Update commands `az spring config-server clear` and `az spring config-server git repo remove` to require confirmation before running the command.
 * Add more samples for `az spring config-server` sub commands.
 
 1.20.1
