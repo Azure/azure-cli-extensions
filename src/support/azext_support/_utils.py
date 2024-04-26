@@ -17,6 +17,7 @@ logger = get_logger(__name__)
 # costants for file upload
 max_chunk_size = 1024 * 1024 * 2.5  # 2.5MB
 
+
 def is_billing_ticket(service_name):
     return "517f2da6-78fd-0498-4e22-ad26996b1dfc" in service_name
 
