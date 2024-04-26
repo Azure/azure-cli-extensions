@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------------------------
 import time
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 class TrafficCollectorScenario(ScenarioTest):
@@ -30,12 +31,12 @@ class TrafficCollectorScenario(ScenarioTest):
         })
 
         self.cmd('az network express-route create '
-                 '--bandwidth 1000 --name {er_name}_1G --peering-location Area51 --resource-group {rg} '
-                 '--provider "Ibiza Test Provider" --sku-tier Standard'
+                 '--bandwidth 1000 --name {er_name}_1G --peering-location SpaceNeedle --resource-group {rg} '
+                 '--provider "bvtazureixpregionalization" --sku-tier Standard'
         )
         self.cmd('az network express-route create '
-                 '--bandwidth 50 --name {er_name} --peering-location Area51 --resource-group {rg} '
-                 '--provider "Ibiza Test Provider" --sku-tier Standard'
+                 '--bandwidth 50 --name {er_name} --peering-location SpaceNeedle --resource-group {rg} '
+                 '--provider "bvtazureixpregionalization" --sku-tier Standard'
         )
         self.cmd('az network-function traffic-collector create '
                  '--resource-group {rg} '
@@ -92,7 +93,7 @@ class TrafficCollectorScenario(ScenarioTest):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             self.cmd('az network-function traffic-collector collector-policy update --resource-group {rg} '
                  '--traffic-collector-name {name} -n {cp_name} --ingestion-policy {ip}')
-        self.assertEqual(str(cm.exception), self.ERR_BANDWIDTH_LESSTHAN1G)
+        self.assertIn("CollectorPolicy can not be created because circuit has bandwidth less than 1G", str(cm.exception))
 
         self.cmd('az network-function traffic-collector collector-policy show --resource-group {rg} '
                  '--traffic-collector-name {name} -n {cp_name}',
@@ -110,7 +111,7 @@ class TrafficCollectorScenario(ScenarioTest):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             self.cmd('az network-function traffic-collector collector-policy create --resource-group {rg} '
                  '--traffic-collector-name {name} -n {cp_name} -l {location} --ingestion-policy {ip}')
-        self.assertEqual(str(cm.exception), self.ERR_BANDWIDTH_LESSTHAN1G)
+        self.assertIn("CollectorPolicy can not be created because circuit has bandwidth less than 1G", str(cm.exception))
 
         time.sleep(120)
         self.cmd('az network-function traffic-collector delete --resource-group {rg} --name {name} --yes')
