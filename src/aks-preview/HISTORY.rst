@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
 
 3.0.0b9
 +++++++
