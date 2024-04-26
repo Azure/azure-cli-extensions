@@ -15,15 +15,27 @@ class TrafficCollectorScenario(ScenarioTest):
         subs_id = self.get_subscription_id()
         atc_name = self.create_random_name(prefix='cli_test_atc-', length=30)
         cp_name = self.create_random_name(prefix='cli_test_cp-', length=20)
+        er_name = self.create_random_name(prefix='cli_test_er-', length=20)
         self.kwargs.update({
             'subs_id': subs_id,
             'rg': resource_group,
             'name': atc_name,
             'cp_name': cp_name,
+            'er_name': er_name,
             'location': 'westus',
-            'ip': '{ingestion-sources:[{resource-id:/subscriptions/05f401ac-885f-4ba4-b2d6-7c5444596230/resourceGroups/atctest/providers/Microsoft.Network/expressRouteCircuits/DoNotDelete_ATC_CLI_Test' +',source-type:Resource}],ingestion-type:IPFIX}',
+            'ip1G': '{ingestion-sources:[{resource-id:/subscriptions/' + subs_id + '/resourceGroups/' + resource_group + '/providers/Microsoft.Network/expressRouteCircuits/' + er_name + '_1G,source-type:Resource}],ingestion-type:IPFIX}',
+            'ip': '{ingestion-sources:[{resource-id:/subscriptions/' + subs_id + '/resourceGroups/' + resource_group + '/providers/Microsoft.Network/expressRouteCircuits/' + er_name + ',source-type:Resource}],ingestion-type:IPFIX}',
             'ep': '{emission-destinations:[{destination-type:AzureMonitor}],emission-type:IPFIX}'
         })
+
+        self.cmd('az network express-route create '
+                 '--bandwidth 1000 --name {er_name}_1G --peering-location Area51 --resource-group {rg} '
+                 '--provider "Ibiza Test Provider" --sku-tier Standard'
+        )
+        self.cmd('az network express-route create '
+                 '--bandwidth 50 --name {er_name} --peering-location Area51 --resource-group {rg} '
+                 '--provider "Ibiza Test Provider" --sku-tier Standard'
+        )
         self.cmd('az network-function traffic-collector create '
                  '--resource-group {rg} '
                  '--name {name} --location {location} --tags foo=doo',
@@ -56,7 +68,7 @@ class TrafficCollectorScenario(ScenarioTest):
 
         # Collector Policy Tests
         self.cmd('az network-function traffic-collector collector-policy create --resource-group {rg} '
-                 '--traffic-collector-name {name} -n {cp_name} -l {location} --ingestion-policy {ip}',
+                 '--traffic-collector-name {name} -n {cp_name} -l {location} --ingestion-policy {ip1G}',
                  checks=[
                      self.check('name', self.kwargs['cp_name'])
                  ])
@@ -91,3 +103,4 @@ class TrafficCollectorScenario(ScenarioTest):
 
         time.sleep(120)
         self.cmd('az network-function traffic-collector delete --resource-group {rg} --name {name} --yes')
+        self.cmd('az network express-route delete --name {name} --resource-group {rg}')
