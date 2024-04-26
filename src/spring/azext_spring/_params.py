@@ -94,6 +94,12 @@ def load_arguments(self, _):
         c.argument('outbound_type', arg_group='VNet Injection',
                    help='The outbound type of Azure Spring Apps VNet instance.',
                    validator=validate_vnet, default="loadBalancer")
+        c.argument('enable_private_storage_access',
+                   arg_group='VNet Injection',
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   options_list=['--enable-private-storage-access', '--enable-psa'],
+                   help='If true, set private network access to backend storage in vnet injection instance.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
                    validator=validate_dataplane_public_endpoint,
@@ -265,6 +271,13 @@ def load_arguments(self, _):
                    validator=validate_dataplane_public_endpoint,
                    options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
                    help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
+
+        c.argument('enable_private_storage_access',
+                   arg_group='VNet Injection',
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   options_list=['--enable-private-storage-access', '--enable-psa'],
+                   help='If true, set private network access to backend storage in vnet injection instance.')
 
         c.argument('enable_planned_maintenance',
                    arg_group='Planned Maintenance',

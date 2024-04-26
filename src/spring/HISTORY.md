@@ -10,6 +10,7 @@ Release History
 * Add argument `--bind-config-server` to `az spring app create` bind with default config server during creation automatically.
 * Update commands `az spring config-server clear` and `az spring config-server git repo remove` to require confirmation before running the command.
 * Add more samples for `az spring config-server` sub commands.
+* Update commands `az spring create` and `az spring update` to include a new argument `--enable-private-storage-access` to set whether private network access to backend storage in vnet injection instance.
 
 1.20.1
 ---
