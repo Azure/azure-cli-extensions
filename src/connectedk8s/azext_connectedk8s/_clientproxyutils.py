@@ -96,6 +96,7 @@ def fetch_and_post_at_to_csp(cmd, api_server_port, tenant_id, kid, clientproxy_p
     try:
         credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"],
                                                          resource=consts.KAP_1P_Server_App_Scope)
+        credential._credential.remove_tokens_for_client() # This is a workaround to fix the issue where the token is not being refreshed https://github.com/AzureAD/microsoft-authentication-library-for-python/pull/692
         accessToken = credential.get_token(consts.KAP_1P_Server_App_Scope, data=token_data)
         jwtToken = accessToken.token
     except Exception as e:
