@@ -2,6 +2,10 @@
 
 Release History
 ===============
+5.0.1
+++++++
+* Fix bug in "az devcenter dev environment show-logs-by-operation" if logs is not in JSON format
+
 5.0.0
 ++++++
 * Require roles and identity type parameters in "az decenter admin project-environment-type create"

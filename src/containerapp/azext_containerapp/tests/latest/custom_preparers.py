@@ -32,8 +32,8 @@ class ConnectedClusterPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             arc_location = self.location
 
             if format_location(self.location) == format_location(STAGE_LOCATION):
-                aks_location = "southcentralus"
-                arc_location = "eastus2euap"
+                aks_location = "eastus"
+                arc_location = "eastus"
             self.live_only_execute(self.cli_ctx, f'az aks create --resource-group {group} --name {self.infra_cluster} --enable-aad --generate-ssh-keys --enable-cluster-autoscaler --min-count 4 --max-count 10 --node-count 4 --location {aks_location}')
             self.live_only_execute(self.cli_ctx, f'az aks get-credentials --resource-group {group} --name {self.infra_cluster} --overwrite-existing --admin')
 
