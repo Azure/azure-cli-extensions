@@ -21,7 +21,7 @@ class TrafficCollectorScenario(ScenarioTest):
             'name': atc_name,
             'cp_name': cp_name,
             'location': 'westus',
-            'ip': '{ingestion-sources:[{resource-id:/subscriptions/' + subs_id + '/resourceGroups/' + resource_group + '/providers/Microsoft.Network/expressRouteCircuits/' + cp_name + ',source-type:Resource}],ingestion-type:IPFIX}',
+            'ip': '{ingestion-sources:[{resource-id:/subscriptions/05f401ac-885f-4ba4-b2d6-7c5444596230/resourceGroups/atctest/providers/Microsoft.Network/expressRouteCircuits/DoNotDelete_ATC_CLI_Test' +',source-type:Resource}],ingestion-type:IPFIX}',
             'ep': '{emission-destinations:[{destination-type:AzureMonitor}],emission-type:IPFIX}'
         })
         self.cmd('az network-function traffic-collector create '
