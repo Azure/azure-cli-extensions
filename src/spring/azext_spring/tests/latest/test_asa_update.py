@@ -62,3 +62,9 @@ class TestSpringAppUpdateWithPlannedMaintenance(BasicTest):
         resource = self.updated_resource
         self.assertEqual(day_of_week, resource.properties.maintenance_schedule_configuration.day)
         self.assertEqual(start_hour, resource.properties.maintenance_schedule_configuration.hour)
+
+class TestSpringAppUpdateWithPrivateStorageAccess(BasicTest):
+    def test_asa_update_with_private_storage_access(self):
+        self._execute('rg', 'asa', enable_private_storage_access=True)
+        resource = self.updated_resource
+        self.assertEqual("Enabled", resource.properties.vnet_addons.private_storage_access)
