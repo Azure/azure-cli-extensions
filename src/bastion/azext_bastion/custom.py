@@ -319,9 +319,13 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
 
 
 def _is_ipconnect_request(bastion, target_ip_address):
-    if 'enableIpConnect' in bastion and bastion['enableIpConnect'] is True and target_ip_address:
-        return True
-
+    if target_ip_address:
+        if 'enableIpConnect' in bastion and bastion['enableIpConnect'] is True:
+            return True
+        else:
+            err_msg = "`--target-ip-address` flag cannot be used when IpConnect is not enabled. " \
+                      "Please use --target-resource-id flag instead."
+            raise InvalidArgumentValueError(err_msg) 
     return False
 
 
