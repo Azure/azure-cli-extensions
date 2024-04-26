@@ -9,7 +9,8 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
 class TrafficCollectorScenario(ScenarioTest):
-
+    ERR_BANDWIDTH_LESSTHAN1G = """CollectorPolicy can not be created because circuit has bandwidth less than 1G.
+    Circuit size with a bandwidth of 1G or more is supported."""
     @ResourceGroupPreparer(name_prefix='cli_test_azure_traffic_collector', location='westus')
     def test_azure_traffic_scenario(self, resource_group):
         subs_id = self.get_subscription_id()
@@ -88,6 +89,11 @@ class TrafficCollectorScenario(ScenarioTest):
                      self.check('name', self.kwargs['cp_name'])
                  ])
 
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            self.cmd('az network-function traffic-collector collector-policy update --resource-group {rg} '
+                 '--traffic-collector-name {name} -n {cp_name} --ingestion-policy {ip}')
+        self.assertEqual(str(cm.exception), self.ERR_BANDWIDTH_LESSTHAN1G)
+
         self.cmd('az network-function traffic-collector collector-policy show --resource-group {rg} '
                  '--traffic-collector-name {name} -n {cp_name}',
                  checks=[
@@ -101,6 +107,12 @@ class TrafficCollectorScenario(ScenarioTest):
             'az network-function traffic-collector collector-policy delete --resource-group {rg} '
             '--traffic-collector-name {name} --name {cp_name} --yes')
 
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            self.cmd('az network-function traffic-collector collector-policy create --resource-group {rg} '
+                 '--traffic-collector-name {name} -n {cp_name} -l {location} --ingestion-policy {ip}')
+        self.assertEqual(str(cm.exception), self.ERR_BANDWIDTH_LESSTHAN1G)
+
         time.sleep(120)
         self.cmd('az network-function traffic-collector delete --resource-group {rg} --name {name} --yes')
-        self.cmd('az network express-route delete --name {name} --resource-group {rg}')
+        self.cmd('az network express-route delete --name {er_name}_1G --resource-group {rg}')
+        self.cmd('az network express-route delete --name {er_name} --resource-group {rg}')
