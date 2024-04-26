@@ -84,6 +84,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWSANNUAL,
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_RAPID_UPGRADE_CHANNEL,
     CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
@@ -219,6 +220,7 @@ node_os_skus_create = [
 node_os_skus = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWSANNUAL,
 ]
 node_os_skus_update = [CONST_OS_SKU_AZURELINUX, CONST_OS_SKU_UBUNTU]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
@@ -858,6 +860,7 @@ def load_arguments(self, _):
         c.argument("ksm_metric_annotations_allow_list")
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
+        c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
@@ -1216,6 +1219,8 @@ def load_arguments(self, _):
             ),
         )
         c.argument("disable_azure_monitor_metrics", action="store_true")
+        c.argument("enable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
+        c.argument("disable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
         c.argument(
             "enable_vpa",
             action="store_true",
@@ -2143,6 +2148,22 @@ def load_arguments(self, _):
     with self.argument_context("aks mesh upgrade start") as c:
         c.argument(
             "revision", validator=validate_azure_service_mesh_revision, required=True
+        )
+
+    with self.argument_context("aks mesh upgrade rollback") as c:
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true"
+        )
+
+    with self.argument_context("aks mesh upgrade complete") as c:
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true"
         )
 
     with self.argument_context("aks approuting enable") as c:

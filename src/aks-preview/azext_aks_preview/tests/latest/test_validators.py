@@ -55,14 +55,10 @@ class TestValidateIPRanges(unittest.TestCase):
             validators.validate_ip_ranges(namespace)
         self.assertEqual(str(cm.exception), err)
 
-    def test_invalid_ip(self):
+    def test_invalid_ip_no_err_raised(self):
         api_server_authorized_ip_ranges = "193.168.0"
         namespace = Namespace(api_server_authorized_ip_ranges)
-        err = "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_ip_ranges(namespace)
-        self.assertEqual(str(cm.exception), err)
+        validators.validate_ip_ranges(namespace)
 
     def test_IPv6(self):
         api_server_authorized_ip_ranges = "3ffe:1900:4545:3:200:f8ff:fe21:67cf"

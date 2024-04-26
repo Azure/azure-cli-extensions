@@ -96,6 +96,8 @@ def _check_tanzu_components_not_enable(cmd, namespace):
     suffix = 'can only be used for Azure Spring Apps Enterprise. Please add --sku="Enterprise" to create Enterprise instance.'
     if namespace.enable_application_configuration_service:
         raise ArgumentUsageError('--enable-application-configuration-service {}'.format(suffix))
+    if namespace.enable_config_server:
+        raise ArgumentUsageError('--enable-config-server {}'.format(suffix))
     if namespace.enable_service_registry:
         raise ArgumentUsageError('--enable-service-registry {}'.format(suffix))
     if namespace.enable_gateway:
