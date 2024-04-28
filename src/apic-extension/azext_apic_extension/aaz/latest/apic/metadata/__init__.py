@@ -8,16 +8,10 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "apic metadata-schema",
-)
-class __CMDGroup(AAZCommandGroup):
-    """Commands to manage Metadata Schemas in API Center
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._create import *
+from ._delete import *
+from ._export import *
+from ._list import *
+from ._show import *
+from ._update import *
