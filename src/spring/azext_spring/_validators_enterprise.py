@@ -726,3 +726,21 @@ def validate_custom_actuator_port(cmd, namespace):
 def validate_custom_actuator_path(cmd, namespace):
     if namespace.custom_actuator_path:
         only_support_enterprise(cmd, namespace)
+
+
+def validate_create_app_binding_default_config_server(cmd, namespace):
+    if namespace.bind_config_server:
+        namespace.bind_config_server \
+            = _get_exactly_one_config_server_resource_id(cmd,
+                                                        namespace.resource_group,
+                                                        namespace.service)
+
+
+def _get_exactly_one_config_server_resource_id(cmd, resource_group, service):
+    client = get_client(cmd)
+    config_server_resources = list(client.config_servers.list(resource_group, service))
+    if len(config_server_resources) == 0:
+        raise ClientRequestError('App cannot bind to config server because it is not configured.')
+    if len(config_server_resources) > 1:
+        raise ClientRequestError('App cannot bind to multiple config servers.')
+    return config_server_resources[0].id

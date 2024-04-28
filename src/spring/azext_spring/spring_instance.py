@@ -12,6 +12,7 @@ from ._build_service import _update_default_build_agent_pool, create_build_servi
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
 from .apm import create_default_apm_for_application_insights
 from ._tanzu_component import (create_application_configuration_service,
+                               create_config_server,
                                create_application_live_view,
                                create_dev_tool_portal,
                                create_service_registry,
@@ -64,6 +65,7 @@ class DefaultSpringCloud:
                        outbound_type=None,
                        enable_log_stream_public_endpoint=None,
                        enable_dataplane_public_endpoint=None,
+                       enable_private_storage_access=None,
                        zone_redundant=False,
                        sku=None,
                        tags=None,
@@ -77,14 +79,18 @@ class DefaultSpringCloud:
         )
 
         if enable_log_stream_public_endpoint is not None or enable_dataplane_public_endpoint is not None:
+            if properties.vnet_addons is None:
+                properties.vnet_addons = models.ServiceVNetAddons()
             val = enable_log_stream_public_endpoint if enable_log_stream_public_endpoint is not None else \
                 enable_dataplane_public_endpoint
-            properties.vnet_addons = models.ServiceVNetAddons(
-                data_plane_public_endpoint=val,
-                log_stream_public_endpoint=val
-            )
-        else:
-            properties.vnet_addons = None
+            properties.vnet_addons.data_plane_public_endpoint = val
+            properties.vnet_addons.log_stream_public_endpoint = val
+
+        if enable_private_storage_access is not None:
+            if properties.vnet_addons is None:
+                properties.vnet_addons = models.ServiceVNetAddons()
+            val = "Enabled" if enable_private_storage_access else "Disabled"
+            properties.vnet_addons.private_storage_access = val
 
         if marketplace_plan_id:
             properties.marketplace_resource = models.MarketplaceResource(
@@ -140,6 +146,7 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
                 self.cmd, self.client, self.resource_group, self.name, kwargs['build_pool_size']),
             _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs),
             create_application_configuration_service(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_config_server(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_application_live_view(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_dev_tool_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_service_registry(self.cmd, self.client, self.resource_group, self.name, **kwargs),
@@ -181,6 +188,7 @@ def spring_create(cmd, client, resource_group, name,
                   registry_username=None,
                   registry_password=None,
                   enable_application_configuration_service=False,
+                  enable_config_server=False,
                   application_configuration_service_generation=None,
                   enable_application_live_view=False,
                   enable_service_registry=False,
@@ -191,6 +199,7 @@ def spring_create(cmd, client, resource_group, name,
                   enable_application_accelerator=False,
                   enable_log_stream_public_endpoint=None,
                   enable_dataplane_public_endpoint=None,
+                  enable_private_storage_access=None,
                   ingress_read_timeout=None,
                   marketplace_plan_id=None,
                   managed_environment=None,
@@ -223,6 +232,7 @@ def spring_create(cmd, client, resource_group, name,
         'registry_username': registry_username,
         'registry_password': registry_password,
         'enable_application_configuration_service': enable_application_configuration_service,
+        'enable_config_server': enable_config_server,
         'application_configuration_service_generation': application_configuration_service_generation,
         'enable_application_live_view': enable_application_live_view,
         'enable_service_registry': enable_service_registry,
@@ -233,6 +243,7 @@ def spring_create(cmd, client, resource_group, name,
         'enable_application_accelerator': enable_application_accelerator,
         'enable_log_stream_public_endpoint': enable_log_stream_public_endpoint,
         'enable_dataplane_public_endpoint': enable_dataplane_public_endpoint,
+        'enable_private_storage_access': enable_private_storage_access,
         'marketplace_plan_id': marketplace_plan_id,
         'managed_environment': managed_environment,
         'infra_resource_group': infra_resource_group,
