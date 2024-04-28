@@ -550,7 +550,7 @@ def load_arguments(self, _):
                        validator=validate_config_file_patterns)
             c.argument('custom_actuator_port', type=int,
                        help='(Enterprise Tier Only) Custom actuator port for the app. Default to 8080.', validator=validate_custom_actuator_port)
-            c.argument('custom_actuator_path', type=str,
+            c.argument('custom_actuator_path', 
                        help='(Enterprise Tier Only) Custom actuator path for the app. Default to "/actuator".', validator=validate_custom_actuator_path)
 
     with self.argument_context('spring app scale') as c:
