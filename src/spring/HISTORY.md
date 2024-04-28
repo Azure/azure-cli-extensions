@@ -2,7 +2,8 @@ Release History
 ===============
 1.22.0
 ---
-* Add arguments `--custom-actuator-port` and `--custom-actuator-path` in `spring app update`, `spring app deploy` and `spring app deployment create` to support custom actuator.
+* Add argument `--custom-actuator-port` in `spring app update`, `spring app deploy` and `spring app deployment create` to support custom actuator port.
+* Add argument `--custom-actuator-path` in `spring app update`, `spring app deploy` and `spring app deployment create` to support custom actuator path.
 
 1.21.0
 ---
