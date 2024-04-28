@@ -12,16 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic api head",
+    "apic metadata delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class Head(AAZCommand):
-    """Checks if specified API exists.
+class Delete(AAZCommand):
+    """Delete specified metadata schema.
+
+    :example: Delete Metadata Schema
+        az apic metadata delete --resource-group api-center-test --service-name contoso --name "test1"
+
+    :example: Delete schema
+        az apic metadata delete -g api-center-test -s contosoeuap --name "approver"
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/apis/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/metadataschemas/{}", "2024-03-01"],
         ]
     }
 
@@ -41,12 +48,13 @@ class Head(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--name", "--api-name"],
-            help="The name of the API.",
+        _args_schema.metadata_schema_name = AAZStrArg(
+            options=["--name", "--metadata-schema", "--metadata-schema-name"],
+            help="The name of the metadata schema.",
             required=True,
-            id_part="child_name_2",
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -60,17 +68,7 @@ class Head(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                max_length=90,
-                min_length=1,
-            ),
-        )
-        _args_schema.workspace_name = AAZStrArg(
-            options=["-w", "--workspace", "--workspace-name"],
-            help="The name of the workspace.",
-            required=True,
-            id_part="child_name_1",
-            default="default",
-            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -79,7 +77,7 @@ class Head(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ApisHead(ctx=self.ctx)()
+        self.MetadataSchemasDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,7 +88,7 @@ class Head(AAZCommand):
     def post_operations(self):
         pass
 
-    class ApisHead(AAZHttpOperation):
+    class MetadataSchemasDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -98,19 +96,21 @@ class Head(AAZCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
+            if session.http_response.status_code in [204]:
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/apis/{apiName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/metadataSchemas/{metadataSchemaName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "HEAD"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -120,7 +120,7 @@ class Head(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "metadataSchemaName", self.ctx.args.metadata_schema_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -133,10 +133,6 @@ class Head(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "workspaceName", self.ctx.args.workspace_name,
                     required=True,
                 ),
             }
@@ -155,9 +151,12 @@ class Head(AAZCommand):
         def on_200(self, session):
             pass
 
+        def on_204(self, session):
+            pass
 
-class _HeadHelper:
-    """Helper class for Head"""
+
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["Head"]
+__all__ = ["Delete"]

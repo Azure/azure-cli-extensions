@@ -17,11 +17,11 @@ from azure.cli.core.aaz import *
 class ImportSpecification(AAZCommand):
     """Imports the API specification.
 
-    :example: Import Sepecification
-        az apic api definition import-specification -g api-center-test -s contosoeuap --api-name echo-api-2 --version-name 2023-08-01 --definition-name openapi3 --format "inline" --value '{"openapi":"3.0.1","info":{"title":"httpbin.org","description":"API Management facade for a very handy and free online HTTP tool.","version":"1.0"}}' --specification '{"name":"openapi","version":"3.0.0"}'
+    :example: Import specification example 1
+        az apic api definition import-specification -g api-center-test -s contosoeuap --api-id echo-api-2 --version-id 2023-08-01 --definition-id openapi3 --format "inline" --value '{"openapi":"3.0.1","info":{"title":"httpbin.org","description":"API Management facade for a very handy and free online HTTP tool.","version":"1.0"}}' --specification '{"name":"openapi","version":"3.0.0"}'
 
-    :example: Import Specification from a file
-        az apic api definition import-specification -g api-center-test -s contosoeuap --api-name echo-api-2 --version-name 2023-11-01 --definition-name openapi8 --format "link" --value 'https://alzaslonaztest.blob.core.windows.net/arpitestblobs/importspec4.txt' --specification '{"name":"openapi","version":"3.0.0"}'
+    :example: Import specification example 2
+        az apic api definition import-specification -g api-center-test -s contoso --api-id echo-api --version-id 2023-11-01 --definition-id openapi --format "link" --value 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json' --specification '{"name":"openapi","version":"3.0.0"}'
     """
 
     _aaz_info = {
@@ -48,22 +48,24 @@ class ImportSpecification(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-        _args_schema.definition_name = AAZStrArg(
-            options=["--name", "--definition", "--definition-name"],
-            help="The name of the API definition.",
+        _args_schema.definition_id = AAZStrArg(
+            options=["--definition-id"],
+            help="The id of the API definition.",
             required=True,
             id_part="child_name_4",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -77,16 +79,18 @@ class ImportSpecification(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-        _args_schema.version_name = AAZStrArg(
-            options=["--version", "--version-name"],
-            help="The name of the API version.",
+        _args_schema.version_id = AAZStrArg(
+            options=["--version-id"],
+            help="The id of the API version.",
             required=True,
             id_part="child_name_3",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -98,6 +102,7 @@ class ImportSpecification(AAZCommand):
             id_part="child_name_1",
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -193,11 +198,11 @@ class ImportSpecification(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "definitionName", self.ctx.args.definition_name,
+                    "definitionName", self.ctx.args.definition_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -213,7 +218,7 @@ class ImportSpecification(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "versionName", self.ctx.args.version_name,
+                    "versionName", self.ctx.args.version_id,
                     required=True,
                 ),
                 **self.serialize_url_param(

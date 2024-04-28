@@ -752,6 +752,16 @@ helps['aks upgrade'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --enable-force-upgrade
+          type: bool
+          short-summary: Enable forceUpgrade cluster upgrade settings override.
+        - name: --disable-force-upgrade
+          type: bool
+          short-summary: Disable forceUpgrade cluster upgrade settings override.
+        - name: --upgrade-override-until
+          type: string
+          short-summary: Until when the cluster upgradeSettings overrides are effective.
+          long-summary: It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
     examples:
       - name: Upgrade a existing managed cluster to a managed cluster snapshot.
         text: az aks upgrade -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"

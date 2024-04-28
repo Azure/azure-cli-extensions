@@ -2288,6 +2288,22 @@ class ContainerappOtherPropertyTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, random_config_dir=True, **kwargs)
 
+    @live_only() # Pass lively, failed in playback mode because in the playback mode the cloud is AzureCloud, not AzureChinaCloud
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="chinaeast3")
+    def test_containerapp_up_mooncake(self, resource_group):
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        image_name = "mcr.microsoft.com/k8se/quickstart:latest"
+        self.cmd('az containerapp up -n {} -g {} --image {} -l chinaeast3'.format(ca_name, resource_group, image_name))
+        self.cmd('az containerapp show -n {} -g {}'.format(ca_name, resource_group), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+        self.cmd('az containerapp env list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 1),
+        ])
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westus")
     def test_containerapp_get_customdomainverificationid_e2e(self, resource_group):
