@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete API deployment.
 
     :example: Delete API deployment
-        az apic api deployment delete -g api-center-test -s contoso --name production --api-name echo-api
+        az apic api deployment delete -g api-center-test -s contoso --deployment-id production --api-id echo-api
     """
 
     _aaz_info = {
@@ -45,22 +45,24 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-        _args_schema.deployment_name = AAZStrArg(
-            options=["--name", "--deployment", "--deployment-name"],
-            help="The name of the API deployment.",
+        _args_schema.deployment_id = AAZStrArg(
+            options=["--deployment-id"],
+            help="The id of the API deployment.",
             required=True,
             id_part="child_name_3",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -74,6 +76,7 @@ class Delete(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -85,6 +88,7 @@ class Delete(AAZCommand):
             id_part="child_name_1",
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -136,11 +140,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "deploymentName", self.ctx.args.deployment_name,
+                    "deploymentName", self.ctx.args.deployment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(

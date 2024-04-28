@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "apic api version update",
 )
 class Update(AAZCommand):
-    """Update new or updates existing API version.
+    """Update existing API version.
 
     :example: Update API version
-        az apic api version update -g api-center-test -s contosoeuap --api-name echo-api --name 2023-01-01 --title "2023-01-01"
+        az apic api version update -g api-center-test -s contosoeuap --api-id echo-api --version-id 2023-01-01 --title "2023-01-01"
     """
 
     _aaz_info = {
@@ -46,12 +46,13 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -65,16 +66,18 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-        _args_schema.version_name = AAZStrArg(
-            options=["--name", "--version", "--version-name"],
-            help="The name of the API version.",
+        _args_schema.version_id = AAZStrArg(
+            options=["--version-id"],
+            help="The id of the API version.",
             required=True,
             id_part="child_name_3",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -85,6 +88,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -170,7 +174,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -186,7 +190,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "versionName", self.ctx.args.version_name,
+                    "versionName", self.ctx.args.version_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -265,7 +269,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -281,7 +285,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "versionName", self.ctx.args.version_name,
+                    "versionName", self.ctx.args.version_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -353,7 +357,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -396,7 +400,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         api_version_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+            flags={"required": True, "client_flatten": True},
         )
         api_version_read.system_data = AAZObjectType(
             serialized_name="systemData",

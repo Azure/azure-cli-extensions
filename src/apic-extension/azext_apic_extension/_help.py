@@ -12,11 +12,11 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['apic api register'] = """
     type: command
-    short-summary: Single Command for registering api, api version, api definition, import spec, create deployment provided a spec file.
+    short-summary: Registers a new API with version, definition, and associated deployments using the specification file as the source of truth.
     parameters:
       - name: --api-location -l
         type: string
-        short-summary: Location of spec file  .
+        short-summary: Location of spec file.
       - name: --resource-group -g
         type: string
         short-summary: Resource group name.
@@ -30,4 +30,5 @@ helps['apic api register'] = """
       - name: Register api by providing spec file.
         text: |
           az apic api register -g api-center-test -s contosoeuap --api-location "examples/cli-examples/spec-examples/openai.json" --environment-name public
+          az apic api register -g api-center-test -s contosoeuap --api-location "examples/cli-examples/spec-examples/openai.yml" --environment-name public
 """

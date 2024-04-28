@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "apic api deployment update",
 )
 class Update(AAZCommand):
-    """Update new or updates existing API deployment.
+    """Update existing API deployment.
 
     :example: Update API deployment
-        az apic api deployment update -g api-center-test -s contoso --name production --title "Production deployment" --api echo-api
+        az apic api deployment update -g api-center-test -s contoso --deployment-id production --title "Production deployment" --api-id echo-api
     """
 
     _aaz_info = {
@@ -46,22 +46,24 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-        _args_schema.deployment_name = AAZStrArg(
-            options=["--name", "--deployment", "--deployment-name"],
-            help="The name of the API deployment.",
+        _args_schema.deployment_id = AAZStrArg(
+            options=["--deployment-id"],
+            help="The id of the API deployment.",
             required=True,
             id_part="child_name_3",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -75,6 +77,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -85,6 +88,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -93,7 +97,7 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.custom_properties = AAZObjectArg(
+        _args_schema.custom_properties = AAZFreeFormDictArg(
             options=["--custom-properties"],
             arg_group="Properties",
             help="The custom metadata defined for API catalog entities.",
@@ -221,11 +225,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "deploymentName", self.ctx.args.deployment_name,
+                    "deploymentName", self.ctx.args.deployment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -316,11 +320,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "deploymentName", self.ctx.args.deployment_name,
+                    "deploymentName", self.ctx.args.deployment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -408,13 +412,17 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("customProperties", AAZObjectType, ".custom_properties")
+                properties.set_prop("customProperties", AAZFreeFormDictType, ".custom_properties")
                 properties.set_prop("definitionId", AAZStrType, ".definition_id")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("environmentId", AAZStrType, ".environment_id")
                 properties.set_prop("server", AAZObjectType, ".server")
                 properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("title", AAZStrType, ".title")
+
+            custom_properties = _builder.get(".properties.customProperties")
+            if custom_properties is not None:
+                custom_properties.set_anytype_elements(".")
 
             server = _builder.get(".properties.server")
             if server is not None:
@@ -471,7 +479,7 @@ class _UpdateHelper:
         )
 
         properties = _schema_deployment_read.properties
-        properties.custom_properties = AAZObjectType(
+        properties.custom_properties = AAZFreeFormDictType(
             serialized_name="customProperties",
         )
         properties.definition_id = AAZStrType(

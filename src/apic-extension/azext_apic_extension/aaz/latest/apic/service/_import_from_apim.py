@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "apic service import-from-apim",
 )
 class ImportFromApim(AAZCommand):
-    """Imports from APIM instance.
+    """Imports APIs from an Azure API Management service instance.
 
     :example: Import From APIM
-        az apic service import-from-apim -g api-center-test --service-name contosoeuap --source-resource-ids '/subscriptions/a200340d-6b82-494d-9dbf-687ba6e33f9e/resourceGroups/servicegroup/providers/Microsoft.ApiManagement/service/contoso/apis/contosoapi
+        az apic service import-from-apim -g api-center-test --service-name contosoeuap --source-resource-ids '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/servicegroup/providers/Microsoft.ApiManagement/service/contoso/apis/contosoapi'
     """
 
     _aaz_info = {
@@ -54,6 +54,7 @@ class ImportFromApim(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),

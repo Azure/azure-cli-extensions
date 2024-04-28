@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete specified API definition.
 
     :example: Delete API definition
-        az apic api definition delete -g api-center-test -s contosoeuap --api-name echo-api --version 2023-01-01 --name "openapi"
+        az apic api definition delete -g api-center-test -s contosoeuap --api-id echo-api --version-id 2023-01-01 --definition-id "openapi"
     """
 
     _aaz_info = {
@@ -45,22 +45,24 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-        _args_schema.definition_name = AAZStrArg(
-            options=["--name", "--definition", "--definition-name"],
-            help="The name of the API definition.",
+        _args_schema.definition_id = AAZStrArg(
+            options=["--definition-id"],
+            help="The id of the API definition.",
             required=True,
             id_part="child_name_4",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -74,16 +76,18 @@ class Delete(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-        _args_schema.version_name = AAZStrArg(
-            options=["--version", "--version-name"],
-            help="The name of the API version.",
+        _args_schema.version_id = AAZStrArg(
+            options=["--version-id"],
+            help="The id of the API version.",
             required=True,
             id_part="child_name_3",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -95,6 +99,7 @@ class Delete(AAZCommand):
             id_part="child_name_1",
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -146,11 +151,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "definitionName", self.ctx.args.definition_name,
+                    "definitionName", self.ctx.args.definition_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -166,7 +171,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "versionName", self.ctx.args.version_name,
+                    "versionName", self.ctx.args.version_id,
                     required=True,
                 ),
                 **self.serialize_url_param(

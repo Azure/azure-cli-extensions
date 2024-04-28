@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get details of the API version.
 
     :example: Show API version details
-        az apic api version show -g api-center-test -s contoso --api-name echo-api --name 2023-01-01
+        az apic api version show -g api-center-test -s contoso --api-id echo-api --version-id 2023-01-01
     """
 
     _aaz_info = {
@@ -44,12 +44,13 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -63,16 +64,18 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-        _args_schema.version_name = AAZStrArg(
-            options=["--name", "--version", "--version-name"],
-            help="The name of the API version.",
+        _args_schema.version_id = AAZStrArg(
+            options=["--version-id"],
+            help="The id of the API version.",
             required=True,
             id_part="child_name_3",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -84,6 +87,7 @@ class Show(AAZCommand):
             id_part="child_name_1",
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -137,7 +141,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -153,7 +157,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "versionName", self.ctx.args.version_name,
+                    "versionName", self.ctx.args.version_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -207,7 +211,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",

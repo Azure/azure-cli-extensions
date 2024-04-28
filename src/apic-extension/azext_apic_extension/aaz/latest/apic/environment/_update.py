@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "apic environment update",
 )
 class Update(AAZCommand):
-    """Update new or updates existing environment.
+    """Update existing environment.
 
     :example: Update environment
-        az apic environment update -g api-center-test -s contosoeuap --name public --title "Public cloud"
+        az apic environment update -g api-center-test -s contosoeuap --environment-id public --title "Public cloud"
     """
 
     _aaz_info = {
@@ -46,12 +46,13 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.environment_name = AAZStrArg(
-            options=["--name", "--environment", "--environment-name"],
-            help="The name of the environment.",
+        _args_schema.environment_id = AAZStrArg(
+            options=["--environment-id"],
+            help="The id of the environment.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -65,6 +66,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -75,6 +77,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -83,7 +86,7 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.custom_properties = AAZObjectArg(
+        _args_schema.custom_properties = AAZFreeFormDictArg(
             options=["--custom-properties"],
             arg_group="Properties",
             help="The custom metadata defined for API catalog entities.",
@@ -96,15 +99,16 @@ class Update(AAZCommand):
             help="Description.",
             nullable=True,
         )
-        _args_schema.kind = AAZStrArg(
-            options=["--kind"],
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
             arg_group="Properties",
-            help="Environment kind.",
+            help="Environment type.",
             enum={"development": "development", "production": "production", "staging": "staging", "testing": "testing"},
         )
         _args_schema.onboarding = AAZObjectArg(
             options=["--onboarding"],
             arg_group="Properties",
+            help="{developerPortalUri:['https://developer.contoso.com'],instructions:'instructions markdown'}",
             nullable=True,
         )
         _args_schema.server = AAZObjectArg(
@@ -126,6 +130,7 @@ class Update(AAZCommand):
         onboarding = cls._args_schema.onboarding
         onboarding.developer_portal_uri = AAZListArg(
             options=["developer-portal-uri"],
+            help="The location of the development portal",
             nullable=True,
         )
         onboarding.instructions = AAZStrArg(
@@ -142,6 +147,7 @@ class Update(AAZCommand):
         server = cls._args_schema.server
         server.management_portal_uri = AAZListArg(
             options=["management-portal-uri"],
+            help="The location of the management portal",
             nullable=True,
         )
         server.type = AAZStrArg(
@@ -217,7 +223,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "environmentName", self.ctx.args.environment_name,
+                    "environmentName", self.ctx.args.environment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -308,7 +314,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "environmentName", self.ctx.args.environment_name,
+                    "environmentName", self.ctx.args.environment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -392,16 +398,20 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("customProperties", AAZObjectType, ".custom_properties")
+                properties.set_prop("customProperties", AAZFreeFormDictType, ".custom_properties")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("kind", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("onboarding", AAZObjectType, ".onboarding")
                 properties.set_prop("server", AAZObjectType, ".server")
                 properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
+
+            custom_properties = _builder.get(".properties.customProperties")
+            if custom_properties is not None:
+                custom_properties.set_anytype_elements(".")
 
             onboarding = _builder.get(".properties.onboarding")
             if onboarding is not None:
@@ -457,7 +467,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         environment_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+            flags={"required": True, "client_flatten": True},
         )
         environment_read.system_data = AAZObjectType(
             serialized_name="systemData",
@@ -468,7 +478,7 @@ class _UpdateHelper:
         )
 
         properties = _schema_environment_read.properties
-        properties.custom_properties = AAZObjectType(
+        properties.custom_properties = AAZFreeFormDictType(
             serialized_name="customProperties",
         )
         properties.description = AAZStrType()

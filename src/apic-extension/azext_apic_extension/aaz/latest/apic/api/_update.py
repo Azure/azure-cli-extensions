@@ -15,10 +15,13 @@ from azure.cli.core.aaz import *
     "apic api update",
 )
 class Update(AAZCommand):
-    """Update new or updates existing API.
+    """Update existing API.
 
     :example: Update API
-        az apic api update -g contoso-resources -s contoso --name echo-api --summary "Basic REST API service"
+        az apic api update -g contoso-resources -s contoso --api-id echo-api --summary "Basic REST API service"
+
+    :example: Update custom properties
+        az apic api update -g contoso-resources -s contoso --api-id echo-api --custom-properties '{\"public-facing\":true}'
     """
 
     _aaz_info = {
@@ -46,12 +49,13 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--name", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -65,6 +69,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -75,6 +80,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -89,7 +95,7 @@ class Update(AAZCommand):
             help="The contact information for the API.",
             nullable=True,
         )
-        _args_schema.custom_properties = AAZObjectArg(
+        _args_schema.custom_properties = AAZFreeFormDictArg(
             options=["--custom-properties"],
             arg_group="Properties",
             help="The custom metadata defined for API catalog entities.",
@@ -111,10 +117,10 @@ class Update(AAZCommand):
             help="Additional, external documentation for the API.",
             nullable=True,
         )
-        _args_schema.kind = AAZStrArg(
-            options=["--kind"],
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
             arg_group="Properties",
-            help="Kind of API. For example, REST or GraphQL.",
+            help="Type of API.",
             enum={"graphql": "graphql", "grpc": "grpc", "rest": "rest", "soap": "soap", "webhook": "webhook", "websocket": "websocket"},
         )
         _args_schema.license = AAZObjectArg(
@@ -131,12 +137,6 @@ class Update(AAZCommand):
             fmt=AAZStrArgFormat(
                 max_length=200,
             ),
-        )
-        _args_schema.terms_of_service = AAZObjectArg(
-            options=["--terms-of-service"],
-            arg_group="Properties",
-            help="Terms of service for the API.",
-            nullable=True,
         )
         _args_schema.title = AAZStrArg(
             options=["--title"],
@@ -234,15 +234,6 @@ class Update(AAZCommand):
                 max_length=200,
             ),
         )
-
-        terms_of_service = cls._args_schema.terms_of_service
-        terms_of_service.url = AAZStrArg(
-            options=["url"],
-            help="URL pointing to the terms of service.",
-            fmt=AAZStrArgFormat(
-                max_length=200,
-            ),
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -305,7 +296,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -396,7 +387,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -480,18 +471,17 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("contacts", AAZListType, ".contacts")
-                properties.set_prop("customProperties", AAZObjectType, ".custom_properties")
+                properties.set_prop("customProperties", AAZFreeFormDictType, ".custom_properties")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("externalDocumentation", AAZListType, ".external_documentation")
-                properties.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("kind", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("license", AAZObjectType, ".license")
                 properties.set_prop("summary", AAZStrType, ".summary")
-                properties.set_prop("termsOfService", AAZObjectType, ".terms_of_service")
                 properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
 
             contacts = _builder.get(".properties.contacts")
@@ -503,6 +493,10 @@ class Update(AAZCommand):
                 _elements.set_prop("email", AAZStrType, ".email")
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("url", AAZStrType, ".url")
+
+            custom_properties = _builder.get(".properties.customProperties")
+            if custom_properties is not None:
+                custom_properties.set_anytype_elements(".")
 
             external_documentation = _builder.get(".properties.externalDocumentation")
             if external_documentation is not None:
@@ -519,10 +513,6 @@ class Update(AAZCommand):
                 license.set_prop("identifier", AAZStrType, ".identifier")
                 license.set_prop("name", AAZStrType, ".name")
                 license.set_prop("url", AAZStrType, ".url")
-
-            terms_of_service = _builder.get(".properties.termsOfService")
-            if terms_of_service is not None:
-                terms_of_service.set_prop("url", AAZStrType, ".url", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
@@ -560,7 +550,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         api_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+            flags={"required": True, "client_flatten": True},
         )
         api_read.system_data = AAZObjectType(
             serialized_name="systemData",
@@ -572,7 +562,7 @@ class _UpdateHelper:
 
         properties = _schema_api_read.properties
         properties.contacts = AAZListType()
-        properties.custom_properties = AAZObjectType(
+        properties.custom_properties = AAZFreeFormDictType(
             serialized_name="customProperties",
         )
         properties.description = AAZStrType()
@@ -585,6 +575,7 @@ class _UpdateHelper:
         properties.license = AAZObjectType()
         properties.lifecycle_stage = AAZStrType(
             serialized_name="lifecycleStage",
+            flags={"read_only": True},
         )
         properties.summary = AAZStrType()
         properties.terms_of_service = AAZObjectType(

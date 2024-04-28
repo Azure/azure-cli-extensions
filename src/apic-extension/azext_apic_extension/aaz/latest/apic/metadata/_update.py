@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic metadata-schema update",
+    "apic metadata update",
 )
 class Update(AAZCommand):
-    """Update new or updates existing metadata schema.
+    """Update existing metadata schema.
 
     :example: Update schema
-        az az apic metadata-schema update --resource-group api-center-test --service-name contoso --name "test1" --schema '{\"type\":\"string\", \"title\":\"Last name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}'
+        az apic metadata update --resource-group api-center-test --service-name contoso --name "test1" --schema '{\"type\":\"string\", \"title\":\"Last name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}'
     """
 
     _aaz_info = {
@@ -52,6 +52,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -65,6 +66,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -73,9 +75,10 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.assigned_to = AAZListArg(
-            options=["--assigned-to"],
+        _args_schema.assignments = AAZListArg(
+            options=["--assignments"],
             arg_group="Properties",
+            help="Defines the assignment scope for the custom metadata, e.g. \"[{entity:api,required:true,deprecated:false}]\". The available entity values are: api, deployment, environment.",
             nullable=True,
         )
         _args_schema.schema = AAZStrArg(
@@ -84,14 +87,15 @@ class Update(AAZCommand):
             help="YAML schema defining the type.",
         )
 
-        assigned_to = cls._args_schema.assigned_to
-        assigned_to.Element = AAZObjectArg(
+        assignments = cls._args_schema.assignments
+        assignments.Element = AAZObjectArg(
             nullable=True,
         )
 
-        _element = cls._args_schema.assigned_to.Element
+        _element = cls._args_schema.assignments.Element
         _element.deprecated = AAZBoolArg(
             options=["deprecated"],
+            help="Deprecated assignment",
             nullable=True,
         )
         _element.entity = AAZStrArg(
@@ -102,6 +106,7 @@ class Update(AAZCommand):
         )
         _element.required = AAZBoolArg(
             options=["required"],
+            help="Required assignment",
             nullable=True,
         )
         return cls._args_schema
@@ -333,11 +338,11 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("assignedTo", AAZListType, ".assigned_to")
+                properties.set_prop("assignedTo", AAZListType, ".assignments")
                 properties.set_prop("schema", AAZStrType, ".schema", typ_kwargs={"flags": {"required": True}})
 
             assigned_to = _builder.get(".properties.assignedTo")
@@ -386,7 +391,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         metadata_schema_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+            flags={"required": True, "client_flatten": True},
         )
         metadata_schema_read.system_data = AAZObjectType(
             serialized_name="systemData",

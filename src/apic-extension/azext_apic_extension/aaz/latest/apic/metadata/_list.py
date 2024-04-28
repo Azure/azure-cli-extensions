@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic metadata-schema list",
+    "apic metadata list",
 )
 class List(AAZCommand):
     """List a collection of metadata schemas.
 
     :example: List schemas
-        az apic metadata-schema list -g api-center-test -s contosoeuap
+        az apic metadata list -g api-center-test -s contosoeuap
     """
 
     _aaz_info = {
@@ -53,6 +53,7 @@ class List(AAZCommand):
             help="The name of the API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -170,7 +171,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True, "read_only": True},
             )
 
             value = cls._schema_on_200.value
@@ -184,7 +185,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",

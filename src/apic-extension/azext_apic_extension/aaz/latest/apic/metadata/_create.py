@@ -12,19 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic environment create",
+    "apic metadata create",
 )
 class Create(AAZCommand):
-    """Create a new environment or update an existing environment.
+    """Create a new metadata schema or update an existing metadata schema.
 
-    :example: Create environment
-        az apic environment create -g api-center-test -s contosoeuap --environment-id public --title "Public cloud" --type "development"
+    :example: Create metadata example 1
+        az apic metadata create --resource-group api-center-test --service-name contoso --name "test1" --schema '{\"type\":\"string\", \"title\":\"First name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}' --assignments '[{entity:api,required:true,deprecated:false}]'
+
+    :example: Create metadata example 2
+        az apic metadata create --resource-group api-center-test --service-name contoso  --name testregion --schema '{\"type\":\"string\",\"title\":\"testregion\",\"oneOf\":[{\"const\":\"Region1\",\"description\":\"\"},{\"const\":\"Region2\",\"description\":\"\"},{\"const\":\"Region3\",\"description\":\"\"}]}' --assignments '[{entity:api,required:true,deprecated:false},{entity:environment,required:true,deprecated:false}]'
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/workspaces/{}/environments/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}/metadataschemas/{}", "2024-03-01"],
         ]
     }
 
@@ -44,9 +47,9 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.environment_id = AAZStrArg(
-            options=["--environment-id"],
-            help="The id of the environment.",
+        _args_schema.metadata_schema_name = AAZStrArg(
+            options=["--name", "--metadata-schema", "--metadata-schema-name"],
+            help="The name of the metadata schema.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",
@@ -67,91 +70,44 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.workspace_name = AAZStrArg(
-            options=["-w", "--workspace", "--workspace-name"],
-            help="The name of the workspace.",
-            required=True,
-            default="default",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,90}$",
-                max_length=90,
-                min_length=1,
-            ),
-        )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.custom_properties = AAZFreeFormDictArg(
-            options=["--custom-properties"],
+        _args_schema.assignments = AAZListArg(
+            options=["--assignments"],
             arg_group="Properties",
-            help="The custom metadata defined for API catalog entities.",
-            blank={},
+            help="Defines the assignment scope for the custom metadata, e.g. \"[{entity:api,required:true,deprecated:false}]\". The available entity values are: api, deployment, environment.",
         )
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
+        _args_schema.schema = AAZStrArg(
+            options=["--schema"],
             arg_group="Properties",
-            help="Environment description.",
-        )
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="Properties",
-            help="Environment type.",
+            help="JSON schema defining the type.",
             required=True,
-            enum={"development": "development", "production": "production", "staging": "staging", "testing": "testing"},
-        )
-        _args_schema.onboarding = AAZObjectArg(
-            options=["--onboarding"],
-            arg_group="Properties",
-            help="Provide onboarding documentation related to your environment, e.g. {developerPortalUri:['https://developer.contoso.com'],instructions:'instructions markdown'}",
-        )
-        _args_schema.server = AAZObjectArg(
-            options=["--server"],
-            arg_group="Properties",
-            help="Server information of the environment.",
-        )
-        _args_schema.title = AAZStrArg(
-            options=["--title"],
-            arg_group="Properties",
-            help="Environment title.",
-            required=True,
-            fmt=AAZStrArgFormat(
-                max_length=50,
-                min_length=1,
-            ),
         )
 
-        onboarding = cls._args_schema.onboarding
-        onboarding.developer_portal_uri = AAZListArg(
-            options=["developer-portal-uri"],
-            help="The location of the development portal",
-        )
-        onboarding.instructions = AAZStrArg(
-            options=["instructions"],
-            help="Onboarding guide.",
-        )
+        assignments = cls._args_schema.assignments
+        assignments.Element = AAZObjectArg()
 
-        developer_portal_uri = cls._args_schema.onboarding.developer_portal_uri
-        developer_portal_uri.Element = AAZStrArg()
-
-        server = cls._args_schema.server
-        server.management_portal_uri = AAZListArg(
-            options=["management-portal-uri"],
-            help="The location of the management portal",
+        _element = cls._args_schema.assignments.Element
+        _element.deprecated = AAZBoolArg(
+            options=["deprecated"],
+            help="Deprecated assignment",
         )
-        server.type = AAZStrArg(
-            options=["type"],
-            help="Type of the server that represents the environment.",
-            enum={"AWS API Gateway": "AWS API Gateway", "Apigee API Management": "Apigee API Management", "Azure API Management": "Azure API Management", "Azure compute service": "Azure compute service", "Kong API Gateway": "Kong API Gateway", "Kubernetes": "Kubernetes", "MuleSoft API Management": "MuleSoft API Management"},
+        _element.entity = AAZStrArg(
+            options=["entity"],
+            help="The entities this metadata schema component gets applied to.",
+            enum={"api": "api", "deployment": "deployment", "environment": "environment"},
         )
-
-        management_portal_uri = cls._args_schema.server.management_portal_uri
-        management_portal_uri.Element = AAZStrArg()
+        _element.required = AAZBoolArg(
+            options=["required"],
+            help="Required assignment",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EnvironmentsCreateOrUpdate(ctx=self.ctx)()
+        self.MetadataSchemasCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -166,7 +122,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EnvironmentsCreateOrUpdate(AAZHttpOperation):
+    class MetadataSchemasCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -180,7 +136,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/workspaces/{workspaceName}/environments/{environmentName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}/metadataSchemas/{metadataSchemaName}",
                 **self.url_parameters
             )
 
@@ -196,7 +152,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "environmentName", self.ctx.args.environment_id,
+                    "metadataSchemaName", self.ctx.args.metadata_schema_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -209,10 +165,6 @@ class Create(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "workspaceName", self.ctx.args.workspace_name,
                     required=True,
                 ),
             }
@@ -251,34 +203,18 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("customProperties", AAZFreeFormDictType, ".custom_properties")
-                properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("kind", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("onboarding", AAZObjectType, ".onboarding")
-                properties.set_prop("server", AAZObjectType, ".server")
-                properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("assignedTo", AAZListType, ".assignments")
+                properties.set_prop("schema", AAZStrType, ".schema", typ_kwargs={"flags": {"required": True}})
 
-            custom_properties = _builder.get(".properties.customProperties")
-            if custom_properties is not None:
-                custom_properties.set_anytype_elements(".")
+            assigned_to = _builder.get(".properties.assignedTo")
+            if assigned_to is not None:
+                assigned_to.set_elements(AAZObjectType, ".")
 
-            onboarding = _builder.get(".properties.onboarding")
-            if onboarding is not None:
-                onboarding.set_prop("developerPortalUri", AAZListType, ".developer_portal_uri")
-                onboarding.set_prop("instructions", AAZStrType, ".instructions")
-
-            developer_portal_uri = _builder.get(".properties.onboarding.developerPortalUri")
-            if developer_portal_uri is not None:
-                developer_portal_uri.set_elements(AAZStrType, ".")
-
-            server = _builder.get(".properties.server")
-            if server is not None:
-                server.set_prop("managementPortalUri", AAZListType, ".management_portal_uri")
-                server.set_prop("type", AAZStrType, ".type")
-
-            management_portal_uri = _builder.get(".properties.server.managementPortalUri")
-            if management_portal_uri is not None:
-                management_portal_uri.set_elements(AAZStrType, ".")
+            _elements = _builder.get(".properties.assignedTo[]")
+            if _elements is not None:
+                _elements.set_prop("deprecated", AAZBoolType, ".deprecated")
+                _elements.set_prop("entity", AAZStrType, ".entity")
+                _elements.set_prop("required", AAZBoolType, ".required")
 
             return self.serialize_content(_content_value)
 
@@ -318,36 +254,20 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.custom_properties = AAZFreeFormDictType(
-                serialized_name="customProperties",
+            properties.assigned_to = AAZListType(
+                serialized_name="assignedTo",
             )
-            properties.description = AAZStrType()
-            properties.kind = AAZStrType(
-                flags={"required": True},
-            )
-            properties.onboarding = AAZObjectType()
-            properties.server = AAZObjectType()
-            properties.title = AAZStrType(
+            properties.schema = AAZStrType(
                 flags={"required": True},
             )
 
-            onboarding = cls._schema_on_200_201.properties.onboarding
-            onboarding.developer_portal_uri = AAZListType(
-                serialized_name="developerPortalUri",
-            )
-            onboarding.instructions = AAZStrType()
+            assigned_to = cls._schema_on_200_201.properties.assigned_to
+            assigned_to.Element = AAZObjectType()
 
-            developer_portal_uri = cls._schema_on_200_201.properties.onboarding.developer_portal_uri
-            developer_portal_uri.Element = AAZStrType()
-
-            server = cls._schema_on_200_201.properties.server
-            server.management_portal_uri = AAZListType(
-                serialized_name="managementPortalUri",
-            )
-            server.type = AAZStrType()
-
-            management_portal_uri = cls._schema_on_200_201.properties.server.management_portal_uri
-            management_portal_uri.Element = AAZStrType()
+            _element = cls._schema_on_200_201.properties.assigned_to.Element
+            _element.deprecated = AAZBoolType()
+            _element.entity = AAZStrType()
+            _element.required = AAZBoolType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
