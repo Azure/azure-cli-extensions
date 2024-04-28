@@ -1,5 +1,9 @@
 Release History
 ===============
+1.23.0
+---
+* For Application Configuration Service Version Gen2, show the Git revisions in command `az spring application-configuration-service config show`.
+
 1.22.0
 ---
 * Add argument `--custom-actuator-port` in `spring app update`, `spring app deploy` and `spring app deployment create` to support custom actuator port.
