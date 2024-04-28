@@ -2,6 +2,15 @@
 
 Release History
 ===============
+0.3.5
+++++++
+* making diff mode more robust
+* bugfix for arm template regex
+* updating genpolicy version up through 3.2.0.azl0.genpolicy1
+* adding configmap sidecar
+* bugfix for seccompProfile missing after injecting policy
+* adding cs2 support
+
 0.3.4
 ++++++
 * adding faster hashing flag to use buffered reader in dmverity-vhd

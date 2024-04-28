@@ -760,3 +760,32 @@ Proxy process stderr retrieval attempt:\n{proxy_process_stderr}""")
         os.remove(kubeconfig)
         os.remove(kubeconfig2)
         
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='sslk8stest', location=CONFIG['location'], random_name_length=16)
+    def test_skipping_ssl_verification(self,resource_group):
+       
+        managed_cluster_name = self.create_random_name(prefix='test-ssl', length=24)
+        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
+        self.kwargs.update({
+            'rg': resource_group,
+            'name': self.create_random_name(prefix='cc-', length=12),
+            'kubeconfig': kubeconfig,
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
+        })
+
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin --skip-ssl-verification', checks=[
+            self.check('tags.foo', 'doo'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('name', '{name}')
+        ])
+
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
+            {managed_cluster_name}-admin -y')
+        self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
+
+        # delete the kube config
+        os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))

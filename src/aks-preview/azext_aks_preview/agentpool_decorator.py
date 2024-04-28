@@ -287,10 +287,11 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.agentpool and
+                hasattr(self.agentpool, "windows_profile") and
                 self.agentpool.windows_profile and
-                self.agentpool.windows_profile.disable_windows_outbound_nat is not None
+                self.agentpool.windows_profile.disable_outbound_nat is not None
             ):
-                disable_windows_outbound_nat = self.agentpool.windows_profile.disable_windows_outbound_nat
+                disable_windows_outbound_nat = self.agentpool.windows_profile.disable_outbound_nat
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation

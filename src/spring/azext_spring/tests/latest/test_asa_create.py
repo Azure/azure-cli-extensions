@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 from .common.test_utils import get_test_cmd
-from ...vendored_sdks.appplatform.v2024_01_01_preview import models
+from ...vendored_sdks.appplatform.v2024_05_01_preview import models
 from ...spring_instance import (spring_create)
 from ..._utils import (_get_sku_name)
 
@@ -369,3 +369,16 @@ class TestSpringAppCreateWithLogStreamConfig(BasicTest):
                       disable_app_insights=True)
         resource = self.created_resource
         self.assertEqual(True, resource.properties.vnet_addons.data_plane_public_endpoint)
+
+class TestSpringAppCreateWithPrivateStorageAccess(BasicTest):
+    def test_asa_create_standard_with_private_storage_access(self):
+        self._execute('rg', 'asa', sku=self._get_sku('Standard'), enable_private_storage_access=True,
+                      disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual("Enabled", resource.properties.vnet_addons.private_storage_access)
+
+    def test_asa_create_enterprise_with_private_storage_access(self):
+        self._execute('rg', 'asa', sku=self._get_sku('Enterprise'), enable_private_storage_access=True,
+                      disable_app_insights=True)
+        resource = self.created_resource
+        self.assertEqual("Enabled", resource.properties.vnet_addons.private_storage_access)
