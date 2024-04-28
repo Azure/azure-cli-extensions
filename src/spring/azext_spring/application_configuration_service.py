@@ -25,6 +25,8 @@ RESOURCE_TYPE = "configurationServices"
 DEFAULT_NAME = "default"
 
 CONFIGURATION_FILES = "configurationFiles"
+METADATA = "metadata"
+GIT_REVISIONS = "gitRevisions"
 
 logger = get_logger(__name__)
 
@@ -351,7 +353,10 @@ def _split_config_lines(response_json):
       ]
     }
     """
-    configuration_files = response_json[CONFIGURATION_FILES]
+    configuration_files = response_json.get(CONFIGURATION_FILES, None)
+
+    if configuration_files is None:
+        raise CLIError("Failed to parse configuration files response {}".format(response_json))
 
     filename_to_multi_line_configs_dict = {}
 
@@ -365,9 +370,28 @@ def _split_config_lines(response_json):
     if len(filename_to_multi_line_configs_dict) == 0:
         raise CLIError("No configuration files found.")
 
-    return {
+    configuration_files_result = {
         CONFIGURATION_FILES: filename_to_multi_line_configs_dict
     }
+
+    _safe_append_git_revisions(configuration_files_result, response_json)
+
+    return configuration_files_result
+
+
+def _safe_append_git_revisions(configuration_files_result, response_json):
+    try:
+        metadata = response_json.get(METADATA, None)
+        if (metadata is None) or (not isinstance(metadata, dict)):
+            return
+        git_revisions = metadata.get(GIT_REVISIONS, None)
+        if git_revisions:
+            configuration_files_result[METADATA] = {
+                GIT_REVISIONS: git_revisions
+            }
+    except Exception as e:
+        logger.debug("Failed to append Git revisions.", e)
+        pass
 
 
 def _export_configs_to_files(response_json, folder_path):
