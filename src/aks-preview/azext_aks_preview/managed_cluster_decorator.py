@@ -3690,6 +3690,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_option,
                 agent_pool_vm_sizes,
                 True,
+                is_called_from_extension=True,
             )
 
 
@@ -5118,6 +5119,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 is_ephemeralDisk_localssd_enabled,
                 is_ephemeralDisk_nvme_enabled,
                 current_core_value,
+                is_called_from_extension=True,
             )
 
         # disable azure container storage
@@ -5140,6 +5142,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 is_ephemeralDisk_localssd_enabled,
                 is_ephemeralDisk_nvme_enabled,
                 current_core_value,
+                is_called_from_extension=True,
             )
 
         # attach keyvault to app routing addon

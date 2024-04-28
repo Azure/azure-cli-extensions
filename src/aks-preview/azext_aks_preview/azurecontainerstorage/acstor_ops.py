@@ -53,7 +53,13 @@ def perform_enable_azure_container_storage(  # pylint: disable=too-many-statemen
     is_ephemeralDisk_localssd_enabled=False,
     is_ephemeralDisk_nvme_enabled=False,
     current_core_value=None,
+    is_called_from_extension=False,
 ):
+    # This will be set true only when aks-preview extension is used
+    # and we want the aks-preview ManagedClusterDecorator to call the
+    # perform_enable_azure_container_storage function.
+    if not is_called_from_extension:
+        return
     # Step 1: Validate if storagepool could be created.
     # Depends on the following:
     #   1a: Grant AKS cluster's node identity the following
@@ -196,11 +202,7 @@ def perform_enable_azure_container_storage(  # pylint: disable=too-many-statemen
         long_op_result = LongRunningOperation(cmd.cli_ctx)(result)
         if long_op_result.provisioning_state == "Succeeded":
             logger.warning(op_text)
-        logger.warning("CLUSTER NAME: %s", cluster_name)
-        logger.warning("LONG OP DEBUG: %s", long_op_result)
     except Exception as ex:  # pylint: disable=broad-except
-        logger.warning("EXCEPTION CLUSTER NAME: %s", cluster_name)
-        logger.warning("EXCEPTION: %s", ex)
         if is_cluster_create:
             logger.error("Azure Container Storage failed to install.\nError: %s", ex)
             logger.warning(
@@ -268,7 +270,13 @@ def perform_disable_azure_container_storage(  # pylint: disable=too-many-stateme
     is_ephemeralDisk_localssd_enabled,
     is_ephemeralDisk_nvme_enabled,
     current_core_value,
+    is_called_from_extension=False,
 ):
+    # This will be set true only when aks-preview extension is used
+    # and we want the aks-preview ManagedClusterDecorator to call the
+    # perform_enable_azure_container_storage function.
+    if not is_called_from_extension:
+        return
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
