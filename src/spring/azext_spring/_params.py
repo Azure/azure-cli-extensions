@@ -34,6 +34,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
                                      validate_build_cert_reference, validate_acs_create, not_support_enterprise,
+                                     validate_custom_actuator_port, validate_custom_actuator_path,
                                      validate_create_app_binding_default_application_configuration_service,
                                      validate_create_app_binding_default_config_server,
                                      validate_create_app_binding_default_service_registry)
@@ -547,6 +548,10 @@ def load_arguments(self, _):
                        help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
                             "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
                        validator=validate_config_file_patterns)
+            c.argument('custom_actuator_port', type=int,
+                       help='(Enterprise Tier Only) Custom actuator port for the app. Default to 8080.', validator=validate_custom_actuator_port)
+            c.argument('custom_actuator_path', 
+                       help='(Enterprise Tier Only) Custom actuator path for the app. Default to "/actuator".', validator=validate_custom_actuator_path)
 
     with self.argument_context('spring app scale') as c:
         c.argument('cpu', arg_type=cpu_type)

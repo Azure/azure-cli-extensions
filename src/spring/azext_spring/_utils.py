@@ -394,6 +394,14 @@ def get_bearer_auth(cli_ctx):
     return BearerAuth(token)
 
 
+def _get_value_from_dict(input_dict, *keys):
+    for key in keys:
+        if not isinstance(input_dict, dict):
+            return None
+        input_dict = input_dict.get(key)
+    return input_dict
+
+
 class BearerAuth(requests.auth.AuthBase):
     def __init__(self, token):
         self.token = token
