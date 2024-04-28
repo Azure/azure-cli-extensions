@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
+* Add option `--enable-force-upgrade`, `--disable-force-upgrade` and `--upgrade-override-until` to `az aks upgrade`.
 
 3.0.0b9
 +++++++
