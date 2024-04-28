@@ -1,5 +1,10 @@
 Release History
 ===============
+1.22.0
+---
+* Add argument `--custom-actuator-port` in `spring app update`, `spring app deploy` and `spring app deployment create` to support custom actuator port.
+* Add argument `--custom-actuator-path` in `spring app update`, `spring app deploy` and `spring app deployment create` to support custom actuator path.
+
 1.21.0
 ---
 * Add argument `--enable-config-server` to `az spring create` to create Spring Cloud Config Server in enterprise tier during creating service instance.
