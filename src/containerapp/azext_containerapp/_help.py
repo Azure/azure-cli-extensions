@@ -958,7 +958,7 @@ helps['containerapp update'] = """
     - name: Update a container app without java metrics enabled
       text: |
           az containerapp update -n my-containerapp -g MyResourceGroup \\
-              --runtime=generic
+              --runtime generic
 """
 
 # containerapp list for preview
