@@ -18,6 +18,7 @@ Pending
 * Vendor new SDK and bump API version to 2024-03-02-preview.
 * Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
 * Add option `--enable-force-upgrade`, `--disable-force-upgrade` and `--upgrade-override-until` to `az aks upgrade`.
+* Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
 
 3.0.0b9
 +++++++

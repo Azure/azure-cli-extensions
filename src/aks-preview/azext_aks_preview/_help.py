@@ -1193,6 +1193,12 @@ helps['aks update'] = """
         - name: --disable-network-observability
           type: bool
           short-summary: Disable network observability on a cluster
+        - name: --enable-advanced-network-observability
+          type: bool
+          short-summary: Enable advanced network observability functionalities on a cluster.
+        - name: --disable-advanced-network-observability
+          type: bool
+          short-summary: Disable advanced network observability functionalities on a cluster
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
