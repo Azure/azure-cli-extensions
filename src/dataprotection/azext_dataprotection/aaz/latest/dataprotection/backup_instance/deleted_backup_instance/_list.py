@@ -13,16 +13,15 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance deleted-backup-instance list",
-    is_experimental=True,
 )
 class List(AAZCommand):
     """List deleted backup instances belonging to a backup vault
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/deletedbackupinstances", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/deletedbackupinstances", "2024-04-01"],
         ]
     }
 
@@ -119,7 +118,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -218,6 +217,9 @@ class List(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.resource_guard_operation_requests = AAZListType(
+                serialized_name="resourceGuardOperationRequests",
             )
             properties.validation_type = AAZStrType(
                 serialized_name="validationType",
@@ -437,6 +439,9 @@ class List(AAZCommand):
             )
             _ListHelper._build_schema_user_facing_error_read(protection_status.error_details)
             protection_status.status = AAZStrType()
+
+            resource_guard_operation_requests = cls._schema_on_200.value.Element.properties.resource_guard_operation_requests
+            resource_guard_operation_requests.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

@@ -47,9 +47,6 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.x_ms_authorization_auxiliary = AAZStrArg(
-            options=["--x-ms-authorization-auxiliary"],
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -118,7 +115,7 @@ class Update(AAZCommand):
         _args_schema.type = AAZStrArg(
             options=["--type"],
             arg_group="Identity",
-            help="The identityType which can be either SystemAssigned or None",
+            help="The identityType which can be \"SystemAssigned\", \"UserAssigned\", \"SystemAssigned,UserAssigned\" or \"None\"",
             nullable=True,
         )
         _args_schema.user_assigned_identities = AAZDictArg(
@@ -165,6 +162,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_guard_operation_requests = AAZListArg(
             options=["--resource-guard-operation-requests"],
+            singular_options=["--operation-requests"],
             arg_group="Properties",
             help="ResourceGuardOperationRequests on which LAC check will be performed",
             nullable=True,
@@ -390,9 +388,6 @@ class Update(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
-                **self.serialize_header_param(
-                    "x-ms-authorization-auxiliary", self.ctx.args.x_ms_authorization_auxiliary,
-                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
