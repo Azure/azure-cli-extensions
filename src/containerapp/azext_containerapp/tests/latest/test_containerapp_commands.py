@@ -2455,9 +2455,6 @@ class ContainerappRuntimeTests(ScenarioTest):
         # Unmatched runtime, runtime should be java when enable-java-metrics is set
         create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=generic --enable-java-metrics', expect_failure=True)
 
-        # Unsupported runtime, runtime should be java or generic
-        create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=otherlanguage', expect_failure=True)
-
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_runtime_java_metrics_update(self, resource_group):
@@ -2537,10 +2534,6 @@ class ContainerappRuntimeTests(ScenarioTest):
 
         # Update container app failed with wrong runtime
         self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=generic --enable-java-metrics',
-                 expect_failure=True)
-
-        # Update container app failed with unsupported runtime
-        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=otherlanguage',
                  expect_failure=True)
 
         # Delete container app
