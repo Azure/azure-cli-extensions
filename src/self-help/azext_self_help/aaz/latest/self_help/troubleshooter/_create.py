@@ -19,13 +19,13 @@ class Create(AAZCommand):
     """Create the specific troubleshooter action under a resource or subscription.
 
     :example: Create Troubleshooter at Resource Level
-        az self-help troubleshooter create --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789012 --solution-id e104dbdf-9e14-4c9f-bc78-21ac90382231 --parameters {ResourceUri:'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'} --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+        az self-help troubleshooter create --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789123 --solution-id e104dbdf-9e14-4c9f-bc78-21ac90382231 --parameters {ResourceUri:'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'} --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {
-        "version": "2023-09-01-preview",
+        "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/troubleshooters/{}", "2023-09-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/troubleshooters/{}", "2024-03-01-preview"],
         ]
     }
 
@@ -141,7 +141,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01-preview",
+                    "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }

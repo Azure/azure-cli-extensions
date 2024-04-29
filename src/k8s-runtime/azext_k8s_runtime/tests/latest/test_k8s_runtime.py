@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import subprocess
 import tempfile
 import azext_k8s_runtime.custom_commands.storage_class as sc
 import azext_k8s_runtime.custom_commands.load_balancer as lb
@@ -81,6 +82,32 @@ class K8sRuntimeScenario(ScenarioTest):
 
         self.cmd("az k8s-runtime storage-class enable --resource-uri {resource_uri}", expect_failure=True)
         self.cmd("az k8s-runtime storage-class disable --resource-uri {resource_uri}", expect_failure=True)
+
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='k8srttest', random_name_length=16)
+    def test_storage_class_delete_storage_class(self, resource_group):
+        self.create_connected_cluster(resource_group)
+
+        self.cmd("az k8s-runtime storage-class enable --resource-uri {resource_uri}", checks=[
+            self.check("extension.provisioningState", "Succeeded"),
+        ])
+
+        test_sc = "rwx-test"
+        self.kwargs.update({"test_sc": test_sc})
+
+        # The default storage classes of AKS cannot be deleted.
+        # Has to create a new one and delete it.
+        self.cmd("az k8s-runtime storage-class create --resource-uri {resource_uri} --storage-class-name {test_sc} --type-properties rwx.backing-storage-class-name=managed")
+
+        self.cmd("az k8s-runtime storage-class delete --yes --resource-uri {resource_uri} --storage-class-name {test_sc}")
+
+        self.failIf(
+            subprocess.call(f"kubectl get storageclass {test_sc} --kubeconfig {self.kwargs.get('kubeconfig')}") == 0,
+            "Storage class {test_sc} is not deleted in the AKS cluster"
+        )
+        self.cmd("az k8s-runtime storage-class show --resource-uri {resource_uri} --storage-class-name {test_sc}", expect_failure=True)
+
+        os.remove(self.kwargs["kubeconfig"])
 
     @live_only()
     @ResourceGroupPreparer(name_prefix='k8srttest', random_name_length=16)

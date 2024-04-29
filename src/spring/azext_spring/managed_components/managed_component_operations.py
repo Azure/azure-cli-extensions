@@ -2,15 +2,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.core._profile import Profile
-from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
-from knack.util import CLIError
 from threading import Thread
 from time import sleep
 
-from .managed_component import (Acs, Flux, Scg, ScgOperator,
-                                ManagedComponentInstance, supported_components, get_component)
+from .managed_component import (ManagedComponentInstance, supported_components)
 
 from ..log_stream.writer import (DefaultWriter, PrefixWriter)
 from ..log_stream.log_stream_operations import (attach_logs_query_options, log_stream_from_url,
@@ -22,7 +18,7 @@ from .._utils import (get_bearer_auth, get_hostname)
 logger = get_logger(__name__)
 
 
-class ManagedComponentInstanceInfo:
+class ManagedComponentInstanceInfo:  # pylint: disable=too-few-public-methods
     component: str
     instance: str
 
