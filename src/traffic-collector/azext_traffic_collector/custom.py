@@ -19,6 +19,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
 from azure.cli.core.aaz import has_value
+from msrestazure.tools import parse_resource_id
 logger = get_logger(__name__)
 
 
@@ -32,7 +33,10 @@ class CollectorPolicyCreate(_CollectorPolicyCreate):
             ingestionsources = args.ingestion_policy.ingestion_sources
             for source in ingestionsources:
                 # Get ExpressRoute Circuit
-                subscription, resourceGroup, circuitName = parseResourceId(str(source.resource_id))
+                resource_id = parse_resource_id(str(source.resource_id))
+                subscription = resource_id['subscription']
+                resourceGroup = resource_id['resource_group']
+                circuitName = resource_id['name']
                 circuit = _ShowER(self)(command_args={
                     "subscription": subscription,
                     "resource_group": resourceGroup,
@@ -63,7 +67,10 @@ class CollectorPolicyUpdate(_CollectorPolicyUpdate):
             ingestionsources = args.ingestion_policy.ingestion_sources
             for source in ingestionsources:
                 # Get ExpressRoute Circuit
-                subscription, resourceGroup, circuitName = parseResourceId(str(source.resource_id))
+                resource_id = parse_resource_id(str(source.resource_id))
+                subscription = resource_id['subscription']
+                resourceGroup = resource_id['resource_group']
+                circuitName = resource_id['name']
                 circuit = _ShowER(self)(command_args={
                     "subscription": subscription,
                     "resource_group": resourceGroup,
@@ -82,13 +89,3 @@ class CollectorPolicyUpdate(_CollectorPolicyUpdate):
                 # Direct Port Circuits
                 if 'bandwidthInGbps' in circuit and circuit['bandwidthInGbps'] < 1:
                     raise InvalidArgumentValueError(err_msg)
-
-
-def parseResourceId(resourceId):
-    subscription = resourceId[resourceId.find('subscriptions/') +
-                              len('subscriptions/'):resourceId.rfind('/resourceGroups')]
-    resourceGroupName = resourceId[resourceId.find('resourceGroups/') +
-                                   len('resourceGroups/'):resourceId.rfind('/providers/Microsoft.Network')]
-    circuitName = resourceId[resourceId.find('Microsoft.Network/expressRouteCircuits/') +
-                             len('Microsoft.Network/expressRouteCircuits/'):]
-    return subscription, resourceGroupName, circuitName
