@@ -20,7 +20,7 @@ az extension add --name self-help
 
   ```
   # Gets list of solution metadata for an azure resource.
-  az self-help discovery-solution list --filter "ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'" --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+  az self-help discovery-solution list --filter "ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'"
   ```
 
 ### _"Diagnostic"_ commands
@@ -71,6 +71,46 @@ az extension add --name self-help
   # Updates solution for a resource.
   az self-help solution update --solution-name solution-name --trigger-criteria [{name:ReplacementKey,value:<!--56ee7509-92e1-4b9e-97c2-dda53065294c-->}] --parameters {SearchText:CanNotRDP,SymptomId:KeyVaultVaultNotFoundInsight} --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
   ```
+
+- #### Warmup Solution for a resource
+
+  _Examples:_
+
+  ```
+  # Warms up solution for a resource.
+  az self-help solution warmup --solution-name solution-name --parameters {} --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+  ```
+
+### _"Simplified-Solutions"_ commands
+
+- #### Creates a Simplified Solution for a resource
+
+  _Examples:_
+
+  ```
+  # Creates a solution for a resource
+  self-help simplified-solution create --solution-name solution-name --solution-id apollo-cognitve-search-custom-skill --parameters {} --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+  ```
+
+- #### Show a Simplified Solution for a resource
+
+  _Examples:_
+
+  ```
+  # Shows solution for a resource.
+  self-help simplified-solution show --solution-name solution-name --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+  ```
+
+### _"Solution-Self-Help"_ commands
+
+- #### Update Solution for a resource
+
+_Examples:_
+
+```
+# Creates a troubleshooter for a resource
+az self-help self-help show --solution-id apollo-48996ff7-002f-47c1-85b2-df138843d5d5
+```
 
 ### _"Troubleshooter"_ commands
 

@@ -13,7 +13,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalEr
 from msrestazure.tools import parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.azure_exceptions import CloudError
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._deployment_uploadable_factory import uploader_selector
 from ._log_stream import LogStream
 

@@ -21,7 +21,7 @@ from knack.log import get_logger
 from ._clierror import NotSupportedPricingTierError
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name, _java_runtime_in_number)
 from ._util_enterprise import is_enterprise_tier
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
@@ -96,6 +96,8 @@ def _check_tanzu_components_not_enable(cmd, namespace):
     suffix = 'can only be used for Azure Spring Apps Enterprise. Please add --sku="Enterprise" to create Enterprise instance.'
     if namespace.enable_application_configuration_service:
         raise ArgumentUsageError('--enable-application-configuration-service {}'.format(suffix))
+    if namespace.enable_config_server:
+        raise ArgumentUsageError('--enable-config-server {}'.format(suffix))
     if namespace.enable_service_registry:
         raise ArgumentUsageError('--enable-service-registry {}'.format(suffix))
     if namespace.enable_gateway:

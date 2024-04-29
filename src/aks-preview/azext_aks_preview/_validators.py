@@ -160,10 +160,7 @@ def validate_ip_ranges(namespace):
                 raise CLIError(
                     "--api-server-authorized-ip-ranges cannot be IPv6 addresses")
         except ValueError:
-            # pylint: disable=raise-missing-from
-            raise CLIError(
-                "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs"
-            )
+            pass
 
 
 def _validate_nodepool_name(nodepool_name):

@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get details of the environment.
 
     :example: Show environment details
-        az apic environment show -g api-center-test -s contosoeuap --name public
+        az apic environment show -g api-center-test -s contosoeuap --environment-id public
     """
 
     _aaz_info = {
@@ -44,12 +44,13 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.environment_name = AAZStrArg(
-            options=["--name", "--environment", "--environment-name"],
-            help="The name of the environment.",
+        _args_schema.environment_id = AAZStrArg(
+            options=["--environment-id"],
+            help="The id of the environment.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -63,6 +64,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -74,6 +76,7 @@ class Show(AAZCommand):
             id_part="child_name_1",
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -127,7 +130,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "environmentName", self.ctx.args.environment_name,
+                    "environmentName", self.ctx.args.environment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -193,7 +196,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -204,7 +207,7 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.custom_properties = AAZObjectType(
+            properties.custom_properties = AAZFreeFormDictType(
                 serialized_name="customProperties",
             )
             properties.description = AAZStrType()

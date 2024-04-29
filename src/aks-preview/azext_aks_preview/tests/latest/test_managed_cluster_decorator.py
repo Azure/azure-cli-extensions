@@ -4330,6 +4330,48 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             dec_2.context.get_intermediate("ingress_appgw_addon_enabled"), True
         )
 
+        # pass in sku automatic will enable the monitoring addon name omsagent
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "sku": "automatic",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec_3.context.set_intermediate("subscription_id", "test_subscription_id")
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_sku_3 = dec_3.set_up_sku(mc_3)
+        with patch(
+            "azure.cli.command_modules.acs.managed_cluster_decorator.ensure_container_insights_for_monitoring",
+            return_value=None), patch(
+            "azure.cli.command_modules.acs.managed_cluster_decorator.ensure_default_log_analytics_workspace_for_monitoring",
+            return_value = "test_workspace_resource_id",
+        ):
+            dec_mc_3 = dec_3.set_up_addon_profiles(dec_mc_sku_3)
+        addon_profiles_3 = {
+            CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
+                    CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                },
+            ),
+        }
+        automaticSKU = self.models.ManagedClusterSKU(name="Automatic", tier="Standard")
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location", 
+            sku = automaticSKU,
+            addon_profiles=addon_profiles_3,
+            kind = "Automatic",
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+        self.assertEqual(
+            dec_3.context.get_intermediate("monitoring_addon_enabled"), True
+        )
+
+
     def test_set_up_http_proxy_config(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -5217,6 +5259,26 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             kind="Base",
         )
         self.assertEqual(dec_mc_2, expect_mc_2)
+
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"uptime_sla": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            sku=None,
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_sku(mc_3)
+        baseSKU = self.models.ManagedClusterSKU(name="Base", tier="Standard")
+        expect_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            sku=baseSKU,
+            kind="Base",
+        )
+        self.assertEqual(dec_mc_3, expect_mc_3)
 
 
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
@@ -8288,6 +8350,83 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             kind="Base",
         )
         self.assertEqual(dec_mc_2, expect_mc_2)
+
+        dec_3 =  AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "uptime_sla": True,
+                "no_uptime_sla": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Free",
+            ),
+        )
+        dec_3.context.attach_mc(mc_3)
+        # fail on mutually exclusive uptime_sla and no_uptime_sla
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_3.update_sku(mc_3)
+        
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "uptime_sla": False,
+                "no_uptime_sla": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Standard",
+            ),
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_sku(mc_4)
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Free",
+            ),
+            kind="Base",
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "uptime_sla": True,
+                "no_uptime_sla": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Free",
+            ),
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_sku(mc_5)
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            sku=self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Standard",
+            ),
+            kind="Base",
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
     def test_setup_supportPlan(self):
         # default value in `aks_create`
