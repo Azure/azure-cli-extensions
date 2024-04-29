@@ -429,15 +429,17 @@ class SerialConsole:
 
     def connect(self):
         def on_open(_):
-            if self.new_auth_flow == "1":
-                GV.websocket_instance.send(self.access_token)
+            pass
 
         def on_message(_, message):
             if GV.first_message:
+                if self.new_auth_flow == "1":
+                    GV.websocket_instance.send(self.access_token)
+                GV.first_message = False
+                GV.loading = False
                 PC.clear_screen()
-            GV.first_message = False
-            GV.loading = False
-            PC.print(message)
+            else:
+                PC.print(message)
 
         def on_error(*_):
             pass
@@ -562,7 +564,7 @@ class SerialConsole:
                     ws.close()
 
             wsapp = websocket.WebSocketApp(
-                self.websocket_url + "?authorization=" + self.access_token + "?new="
+                self.websocket_url + "?authorization=" + self.access_token + "&new="
                 + self.new_auth_flow, on_message=on_message)
             wsapp.run_forever()
             GV.loading = False
