@@ -457,7 +457,7 @@ class SerialConsole:
         def connect_thread():
             if self.load_websocket_url():
                 GV.websocket_instance = websocket.WebSocketApp(
-                    self.websocket_url + "?authorization=" + self.access_token + "?new=" + self.new_auth_flow,
+                    self.websocket_url + "?authorization=" + self.access_token + "&new=" + self.new_auth_flow,
                     on_open=on_open,
                     on_message=on_message,
                     on_error=on_error,

@@ -1,6 +1,10 @@
 Release History
 ===============
 
+0.1.8
+++++++
+* Fix typo
+
 0.1.7
 ++++++
 * Preparation for the new websocket authentication mechanism
