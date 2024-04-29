@@ -715,12 +715,26 @@ def _get_eactly_one_application_configuration_service_resource_id(cmd, resource_
         raise ClientRequestError('App cannot bind to multiple application configuration services.')
     return acs_resources[0].id
 
+
+def validate_custom_actuator_port(cmd, namespace):
+    if namespace.custom_actuator_port:
+        only_support_enterprise(cmd, namespace)
+        if namespace.custom_actuator_port <= 0:
+            raise ArgumentUsageError("--custom-actuator-port must be greater than 0")
+
+
+def validate_custom_actuator_path(cmd, namespace):
+    if namespace.custom_actuator_path:
+        only_support_enterprise(cmd, namespace)
+
+
 def validate_create_app_binding_default_config_server(cmd, namespace):
     if namespace.bind_config_server:
         namespace.bind_config_server \
             = _get_exactly_one_config_server_resource_id(cmd,
                                                         namespace.resource_group,
                                                         namespace.service)
+
 
 def _get_exactly_one_config_server_resource_id(cmd, resource_group, service):
     client = get_client(cmd)
