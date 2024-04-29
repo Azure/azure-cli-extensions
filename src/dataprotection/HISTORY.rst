@@ -11,7 +11,6 @@ Release History
 * `az dataprotection backup-instance suspend-backups` - Suspend Backups
 * `az dataprotection backup-instance restore trigger` - Trigger Restore
 * Also now supporting shorthands for new RecoveryServices critical operations.
-* Also added: code cleanup to reduce complexity of resource guard mapping/unlock code.
 
 1.1.0
 +++++
