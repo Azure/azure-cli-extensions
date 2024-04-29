@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection recovery-point list",
-    is_experimental=True,
 )
 class List(AAZCommand):
     """Returns a list of Recovery Points for a DataSource in a vault.
@@ -23,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/recoverypoints", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/recoverypoints", "2024-04-01"],
         ]
     }
 
@@ -145,7 +144,7 @@ class List(AAZCommand):
                     "$skipToken", self.ctx.args.skip_token,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance validate-for-restore",
-    is_experimental=True,
 )
 class ValidateForRestore(AAZCommand):
     """Validates if Restore can be triggered for a DataSource
@@ -23,9 +22,9 @@ class ValidateForRestore(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validaterestore", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validaterestore", "2024-04-01"],
         ]
     }
 
@@ -86,6 +85,10 @@ class ValidateForRestore(AAZCommand):
             options=["identity-details"],
             help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
         )
+        restore_request_object.resource_guard_operation_requests = AAZListArg(
+            options=["resource-guard-operation-requests"],
+            help="ResourceGuardOperationRequests on which LAC check will be performed",
+        )
         restore_request_object.restore_target_info = AAZObjectArg(
             options=["restore-target-info"],
             help="Gets or sets the restore target information.",
@@ -141,6 +144,9 @@ class ValidateForRestore(AAZCommand):
             options=["user-assigned-identity-arm-url"],
             help="ARM URL for User Assigned Identity.",
         )
+
+        resource_guard_operation_requests = cls._args_schema.restore_request_object.resource_guard_operation_requests
+        resource_guard_operation_requests.Element = AAZStrArg()
 
         restore_target_info = cls._args_schema.restore_request_object.restore_target_info
         restore_target_info.item_level_restore_target_info = AAZObjectArg(
@@ -268,6 +274,11 @@ class ValidateForRestore(AAZCommand):
             help="Gets or sets the PV (Persistent Volume) Restore Mode property. This property sets whether volumes needs to be restored.",
             enum={"RestoreWithVolumeData": "RestoreWithVolumeData", "RestoreWithoutVolumeData": "RestoreWithoutVolumeData"},
         )
+        kubernetes_cluster_restore_criteria.resource_modifier_reference = AAZObjectArg(
+            options=["resource-modifier-reference"],
+            help="Gets or sets the resource modifier reference. This property sets the reference for resource modifier during restore.",
+        )
+        cls._build_args_namespaced_name_resource_create(kubernetes_cluster_restore_criteria.resource_modifier_reference)
         kubernetes_cluster_restore_criteria.restore_hook_references = AAZListArg(
             options=["restore-hook-references"],
             help="Gets or sets the restore hook references. This property sets the hook reference to be executed during restore.",
@@ -335,6 +346,11 @@ class ValidateForRestore(AAZCommand):
             help="Gets or sets the PV (Persistent Volume) Restore Mode property. This property sets whether volumes needs to be restored from vault.",
             enum={"RestoreWithVolumeData": "RestoreWithVolumeData", "RestoreWithoutVolumeData": "RestoreWithoutVolumeData"},
         )
+        kubernetes_cluster_vault_tier_restore_criteria.resource_modifier_reference = AAZObjectArg(
+            options=["resource-modifier-reference"],
+            help="Gets or sets the resource modifier reference. This property sets the reference for resource modifier during restore.",
+        )
+        cls._build_args_namespaced_name_resource_create(kubernetes_cluster_vault_tier_restore_criteria.resource_modifier_reference)
         kubernetes_cluster_vault_tier_restore_criteria.restore_hook_references = AAZListArg(
             options=["restore-hook-references"],
             help="Gets or sets the restore hook references. This property sets the hook reference to be executed during restore from vault.",
@@ -740,7 +756,7 @@ class ValidateForRestore(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -773,6 +789,7 @@ class ValidateForRestore(AAZCommand):
                 restore_request_object.set_const("objectType", "AzureBackupRecoveryPointBasedRestoreRequest", AAZStrType, ".azure_backup_recovery_point_based_restore_request", typ_kwargs={"flags": {"required": True}})
                 restore_request_object.set_const("objectType", "AzureBackupRecoveryTimeBasedRestoreRequest", AAZStrType, ".azure_backup_recovery_time_based_restore_request", typ_kwargs={"flags": {"required": True}})
                 restore_request_object.set_const("objectType", "AzureBackupRestoreWithRehydrationRequest", AAZStrType, ".azure_backup_restore_with_rehydration_request", typ_kwargs={"flags": {"required": True}})
+                restore_request_object.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
                 restore_request_object.set_prop("restoreTargetInfo", AAZObjectType, ".restore_target_info", typ_kwargs={"flags": {"required": True}})
                 restore_request_object.set_prop("sourceDataStoreType", AAZStrType, ".source_data_store_type", typ_kwargs={"flags": {"required": True}})
                 restore_request_object.set_prop("sourceResourceId", AAZStrType, ".source_resource_id")
@@ -784,6 +801,10 @@ class ValidateForRestore(AAZCommand):
             if identity_details is not None:
                 identity_details.set_prop("useSystemAssignedIdentity", AAZBoolType, ".use_system_assigned_identity")
                 identity_details.set_prop("userAssignedIdentityArmUrl", AAZStrType, ".user_assigned_identity_arm_url")
+
+            resource_guard_operation_requests = _builder.get(".restoreRequestObject.resourceGuardOperationRequests")
+            if resource_guard_operation_requests is not None:
+                resource_guard_operation_requests.set_elements(AAZStrType, ".")
 
             restore_target_info = _builder.get(".restoreRequestObject.restoreTargetInfo")
             if restore_target_info is not None:
@@ -843,6 +864,7 @@ class ValidateForRestore(AAZCommand):
                 disc_kubernetes_cluster_restore_criteria.set_prop("labelSelectors", AAZListType, ".kubernetes_cluster_restore_criteria.label_selectors")
                 disc_kubernetes_cluster_restore_criteria.set_prop("namespaceMappings", AAZDictType, ".kubernetes_cluster_restore_criteria.namespace_mappings")
                 disc_kubernetes_cluster_restore_criteria.set_prop("persistentVolumeRestoreMode", AAZStrType, ".kubernetes_cluster_restore_criteria.persistent_volume_restore_mode")
+                _ValidateForRestoreHelper._build_schema_namespaced_name_resource_create(disc_kubernetes_cluster_restore_criteria.set_prop("resourceModifierReference", AAZObjectType, ".kubernetes_cluster_restore_criteria.resource_modifier_reference"))
                 disc_kubernetes_cluster_restore_criteria.set_prop("restoreHookReferences", AAZListType, ".kubernetes_cluster_restore_criteria.restore_hook_references")
 
             excluded_namespaces = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.excludedNamespaces")
@@ -884,6 +906,7 @@ class ValidateForRestore(AAZCommand):
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("labelSelectors", AAZListType, ".kubernetes_cluster_vault_tier_restore_criteria.label_selectors")
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("namespaceMappings", AAZDictType, ".kubernetes_cluster_vault_tier_restore_criteria.namespace_mappings")
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("persistentVolumeRestoreMode", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria.persistent_volume_restore_mode")
+                _ValidateForRestoreHelper._build_schema_namespaced_name_resource_create(disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("resourceModifierReference", AAZObjectType, ".kubernetes_cluster_vault_tier_restore_criteria.resource_modifier_reference"))
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("restoreHookReferences", AAZListType, ".kubernetes_cluster_vault_tier_restore_criteria.restore_hook_references")
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("stagingResourceGroupId", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria.staging_resource_group_id")
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("stagingStorageAccountId", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria.staging_storage_account_id")

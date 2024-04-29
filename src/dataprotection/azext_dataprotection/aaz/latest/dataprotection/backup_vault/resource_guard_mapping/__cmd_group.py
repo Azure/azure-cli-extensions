@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "dataprotection backup-vault resource-guard-mapping",
-    is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage ResourceGuard mappings for a backup vault.
