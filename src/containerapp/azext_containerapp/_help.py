@@ -1588,3 +1588,81 @@ helps['containerapp env telemetry otlp list'] = """
           az containerapp env telemetry otlp list -n MyContainerappEnvironment -g MyResourceGroup
 """
 
+# SessionPool Commands
+helps['containerapp sessionpool'] = """
+    type: group
+    short-summary: Commands to manage session pools.
+"""
+
+helps['containerapp sessionpool create'] = """
+    type: command
+    short-summary: Create a Session pool. 
+    examples:
+    - name: Create a Session Pool with container type JupyterPython default settings.
+      text: |
+          az containerapp sessionpool update -n MySessionPool -g MyResourceGroup \\
+              --location eastasia
+    - name: Create a Session Pool with container type JupyterPython, max concurrent sessions is 30.
+      text: |
+          az containerapp sessionpool update -n MySessionPool -g MyResourceGroup \\
+              --container-type JupyterPython --max-concurrent-sessions 30 --location eastasia
+    - name: Create a Session Pool with container type CustomerContainer with default quickstart image.
+      text: |
+          az containerapp sessionpool update -n MySessionPool -g MyResourceGroup \\
+              --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --location eastasia    
+    - name: Create a Session Pool with container type CustomerContainer that has secrets and environment variables.
+      text: |
+          az containerapp sessionpool update -n MySessionPool -g MyResourceGroup \\
+              --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 
+              --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret
+              --location eastasia
+    
+    - name: Create a Session Pool with container type CustomerContainer that has secrets and environment variables.
+      text: |
+          az containerapp sessionpool update -n MySessionPool -g MyResourceGroup \\
+              --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 
+              --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret
+              --location eastasia
+             
+    
+"""
+
+helps['containerapp sessionpool update'] = """
+    type: command
+    short-summary: Update a Session pool.
+    examples:
+    - name: Update a session pool's max concurrent sessions configuration.
+      text: |
+          az containerapp sessionpool update -n MySessionPool -g MyResourceGroup \\
+              --max-concurrent-sessions 20
+"""
+
+helps['containerapp sessionpool delete'] = """
+    type: command
+    short-summary: Delete a session pool.
+    examples:
+    - name: Delete a session pool.
+      text: az containerapp sessionpool delete -n MySessionPool -g MyResourceGroup
+"""
+
+helps['containerapp sessionpool show'] = """
+    type: command
+    short-summary: Show details of a Session Pool.
+    examples:
+    - name: Show the details of a Session Pool.
+      text: |
+          az containerapp sessionpool show -n MySessionPool -g MyResourceGroup
+"""
+
+helps['containerapp sessionpool list'] = """
+    type: command
+    short-summary: List Session Pools by subscription or resource group.
+    examples:
+    - name: List Session Pools in the current subscription.
+      text: |
+          az containerapp sessionpool list
+    - name: List Session Pools by resource group.
+      text: |
+          az containerapp sessionpool list -g MyResourceGroup
+"""
+

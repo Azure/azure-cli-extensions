@@ -15,6 +15,7 @@ import re
 import requests
 import packaging.version as SemVer
 
+from enum import Enum
 from urllib.request import urlopen
 
 from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_location_allowed, \
@@ -734,3 +735,15 @@ def is_cloud_supported_by_connected_env(cli_ctx):
         return True
 
     return False
+def convert_egress_parameter(egress_enabled):
+    if egress_enabled:
+        return "egressEnabled"
+    else:
+        return "egressDisabled"
+
+
+class AppType(Enum):
+    ContainerApp = 1
+    ContainerAppJob = 2
+    SessionPool = 3
+
