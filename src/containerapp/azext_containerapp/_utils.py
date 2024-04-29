@@ -733,8 +733,9 @@ def is_cloud_supported_by_connected_env(cli_ctx):
     from azure.cli.core.cloud import CloudNameEnum
     if cli_ctx.cloud.name == CloudNameEnum.AzureCloud:
         return True
-
     return False
+
+
 def convert_egress_parameter(egress_enabled):
     if egress_enabled:
         return "egressEnabled"

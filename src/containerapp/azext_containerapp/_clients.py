@@ -1034,7 +1034,7 @@ class SessionPoolPreviewClient():
 
         if no_wait:
             return r.json()
-        elif r.status_code == 201:
+        elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
             poll_status(cmd, operation_url)
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
@@ -1080,7 +1080,7 @@ class SessionPoolPreviewClient():
         return r.json()
 
     @classmethod
-    def list(cls, cmd, resource_group_name):
+    def list_by_resource_group(cls, cmd, resource_group_name):
         session_pool_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -1099,4 +1099,31 @@ class SessionPoolPreviewClient():
             session_pool_list.append(session_pool)
 
         return session_pool_list
+
+    @classmethod
+    def list_by_subscription(cls, cmd, formatter=lambda x: x):
+        sessionpools = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = "{}/subscriptions/{}/providers/Microsoft.App/sessionPools?api-version={}".format(
+            management_hostname.strip('/'),
+            sub_id,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        j = r.json()
+        for env in j["value"]:
+            formatted = formatter(env)
+            sessionpools.append(formatted)
+
+        while j.get("nextLink") is not None:
+            request_url = j["nextLink"]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            j = r.json()
+            for env in j["value"]:
+                formatted = formatter(env)
+                sessionpools.append(formatted)
+
+        return sessionpools
 

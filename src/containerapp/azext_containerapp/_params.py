@@ -345,8 +345,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 
     with self.argument_context('containerapp sessionpool', arg_group='Configuration') as c:
-        c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
-        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "JupyterPython"]), help="The container type of Session Pool", default="JupyterPython")
+        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS"]), help="The container type of Session Pool, default=PythonLTS")
         c.argument('cooldown_period', help="Period (in seconds), after which the session will be deleted.", default=300)
         c.argument('secrets', nargs='*', options_list=['--secrets', '-s'], help="A list of secret(s) for the session pool. Space-separated values in 'key=value' format.")
         c.argument('egress_enabled', options_list=['--enable-egress'], default=False, arg_type=get_three_state_flag(), help="Egress is enabled for the Sessions or not.")
@@ -356,6 +355,7 @@ def load_arguments(self, _):
         c.argument('ready_session_instances', help="The number of sessions that will be ready in the session pool all the time.", type=int)
 
     with self.argument_context('containerapp sessionpool', arg_group='Container') as c:
+        c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('container_name', help="Name of the container.")
         c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores from 0.25 - 2.0, e.g. 0.5")
