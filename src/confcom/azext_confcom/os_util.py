@@ -145,23 +145,22 @@ def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
     tar_dir = os.path.dirname(tar_location)
     info_file = None
     info_file_name = "manifest.json"
-    # if there's more than one image in the tarball, we need to do some more logic
-    if len(info_file_name) > 0:
-        # extract just the manifest file and see if any of the RepoTags match the image_name we're searching for
-        # the manifest.json should have a list of all the image tags
-        # and what json files they map to to get env vars, startup cmd, etc.
-        tar.extract(info_file_name, path=tar_dir)
-        manifest_path = os.path.join(tar_dir, info_file_name)
-        manifest = load_json_from_file(manifest_path)
+
+    # extract just the manifest file and see if any of the RepoTags match the image_name we're searching for
+    # the manifest.json should have a list of all the image tags
+    # and what json files they map to to get env vars, startup cmd, etc.
+    tar.extract(info_file_name, path=tar_dir)
+    manifest_path = os.path.join(tar_dir, info_file_name)
+    manifest = load_json_from_file(manifest_path)
+    try:
         # if we match a RepoTag to the image, stop searching
         for image in manifest:
             if image_name in image.get("RepoTags"):
                 info_file = image.get("Config")
                 break
+    finally:
         # remove the extracted manifest file to clean up
         os.remove(manifest_path)
-    else:
-        eprint(f"Tarball at {tar_location} contains no images")
 
     if not info_file:
         return None

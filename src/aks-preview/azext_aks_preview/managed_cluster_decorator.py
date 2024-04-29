@@ -317,6 +317,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 skuName = CONST_MANAGED_CLUSTER_SKU_NAME_BASE
         return skuName
 
+    def _get_enable_addons(self, enable_validation: bool = False) -> List[str]:
+        enable_addons = super()._get_enable_addons()
+        sku_name = self.get_sku_name()
+        if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            enable_addons.append("monitoring")
+        return enable_addons
+
+    def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
+        enable_msi_auth_for_monitoring = super().get_enable_msi_auth_for_monitoring()
+        sku_name = self.get_sku_name()
+        if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            return True
+        return enable_msi_auth_for_monitoring
+
     def _get_outbound_type(
         self,
         enable_validation: bool = False,
@@ -1923,6 +1937,57 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_disable_azure_monitor_metrics(enable_validation=True)
 
+    def _get_enable_azure_monitor_app_monitoring(self, enable_validation=True) -> bool:
+        """Internal function to obtain the value of enable_azure_monitor_app_monitoring.
+        This function supports the option of enable_validation. When enabled, if both
+        enable_azure_monitor_app_monitoring and disable_azure_monitor_app_monitoring are specified,
+        raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        enable_azure_monitor_app_monitoring = self.raw_param.get("enable_azure_monitor_app_monitoring")
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_azure_monitor_app_monitoring and self._get_disable_azure_monitor_app_monitoring(False):
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-azure-monitor-app-monitoring and --disable-azure-monitor-app-monitoring "
+                    "at the same time."
+                )
+        return enable_azure_monitor_app_monitoring
+
+    def get_enable_azure_monitor_app_monitoring(self) -> bool:
+        """Obtain the value of enable_azure_monitor_app_monitoring.
+        If both enable_azure_monitor_app_monitoring and
+        disable_azure_monitor_app_monitoring are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_enable_azure_monitor_app_monitoring(enable_validation=True)
+
+    def _get_disable_azure_monitor_app_monitoring(self, enable_validation=True) -> bool:
+        """Internal function to obtain the value of disable_azure_monitor_app_monitoring.
+        This function supports the option of enable_validation. When enabled, if both
+        enable_azure_monitor_app_monitoring and disable_azure_monitor_app_monitoring are specified,
+        raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        # Read the original value passed by the command.
+        disable_azure_monitor_app_monitoring = self.raw_param.get("disable_azure_monitor_app_monitoring")
+        if disable_azure_monitor_app_monitoring and self._get_enable_azure_monitor_app_monitoring(False):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-azure-monitor-app-monitoring and --disable-azure-monitor-app-monitoring "
+                "at the same time."
+            )
+        return disable_azure_monitor_app_monitoring
+
+    def get_disable_azure_monitor_app_monitoring(self) -> bool:
+        """Obtain the value of disable_azure_monitor_app_monitoring.
+        If both enable_azure_monitor_app_monitoring and
+        disable_azure_monitor_app_monitoring are specified, raise a MutuallyExclusiveArgumentError.
+        :return: bool
+        """
+        return self._get_disable_azure_monitor_app_monitoring(enable_validation=True)
+
     def get_enable_node_restriction(self) -> bool:
         """Obtain the value of enable_node_restriction.
 
@@ -2123,6 +2188,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def _handle_upgrade_asm(self, new_profile: ServiceMeshProfile) -> Tuple[ServiceMeshProfile, bool]:
         mesh_upgrade_command = self.raw_param.get("mesh_upgrade_command", None)
+        supress_confirmation = self.raw_param.get("yes", False)
         updated = False
 
         # deal with mesh upgrade commands
@@ -2152,9 +2218,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     f"Please ensure all data plane workloads have been rolled over to revision {revision_to_keep} "
                     "so that they are still part of the mesh.\nAre you sure you want to proceed?"
                 )
-                if prompt_y_n(msg, default="y"):
-                    new_profile.istio.revisions.remove(revision_to_remove)
-                    updated = True
+                if not supress_confirmation and not prompt_y_n(msg, default="n"):
+                    raise DecoratorEarlyExitException()
+                new_profile.istio.revisions.remove(revision_to_remove)
+                updated = True
             elif (
                 mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START and
                 requested_revision is not None
@@ -3104,6 +3171,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 metric_labels_allowlist=str(ksm_metric_labels_allow_list),
                 metric_annotations_allow_list=str(ksm_metric_annotations_allow_list))
             self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
+
+        if self.context.get_enable_azure_monitor_app_monitoring():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            mc.azure_monitor_profile.app_monitoring = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+            )
+            mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
+            )
+
         return mc
 
     def set_up_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4268,6 +4352,34 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)  # pylint: disable=no-member
             )
 
+        if self.context.get_enable_azure_monitor_app_monitoring():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            mc.azure_monitor_profile.app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+            mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=True)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
+            )
+
+        if self.context.get_disable_azure_monitor_app_monitoring():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            mc.azure_monitor_profile.app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring()
+            mc.azure_monitor_profile.app_monitoring.auto_instrumentation = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(enabled=False)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=False)
+            )
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
+                self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=False)
+            )
+
         # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
         # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
         if (
@@ -4831,6 +4943,24 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 agent_pool_profile.security_profile.ssh_access = ssh_access
         return mc
 
+    def update_bootstrap_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        bootstrap_artifact_source = self.context.get_bootstrap_artifact_source()
+        bootstrap_container_registry_resource_id = self.context.get_bootstrap_container_registry_resource_id()
+        if bootstrap_artifact_source is not None:
+            if bootstrap_artifact_source != CONST_ARTIFACT_SOURCE_CACHE and bootstrap_container_registry_resource_id:
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --bootstrap-container-registry-resource-id when "
+                    "--bootstrap-artifact-source is not Cache."
+                )
+            if mc.bootstrap_profile is None:
+                mc.bootstrap_profile = self.models.ManagedClusterBootstrapProfile()  # pylint: disable=no-member
+            mc.bootstrap_profile.artifact_source = bootstrap_artifact_source
+            mc.bootstrap_profile.container_registry_id = bootstrap_container_registry_resource_id
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -4904,6 +5034,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_provisioning_profile(mc)
         # update agentpool profile ssh access
         mc = self.update_agentpool_profile_ssh_access(mc)
+        # update bootstrap profile
+        mc = self.update_bootstrap_profile(mc)
 
         return mc
 

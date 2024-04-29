@@ -60,7 +60,7 @@ from ._utils import (
     get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
     create_extension, create_custom_location, get_cluster_extension, validate_environment_location,
     list_environment_locations, get_randomized_name_with_dash, get_randomized_name, get_connected_k8s,
-    list_cluster_extensions, list_custom_location
+    list_cluster_extensions, list_custom_location, is_cloud_supported_by_connected_env
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -1388,9 +1388,10 @@ def _set_up_defaults(
                 "Please specify which resource group your Containerapp environment is in."
             )    # get ACR details from --image, if possible
 
-    _infer_existing_connected_env(cmd, location, resource_group, env, custom_location)
+    if is_cloud_supported_by_connected_env(cmd.cli_ctx):
+        _infer_existing_connected_env(cmd, location, resource_group, env, custom_location)
 
-    _infer_existing_custom_location_or_extension(cmd, name, location, resource_group, env, custom_location, extension)
+        _infer_existing_custom_location_or_extension(cmd, name, location, resource_group, env, custom_location, extension)
 
     if not is_registry_server_params_set:
         _get_acr_from_image(cmd, app)
