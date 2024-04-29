@@ -1609,7 +1609,7 @@ helps['containerapp sessionpool'] = """
 
 helps['containerapp sessionpool create'] = """
     type: command
-    short-summary: Create a Session pool. 
+    short-summary: Create or update a Session pool. 
     examples:
     - name: Create or update a Session Pool with container type PythonLTS default settings.
       text: |
