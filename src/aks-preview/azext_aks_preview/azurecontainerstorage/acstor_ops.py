@@ -59,9 +59,7 @@ def perform_enable_azure_container_storage(  # pylint: disable=too-many-statemen
     # and we want the aks-preview ManagedClusterDecorator to call the
     # perform_enable_azure_container_storage function.
     if not is_called_from_extension:
-        logger.warning("HERE?")
         return
-    logger.warning("HERE1")
     # Step 1: Validate if storagepool could be created.
     # Depends on the following:
     #   1a: Grant AKS cluster's node identity the following
@@ -278,9 +276,7 @@ def perform_disable_azure_container_storage(  # pylint: disable=too-many-stateme
     # and we want the aks-preview ManagedClusterDecorator to call the
     # perform_enable_azure_container_storage function.
     if not is_called_from_extension:
-        logger.warning("HERE?")
         return
-    logger.warning("HERE1")
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
