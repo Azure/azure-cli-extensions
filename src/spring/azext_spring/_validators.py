@@ -21,7 +21,7 @@ from knack.log import get_logger
 from ._clierror import NotSupportedPricingTierError
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name, _java_runtime_in_number)
 from ._util_enterprise import is_enterprise_tier
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
@@ -96,6 +96,8 @@ def _check_tanzu_components_not_enable(cmd, namespace):
     suffix = 'can only be used for Azure Spring Apps Enterprise. Please add --sku="Enterprise" to create Enterprise instance.'
     if namespace.enable_application_configuration_service:
         raise ArgumentUsageError('--enable-application-configuration-service {}'.format(suffix))
+    if namespace.enable_config_server:
+        raise ArgumentUsageError('--enable-config-server {}'.format(suffix))
     if namespace.enable_service_registry:
         raise ArgumentUsageError('--enable-service-registry {}'.format(suffix))
     if namespace.enable_gateway:
@@ -176,48 +178,6 @@ def validate_cosmos_type(namespace):
         if namespace.key_space is None:
             raise InvalidArgumentValueError(
                 "Cosmosdb with type {} should specify collection name".format(type))
-
-
-def validate_log_limit(namespace):
-    temp_limit = None
-    try:
-        temp_limit = namespace.limit
-    except:
-        raise InvalidArgumentValueError('--limit must contains only digit')
-    if temp_limit < 1:
-        raise InvalidArgumentValueError('--limit must be in the range [1,2048]')
-    if temp_limit > 2048:
-        temp_limit = 2048
-        logger.error("--limit can not be more than 2048, using 2048 instead")
-    namespace.limit = temp_limit * 1024
-
-
-def validate_log_lines(namespace):
-    temp_lines = None
-    try:
-        temp_lines = namespace.lines
-    except:
-        raise InvalidArgumentValueError('--lines must contains only digit')
-    if temp_lines < 1:
-        raise InvalidArgumentValueError('--lines must be in the range [1,10000]')
-    if temp_lines > 10000:
-        temp_lines = 10000
-        logger.error("--lines can not be more than 10000, using 10000 instead")
-    namespace.lines = temp_lines
-
-
-def validate_log_since(namespace):
-    if namespace.since:
-        last = namespace.since[-1:]
-        try:
-            namespace.since = int(
-                namespace.since[:-1]) if last in ("hms") else int(namespace.since)
-        except:
-            raise InvalidArgumentValueError("--since contains invalid characters")
-        namespace.since *= 60 if last == "m" else 1
-        namespace.since *= 3600 if last == "h" else 1
-        if namespace.since > 3600:
-            raise InvalidArgumentValueError("--since can not be more than 1h")
 
 
 def validate_jvm_options(namespace):

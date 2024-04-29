@@ -165,6 +165,8 @@ def connect_webapp(cmd, client, resource_group_name, application, app_service, e
         raise InvalidArgumentValueError(f"App Insights {application} under resource group {resource_group_name} was not found.")
 
     settings = [f"APPINSIGHTS_INSTRUMENTATIONKEY={app_insights.instrumentation_key}"]
+    if app_insights.connection_string is not None:
+        settings.append(f"APPINSIGHTS_CONNECTIONSTRING={app_insights.connection_string}")
     if enable_profiler is True:
         settings.append("APPINSIGHTS_PROFILERFEATURE_VERSION=1.0.0")
     elif enable_profiler is False:
@@ -190,6 +192,9 @@ def connect_function(cmd, client, resource_group_name, application, app_service)
         raise InvalidArgumentValueError(f"App Insights {application} under resource group {resource_group_name} was not found.")
 
     settings = [f"APPINSIGHTS_INSTRUMENTATIONKEY={app_insights.instrumentation_key}"]
+
+    if app_insights.connection_string is not None:
+        settings.append(f"APPINSIGHTS_CONNECTIONSTRING={app_insights.connection_string}")
 
     if is_valid_resource_id(app_service):
         resource_id = parse_resource_id(app_service)

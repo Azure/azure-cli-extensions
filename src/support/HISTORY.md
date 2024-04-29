@@ -1,6 +1,10 @@
 Release History
 ===============
 
+1.0.4
+-----
+* Add deprecated message for commands before new upcoming version
+
 1.0.3
 -----
 * Migrate to track 2 SDK

@@ -124,6 +124,9 @@ aks create:
     enable_network_observability:
       rule_exclusions:
       - option_length_too_long
+    cluster_service_load_balancer_health_probe_mode:
+      rule_exclusions:
+      - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:
@@ -202,6 +205,9 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     disable_network_observability:
+      rule_exclusions:
+      - option_length_too_long
+    cluster_service_load_balancer_health_probe_mode:
       rule_exclusions:
       - option_length_too_long
 arcdata dc create:
@@ -317,16 +323,6 @@ batch pool create:
       rule_exclusions:
       - option_length_too_long
     target_low_priority_nodes:
-      rule_exclusions:
-      - option_length_too_long
-blockchain member create:
-  parameters:
-    consortium_management_account_password:
-      rule_exclusions:
-      - option_length_too_long
-blockchain member update:
-  parameters:
-    consortium_management_account_password:
       rule_exclusions:
       - option_length_too_long
 blueprint assignment create:
@@ -538,6 +534,11 @@ datafactory pipeline create-run:
 dataprotection backup-instance restore initialize-for-data-recovery-as-files:
   parameters:
     target_blob_container_url:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-instance update-msi-permissions:
+  parameters:
+    target_storage_account_id:
       rule_exclusions:
       - option_length_too_long
 dataprotection backup-vault create:

@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}/packetcoredataplanes/{}", "2022-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}/packetcoredataplanes/{}", "2023-09-01"],
         ]
     }
 
@@ -210,7 +210,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -304,6 +304,9 @@ class Create(AAZCommand):
                 serialized_name="userPlaneAccessInterface",
                 flags={"required": True},
             )
+            properties.user_plane_access_virtual_ipv4_addresses = AAZListType(
+                serialized_name="userPlaneAccessVirtualIpv4Addresses",
+            )
 
             user_plane_access_interface = cls._schema_on_200_201.properties.user_plane_access_interface
             user_plane_access_interface.ipv4_address = AAZStrType(
@@ -316,6 +319,9 @@ class Create(AAZCommand):
                 serialized_name="ipv4Subnet",
             )
             user_plane_access_interface.name = AAZStrType()
+
+            user_plane_access_virtual_ipv4_addresses = cls._schema_on_200_201.properties.user_plane_access_virtual_ipv4_addresses
+            user_plane_access_virtual_ipv4_addresses.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

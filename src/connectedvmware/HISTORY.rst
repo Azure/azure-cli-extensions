@@ -2,6 +2,20 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Fix bug in `az connectedvmware create` command when RG of machine is different from RG of vCenter.
+* Update help command for vm create to remove non-required parameters.
+* Bug fix in sample resource id format for vcenter
+* Add --private-link-scope flag to `az connectedvmware vm guest-agent enable` command.
+
+1.0.0
+++++++
+* Add command `az connectedvmware create-from-machines`.
+* Delete HCRP Machine resource by default during `delete vm`. To retain, use `--retain-machine` flag.
+* Use GA API Version for VCENTER_KIND_GET_API_VERSION.
+* Set extension to non-preview version
+
 0.2.4
 ++++++
 * Link existing HCRP machine to vCenter using the CLI.

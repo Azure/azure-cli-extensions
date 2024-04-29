@@ -60,7 +60,7 @@ from ._utils import (
     get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
     create_extension, create_custom_location, get_cluster_extension, validate_environment_location,
     list_environment_locations, get_randomized_name_with_dash, get_randomized_name, get_connected_k8s,
-    list_cluster_extensions, list_custom_location
+    list_cluster_extensions, list_custom_location, is_cloud_supported_by_connected_env
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -410,6 +410,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         env_vars=None,
         workload_profile_name=None,
         ingress=None,
+        force_single_container_updates=None
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -422,6 +423,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.env_vars = env_vars
         self.ingress = ingress
         self.workload_profile_name = workload_profile_name
+        self.force_single_container_updates = force_single_container_updates
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -453,8 +455,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             env_vars=self.env_vars,
             workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
-            environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE
+            environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE,
+            force_single_container_updates=self.force_single_container_updates
         )
+
+    def set_force_single_container_updates(self, force_single_container_updates):
+        self.force_single_container_updates = force_single_container_updates
 
     def create_acr_if_needed(self):
         if self.should_create_acr:
@@ -521,7 +527,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         run_full_id = uuid.uuid4().hex
         logs_file_path = os.path.join(tempfile.gettempdir(), f"{'build{}'.format(run_full_id)[:12]}.txt")
-        logs_file = open(logs_file_path, "w")
+        logs_file = open(logs_file_path, "w", encoding="utf-8")
 
         try:
             resource_group_name = self.resource_group.name
@@ -1348,7 +1354,8 @@ def _set_up_defaults(
     env: "ContainerAppEnvironment",
     app: "ContainerApp",
     custom_location: "CustomLocation",
-    extension: "Extension"
+    extension: "Extension",
+    is_registry_server_params_set=None
 ):
     # If no RG passed in and a singular app exists with the same name, get its env and rg
     _get_app_env_and_group(cmd, name, resource_group, env, location, custom_location)
@@ -1374,11 +1381,13 @@ def _set_up_defaults(
                 "Please specify which resource group your Containerapp environment is in."
             )    # get ACR details from --image, if possible
 
-    _infer_existing_connected_env(cmd, location, resource_group, env, custom_location)
+    if is_cloud_supported_by_connected_env(cmd.cli_ctx):
+        _infer_existing_connected_env(cmd, location, resource_group, env, custom_location)
 
-    _infer_existing_custom_location_or_extension(cmd, name, location, resource_group, env, custom_location, extension)
+        _infer_existing_custom_location_or_extension(cmd, name, location, resource_group, env, custom_location, extension)
 
-    _get_acr_from_image(cmd, app)
+    if not is_registry_server_params_set:
+        _get_acr_from_image(cmd, app)
 
 
 # Try to get existed connected environment

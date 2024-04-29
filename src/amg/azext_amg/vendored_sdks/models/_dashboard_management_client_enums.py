@@ -52,6 +52,15 @@ class DeterministicOutboundIP(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     ENABLED = "Enabled"
 
 
+class ManagedPrivateEndpointConnectionStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The approval/rejection status of managed private endpoint connection."""
+
+    PENDING = "Pending"
+    APPROVED = "Approved"
+    REJECTED = "Rejected"
+    DISCONNECTED = "Disconnected"
+
+
 class ManagedServiceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Type of managed service identity (where both SystemAssigned and UserAssigned types are
     allowed).

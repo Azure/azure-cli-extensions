@@ -43,6 +43,7 @@ def acipolicygen_confcom(
     print_policy_to_terminal: bool = False,
     disable_stdio: bool = False,
     print_existing_policy: bool = False,
+    faster_hashing: bool = False,
 ):
 
     if sum(map(bool, [input_path, arm_template, image_name])) != 1:
@@ -57,6 +58,8 @@ def acipolicygen_confcom(
         )
     elif save_to_file and arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
         error_out("Must print policy to terminal when saving to file")
+    elif faster_hashing and tar_mapping_location:
+        error_out("Cannot use --faster-hashing with --tar")
 
     if print_existing_policy or outraw or outraw_pretty_print:
         logger.warning(
@@ -124,7 +127,7 @@ def acipolicygen_confcom(
 
     for count, policy in enumerate(container_group_policies):
         policy.populate_policy_content_for_all_images(
-            individual_image=bool(image_name), tar_mapping=tar_mapping
+            individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing
         )
 
         if validate_sidecar:
@@ -132,10 +135,8 @@ def acipolicygen_confcom(
         elif diff:
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
-            seccomp_profile_hashes = {x.get_id(): x.get_seccomp_profile_sha256() for x in policy.get_images()}
             result = inject_policy_into_template(arm_template, arm_template_parameters,
-                                                 policy.get_serialized_output(), count,
-                                                 seccomp_profile_hashes)
+                                                 policy.get_serialized_output(), count)
             if result:
                 # this is always going to be the unencoded policy
                 print(str_to_sha256(policy.get_serialized_output(OutputType.RAW)))

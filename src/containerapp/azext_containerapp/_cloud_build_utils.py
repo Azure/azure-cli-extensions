@@ -183,7 +183,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         thread = display_spinner("Streaming Cloud Build logs")
         headers = {'Authorization': 'Bearer ' + token}
         logs_stream_retries = 0
-        maximum_logs_stream_retries = 5
+        maximum_logs_stream_retries = 8
         while logs_stream_retries < maximum_logs_stream_retries:
             logs_stream_retries += 1
             response_log_streaming = requests.get(
@@ -194,7 +194,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
                 raise ValidationError(f"Error when streaming the logs, request exited with {response_log_streaming.status_code}")
             # Actually validate that we logs streams successfully
             response_log_streaming_lines = response_log_streaming.iter_lines()
-            count_lines_check = 2
+            count_lines_check = 4
             for line in response_log_streaming_lines:
                 log_line = remove_ansi_characters(line.decode("utf-8"))
                 log_in_file(log_line, logs_file, no_print=True)
@@ -211,6 +211,9 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
             if count_lines_check <= 0:
                 # We checked the set number of lines and logs stream without error. Let's continue.
                 break
+            # Wait for a bit, and then break to try again. Using "logs_stream_retries" as the number of seconds to wait is a primitive exponential retry.
+            log_in_file(f"{substatus_indentation}Wait logstream for build container...\n", logs_file)
+            time.sleep(logs_stream_retries)
         done_spinner = True
         thread.join()
 
