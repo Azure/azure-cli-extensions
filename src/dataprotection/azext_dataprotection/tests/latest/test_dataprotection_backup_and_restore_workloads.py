@@ -281,7 +281,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
             'operation': 'Backup',
             'restoreOperation': 'Restore',
             'pgflexName': 'clitest-pgflex-server',
-            'pgflexDsId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforPostgreSQL/flexibleServers/clitest-pgflex-server',
+            'pgflexDsId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforPostgreSQL/flexibleServers/clitest-pgflex-server-2',
             'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupPolicies/pgflexpolicy',
             'policyRuleName': 'BackupWeekly',
             'targetBlobContainerUrl': 'https://clitestecysa.blob.core.windows.net/clitestpgflexblob',
