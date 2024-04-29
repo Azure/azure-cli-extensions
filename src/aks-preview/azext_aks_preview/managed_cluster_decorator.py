@@ -3988,37 +3988,47 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     is_ephemeralDisk_localssd_enabled,
                     is_ephemeralDisk_nvme_enabled,
                 )
-                pre_disable_validate = False
 
-                msg = (
-                    "Disabling Azure Container Storage will forcefully delete all the storagepools in the cluster and "
-                    "affect the applications using these storagepools. Forceful deletion of storagepools can also "
-                    "lead to leaking of storage resources which are being consumed. Do you want to validate whether "
-                    "any of the storagepools are being used before disabling Azure Container Storage?"
-                )
-
-                from azext_aks_preview.azurecontainerstorage._consts import (
-                    CONST_ACSTOR_ALL,
-                )
-                if disable_pool_type != CONST_ACSTOR_ALL:
-                    msg = (
-                        f"Disabling Azure Container Storage for storagepool type {disable_pool_type} "
-                        "will forcefully delete all the storagepools of the same type and affect the "
-                        "applications using these storagepools. Forceful deletion of storagepools can "
-                        "also lead to leaking of storage resources which are being consumed. Do you want to "
-                        f"validate whether any of the storagepools of type {disable_pool_type} are being used "
-                        "before disabling Azure Container Storage?"
-                    )
-                if self.context.get_yes() or prompt_y_n(msg, default="y"):
-                    pre_disable_validate = True
-
-                # set intermediate
-                self.context.set_intermediate("disable_azure_container_storage", True, overwrite_exists=True)
-                self.context.set_intermediate(
+                is_pre_disable_validate_set = self.context.get_intermediate(
                     "pre_disable_validate_azure_container_storage",
-                    pre_disable_validate,
-                    overwrite_exists=True
+                    default_value="default",
                 )
+
+                # pre_disable_validate_azure_container_storage will be set to
+                # True or False if the updated version az aks cli is being used.
+                # If that is the case, we will skip showing the prompt.
+                if is_pre_disable_validate_set == "default":
+                    pre_disable_validate = False
+
+                    msg = (
+                        "Disabling Azure Container Storage will forcefully delete all the storagepools in the cluster and "
+                        "affect the applications using these storagepools. Forceful deletion of storagepools can also "
+                        "lead to leaking of storage resources which are being consumed. Do you want to validate whether "
+                        "any of the storagepools are being used before disabling Azure Container Storage?"
+                    )
+
+                    from azext_aks_preview.azurecontainerstorage._consts import (
+                        CONST_ACSTOR_ALL,
+                    )
+                    if disable_pool_type != CONST_ACSTOR_ALL:
+                        msg = (
+                            f"Disabling Azure Container Storage for storagepool type {disable_pool_type} "
+                            "will forcefully delete all the storagepools of the same type and affect the "
+                            "applications using these storagepools. Forceful deletion of storagepools can "
+                            "also lead to leaking of storage resources which are being consumed. Do you want to "
+                            f"validate whether any of the storagepools of type {disable_pool_type} are being used "
+                            "before disabling Azure Container Storage?"
+                        )
+                    if self.context.get_yes() or prompt_y_n(msg, default="y"):
+                        pre_disable_validate = True
+
+                    # set intermediate
+                    self.context.set_intermediate("disable_azure_container_storage", True, overwrite_exists=True)
+                    self.context.set_intermediate(
+                        "pre_disable_validate_azure_container_storage",
+                        pre_disable_validate,
+                        overwrite_exists=True
+                    )
 
             # Set intermediates
             self.context.set_intermediate("is_extension_installed", is_extension_installed, overwrite_exists=True)
