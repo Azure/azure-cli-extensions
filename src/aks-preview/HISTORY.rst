@@ -14,6 +14,9 @@ Pending
 * Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
 * Add option `--enable-force-upgrade`, `--disable-force-upgrade` and `--upgrade-override-until` to `az aks upgrade`.
 
+3.0.0b10
+* Support to enable azure monitor profile when the sku name is automatic.
+
 3.0.0b9
 +++++++
 * Support to enable azure container insight monitoring when the sku name is automatic.
