@@ -1596,7 +1596,7 @@ helps['containerapp env dotnet-component'] = """
 
 helps['containerapp env dotnet-component list'] = """
     type: command
-    short-summary: List all DotNet components within the environment.
+    short-summary: List DotNet component within the environment.
     examples:
     - name: List all DotNet components within an environment.
       text: |
