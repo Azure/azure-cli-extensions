@@ -1492,7 +1492,7 @@ helps['containerapp env telemetry data-dog show'] = """
     examples:
     - name: Show container apps environment telemetry data dog settings.
       text: |
-          az containerapp env telemetry data-dog show -n MyContainerappEnvironment -g MyResourceGroup 
+          az containerapp env telemetry data-dog show -n MyContainerappEnvironment -g MyResourceGroup
 """
 
 helps['containerapp env telemetry app-insights set'] = """
@@ -1511,7 +1511,7 @@ helps['containerapp env telemetry app-insights show'] = """
     examples:
     - name: Show container apps environment telemetry app insights settings.
       text: |
-          az containerapp env telemetry app-insights show -n MyContainerappEnvironment -g MyResourceGroup 
+          az containerapp env telemetry app-insights show -n MyContainerappEnvironment -g MyResourceGroup
 """
 
 helps['containerapp env telemetry data-dog delete'] = """
@@ -1586,5 +1586,42 @@ helps['containerapp env telemetry otlp list'] = """
     - name: List container apps environment telemetry otlp settings.
       text: |
           az containerapp env telemetry otlp list -n MyContainerappEnvironment -g MyResourceGroup
+"""
+
+# DotNet Components Commands
+helps['containerapp env dotnet-component'] = """
+    type: group
+    short-summary: Commands to manage dotnet components within the environment.
+"""
+
+helps['containerapp env dotnet-component list'] = """
+    type: command
+    short-summary: List all dotnet components within the environment.
+    examples:
+    - name: List all DotNet components within an environment.
+      text: |
+          az containerapp env dotnet-component list -g MyResourceGroup --environment MyEnvironment
+"""
+
+helps['containerapp env dotnet-component create'] = """
+    type: command
+    short-summary: Command to create dotnet component to enable Aspire Dashboard.
+    examples:
+    - name: Create a DotNet component to enable Aspire Dashboard.
+      text: |
+          az containerapp env dotnet-component create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+"""
+
+helps['containerapp env dotnet-component delete'] = """
+    type: command
+    short-summary: Command to delete dotnet component to disable Aspire Dashboard.
+    examples:
+    - name: Delete DotNet component.
+      text: |
+          az containerapp env dotnet-component delete -g MyResourceGroup \\
+              -n MyDotNetComponentName \\
+              --environment MyEnvironment
 """
 

@@ -587,3 +587,9 @@ CustomDomainConfiguration = {
     "certificatePassword": None,
     "certificateKeyVaultProperties": None
 }
+
+DotNetComponent = {
+    "properties": {
+        "componentType": "AspireDashboard"
+    }
+}

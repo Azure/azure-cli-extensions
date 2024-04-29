@@ -77,6 +77,7 @@ from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from .java_component_decorator import JavaComponentDecorator
+from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
     GitHubActionPreviewClient,
@@ -92,7 +93,8 @@ from ._clients import (
     ConnectedEnvironmentClient,
     ConnectedEnvStorageClient,
     ConnectedEnvCertificateClient,
-    JavaComponentPreviewClient
+    JavaComponentPreviewClient,
+    DotNetComponentPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -2346,7 +2348,7 @@ def set_environment_telemetry_data_dog(cmd,
 
     containerapp_env_telemetry_data_dog_decorator.construct_payload()
     r = containerapp_env_telemetry_data_dog_decorator.update()
-    
+
     return r
 
 
@@ -2369,7 +2371,7 @@ def delete_environment_telemetry_data_dog(cmd,
 
     containerapp_env_telemetry_data_dog_decorator.construct_payload()
     r = containerapp_env_telemetry_data_dog_decorator.update()
-    
+
     return r
 
 
@@ -2384,7 +2386,7 @@ def show_environment_telemetry_data_dog(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_data_dog_decorator.show()
@@ -2416,7 +2418,7 @@ def set_environment_telemetry_app_insights(cmd,
 
     containerapp_env_telemetry_app_insights_decorator.construct_payload()
     r = containerapp_env_telemetry_app_insights_decorator.update()
-    
+
     return r
 
 
@@ -2438,7 +2440,7 @@ def delete_environment_telemetry_app_insights(cmd,
 
     containerapp_env_telemetry_app_insights_decorator.construct_payload()
     r = containerapp_env_telemetry_app_insights_decorator.update()
-    
+
     return r
 
 
@@ -2453,7 +2455,7 @@ def show_environment_telemetry_app_insights(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_app_insights_decorator.show()
@@ -2507,7 +2509,7 @@ def add_environment_telemetry_otlp(cmd,
 
     containerapp_env_telemetry_otlp_decorator.construct_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
-    
+
     return r
 
 
@@ -2547,7 +2549,7 @@ def update_environment_telemetry_otlp(cmd,
 
     containerapp_env_telemetry_otlp_decorator.construct_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
-    
+
     return r
 
 
@@ -2570,7 +2572,7 @@ def remove_environment_telemetry_otlp(cmd,
 
     containerapp_env_telemetry_otlp_decorator.construct_remove_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
-    
+
     return r
 
 
@@ -2586,7 +2588,7 @@ def show_environment_telemetry_otlp(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
@@ -2602,7 +2604,7 @@ def show_environment_telemetry_otlp(cmd,
 
         if not otlp:
             raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
-        
+
         existing_otlps = otlp
         safe_set(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
 
@@ -2620,7 +2622,7 @@ def list_environment_telemetry_otlp(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
@@ -2628,4 +2630,69 @@ def list_environment_telemetry_otlp(cmd,
         handle_non_404_status_code_exception(e)
 
     return containerapp_env_def
+
+def list_dotnet_components(cmd, environment_name, resource_group_name):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return dotnet_component_decorator.list()
+
+
+def show_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    result = dotnet_component_decorator.show()
+
+    return result
+
+
+def delete_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    result = None
+    try:
+        result = dotnet_component_decorator.client.show(cmd, resource_group_name, environment_name, dotnet_component_name)
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
+
+    return dotnet_component_decorator.delete()
+
+
+def create_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    dotnet_component_decorator.construct_payload()
+    return dotnet_component_decorator.create()
+
+
+def update_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    dotnet_component_decorator.construct_payload()
+    return dotnet_component_decorator.update()
 
