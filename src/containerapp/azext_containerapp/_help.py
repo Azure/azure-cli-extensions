@@ -1591,12 +1591,12 @@ helps['containerapp env telemetry otlp list'] = """
 # DotNet Components Commands
 helps['containerapp env dotnet-component'] = """
     type: group
-    short-summary: Commands to manage dotnet components within the environment.
+    short-summary: Commands to manage DotNet components within the environment.
 """
 
 helps['containerapp env dotnet-component list'] = """
     type: command
-    short-summary: List all dotnet components within the environment.
+    short-summary: List all DotNet components within the environment.
     examples:
     - name: List all DotNet components within an environment.
       text: |
@@ -1605,23 +1605,43 @@ helps['containerapp env dotnet-component list'] = """
 
 helps['containerapp env dotnet-component create'] = """
     type: command
-    short-summary: Command to create dotnet component to enable Aspire Dashboard.
+    short-summary: Command to create DotNet component to enable Aspire Dashboard.
     examples:
     - name: Create a DotNet component to enable Aspire Dashboard.
       text: |
           az containerapp env dotnet-component create -g MyResourceGroup \\
-              -n MyJavaComponentName \\
+              -n MyDotNetComponentName \\
               --environment MyEnvironment \\
 """
 
 helps['containerapp env dotnet-component delete'] = """
     type: command
-    short-summary: Command to delete dotnet component to disable Aspire Dashboard.
+    short-summary: Command to delete DotNet component to disable Aspire Dashboard.
     examples:
     - name: Delete DotNet component.
       text: |
           az containerapp env dotnet-component delete -g MyResourceGroup \\
               -n MyDotNetComponentName \\
               --environment MyEnvironment
+"""
+
+helps['containerapp env dotnet-component update'] = """
+    type: command
+    short-summary: Command to update DotNet component (can only update name).
+    examples:
+    - name: Update DotNet component.
+      text: |
+          az containerapp env dotnet-component update -g MyResourceGroup \\
+              -n MyDotNetComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env dotnet-component show'] = """
+    type: command
+    short-summary: Command to show DotNet component in environment.
+    examples:
+    - name: Show the details of an environment.
+      text: |
+          az containerapp env dotnet-component show -n MyContainerappEnvironment -g MyResourceGroup
 """
 

@@ -995,7 +995,7 @@ class DotNetComponentPreviewClient():
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def create(cls, cmd, resource_group_name, environment_name, name, dotNet_component_envelope, no_wait=False):
+    def create(cls, cmd, resource_group_name, environment_name, name, dotnet_component_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/dotNetComponents/{}?api-version={}"
@@ -1007,7 +1007,7 @@ class DotNetComponentPreviewClient():
             name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(dotNet_component_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(dotnet_component_envelope))
 
         if no_wait:
             return r.json()
@@ -1019,7 +1019,7 @@ class DotNetComponentPreviewClient():
         return r.json()
 
     @classmethod
-    def update(cls, cmd, resource_group_name, environment_name, name, dotNet_component_envelope, no_wait=False):
+    def update(cls, cmd, resource_group_name, environment_name, name, dotnet_component_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/dotNetComponents/{}?api-version={}"
@@ -1031,7 +1031,7 @@ class DotNetComponentPreviewClient():
             name,
             cls.api_version)
 
-        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(dotNet_component_envelope))
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(dotnet_component_envelope))
 
         if no_wait:
             return
