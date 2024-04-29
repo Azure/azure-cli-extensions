@@ -26,3 +26,9 @@ Turn on ABAC-based Repository Permission on an existing registry:
 ```bash
 az acr update -g $resource_group -n $acr_name --abac-permissions-enabled true
 ```
+
+Check status of ABAC-based Repository Permission on a registry:
+
+```bash
+az acr show -n $acr_name --query abacRepoPermission
+```

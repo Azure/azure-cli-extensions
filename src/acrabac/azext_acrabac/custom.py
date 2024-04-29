@@ -137,6 +137,18 @@ def acr_update_set_preview(cmd, client, registry_name, resource_group_name=None,
     return acr_update_set(cmd, client, registry_name, resource_group_name, parameters)
 
 
+def acr_list_preview(client, resource_group_name=None):
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name)
+    return client.list()
+
+
+def acr_show_preview(cmd, client, registry_name, resource_group_name=None):
+    from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name
+    resource_group_name = get_resource_group_name_by_registry_name(cmd.cli_ctx, registry_name, resource_group_name)
+    return client.get(resource_group_name, registry_name)
+
+
 def _configure_abac_repo_permission(cmd, registry, enabled):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azure.cli.core.profiles import ResourceType

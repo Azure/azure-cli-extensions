@@ -18,7 +18,8 @@ def load_command_table(self, _):
 
     with self.command_group('acr', acr_custom_util) as g:
         g.command('create', 'acr_create_preview')
-        # TODO: @m5i: consider add list (to show extra property)
+        g.command('list', 'acr_list_preview')
+        g.show_command('show', 'acr_show_preview')
         g.generic_update_command('update',
                                  getter_name='acr_update_get_preview',
                                  setter_name='acr_update_set_preview',

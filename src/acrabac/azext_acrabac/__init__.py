@@ -15,9 +15,7 @@ class AcrabacCommandsLoader(AzCommandsLoader):
         super(AcrabacCommandsLoader, self).__init__(
             cli_ctx=cli_ctx,
             resource_type=ResourceType.MGMT_CONTAINERREGISTRY,
-            # TODO: @m5i: can we get rid of this? use custom_command_type
-            operation_group="webhooks",
-        )
+            operation_group="registries")
 
     def load_command_table(self, args):
         from azext_acrabac.commands import load_command_table
