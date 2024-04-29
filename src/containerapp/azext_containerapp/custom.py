@@ -103,8 +103,7 @@ from ._models import (
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
-    AzureFileProperties as AzureFilePropertiesModel,
-    SessionPool as SessionPoolModel
+    AzureFileProperties as AzureFilePropertiesModel
 )
 
 from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running, parse_build_env_vars
@@ -2671,7 +2670,7 @@ def create_session_pool(cmd,
         cmd=cmd,
         client=SessionPoolPreviewClient,
         raw_parameters=raw_parameters,
-        models=SessionPoolModel
+        models=CONTAINER_APPS_SDK_MODELS
     )
     session_pool_decorator.validate_arguments()
     session_pool_decorator.register_provider(CONTAINER_APPS_RP)
@@ -2709,7 +2708,7 @@ def update_session_pool(cmd,
         cmd=cmd,
         client=SessionPoolPreviewClient,
         raw_parameters=raw_parameters,
-        models=SessionPoolModel
+        models=CONTAINER_APPS_SDK_MODELS
     )
     session_pool_decorator.construct_payload()
     r = session_pool_decorator.update()
@@ -2725,7 +2724,7 @@ def show_session_pool(cmd,
         cmd=cmd,
         client=SessionPoolPreviewClient,
         raw_parameters=raw_parameters,
-        models=SessionPoolModel
+        models=CONTAINER_APPS_SDK_MODELS
     )
     session_pool_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
     r = session_pool_decorator.show()
@@ -2734,13 +2733,13 @@ def show_session_pool(cmd,
 
 
 def list_session_pool(cmd,
-                      resource_group_name):
+                      resource_group_name=None):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolPreviewDecorator(
         cmd=cmd,
         client=SessionPoolPreviewClient,
         raw_parameters=raw_parameters,
-        models=SessionPoolModel
+        models=CONTAINER_APPS_SDK_MODELS
     )
     session_pool_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
     r = session_pool_decorator.list()
@@ -2756,7 +2755,7 @@ def delete_session_pool(cmd,
         cmd=cmd,
         client=SessionPoolPreviewClient,
         raw_parameters=raw_parameters,
-        models=SessionPoolModel
+        models=CONTAINER_APPS_SDK_MODELS
     )
     r = session_pool_decorator.delete()
 
