@@ -131,4 +131,4 @@ def infer_runtime_option(runtime, enable_java_metrics):
         return runtime
     if enable_java_metrics is not None:
         return RUNTIME_JAVA
-    return RUNTIME_GENERIC
+    return None
