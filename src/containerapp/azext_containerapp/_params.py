@@ -336,6 +336,6 @@ def load_arguments(self, _):
         c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
 
     with self.argument_context('containerapp env dotnet-component') as c:
-        c.argument('dotnet_component_name', options_list=['--name', '-n'], help="The Java component name.")
+        c.argument('dotnet_component_name', options_list=['--name', '-n'], help="The DotNet component name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
