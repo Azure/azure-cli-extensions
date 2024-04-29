@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List a collection of API definitions.
 
     :example: List API definitions
-        az apic api definition list -g api-center-test -s contosoeuap --api-name echo-api --version 2023-01-01
+        az apic api definition list -g api-center-test -s contosoeuap --api-id echo-api --version-id 2023-01-01
     """
 
     _aaz_info = {
@@ -45,11 +45,12 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -62,15 +63,17 @@ class List(AAZCommand):
             help="The name of the API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-        _args_schema.version_name = AAZStrArg(
-            options=["--version", "--version-name"],
-            help="The name of the API version.",
+        _args_schema.version_id = AAZStrArg(
+            options=["--version-id"],
+            help="The id of the API version.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -81,6 +84,7 @@ class List(AAZCommand):
             required=True,
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -139,7 +143,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -155,7 +159,7 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "versionName", self.ctx.args.version_name,
+                    "versionName", self.ctx.args.version_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -210,7 +214,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True, "read_only": True},
             )
 
             value = cls._schema_on_200.value
@@ -224,7 +228,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",

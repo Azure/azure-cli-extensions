@@ -7,8 +7,8 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring,
-                              cf_config_servers, cf_eureka_servers)
+from ._client_factory import (cf_spring, 
+                              cf_eureka_servers)
 from ._transformers import (transform_spring_table_output,
                             transform_app_table_output,
                             transform_spring_deployment_output,
@@ -158,19 +158,23 @@ def load_command_table(self, _):
         g.custom_command('enable', 'eureka_enable')
         g.custom_command('disable', 'eureka_disable')
 
-    with self.command_group('spring config-server', client_factory=cf_config_servers,
+    with self.command_group('spring config-server',
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('set', 'config_set', supports_no_wait=True)
-        g.custom_command('clear', 'config_delete')
+        g.custom_command('clear', 'config_clear', confirmation=True)
         g.custom_show_command('show', 'config_get')
         g.custom_command('enable', 'config_enable')
         g.custom_command('disable', 'config_disable')
+        g.custom_command('create', 'config_create', is_preview=True)
+        g.custom_command('delete', 'config_delete', confirmation=True, is_preview=True)
+        g.custom_command('bind', 'config_bind', is_preview=True)
+        g.custom_command('unbind', 'config_unbind', confirmation=True, is_preview=True)
 
-    with self.command_group('spring config-server git', client_factory=cf_config_servers,
+    with self.command_group('spring config-server git',
                             supports_local_cache=True, exception_handler=handle_asc_exception) as g:
         g.custom_command('set', 'config_git_set')
         g.custom_command('repo add', 'config_repo_add')
-        g.custom_command('repo remove', 'config_repo_delete')
+        g.custom_command('repo remove', 'config_repo_delete', confirmation=True)
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
 
