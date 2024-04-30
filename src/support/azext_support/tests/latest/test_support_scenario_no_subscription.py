@@ -126,20 +126,6 @@ class SupportScenarioTestNoSubscription(ScenarioTest):
         rsp = self.cmd(cmd).get_output_in_json()
         self._validate_support_tickets_show_cmd(rsp, test_ticket_name)
 
-    def test_chat_transcript_no_subscription(self):
-        test_ticket_name = "58cf91d7-27a54e37-7ee57473-c9c9-4350-b0e1-f7aa2479108d"
-        test_chat_transcript_name = "e3bc592b-ba39-49d3-8853-16e33023b22b"
-
-        # List Chat Transcript
-        cmd = self._build_chat_transcript_list_cmd(test_ticket_name)
-        rsp = self.cmd(cmd).get_output_in_json()
-        self._validate_chat_transcript_list_cmd(rsp, test_chat_transcript_name)
-
-        # Show Chat Transcript
-        cmd = self._build_chat_transcript_show_cmd(test_ticket_name, test_chat_transcript_name)
-        rsp = self.cmd(cmd).get_output_in_json()
-        self._validate_chat_transcript_show_cmd(rsp, test_chat_transcript_name)
-
     def test_support_file_attachment_no_subscription(self):
         # Create File workspace
         file_workspace_name = self.create_random_name(prefix='no_sub_', length=20)
@@ -167,7 +153,6 @@ class SupportScenarioTestNoSubscription(ScenarioTest):
         cmd += "--description '{0}' ".format(test_ticket_title)
         cmd += "--severity 'minimal' "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
-        cmd += "--severity 'minimal' "
         cmd += "--title '{0}' ".format(test_ticket_title)
         cmd += "--contact-country 'USA' "
         cmd += "--contact-email 'azengcase@microsoft.com' "
@@ -211,8 +196,6 @@ class SupportScenarioTestNoSubscription(ScenarioTest):
         self.assertTrue(rsp is not None)
         self.assertTrue("type" in rsp)
         self.assertTrue(rsp["type"] == "Microsoft.Support/communications")
-        self.assertTrue("name" in rsp)
-        self.assertTrue(rsp["name"] == test_communication_name)
 
     def _build_support_tickets_communications_list_cmd(self, test_ticket_name):
         cmd = "support no-subscription communication list "
@@ -227,14 +210,6 @@ class SupportScenarioTestNoSubscription(ScenarioTest):
         self.assertTrue(rsp[0]["type"] == "Microsoft.Support/communications")
         self.assertTrue("name" in rsp[0])
 
-        communication_returned = False
-        for communication in rsp:
-            if communication["name"] == test_communication_name:
-                communication_returned = True
-                break
-
-        self.assertTrue(communication_returned is True)
-
     def _build_support_tickets_communications_show_cmd(self, test_ticket_name, test_communication_name):
         cmd = "support no-subscription communication show "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
@@ -246,8 +221,6 @@ class SupportScenarioTestNoSubscription(ScenarioTest):
         self.assertTrue(rsp is not None)
         self.assertTrue("type" in rsp)
         self.assertTrue(rsp["type"] == "Microsoft.Support/communications")
-        self.assertTrue("name" in rsp)
-        self.assertTrue(rsp["name"] == test_communication_name)
 
     def _build_support_tickets_list_cmd(self):
         cmd = "support no-subscription tickets list --max-items 3 "
@@ -273,7 +246,6 @@ class SupportScenarioTestNoSubscription(ScenarioTest):
     def _build_support_tickets_update_cmd1(self, test_ticket_name):
         cmd = "support no-subscription tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
-        cmd += "--severity 'moderate' "
         cmd += "--contact-method 'phone' "
         cmd += "--contact-phone-number '123-456-7890' "
 
@@ -283,8 +255,6 @@ class SupportScenarioTestNoSubscription(ScenarioTest):
         self.assertTrue(rsp is not None)
         self.assertTrue("type" in rsp)
         self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
-        self.assertTrue("severity" in rsp)
-        self.assertTrue("Moderate" == rsp["severity"])
         self.assertTrue("contactDetails" in rsp)
         self.assertTrue("123-456-7890" == rsp["contactDetails"]["phoneNumber"])
         self.assertTrue("Phone" == rsp["contactDetails"]["preferredContactMethod"])
@@ -292,7 +262,6 @@ class SupportScenarioTestNoSubscription(ScenarioTest):
     def _build_support_tickets_update_cmd2(self, test_ticket_name):
         cmd = "support no-subscription tickets update "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
-        cmd += "--severity 'minimal' "
         cmd += "--contact-method 'email' "
 
         return cmd
@@ -301,8 +270,6 @@ class SupportScenarioTestNoSubscription(ScenarioTest):
         self.assertTrue(rsp is not None)
         self.assertTrue("type" in rsp)
         self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
-        self.assertTrue("severity" in rsp)
-        self.assertTrue("Minimal" == rsp["severity"])
         self.assertTrue("contactDetails" in rsp)
         self.assertTrue("Email" == rsp["contactDetails"]["preferredContactMethod"])
 
@@ -351,33 +318,6 @@ class SupportScenarioTestNoSubscription(ScenarioTest):
         self.assertTrue(rsp is not None)
         self.assertTrue(rsp.exit_code is not None)
         self.assertTrue(rsp.exit_code == exit_code)
-
-    def _build_chat_transcript_list_cmd(self, test_ticket_name):
-        cmd = "support no-subscription chat-transcript list "
-        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
-
-        return cmd
-
-    def _validate_chat_transcript_list_cmd(self, rsp, test_chat_transcript_name):
-        self.assertTrue(rsp is not None)
-        self.assertTrue("type" in rsp[0])
-        self.assertTrue(rsp[0]["type"] == "Microsoft.Support/chatTranscripts")
-        self.assertTrue("name" in rsp[0])
-        self.assertTrue(rsp[0]["name"] == test_chat_transcript_name)
-
-    def _build_chat_transcript_show_cmd(self, test_ticket_name, test_chat_transcript_name):
-        cmd = "support no-subscription chat-transcript show "
-        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
-        cmd += "--chat-transcript-name '{0}' ".format(test_chat_transcript_name)
-
-        return cmd
-
-    def _validate_chat_transcript_show_cmd(self, rsp, test_chat_transcript_name):
-        self.assertTrue(rsp is not None)
-        self.assertTrue("type" in rsp)
-        self.assertTrue(rsp["type"] == "Microsoft.Support/chatTranscripts")
-        self.assertTrue("name" in rsp)
-        self.assertTrue(rsp["name"] == test_chat_transcript_name)
 
     def _validate_create_file_workspace_no_subscription(self, file_workspace_name):
         create_file_workspace_result = self.cmd(

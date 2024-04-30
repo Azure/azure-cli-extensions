@@ -15,13 +15,13 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --debug --description --severity --ticket-name --severity --title --contact-country
-        --contact-email --contact-first-name --contact-language --contact-last-name
-        --contact-method --contact-timezone --advanced-diagnostic-consent --problem-classification
+      - --debug --description --severity --ticket-name --title --contact-country --contact-email
+        --contact-first-name --contact-language --contact-last-name --contact-method
+        --contact-timezone --advanced-diagnostic-consent --problem-classification
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
   response:
     body:
       string: '{"message":"Name 12345 is invalid. The name cannot include: ''<'',
@@ -36,7 +36,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:45:52 GMT
+      - Tue, 30 Apr 2024 21:09:22 GMT
       expires:
       - '-1'
       pragma:
@@ -48,11 +48,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/7c46bd4f-d1c0-4843-9b9b-8336fc4d07f5
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/ddfc17bd-c36a-4897-a161-b3b5bc44fb36
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: 27392705ADA8443E8CDA03E927316882 Ref B: BN1AA2051012019 Ref C: 2024-04-26T03:45:52Z'
+      - 'Ref A: 3379942F9066452683E3EF52FD0B4DE4 Ref B: CO6AA3150217047 Ref C: 2024-04-30T21:09:22Z'
     status:
       code: 200
       message: OK

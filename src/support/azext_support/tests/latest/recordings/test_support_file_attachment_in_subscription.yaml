@@ -17,9 +17,9 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --subscription
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
   response:
     body:
       string: '{"nameAvailable":true}'
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:44:38 GMT
+      - Tue, 30 Apr 2024 21:09:08 GMT
       expires:
       - '-1'
       pragma:
@@ -43,11 +43,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/cfc65cce-5406-4238-8864-aaad18300087
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/69339864-e677-454b-ac24-a52086b862ef
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: 590B352AF7D04621BB32204ABBDC84B9 Ref B: BN1AA2051013035 Ref C: 2024-04-26T03:44:37Z'
+      - 'Ref A: 10C6F797A1174B539426123A30B27477 Ref B: CO6AA3150218029 Ref C: 2024-04-30T21:09:07Z'
     status:
       code: 200
       message: OK
@@ -67,12 +67,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --subscription
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001","name":"in_sub_cli_000001","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-04-27T03:44:41Z","createdOn":"2024-04-26T03:44:41Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001","name":"in_sub_cli_000001","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-05-01T21:09:12Z","createdOn":"2024-04-30T21:09:12Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -81,11 +81,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:44:43 GMT
+      - Tue, 30 Apr 2024 21:09:14 GMT
       expires:
       - '-1'
       location:
-      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2024-04-01
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2024-04-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -95,11 +95,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/b824418b-7226-4632-9444-4fcbcb062d84
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/f4aaaadd-e0a9-4a6d-bb91-d0f223f3a89b
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
       x-msedge-ref:
-      - 'Ref A: 3C49762B6F15481887C9BC025FA02D52 Ref B: BN1AA2051012031 Ref C: 2024-04-26T03:44:38Z'
+      - 'Ref A: 0BF255ED026E457B86DA092370069BA0 Ref B: CO6AA3150218011 Ref C: 2024-04-30T21:09:10Z'
     status:
       code: 201
       message: Created
@@ -117,12 +117,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --subscription
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001","name":"in_sub_cli_000001","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-04-27T03:44:41Z","createdOn":"2024-04-26T03:44:41Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001","name":"in_sub_cli_000001","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-05-01T21:09:12Z","createdOn":"2024-04-30T21:09:12Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -131,7 +131,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:44:46 GMT
+      - Tue, 30 Apr 2024 21:09:18 GMT
       expires:
       - '-1'
       pragma:
@@ -143,9 +143,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/b03206d8-6253-4453-9607-3c84771644d3
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/970d428d-ad06-4484-8fc3-0894878b33c8
       x-msedge-ref:
-      - 'Ref A: 1C8F84C679BF477DBD9AAF3BEB94A31B Ref B: BN1AA2051014051 Ref C: 2024-04-26T03:44:44Z'
+      - 'Ref A: A9FB02F8DBBA47D3895B442DDD537C90 Ref B: CO6AA3150218037 Ref C: 2024-04-30T21:09:16Z'
     status:
       code: 200
       message: OK
@@ -167,12 +167,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-path --subscription
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-26T03:44:54Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-30T21:09:29Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
     headers:
       cache-control:
       - no-cache
@@ -181,11 +181,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:44:55 GMT
+      - Tue, 30 Apr 2024 21:09:30 GMT
       expires:
       - '-1'
       location:
-      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2024-04-01
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2024-04-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -195,11 +195,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/7715a189-c8e6-4407-adfd-3d7906481bf3
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/80ec0ae5-120e-4c71-824f-3c822e19aded
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
       x-msedge-ref:
-      - 'Ref A: 3EA8A223AF354FE78EA7F0C1D0E5044B Ref B: BN1AA2051013047 Ref C: 2024-04-26T03:44:47Z'
+      - 'Ref A: 926DC35F44024BE0AB469ADC6EC24B74 Ref B: CO6AA3150219021 Ref C: 2024-04-30T21:09:22Z'
     status:
       code: 201
       message: Created
@@ -221,9 +221,9 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-path --subscription
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt/upload?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt/upload?api-version=2024-04-01
   response:
     body:
       string: ''
@@ -231,7 +231,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Fri, 26 Apr 2024 03:45:07 GMT
+      - Tue, 30 Apr 2024 21:09:41 GMT
       expires:
       - '-1'
       pragma:
@@ -243,11 +243,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/e1ca0bd8-1a53-4777-8f8c-652fa0e815c9
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/7f112dab-34d0-4bef-9427-9a126543d284
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: C71C392A5B284B8D8994361DFAECF5CD Ref B: BN1AA2051015053 Ref C: 2024-04-26T03:44:55Z'
+      - 'Ref A: E9E7D877D8A943E4BD44F6A7056D7604 Ref B: CO6AA3150219047 Ref C: 2024-04-30T21:09:31Z'
     status:
       code: 204
       message: No Content
@@ -265,12 +265,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --subscription
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files?api-version=2024-04-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-26T03:44:54Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-30T21:09:29Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}]}'
     headers:
       cache-control:
       - no-cache
@@ -279,7 +279,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:45:11 GMT
+      - Tue, 30 Apr 2024 21:09:46 GMT
       expires:
       - '-1'
       pragma:
@@ -291,9 +291,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/a057ae56-d8d4-439a-8190-53bd449bf343
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/cedd1bc1-3638-4176-adef-f8bf37af84a2
       x-msedge-ref:
-      - 'Ref A: 2677A45B592340F98358CDF30A81BE3B Ref B: BN1AA2051012051 Ref C: 2024-04-26T03:45:07Z'
+      - 'Ref A: FC4CE4BC140845CEBC26F616B2C8974B Ref B: CO6AA3150218021 Ref C: 2024-04-30T21:09:42Z'
     status:
       code: 200
       message: OK
@@ -311,12 +311,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-name --subscription
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-26T03:44:54Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_cli_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-30T21:09:29Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
     headers:
       cache-control:
       - no-cache
@@ -325,7 +325,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:45:16 GMT
+      - Tue, 30 Apr 2024 21:09:54 GMT
       expires:
       - '-1'
       pragma:
@@ -337,9 +337,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/f29e77a6-b361-4b11-9afd-2873ab9981a1
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/f7a7d632-9a65-4c9a-8de0-02e27b9e9ae0
       x-msedge-ref:
-      - 'Ref A: 62E762367A494E7ABBBEF975551FB938 Ref B: BN1AA2051014027 Ref C: 2024-04-26T03:45:12Z'
+      - 'Ref A: C059841129EE429EAF5A3E76C52C55E1 Ref B: CO6AA3150217053 Ref C: 2024-04-30T21:09:49Z'
     status:
       code: 200
       message: OK
@@ -361,9 +361,9 @@ interactions:
       ParameterSetName:
       - --file-workspace-name
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
   response:
     body:
       string: '{"nameAvailable":true}'
@@ -375,7 +375,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:45:17 GMT
+      - Tue, 30 Apr 2024 21:09:56 GMT
       expires:
       - '-1'
       pragma:
@@ -387,11 +387,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/8f4448d4-fe14-4709-8127-fc8c2db08e46
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/e51725ef-f56b-4ce3-b1b1-e46d0f70664b
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-msedge-ref:
-      - 'Ref A: 314630C7B8DD46B8A4652B740039BD51 Ref B: BN1AA2051012033 Ref C: 2024-04-26T03:45:17Z'
+      - 'Ref A: F21296F4A9AE4722BCA31E3D59D703CB Ref B: CO6AA3150220011 Ref C: 2024-04-30T21:09:55Z'
     status:
       code: 200
       message: OK
@@ -411,12 +411,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002","name":"in_sub_account_000002","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-04-27T03:45:20Z","createdOn":"2024-04-26T03:45:20Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002","name":"in_sub_account_000002","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-05-01T21:10:03Z","createdOn":"2024-04-30T21:10:03Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -425,11 +425,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:45:22 GMT
+      - Tue, 30 Apr 2024 21:10:05 GMT
       expires:
       - '-1'
       location:
-      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2024-04-01
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2024-04-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -439,11 +439,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/2d560039-5863-4d46-b0f6-608b64d9a5f1
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/582ca38a-cac0-4d1e-98e1-b74283cd93c1
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-msedge-ref:
-      - 'Ref A: 786BF9B583C84354AE12789BE2DDEEAE Ref B: BN1AA2051012027 Ref C: 2024-04-26T03:45:17Z'
+      - 'Ref A: C07AB9FEB2334A119DD987043FAE6944 Ref B: CO6AA3150218021 Ref C: 2024-04-30T21:09:57Z'
     status:
       code: 201
       message: Created
@@ -461,12 +461,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002","name":"in_sub_account_000002","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-04-27T03:45:20Z","createdOn":"2024-04-26T03:45:20Z"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002","name":"in_sub_account_000002","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-05-01T21:10:03Z","createdOn":"2024-04-30T21:10:03Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -475,7 +475,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:45:25 GMT
+      - Tue, 30 Apr 2024 21:10:08 GMT
       expires:
       - '-1'
       pragma:
@@ -487,9 +487,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/353780d5-dbdb-4692-8e7d-ec3c3733f0ff
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/23985f38-34ec-415d-b4ba-3b2040fd623c
       x-msedge-ref:
-      - 'Ref A: 26D8FD76F1EC4D60812A7F1FF11A0C1C Ref B: BN1AA2051013053 Ref C: 2024-04-26T03:45:22Z'
+      - 'Ref A: D2CC9339473F4589A1DCFB2C8499CD59 Ref B: CO6AA3150220037 Ref C: 2024-04-30T21:10:07Z'
     status:
       code: 200
       message: OK
@@ -511,12 +511,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-path
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-26T03:45:32Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-30T21:10:16Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
     headers:
       cache-control:
       - no-cache
@@ -525,11 +525,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:45:33 GMT
+      - Tue, 30 Apr 2024 21:10:17 GMT
       expires:
       - '-1'
       location:
-      - https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2024-04-01
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2024-04-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -539,11 +539,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/0d01dc99-a546-4320-b3b2-21a0fd76ae7b
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/62d2c2db-9a13-4e2c-889a-7170b23495b0
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: 83ABED9A836842A0A86DE6EBA9B7065D Ref B: BN1AA2051014021 Ref C: 2024-04-26T03:45:25Z'
+      - 'Ref A: 54781F97516B4B9C98978DA0BE023D39 Ref B: CO6AA3150219009 Ref C: 2024-04-30T21:10:11Z'
     status:
       code: 201
       message: Created
@@ -565,9 +565,9 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-path
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt/upload?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt/upload?api-version=2024-04-01
   response:
     body:
       string: ''
@@ -575,7 +575,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Fri, 26 Apr 2024 03:45:42 GMT
+      - Tue, 30 Apr 2024 21:10:27 GMT
       expires:
       - '-1'
       pragma:
@@ -587,11 +587,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/74a7c89e-d424-454d-ad21-8b1a1aee36b5
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/0634d155-ce10-4baa-8bcb-29c070a5fd61
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-msedge-ref:
-      - 'Ref A: B93A5661F9E245658DD7E808464C3CB1 Ref B: BN1AA2051014037 Ref C: 2024-04-26T03:45:34Z'
+      - 'Ref A: EA76A46650A14C37AF86E5B8FA137D49 Ref B: CO6AA3150219009 Ref C: 2024-04-30T21:10:18Z'
     status:
       code: 204
       message: No Content
@@ -609,12 +609,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files?api-version=2024-04-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-26T03:45:32Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-30T21:10:16Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}]}'
     headers:
       cache-control:
       - no-cache
@@ -623,7 +623,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:45:46 GMT
+      - Tue, 30 Apr 2024 21:10:34 GMT
       expires:
       - '-1'
       pragma:
@@ -635,9 +635,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/4980a67b-1b7f-4041-8cd5-f75c6effc996
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/e585cc81-6e84-4c9f-b679-d2dcc95a625c
       x-msedge-ref:
-      - 'Ref A: 998B255BE1FD4850B8FA0C957CB44409 Ref B: BN1AA2051012009 Ref C: 2024-04-26T03:45:43Z'
+      - 'Ref A: 18263C5932AB4BD4B995E74D024C6B3C Ref B: CO6AA3150217011 Ref C: 2024-04-30T21:10:29Z'
     status:
       code: 200
       message: OK
@@ -655,12 +655,12 @@ interactions:
       ParameterSetName:
       - --file-workspace-name --file-name
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2024-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt?api-version=2024-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-26T03:45:32Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/fileWorkspaces/in_sub_account_000002/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-04-30T21:10:16Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
     headers:
       cache-control:
       - no-cache
@@ -669,7 +669,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 Apr 2024 03:45:51 GMT
+      - Tue, 30 Apr 2024 21:10:40 GMT
       expires:
       - '-1'
       pragma:
@@ -681,9 +681,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=72b0a4ad-45a2-4411-a30f-7ca7e6de8cfa/centraluseuap/4dd8c0c0-0db4-4cc6-90a0-8570a2c69c7a
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ea795d90-83db-40af-a625-9e5ab7cf90ac/eastus2euap/8e1301a6-2ffa-4e0a-a90e-074a329d84cc
       x-msedge-ref:
-      - 'Ref A: 8A5930B6592342A49AFD44784742557C Ref B: BN1AA2051012051 Ref C: 2024-04-26T03:45:47Z'
+      - 'Ref A: 9E57B78B28394841A887DDB81610B367 Ref B: CO6AA3150218039 Ref C: 2024-04-30T21:10:36Z'
     status:
       code: 200
       message: OK

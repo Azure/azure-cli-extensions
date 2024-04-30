@@ -239,7 +239,6 @@ class SupportScenarioTest(ScenarioTest):
         cmd += "--description '{0}' ".format(test_ticket_title)
         cmd += "--severity 'minimal' "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
-        cmd += "--severity 'minimal' "
         cmd += "--title '{0}' ".format(test_ticket_title)
         cmd += "--contact-country 'USA' "
         cmd += "--contact-email 'azengcase@microsoft.com' "
