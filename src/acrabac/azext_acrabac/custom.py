@@ -38,7 +38,8 @@ def acr_create_preview(cmd,
                        allow_exports=None,
                        tags=None,
                        allow_metadata_search=None,
-                       abac_permissions_enabled=None):
+                       abac_permissions_enabled=None,
+                       yes=False):
     from azure.cli.command_modules.acr._constants import get_managed_sku, get_premium_sku
     from azure.cli.command_modules.acr.network_rule import NETWORK_RULE_NOT_SUPPORTED
     from azure.cli.command_modules.acr.custom import (
@@ -71,7 +72,7 @@ def acr_create_preview(cmd,
         _configure_metadata_search(cmd, registry, allow_metadata_search)
 
     if abac_permissions_enabled is not None:
-        _configure_abac_repo_permission(cmd, registry, abac_permissions_enabled)
+        _configure_abac_repo_permission(cmd, registry, abac_permissions_enabled, yes)
 
     _handle_network_bypass(cmd, registry, allow_trusted_services)
     _handle_export_policy(cmd, registry, allow_exports)
@@ -107,7 +108,8 @@ def acr_update_custom_preview(cmd,
                               allow_exports=None,
                               tags=None,
                               allow_metadata_search=None,
-                              abac_permissions_enabled=None):
+                              abac_permissions_enabled=None,
+                              yes=False):
     instance = acr_update_custom(
         cmd,
         instance,
@@ -124,7 +126,7 @@ def acr_update_custom_preview(cmd,
     )
 
     if abac_permissions_enabled is not None:
-        _configure_abac_repo_permission(cmd, instance, abac_permissions_enabled)
+        _configure_abac_repo_permission(cmd, instance, abac_permissions_enabled, yes)
 
     return instance
 
@@ -149,7 +151,7 @@ def acr_show_preview(cmd, client, registry_name, resource_group_name=None):
     return client.get(resource_group_name, registry_name)
 
 
-def _configure_abac_repo_permission(cmd, registry, enabled):
+def _configure_abac_repo_permission(cmd, registry, enabled, yes=False):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azure.cli.core.profiles import ResourceType
 
@@ -168,6 +170,6 @@ def _configure_abac_repo_permission(cmd, registry, enabled):
 
     if enabled:
         user_confirmation(
-            "The current preview experience of ABAC-enabled Repository Permissions prevents ACR tasks from functioning. Are you sure you want to enable it?")
+            "The current preview experience of ABAC-enabled Repository Permissions prevents ACR tasks from functioning. Are you sure you want to enable it?", yes)
 
     registry.abac_repo_permission = AbacRepoPermission.enabled if enabled else AbacRepoPermission.disabled

@@ -1,0 +1,761 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --location --abac-permissions-enabled --yes
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Features/providers/Microsoft.ContainerRegistry/features/AllowAttributeBasedAccessControl?api-version=2021-07-01
+  response:
+    body:
+      string: '{"properties":{"state":"Registered"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Features/providers/Microsoft.ContainerRegistry/features/AllowAttributeBasedAccessControl","type":"Microsoft.Features/providers/features","name":"Microsoft.ContainerRegistry/AllowAttributeBasedAccessControl"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '322'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:03:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/d8b48c3a-cecb-4db5-8d61-38bf17a4b373
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3738'
+      x-msedge-ref:
+      - 'Ref A: 158389761633495AB93994BB6B58640B Ref B: TYO201100113033 Ref C: 2024-04-30T09:03:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "australiaeast", "sku": {"name": "Basic"}, "properties": {"adminUserEnabled":
+      false, "anonymousPullEnabled": false, "abacRepoPermission": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '162'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --sku --location --abac-permissions-enabled --yes
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:04:00.6254408+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:04:00.6254408+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:04:00.6254408Z","provisioningState":"Creating","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313563+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313981+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Enabled"}}'
+    headers:
+      api-supported-versions:
+      - 2024-01-01-preview
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-9361e440-06d0-11ef-b583-00155d943759?api-version=2024-01-01-preview&t=638500646648149641&c=MIIHHzCCBgegAwIBAgITHgRY6-o1G8oneievMgAABFjr6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNDE0MTcyMjMwWhcNMjUwNDA5MTcyMjMwWjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDHXRcT1wfS3-OzMCS-cOJdOIlGA74lpS7FKkN1EKOFKIVgnPy2Yh_Yz3cnC-iw7igYXm1vkryZxocbl5TpyeEw4YSDzNLtSD_rzMXjonrnzwCm7DKp9-FLTtYouZvePUNlordxM4V3eqy6GaDKS-JLyeAVWCxhHztzl0qAq574C47RA-A96GT0C_Nu_a_uC5AtY4dWoFeXtOkqtjfZGJ22e0iao0vB9dxmWHlQ7y69FbxWB_8oADboZWXYZ1xS4xjTVTkyzZIBlGRn1afttuJ0IQGtcf3tVEkfJQtR17tenoOOJRRFPn13It-YLWxMeoHFlVUxaB1BMy92tPrQs-IRAgMBAAGjggQXMIIEEzAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUdOvzY0A5u36Xs59ceM8mz4y5kM8wDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDBBBgNVHSAEOjA4MAwGCisGAQQBgjd7AQEwDAYKKwYBBAGCN3sCATAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBoExP5J0M5FxBDqeHo6sNVl7x4zrUtHN4F9sHk57urWwaheOFqB5ZMfLO1jhRxXmsunzTm98zE-JvCD1tjLacbOh9jvhe8Vui3GfxDFT5j8Kdz40OtwwyCP-tV6JJ3cLWmpK1PLDAH4Htr9LyRHA3eiTsObxO8AZC8Vj3VjrI7tCtgZ0arJmNFv2GKIyX8BOblTwv04SSS9xtg1yv4tB3hV415asQAjSLFuBkdldQErOSFCiqVFXXzRwbUh-a5Ali4qDc8jexmqxmDZjHVF97VQhztNR-yEdYRlMiHyiHxUBrWl4JMtn_XuOJ_rCYofNrjYibJPoh9aWa8iSUCec_v&s=qr8h-LVf-1AxTXk04CNqMy5MikNmR_gw8mZRcOpHNpsbUXv4WTSXrUtyUSAvrXa3q_u_kzzFHpI4QZSycNKzlKgFAVX7W3MnB76QFz0qm-Bc0BKX85Vs3bxRO8yDLCevqCnwN-h-v3IRHHNNSszuCdhAFFnpz-ooKj7k_G3C-gQ8lyMjhq-GBAciFavEngioEOhWErFk0P2d_FdM7mPBrz_zCkNXaESUQgp_mJmYvX67tPsj5-E_q37eAzU34lo55dyQZAY77QSsXgQMliKkJ9hWoJYi9Z6FIp9gwqPgXqPhGoFW7vNg5kpTZ_37N3h0sEjaR36b8KHalvr5iEp8xw&h=eqwmMQ9Aw5fYU2uIxuVjpWaODrFMtdWk_C8VRCGNvGU
+      cache-control:
+      - no-cache
+      content-length:
+      - '1454'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/8205d159-ed55-4a28-b372-6a99f3f50ef8
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '3000'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '200'
+      x-msedge-ref:
+      - 'Ref A: 80703D89612B4809B32FC44092E34200 Ref B: TYO201100114049 Ref C: 2024-04-30T09:03:59Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --location --abac-permissions-enabled --yes
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-9361e440-06d0-11ef-b583-00155d943759?api-version=2024-01-01-preview&t=638500646648149641&c=MIIHHzCCBgegAwIBAgITHgRY6-o1G8oneievMgAABFjr6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNDE0MTcyMjMwWhcNMjUwNDA5MTcyMjMwWjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDHXRcT1wfS3-OzMCS-cOJdOIlGA74lpS7FKkN1EKOFKIVgnPy2Yh_Yz3cnC-iw7igYXm1vkryZxocbl5TpyeEw4YSDzNLtSD_rzMXjonrnzwCm7DKp9-FLTtYouZvePUNlordxM4V3eqy6GaDKS-JLyeAVWCxhHztzl0qAq574C47RA-A96GT0C_Nu_a_uC5AtY4dWoFeXtOkqtjfZGJ22e0iao0vB9dxmWHlQ7y69FbxWB_8oADboZWXYZ1xS4xjTVTkyzZIBlGRn1afttuJ0IQGtcf3tVEkfJQtR17tenoOOJRRFPn13It-YLWxMeoHFlVUxaB1BMy92tPrQs-IRAgMBAAGjggQXMIIEEzAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUdOvzY0A5u36Xs59ceM8mz4y5kM8wDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDBBBgNVHSAEOjA4MAwGCisGAQQBgjd7AQEwDAYKKwYBBAGCN3sCATAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBoExP5J0M5FxBDqeHo6sNVl7x4zrUtHN4F9sHk57urWwaheOFqB5ZMfLO1jhRxXmsunzTm98zE-JvCD1tjLacbOh9jvhe8Vui3GfxDFT5j8Kdz40OtwwyCP-tV6JJ3cLWmpK1PLDAH4Htr9LyRHA3eiTsObxO8AZC8Vj3VjrI7tCtgZ0arJmNFv2GKIyX8BOblTwv04SSS9xtg1yv4tB3hV415asQAjSLFuBkdldQErOSFCiqVFXXzRwbUh-a5Ali4qDc8jexmqxmDZjHVF97VQhztNR-yEdYRlMiHyiHxUBrWl4JMtn_XuOJ_rCYofNrjYibJPoh9aWa8iSUCec_v&s=qr8h-LVf-1AxTXk04CNqMy5MikNmR_gw8mZRcOpHNpsbUXv4WTSXrUtyUSAvrXa3q_u_kzzFHpI4QZSycNKzlKgFAVX7W3MnB76QFz0qm-Bc0BKX85Vs3bxRO8yDLCevqCnwN-h-v3IRHHNNSszuCdhAFFnpz-ooKj7k_G3C-gQ8lyMjhq-GBAciFavEngioEOhWErFk0P2d_FdM7mPBrz_zCkNXaESUQgp_mJmYvX67tPsj5-E_q37eAzU34lo55dyQZAY77QSsXgQMliKkJ9hWoJYi9Z6FIp9gwqPgXqPhGoFW7vNg5kpTZ_37N3h0sEjaR36b8KHalvr5iEp8xw&h=eqwmMQ9Aw5fYU2uIxuVjpWaODrFMtdWk_C8VRCGNvGU
+  response:
+    body:
+      string: '{"status":"Creating"}'
+    headers:
+      api-supported-versions:
+      - 2024-01-01-preview
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-9361e440-06d0-11ef-b583-00155d943759?api-version=2024-01-01-preview&t=638500646654242957&c=MIIHHzCCBgegAwIBAgITHgRY6-o1G8oneievMgAABFjr6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNDE0MTcyMjMwWhcNMjUwNDA5MTcyMjMwWjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDHXRcT1wfS3-OzMCS-cOJdOIlGA74lpS7FKkN1EKOFKIVgnPy2Yh_Yz3cnC-iw7igYXm1vkryZxocbl5TpyeEw4YSDzNLtSD_rzMXjonrnzwCm7DKp9-FLTtYouZvePUNlordxM4V3eqy6GaDKS-JLyeAVWCxhHztzl0qAq574C47RA-A96GT0C_Nu_a_uC5AtY4dWoFeXtOkqtjfZGJ22e0iao0vB9dxmWHlQ7y69FbxWB_8oADboZWXYZ1xS4xjTVTkyzZIBlGRn1afttuJ0IQGtcf3tVEkfJQtR17tenoOOJRRFPn13It-YLWxMeoHFlVUxaB1BMy92tPrQs-IRAgMBAAGjggQXMIIEEzAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUdOvzY0A5u36Xs59ceM8mz4y5kM8wDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDBBBgNVHSAEOjA4MAwGCisGAQQBgjd7AQEwDAYKKwYBBAGCN3sCATAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBoExP5J0M5FxBDqeHo6sNVl7x4zrUtHN4F9sHk57urWwaheOFqB5ZMfLO1jhRxXmsunzTm98zE-JvCD1tjLacbOh9jvhe8Vui3GfxDFT5j8Kdz40OtwwyCP-tV6JJ3cLWmpK1PLDAH4Htr9LyRHA3eiTsObxO8AZC8Vj3VjrI7tCtgZ0arJmNFv2GKIyX8BOblTwv04SSS9xtg1yv4tB3hV415asQAjSLFuBkdldQErOSFCiqVFXXzRwbUh-a5Ali4qDc8jexmqxmDZjHVF97VQhztNR-yEdYRlMiHyiHxUBrWl4JMtn_XuOJ_rCYofNrjYibJPoh9aWa8iSUCec_v&s=LqHcKhZcQZxhSKtQ9QFgMvL0mFoYljqbALFuvohUvU3SCSjqDps4XHfI1KBuOlTWzKKPJ8pfS59Y5qWay5MG6sHIlhN75Oynu-26u8uKl3rytWTXpFi_mvkbQcdprl007EU-TMR5kVIX-KpNH-ftO-lkbCp1uW49JIKLHsAjpeDXhJeo76hgoOClQhQ75PTktAAisuMW8EapzcxPAn0ZfVG6oWYymMFgsjWWPKQs7uTKt1UJnNCNMQnATQh0N48CJrCrh6FEZfOxT2-qXEBaN2ZL2AILsdQHGZC1tKVMBLGmJjb8LvxUOywypra5lAFZLPDapwqs7u85o7nMK4tbcg&h=spikOQ3YS6_L5kdzsSlG--p42SfNRj-lhJD3EQml78E
+      cache-control:
+      - no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/5583512e-cab8-4552-9e2c-6041254f0a9e
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 7D2E97B0AE6B48C1820EBEC320472F90 Ref B: TYO201100114049 Ref C: 2024-04-30T09:04:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --location --abac-permissions-enabled --yes
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-9361e440-06d0-11ef-b583-00155d943759?api-version=2024-01-01-preview&t=638500646648149641&c=MIIHHzCCBgegAwIBAgITHgRY6-o1G8oneievMgAABFjr6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNDE0MTcyMjMwWhcNMjUwNDA5MTcyMjMwWjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDHXRcT1wfS3-OzMCS-cOJdOIlGA74lpS7FKkN1EKOFKIVgnPy2Yh_Yz3cnC-iw7igYXm1vkryZxocbl5TpyeEw4YSDzNLtSD_rzMXjonrnzwCm7DKp9-FLTtYouZvePUNlordxM4V3eqy6GaDKS-JLyeAVWCxhHztzl0qAq574C47RA-A96GT0C_Nu_a_uC5AtY4dWoFeXtOkqtjfZGJ22e0iao0vB9dxmWHlQ7y69FbxWB_8oADboZWXYZ1xS4xjTVTkyzZIBlGRn1afttuJ0IQGtcf3tVEkfJQtR17tenoOOJRRFPn13It-YLWxMeoHFlVUxaB1BMy92tPrQs-IRAgMBAAGjggQXMIIEEzAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUdOvzY0A5u36Xs59ceM8mz4y5kM8wDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDBBBgNVHSAEOjA4MAwGCisGAQQBgjd7AQEwDAYKKwYBBAGCN3sCATAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBoExP5J0M5FxBDqeHo6sNVl7x4zrUtHN4F9sHk57urWwaheOFqB5ZMfLO1jhRxXmsunzTm98zE-JvCD1tjLacbOh9jvhe8Vui3GfxDFT5j8Kdz40OtwwyCP-tV6JJ3cLWmpK1PLDAH4Htr9LyRHA3eiTsObxO8AZC8Vj3VjrI7tCtgZ0arJmNFv2GKIyX8BOblTwv04SSS9xtg1yv4tB3hV415asQAjSLFuBkdldQErOSFCiqVFXXzRwbUh-a5Ali4qDc8jexmqxmDZjHVF97VQhztNR-yEdYRlMiHyiHxUBrWl4JMtn_XuOJ_rCYofNrjYibJPoh9aWa8iSUCec_v&s=qr8h-LVf-1AxTXk04CNqMy5MikNmR_gw8mZRcOpHNpsbUXv4WTSXrUtyUSAvrXa3q_u_kzzFHpI4QZSycNKzlKgFAVX7W3MnB76QFz0qm-Bc0BKX85Vs3bxRO8yDLCevqCnwN-h-v3IRHHNNSszuCdhAFFnpz-ooKj7k_G3C-gQ8lyMjhq-GBAciFavEngioEOhWErFk0P2d_FdM7mPBrz_zCkNXaESUQgp_mJmYvX67tPsj5-E_q37eAzU34lo55dyQZAY77QSsXgQMliKkJ9hWoJYi9Z6FIp9gwqPgXqPhGoFW7vNg5kpTZ_37N3h0sEjaR36b8KHalvr5iEp8xw&h=eqwmMQ9Aw5fYU2uIxuVjpWaODrFMtdWk_C8VRCGNvGU
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      api-supported-versions:
+      - 2024-01-01-preview
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-9361e440-06d0-11ef-b583-00155d943759?api-version=2024-01-01-preview&t=638500646760662338&c=MIIHHzCCBgegAwIBAgITHgRY6-o1G8oneievMgAABFjr6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNDE0MTcyMjMwWhcNMjUwNDA5MTcyMjMwWjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDHXRcT1wfS3-OzMCS-cOJdOIlGA74lpS7FKkN1EKOFKIVgnPy2Yh_Yz3cnC-iw7igYXm1vkryZxocbl5TpyeEw4YSDzNLtSD_rzMXjonrnzwCm7DKp9-FLTtYouZvePUNlordxM4V3eqy6GaDKS-JLyeAVWCxhHztzl0qAq574C47RA-A96GT0C_Nu_a_uC5AtY4dWoFeXtOkqtjfZGJ22e0iao0vB9dxmWHlQ7y69FbxWB_8oADboZWXYZ1xS4xjTVTkyzZIBlGRn1afttuJ0IQGtcf3tVEkfJQtR17tenoOOJRRFPn13It-YLWxMeoHFlVUxaB1BMy92tPrQs-IRAgMBAAGjggQXMIIEEzAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUdOvzY0A5u36Xs59ceM8mz4y5kM8wDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDBBBgNVHSAEOjA4MAwGCisGAQQBgjd7AQEwDAYKKwYBBAGCN3sCATAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBoExP5J0M5FxBDqeHo6sNVl7x4zrUtHN4F9sHk57urWwaheOFqB5ZMfLO1jhRxXmsunzTm98zE-JvCD1tjLacbOh9jvhe8Vui3GfxDFT5j8Kdz40OtwwyCP-tV6JJ3cLWmpK1PLDAH4Htr9LyRHA3eiTsObxO8AZC8Vj3VjrI7tCtgZ0arJmNFv2GKIyX8BOblTwv04SSS9xtg1yv4tB3hV415asQAjSLFuBkdldQErOSFCiqVFXXzRwbUh-a5Ali4qDc8jexmqxmDZjHVF97VQhztNR-yEdYRlMiHyiHxUBrWl4JMtn_XuOJ_rCYofNrjYibJPoh9aWa8iSUCec_v&s=XOxWw2CQye2RuxWbUzM2vgjq1pTBQYL0IqBlVnT_IhyQAXTERARKwOE43R9GszhqrURaIT3U4MUPr_YNiGlU7l3jR7C47Tk2WwpDgaUJdLp4tQuiUR8yVM1450SROjHE9ME1-juExWsbJyaOVRelaw6bgGSg_2HHfseQEBWTEXkHbf8KQSDb1Ku7IZ0L6R_EVh8UwMmI3_SSWFkKi1MQlCs7Tt-rKuoOm14FugqkiGDlGDvuoTGwGRNn3K_Wt24sOjx2CUk_uvEi-5hHgb6JV0eSPaw0QnzvM7_oIO8fHGH8dEyBVPfuqNgqvybDuwZXtQy0s9Jjs8ubciO-03fj_A&h=K-ehp3hJLMIo_yKZrQUM1ilFVGMfJ21K0XdB72YGt68
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/83835cd7-ebfe-4dbd-8334-5839740dc267
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3744'
+      x-msedge-ref:
+      - 'Ref A: 6D24BED0FE014233AA07BAFEA33E8DF2 Ref B: TYO201100114049 Ref C: 2024-04-30T09:04:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --location --abac-permissions-enabled --yes
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:04:00.6254408+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:04:00.6254408+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:04:00.6254408Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313563+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313981+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Enabled"}}'
+    headers:
+      api-supported-versions:
+      - 2024-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1455'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3743'
+      x-msedge-ref:
+      - 'Ref A: E0A826B6DF184562982225DB713934C1 Ref B: TYO201100114049 Ref C: 2024-04-30T09:04:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:04:00.6254408+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:04:00.6254408+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:04:00.6254408Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313563+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313981+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Enabled"}}'
+    headers:
+      api-supported-versions:
+      - 2024-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1455'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3743'
+      x-msedge-ref:
+      - 'Ref A: D27E3A65CA1F43379A40858A01C2240F Ref B: TYO201100113019 Ref C: 2024-04-30T09:04:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --abac-permissions-enabled
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Features/providers/Microsoft.ContainerRegistry/features/AllowAttributeBasedAccessControl?api-version=2021-07-01
+  response:
+    body:
+      string: '{"properties":{"state":"Registered"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Features/providers/Microsoft.ContainerRegistry/features/AllowAttributeBasedAccessControl","type":"Microsoft.Features/providers/features","name":"Microsoft.ContainerRegistry/AllowAttributeBasedAccessControl"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '322'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/8fc32403-37d3-4901-b76b-8e8d90453488
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3746'
+      x-msedge-ref:
+      - 'Ref A: 7B82F90F81C84AB9A0ED20831335F13A Ref B: TYO201100114051 Ref C: 2024-04-30T09:04:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --abac-permissions-enabled
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2023-11-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:04:00.6254408+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:04:00.6254408+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:04:00.6254408Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313563+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313981+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled"}}'
+    headers:
+      api-supported-versions:
+      - 2023-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1424'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3740'
+      x-msedge-ref:
+      - 'Ref A: 2DF3CE343ABE45F68B15975FEAA3B8B9 Ref B: TYO201100113039 Ref C: 2024-04-30T09:04:40Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"abacRepoPermission": "Disabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '50'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --abac-permissions-enabled
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: PATCH
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:04:00.6254408+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:04:42.6144644+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:04:00.6254408Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313563+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313981+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Disabled"}}'
+    headers:
+      api-supported-versions:
+      - 2024-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1456'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/21afaa59-170f-40ca-b161-477f2ac33dea
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 7C93AF3A3871461D807174E7B8FDFB7A Ref B: TYO201151002054 Ref C: 2024-04-30T09:04:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:04:00.6254408+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:04:42.6144644+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:04:00.6254408Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313563+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313981+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Disabled"}}'
+    headers:
+      api-supported-versions:
+      - 2024-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1456'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3738'
+      x-msedge-ref:
+      - 'Ref A: 8351BF3F58964DBF9E0BD3318DE680D9 Ref B: TYO201151002011 Ref C: 2024-04-30T09:04:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --abac-permissions-enabled --yes
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Features/providers/Microsoft.ContainerRegistry/features/AllowAttributeBasedAccessControl?api-version=2021-07-01
+  response:
+    body:
+      string: '{"properties":{"state":"Registered"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Features/providers/Microsoft.ContainerRegistry/features/AllowAttributeBasedAccessControl","type":"Microsoft.Features/providers/features","name":"Microsoft.ContainerRegistry/AllowAttributeBasedAccessControl"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '322'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/eaf37518-8317-411c-98f5-552e4163d412
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3743'
+      x-msedge-ref:
+      - 'Ref A: 864DD093D9AA4F5A8B02275BEB26DA78 Ref B: TYO201100116045 Ref C: 2024-04-30T09:04:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --abac-permissions-enabled --yes
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2023-11-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:04:00.6254408+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:04:42.6144644+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:04:00.6254408Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313563+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313981+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled"}}'
+    headers:
+      api-supported-versions:
+      - 2023-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1424'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3736'
+      x-msedge-ref:
+      - 'Ref A: DF5E0F4EAC41489096149799DBCD87F3 Ref B: TYO201100116025 Ref C: 2024-04-30T09:04:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"abacRepoPermission": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '49'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --abac-permissions-enabled --yes
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: PATCH
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:04:00.6254408+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:04:48.6348897+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:04:00.6254408Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313563+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313981+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Enabled"}}'
+    headers:
+      api-supported-versions:
+      - 2024-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1455'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/01bbc495-09b6-410e-aa22-7c81045932d3
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2998'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 6693F8C4D4F943078F28FF5F6583D999 Ref B: TYO201100114047 Ref C: 2024-04-30T09:04:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:04:00.6254408+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:04:48.6348897+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:04:00.6254408Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313563+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:04:24.1313981+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Enabled"}}'
+    headers:
+      api-supported-versions:
+      - 2024-01-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1455'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 30 Apr 2024 09:04:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3742'
+      x-msedge-ref:
+      - 'Ref A: F777FF5FDE2C4185BB6ED85824885864 Ref B: TYO201151001011 Ref C: 2024-04-30T09:04:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2023-11-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2023-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 30 Apr 2024 09:04:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/4bc036cf-17f6-47cb-856b-26f1caa7c06a
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 7329FB2180ED4603A38AE6AE6949E32F Ref B: TYO201100113029 Ref C: 2024-04-30T09:04:51Z'
+    status:
+      code: 200
+      message: OK
+version: 1

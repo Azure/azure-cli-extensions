@@ -6,7 +6,6 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
@@ -15,26 +14,60 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class AcrabacScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_acrabac')
-    def test_acrabac(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_acrabac_')
+    def test_acr_create_abac(self, resource_group):
 
         self.kwargs.update({
-            'name': 'test1'
+            'name': self.create_random_name('clitestabac', length=16),
         })
 
-        self.cmd('acrabac create -g {rg} -n {name} --tags foo=doo', checks=[
-            self.check('tags.foo', 'doo'),
-            self.check('name', '{name}')
+        self.cmd('acr create -g {rg} -n {name} --sku Basic --location australiaeast --abac-permissions-enabled true --yes', checks=[
+            self.check('abacRepoPermission', 'Enabled')
         ])
-        self.cmd('acrabac update -g {rg} -n {name} --tags foo=boo', checks=[
-            self.check('tags.foo', 'boo')
+
+        self.cmd('acr show -g {rg} -n {name}', checks=[
+            self.check('abacRepoPermission', 'Enabled')
         ])
-        count = len(self.cmd('acrabac list').get_output_in_json())
-        self.cmd('acrabac show - {rg} -n {name}', checks=[
-            self.check('name', '{name}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('tags.foo', 'boo')
+
+        self.cmd('acr update -g {rg} -n {name} --abac-permissions-enabled false', checks=[
+            self.check('abacRepoPermission', 'Disabled')
         ])
-        self.cmd('acrabac delete -g {rg} -n {name}')
-        final_count = len(self.cmd('acrabac list').get_output_in_json())
-        self.assertTrue(final_count, count - 1)
+
+        self.cmd('acr show -g {rg} -n {name}', checks=[
+            self.check('abacRepoPermission', 'Disabled')
+        ])
+
+        self.cmd('acr update -g {rg} -n {name} --abac-permissions-enabled true --yes', checks=[
+            self.check('abacRepoPermission', 'Enabled')
+        ])
+
+        self.cmd('acr show -g {rg} -n {name}', checks=[
+            self.check('abacRepoPermission', 'Enabled')
+        ])
+
+        self.cmd('acr delete -g {rg} -n {name} --yes')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_acrabac_')
+    def test_acr_create_normal(self, resource_group):
+
+        self.kwargs.update({
+            'name': self.create_random_name('clitestabac', length=16),
+        })
+
+        self.cmd('acr create -g {rg} -n {name} --sku Basic --location australiaeast', checks=[
+            self.check('abacRepoPermission', 'Disabled')
+        ])
+
+        self.cmd('acr show -g {rg} -n {name}', checks=[
+            self.check('abacRepoPermission', 'Disabled')
+        ])
+
+        self.cmd('acr update -g {rg} -n {name} --abac-permissions-enabled true --yes', checks=[
+            self.check('abacRepoPermission', 'Enabled')
+        ])
+
+        self.cmd('acr show -g {rg} -n {name}', checks=[
+            self.check('abacRepoPermission', 'Enabled')
+        ])
+
+        self.cmd('acr delete -g {rg} -n {name} --yes')
