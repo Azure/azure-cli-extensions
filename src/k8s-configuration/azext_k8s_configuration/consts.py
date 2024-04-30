@@ -8,7 +8,7 @@
 # API VERSIONS -----------------------------------------
 
 SOURCE_CONTROL_API_VERSION = "2022-03-01"
-FLUXCONFIG_API_VERSION = "2022-07-01"
+FLUXCONFIG_API_VERSION = "2024-04-01-preview"
 EXTENSION_API_VERSION = "2022-07-01"
 
 # ERROR/HELP TEXT DEFINITIONS -----------------------------------------
