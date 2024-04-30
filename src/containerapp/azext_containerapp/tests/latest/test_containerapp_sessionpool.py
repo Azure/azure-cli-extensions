@@ -29,7 +29,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         self.assertTrue(len(sessionpool_list) == 0)
 
         # Create JupyterPython SessionPool
-        sessionpool_name_python = "spjupyterpython"
+        sessionpool_name_python = self.create_random_name(prefix='spjupyterpython', length=24)
         self.cmd('containerapp sessionpool create -g {} -n {} --cooldown-period {}'.format(
             resource_group, sessionpool_name_python, 300), checks=[
             JMESPathCheck('name', sessionpool_name_python),
@@ -39,7 +39,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         ])
 
         # Create JupyterPython SessionPool
-        sessionpool_name_custom = "spcustomcontainer"
+        sessionpool_name_custom = self.create_random_name(prefix='spcustomcontainer', length=24)
         ready_instances = 2
         image = "mcr.microsoft.com/k8se/quickstart:latest"
         secret_name = "testsecret"
@@ -94,8 +94,8 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck('properties.containerType', "CustomContainer")
             ])
 
-        self.cmd('containerapp sessionpool delete -g {} -n {}'.format(resource_group, sessionpool_name_python))
-        self.cmd('containerapp sessionpool delete -g {} -n {}'.format(resource_group, sessionpool_name_custom))
+        self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_python))
+        self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
 
         # List Session Pools
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
