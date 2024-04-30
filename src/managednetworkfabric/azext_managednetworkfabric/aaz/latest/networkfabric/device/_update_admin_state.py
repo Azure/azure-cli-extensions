@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric tap resync",
+    "networkfabric device update-admin-state",
 )
-class Resync(AAZCommand):
-    """Implements the operation to the underlying resources.
+class UpdateAdminState(AAZCommand):
+    """Updates the Administrative state of the Network Device.
 
-    :example: Resync Operation
-        az networkfabric tap resync --resource-group "example-rg" --resource-name "example-networktap"
+    :example: Update admin state
+        az networkfabric device update-admin-state --resource-name "example-device-name" --resource-group "example-RG" --state "UnderMaintenance"
     """
 
     _aaz_info = {
         "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networktaps/{}/resync", "2024-02-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/updateadministrativestate", "2024-02-15-preview"],
         ]
     }
 
@@ -47,18 +47,36 @@ class Resync(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Tap.",
+            help="Name of the Network Device.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.resource_ids = AAZListArg(
+            options=["--resource-ids"],
+            arg_group="Body",
+            help="Network Fabrics or Network Rack resource Id.",
+        )
+        _args_schema.state = AAZStrArg(
+            options=["--state"],
+            arg_group="Body",
+            help="Administrative state.",
+            enum={"Enable": "Enable", "GracefulQuarantine": "GracefulQuarantine", "Quarantine": "Quarantine", "RMA": "RMA", "Resync": "Resync", "UnderMaintenance": "UnderMaintenance"},
+        )
+
+        resource_ids = cls._args_schema.resource_ids
+        resource_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkTapsResync(ctx=self.ctx)()
+        yield self.NetworkDevicesUpdateAdministrativeState(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +91,7 @@ class Resync(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkTapsResync(AAZHttpOperation):
+    class NetworkDevicesUpdateAdministrativeState(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +121,7 @@ class Resync(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkTaps/{networkTapName}/resync",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedNetworkFabric/networkDevices/{networkDeviceName}/updateAdministrativeState",
                 **self.url_parameters
             )
 
@@ -119,7 +137,7 @@ class Resync(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkTapName", self.ctx.args.resource_name,
+                    "networkDeviceName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -147,10 +165,29 @@ class Resync(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("resourceIds", AAZListType, ".resource_ids")
+            _builder.set_prop("state", AAZStrType, ".state")
+
+            resource_ids = _builder.get(".resourceIds")
+            if resource_ids is not None:
+                resource_ids.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -168,13 +205,13 @@ class Resync(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _ResyncHelper._build_schema_common_post_action_response_for_state_update_read(cls._schema_on_200)
+            _UpdateAdminStateHelper._build_schema_common_post_action_response_for_state_update_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
 
-class _ResyncHelper:
-    """Helper class for Resync"""
+class _UpdateAdminStateHelper:
+    """Helper class for UpdateAdminState"""
 
     _schema_common_post_action_response_for_state_update_read = None
 
@@ -249,4 +286,4 @@ class _ResyncHelper:
         _schema.target = cls._schema_error_detail_read.target
 
 
-__all__ = ["Resync"]
+__all__ = ["UpdateAdminState"]
