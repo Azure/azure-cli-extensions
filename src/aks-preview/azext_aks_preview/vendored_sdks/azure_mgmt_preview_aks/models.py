@@ -4,4 +4,4 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
-from .v2024_01_02_preview.models import *
+from .v2024_03_02_preview.models import *

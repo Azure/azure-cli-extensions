@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/configurations/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -51,6 +51,9 @@ class Wait(AAZWaitCommand):
             help="The name of targeted Nginx deployment",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -58,7 +61,17 @@ class Wait(AAZWaitCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.ConfigurationsGet(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
@@ -88,17 +101,7 @@ class Wait(AAZWaitCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
-        
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -117,6 +120,16 @@ class Wait(AAZWaitCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -161,7 +174,6 @@ class Wait(AAZWaitCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -174,6 +186,7 @@ class Wait(AAZWaitCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.root_file = AAZStrType(
                 serialized_name="rootFile",
@@ -181,67 +194,66 @@ class Wait(AAZWaitCommand):
 
             files = cls._schema_on_200.properties.files
             files.Element = AAZObjectType()
-            _build_schema_nginx_configuration_file_read(files.Element)
+            _WaitHelper._build_schema_nginx_configuration_file_read(files.Element)
 
             package = cls._schema_on_200.properties.package
             package.data = AAZStrType()
+            package.protected_files = AAZListType(
+                serialized_name="protectedFiles",
+            )
+
+            protected_files = cls._schema_on_200.properties.package.protected_files
+            protected_files.Element = AAZStrType()
 
             protected_files = cls._schema_on_200.properties.protected_files
             protected_files.Element = AAZObjectType()
-            _build_schema_nginx_configuration_file_read(protected_files.Element)
+            _WaitHelper._build_schema_nginx_configuration_file_read(protected_files.Element)
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-_schema_nginx_configuration_file_read = None
+class _WaitHelper:
+    """Helper class for Wait"""
 
+    _schema_nginx_configuration_file_read = None
 
-def _build_schema_nginx_configuration_file_read(_schema):
-    global _schema_nginx_configuration_file_read
-    if _schema_nginx_configuration_file_read is not None:
-        _schema.content = _schema_nginx_configuration_file_read.content
-        _schema.virtual_path = _schema_nginx_configuration_file_read.virtual_path
-        return
+    @classmethod
+    def _build_schema_nginx_configuration_file_read(cls, _schema):
+        if cls._schema_nginx_configuration_file_read is not None:
+            _schema.content = cls._schema_nginx_configuration_file_read.content
+            _schema.virtual_path = cls._schema_nginx_configuration_file_read.virtual_path
+            return
 
-    _schema_nginx_configuration_file_read = AAZObjectType()
+        cls._schema_nginx_configuration_file_read = _schema_nginx_configuration_file_read = AAZObjectType()
 
-    nginx_configuration_file_read = _schema_nginx_configuration_file_read
-    nginx_configuration_file_read.content = AAZStrType()
-    nginx_configuration_file_read.virtual_path = AAZStrType(
-        serialized_name="virtualPath",
-    )
+        nginx_configuration_file_read = _schema_nginx_configuration_file_read
+        nginx_configuration_file_read.content = AAZStrType()
+        nginx_configuration_file_read.virtual_path = AAZStrType(
+            serialized_name="virtualPath",
+        )
 
-    _schema.content = _schema_nginx_configuration_file_read.content
-    _schema.virtual_path = _schema_nginx_configuration_file_read.virtual_path
+        _schema.content = cls._schema_nginx_configuration_file_read.content
+        _schema.virtual_path = cls._schema_nginx_configuration_file_read.virtual_path
 
 
 __all__ = ["Wait"]

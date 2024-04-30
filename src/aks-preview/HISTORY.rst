@@ -11,7 +11,89 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+3.0.0b10
+++++++++
+* Support to enable azure monitor profile when the sku name is automatic.
+* Vendor new SDK and bump API version to 2024-03-02-preview.
+* Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
+* Add option `--enable-force-upgrade`, `--disable-force-upgrade` and `--upgrade-override-until` to `az aks upgrade`.
+
+3.0.0b9
++++++++
+* Support to enable azure container insight monitoring when the sku name is automatic.
+* Add AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview to test_aks_automatic_sku.
+
+3.0.0b8
++++++++
+* Ignore invalid ip error for `--api-server-authorized-ip-ranges`.
+
+3.0.0b7
++++++++
+* Support `--yes` for `az aks mesh upgrade rollback` and `az aks mesh upgrade complete` commands.
+* Correct the property disable_outbound_nat in windows_profile and add UT.
+* Minimise the roles needed to introduce for Elastic SAN for enabling Azure Container Storage with elasticSan storagepool type.
+
+3.0.0b6
++++++++
+* Add `--enable-azure-monitor-app-monitoring` to the `az aks create` command.
+* Add `--enable-azure-monitor-app-monitoring` and `--disable-azure-monitor-app-monitoring` to the `az aks update` command.
+
+3.0.0b5
++++++++
+* Add `--bootstrap-artifact-source` and `--bootstrap-container-registry-resource-id` to `az aks update`.
+
+3.0.0b4
++++++++
+* Fix the issue that option `--uptime-sla` is ignored in command `az aks create`.
+* Fix the issue that option `--uptime-sla` and `--no-uptime-sla` are ignored in command `az aks update`.
+
+3.0.0b3
++++++++
+* Add `--nodepool-initialization-taints` to `az aks create` and `az aks update`.
+* Add `--bootstrap-artifact-source` and `--bootstrap-container-registry-resource-id` to `az aks create`.
+
+3.0.0b2
++++++++
+* Add `--sku` to the `az aks create` command.
+* Add `--sku` to the `az aks update` command.
+* Support cluster service health probe mode by `--cluster-service-load-balancer-health-probe-mode {Shared, Servicenodeport}`
+
+
+3.0.0b1
++++++++
+* [BREAKING CHANGE] Remove support for nodeSelector for egress gateway for `az aks mesh` command.
+
+2.0.0b8
++++++++
+* Add `az aks check-network outbound` command to check outbound network from nodes.
+* Update the minimum required cli core version to `2.56.0` (actually since `2.0.0b7`).
+
+2.0.0b7
++++++++
+* Support reset default value for loadbalancer profile and natgateway profile
+* Vendor new SDK and bump API version to 2024-02-02-preview.
+
+2.0.0b6
++++++++
+* Fix the resource allocated after disabling ephemeralDisk storagepool type for option `all` in azure container storage.
+
+2.0.0b5
++++++++
+* Add support to enable and disable a single type of storagepool using `--enable-azure-container-storage` and `--disable-azure-container-storage` respectively.
+* Add support to define the resource allocation to Azure Container Storage applications based on the type of node pools used and storagepools enabled.
+
+2.0.0b4
++++++++
+* Add `--enable-vtpm` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-vtpm` to the `az aks nodepool update` command.
+* Add `--enable-secure-boot` to `az aks create`, `az aks nodepool add` and `az aks nodepool update`.
+* Add `--disable-secure-boot` to the `az aks nodepool update` command.
+
+2.0.0b3
++++++++
 * Add parameter to set revision `--revision` for the Azure Service Mesh addon while creating AKS cluster.
+* Fix for `az aks mesh get-upgrades` command panic response when ASM addon is not enabled.
 
 2.0.0b2
 +++++++

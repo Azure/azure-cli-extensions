@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "nginx deployment certificate show",
 )
 class Show(AAZCommand):
-    """Get the properties of a specific Nginx certificate.
+    """Get the properties of a specific NGINX certificate.
 
     :example: Certificate Get
         az nginx deployment certificate show --certificate-name myCertificate --deployment-name myDeployment --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-08-01",
+        "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/certificates/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/certificates/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -55,6 +55,9 @@ class Show(AAZCommand):
             help="The name of targeted Nginx deployment",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -62,7 +65,17 @@ class Show(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.CertificatesGet(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -92,17 +105,7 @@ class Show(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
-        
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -121,6 +124,16 @@ class Show(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -165,55 +178,69 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
+            properties.certificate_error = AAZObjectType(
+                serialized_name="certificateError",
+            )
             properties.certificate_virtual_path = AAZStrType(
                 serialized_name="certificateVirtualPath",
             )
+            properties.key_vault_secret_created = AAZStrType(
+                serialized_name="keyVaultSecretCreated",
+                flags={"read_only": True},
+            )
             properties.key_vault_secret_id = AAZStrType(
                 serialized_name="keyVaultSecretId",
+            )
+            properties.key_vault_secret_version = AAZStrType(
+                serialized_name="keyVaultSecretVersion",
+                flags={"read_only": True},
             )
             properties.key_virtual_path = AAZStrType(
                 serialized_name="keyVirtualPath",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
+            properties.sha1_thumbprint = AAZStrType(
+                serialized_name="sha1Thumbprint",
+                flags={"read_only": True},
+            )
+
+            certificate_error = cls._schema_on_200.properties.certificate_error
+            certificate_error.code = AAZStrType()
+            certificate_error.message = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
+
+
+class _ShowHelper:
+    """Helper class for Show"""
 
 
 __all__ = ["Show"]

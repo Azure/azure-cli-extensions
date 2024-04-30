@@ -9,6 +9,7 @@
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+
 class BackupVaultScenarioTest(ScenarioTest):
 
     def setUp(test):
@@ -22,18 +23,19 @@ class BackupVaultScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
     def test_dataprotection_backup_vault_create_and_delete(test):
         test.cmd('az dataprotection backup-vault create '
-                '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
-                '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" '
-                '--immutability-state "Locked"',
-                checks=[
-                    test.check('name', "{vaultName}"),
-                    test.check('identity.type', "SystemAssigned"),
-                    test.check('properties.securitySettings.softDeleteSettings.state', "On"),
-                    test.check('properties.securitySettings.softDeleteSettings.retentionDurationInDays', 14.0),
-                    test.check('properties.securitySettings.immutabilitySettings.state', "Locked"),
-                    test.check('properties.storageSettings[0].datastoreType', "VaultStore"),
-                    test.check('properties.storageSettings[0].type', "LocallyRedundant")
-                ])
+                 '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
+                 '--storage-settings datastore-type="VaultStore" type="GeoRedundant" --type "SystemAssigned" '
+                 '--immutability-state "Locked" --cross-region-restore-state "Enabled"',
+                 checks=[
+                     test.check('name', "{vaultName}"),
+                     test.check('identity.type', "SystemAssigned"),
+                     test.check('properties.securitySettings.softDeleteSettings.state', "On"),
+                     test.check('properties.securitySettings.softDeleteSettings.retentionDurationInDays', 14.0),
+                     test.check('properties.securitySettings.immutabilitySettings.state', "Locked"),
+                     test.check('properties.storageSettings[0].datastoreType', "VaultStore"),
+                     test.check('properties.storageSettings[0].type', "GeoRedundant"),
+                     test.check('properties.featureSettings.crossRegionRestoreSettings.state', "Enabled")
+                 ])
         test.cmd('az dataprotection backup-vault list -g "{rg}"', checks=[
             test.check("length([?name == '{vaultName}'])", 1),
             test.exists("[?name == '{vaultName}']")   # Better way to check existance ?.
@@ -47,9 +49,12 @@ class BackupVaultScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
     def test_dataprotection_backup_vault_update(test):
         test.cmd('az dataprotection backup-vault create '
-                '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
-                '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" '
-                '--soft-delete-state "Off" --immutability-state "Unlocked"')
+                 '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
+                 '--storage-settings datastore-type="VaultStore" type="GeoRedundant" --type "SystemAssigned" '
+                 '--soft-delete-state "Off" --immutability-state "Unlocked"',
+                 checks=[
+                     test.check('properties.featureSettings.crossRegionRestoreSettings.state', "None")
+                 ])
 
         # soft-delete updates
         test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --soft-delete-state "On" --retention-duration-in-days "14"', checks=[
@@ -80,3 +85,9 @@ class BackupVaultScenarioTest(ScenarioTest):
             test.check('properties.securitySettings.immutabilitySettings.state', "Locked")
         ])
         test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --immutability-state "Unlocked"', expect_failure=True)
+
+        # Cross-region restore updates
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --crr-state "Enabled"', checks=[
+            test.check('properties.featureSettings.crossRegionRestoreSettings.state', "Enabled")
+        ])
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --cross-region-restore-state "Disabled"', expect_failure=True)

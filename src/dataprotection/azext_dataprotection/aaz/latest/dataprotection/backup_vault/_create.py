@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-vault create",
-    is_experimental=True,
 )
 class Create(AAZCommand):
     """Create a BackupVault resource belonging to a resource group.
@@ -26,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2024-04-01"],
         ]
     }
 
@@ -56,6 +55,16 @@ class Create(AAZCommand):
             options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
+        )
+
+        # define Arg Group "CrossRegionRestoreSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.cross_region_restore_state = AAZStrArg(
+            options=["--crr-state", "--cross-region-restore-state"],
+            arg_group="CrossRegionRestoreSettings",
+            help="Set the CrossRegionRestore state. Once enabled, it cannot be set to disabled.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         # define Arg Group "FeatureSettings"
@@ -247,7 +256,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -291,7 +300,12 @@ class Create(AAZCommand):
 
             feature_settings = _builder.get(".properties.featureSettings")
             if feature_settings is not None:
+                feature_settings.set_prop("crossRegionRestoreSettings", AAZObjectType)
                 feature_settings.set_prop("crossSubscriptionRestoreSettings", AAZObjectType)
+
+            cross_region_restore_settings = _builder.get(".properties.featureSettings.crossRegionRestoreSettings")
+            if cross_region_restore_settings is not None:
+                cross_region_restore_settings.set_prop("state", AAZStrType, ".cross_region_restore_state")
 
             cross_subscription_restore_settings = _builder.get(".properties.featureSettings.crossSubscriptionRestoreSettings")
             if cross_subscription_restore_settings is not None:
@@ -405,6 +419,10 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.bcdr_security_level = AAZStrType(
+                serialized_name="bcdrSecurityLevel",
+                flags={"read_only": True},
+            )
             properties.feature_settings = AAZObjectType(
                 serialized_name="featureSettings",
             )
@@ -418,6 +436,12 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.replicated_regions = AAZListType(
+                serialized_name="replicatedRegions",
+            )
+            properties.resource_guard_operation_requests = AAZListType(
+                serialized_name="resourceGuardOperationRequests",
             )
             properties.resource_move_details = AAZObjectType(
                 serialized_name="resourceMoveDetails",
@@ -462,6 +486,12 @@ class Create(AAZCommand):
                 serialized_name="alertsForAllJobFailures",
             )
 
+            replicated_regions = cls._schema_on_200_201.properties.replicated_regions
+            replicated_regions.Element = AAZStrType()
+
+            resource_guard_operation_requests = cls._schema_on_200_201.properties.resource_guard_operation_requests
+            resource_guard_operation_requests.Element = AAZStrType()
+
             resource_move_details = cls._schema_on_200_201.properties.resource_move_details
             resource_move_details.completion_time_utc = AAZStrType(
                 serialized_name="completionTimeUtc",
@@ -480,11 +510,39 @@ class Create(AAZCommand):
             )
 
             security_settings = cls._schema_on_200_201.properties.security_settings
+            security_settings.encryption_settings = AAZObjectType(
+                serialized_name="encryptionSettings",
+            )
             security_settings.immutability_settings = AAZObjectType(
                 serialized_name="immutabilitySettings",
             )
             security_settings.soft_delete_settings = AAZObjectType(
                 serialized_name="softDeleteSettings",
+            )
+
+            encryption_settings = cls._schema_on_200_201.properties.security_settings.encryption_settings
+            encryption_settings.infrastructure_encryption = AAZStrType(
+                serialized_name="infrastructureEncryption",
+            )
+            encryption_settings.kek_identity = AAZObjectType(
+                serialized_name="kekIdentity",
+            )
+            encryption_settings.key_vault_properties = AAZObjectType(
+                serialized_name="keyVaultProperties",
+            )
+            encryption_settings.state = AAZStrType()
+
+            kek_identity = cls._schema_on_200_201.properties.security_settings.encryption_settings.kek_identity
+            kek_identity.identity_id = AAZStrType(
+                serialized_name="identityId",
+            )
+            kek_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+
+            key_vault_properties = cls._schema_on_200_201.properties.security_settings.encryption_settings.key_vault_properties
+            key_vault_properties.key_uri = AAZStrType(
+                serialized_name="keyUri",
             )
 
             immutability_settings = cls._schema_on_200_201.properties.security_settings.immutability_settings

@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete an Nginx deployment certificate
+    """Delete an NGINX deployment certificate
 
     :example: Certificate_Delete
         az nginx deployment certificate delete --certificate-name myCertificate --deployment-name myDeployment --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-08-01",
+        "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/certificates/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/certificates/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -57,6 +57,9 @@ class Delete(AAZCommand):
             help="The name of targeted Nginx deployment",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -64,7 +67,17 @@ class Delete(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         yield self.CertificatesDelete(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     class CertificatesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -115,17 +128,7 @@ class Delete(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -149,11 +152,25 @@ class Delete(AAZCommand):
             }
             return parameters
 
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
         def on_200(self, session):
             pass
 
         def on_204(self, session):
             pass
+
+
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
 __all__ = ["Delete"]

@@ -8,7 +8,7 @@ import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2024_01_01_preview import models
+from ...vendored_sdks.appplatform.v2024_05_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment,
@@ -22,6 +22,7 @@ try:
 except ImportError:
     from unittest import mock
 
+from .common.test_utils import get_test_cmd
 from azure.cli.core.mock import DummyCli
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.commands import AzCliCommand
@@ -30,16 +31,6 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
 
 
 class BasicTest(unittest.TestCase):
@@ -74,7 +65,7 @@ class BasicTest(unittest.TestCase):
 class TestSetActiveDeploy(BasicTest):
     def test_blue_green_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        app_set_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
+        app_set_deployment(get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
         call_args = client.apps.begin_set_active_deployments.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
@@ -83,7 +74,7 @@ class TestSetActiveDeploy(BasicTest):
 
     def test_unset_active_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        app_unset_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app')
+        app_unset_deployment(get_test_cmd(), client, 'rg', 'asc', 'app')
         call_args = client.apps.begin_set_active_deployments.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
@@ -92,7 +83,7 @@ class TestSetActiveDeploy(BasicTest):
 
     def test_blue_green_standard(self):
         client = self._get_basic_mock_client(sku='Standard')
-        app_set_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
+        app_set_deployment(get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
         call_args = client.apps.begin_set_active_deployments.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
@@ -101,7 +92,7 @@ class TestSetActiveDeploy(BasicTest):
 
     def test_unset_active_standard(self):
         client = self._get_basic_mock_client(sku='Standard')
-        app_unset_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app')
+        app_unset_deployment(get_test_cmd(), client, 'rg', 'asc', 'app')
         call_args = client.apps.begin_set_active_deployments.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
@@ -128,7 +119,7 @@ class TestAppDeploy_Patch(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        app_deploy(_get_test_cmd(), client, *args, **kwargs)
+        app_deploy(get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_update.call_args_list
         self.assertEqual(1, len(call_args))
@@ -295,7 +286,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        app_deploy(_get_test_cmd(), client, *args, **kwargs)
+        app_deploy(get_test_cmd(), client, *args, **kwargs)
 
         self.verify_build_args(client, *args)
 
@@ -329,6 +320,39 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         self.assertEqual(self.result_id, resource.properties.source.build_result_id)
         self.assertIsNone(resource.properties.source.version)
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_actuator_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
+                      custom_actuator_port='8888', custom_actuator_path='actuator-path')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_actuator_acs_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
+                      custom_actuator_port='8888', custom_actuator_path='actuator-path', config_file_patterns='my-pattern')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}, 'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_actuator_port_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
+                      custom_actuator_port='8888')
+        resource = self.patch_deployment_resource
+        self.assertEqual('BuildResult', resource.properties.source.type)
+        self.assertEqual(self.result_id, resource.properties.source.build_result_id)
+        self.assertIsNone(resource.properties.source.version)
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': None}},
                          resource.properties.deployment_settings.addon_configs)
 
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
@@ -401,7 +425,7 @@ class TestAppDeploy_Put(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        app_deploy(_get_test_cmd(), client, *args, **kwargs)
+        app_deploy(get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
@@ -468,7 +492,7 @@ class TestAppUpdate(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        app_update(_get_test_cmd(), client, *args, **kwargs)
+        app_update(get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_update.call_args_list
         if len(call_args):
@@ -559,6 +583,26 @@ class TestAppUpdate(BasicTest):
         self._execute('rg', 'asc', 'app', deployment=deployment, client=client, config_file_patterns='updated-pattern')
         resource = self.patch_deployment_resource
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'updated-pattern'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    def test_app_update_in_enterprise_with_actuator(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment = self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.addon_configs = {
+            'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, custom_actuator_port='8888', custom_actuator_path='updated-path')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'updated-path'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    def test_app_update_in_enterprise_with_actuator_path(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment = self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.addon_configs = {
+            'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, custom_actuator_path='updated-path')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': None, 'actuatorPath': 'updated-path'}},
                          resource.properties.deployment_settings.addon_configs)
 
     def test_app_update_clear_jvm_option_in_enterprise(self):
@@ -672,7 +716,7 @@ class TestAppCreate(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        app_create(_get_test_cmd(), client, *args, **kwargs)
+        app_create(get_test_cmd(), client, *args, **kwargs)
         call_args = client.apps.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
@@ -733,14 +777,18 @@ class TestAppCreate(BasicTest):
         client = self._get_basic_mock_client(sku='Enterprise')
         default_service_registry_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/serviceRegistries/default'
         default_application_configuration_service_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/configurationServices/default'
+        default_config_server_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/configServers/default'
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1,
                       bind_service_registry=default_service_registry_id,
                       bind_application_configuration_service=default_application_configuration_service_id,
+                      bind_config_server=default_config_server_id,
                       client=client)
         addon_configs = self.put_app_resource.properties.addon_configs
         self.assertEqual(default_service_registry_id, addon_configs['serviceRegistry']['resourceId'])
         self.assertEqual(default_application_configuration_service_id,
                          addon_configs['applicationConfigurationService']['resourceId'])
+        self.assertEqual(default_config_server_id,
+                    addon_configs['configServer']['resourceId'])
 
     def test_app_with_persistent_storage(self):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True)
@@ -819,7 +867,7 @@ class TestDeploymentCreate(BasicTest):
 
     def _execute(self, *args, **kwargs):
         client = kwargs.pop('client', None) or self._get_basic_mock_client()
-        deployment_create(_get_test_cmd(), client, *args, **kwargs)
+        deployment_create(get_test_cmd(), client, *args, **kwargs)
 
         call_args = client.deployments.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
@@ -905,6 +953,21 @@ class TestDeploymentCreate(BasicTest):
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},
                          resource.properties.deployment_settings.addon_configs)
 
+    def test_create_deployment_with_actuator_in_enterprise(self):
+        deployment = self._get_deployment(sku='Enterprise')
+        client = self._get_basic_mock_client('Enterprise', deployment)
+        self._execute('rg', 'asc', 'app', 'green', client=client,  custom_actuator_port='8888', custom_actuator_path='actuator-path')
+        resource = self.put_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    def test_create_deployment_with_actuator_port_in_enterprise(self):
+        deployment = self._get_deployment(sku='Enterprise')
+        client = self._get_basic_mock_client('Enterprise', deployment)
+        self._execute('rg', 'asc', 'app', 'green', client=client,  custom_actuator_port='8888')
+        resource = self.put_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': None }},
+                         resource.properties.deployment_settings.addon_configs)
 
 class RemoteDebugTest(BasicTest):
     def __init__(self, methodName: str = ...):
@@ -915,7 +978,7 @@ class RemoteDebugTest(BasicTest):
         deployment = self._get_deployment()
         deployment.name = 'my-deployment'
         deployment_enable_remote_debugging(
-            _get_test_cmd(),
+            get_test_cmd(),
             client,
             'rg', 'asc', 'app', 123, deployment)
         args = client.deployments.begin_enable_remote_debugging.call_args_list
@@ -929,7 +992,7 @@ class RemoteDebugTest(BasicTest):
         deployment = self._get_deployment()
         deployment.name = 'my-deployment'
         deployment_enable_remote_debugging(
-            _get_test_cmd(),
+            get_test_cmd(),
             client,
             'rg', 'asc', 'app', deployment=deployment)
         args = client.deployments.begin_enable_remote_debugging.call_args_list
@@ -941,7 +1004,7 @@ class RemoteDebugTest(BasicTest):
         deployment = self._get_deployment()
         deployment.name = 'my-deployment'
         deployment_disable_remote_debugging(
-            _get_test_cmd(),
+            get_test_cmd(),
             client,
             'rg', 'asc', 'app', deployment)
         args = client.deployments.begin_disable_remote_debugging.call_args_list
@@ -953,7 +1016,7 @@ class RemoteDebugTest(BasicTest):
         deployment = self._get_deployment()
         deployment.name = 'my-deployment'
         deployment_get_remote_debugging(
-            _get_test_cmd(),
+            get_test_cmd(),
             client,
             'rg', 'asc', 'app', deployment)
         args = client.deployments.get_remote_debugging_config.call_args_list
@@ -965,7 +1028,7 @@ class CustomDomainTests(BasicTest):
 
     def test_create_domain(self):
         client = self._get_basic_mock_client()
-        domain_update(_get_test_cmd(), client,
+        domain_update(get_test_cmd(), client,
                       'rg', 'asc', 'app', 'my-domain')
         args = client.custom_domains.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))
@@ -987,7 +1050,7 @@ class CustomDomainTests(BasicTest):
 
         client = self._get_basic_mock_client()
         client.certificates.get = _get_cert
-        domain_update(_get_test_cmd(), client,
+        domain_update(get_test_cmd(), client,
                       'rg', 'asc', 'app', 'my-domain', 'my-cert')
         args = client.custom_domains.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))
@@ -1001,7 +1064,7 @@ class CustomDomainTests(BasicTest):
 
     def test_create_domain_with_ingress(self):
         client = self._get_basic_mock_client()
-        domain_update(_get_test_cmd(), client,
+        domain_update(get_test_cmd(), client,
                       'rg', 'asc', 'app', 'my-domain', enable_ingress_to_app_tls=True)
         args = client.custom_domains.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))

@@ -21,9 +21,13 @@ class URIIdentityReplacer(RecordingProcessor):
     """Replace the identity in request uri"""
 
     def process_request(self, request):
-        resource = (urlparse(request.uri).netloc).split('.')[0]
+        communication_endpoint = (urlparse(request.uri).netloc).split('.')
+        resource = communication_endpoint[0]+'.'+communication_endpoint[1]
         request.uri = re.sub('/phoneNumbers/[%2B\\d]+', '/phoneNumbers/sanitized', request.uri)
         request.uri = re.sub('/identities/([^/?]+)', '/identities/sanitized', request.uri)
+        request.uri = re.sub('/resourceGroups/([^/?]+)', '/resourceGroups/sanitized', request.uri)
+        request.uri = re.sub('/communicationServices/([^/?]+)', '/communicationServices/sanitized', request.uri)
+        request.uri = re.sub('/userAssignedIdentities/([^/?]+)', '/userAssignedIdentities/sanitized', request.uri)
         request.uri = re.sub('/chat/threads/([^/?]+)', '/chat/threads/sanitized', request.uri)
         request.uri = re.sub('/chat/threads/([^/?]+)/messages/([^/?]+)', '/chat/threads/sanitized/messages/sanitized', request.uri)
         request.uri = re.sub('/rooms/([0-9]+)/', '/rooms/sanitized/', request.uri)

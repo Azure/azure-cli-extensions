@@ -635,7 +635,7 @@ class CustomJsonParsing(unittest.TestCase):
 
             self.assertEqual(
                 image.id,
-                "sha256:e525c930fe751104ff24c356a7bcfad66ce4b92797780eb38dc2ff95d7a66fdc",
+                "sha256:d49a5025be10344cce77d178103a225cb5d7316861e5d8f106e7ff278ae51b62",
             )
 
     def test_infrastructure_svn(self):

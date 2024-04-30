@@ -383,7 +383,8 @@ ContainerAppCertificateEnvelope = {
     "location": None,
     "properties": {
         "password": None,
-        "value": None
+        "value": None,
+        "certificateKeyVaultProperties": None
     }
 }
 
@@ -578,4 +579,11 @@ JavaComponent = {
     "properties": {
         "componentType": None
     }
+}
+
+CustomDomainConfiguration = {
+    "dnsSuffix": None,
+    "certificateValue": None,
+    "certificatePassword": None,
+    "certificateKeyVaultProperties": None
 }

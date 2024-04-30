@@ -133,3 +133,4 @@ def upload_file(
 
     Upload(cli_ctx=cmd.cli_ctx)(command_args=upload_input)
     print("File '{}' has been succesfully uploaded.".format(full_file_name))
+    

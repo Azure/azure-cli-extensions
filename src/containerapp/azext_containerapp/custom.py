@@ -12,6 +12,7 @@ import subprocess
 from concurrent.futures import ThreadPoolExecutor
 
 from azure.cli.core import telemetry as telemetry_core
+from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -38,7 +39,7 @@ from azure.cli.command_modules.containerapp._utils import (_validate_subscriptio
                                                            generate_randomized_cert_name, load_cert_file,
                                                            generate_randomized_managed_cert_name,
                                                            check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                                                           trigger_workflow, set_managed_identity, _ensure_identity_resource_id,
+                                                           trigger_workflow, _ensure_identity_resource_id,
                                                            AppType)
 
 from knack.log import get_logger
@@ -48,7 +49,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
-    ContainerappEnvCertificateUploadDecorator
+    ContainerappEnvCertificatePreviweUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
@@ -67,7 +68,10 @@ from .daprcomponent_resiliency_decorator import (
 )
 from .containerapp_env_telemetry_decorator import (
     ContainerappEnvTelemetryDataDogPreviewSetDecorator,
-    ContainerappEnvTelemetryAppInsightsPreviewSetDecorator
+    ContainerappEnvTelemetryAppInsightsPreviewSetDecorator,
+    ContainerappEnvTelemetryOtlpPreviewSetDecorator,
+    APP_INSIGHTS_DEST,
+    DATA_DOG_DEST
 )
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
@@ -113,7 +117,6 @@ from ._constants import (CONTAINER_APPS_RP,
 
 
 logger = get_logger(__name__)
-
 
 def list_all_services(cmd, environment_name, resource_group_name):
     services = list_containerapp(cmd, resource_group_name=resource_group_name, managed_env=environment_name)
@@ -702,6 +705,8 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
+                               certificate_identity = None,
+                               certificate_key_vault_url=None,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
                                enable_dedicated_gpu=False,
@@ -736,6 +741,8 @@ def update_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
+                               certificate_identity = None,
+                               certificate_key_vault_url=None,
                                tags=None,
                                workload_profile_type=None,
                                workload_profile_name=None,
@@ -1276,16 +1283,17 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
     return containerapp_env_certificate_list_decorator.list()
 
 
-def upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+def upload_certificate(cmd, name, resource_group_name, certificate_file=None, certificate_name=None, certificate_password=None, location=None, prompt=False, certificate_identity = None, certificate_key_vault_url=None):
     raw_parameters = locals()
 
-    containerapp_env_certificate_upload_decorator = ContainerappEnvCertificateUploadDecorator(
+    containerapp_env_certificate_upload_decorator = ContainerappEnvCertificatePreviweUploadDecorator(
         cmd=cmd,
         client=ManagedEnvironmentPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_env_certificate_upload_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_env_certificate_upload_decorator.validate_arguments()
     containerapp_env_certificate_upload_decorator.construct_payload()
 
     return containerapp_env_certificate_upload_decorator.create_or_update()
@@ -2287,35 +2295,35 @@ def update_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.update()
 
 
-def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
     return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
 
 
-def update_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
     return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
 
 
-def show_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name):
+def show_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
     return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG)
 
 
-def delete_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+def delete_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
 
 
-def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
     return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
 
 
-def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
+def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
     return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
 
 
-def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name):
+def show_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
     return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA)
 
 
-def delete_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+def delete_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)
 
 
@@ -2365,6 +2373,31 @@ def delete_environment_telemetry_data_dog(cmd,
     return r
 
 
+def show_environment_telemetry_data_dog(cmd,
+                                        name,
+                                        resource_group_name):
+    raw_parameters = locals()
+
+    containerapp_env_telemetry_data_dog_decorator = ContainerappEnvTelemetryDataDogPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    
+    containerapp_env_def = None
+    try:
+        containerapp_env_def = containerapp_env_telemetry_data_dog_decorator.show()
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
+
+    r = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "dataDogConfiguration")
+    if r is None:
+        raise ValidationError("The containerapp environment '{}' does not have data dog enabled.".format(name))
+
+    return containerapp_env_def
+
+
 def set_environment_telemetry_app_insights(cmd,
                                            name,
                                            resource_group_name,
@@ -2407,4 +2440,192 @@ def delete_environment_telemetry_app_insights(cmd,
     r = containerapp_env_telemetry_app_insights_decorator.update()
     
     return r
+
+
+def show_environment_telemetry_app_insights(cmd,
+                                            name,
+                                            resource_group_name):
+    raw_parameters = locals()
+
+    containerapp_env_telemetry_app_insights_decorator = ContainerappEnvTelemetryAppInsightsPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    
+    containerapp_env_def = None
+    try:
+        containerapp_env_def = containerapp_env_telemetry_app_insights_decorator.show()
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
+
+    r = safe_get(containerapp_env_def, "properties", "appInsightsConfiguration")
+
+    if r is None:
+        raise ValidationError("The containerapp environment '{}' does not have app insights enabled.".format(name))
+
+    if not containerapp_env_def:
+        raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
+
+    return containerapp_env_def
+
+
+def add_environment_telemetry_otlp(cmd,
+                                   name,
+                                   resource_group_name,
+                                   otlp_name,
+                                   endpoint,
+                                   insecure=False,
+                                   enable_open_telemetry_traces=False,
+                                   enable_open_telemetry_logs=False,
+                                   enable_open_telemetry_metrics=False,
+                                   headers=None,
+                                   no_wait=False):
+    raw_parameters = locals()
+    containerapp_env_telemetry_otlp_decorator = ContainerappEnvTelemetryOtlpPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = {}
+
+    try:
+        r = containerapp_env_telemetry_otlp_decorator.show()
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    existing_otlps = safe_get(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
+    if existing_otlps is not None:
+        otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
+
+        if otlp:
+            raise ValidationError(f"Otlp entry with name --otlp-name {otlp_name} already exist, please retry with different name")
+
+    containerapp_env_telemetry_otlp_decorator.construct_payload()
+    r = containerapp_env_telemetry_otlp_decorator.update()
+    
+    return r
+
+
+def update_environment_telemetry_otlp(cmd,
+                                      name,
+                                      resource_group_name,
+                                      otlp_name,
+                                      endpoint=None,
+                                      insecure=None,
+                                      enable_open_telemetry_traces=None,
+                                      enable_open_telemetry_logs=None,
+                                      enable_open_telemetry_metrics=None,
+                                      headers=None,
+                                      no_wait=False):
+    raw_parameters = locals()
+    containerapp_env_telemetry_otlp_decorator = ContainerappEnvTelemetryOtlpPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = {}
+
+    try:
+        r = containerapp_env_telemetry_otlp_decorator.show()
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
+
+    existing_otlps = safe_get(r, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
+    if existing_otlps is not None:
+        otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
+
+        if not otlp:
+            raise ValidationError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please make sure the {otlp_name} already added")
+
+    containerapp_env_telemetry_otlp_decorator.construct_payload()
+    r = containerapp_env_telemetry_otlp_decorator.update()
+    
+    return r
+
+
+def remove_environment_telemetry_otlp(cmd,
+                                      name,
+                                      resource_group_name,
+                                      otlp_name,
+                                      no_wait=False):
+    raw_parameters = locals()
+    raw_parameters["enable_open_telemetry_traces"] = False
+    raw_parameters["enable_open_telemetry_logs"] = False
+    raw_parameters["enable_open_telemetry_metrics"] = False
+    containerapp_env_telemetry_otlp_decorator = ContainerappEnvTelemetryOtlpPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_telemetry_otlp_decorator.register_provider(CONTAINER_APPS_RP)
+
+    containerapp_env_telemetry_otlp_decorator.construct_remove_payload()
+    r = containerapp_env_telemetry_otlp_decorator.update()
+    
+    return r
+
+
+def show_environment_telemetry_otlp(cmd,
+                                    name,
+                                    resource_group_name,
+                                    otlp_name):
+    raw_parameters = locals()
+
+    containerapp_env_telemetry_otlp_decorator = ContainerappEnvTelemetryOtlpPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    
+    containerapp_env_def = None
+    try:
+        containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
+
+    if not containerapp_env_def:
+        raise ResourceNotFoundError("The containerapp environment '{}' does not exist".format(name))
+
+    existing_otlps = safe_get(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations")
+    if existing_otlps is not None:
+        otlp = [p for p in existing_otlps if p["name"].lower() == otlp_name.lower()]
+
+        if not otlp:
+            raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
+        
+        existing_otlps = otlp
+        safe_set(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
+
+    return containerapp_env_def
+
+
+def list_environment_telemetry_otlp(cmd,
+                                    name,
+                                    resource_group_name):
+    raw_parameters = locals()
+
+    containerapp_env_telemetry_otlp_decorator = ContainerappEnvTelemetryOtlpPreviewSetDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    
+    containerapp_env_def = None
+    try:
+        containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
+
+    return containerapp_env_def
 

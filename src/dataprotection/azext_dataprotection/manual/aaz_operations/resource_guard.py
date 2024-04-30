@@ -5,15 +5,15 @@
 
 # pylint: disable=protected-access
 # pylint: disable=line-too-long
+# pylint: disable=consider-using-f-string
 
 from azure.cli.core.aaz import AAZStrArg, AAZUndefined, has_value
 from azure.cli.core.aaz.utils import assign_aaz_list_arg
 from knack.log import get_logger
-from knack.util import CLIError
 from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Update as _Update
 from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Unlock as _Unlock
 from azext_dataprotection.manual.enums import get_resource_type_values
-from ..helpers import critical_operation_map, operation_request_map
+from ..helpers import critical_operation_map, transform_resource_guard_operation_request
 
 logger = get_logger(__name__)
 
@@ -74,30 +74,9 @@ class Unlock(_Unlock):
             self.ctx.args.resource_guard_operation_requests = assign_aaz_list_arg(
                 self.ctx.args.resource_guard_operation_requests,
                 self.ctx.args.resource_guard_operation_requests,
-                element_transformer=self._transform_resource_guard_operation_request
+                element_transformer=lambda _, operation:
+                    transform_resource_guard_operation_request(self, _, operation)
             )
         if has_value(self.ctx.args.tenant_id):
             # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
             self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))
-
-    def _transform_resource_guard_operation_request(self, _, operation):
-        if str(operation) in operation_request_map:
-            from azext_dataprotection.aaz.latest.dataprotection.backup_vault.resource_guard_mapping \
-                import Show as ResourceGuardMappingGet
-            resource_guard_mapping = ResourceGuardMappingGet(cli_ctx=self.cli_ctx)(command_args={
-                "resource_group": str(self.ctx.args.resource_group),
-                "vault_name": str(self.ctx.args.vault_name),
-                "resource_guard_mapping_name": "DppResourceGuardProxy",
-            })
-
-            formatted_operation_list = [item['defaultResourceRequest'] for
-                                        item in resource_guard_mapping["properties"]["resourceGuardOperationDetails"]]
-            formatted_operation = [op for op in formatted_operation_list if
-                                   operation_request_map[str(operation)] in op]
-
-            if len(formatted_operation) != 1:
-                raise CLIError("Unable to proceed with shorthand argument {}. "
-                               "Please retry the command with the full payload".format(operation))
-
-            return formatted_operation[0]
-        return operation
