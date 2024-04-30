@@ -117,7 +117,7 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.javascript_challenge_expiration_in_minutes = AAZIntArg(
-            options=["--javascript-challenge-expiration-in-minutes"],
+            options=["--js-expiration", "--javascript-challenge-expiration-in-minutes"],
             arg_group="PolicySettings",
             help="Defines the JavaScript challenge cookie validity lifetime in minutes. Value must be an integer between 5 and 1440 with the default value being 30.",
             nullable=True,
