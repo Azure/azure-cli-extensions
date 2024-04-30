@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.7.1
+++++++
+* Fixed PoP token for proxy command using service principal.
+
 1.7.0
 ++++++
 * Update helm binary download source.
