@@ -9,7 +9,12 @@ from azure.cli.core import AzCommandsLoader
 class SupportCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
-        super().__init__(cli_ctx=cli_ctx)
+        from azure.cli.core.commands import CliCommandType
+
+        support_custom = CliCommandType(
+            operations_tmpl="azext_support.custom#{}"
+        )
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=support_custom)
 
     def load_command_table(self, args):
         from azext_support.commands import load_command_table
