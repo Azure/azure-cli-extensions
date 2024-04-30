@@ -61,6 +61,9 @@ class SessionPoolPreviewDecorator(BaseResource):
     def get_argument_cooldown_period_in_seconds(self):
         return self.get_param('cooldown_period')
 
+    def set_argument_cooldown_period_in_seconds(self, period):
+        return self.set_param('cooldown_period', period)
+
     def get_argument_secrets(self):
         return self.get_param('secrets')
 
@@ -194,6 +197,8 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
     def set_up_dynamic_configuration(self):
         dynamic_pool_def = {}
         dynamic_pool_def["executionType"] = "Timed"
+        if self.get_argument_cooldown_period_in_seconds() is None:
+            self.set_argument_cooldown_period_in_seconds(300)
         dynamic_pool_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
         return dynamic_pool_def
 
@@ -292,8 +297,10 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
         else:
             if container_def is not None:
                 customer_container_template["containers"] = [container_def]
-            customer_container_template["ingress"] = ingress_def
-            customer_container_template["registryCredentials"] = registry_def
+            if ingress_def is not None:
+                customer_container_template["ingress"] = ingress_def
+            if registry_def is not None:
+                customer_container_template["registryCredentials"] = registry_def
 
         if self.get_argument_container_type() is not None:
             safe_set(self.session_pool_def, "properties", "containerType", value=self.get_argument_container_type())
