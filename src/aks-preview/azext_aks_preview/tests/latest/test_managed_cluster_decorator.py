@@ -4566,6 +4566,39 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         updated_mc = dec.set_up_workload_identity_profile(mc)
         self.assertTrue(updated_mc.security_profile.workload_identity.enabled)
 
+    def test_set_up_azure_monitor_profile(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"sku": "automatic"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location = "test_location",
+            identity = self.models.ManagedClusterIdentity(type="SystemAssigned"),
+            )
+        dec_1.context.attach_mc(mc_1)
+        dec_1_mc_sku = dec_1.set_up_sku(mc_1)
+        dec_mc_1 = dec_1.set_up_azure_monitor_profile(dec_1_mc_sku)
+        azure_monitor_profiles_1 = self.models.ManagedClusterAzureMonitorProfile(
+            metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(
+                enabled = False,
+                kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(
+                metric_labels_allowlist = '',
+                metric_annotations_allow_list = '',
+                )
+            )
+        )
+        automaticSKU = self.models.ManagedClusterSKU(name = "Automatic", tier = "Standard")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location = "test_location", 
+            sku = automaticSKU,
+            azure_monitor_profile = azure_monitor_profiles_1,
+            kind = "Automatic",
+            identity = self.models.ManagedClusterIdentity(type = "SystemAssigned"),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
     def test_set_up_image_cleaner(self):
         dec_0 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
