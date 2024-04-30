@@ -3847,7 +3847,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
         return mc
 
-    # pylint: disable=too-many-statements,too-many-locals
+    # pylint: disable=too-many-statements,too-many-locals,too-many-branches
     def update_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure container storage for the Managed Cluster object
         :return: ManagedCluster
@@ -4001,10 +4001,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     pre_disable_validate = False
 
                     msg = (
-                        "Disabling Azure Container Storage will forcefully delete all the storagepools in the cluster and "
-                        "affect the applications using these storagepools. Forceful deletion of storagepools can also "
-                        "lead to leaking of storage resources which are being consumed. Do you want to validate whether "
-                        "any of the storagepools are being used before disabling Azure Container Storage?"
+                        "Disabling Azure Container Storage will forcefully delete all the storagepools in the cluster "
+                        "and affect the applications using these storagepools. Forceful deletion of storagepools can "
+                        "also lead to leaking of storage resources which are being consumed. Do you want to validate "
+                        "whether any of the storagepools are being used before disabling Azure Container Storage?"
                     )
 
                     from azext_aks_preview.azurecontainerstorage._consts import (
