@@ -10,10 +10,9 @@ class SupportCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_support._client_factory import cf_support
 
         support_custom = CliCommandType(
-            operations_tmpl="azext_support.custom#{}", client_factory=cf_support
+            operations_tmpl="azext_support.custom#{}"
         )
         super().__init__(cli_ctx=cli_ctx, custom_command_type=support_custom)
 
@@ -29,11 +28,6 @@ class SupportCommandsLoader(AzCommandsLoader):
             load_aaz_command_table(loader=self, aaz_pkg_name=aaz.__name__, args=args)
         load_command_table(self, args)
         return self.command_table
-
-    def load_arguments(self, command):
-        from azext_support._params import load_arguments
-
-        load_arguments(self, command)
 
 
 COMMAND_LOADER_CLS = SupportCommandsLoader
