@@ -355,7 +355,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 
     with self.argument_context('containerapp sessionpool', arg_group='Configuration') as c:
-        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS"]), help="The container type of Session Pool, default=PythonLTS")
+        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS"]), help="The pool type of the Session Pool, default=PythonLTS")
         c.argument('cooldown_period', help="Period (in seconds), after which the session will be deleted, default=300")
         c.argument('secrets', nargs='*', options_list=['--secrets', '-s'], help="A list of secret(s) for the session pool. Space-separated values in 'key=value' format.")
         c.argument('egress_enabled', options_list=['--enable-egress'], default=False, arg_type=get_three_state_flag(), help="Egress is enabled for the Sessions or not.")
