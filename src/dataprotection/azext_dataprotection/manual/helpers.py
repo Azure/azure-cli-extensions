@@ -16,8 +16,11 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
     CLIInternalError,
+    CLIError,
     MutuallyExclusiveArgumentError,
 )
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 from azext_dataprotection.manual import backupcenter_helper
 from azext_dataprotection.manual.custom import (
     dataprotection_backup_instance_list_from_resourcegraph,
@@ -29,16 +32,25 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
                           "updatePolicy": "/backupPolicies/write",
                           "deleteRGMapping": "/backupResourceGuardProxies/delete",
                           "getSecurityPIN": "/backupSecurityPIN/action",
-                          "disableSoftDelete": "/backupconfig/write"}
+                          "disableSoftDelete": "/backupconfig/write",
+                          "RecoveryServicesDisableImmutability": "/write#reduceImmutabilityState",
+                          "RecoveryServicesStopProtection": "/backupFabrics/protectionContainers/protectedItems/write#stopProtectionWithRetainData",
+                          "DisableMUA": "/backupResourceGuardProxies/delete",
+                          "DeleteBackupInstance": "/backupInstances/delete",
+                          "DataProtectionDisableImmutability": "/write#reduceImmutabilityState",
+                          "DataProtectionSoftDelete": "/write#reduceSoftDeleteSecurity",
+                          "DataProtectionStopProtection": "/backupInstances/stopProtection/action",
+                          "DataProtectionSuspendBackup": "/backupInstances/suspendBackups/action",
+                          "DataProtectionRestore": "/backupInstances/restore/action"}
 
-operation_request_map = {"DisableMUA": "/deleteResourceGuardProxyRequests/default",
-                         "DeleteBackupInstance": "/deleteBackupInstanceRequests/default"}
 
 datasource_map = {
     "AzureDisk": "Microsoft.Compute/disks",
     "AzureBlob": "Microsoft.Storage/storageAccounts/blobServices",
     "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
-    "AzureKubernetesService": "Microsoft.ContainerService/managedClusters"
+    "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
+    "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers",
+    "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers"
 }
 
 # This is ideally temporary, as Backup Vault contains secondary region information. But in some cases
@@ -538,6 +550,10 @@ def get_rg_id_from_arm_id(arm_id):
     return truncate_id_using_scope(arm_id, "ResourceGroup")
 
 
+def get_storage_account_from_container_id(container_id):
+    return truncate_id_using_scope(container_id, 'StorageAccount')
+
+
 def get_resource_id_from_restore_request_object(restore_request_object, role_type):
     resource_id = None
 
@@ -561,6 +577,9 @@ def get_resource_id_from_backup_instance(backup_instance, role_type):
 
     if role_type == 'DataSource':
         resource_id = backup_instance['properties']['data_source_info']['resource_id']
+    elif role_type == 'DataSourceRG':
+        datasource_id = backup_instance['properties']['data_source_info']['resource_id']
+        resource_id = truncate_id_using_scope(datasource_id, "ResourceGroup")
     elif role_type == 'SnapshotRG':
         data_stores = backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list']
         resource_id = data_stores[0]['resource_group_id']
@@ -593,38 +612,23 @@ def get_secret_params_from_uri(secret_uri):
     return secret_params
 
 
-def get_help_text_on_grant_permissions(datasource_type):
-    help_text = "This command will attempt to automatically grant the following access to the backup vault:\n"
-
-    if datasource_type == 'AzureDatabaseForPostgreSQL':
-        help_text += ("1. Backup vault's identity access on the Postgres server and the key vault\n"
-                      "2. 'Allow all Azure Services' under network connectivity in the Postgres server\n"
-                      "3. 'Allow Trusted Azure Services' under network connectivity in the Key vault")
-
-    if datasource_type == 'AzureBlob':
-        help_text += "Backup vault's identity access on the storage account"
-
-    if datasource_type == 'AzureDisk':
-        help_text += "Backup vault's identity access on the disk and snapshot resource group"
-
-    if datasource_type == "AzureKubernetesService":
-        help_text += ("1. Backup vault's identity access as Reader on the AKS Cluster and snapshot resource group\n"
-                      "2. AKS cluster's identity access as Contributor on the snapshot resource group")
-
-    help_text += "\nAre you sure you want to continue?"
-    return help_text
-
-
-def get_help_text_on_grant_permissions_templatized(datasource_type):
+def get_help_text_on_grant_permissions_templatized(datasource_type, operation):
     help_text = "This command will attempt to automatically grant the following access:\n"
     manifest = load_manifest(datasource_type)
 
-    if 'backupVaultPermissions' in manifest:
-        for role_object in manifest['backupVaultPermissions']:
+    if operation == 'Backup':
+        vault_permissions = 'backupVaultPermissions'
+        datasource_permissions = 'dataSourcePermissions'
+    if operation == 'Restore':
+        vault_permissions = 'backupVaultRestorePermissions'
+        datasource_permissions = 'dataSourceRestorePermissions'
+
+    if vault_permissions in manifest:
+        for role_object in manifest[vault_permissions]:
             help_text += help_text_permission_line_generator('Backup Vault', role_object, datasource_type)
 
-    if 'dataSourcePermissions' in manifest:
-        for role_object in manifest['dataSourcePermissions']:
+    if datasource_permissions in manifest:
+        for role_object in manifest[datasource_permissions]:
             help_text += help_text_permission_line_generator(
                 get_help_word_from_permission_type('DataSource', datasource_type),
                 role_object,
@@ -656,8 +660,11 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
     if permission_type == 'SnapshotRG':
         return 'snapshot resource group'
 
+    if permission_type == 'DataSourceRG':
+        return 'datasource resource group'
+
     if permission_type == 'DataSource':
-        helptext_dsname = ''
+        helptext_dsname = permission_type + ' '
 
         if datasource_type == 'AzureKubernetesService':
             helptext_dsname = "AKS Cluster"
@@ -667,6 +674,10 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
             helptext_dsname = 'disk'
         if datasource_type == 'AzureDatabaseForPostgreSQL':
             helptext_dsname = "Postgres server"
+        if datasource_type == 'AzureDatabaseForPostgreSQLFlexibleServer':
+            helptext_dsname = "Postgres flexible server"
+        if datasource_type == 'AzureDatabaseForMySQL':
+            helptext_dsname = "MySQL server"
 
         return helptext_dsname
 
@@ -815,3 +826,104 @@ def get_source_and_replicated_region_from_backup_vault(source_backup_vault):
         target_location = replicated_regions[0]
 
     return source_location, target_location
+
+
+def get_datasource_principal_id_from_object(cmd, datasource_type, backup_instance=None,
+                                            restore_request_object=None):
+    if backup_instance is None and restore_request_object is None:
+        raise CLIInternalError("Please enter either one of backup_instance or restore_request_object")
+    if backup_instance is not None and restore_request_object is not None:
+        raise CLIInternalError("Please enter just one of backup_instance or restore_request_object")
+
+    if backup_instance is not None:
+        datasource_arm_id = get_resource_id_from_backup_instance(backup_instance, 'DataSource')
+    if restore_request_object is not None:
+        datasource_arm_id = get_resource_id_from_restore_request_object(restore_request_object, 'DataSource')
+
+    subscription_id = get_sub_id_from_arm_id(datasource_arm_id).split('/')[-1]
+
+    datasource_principal_id = None
+
+    if datasource_type == "AzureKubernetesService":
+        from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
+        aks_client = getattr(get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id),
+                             'managed_clusters')
+        aks_name = get_resource_name_from_backup_instance(backup_instance, 'DataSource')
+        aks_rg = get_rg_id_from_arm_id(datasource_arm_id).split('/')[-1]
+        aks_cluster = aks_client.get(aks_rg, aks_name)
+
+        if "UserAssigned" in aks_cluster.identity.type:
+            uami_key = list(aks_cluster.identity.user_assigned_identities.keys())[0]
+            if uami_key == "" or uami_key is None:
+                raise CLIInternalError("User assigned identity not found for AKS Cluster")
+            datasource_principal_id = aks_cluster.identity.user_assigned_identities[uami_key].principal_id
+        else:
+            datasource_principal_id = aks_cluster.identity.principal_id
+    else:
+        raise InvalidArgumentValueError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
+
+    return datasource_principal_id
+
+
+def check_and_assign_roles(cmd, role_object, principal_id, role_assignments_arr, permissions_scope,
+                           backup_instance=None, restore_request_object=None,
+                           snapshot_resource_group_id=None, target_storage_account_id=None):
+    if backup_instance is None and restore_request_object is None:
+        raise CLIInternalError("Please enter either one of backup_instance or restore_request_object")
+    if backup_instance is not None and restore_request_object is not None:
+        raise CLIInternalError("Please enter just one of backup_instance or restore_request_object")
+
+    if backup_instance is not None:
+        resource_id = get_resource_id_from_backup_instance(backup_instance, role_object['type'])
+    if restore_request_object is not None:
+        resource_id = get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
+        if role_object['type'] == 'SnapshotRG':
+            if snapshot_resource_group_id is None:
+                logger.warning('snapshot-resource-group-id parameter is required to assign permissions '
+                               'over snapshot resource group, skipping')
+                return role_assignments_arr
+            resource_id = snapshot_resource_group_id
+        if role_object['type'] == 'TargetStorageAccount':
+            if target_storage_account_id is None:
+                logger.warning('target-storage-account parameter is required to assign permissions '
+                               'over target resource group, skipping')
+                return role_assignments_arr
+            resource_id = target_storage_account_id
+
+    resource_id = truncate_id_using_scope(resource_id, "Resource")
+
+    assignment_scope = truncate_id_using_scope(resource_id, permissions_scope)
+
+    role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                             scope=resource_id, include_inherited=True)
+    if not role_assignments:
+        assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                            scope=assignment_scope)
+        role_assignments_arr.append(get_permission_object_from_role_object(assignment))
+
+    return role_assignments_arr
+
+
+def transform_resource_guard_operation_request(cmd, _, operation):
+    # if we don't have a shorthand defined, just returning the value unchanged
+    if str(operation) in critical_operation_map:
+        from azext_dataprotection.aaz.latest.dataprotection.backup_vault.resource_guard_mapping \
+            import Show as ResourceGuardMappingGet
+        resource_guard_mapping = ResourceGuardMappingGet(cli_ctx=cmd.cli_ctx)(command_args={
+            "resource_group": str(cmd.ctx.args.resource_group),
+            "vault_name": str(cmd.ctx.args.vault_name),
+            "resource_guard_mapping_name": "DppResourceGuardProxy",
+        })
+
+        formatted_operation = None
+        for operation_detail in resource_guard_mapping['properties']['resourceGuardOperationDetails']:
+            if operation_detail['vaultCriticalOperation'] == 'Microsoft.DataProtection/backupVaults' + critical_operation_map[str(operation)]:
+                formatted_operation = operation_detail['defaultResourceRequest']
+                break
+
+        if formatted_operation is None:
+            raise CLIError("Unable to proceed with shorthand argument {}. "
+                           "Please retry the command with the full payload".format(operation))
+
+        return formatted_operation
+    return operation

@@ -19,7 +19,7 @@ from .writer import DefaultWriter
 logger = get_logger(__name__)
 
 
-class LogStreamBaseQueryOptions:
+class LogStreamBaseQueryOptions:  # pylint: disable=too-few-public-methods
     def __init__(self, follow, lines, since, limit):
         self.follow = follow
         self.lines = lines

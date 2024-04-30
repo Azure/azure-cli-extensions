@@ -3,6 +3,20 @@
 Release History
 ===============
 
+1.2.0
++++++
+* The following commands and scenarios now have resourceguard-based MUA protection
+* `az dataprotection backup-vault update` - Modify Soft Delete and Immutability State
+* `az dataprotection backup-instance stop-protection` - Stop Protection
+* `az dataprotection backup-instance suspend-backups` - Suspend Backups
+* `az dataprotection backup-instance restore trigger` - Trigger Restore
+* `az dataprotection resource-guard` - Also now supporting shorthands for new RecoveryServices critical operations.
+
+1.1.0
++++++
+* Added dataprotection support for PostgreSQLFlexibleServer and MySQL workloads: new manifests, code cleanup.
+* `az dataprotection backup-instance update-msi-permissions`: New parameter `--target-storage-account-id` for Restore, support Restore for new workloads, code cleanup.
+
 1.0.0
 ++++++
 * Added support for Cross Region Restore for Backup Vaults.

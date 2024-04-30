@@ -160,10 +160,7 @@ def validate_ip_ranges(namespace):
                 raise CLIError(
                     "--api-server-authorized-ip-ranges cannot be IPv6 addresses")
         except ValueError:
-            # pylint: disable=raise-missing-from
-            raise CLIError(
-                "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs"
-            )
+            pass
 
 
 def _validate_nodepool_name(nodepool_name):
@@ -649,6 +646,15 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
     from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(key_vault_resource_id):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
+
+
+def validate_bootstrap_container_registry_resource_id(namespace):
+    container_registry_resource_id = namespace.bootstrap_container_registry_resource_id
+    if container_registry_resource_id is None or container_registry_resource_id == '':
+        return
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(container_registry_resource_id):
+        raise InvalidArgumentValueError("--bootstrap-container-registry-resource-id is not a valid Azure resource ID.")
 
 
 def validate_enable_custom_ca_trust(namespace):

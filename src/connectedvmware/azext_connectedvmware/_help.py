@@ -396,34 +396,30 @@ helps[
     examples:
       - name: Create vm
         text: |-
-               az connectedvmware vm create --custom-location "custom location name" \
-               --location "location name" --inventory-item "name or id of the inventory item" \
-               --name "virtual machine name" --resource-group "resource group name" \
-               --vcenter "name or id of the vcenter"
+               az connectedvmware vm create --inventory-item "name or id of the inventory item" \
+--name "virtual machine name" --resource-group "resource group name" --vcenter "name or id of the vcenter"
 
       - name: Enable an exiting VM to azure.
         text: |-
-               az connectedvmware vm create --subscription contoso-sub \
-               --resource-group contoso-rg --location eastus --custom-location contoso-cl \
-               --inventory-item 01234567-0123-0123-0123-0123456789ab --name contoso-vm
+               az connectedvmware vm create --subscription contoso-sub --resource-group contoso-rg \
+--inventory-item 01234567-0123-0123-0123-0123456789ab --name contoso-vm
 
       - name: Link an HCRP Machine to a vCenter in another subscription using the machine id.
         text: |-
                az connectedvmware vm create \
-               --machine-id /subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/machines/contoso-vm \
-               --vcenter /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+--machine-id /subscriptions/01234567-0123-0123-0123-0123456789ab/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/machines/contoso-vm \
+--vcenter /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.ConnectedVMwareVsphere/vcenters/contoso-vcenter
 
       - name: Link an HCRP Machine to a vCenter in another subscription using the machine name.
         text: |-
                 az connectedvmware vm create \
-                --resource-group contoso-rg --location eastus --name hcrp-contoso-machine \
-                --vcenter /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+--resource-group contoso-rg --name hcrp-contoso-machine \
+--vcenter /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.ConnectedVMwareVsphere/vcenters/contoso-vcenter
 
       - name: Link an HCRP Machine to a vCenter in the same subscription and resource group.
         text: |-
                 az connectedvmware vm create \
-                --resource-group contoso-rg --location eastus --name hcrp-contoso-machine \
-                --vcenter contoso-vcenter
+--resource-group contoso-rg --name hcrp-contoso-machine --vcenter contoso-vcenter
 """
 
 helps[
@@ -436,19 +432,19 @@ helps[
         text: |-
                 az connectedvmware vm create-from-machines \
 --resource-group contoso-rg --name contoso-vm \
---vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+--vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.ConnectedVMwareVsphere/vcenters/contoso-vcenter
 
       - name: Creates VMware resources from all Arc for Servers machines in the specified resource group belonging to that vCenter
         text: |-
                 az connectedvmware vm create-from-machines \
 --resource-group contoso-rg \
---vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+--vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.ConnectedVMwareVsphere/vcenters/contoso-vcenter
 
       - name: Create VMware resources from all Arc for Servers machines in the specified subscription belonging to that vCenter
         text: |-
                 az connectedvmware vm create-from-machines \
 --subscription contoso-sub \
---vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.HybridCompute/vcenters/contoso-vcenter
+--vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.ConnectedVMwareVsphere/vcenters/contoso-vcenter
 """
 
 helps[
@@ -674,8 +670,13 @@ helps[
       - name: Enable guest agent on the vm
         text: |-
                az connectedvmware vm guest-agent enable --username "vm user name" --password "vm password" \
-               --resource-group "resource group name" --subscription "Name or ID of subscription" \
-               --vm-name "vm name"
+--resource-group "resource group name" --subscription "Name or ID of subscription" --vm-name "vm name"
+
+      - name: Enable guest agent on the vm using private link
+        text: |-
+               az connectedvmware vm guest-agent enable --username "vm user name" --password "vm password" \
+--resource-group "resource group name" --subscription "Name or ID of subscription" --vm-name "vm name" \
+--private-link-scope "/subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg/providers/Microsoft.HybirdCompute/privateLinkScopes/contoso-private-link-scope"
 """
 
 helps[

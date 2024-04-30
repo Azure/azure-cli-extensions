@@ -101,6 +101,9 @@ def update_scheduled_query(cmd,
         c.set_param('tags', tags)
         c.set_param('enabled', not disabled)
         c.set_param('description', description)
+        if instance.actions is None:
+            from azext_scheduled_query.vendored_sdks.azure_mgmt_scheduled_query.models import Actions
+            c.set_param("actions", Actions())
         c.set_param('actions.action_groups', action_groups)
         c.set_param('actions.custom_properties', custom_properties)
         c.set_param('severity', severity)
