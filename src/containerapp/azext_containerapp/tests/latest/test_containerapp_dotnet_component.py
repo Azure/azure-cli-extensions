@@ -16,10 +16,7 @@ class ContainerappDotNetComponentTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
     def test_containerapp_dotnet_component(self, resource_group):
-        # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
-        location = TEST_LOCATION
-        if format_location(location) == format_location(STAGE_LOCATION):
-            location = "northcentralusstage"
+        location = "northcentralusstage"
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-dotnet-env', length=24)

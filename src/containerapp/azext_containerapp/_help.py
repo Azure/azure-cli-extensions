@@ -1632,6 +1632,6 @@ helps['containerapp env dotnet-component show'] = """
     examples:
     - name: Show the details of an environment.
       text: |
-          az containerapp env dotnet-component show -n MyContainerappEnvironment -g MyResourceGroup
+          az containerapp env dotnet-component show -n MyDotNetComponentName --environment MyContainerappEnvironment -g MyResourceGroup
 """
 
