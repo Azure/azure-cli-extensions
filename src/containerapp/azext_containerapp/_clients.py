@@ -1066,7 +1066,7 @@ class DotNetComponentPreviewClient():
             if r.status_code == 202:
                 operation_url = r.headers.get(HEADER_LOCATION)
                 poll_results(cmd, operation_url)
-                logger.warning('Java component successfully deleted')
+                logger.warning('DotNet component successfully deleted')
 
     @classmethod
     def show(cls, cmd, resource_group_name, environment_name, name):
