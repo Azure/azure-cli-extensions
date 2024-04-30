@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.aaz._base import has_value
+# pylint: disable=protected-access
 from azure.cli.core.aaz import AAZBoolArg
 from azext_front_door.aaz.latest.network.front_door.waf_policy import Create as _WafPolicyCreate, \
     Update as _WafPolicyUpdate
