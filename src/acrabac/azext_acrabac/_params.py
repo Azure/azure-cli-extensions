@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import get_three_state_flag
 
 
@@ -14,7 +13,9 @@ def load_arguments_preview(self, _):
             "abac_permissions_enabled",
             arg_type=get_three_state_flag(),
             is_preview=True,
-            help="Create a registry with ABAC-enabled Repository Permissions. This allows granting role assignment permissions at the repository level through role assignment conditions. For more information on this preview feature, see https://aka.ms/acr/abac/repository-permissions. The Default is false.",
+            help="Create a registry with ABAC-enabled Repository Permissions. "
+            "This allows granting role assignment permissions at the repository level through role assignment conditions. "
+            "For more information on this preview feature, see https://aka.ms/acr/abac/repository-permissions. The Default is false.",
         )
 
     with self.argument_context("acr update", arg_group="Permissions and Role Assignment") as c:
@@ -22,5 +23,7 @@ def load_arguments_preview(self, _):
             "abac_permissions_enabled",
             arg_type=get_three_state_flag(),
             is_preview=True,
-            help="Update a registry to enable or disable ABAC-enabled Repository Permissions. This allows granting role assignment permissions at the repository level through role assignment conditions. For more information on this preview feature, see https://aka.ms/acr/abac/repository-permissions. The Default is false.",
+            help="Update a registry to enable or disable ABAC-enabled Repository Permissions. "
+            "This allows granting role assignment permissions at the repository level through role assignment conditions. "
+            "For more information on this preview feature, see https://aka.ms/acr/abac/repository-permissions. The Default is false.",
         )

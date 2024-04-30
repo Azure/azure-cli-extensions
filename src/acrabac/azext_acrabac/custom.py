@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=too-many-locals
+
 import re
 from azure.cli.command_modules.acr.custom import acr_update_custom, acr_update_set
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -131,7 +133,7 @@ def acr_update_custom_preview(cmd,
     return instance
 
 
-def acr_update_get_preview(cmd):
+def acr_update_get_preview():
     return RegistryUpdateParameters()
 
 
@@ -163,13 +165,15 @@ def _configure_abac_repo_permission(cmd, registry, enabled, yes=False):
     )
     if not (feature_result and feature_result.properties and feature_result.properties.state == "Registered"):
         raise CLIError(
-            "usage error: ABAC-based repository permissions is only applicable to subscriptions registered with feature {}".format(
+            "usage error: ABAC-based repository permissions is only applicable to"
+            " subscriptions registered with feature {}".format(
                 ACR_AFEC_ABAC_REPO_PERMISSION
             )
         )
 
     if enabled:
         user_confirmation(
-            "The current preview experience of ABAC-enabled Repository Permissions prevents ACR tasks from functioning. Are you sure you want to enable it?", yes)
+            "The current preview experience of ABAC-enabled Repository Permissions prevents ACR tasks from functioning."
+            " Are you sure you want to enable it?", yes)
 
     registry.abac_repo_permission = AbacRepoPermission.enabled if enabled else AbacRepoPermission.disabled
