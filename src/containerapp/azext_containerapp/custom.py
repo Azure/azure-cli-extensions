@@ -2633,6 +2633,7 @@ def list_environment_telemetry_otlp(cmd,
 
     return containerapp_env_def
 
+
 def list_dotnet_components(cmd, environment_name, resource_group_name):
     raw_parameters = locals()
     dotnet_component_decorator = DotNetComponentDecorator(
