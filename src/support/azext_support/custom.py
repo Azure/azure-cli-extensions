@@ -42,41 +42,34 @@ from .aaz.latest.support.no_subscription.file_workspace import (
 logger = get_logger(__name__)
 
 
+def set_configured_defaults(args):
+    for arg_name, arg in args:
+        if arg_name == "contact_language":
+            arg.completer = getLanguage()
+        if arg_name == "contact_timezone":
+            arg.completer = getTimeZone()
+    return args
+
+
 class TicketUpdate(_Update):
 
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZArgEnum
-
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.contact_language.enum = AAZArgEnum(getLanguage())
-        args_schema.contact_timezone.enum = AAZArgEnum(getTimeZone())
-        return args_schema
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
 class TicketUpdateNoSubscription(_UpdateNoSubscription):
 
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZArgEnum
-
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.contact_language.enum = AAZArgEnum(getLanguage())
-        args_schema.contact_timezone.enum = AAZArgEnum(getTimeZone())
-        return args_schema
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
 class TicketCreate(_CreateTicket):
 
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZArgEnum
-
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.contact_language.enum = AAZArgEnum(getLanguage())
-        args_schema.contact_timezone.enum = AAZArgEnum(getTimeZone())
-
-        return args_schema
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
     def pre_operations(self):
         from azext_support._validators import _validate_tickets_create
@@ -118,15 +111,9 @@ class TicketCreate(_CreateTicket):
 
 class TicketCreateNoSubscription(_CreateTicketNoSubscription):
 
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZArgEnum
-
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.contact_language.enum = AAZArgEnum(getLanguage())
-        args_schema.contact_timezone.enum = AAZArgEnum(getTimeZone())
-
-        return args_schema
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
     def pre_operations(self):
         from azext_support._validators import (
