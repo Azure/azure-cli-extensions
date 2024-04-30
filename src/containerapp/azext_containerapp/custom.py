@@ -10,6 +10,8 @@ from urllib.parse import urlparse
 import json
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
+from ._constants import DOTNET_COMPONENT_RESOURCE_TYPE
+
 
 from azure.cli.core import telemetry as telemetry_core
 from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
@@ -2679,7 +2681,7 @@ def delete_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     return dotnet_component_decorator.delete()
 
 
-def create_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait):
+def create_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait, dotnet_component_type=DOTNET_COMPONENT_RESOURCE_TYPE):
     # Check if DotNet component already exists in environment
     existing_dotnet_component = list_dotnet_components(cmd, environment_name, resource_group_name)
     if existing_dotnet_component and len(existing_dotnet_component) > 0:
@@ -2704,7 +2706,7 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     return r
 
 
-def update_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait):
+def update_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait, dotnet_component_type=DOTNET_COMPONENT_RESOURCE_TYPE):
     raw_parameters = locals()
     dotnet_component_decorator = DotNetComponentDecorator(
         cmd=cmd,

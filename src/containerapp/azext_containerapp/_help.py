@@ -1596,7 +1596,7 @@ helps['containerapp env dotnet-component'] = """
 
 helps['containerapp env dotnet-component list'] = """
     type: command
-    short-summary: List DotNet component within the environment.
+    short-summary: Command to list DotNet components within the environment.
     examples:
     - name: List all DotNet components within an environment.
       text: |
@@ -1605,13 +1605,14 @@ helps['containerapp env dotnet-component list'] = """
 
 helps['containerapp env dotnet-component create'] = """
     type: command
-    short-summary: Command to create DotNet component to enable Aspire Dashboard.
+    short-summary: Command to create DotNet component to enable Aspire Dashboard. Supported DotNet component type is Aspire Dashboard.
     examples:
     - name: Create a DotNet component to enable Aspire Dashboard.
       text: |
           az containerapp env dotnet-component create -g MyResourceGroup \\
               -n MyDotNetComponentName \\
               --environment MyEnvironment \\
+              --type AspireDashboard
 """
 
 helps['containerapp env dotnet-component delete'] = """
@@ -1627,13 +1628,14 @@ helps['containerapp env dotnet-component delete'] = """
 
 helps['containerapp env dotnet-component update'] = """
     type: command
-    short-summary: Command to update DotNet component (can only update name).
+    short-summary: Command to update DotNet component. Supported DotNet component type is Aspire Dashboard.
     examples:
     - name: Update DotNet component.
       text: |
           az containerapp env dotnet-component update -g MyResourceGroup \\
               -n MyDotNetComponentName \\
-              --environment MyEnvironment
+              --environment MyEnvironment \\
+              --type AspireDashboard
 """
 
 helps['containerapp env dotnet-component show'] = """

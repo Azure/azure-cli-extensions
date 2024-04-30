@@ -31,8 +31,17 @@ class DotNetComponentDecorator(BaseResource):
     def get_argument_dotnet_component_name(self):
         return self.get_param("dotnet_component_name")
 
+    def get_argument_component_type(self):
+        return self.get_param("dotnet_component_type")
+
+    def set_argument_component_type(self, component_type: str):
+        self.set_param("dotnet_component_type", component_type)
+
     def construct_payload(self):
-        self.dotnet_component_def["properties"]["componentType"] = DOTNET_COMPONENT_RESOURCE_TYPE
+        if self.get_argument_component_type() is not "AspireDashboard":
+            logger.warning(f"{self.get_argument_component_type()} is not a valid component type. Supported component types are: AspireDashboard. Setting component type to AspireDashboard.")
+            self.set_argument_component_type("AspireDashboard")
+        self.dotnet_component_def["properties"]["componentType"] = self.get_argument_component_type()
 
     def create(self):
         try:
