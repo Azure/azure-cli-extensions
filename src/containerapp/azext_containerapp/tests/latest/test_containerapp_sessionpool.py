@@ -8,7 +8,9 @@ from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
-from .common import TEST_LOCATION, STAGE_LOCATION
+from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
+                     clean_up_test_file,
+                     )
 from .utils import create_containerapp_env
 
 
@@ -22,7 +24,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env', length=24)
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, TEST_LOCATION)
 
         # List Session Pools
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
