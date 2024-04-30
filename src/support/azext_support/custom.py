@@ -6,7 +6,6 @@
 # pylint: disable=unused-argument
 # pylint: disable=too-many-locals
 
-import json
 from datetime import date, datetime, timedelta
 
 from azext_support._utils import (
