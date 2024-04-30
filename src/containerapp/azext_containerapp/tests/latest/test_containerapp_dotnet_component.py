@@ -24,7 +24,6 @@ class ContainerappDotNetComponentTests(ScenarioTest):
 
         env_name = self.create_random_name(prefix='aca-dotnet-env', length=24)
         dotnet_component_name = self.create_random_name(prefix='dotnet-aca', length=24)
-        dotnet_component_name_update = self.create_random_name(prefix='dotnet-aca-update', length=24)
 
         create_containerapp_env(self, env_name, resource_group)
 
@@ -39,6 +38,13 @@ class ContainerappDotNetComponentTests(ScenarioTest):
             JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
 
+        # Show DotNet Component
+        self.cmd('containerapp env dotnet-component show -g {} -n {} --environment {}'.format(resource_group, dotnet_component_name_update, env_name), checks=[
+            JMESPathCheck('name', dotnet_component_name),
+            JMESPathCheck('properties.componentType', "AspireDashboard"),
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ])
+
         # List DotNet Components
         dotnet_component_list = self.cmd("containerapp env dotnet-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()
         self.assertTrue(len(dotnet_component_list) == 1)
@@ -46,15 +52,15 @@ class ContainerappDotNetComponentTests(ScenarioTest):
         # Update DotNet Component
         self.cmd(
             'containerapp env dotnet-component update -g {} -n {} --environment {}'.format(
-                resource_group, dotnet_component_name_update, env_name), checks=[
-                JMESPathCheck('name', dotnet_component_name_update),
+                resource_group, dotnet_component_name, env_name), checks=[
+                JMESPathCheck('name', dotnet_component_name),
                 JMESPathCheck('properties.componentType', "AspireDashboard"),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
             ])
 
-        #  Show DotNet Component
+        # Show DotNet Component
         self.cmd('containerapp env dotnet-component show -g {} -n {} --environment {}'.format(resource_group, dotnet_component_name_update, env_name), checks=[
-            JMESPathCheck('name', dotnet_component_name_update),
+            JMESPathCheck('name', dotnet_component_name),
             JMESPathCheck('properties.componentType', "AspireDashboard"),
             JMESPathCheck('properties.provisioningState', "Succeeded")
         ])
