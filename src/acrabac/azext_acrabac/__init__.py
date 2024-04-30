@@ -10,8 +10,6 @@ from azure.cli.core.profiles import ResourceType
 class AcrabacCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
-        from azure.cli.core.commands import CliCommandType
-
         super(AcrabacCommandsLoader, self).__init__(
             cli_ctx=cli_ctx,
             resource_type=ResourceType.MGMT_CONTAINERREGISTRY,
