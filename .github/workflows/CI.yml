@@ -1,11 +1,14 @@
 name: CI
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
     - uses: actions/checkout@v2
@@ -13,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.11
+        python-version: ${{ matrix.python-version }}
 
     - name: Setup development environment
       run: |
