@@ -2704,23 +2704,3 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     if r is not None:
         logger.warning("Successfully created DotNet component '%s' in environment '%s' in resource group '%s'. Access your Aspire Dashboard at %s.", dotnet_component_name, environment_name, resource_group_name, aspire_dashboard_url)
     return r
-
-
-def update_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait, dotnet_component_type=DOTNET_COMPONENT_RESOURCE_TYPE):
-    raw_parameters = locals()
-    dotnet_component_decorator = DotNetComponentDecorator(
-        cmd=cmd,
-        client=DotNetComponentPreviewClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
-    dotnet_component_decorator.construct_payload()
-    managed_environment = show_managed_environment(cmd, environment_name, resource_group_name)
-    default_domain = safe_get(managed_environment, "properties", "defaultDomain")
-    if not default_domain:
-        raise ValidationError("The containerapp environment '{}' does not have a default domain.".format(environment_name))
-    aspire_dashboard_url = f"https://{dotnet_component_name}.ext.{default_domain}"
-    r = dotnet_component_decorator.updated()
-    if r is not None:
-        logger.warning("Successfully updated DotNet component '%s' in environment '%s' in resource group '%s'. Access your Aspire Dashboard at %s.", dotnet_component_name, environment_name, resource_group_name, aspire_dashboard_url)
-    return r

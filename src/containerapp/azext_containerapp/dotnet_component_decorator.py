@@ -54,15 +54,6 @@ class DotNetComponentDecorator(BaseResource):
 
             handle_raw_exception(e)
 
-    def update(self):
-        try:
-            return self.client.update(
-                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                environment_name=self.get_argument_environment_name(), name=self.get_argument_dotnet_component_name(),
-                dotnet_component_envelope=self.dotnet_component_def, no_wait=self.get_argument_no_wait())
-        except Exception as e:
-            handle_raw_exception(e)
-
     def show(self):
         try:
             return self.client.show(

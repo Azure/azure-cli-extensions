@@ -209,5 +209,4 @@ def load_command_table(self, args):
         g.custom_command('list', 'list_dotnet_components')
         g.custom_show_command('show', 'show_dotnet_component')
         g.custom_command('create', 'create_dotnet_component', supports_no_wait=True)
-        g.custom_command('update', 'update_dotnet_component', supports_no_wait=True)
         g.custom_command('delete', 'delete_dotnet_component', confirmation=True, supports_no_wait=True)

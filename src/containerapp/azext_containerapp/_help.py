@@ -1626,18 +1626,6 @@ helps['containerapp env dotnet-component delete'] = """
               --environment MyEnvironment
 """
 
-helps['containerapp env dotnet-component update'] = """
-    type: command
-    short-summary: Command to update DotNet component. Supported DotNet component type is Aspire Dashboard.
-    examples:
-    - name: Update DotNet component.
-      text: |
-          az containerapp env dotnet-component update -g MyResourceGroup \\
-              -n MyDotNetComponentName \\
-              --environment MyEnvironment \\
-              --type AspireDashboard
-"""
-
 helps['containerapp env dotnet-component show'] = """
     type: command
     short-summary: Command to show DotNet component in environment.
