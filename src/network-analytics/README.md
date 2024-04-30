@@ -16,4 +16,4 @@ az network-analytics data-product remove-user-role --data-product-name clitest -
 
 az network-analytics data-product delete --name clitest --resource-group test-RG
 
-az network-analytics data-product ingest --data-product-name clitest --resource-group test-RG --data-type MCC --srcdir ./folder1/file2
+az network-analytics data-product ingest --data-product-name clitest --resource-group test-RG --data-type MCC --source ./folder1/file2 --destination folder1/folder2/file3

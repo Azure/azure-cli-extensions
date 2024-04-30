@@ -12,7 +12,6 @@ from .__cmd_group import *
 from ._add_user_role import *
 from ._create import *
 from ._delete import *
-from ._ingest import *
 from ._list import *
 from ._list_roles_assignment import *
 from ._remove_user_role import *
