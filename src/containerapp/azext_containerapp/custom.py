@@ -2724,4 +2724,3 @@ def update_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     if r is not None:
         logger.warning("Successfully updated DotNet component '%s' in environment '%s' in resource group '%s'. Access your Aspire Dashboard at %s.", dotnet_component_name, environment_name, resource_group_name, aspire_dashboard_url)
     return r
-
