@@ -7,9 +7,6 @@ import re
 import os
 import math
 import base64
-from azure.cli.core._profile import Profile
-from azure.cli.core.azclierror import UnauthorizedError
-from knack.util import CLIError
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -48,20 +45,6 @@ def parse_support_area_path(problem_classification_id):
     return None
 
 
-def get_bearer_token(cmd, tenant_id):
-    client = Profile(cli_ctx=cmd.cli_ctx)
-
-    try:
-        logger.debug("Retrieving access token for tenant %s", tenant_id)
-        creds, _, _ = client.get_raw_token(tenant=tenant_id)
-    except CLIError as unauthorized_error:
-        raise UnauthorizedError("Can't find authorization for {0}. ".format(tenant_id) +
-                                "Run \'az login -t <tenant_name> --allow-no-subscriptions\' and try again.") from \
-            unauthorized_error
-
-    return "Bearer " + creds[1]
-
-
 def encode_string_content(chunk_content):
     return str(base64.b64encode(chunk_content).decode("utf-8"))
 
@@ -87,21 +70,21 @@ def upload_file(
     Upload,
     subscription_id=None,
 ):
-    from azext_support._validators import validate_file_path, validate_file_size
-    from azext_support._validators import validate_file_extension, validate_file_name
+    from azext_support._validators import _validate_file_path, _validate_file_size
+    from azext_support._validators import _validate_file_extension, _validate_file_name
 
-    validate_file_path(file_path)
+    _validate_file_path(file_path)
 
     full_file_name, file_name_without_extension, file_extension = get_file_name_info(
         file_path
     )
-    validate_file_extension(file_extension)
-    validate_file_name(file_name_without_extension)
+    _validate_file_extension(file_extension)
+    _validate_file_name(file_name_without_extension)
 
     content = get_file_content(file_path)
 
     file_size = int(len(content))
-    validate_file_size(file_size)
+    _validate_file_size(file_size)
 
     chunk_size = int(min(max_chunk_size, file_size))
     number_of_chunks = int(math.ceil(file_size / chunk_size))
