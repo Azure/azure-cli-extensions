@@ -29,7 +29,7 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models as _models
-from ..._serialization import Serializer
+from msrest import Serializer
 from .._vendor import _convert_request
 
 T = TypeVar("T")

@@ -15,7 +15,7 @@ from azure.mgmt.core import ARMPipelineClient
 from azure.mgmt.core.policies import ARMAutoResourceProviderRegistrationPolicy
 
 from . import models as _models
-from .._serialization import Deserializer, Serializer
+from msrest import Deserializer, Serializer
 from ._configuration import SourceControlConfigurationClientConfiguration
 from .operations import FluxConfigOperationStatusOperations, FluxConfigurationsOperations
 

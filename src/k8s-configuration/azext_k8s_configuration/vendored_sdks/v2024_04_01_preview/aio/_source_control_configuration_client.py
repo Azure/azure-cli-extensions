@@ -15,7 +15,7 @@ from azure.mgmt.core import AsyncARMPipelineClient
 from azure.mgmt.core.policies import AsyncARMAutoResourceProviderRegistrationPolicy
 
 from .. import models as _models
-from ..._serialization import Deserializer, Serializer
+from msrest.serialization import Deserializer, Serializer
 from ._configuration import SourceControlConfigurationClientConfiguration
 from .operations import FluxConfigOperationStatusOperations, FluxConfigurationsOperations
 
