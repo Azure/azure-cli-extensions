@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0b3
+++++++
+* unhide package and protected file
+
 2.0.0b2
 ++++++
 * use appropriate sku in the example command for deployment
