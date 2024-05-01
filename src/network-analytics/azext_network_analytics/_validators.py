@@ -33,7 +33,7 @@ def validate_source_path(namespace):
 def validate_destination_path(namespace):
     destination = namespace.destination
 
-    pattern = "^[a-z][a-z0-9]*$"
+    pattern = r"^[^\/]+(?:\/[^\/]+)+\/[^\/]+$"
     match = re.match(pattern, destination)
     if not match:
         raise InvalidArgumentValueError("Invalid destination path. Please provide a path that is at least two directories deep such as 'folder1/folder2/file3'.")

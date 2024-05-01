@@ -59,7 +59,7 @@ class DataProductsIngest():
 
     def get_keyvault_url(self, data_product):
         ingestion_url = data_product.properties['consumptionEndpoints']['ingestionUrl']
-        pattern = r"regex(https://aoiingestion(.*)\.blob\.core\.windows\.net)"
+        pattern = r"https://aoiingestion(.*)\.blob\.core\.windows\.net"
         unique_id = re.search(pattern, ingestion_url).group(1)
         vault_base_url = KEYVAULT_URI.format(unique_id)
         return vault_base_url
