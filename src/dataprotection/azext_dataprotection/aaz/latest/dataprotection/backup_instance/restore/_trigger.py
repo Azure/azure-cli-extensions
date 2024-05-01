@@ -13,16 +13,15 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance restore trigger",
-    is_experimental=True,
 )
 class Trigger(AAZCommand):
     """Triggers restore for a BackupInstance
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/restore", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/restore", "2024-04-01"],
         ]
     }
 
@@ -60,6 +59,17 @@ class Trigger(AAZCommand):
         )
 
         # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.resource_guard_operation_requests = AAZListArg(
+            options=["--resource-guard-operation-requests"],
+            singular_options=["--operation-requests"],
+            arg_group="Parameters",
+            help="Critical operation request which is protected by the resourceGuard.",
+        )
+
+        resource_guard_operation_requests = cls._args_schema.resource_guard_operation_requests
+        resource_guard_operation_requests.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -204,6 +214,11 @@ class Trigger(AAZCommand):
             help="Gets or sets the PV (Persistent Volume) Restore Mode property. This property sets whether volumes needs to be restored.",
             enum={"RestoreWithVolumeData": "RestoreWithVolumeData", "RestoreWithoutVolumeData": "RestoreWithoutVolumeData"},
         )
+        kubernetes_cluster_restore_criteria.resource_modifier_reference = AAZObjectArg(
+            options=["resource-modifier-reference"],
+            help="Gets or sets the resource modifier reference. This property sets the reference for resource modifier during restore.",
+        )
+        cls._build_args_namespaced_name_resource_create(kubernetes_cluster_restore_criteria.resource_modifier_reference)
         kubernetes_cluster_restore_criteria.restore_hook_references = AAZListArg(
             options=["restore-hook-references"],
             help="Gets or sets the restore hook references. This property sets the hook reference to be executed during restore.",
@@ -271,6 +286,11 @@ class Trigger(AAZCommand):
             help="Gets or sets the PV (Persistent Volume) Restore Mode property. This property sets whether volumes needs to be restored from vault.",
             enum={"RestoreWithVolumeData": "RestoreWithVolumeData", "RestoreWithoutVolumeData": "RestoreWithoutVolumeData"},
         )
+        kubernetes_cluster_vault_tier_restore_criteria.resource_modifier_reference = AAZObjectArg(
+            options=["resource-modifier-reference"],
+            help="Gets or sets the resource modifier reference. This property sets the reference for resource modifier during restore.",
+        )
+        cls._build_args_namespaced_name_resource_create(kubernetes_cluster_vault_tier_restore_criteria.resource_modifier_reference)
         kubernetes_cluster_vault_tier_restore_criteria.restore_hook_references = AAZListArg(
             options=["restore-hook-references"],
             help="Gets or sets the restore hook references. This property sets the hook reference to be executed during restore from vault.",
@@ -676,7 +696,7 @@ class Trigger(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -702,11 +722,16 @@ class Trigger(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("objectType", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
             _builder.set_prop("restoreTargetInfo", AAZObjectType, ".restore_target_info", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("sourceDataStoreType", AAZStrType, ".source_data_store_type", typ_kwargs={"flags": {"required": True}})
             _builder.discriminate_by("objectType", "AzureBackupRecoveryPointBasedRestoreRequest")
             _builder.discriminate_by("objectType", "AzureBackupRecoveryTimeBasedRestoreRequest")
             _builder.discriminate_by("objectType", "AzureBackupRestoreWithRehydrationRequest")
+
+            resource_guard_operation_requests = _builder.get(".resourceGuardOperationRequests")
+            if resource_guard_operation_requests is not None:
+                resource_guard_operation_requests.set_elements(AAZStrType, ".")
 
             restore_target_info = _builder.get(".restoreTargetInfo")
             if restore_target_info is not None:
@@ -766,6 +791,7 @@ class Trigger(AAZCommand):
                 disc_kubernetes_cluster_restore_criteria.set_prop("labelSelectors", AAZListType, ".kubernetes_cluster_restore_criteria.label_selectors")
                 disc_kubernetes_cluster_restore_criteria.set_prop("namespaceMappings", AAZDictType, ".kubernetes_cluster_restore_criteria.namespace_mappings")
                 disc_kubernetes_cluster_restore_criteria.set_prop("persistentVolumeRestoreMode", AAZStrType, ".kubernetes_cluster_restore_criteria.persistent_volume_restore_mode")
+                _TriggerHelper._build_schema_namespaced_name_resource_create(disc_kubernetes_cluster_restore_criteria.set_prop("resourceModifierReference", AAZObjectType, ".kubernetes_cluster_restore_criteria.resource_modifier_reference"))
                 disc_kubernetes_cluster_restore_criteria.set_prop("restoreHookReferences", AAZListType, ".kubernetes_cluster_restore_criteria.restore_hook_references")
 
             excluded_namespaces = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.excludedNamespaces")
@@ -807,6 +833,7 @@ class Trigger(AAZCommand):
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("labelSelectors", AAZListType, ".kubernetes_cluster_vault_tier_restore_criteria.label_selectors")
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("namespaceMappings", AAZDictType, ".kubernetes_cluster_vault_tier_restore_criteria.namespace_mappings")
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("persistentVolumeRestoreMode", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria.persistent_volume_restore_mode")
+                _TriggerHelper._build_schema_namespaced_name_resource_create(disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("resourceModifierReference", AAZObjectType, ".kubernetes_cluster_vault_tier_restore_criteria.resource_modifier_reference"))
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("restoreHookReferences", AAZListType, ".kubernetes_cluster_vault_tier_restore_criteria.restore_hook_references")
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("stagingResourceGroupId", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria.staging_resource_group_id")
                 disc_kubernetes_cluster_vault_tier_restore_criteria.set_prop("stagingStorageAccountId", AAZStrType, ".kubernetes_cluster_vault_tier_restore_criteria.staging_storage_account_id")

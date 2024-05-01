@@ -40,7 +40,7 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
     def test_containerapp_up_on_arc_e2e(self, resource_group, connected_cluster_name):
         connected_cluster = self.cmd(
             f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
-        custom_location_name = self.create_random_name(prefix="my-custom-location", length=24)
+        custom_location_name="my-custom-location"
         create_extension_and_custom_location(self, resource_group, connected_cluster_name, custom_location_name)
         sub_id = self.cmd('az account show').get_output_in_json()['id']
         custom_location_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/Microsoft.ExtendedLocation/customLocations/{custom_location_name}"
@@ -52,7 +52,7 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         self.cmd(f'containerapp up -n {app_name} -g {resource_group} --connected-cluster-id {connected_cluster_id} --image {image}')
         env_list = self.cmd(f'containerapp connected-env list -g {resource_group}').get_output_in_json()
         self.assertEqual(env_list[0]["extendedLocation"]["name"].lower(), custom_location_id.lower())
-        if format_location(connected_cluster["location"]) == format_location('eastus2euap'):
+        if format_location(connected_cluster["location"]) == format_location('eastus'):
             self.assertEqual(format_location(env_list[0]["location"]), format_location(TEST_LOCATION))
         else:
             self.assertEqual(format_location(env_list[0]["location"]), format_location(connected_cluster["location"]))
@@ -137,7 +137,7 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
         self.assertIsNotNone(custom_location_id)
         env_list = self.cmd(f'containerapp connected-env list -g {resource_group}').get_output_in_json()
         self.assertEqual(env_list[0]["extendedLocation"]["name"].lower(), custom_location_id.lower())
-        if format_location(connected_cluster["location"]) == format_location('eastus2euap'):
+        if format_location(connected_cluster["location"]) == format_location('eastus'):
             self.assertEqual(format_location(env_list[0]["location"]), format_location(TEST_LOCATION))
         else:
             self.assertEqual(format_location(env_list[0]["location"]), format_location(connected_cluster["location"]))

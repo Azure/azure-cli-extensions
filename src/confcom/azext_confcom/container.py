@@ -92,6 +92,10 @@ def extract_id(container_json: Any) -> str:
     return case_insensitive_dict_get(container_json, config.ACI_FIELD_CONTAINERS_ID)
 
 
+def extract_container_name(container_json: Any) -> str:
+    return case_insensitive_dict_get(container_json, config.ACI_FIELD_CONTAINERS_NAME)
+
+
 def extract_working_dir(container_json: Any) -> str:
     # parse working directory
     workingDir = case_insensitive_dict_get(
@@ -488,6 +492,7 @@ class ContainerImage:
 
         container_image = extract_container_image(container_json)
         id_val = extract_id(container_json)
+        container_name = extract_container_name(container_json)
         environment_rules = extract_env_rules(container_json=container_json)
         command = extract_command(container_json)
         working_dir = extract_working_dir(container_json)
@@ -507,6 +512,7 @@ class ContainerImage:
         allow_privilege_escalation = extract_allow_privilege_escalation(container_json)
         return ContainerImage(
             containerImage=container_image,
+            containerName=container_name,
             environmentRules=environment_rules,
             command=command,
             workingDir=working_dir,
@@ -540,8 +546,10 @@ class ContainerImage:
         allowPrivilegeEscalation: bool = True,
         execProcesses: List = None,
         signals: List = None,
+        containerName: str = ""
     ) -> None:
         self.containerImage = containerImage
+        self.containerName = containerName
         if ":" in containerImage:
             self.base, self.tag = containerImage.split(":", 1)
         else:
@@ -572,6 +580,9 @@ class ContainerImage:
 
     def get_id(self) -> str:
         return self._identifier
+
+    def get_name(self) -> str:
+        return self.containerName
 
     def get_working_dir(self) -> str:
         return self._workingDir
@@ -616,6 +627,8 @@ class ContainerImage:
     def parse_all_parameters_and_variables(self, params, vars_dict) -> None:
         field_names = [
             "containerImage",
+            "containerName",
+            "_identifier",
             "_environmentRules",
             "_command",
             "_workingDir",
@@ -696,6 +709,7 @@ class ContainerImage:
 
         elements = {
             config.POLICY_FIELD_CONTAINERS_ID: self._identifier,
+            config.POLICY_FIELD_CONTAINERS_NAME: self.get_name(),
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_LAYERS: self._layers,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_COMMANDS: self._command,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS: self._get_environment_rules(),
