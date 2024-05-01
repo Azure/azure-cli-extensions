@@ -10,6 +10,7 @@
 from azure.cli.core.commands import CliCommandType
 from ._client_factory import cf_storage_container
 
+
 def load_command_table(self, _):
     data_product_sdk = CliCommandType(
         operations_tmpl="azext_network_analytics.vendored_sdks.data_product.operations#IngestOperations.{}",
