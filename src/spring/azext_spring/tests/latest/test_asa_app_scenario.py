@@ -55,7 +55,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy fake file, the fail is expected
-        with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error."):
+        with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error"):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
@@ -82,7 +82,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy change to .Net
-        with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
+        with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped"):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
 
 
@@ -164,12 +164,31 @@ class AppCRUD(ScenarioTest):
             'rg': resource_group
         })
 
-        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --bind-service-registry --bind-application-configuration-service', checks=[
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --bind-service-registry --bind-application-configuration-service --bind-config-server', checks=[
             self.check('name', '{app}'),
             self.check('properties.addonConfigs.applicationConfigurationService.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(self.get_subscription_id(), resource_group, spring)),
-            self.check('properties.addonConfigs.serviceRegistry.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(self.get_subscription_id(), resource_group, spring))
+            self.check('properties.addonConfigs.serviceRegistry.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(self.get_subscription_id(), resource_group, spring)),
+            self.check('properties.addonConfigs.configServer.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configServers/default".format(self.get_subscription_id(), resource_group, spring))
         ])
 
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'], location = 'eastasia')
+    @SpringAppNamePreparer()
+    def test_app_actuator_configs(self, resource_group, spring, app):
+        self.kwargs.update({
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName}', checks=[
+            self.check('name', '{app}'),
+        ])
+
+        # add actuator configs
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8080 --custom-actuator-path actuator', checks=[
+            self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8080}}),
+        ])
 
 class BlueGreenTest(ScenarioTest):
 

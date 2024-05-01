@@ -21,10 +21,15 @@ from azure.cli.core.azclierror import (
     ForbiddenError,
     UnauthorizedError
 )
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 from knack.log import get_logger
+from knack.prompting import prompt_y_n
+from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
+from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as BackupVaultGet
 
 logger = get_logger(__name__)
 
@@ -208,49 +213,36 @@ def dataprotection_backup_vault_list_from_resourcegraph(client, resource_groups=
 
 def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_name, datasource_type, vault_name, operation,
                                                           permissions_scope, backup_instance=None, restore_request_object=None,
-                                                          keyvault_id=None, snapshot_resource_group_id=None, yes=False):
-    from msrestazure.tools import is_valid_resource_id, parse_resource_id
-
+                                                          keyvault_id=None, snapshot_resource_group_id=None,
+                                                          target_storage_account_id=None, yes=False):
     if operation == 'Backup' and backup_instance is None:
         raise RequiredArgumentMissingError("--backup-instance needs to be given when --operation is given as Backup")
-    elif operation == "Restore" and restore_request_object is None:
+
+    if operation == "Restore" and restore_request_object is None:
         raise RequiredArgumentMissingError("--restore-request-object needs to be given when --operation is given as Restore")
 
     if datasource_type == 'AzureDatabaseForPostgreSQL':
         if not keyvault_id:
             raise RequiredArgumentMissingError("--keyvault-id needs to be given when --datasource-type is AzureDatabaseForPostgreSQL")
-
         if not is_valid_resource_id(keyvault_id):
             raise InvalidArgumentValueError("Please provide a valid keyvault ID")
 
-    datasource_map = {
-        "AzureDisk": "Microsoft.Compute/disks",
-        "AzureBlob": "Microsoft.Storage/storageAccounts/blobServices",
-        "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
-        "AzureKubernetesService": "Microsoft.ContainerService/managedClusters"
-    }
-
     manifest = helper.load_manifest(datasource_type)
 
-    from knack.prompting import prompt_y_n
-    msg = helper.get_help_text_on_grant_permissions_templatized(datasource_type)
-    if not yes and not prompt_y_n(msg):
+    warning_message = helper.get_help_text_on_grant_permissions_templatized(datasource_type, operation)
+    if not yes and not prompt_y_n(warning_message):
         return None
-
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
-    from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as BackupVaultGet
 
     backup_vault = BackupVaultGet(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name
     })
-    principal_id = backup_vault['identity']['principalId']
+    vault_principal_id = backup_vault['identity']['principalId']
 
     role_assignments_arr = []
 
     if operation == "Backup":
-        if datasource_map[datasource_type] != backup_instance["properties"]["data_source_info"]["datasource_type"]:
+        if helper.datasource_map[datasource_type] != backup_instance["properties"]["data_source_info"]["datasource_type"]:
             raise InvalidArgumentValueError("--backup-instance provided is not compatible with the --datasource-type.")
 
         if backup_instance['properties']['data_source_info']['resource_location'] != backup_vault['location']:
@@ -305,9 +297,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
                 keyvault_assignment_scope = helper.truncate_id_using_scope(keyvault_id, permissions_scope)
 
-                role_assignment = list_role_assignments(cmd, assignee=principal_id, role=role, scope=keyvault_id, include_inherited=True)
+                role_assignment = list_role_assignments(cmd, assignee=vault_principal_id, role=role, scope=keyvault_id, include_inherited=True)
                 if not role_assignment:
-                    assignment = create_role_assignment(cmd, assignee=principal_id, role=role, scope=keyvault_assignment_scope)
+                    assignment = create_role_assignment(cmd, assignee=vault_principal_id, role=role, scope=keyvault_assignment_scope)
                     role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
 
             else:
@@ -319,7 +311,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
                 secrets_array = []
                 for policy in keyvault.properties.access_policies:
-                    if policy.object_id == principal_id:
+                    if policy.object_id == vault_principal_id:
                         secrets_array = policy.permissions.secrets
                         break
 
@@ -331,7 +323,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
                 if not permissions_set:
                     keyvault_update = True
-                    keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
+                    keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=vault_principal_id, secret_permissions=secrets_array)
                     keyvault = keyvault.result()
 
             from azure.cli.command_modules.keyvault.custom import update_vault_setter
@@ -345,57 +337,19 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
             if keyvault_update:
                 role_assignments_arr.append(helper.get_permission_object_from_keyvault(keyvault))
 
-        for role_object in manifest['backupVaultPermissions']:
-            resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
-            resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-
-            assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-
-            role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                     scope=resource_id, include_inherited=True)
-            if not role_assignments:
-                assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                    scope=assignment_scope)
-                role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+        if 'backupVaultPermissions' in manifest:
+            for role_object in manifest['backupVaultPermissions']:
+                role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
+                                                                     backup_instance=backup_instance, principal_id=vault_principal_id,
+                                                                     role_assignments_arr=role_assignments_arr)
 
         if 'dataSourcePermissions' in manifest:
+            datasource_principal_id = helper.get_datasource_principal_id_from_object(cmd, datasource_type,
+                                                                                     backup_instance=backup_instance)
             for role_object in manifest['dataSourcePermissions']:
-                datasource_principal_id = None
-
-                if datasource_type == "AzureKubernetesService":
-                    datasource_arm_id = helper.get_resource_id_from_backup_instance(backup_instance, 'DataSource')
-                    subscription_arm_id = helper.get_sub_id_from_arm_id(datasource_arm_id)
-                    subscription_id = subscription_arm_id.split("/")[-1]
-
-                    from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
-                    aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
-                    aks_client = getattr(aks_client, 'managed_clusters')
-                    aks_name = helper.get_resource_name_from_backup_instance(backup_instance, 'DataSource')
-                    aks_rg_id = helper.get_rg_id_from_arm_id(datasource_arm_id)
-                    aks_rg = aks_rg_id.split('/')[-1]
-                    aks_cluster = aks_client.get(aks_rg, aks_name)
-
-                    if "UserAssigned" in aks_cluster.identity.type:
-                        uami_key = list(aks_cluster.identity.user_assigned_identities.keys())[0]
-                        if uami_key == "" or uami_key is None:
-                            raise CLIInternalError("User assigned identity not found for AKS Cluster")
-                        datasource_principal_id = aks_cluster.identity.user_assigned_identities[uami_key].principal_id
-                    else:
-                        datasource_principal_id = aks_cluster.identity.principal_id
-                else:
-                    raise InvalidArgumentValueError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
-
-                resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
-                resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-                assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-
-                role_assignments = list_role_assignments(cmd, assignee=datasource_principal_id,
-                                                         role=role_object['roleDefinitionName'], scope=resource_id,
-                                                         include_inherited=True)
-                if not role_assignments:
-                    assignment = create_role_assignment(cmd, assignee=datasource_principal_id,
-                                                        role=role_object['roleDefinitionName'], scope=assignment_scope)
-                    role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+                role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
+                                                                     backup_instance=backup_instance, principal_id=datasource_principal_id,
+                                                                     role_assignments_arr=role_assignments_arr)
 
         # Network line of sight access on server, if that is the datasource type
         if datasource_type == 'AzureDatabaseForPostgreSQL':
@@ -422,76 +376,26 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                 rule = postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters)
                 role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
     elif operation == "Restore":
-        if datasource_type != "AzureKubernetesService":
+        if datasource_type not in ("AzureKubernetesService", "AzureDatabaseForMySQL",
+                                   "AzureDatabaseForPostgreSQLFlexibleServer"):
             raise InvalidArgumentValueError("Set permissions for restore is currently not supported for given DataSourceType")
 
-        for role_object in manifest['backupVaultPermissions']:
-            resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
-
-            if role_object['type'] == 'SnapshotRG':
-                if snapshot_resource_group_id is None:
-                    logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
-                    continue
-                else:
-                    resource_id = snapshot_resource_group_id
-
-            resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-
-            assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-
-            role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                     scope=resource_id, include_inherited=True)
-            if not role_assignments:
-                assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                    scope=assignment_scope)
-                role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+        for role_object in manifest['backupVaultRestorePermissions']:
+            role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
+                                                                 restore_request_object=restore_request_object, principal_id=vault_principal_id,
+                                                                 role_assignments_arr=role_assignments_arr,
+                                                                 target_storage_account_id=target_storage_account_id,
+                                                                 snapshot_resource_group_id=snapshot_resource_group_id)
 
         if 'dataSourcePermissions' in manifest:
-            for role_object in manifest['dataSourcePermissions']:
-                resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
-
-                if role_object['type'] == 'SnapshotRG':
-                    if snapshot_resource_group_id is None:
-                        logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
-                        continue
-                    else:
-                        resource_id = snapshot_resource_group_id
-
-                resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-                assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-
-                datasource_principal_id = None
-
-                if datasource_type == "AzureKubernetesService":
-                    datasource_arm_id = helper.get_resource_id_from_restore_request_object(restore_request_object, 'DataSource')
-                    subscription_arm_id = helper.get_sub_id_from_arm_id(datasource_arm_id)
-                    subscription_id = subscription_arm_id.split("/")[-1]
-
-                    from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
-                    aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
-                    aks_client = getattr(aks_client, 'managed_clusters')
-                    aks_name = helper.get_resource_name_from_restore_request_object(restore_request_object, 'DataSource')
-                    aks_rg_id = helper.get_rg_id_from_arm_id(datasource_arm_id)
-                    aks_rg = aks_rg_id.split('/')[-1]
-                    aks_cluster = aks_client.get(aks_rg, aks_name)
-
-                    if "UserAssigned" in aks_cluster.identity.type:
-                        uami_key = list(aks_cluster.identity.user_assigned_identities.keys())[0]
-                        if uami_key == "" or uami_key is None:
-                            raise CLIInternalError("User assigned identity not found for AKS Cluster")
-                        datasource_principal_id = aks_cluster.identity.user_assigned_identities[uami_key].principal_id
-                    else:
-                        datasource_principal_id = aks_cluster.identity.principal_id
-                else:
-                    raise InvalidArgumentValueError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
-
-                role_assignments = list_role_assignments(cmd, assignee=datasource_principal_id,
-                                                         role=role_object['roleDefinitionName'], scope=resource_id,
-                                                         include_inherited=True)
-                if not role_assignments:
-                    assignment = create_role_assignment(cmd, assignee=datasource_principal_id,
-                                                        role=role_object['roleDefinitionName'], scope=assignment_scope)
-                    role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+            datasource_principal_id = helper.get_datasource_principal_id_from_object(cmd, datasource_type,
+                                                                                     restore_request_object=restore_request_object)
+            for role_object in manifest['dataSourceRestorePermissions']:
+                role_assignments_arr = helper.check_and_assign_roles(cmd, permissions_scope=permissions_scope, role_object=role_object,
+                                                                     restore_request_object=restore_request_object, principal_id=datasource_principal_id,
+                                                                     role_assignments_arr=role_assignments_arr,
+                                                                     target_storage_account_id=target_storage_account_id,
+                                                                     snapshot_resource_group_id=snapshot_resource_group_id)
 
     if not role_assignments_arr:
         logger.warning("The required permissions are already assigned!")
@@ -816,7 +720,8 @@ def dataprotection_recovery_point_list(cmd, backup_instance_name, resource_group
 
 
 def dataprotection_backup_instance_restore_trigger(cmd, vault_name, resource_group_name, backup_instance_name,
-                                                   restore_request_object, use_secondary_region=None, no_wait=False):
+                                                   restore_request_object, use_secondary_region=None, no_wait=False,
+                                                   resource_guard_operation_requests=None, tenant_id=None):
     from .aaz_operations.backup_instance import (
         RestoreTrigger,
         TriggerCRR
@@ -838,11 +743,14 @@ def dataprotection_backup_instance_restore_trigger(cmd, vault_name, resource_gro
             "no_wait": no_wait
         })
 
+    # Resource guard checks only exists for non-CRR restore trigger right now
     return RestoreTrigger(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name,
         "backup_instance_name": backup_instance_name,
         "restore_request_object": restore_request_object,
+        "resource_guard_operation_requests": resource_guard_operation_requests,
+        "tenant_id": tenant_id,
         "no_wait": no_wait
     })
 

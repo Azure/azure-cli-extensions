@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "apic environment create",
 )
 class Create(AAZCommand):
-    """Create new or updates existing environment.
+    """Create a new environment or update an existing environment.
 
     :example: Create environment
-        az apic environment create -g api-center-test -s contosoeuap --name public --title "Public cloud" --kind "development"
+        az apic environment create -g api-center-test -s contosoeuap --environment-id public --title "Public cloud" --type "development"
     """
 
     _aaz_info = {
@@ -44,11 +44,12 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.environment_name = AAZStrArg(
-            options=["--name", "--environment", "--environment-name"],
-            help="The name of the environment.",
+        _args_schema.environment_id = AAZStrArg(
+            options=["--environment-id"],
+            help="The id of the environment.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -61,6 +62,7 @@ class Create(AAZCommand):
             help="The name of the API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -71,6 +73,7 @@ class Create(AAZCommand):
             required=True,
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -79,7 +82,7 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.custom_properties = AAZObjectArg(
+        _args_schema.custom_properties = AAZFreeFormDictArg(
             options=["--custom-properties"],
             arg_group="Properties",
             help="The custom metadata defined for API catalog entities.",
@@ -88,17 +91,19 @@ class Create(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="Description.",
+            help="Environment description.",
         )
-        _args_schema.kind = AAZStrArg(
-            options=["--kind"],
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
             arg_group="Properties",
-            help="Environment kind.",
+            help="Environment type.",
+            required=True,
             enum={"development": "development", "production": "production", "staging": "staging", "testing": "testing"},
         )
         _args_schema.onboarding = AAZObjectArg(
             options=["--onboarding"],
             arg_group="Properties",
+            help="Provide onboarding documentation related to your environment, e.g. {developerPortalUri:['https://developer.contoso.com'],instructions:'instructions markdown'}",
         )
         _args_schema.server = AAZObjectArg(
             options=["--server"],
@@ -109,6 +114,7 @@ class Create(AAZCommand):
             options=["--title"],
             arg_group="Properties",
             help="Environment title.",
+            required=True,
             fmt=AAZStrArgFormat(
                 max_length=50,
                 min_length=1,
@@ -118,6 +124,7 @@ class Create(AAZCommand):
         onboarding = cls._args_schema.onboarding
         onboarding.developer_portal_uri = AAZListArg(
             options=["developer-portal-uri"],
+            help="The location of the development portal",
         )
         onboarding.instructions = AAZStrArg(
             options=["instructions"],
@@ -130,6 +137,7 @@ class Create(AAZCommand):
         server = cls._args_schema.server
         server.management_portal_uri = AAZListArg(
             options=["management-portal-uri"],
+            help="The location of the management portal",
         )
         server.type = AAZStrArg(
             options=["type"],
@@ -188,7 +196,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "environmentName", self.ctx.args.environment_name,
+                    "environmentName", self.ctx.args.environment_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -239,16 +247,20 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("customProperties", AAZObjectType, ".custom_properties")
+                properties.set_prop("customProperties", AAZFreeFormDictType, ".custom_properties")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("kind", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("onboarding", AAZObjectType, ".onboarding")
                 properties.set_prop("server", AAZObjectType, ".server")
                 properties.set_prop("title", AAZStrType, ".title", typ_kwargs={"flags": {"required": True}})
+
+            custom_properties = _builder.get(".properties.customProperties")
+            if custom_properties is not None:
+                custom_properties.set_anytype_elements(".")
 
             onboarding = _builder.get(".properties.onboarding")
             if onboarding is not None:
@@ -295,7 +307,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -306,7 +318,7 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.custom_properties = AAZObjectType(
+            properties.custom_properties = AAZFreeFormDictType(
                 serialized_name="customProperties",
             )
             properties.description = AAZStrType()

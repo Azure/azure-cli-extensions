@@ -15,13 +15,13 @@ from azure.cli.core.aaz import *
     "apic service create",
 )
 class Create(AAZCommand):
-    """Create an instance of Azure API Center service.
+    """Creates an instance or update an existing instance of an Azure API Center service.
 
     :example: Create service Example 1
-        az apic create -g contoso-resources -s contoso -l centraluseuap
+        az apic service create -g contoso-resources -s contoso -l eastus
 
     :example: Create Service Example 2
-        az apic create --resource-group contoso-resources --name contoso --locationcentraluseuap
+        az apic service create --resource-group contoso-resources --name contoso --location eastus
     """
 
     _aaz_info = {
@@ -55,29 +55,24 @@ class Create(AAZCommand):
             help="The name of the API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-
-        # define Arg Group "Payload"
-
-        _args_schema = cls._args_schema
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
-            arg_group="Payload",
-            help="Managed service identity (system assigned and/or user assigned identities)",
+            help="The managed service identities assigned to this resource.",
         )
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="Payload",
             help="The geo-location where the resource lives",
+            required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Payload",
             help="Resource tags.",
         )
 
@@ -191,7 +186,7 @@ class Create(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
