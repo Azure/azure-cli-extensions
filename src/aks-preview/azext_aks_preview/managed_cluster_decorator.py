@@ -55,7 +55,10 @@ from azext_aks_preview._podidentity import (
     _is_pod_identity_addon_enabled,
     _update_addon_pod_identity,
 )
-from azext_aks_preview._roleassignments import add_role_assignment
+from azext_aks_preview._roleassignments import (
+    add_role_assignment,
+    _add_role_assignment_executor_new
+)
 from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolUpdateDecorator,
@@ -67,6 +70,7 @@ from azext_aks_preview.azurecontainerstorage.acstor_ops import (
 from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites,
 )
+from azure.cli.command_modules.acs._client_factory import get_graph_client
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
@@ -188,6 +192,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ] = ensure_azure_monitor_profile_prerequisites
             # temp workaround for the breaking change caused by default API version bump of the auth SDK
             external_functions["add_role_assignment"] = add_role_assignment
+            external_functions["_add_role_assignment_executor_new"] = _add_role_assignment_executor_new
             # azure container storage functions
             external_functions["perform_enable_azure_container_storage"] = perform_enable_azure_container_storage
             external_functions["perform_disable_azure_container_storage"] = perform_disable_azure_container_storage
@@ -3695,6 +3700,37 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 True,
                 is_called_from_extension=True,
             )
+
+        #Add role assignments for automatic sku
+        if cluster.sku.name == "Automatic":
+            client = get_graph_client(self.cmd.cli_ctx)
+            try:
+                user = client.signed_in_user_get()
+            except Exception as e:
+                logger.warning("Could not get signed in user.")
+            else:
+                object_id = user["id"]
+                self.context.external_functions._add_role_assignment_executor_new(
+                    self.cmd,
+                    "Azure Kubernetes Service RBAC Cluster Admin",
+                    object_id,
+                    scope=cluster.id,
+                    resolve_assignee=False,
+                )
+                self.context.external_functions._add_role_assignment_executor_new(
+                    self.cmd,
+                    "Azure Kubernetes Service RBAC Admin",
+                    object_id,
+                    scope=cluster.id,
+                    resolve_assignee=False,
+                )
+                self.context.external_functions._add_role_assignment_executor_new(
+                    self.cmd,
+                    "Azure Kubernetes Service Cluster User Role",
+                    object_id,
+                    scope=cluster.id,
+                    resolve_assignee=False,
+                )
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
