@@ -3245,6 +3245,36 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("sku.tier", "Standard"),
             ],
         )
+
+        # azuremonitor metrics will be set to false after initial creation command as its in the
+        # postprocessing step that we do an update to enable it. Adding a wait for the second put request
+        # in addonput.py which enables the Azure Monitor Metrics addon as all the DC* resources
+        # have now been created.
+        wait_cmd = " ".join(
+            [
+                "aks",
+                "wait",
+                "--resource-group={resource_group}",
+                "--name={name}",
+                "--updated",
+                "--interval 60",
+                "--timeout 300",
+            ]
+        )
+        self.cmd(
+            wait_cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+        self.cmd(
+            "aks show -g {resource_group} -n {name} --output=json",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("azureMonitorProfile.metrics.enabled", True),
+            ],
+        )
         
         # scale the cluster
         scale_cluster_cmd = (
@@ -11010,13 +11040,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
                      '--enable-azure-container-storage azureDisk'
 
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
         # Sleep for 5 mins before next operation,
         # since azure container storage operations take
         # some time to post process.
         time.sleep(5 * 60)
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
 
         # update: disable-azure-container-storage
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
