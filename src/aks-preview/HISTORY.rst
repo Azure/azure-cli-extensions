@@ -12,6 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+3.0.0b11
+++++++++
+* Create three default role assignments for automatic sku clusters.
+* "Azure Kubernetes Service RBAC Cluster Admin"
+* "Azure Kubernetes Service RBAC Admin"
+* "Azure Kubernetes Service Cluster User Role"
+
 3.0.0b10
 ++++++++
 * Support to enable azure monitor profile when the sku name is automatic.
