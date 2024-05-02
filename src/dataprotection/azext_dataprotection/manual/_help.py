@@ -30,7 +30,7 @@ helps['dataprotection backup-instance update'] = """
     short-summary: Update properties associated with a backup instance.
     examples:
       - name: Fetch backup configuration for vaulted blobs, providing a list of containers to back up
-        text: az dataprotection backup-instance initialize-backupconfig --container-list
+        text: az dataprotection backup-instance initialize-backupconfig --container-list sample1 sample2
       - name: Update backed up containers for a vaulted blob backup instance
         text: az dataprotection backup-instance update --backup-instance-name MyDisk1 --vaulted-blob-container-list {backup_configuration} -g MyResourceGroup --vault-name MyVault
 """
@@ -199,7 +199,7 @@ helps['dataprotection backup-instance initialize-backupconfig'] = """
       - name: Initialize backup configuration for AzureKubernetesService
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService --label-selectors key=val foo=bar --excluded-namespaces excludeNS1 excludeNS2
       - name: Initialize backup configuration for AzureBlob
-        text: az dataprotection backup-instance initialize-backupconfig --datasource-type "AzureBlob" --include-all-containers --storage-account-rg "sapleRG" --storage-account-name "samplestorage"'
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type "AzureBlob" --include-all-containers --storage-account-rg "sampleRG" --storage-account-name "samplestorage"
 """
 
 helps['dataprotection backup-instance initialize-restoreconfig'] = """

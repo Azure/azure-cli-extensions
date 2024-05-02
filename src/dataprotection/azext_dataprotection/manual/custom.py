@@ -118,7 +118,7 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
                                             ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources, '
                                             ' --backup-hook-references for given datasource type.')
         return helper.get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group)
-    
+
     raise InvalidArgumentValueError('Given datasource type is not supported currently. '
                                     'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
 
