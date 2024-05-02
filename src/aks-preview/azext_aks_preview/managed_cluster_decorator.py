@@ -3555,7 +3555,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 logger.warning(
                     "Could not create a role assignment for subnet. Are you an Owner on this subscription?"
                 )
-
+    # pylint: disable=too-many-locals
     def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
         """Postprocessing performed after the cluster is created.
 
@@ -3718,14 +3718,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
                     self.cmd,
                     "Azure Kubernetes Service RBAC Admin",
-                    object_id,
+                    user["id"],
                     scope=cluster.id,
                     resolve_assignee=False,
                 )
                 self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
                     self.cmd,
                     "Azure Kubernetes Service Cluster User Role",
-                    object_id,
+                    user["id"],
                     scope=cluster.id,
                     resolve_assignee=False,
                 )
