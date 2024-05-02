@@ -3703,7 +3703,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
 
         # Add role assignments for automatic sku
-        if cluster.sku.name == "Automatic":
+        if cluster.sku is not None and cluster.sku.name == "Automatic":
             try:
                 user = get_graph_client(self.cmd.cli_ctx).signed_in_user_get()
             except Exception as e:  # pylint: disable=broad-except
