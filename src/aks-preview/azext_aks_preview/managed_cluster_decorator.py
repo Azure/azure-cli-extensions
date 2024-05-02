@@ -3703,28 +3703,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         # Add role assignments for automatic sku
         if cluster.sku.name == "Automatic":
-            client = get_graph_client(self.cmd.cli_ctx)
             try:
-                user = client.signed_in_user_get()
-            except Exception:
-                logger.warning("Could not get signed in user.")
+                user = get_graph_client(self.cmd.cli_ctx).signed_in_user_get()
+            except Exception as e:  # pylint: disable=broad-except
+                logger.warning("Could not get signed in user: %s", str(e))
             else:
-                object_id = user["id"]
-                self.context.external_functions._add_role_assignment_executor_new(
+                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
                     self.cmd,
                     "Azure Kubernetes Service RBAC Cluster Admin",
-                    object_id,
+                    user["id"],
                     scope=cluster.id,
                     resolve_assignee=False,
                 )
-                self.context.external_functions._add_role_assignment_executor_new(
+                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
                     self.cmd,
                     "Azure Kubernetes Service RBAC Admin",
                     object_id,
                     scope=cluster.id,
                     resolve_assignee=False,
                 )
-                self.context.external_functions._add_role_assignment_executor_new(
+                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
                     self.cmd,
                     "Azure Kubernetes Service Cluster User Role",
                     object_id,
