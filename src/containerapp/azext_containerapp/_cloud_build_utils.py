@@ -139,6 +139,13 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         base_proxy_endpoint = container_app_result["properties"]["eventStreamEndpoint"].rstrip("/eventstream")
         upload_endpoint = f"{base_proxy_endpoint}/upload?token={token}"
         headers = {'Authorization': 'Bearer ' + token}
+        if build_env_vars:
+            import json
+            # Parse the env vars into a json raw string in the format [{"name": "key1", "value": "value1"}, {"name": "key2", "value": "value2"}]
+            parsed_build_env_vars = parse_build_env_vars(build_env_vars)
+            json_build_env_vars = json.dumps(parsed_build_env_vars)
+            headers["BuildtimeEnvVars"] = json_build_env_vars
+
         try:
             data_file = open(data_file_path, "rb")
             file_name = os.path.basename(data_file_path)
