@@ -153,7 +153,7 @@ def load_command_table(self, args):
         g.custom_command('interactive', 'patch_interactive')
         g.custom_command('delete', 'patch_delete')
         g.custom_command('show', 'patch_show')
-    
+
     with self.command_group('containerapp patch configure', is_preview=True) as g:
         g.custom_command('mode', 'patch_mode_configure')
 

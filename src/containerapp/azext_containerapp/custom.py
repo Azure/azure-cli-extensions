@@ -1479,7 +1479,7 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, container_app_na
         logger.warning("Cloud patching is only supported in North Central US (Stage) now.")
         app = show_containerapp(cmd, container_app_name, resource_group_name)
         if app is None:
-            logger.error(f"Container app {container_app_name} not found in resource group {resource_group_name}.")
+            logger.error("Container app {0} not found in resource group {1}.".format(container_app_name, resource_group_name))
             return
         if app["location"] != "North Central US (Stage)":
             logger.warning("Cloud patching is not supported in the location of the container app. Defaulted back to use local patching.")
@@ -1487,9 +1487,9 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, container_app_na
         else:
             from ._clients import PatchClient
             patch_client = PatchClient()
-            patch_list = patch_client.list(cmd, resource_group_name, container_app_name)
-            if patch_list:
-                return patch_list["value"]
+            patches = patch_client.list(cmd, resource_group_name, container_app_name)
+            if patches:
+                return patches["value"]
 
     # Ensure that Docker is running locally before attempting to use the pack CLI
     if is_docker_running() is False:
@@ -1553,7 +1553,7 @@ def patch_show(cmd, resource_group_name=None, container_app_name=None, patch_nam
         return
     app = show_containerapp(cmd, container_app_name, resource_group_name)
     if app is None:
-        logger.error(f"Container app {container_app_name} not found in resource group {resource_group_name}.")
+        logger.error("Container app {0} not found in resource group {1}.".format(container_app_name, resource_group_name))
         return
     if app["location"] != "North Central US (Stage)":
         logger.warning("Cloud patching is not supported in the location of the container app.")
@@ -1570,7 +1570,7 @@ def patch_delete(cmd, resource_group_name=None, container_app_name=None, patch_n
         return
     app = show_containerapp(cmd, container_app_name, resource_group_name)
     if app is None:
-        logger.error(f"Container app {container_app_name} not found in resource group {resource_group_name}.")
+        logger.error("Container app {0} not found in resource group {1}.".format(container_app_name, resource_group_name))
         return
     if app["location"] != "North Central US (Stage)":
         logger.warning("Cloud patching is not supported in the location of the container app.")
@@ -1579,16 +1579,16 @@ def patch_delete(cmd, resource_group_name=None, container_app_name=None, patch_n
     patch_client = PatchClient()
     is_patch_deleted = patch_client.delete(cmd, resource_group_name, container_app_name, patch_name)
     if is_patch_deleted:
-        print(f"Patch {patch_name} for container app {container_app_name} is deleted successfully.")
+        print("Patch {0} for container app {1} is deleted successfully.".format(patch_name, container_app_name))
     else:
-        logger.error(f"Failed to delete patch {patch_name} for container app {container_app_name}.")
+        logger.error("Failed to delete patch {0} for container app {1}.".format(patch_name, container_app_name))
 
 
 def patch_mode_configure(cmd, resource_group_name=None, container_app_name=None, patch_mode=None):
     logger.warning("This command is currently only available for container app Cloud Patches in North Central US (Stage).")
     app = show_containerapp(cmd, container_app_name, resource_group_name)
     if app is None:
-        logger.error(f"Container app {container_app_name} not found in resource group {resource_group_name}.")
+        logger.error("Container app {0} not found in resource group {1}.".format(container_app_name, resource_group_name))
         return
     if app["location"] != "North Central US (Stage)":
         logger.warning("Cloud patching is not supported in the location of the container app.")
@@ -1600,9 +1600,9 @@ def patch_mode_configure(cmd, resource_group_name=None, container_app_name=None,
     patch_client = PatchClient()
     is_patch_mode_configured = patch_client.patch_mode_configure(cmd, resource_group_name, container_app_name, patch_mode)
     if is_patch_mode_configured:
-        print(f"Patch mode for container app {container_app_name} is set to {patch_mode}.")
+        print("Patch mode for container app {0} is set to {1}.".format(container_app_name, patch_mode))
     else:
-        logger.error(f"Failed to set patch mode for container app {container_app_name}.")
+        logger.error("Failed to set patch mode for container app {}.".format(container_app_name))
     return
 
 
@@ -1697,21 +1697,9 @@ def patch_interactive(cmd, resource_group_name=None, managed_env=None, show_all=
 
 
 def patch_apply(cmd, resource_group_name=None, managed_env=None, container_app_name=None, patch_name=None, show_all=False):
-    app = show_containerapp(cmd, container_app_name, resource_group_name)
-    if app is None:
-        logger.error(f"Container app {container_app_name} not found in resource group {resource_group_name}.")
-        return
-    if app["location"] == "North Central US (Stage)":
-        logger.info("Using cloud patching...")
-        logger.warning("Cloud patching is only supported in North Central US (Stage) now.")
-        from ._clients import PatchClient
-        patch_client = PatchClient()
-        is_patch_success = patch_client.apply(cmd, resource_group_name, container_app_name, patch_name)
-        if is_patch_success:
-            logger.info(f"Patch {patch_name} for container app {container_app_name} is queued successfully to be applied.")
-        else:
-            logger.error(f"Failed to apply patch {patch_name} for container app {container_app_name}.")
-        return
+    if container_app_name:
+        # Use Cloud Patching if container app name is provided
+        return use_cloud_patch(cmd, container_app_name, resource_group_name, patch_name)
     if is_docker_running() is False:
         logger.error("Please install or start Docker and try again.")
         return
@@ -1730,6 +1718,24 @@ def patch_apply(cmd, resource_group_name=None, managed_env=None, container_app_n
     if without_unpatchable_results == []:
         return
     patch_apply_handle_input(cmd, patchable_check_results, "y", pack_exec_path)
+
+
+def use_cloud_patch(cmd, container_app_name, resource_group_name, patch_name):
+    app = show_containerapp(cmd, container_app_name, resource_group_name)
+    if app is None:
+        logger.error("Container app {0} not found in resource group {1}.".format(container_app_name, resource_group_name))
+        return
+    if app["location"] == "North Central US (Stage)":
+        logger.warning("Using cloud patching...")
+        logger.warning("Cloud patching is only supported in North Central US (Stage) now.")
+        from ._clients import PatchClient
+        patch_client = PatchClient()
+        is_patch_success = patch_client.apply(cmd, resource_group_name, container_app_name, patch_name)
+        if is_patch_success:
+            print("Patch {0} for container app {1} is queued successfully to be applied.".format(patch_name, container_app_name))
+        else:
+            logger.error("Failed to apply patch {0} for container app {1}.".format(patch_name, container_app_name))
+        return
 
 
 def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
@@ -2439,7 +2445,7 @@ def set_environment_telemetry_data_dog(cmd,
 
     containerapp_env_telemetry_data_dog_decorator.construct_payload()
     r = containerapp_env_telemetry_data_dog_decorator.update()
-    
+
     return r
 
 
@@ -2462,7 +2468,7 @@ def delete_environment_telemetry_data_dog(cmd,
 
     containerapp_env_telemetry_data_dog_decorator.construct_payload()
     r = containerapp_env_telemetry_data_dog_decorator.update()
-    
+
     return r
 
 
@@ -2477,7 +2483,7 @@ def show_environment_telemetry_data_dog(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_data_dog_decorator.show()
@@ -2509,7 +2515,7 @@ def set_environment_telemetry_app_insights(cmd,
 
     containerapp_env_telemetry_app_insights_decorator.construct_payload()
     r = containerapp_env_telemetry_app_insights_decorator.update()
-    
+
     return r
 
 
@@ -2531,7 +2537,7 @@ def delete_environment_telemetry_app_insights(cmd,
 
     containerapp_env_telemetry_app_insights_decorator.construct_payload()
     r = containerapp_env_telemetry_app_insights_decorator.update()
-    
+
     return r
 
 
@@ -2546,7 +2552,7 @@ def show_environment_telemetry_app_insights(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_app_insights_decorator.show()
@@ -2600,7 +2606,7 @@ def add_environment_telemetry_otlp(cmd,
 
     containerapp_env_telemetry_otlp_decorator.construct_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
-    
+
     return r
 
 
@@ -2640,7 +2646,7 @@ def update_environment_telemetry_otlp(cmd,
 
     containerapp_env_telemetry_otlp_decorator.construct_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
-    
+
     return r
 
 
@@ -2663,7 +2669,7 @@ def remove_environment_telemetry_otlp(cmd,
 
     containerapp_env_telemetry_otlp_decorator.construct_remove_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
-    
+
     return r
 
 
@@ -2679,7 +2685,7 @@ def show_environment_telemetry_otlp(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
@@ -2695,7 +2701,7 @@ def show_environment_telemetry_otlp(cmd,
 
         if not otlp:
             raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
-        
+
         existing_otlps = otlp
         safe_set(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
 
@@ -2713,7 +2719,7 @@ def list_environment_telemetry_otlp(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
@@ -2721,4 +2727,3 @@ def list_environment_telemetry_otlp(cmd,
         handle_non_404_status_code_exception(e)
 
     return containerapp_env_def
-
