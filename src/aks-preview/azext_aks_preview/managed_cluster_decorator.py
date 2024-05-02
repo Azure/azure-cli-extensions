@@ -3706,7 +3706,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             client = get_graph_client(self.cmd.cli_ctx)
             try:
                 user = client.signed_in_user_get()
-            except Exception as e:
+            except Exception:
                 logger.warning("Could not get signed in user.")
             else:
                 object_id = user["id"]
