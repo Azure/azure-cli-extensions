@@ -248,9 +248,13 @@ def load_arguments(self, _):
 
     # Patch
     with self.argument_context('containerapp patch') as c:
+        c.argument('patch_name', help="Name of the cloud patch for a container app.")
+        c.argument('container_app_name', help='Name of the container app.')
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('managed_env', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
         c.argument('show_all', action='store_true', help='Show all patchable and unpatchable container apps')
+        c.argument('configure', help='Configure the patch or the patching mode for the container app')
+        c.argument('patch_mode', help='The patching mode for the container app. Supported modes are: Automatic, Manual, Disabled')
 
     # Container App job
     with self.argument_context('containerapp job') as c:

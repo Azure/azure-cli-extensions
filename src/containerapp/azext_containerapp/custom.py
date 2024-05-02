@@ -1472,7 +1472,25 @@ def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_na
     return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
 
 
-def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
+def patch_list(cmd, resource_group_name=None, managed_env=None, container_app_name=None, show_all=False):
+    if container_app_name:
+        # Use cloud patching if container app name is provided
+        logger.warning("Container app name is provided. List cloud patches available for the container app.")
+        logger.warning("Cloud patching is only supported in North Central US (Stage) now.")
+        app = show_containerapp(cmd, container_app_name, resource_group_name)
+        if app is None:
+            logger.error(f"Container app {container_app_name} not found in resource group {resource_group_name}.")
+            return
+        if app["location"] != "North Central US (Stage)":
+            logger.warning("Cloud patching is not supported in the location of the container app. Defaulted back to use local patching.")
+            logger.warning("Container App name will not be used in local patching.")
+        else:
+            from ._clients import PatchClient
+            patch_client = PatchClient()
+            patch_list = patch_client.list(cmd, resource_group_name, container_app_name)
+            if patch_list:
+                return patch_list["value"]
+
     # Ensure that Docker is running locally before attempting to use the pack CLI
     if is_docker_running() is False:
         logger.error("Please install or start Docker and try again.")
@@ -1526,6 +1544,66 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
     if not results:
         logger.warning("No container apps available to patch at this time. Use --show-all to show the container apps that cannot be patched.")
     return results
+
+
+def patch_show(cmd, resource_group_name=None, container_app_name=None, patch_name=None):
+    logger.warning("This command is currently only available for container app cloud patches in North Central US (Stage).")
+    if patch_name is None:
+        logger.error("Please provide the name of the patch to show.")
+        return
+    app = show_containerapp(cmd, container_app_name, resource_group_name)
+    if app is None:
+        logger.error(f"Container app {container_app_name} not found in resource group {resource_group_name}.")
+        return
+    if app["location"] != "North Central US (Stage)":
+        logger.warning("Cloud patching is not supported in the location of the container app.")
+        return
+    from ._clients import PatchClient
+    patch_client = PatchClient()
+    return patch_client.show(cmd, resource_group_name, container_app_name, patch_name)
+
+
+def patch_delete(cmd, resource_group_name=None, container_app_name=None, patch_name=None):
+    logger.warning("This command is currently only available for container app cloud patches in North Central US (Stage).")
+    if patch_name is None:
+        logger.error("Please provide the name of the patch to delete.")
+        return
+    app = show_containerapp(cmd, container_app_name, resource_group_name)
+    if app is None:
+        logger.error(f"Container app {container_app_name} not found in resource group {resource_group_name}.")
+        return
+    if app["location"] != "North Central US (Stage)":
+        logger.warning("Cloud patching is not supported in the location of the container app.")
+        return
+    from ._clients import PatchClient
+    patch_client = PatchClient()
+    is_patch_deleted = patch_client.delete(cmd, resource_group_name, container_app_name, patch_name)
+    if is_patch_deleted:
+        print(f"Patch {patch_name} for container app {container_app_name} is deleted successfully.")
+    else:
+        logger.error(f"Failed to delete patch {patch_name} for container app {container_app_name}.")
+
+
+def patch_mode_configure(cmd, resource_group_name=None, container_app_name=None, patch_mode=None):
+    logger.warning("This command is currently only available for container app Cloud Patches in North Central US (Stage).")
+    app = show_containerapp(cmd, container_app_name, resource_group_name)
+    if app is None:
+        logger.error(f"Container app {container_app_name} not found in resource group {resource_group_name}.")
+        return
+    if app["location"] != "North Central US (Stage)":
+        logger.warning("Cloud patching is not supported in the location of the container app.")
+        return
+    if patch_mode not in ["Automatic", "Manual", "Disabled"]:
+        logger.error("Invalid patch mode provided. Please provide 'Automatic', 'Manual', or 'Disabled'.")
+        return
+    from ._clients import PatchClient
+    patch_client = PatchClient()
+    is_patch_mode_configured = patch_client.patch_mode_configure(cmd, resource_group_name, container_app_name, patch_mode)
+    if is_patch_mode_configured:
+        print(f"Patch mode for container app {container_app_name} is set to {patch_mode}.")
+    else:
+        logger.error(f"Failed to set patch mode for container app {container_app_name}.")
+    return
 
 
 def _get_patchable_check_result(inspect_result, oryx_run_images):
@@ -1618,7 +1696,22 @@ def patch_interactive(cmd, resource_group_name=None, managed_env=None, show_all=
     patch_apply_handle_input(cmd, patchable_check_results, user_input, pack_exec_path)
 
 
-def patch_apply(cmd, resource_group_name=None, managed_env=None, show_all=False):
+def patch_apply(cmd, resource_group_name=None, managed_env=None, container_app_name=None, patch_name=None, show_all=False):
+    app = show_containerapp(cmd, container_app_name, resource_group_name)
+    if app is None:
+        logger.error(f"Container app {container_app_name} not found in resource group {resource_group_name}.")
+        return
+    if app["location"] == "North Central US (Stage)":
+        logger.info("Using cloud patching...")
+        logger.warning("Cloud patching is only supported in North Central US (Stage) now.")
+        from ._clients import PatchClient
+        patch_client = PatchClient()
+        is_patch_success = patch_client.apply(cmd, resource_group_name, container_app_name, patch_name)
+        if is_patch_success:
+            logger.info(f"Patch {patch_name} for container app {container_app_name} is queued successfully to be applied.")
+        else:
+            logger.error(f"Failed to apply patch {patch_name} for container app {container_app_name}.")
+        return
     if is_docker_running() is False:
         logger.error("Please install or start Docker and try again.")
         return

@@ -875,6 +875,110 @@ class BuildClient():
         return r.json()
 
 
+class PatchClient():
+    api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def list(cls, cmd, resource_group_name, container_app_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/patches?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            cls.api_version)
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
+
+    @classmethod
+    def show(cls, cmd, resource_group_name, container_app_name, patch_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/patches/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            patch_name,
+            cls.api_version)
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
+
+    @classmethod
+    def apply(cls, cmd, resource_group_name, container_app_name, patch_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/patches/{}/apply?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            patch_name,
+            cls.api_version)
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        if r.status_code == 202 or r.status_code == 201 or r.status_code == 200:
+            return True
+        return False
+
+    @classmethod
+    def delete(cls, cmd, resource_group_name, container_app_name, patch_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/patches/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            patch_name,
+            cls.api_version)
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+        if r.status_code == 202 or r.status_code == 204 or r.status_code == 200 or r.status_code == 201:
+            return True
+        return False
+
+    @classmethod
+    def skip(cls, cmd, resource_group_name, container_app_name, patch_name, skip_config: bool):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        skip_config = "true" if skip_config else "false"
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/patches/{}/skip?api-version={}?patchSkipConfig=skip:{}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            patch_name,
+            cls.api_version,
+            skip_config)
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return r.json()
+
+    @classmethod
+    def patch_mode_configure(cls, cmd, resource_group_name, container_app_name, patch_mode):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            container_app_name,
+            cls.api_version)
+        body_data = {
+            "properties": {
+                "patchingMode": patch_mode
+            }
+        }
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(body_data))
+        if r.status_code == 202 or r.status_code == 204 or r.status_code == 200 or r.status_code == 201:
+            return True
+        return False
+
 class JavaComponentPreviewClient():
     api_version = PREVIEW_API_VERSION
 

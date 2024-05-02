@@ -151,6 +151,11 @@ def load_command_table(self, args):
         g.custom_command('list', 'patch_list')
         g.custom_command('apply', 'patch_apply')
         g.custom_command('interactive', 'patch_interactive')
+        g.custom_command('delete', 'patch_delete')
+        g.custom_command('show', 'patch_show')
+    
+    with self.command_group('containerapp patch configure', is_preview=True) as g:
+        g.custom_command('mode', 'patch_mode_configure')
 
     if is_cloud_supported_by_connected_env(self.cli_ctx):
         with self.command_group('containerapp connected-env', is_preview=True) as g:

@@ -809,6 +809,9 @@ helps['containerapp patch list'] = """
     - name: List patchable and unpatchable container apps by managed environment with the show-all option.
       text: |
           az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv --show-all
+    - name: List available patches for a container app.
+      text: |
+            az containerapp patch list -g MyResourceGroup --container-app-name MyContainerApp
 """
 
 helps['containerapp patch apply'] = """
@@ -827,6 +830,27 @@ helps['containerapp patch apply'] = """
     - name: List patchable and unpatchable container apps by managed environment with the show-all option and apply patch for patchable container apps.
       text: |
           az containerapp patch apply -g MyResourceGroup --environment MyContainerAppEnv --show-all
+    - name: Apply a patch for a container app by patch name using Cloud Patching.
+      text: |
+          az containerapp patch apply -g MyResourceGroup --container-app-name MyContainerApp --patch-name patch-12345
+"""
+
+helps['containerapp patch delete'] = """
+    type: command
+    short-summary: Delete a Container App Cloud Patch from a Container App.
+    examples:
+    - name: Delete a Cloud Patch.
+      text: |
+          az containerapp patch delete -g MyResourceGroup --container-app-name MyContainerApp --patch-name patch-12345
+"""
+
+helps['containerapp patch show'] = """
+    type: command
+    short-summary: Show the details of a Container App Cloud Patch.
+    examples:
+    - name: Show the details of a Cloud Patch.
+      text: |
+          az containerapp patch show -g MyResourceGroup --container-app-name MyContainerApp --patch-name patch-12345
 """
 
 helps['containerapp patch interactive'] = """
@@ -845,6 +869,15 @@ helps['containerapp patch interactive'] = """
     - name: List patchable and unpatchable container apps by managed environment with the show-all option and apply patch for patchable container apps interactively.
       text: |
           az containerapp patch interactive -g MyResourceGroup --environment MyContainerAppEnv --show-all
+"""
+
+helps["containerapp patch configure mode"] = """
+    type: command
+    short-summary: Configure the patching mode for a container app.
+    examples:
+    - name: Configure the patching mode for a container app to be manually patched.
+      text: |
+          az containerapp patch configure mode -g MyResourceGroup --container-app-name MyContainerApp --patch-mode Manual
 """
 
 # containerapp create for preview
