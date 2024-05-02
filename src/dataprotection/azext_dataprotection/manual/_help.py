@@ -30,7 +30,7 @@ helps['dataprotection backup-instance update'] = """
     short-summary: Update properties associated with a backup instance.
     examples:
       - name: Fetch backup configuration for vaulted blobs, providing a list of containers to back up
-        text: az dataprotection backup-instance initialize-backupconfig --container-list 
+        text: az dataprotection backup-instance initialize-backupconfig --container-list
       - name: Update backed up containers for a vaulted blob backup instance
         text: az dataprotection backup-instance update --backup-instance-name MyDisk1 --vaulted-blob-container-list {backup_configuration} -g MyResourceGroup --vault-name MyVault
 """

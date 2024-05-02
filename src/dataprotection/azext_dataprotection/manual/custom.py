@@ -111,16 +111,16 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
             "include_cluster_scope_resources": include_cluster_scope_resources,
             "backup_hook_references": backup_hook_references
         }
-    elif datasource_type == "AzureBlob":
+    if datasource_type == "AzureBlob":
         if any([excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces,
                 label_selectors, snapshot_volumes, include_cluster_scope_resources, backup_hook_references]):
             raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
                                             ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources, '
                                             ' --backup-hook-references for given datasource type.')
         return helper.get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group)
-    else:
-        raise InvalidArgumentValueError('Given datasource type is not supported currently. '
-                                        'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
+    
+    raise InvalidArgumentValueError('Given datasource type is not supported currently. '
+                                    'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
@@ -215,7 +215,6 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
         "resource_group": resource_group_name,
         "vault_name": vault_name,
     })
-
 
 
 def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):

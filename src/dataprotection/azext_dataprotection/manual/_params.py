@@ -119,7 +119,8 @@ def load_arguments(self, _):
         c.argument('backup_instance_name', type=str, help="Backup instance name.")
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vault_name', vault_name_type)
-        c.argument('vaulted_blob_container_list', type=validate_file_or_dict, help="Enter the container list to modify a vaulted blob backup. The output for "
+        c.argument('vaulted_blob_container_list', type=validate_file_or_dict, options_list=['--vaulted-blob-container-list', '--container-blob-list']
+                   help="Enter the container list to modify a vaulted blob backup. The output for "
                    "'az dataprotection backup-instance initialize-backupconfig' needs to be provided as input")
 
     with self.argument_context('dataprotection backup-instance update-policy') as c:

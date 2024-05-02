@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long
 # pylint: disable=unnecessary-list-index-lookup
+# pylint: disable=unidiomatic-typecheck
 
 import uuid
 import re
@@ -234,7 +235,7 @@ def get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_co
             "object_type": "BlobBackupDatasourceParameters",
             "containers_list": vaulted_backup_containers
         }
-    elif include_all_containers:
+    if include_all_containers:
         if storage_account_name and storage_account_resource_group:
             from azure.cli.command_modules.storage.operations.blob import list_container_rm
             container_list_generator = list_container_rm(cmd, client, storage_account_resource_group, storage_account_name)
@@ -246,12 +247,10 @@ def get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_co
                 "object_type": "BlobBackupDatasourceParameters",
                 "containers_list": containers_list
             }
-        else:
-            raise RequiredArgumentMissingError('Please input --storage-account-name and --storage-account-resource-group parameters '
-                                                'for fetching all vaulted containers.')
-    else:
-        raise RequiredArgumentMissingError('Please provide --vaulted-backup-containers argument or --include-all-containers argument '
-                                            'for given workload type.')
+        raise RequiredArgumentMissingError('Please input --storage-account-name and --storage-account-resource-group parameters '
+                                           'for fetching all vaulted containers.')
+    raise RequiredArgumentMissingError('Please provide --vaulted-backup-containers argument or --include-all-containers argument '
+                                       'for given workload type.')
 
 
 def get_datasource_auth_credentials_info(secret_store_type, secret_store_uri):
@@ -444,24 +443,24 @@ def are_multiple_true(*values):
 
 def validate_vaulted_blob_prefix_pattern(vaulted_blob_prefix_pattern):
     # Format:
-    # { 
-    #   "containers":  [ 
-    #     { 
-    #       "name":  "container1", 
-    #       "prefixmatch":  [ 
-    #         "b, 
-    #         “d” 
-
-    #       ] 
-    #     }, 
-    #     { 
-    #       "name":  "container2", 
+    # {
+    #   "containers":  [
+    #     {
+    #       "name":  "container1",
     #       "prefixmatch":  [
-    #         "bcd”, 
-    #         “aabb” 
+    #         "b,
+    #         “d”
+
     #       ]
-    #     } 
-    #   ] 
+    #     },
+    #     {
+    #       "name":  "container2",
+    #       "prefixmatch":  [
+    #         "bcd”,
+    #         “aabb”
+    #       ]
+    #     }
+    #   ]
     # }
 
     if 'containers' not in vaulted_blob_prefix_pattern:
@@ -476,16 +475,16 @@ def validate_vaulted_blob_prefix_pattern(vaulted_blob_prefix_pattern):
 
         if 'name' not in container:
             raise InvalidArgumentValueError('The container-prefix pattern should have the container name under "name"')
-        
+
         if type(container['name']) is not str:
             raise InvalidArgumentValueError('The container name should be a string')
-        
+
         if 'prefixmatch' not in container:
             raise InvalidArgumentValueError('The container-prefix pattern should have a list of prefix matches under "prefixmatch"')
 
         if type(container['prefixmatch']) is not list:
             raise InvalidArgumentValueError('The prefix matches should be a list of strings')
-        
+
         for prefix in container['prefixmatch']:
             if type(prefix) is not str:
                 raise InvalidArgumentValueError('The prefix match should be a string value')
