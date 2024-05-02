@@ -3701,7 +3701,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 is_called_from_extension=True,
             )
 
-        #Add role assignments for automatic sku
+        # Add role assignments for automatic sku
         if cluster.sku.name == "Automatic":
             client = get_graph_client(self.cmd.cli_ctx)
             try:
