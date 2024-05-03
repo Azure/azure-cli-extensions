@@ -147,24 +147,24 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
     def validate_arguments(self):
         validate_container_app_name(self.get_argument_name(), AppType.SessionPool.name)
         container_type = self.get_argument_container_type()
-        environment_name = self.get_argument_managed_env()
+        #environment_name = self.get_argument_managed_env()
 
         location = self.get_argument_location()
         _ensure_location_allowed(self.cmd, location, CONTAINER_APPS_RP, "sessionPools")
 
-        if container_type == ContainerType.CustomContainer.name:
-            if environment_name is None:
-                raise RequiredArgumentMissingError(f'Must provide environment name when container type is {ContainerType.CustomContainer.name}')
-        else:
-            if environment_name is not None:
-                raise ValidationError(f"Do not pass environment name when using container type {container_type}")
+        # if container_type == ContainerType.CustomContainer.name:
+        #     if environment_name is None:
+        #         raise RequiredArgumentMissingError(f'Must provide environment name when container type is {ContainerType.CustomContainer.name}')
+        # else:
+        #     if environment_name is not None:
+        #         raise ValidationError(f"Do not pass environment name when using container type {container_type}")
 
     def construct_payload(self):
         self.session_pool_def["location"] = self.get_argument_location()
 
         # We only support 'Dynamic' type in CLI
         self.session_pool_def["properties"]["poolManagementType"] = "Dynamic"
-        self.session_pool_def["properties"]["environmentId"] = self.get_argument_managed_env()
+        #self.session_pool_def["properties"]["environmentId"] = self.get_argument_managed_env()
         if self.get_argument_container_type() is None:
             self.set_argument_container_type(ContainerType.PythonLTS.name)
         self.session_pool_def["properties"]["containerType"] = self.get_argument_container_type()
@@ -174,21 +174,21 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         session_scale_def = self.set_up_scale_configuration()
         secrets_def = self.set_up_secrets()
 
-        # CustomerContainerTemplate
-        customer_container_template = None
-        if self.get_argument_container_type() == ContainerType.CustomContainer.name:
-            customer_container_template = {}
-            self.validate_environment()
+        # # CustomerContainerTemplate
+        # customer_container_template = None
+        # if self.get_argument_container_type() == ContainerType.CustomContainer.name:
+        #     customer_container_template = {}
+        #     self.validate_environment()
 
-            container_def = self.set_up_container()
-            ingress_def = self.set_up_ingress()
-            registry_def = self.set_up_registry_auth_configuration(secrets_def)
+        #     container_def = self.set_up_container()
+        #     ingress_def = self.set_up_ingress()
+        #     registry_def = self.set_up_registry_auth_configuration(secrets_def)
 
-            customer_container_template["containers"] = [container_def]
-            customer_container_template["ingress"] = ingress_def
-            customer_container_template["registryCredentials"] = registry_def
+        #     customer_container_template["containers"] = [container_def]
+        #     customer_container_template["ingress"] = ingress_def
+        #     customer_container_template["registryCredentials"] = registry_def
 
-        safe_set(self.session_pool_def, "properties", "customContainerTemplate", value=customer_container_template)
+        # safe_set(self.session_pool_def, "properties", "customContainerTemplate", value=customer_container_template)
         safe_set(self.session_pool_def, "properties", "secrets", value=secrets_def)
         safe_set(self.session_pool_def, "properties", "dynamicPoolConfiguration", value=dynamic_pool_def)
         safe_set(self.session_pool_def, "properties", "sessionNetworkConfiguration", value=session_network_def)
@@ -219,47 +219,48 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         session_scale_def["readySessionInstances"] = self.get_argument_ready_session_instances()
         return session_scale_def
 
-    def set_up_resource(self):
-        resources_def = None
-        if self.get_argument_cpu() is not None or self.get_argument_memory() is not None:
-            resources_def = ContainerResourcesModel
-            resources_def["cpu"] = self.get_argument_cpu()
-            resources_def["memory"] = self.get_argument_memory()
-        return resources_def
+    # def set_up_resource(self):
+    #     resources_def = None
+    #     if self.get_argument_cpu() is not None or self.get_argument_memory() is not None:
+    #         resources_def = ContainerResourcesModel
+    #         resources_def["cpu"] = self.get_argument_cpu()
+    #         resources_def["memory"] = self.get_argument_memory()
+    #     return resources_def
 
-    def set_up_container(self):
-        container_def = ContainerModel
-        container_def["name"] = self.get_argument_container_name() if self.get_argument_container_name() else self.get_argument_name()
-        container_def["image"] = self.get_argument_image() if self.get_argument_image() else HELLO_WORLD_IMAGE
-        if self.get_argument_env_vars() is not None:
-            container_def["env"] = parse_env_var_flags(self.get_argument_env_vars())
-        if self.get_argument_startup_command() is not None:
-            container_def["command"] = self.get_argument_startup_command()
-        if self.get_argument_args() is not None:
-            container_def["args"] = self.get_argument_args()
-        container_def["resources"] = self.set_up_resource()
-        return container_def
+    # def set_up_container(self):
+    #     container_def = ContainerModel
+    #     container_def["name"] = self.get_argument_container_name() if self.get_argument_container_name() else self.get_argument_name()
+    #     container_def["image"] = self.get_argument_image() if self.get_argument_image() else HELLO_WORLD_IMAGE
+    #     if self.get_argument_env_vars() is not None:
+    #         container_def["env"] = parse_env_var_flags(self.get_argument_env_vars())
+    #     if self.get_argument_startup_command() is not None:
+    #         container_def["command"] = self.get_argument_startup_command()
+    #     if self.get_argument_args() is not None:
+    #         container_def["args"] = self.get_argument_args()
+    #     container_def["resources"] = self.set_up_resource()
+    #     return container_def
 
-    def set_up_ingress(self):
-        if self.get_argument_target_port() is None:
-            raise RequiredArgumentMissingError("Required argument 'target_port' is not specified.")
-        ingress_def = {}
-        ingress_def["targetPort"] = self.get_argument_target_port()
-        return ingress_def
+    # def set_up_ingress(self):
+    #     if self.get_argument_target_port() is None:
+    #         raise RequiredArgumentMissingError("Required argument 'target_port' is not specified.")
+    #     ingress_def = {}
+    #     ingress_def["targetPort"] = self.get_argument_target_port()
+    #     return ingress_def
 
-    def validate_environment(self):
-        # Validate managed environment
-        parsed_managed_env = parse_resource_id(self.get_argument_managed_env())
-        managed_env_name = parsed_managed_env['name']
-        managed_env_rg = parsed_managed_env['resource_group']
-        try:
-            managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg,
-                                                                  name=managed_env_name)
-        except Exception as e:
-            handle_non_404_status_code_exception(e)
+    # def validate_environment(self):
+    #     # Validate managed environment
+    #     parsed_managed_env = parse_resource_id(self.get_argument_managed_env())
+    #     managed_env_name = parsed_managed_env['name']
+    #     managed_env_rg = parsed_managed_env['resource_group']
+    #     try:
+    #         managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg,
+    #                                                               name=managed_env_name)
+    #     except Exception as e:
+    #         handle_non_404_status_code_exception(e)
 
     def create(self):
         try:
+            #raise RequiredArgumentMissingError(self.session_pool_def)
             return self.client.create(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                 name=self.get_argument_name(),

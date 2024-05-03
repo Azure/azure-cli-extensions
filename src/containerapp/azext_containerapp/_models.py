@@ -295,10 +295,10 @@ ContainerAppsJob = {
 SessionPool = {
     "location": None,
     "properties": {
-        "environmentId": None,
+        #"environmentId": None,
         "poolManagementType": None,
         "containerType": None,
-        "customContainerTemplate": None,
+        #"customContainerTemplate": None,
         "secrets": None,
         "dynamicPoolConfiguration": None,
         "scaleConfiguration": None,

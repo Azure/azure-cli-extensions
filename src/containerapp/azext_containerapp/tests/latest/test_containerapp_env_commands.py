@@ -631,6 +631,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             vnet_location = "centralus"
 
         self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet} --location {vnet_location}")
+        # throws cassette error
         sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
 
         self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} -i {infra_rg} --enable-workload-profiles true --logs-destination none')

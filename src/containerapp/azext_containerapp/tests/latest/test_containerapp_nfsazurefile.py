@@ -39,6 +39,7 @@ class ContainerAppMountNfsAzureFileTest(ScenarioTest):
             vnet_location = "centralus"
         self.cmd(
             f'az network vnet create --resource-group {resource_group}  --name {vnet} --address-prefix 10.0.0.0/16 --subnet-name {subnet} --subnet-prefixes 10.0.0.0/23 --location {vnet_location}')
+        # throws error
         self.cmd(
             f'az network vnet subnet update --resource-group {resource_group} --vnet-name {vnet} --name {subnet} --service-endpoints Microsoft.Storage.Global --delegations Microsoft.App/environments')
 
