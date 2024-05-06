@@ -364,8 +364,8 @@ def load_arguments(self, _):
         c.argument('egress_enabled', options_list=['--enable-egress'], default=False, arg_type=get_three_state_flag(), help="Egress is enabled for the Sessions or not.")
 
     with self.argument_context('containerapp sessionpool', arg_group='Scale') as c:
-        c.argument('max_concurrent_sessions', help="Max count of sessions can be run at the same time.", type=int)
-        c.argument('ready_session_instances', help="The number of sessions that will be ready in the session pool all the time.", type=int)
+        c.argument('max_concurrent_sessions', options_list=['--max-sessions'], help="Max count of sessions can be run at the same time.", type=int)
+        c.argument('ready_session_instances', options_list=['--ready-sessions'], help="The number of sessions that will be ready in the session pool all the time.", type=int)
 
     with self.argument_context('containerapp sessionpool', arg_group='Container') as c:
         c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")

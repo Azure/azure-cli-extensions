@@ -1035,7 +1035,7 @@ class SessionPoolPreviewClient():
         if no_wait:
             return r.json()
         elif r.status_code == 202:
-            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            operation_url = r.headers.get(HEADER_LOCATION)
             poll_status(cmd, operation_url)
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
