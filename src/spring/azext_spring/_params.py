@@ -34,6 +34,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
                                      validate_build_cert_reference, validate_acs_create, not_support_enterprise,
+                                     validate_custom_actuator_port, validate_custom_actuator_path,
                                      validate_create_app_binding_default_application_configuration_service,
                                      validate_create_app_binding_default_config_server,
                                      validate_create_app_binding_default_service_registry)
@@ -94,6 +95,12 @@ def load_arguments(self, _):
         c.argument('outbound_type', arg_group='VNet Injection',
                    help='The outbound type of Azure Spring Apps VNet instance.',
                    validator=validate_vnet, default="loadBalancer")
+        c.argument('enable_private_storage_access',
+                   arg_group='VNet Injection',
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   options_list=['--enable-private-storage-access', '--enable-psa'],
+                   help='If true, set private network access to backend storage in vnet injection instance.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
                    validator=validate_dataplane_public_endpoint,
@@ -265,6 +272,13 @@ def load_arguments(self, _):
                    validator=validate_dataplane_public_endpoint,
                    options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
                    help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
+
+        c.argument('enable_private_storage_access',
+                   arg_group='VNet Injection',
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   options_list=['--enable-private-storage-access', '--enable-psa'],
+                   help='If true, set private network access to backend storage in vnet injection instance.')
 
         c.argument('enable_planned_maintenance',
                    arg_group='Planned Maintenance',
@@ -534,6 +548,10 @@ def load_arguments(self, _):
                        help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
                             "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
                        validator=validate_config_file_patterns)
+            c.argument('custom_actuator_port', type=int,
+                       help='(Enterprise Tier Only) Custom actuator port for the app. Default to 8080.', validator=validate_custom_actuator_port)
+            c.argument('custom_actuator_path', 
+                       help='(Enterprise Tier Only) Custom actuator path for the app. Default to "/actuator".', validator=validate_custom_actuator_path)
 
     with self.argument_context('spring app scale') as c:
         c.argument('cpu', arg_type=cpu_type)
