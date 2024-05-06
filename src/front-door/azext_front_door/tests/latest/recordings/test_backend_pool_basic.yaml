@@ -29,43 +29,43 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2313'
+      - '2065'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Creating","resourceState":"Creating","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Creating","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Creating","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Creating","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Creating"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Creating","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Creating","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Creating","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Creating","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Creating","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Creating"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/571d871b-143f-4a35-820d-345f8f41655d?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/235b6f5d-513a-4971-a116-d7898a1c47e4?api-version=2021-06-01&t=638493544186618879&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=i6X98aqm9om6-hOH1f3jt2mEe3u_AsUkCDNrANJtIW4w2qlDFkb0hy11CmiSjYVEzGXZ2rmHq3PpWYirv4EG-ttL1D1nw2Btv068PtzuRiE5NVtvMOzPjuDdF2FJdGHA5Lv85frenwmcDd96TFbKmh852VPlkaxL0ZjH-Qp5ifmeMfvJ9NBzLJuxZefICyFloBAOisupFiaZH-psJdZDVNS-PbK2ZXdIPwT6mApUJDvazJog3CAGzYdgKHTm497L08O91WmetrtWUOHSXJKcXO7rnUd871oaVGLHZKZRYeNC3FeZTSbSImhmXrMO-X3ft8df0ywuZ6uVZPYui_Rw5g&h=1MV4EdNxt7tEWBH0L4IJOT9Vwn4V3h1cvLVis-cKz0s
       cache-control:
       - no-cache
       content-length:
-      - '4833'
+      - '4239'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:35:55 GMT
+      - Mon, 22 Apr 2024 03:46:58 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: B644741800DA47B0B392A4D27BE35A8E Ref B: MAA201060513047 Ref C: 2024-04-22T03:46:54Z'
     status:
       code: 201
       message: Created
@@ -83,9 +83,9 @@ interactions:
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/571d871b-143f-4a35-820d-345f8f41655d?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/235b6f5d-513a-4971-a116-d7898a1c47e4?api-version=2021-06-01&t=638493544186618879&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=i6X98aqm9om6-hOH1f3jt2mEe3u_AsUkCDNrANJtIW4w2qlDFkb0hy11CmiSjYVEzGXZ2rmHq3PpWYirv4EG-ttL1D1nw2Btv068PtzuRiE5NVtvMOzPjuDdF2FJdGHA5Lv85frenwmcDd96TFbKmh852VPlkaxL0ZjH-Qp5ifmeMfvJ9NBzLJuxZefICyFloBAOisupFiaZH-psJdZDVNS-PbK2ZXdIPwT6mApUJDvazJog3CAGzYdgKHTm497L08O91WmetrtWUOHSXJKcXO7rnUd871oaVGLHZKZRYeNC3FeZTSbSImhmXrMO-X3ft8df0ywuZ6uVZPYui_Rw5g&h=1MV4EdNxt7tEWBH0L4IJOT9Vwn4V3h1cvLVis-cKz0s
   response:
     body:
       string: '{"status":"InProgress","error":{"code":"None","message":null}}'
@@ -95,25 +95,21 @@ interactions:
       content-length:
       - '62'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:36:05 GMT
+      - Mon, 22 Apr 2024 03:46:59 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: FF9A776658F24F6BB25C916044B96467 Ref B: MAA201060513047 Ref C: 2024-04-22T03:46:58Z'
     status:
       code: 200
       message: OK
@@ -131,9 +127,9 @@ interactions:
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/571d871b-143f-4a35-820d-345f8f41655d?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/235b6f5d-513a-4971-a116-d7898a1c47e4?api-version=2021-06-01&t=638493544186618879&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=i6X98aqm9om6-hOH1f3jt2mEe3u_AsUkCDNrANJtIW4w2qlDFkb0hy11CmiSjYVEzGXZ2rmHq3PpWYirv4EG-ttL1D1nw2Btv068PtzuRiE5NVtvMOzPjuDdF2FJdGHA5Lv85frenwmcDd96TFbKmh852VPlkaxL0ZjH-Qp5ifmeMfvJ9NBzLJuxZefICyFloBAOisupFiaZH-psJdZDVNS-PbK2ZXdIPwT6mApUJDvazJog3CAGzYdgKHTm497L08O91WmetrtWUOHSXJKcXO7rnUd871oaVGLHZKZRYeNC3FeZTSbSImhmXrMO-X3ft8df0ywuZ6uVZPYui_Rw5g&h=1MV4EdNxt7tEWBH0L4IJOT9Vwn4V3h1cvLVis-cKz0s
   response:
     body:
       string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
@@ -143,25 +139,21 @@ interactions:
       content-length:
       - '61'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:36:36 GMT
+      - Mon, 22 Apr 2024 03:47:30 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 37E3987571D54471956F7E219C81D844 Ref B: MAA201060513047 Ref C: 2024-04-22T03:47:30Z'
     status:
       code: 200
       message: OK
@@ -179,37 +171,33 @@ interactions:
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4828'
+      - '4234'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:36:36 GMT
+      - Mon, 22 Apr 2024 03:47:31 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 9799E03EE774439D9ADABC9D2D62BEE3 Ref B: MAA201060513047 Ref C: 2024-04-22T03:47:30Z'
     status:
       code: 200
       message: OK
@@ -227,37 +215,33 @@ interactions:
       ParameterSetName:
       - -f -g -n --address --load-balancing --probe
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4828'
+      - '4234'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:36:38 GMT
+      - Mon, 22 Apr 2024 03:47:33 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 9BA9D5EF4F5241CF8E83EDD3D20CDFB6 Ref B: MAA201060515029 Ref C: 2024-04-22T03:47:32Z'
     status:
       code: 200
       message: OK
@@ -298,45 +282,45 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '4442'
+      - '3767'
       Content-Type:
       - application/json
       ParameterSetName:
       - -f -g -n --address --load-balancing --probe
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/bkp1","name":"bkp1","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/bkp1","name":"bkp1","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/c13decad-6c30-410f-b707-af72eebc1472?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/024b54f9-6121-4667-83ef-1d400c0efdfa?api-version=2021-06-01&t=638493544554900099&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=dqRVb1K7s7YzkKvgTCSbMAybi6ijR7FAz40KysDCdZrDErbqjxjk836D_y5Y_RTHe62l_6-PPigqAW9hPr9TtICrap71dBLEQavLg2Lx783dXtTF3bLazA2h3QZg3CZL9ItJ5VLZfcDBSRWlw3j-5-7ke51URJpNvS4jFKK_Hzn_7PQrQNPv0zYpLQzFxrRdxliBGFXlDz6smxCgsS3EihhmXYX6XcLH6PgCvMQQBoiKbpUae_WeUx17oWGhsNStaO4lCSbYwgJpwiTt1iafkMpsfTxnSJGE-ST9qVjXPLwdBeqV4E1QbSYnwhePg-xkO7CLyZVTU_vgHEt2YNEAeg&h=RNr1pvuuCcxou0k048Rk4IuZ9Up-BCE6TctMzA6zq3k
       cache-control:
       - no-cache
       content-length:
-      - '6022'
+      - '5245'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:36:41 GMT
+      - Mon, 22 Apr 2024 03:47:34 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/c13decad-6c30-410f-b707-af72eebc1472/frontdoorresults/clifrontdoor000002?api-version=2020-05-01
-      odata-version:
-      - '4.0'
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/024b54f9-6121-4667-83ef-1d400c0efdfa/frontdoorresults/clifrontdoor000002?api-version=2021-06-01
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 9C29CD0EB0A54F53B524B7FD9E2C6183 Ref B: MAA201060515029 Ref C: 2024-04-22T03:47:34Z'
     status:
       code: 202
       message: Accepted
@@ -354,9 +338,9 @@ interactions:
       ParameterSetName:
       - -f -g -n --address --load-balancing --probe
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/c13decad-6c30-410f-b707-af72eebc1472?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/024b54f9-6121-4667-83ef-1d400c0efdfa?api-version=2021-06-01&t=638493544554900099&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=dqRVb1K7s7YzkKvgTCSbMAybi6ijR7FAz40KysDCdZrDErbqjxjk836D_y5Y_RTHe62l_6-PPigqAW9hPr9TtICrap71dBLEQavLg2Lx783dXtTF3bLazA2h3QZg3CZL9ItJ5VLZfcDBSRWlw3j-5-7ke51URJpNvS4jFKK_Hzn_7PQrQNPv0zYpLQzFxrRdxliBGFXlDz6smxCgsS3EihhmXYX6XcLH6PgCvMQQBoiKbpUae_WeUx17oWGhsNStaO4lCSbYwgJpwiTt1iafkMpsfTxnSJGE-ST9qVjXPLwdBeqV4E1QbSYnwhePg-xkO7CLyZVTU_vgHEt2YNEAeg&h=RNr1pvuuCcxou0k048Rk4IuZ9Up-BCE6TctMzA6zq3k
   response:
     body:
       string: '{"status":"InProgress","error":{"code":"None","message":null}}'
@@ -366,25 +350,21 @@ interactions:
       content-length:
       - '62'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:36:52 GMT
+      - Mon, 22 Apr 2024 03:47:35 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 881872D5C81F48299821BD23ACD56A28 Ref B: MAA201060515029 Ref C: 2024-04-22T03:47:35Z'
     status:
       code: 200
       message: OK
@@ -402,9 +382,9 @@ interactions:
       ParameterSetName:
       - -f -g -n --address --load-balancing --probe
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/c13decad-6c30-410f-b707-af72eebc1472?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/024b54f9-6121-4667-83ef-1d400c0efdfa?api-version=2021-06-01&t=638493544554900099&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=dqRVb1K7s7YzkKvgTCSbMAybi6ijR7FAz40KysDCdZrDErbqjxjk836D_y5Y_RTHe62l_6-PPigqAW9hPr9TtICrap71dBLEQavLg2Lx783dXtTF3bLazA2h3QZg3CZL9ItJ5VLZfcDBSRWlw3j-5-7ke51URJpNvS4jFKK_Hzn_7PQrQNPv0zYpLQzFxrRdxliBGFXlDz6smxCgsS3EihhmXYX6XcLH6PgCvMQQBoiKbpUae_WeUx17oWGhsNStaO4lCSbYwgJpwiTt1iafkMpsfTxnSJGE-ST9qVjXPLwdBeqV4E1QbSYnwhePg-xkO7CLyZVTU_vgHEt2YNEAeg&h=RNr1pvuuCcxou0k048Rk4IuZ9Up-BCE6TctMzA6zq3k
   response:
     body:
       string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
@@ -414,25 +394,21 @@ interactions:
       content-length:
       - '61'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:21 GMT
+      - Mon, 22 Apr 2024 03:48:06 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: A8638635FC914E77915427B3C099A420 Ref B: MAA201060515029 Ref C: 2024-04-22T03:48:06Z'
     status:
       code: 200
       message: OK
@@ -450,37 +426,33 @@ interactions:
       ParameterSetName:
       - -f -g -n --address --load-balancing --probe
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/bkp1","name":"bkp1","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/bkp1","name":"bkp1","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '6022'
+      - '5245'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:22 GMT
+      - Mon, 22 Apr 2024 03:48:08 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 213B57389CAE458DBC9ADB62647A4782 Ref B: MAA201060515029 Ref C: 2024-04-22T03:48:07Z'
     status:
       code: 200
       message: OK
@@ -498,37 +470,33 @@ interactions:
       ParameterSetName:
       - -f -g
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/bkp1","name":"bkp1","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/bkp1","name":"bkp1","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '6022'
+      - '5245'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:23 GMT
+      - Mon, 22 Apr 2024 03:48:10 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1C46477F17DA44ACB7521B7BB1EFAF16 Ref B: MAA201060516053 Ref C: 2024-04-22T03:48:10Z'
     status:
       code: 200
       message: OK
@@ -546,37 +514,33 @@ interactions:
       ParameterSetName:
       - -f -g -n
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/bkp1","name":"bkp1","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/bkp1","name":"bkp1","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '6022'
+      - '5245'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:24 GMT
+      - Mon, 22 Apr 2024 03:48:12 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 53521F561A1F40969C2D074F06898AB0 Ref B: MAA201060513053 Ref C: 2024-04-22T03:48:11Z'
     status:
       code: 200
       message: OK
@@ -594,37 +558,33 @@ interactions:
       ParameterSetName:
       - -f -g -n
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/bkp1","name":"bkp1","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/bkp1","name":"bkp1","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '6022'
+      - '5245'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:25 GMT
+      - Mon, 22 Apr 2024 03:48:14 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 5B1CFCF51586437AB752CB56BDBCE972 Ref B: MAA201060515033 Ref C: 2024-04-22T03:48:13Z'
     status:
       code: 200
       message: OK
@@ -661,45 +621,45 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '3672'
+      - '3119'
       Content-Type:
       - application/json
       ParameterSetName:
       - -f -g -n
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/194e59f1-f22e-4028-9acd-8540d41778fc?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b22cbc70-684a-4d5d-ab5d-d779bc1d5f5d?api-version=2021-06-01&t=638493544970768688&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=dyt125XUODcL3yjCQ4jdJjbvE8_H3xJUpK7Uv-TLcOo7DRDW4ozZ9h71GlwU1X54f45rOAFEV0LtUBxy1LzUOoLaz46MNQf9a62Qu6UjrLc5H6alzIDf8Q9c3ypFpw82UpLFFt63QvBzhkKJvOZg9BysoyzkCgTSWYU5h0s5qji04cCWH4rECcoh8zWE0H8zLWXA5IOR8Eoz9K43El8JSQy-v6c8RREpKRcvDiqKJu0gsqKCaDgjTUTwLs-z6FIaNvNcwcvYZvdTRge2cxNjpmq99OfoQk2lOZ0rocsjPjmhjZ3mp9U87a1bx-Ypta5obO3NWAPVLJ5c5821gcDtUw&h=4NFJ04d7cTnv9rCIKrUlD4jT9VOWobM9vDMD-EWnOZU
       cache-control:
       - no-cache
       content-length:
-      - '4828'
+      - '4234'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:27 GMT
+      - Mon, 22 Apr 2024 03:48:17 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/194e59f1-f22e-4028-9acd-8540d41778fc/frontdoorresults/clifrontdoor000002?api-version=2020-05-01
-      odata-version:
-      - '4.0'
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b22cbc70-684a-4d5d-ab5d-d779bc1d5f5d/frontdoorresults/clifrontdoor000002?api-version=2021-06-01
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 7EB079B648FD4D87BDBF4FBA84569F2D Ref B: MAA201060515033 Ref C: 2024-04-22T03:48:14Z'
     status:
       code: 202
       message: Accepted
@@ -717,9 +677,9 @@ interactions:
       ParameterSetName:
       - -f -g -n
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/194e59f1-f22e-4028-9acd-8540d41778fc?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b22cbc70-684a-4d5d-ab5d-d779bc1d5f5d?api-version=2021-06-01&t=638493544970768688&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=dyt125XUODcL3yjCQ4jdJjbvE8_H3xJUpK7Uv-TLcOo7DRDW4ozZ9h71GlwU1X54f45rOAFEV0LtUBxy1LzUOoLaz46MNQf9a62Qu6UjrLc5H6alzIDf8Q9c3ypFpw82UpLFFt63QvBzhkKJvOZg9BysoyzkCgTSWYU5h0s5qji04cCWH4rECcoh8zWE0H8zLWXA5IOR8Eoz9K43El8JSQy-v6c8RREpKRcvDiqKJu0gsqKCaDgjTUTwLs-z6FIaNvNcwcvYZvdTRge2cxNjpmq99OfoQk2lOZ0rocsjPjmhjZ3mp9U87a1bx-Ypta5obO3NWAPVLJ5c5821gcDtUw&h=4NFJ04d7cTnv9rCIKrUlD4jT9VOWobM9vDMD-EWnOZU
   response:
     body:
       string: '{"status":"InProgress","error":{"code":"None","message":null}}'
@@ -729,25 +689,21 @@ interactions:
       content-length:
       - '62'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:37 GMT
+      - Mon, 22 Apr 2024 03:48:18 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: F6285A9335E045678161C8519B8AF2AA Ref B: MAA201060515033 Ref C: 2024-04-22T03:48:17Z'
     status:
       code: 200
       message: OK
@@ -765,9 +721,9 @@ interactions:
       ParameterSetName:
       - -f -g -n
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/194e59f1-f22e-4028-9acd-8540d41778fc?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b22cbc70-684a-4d5d-ab5d-d779bc1d5f5d?api-version=2021-06-01&t=638493544970768688&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=dyt125XUODcL3yjCQ4jdJjbvE8_H3xJUpK7Uv-TLcOo7DRDW4ozZ9h71GlwU1X54f45rOAFEV0LtUBxy1LzUOoLaz46MNQf9a62Qu6UjrLc5H6alzIDf8Q9c3ypFpw82UpLFFt63QvBzhkKJvOZg9BysoyzkCgTSWYU5h0s5qji04cCWH4rECcoh8zWE0H8zLWXA5IOR8Eoz9K43El8JSQy-v6c8RREpKRcvDiqKJu0gsqKCaDgjTUTwLs-z6FIaNvNcwcvYZvdTRge2cxNjpmq99OfoQk2lOZ0rocsjPjmhjZ3mp9U87a1bx-Ypta5obO3NWAPVLJ5c5821gcDtUw&h=4NFJ04d7cTnv9rCIKrUlD4jT9VOWobM9vDMD-EWnOZU
   response:
     body:
       string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
@@ -777,25 +733,21 @@ interactions:
       content-length:
       - '61'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:07 GMT
+      - Mon, 22 Apr 2024 03:48:49 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8FE25AF286744C2DB46D6D433F94294A Ref B: MAA201060515033 Ref C: 2024-04-22T03:48:48Z'
     status:
       code: 200
       message: OK
@@ -813,37 +765,33 @@ interactions:
       ParameterSetName:
       - -f -g -n
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4828'
+      - '4234'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:08 GMT
+      - Mon, 22 Apr 2024 03:48:50 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4F5A1513A5AA4A59BE15A568BE2C7062 Ref B: MAA201060515033 Ref C: 2024-04-22T03:48:49Z'
     status:
       code: 200
       message: OK
@@ -861,37 +809,33 @@ interactions:
       ParameterSetName:
       - -f -g
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"88a382ae-0a8c-446d-b08e-43102e21cb01","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"0dc8b0f9-3b4d-4727-88a6-deae30623ed4","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4828'
+      - '4234'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:09 GMT
+      - Mon, 22 Apr 2024 03:48:52 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 808369C4C69F4AADACA71271DC67150F Ref B: MAA201060513047 Ref C: 2024-04-22T03:48:51Z'
     status:
       code: 200
       message: OK
