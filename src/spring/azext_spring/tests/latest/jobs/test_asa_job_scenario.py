@@ -355,5 +355,4 @@ class AsaJobScenarioTest(ScenarioTest):
                                             secret_envs=secret_envs,
                                             args=args
                                         )
-                                        print(f'command_str is command_str')
                                         self.cmd(command_str)
