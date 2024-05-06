@@ -871,6 +871,11 @@ helps['containerapp patch interactive'] = """
           az containerapp patch interactive -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """
 
+helps["containerapp patch configure"] = """
+    type: group
+    short-summary: Commands to configure the patching settings for a container app.
+"""
+
 helps["containerapp patch configure mode"] = """
     type: command
     short-summary: Configure the patching mode for a container app.

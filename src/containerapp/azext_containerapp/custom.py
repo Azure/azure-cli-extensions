@@ -118,6 +118,7 @@ from ._constants import (CONTAINER_APPS_RP,
 
 logger = get_logger(__name__)
 
+
 def list_all_services(cmd, environment_name, resource_group_name):
     services = list_containerapp(cmd, resource_group_name=resource_group_name, managed_env=environment_name)
     dev_service_list = []
