@@ -1,6 +1,14 @@
 
 Release History
 ===============
+1.0.5
+++++++
+Bug fix ASG is not added properly when reset the nic
+Add ASG if exist when nic is reset 
+
+1.0.4
+++++++
+Logging improvements and script fixing
 
 1.0.3
 ++++++

@@ -59,6 +59,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_AVAILABILITY_SET,
     CONST_MIN_NODE_IMAGE_VERSION,
+    CONST_ARTIFACT_SOURCE_DIRECT,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
@@ -481,6 +482,7 @@ def aks_create(
     node_os_upgrade_channel=None,
     cluster_autoscaler_profile=None,
     uptime_sla=False,
+    sku=None,
     tier=None,
     fqdn_subdomain=None,
     api_server_authorized_ip_ranges=None,
@@ -523,6 +525,8 @@ def aks_create(
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
     http_proxy_config=None,
+    bootstrap_artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
+    bootstrap_container_registry_resource_id=None,
     # addons
     enable_addons=None,  # pylint: disable=redefined-outer-name
     workspace_resource_id=None,
@@ -556,6 +560,7 @@ def aks_create(
     nodepool_tags=None,
     nodepool_labels=None,
     nodepool_taints=None,
+    nodepool_initialization_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
     vm_set_type=None,
@@ -613,7 +618,7 @@ def aks_create(
     # azure service mesh
     enable_azure_service_mesh=None,
     revision=None,
-    # azure monitor profile
+    # azure monitor profile - metrics
     enable_azuremonitormetrics=False,
     enable_azure_monitor_metrics=False,
     azure_monitor_workspace_resource_id=None,
@@ -621,6 +626,8 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    # azure monitor profile - app monitoring
+    enable_azure_monitor_app_monitoring=False,
     # metrics profile
     enable_cost_analysis=False,
     # AI toolchain operator
@@ -636,6 +643,9 @@ def aks_create(
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    cluster_service_load_balancer_health_probe_mode=None,
+    # Static Egress Gateway
+    enable_static_egress_gateway=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -700,6 +710,7 @@ def aks_update(
     cluster_autoscaler_profile=None,
     uptime_sla=False,
     no_uptime_sla=False,
+    sku=None,
     tier=None,
     api_server_authorized_ip_ranges=None,
     enable_public_fqdn=False,
@@ -741,6 +752,8 @@ def aks_update(
     azure_keyvault_kms_key_vault_network_access=None,
     azure_keyvault_kms_key_vault_resource_id=None,
     http_proxy_config=None,
+    bootstrap_artifact_source=None,
+    bootstrap_container_registry_resource_id=None,
     # addons
     enable_secret_rotation=False,
     disable_secret_rotation=False,
@@ -753,6 +766,7 @@ def aks_update(
     max_count=None,
     nodepool_labels=None,
     nodepool_taints=None,
+    nodepool_initialization_taints=None,
     # misc
     yes=False,
     no_wait=False,
@@ -798,6 +812,9 @@ def aks_update(
     enable_windows_recording_rules=False,
     disable_azuremonitormetrics=False,
     disable_azure_monitor_metrics=False,
+    # azure monitor profile - app monitoring
+    enable_azure_monitor_app_monitoring=False,
+    disable_azure_monitor_app_monitoring=False,
     enable_vpa=False,
     disable_vpa=False,
     enable_addon_autoscaling=False,
@@ -826,6 +843,10 @@ def aks_update(
     azure_container_storage_nodepools=None,
     node_provisioning_mode=None,
     ssh_access=None,
+    cluster_service_load_balancer_health_probe_mode=None,
+    # Static Egress Gateway
+    enable_static_egress_gateway=False,
+    disable_static_egress_gateway=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1013,6 +1034,9 @@ def aks_upgrade(cmd,
                 node_image_only=False,
                 cluster_snapshot_id=None,
                 aks_custom_headers=None,
+                enable_force_upgrade=False,
+                disable_force_upgrade=False,
+                upgrade_override_until=None,
                 yes=False):
     msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
     if not yes and not prompt_y_n(msg, default="n"):
@@ -1060,6 +1084,13 @@ def aks_upgrade(cmd,
         )
         mcsnapshot = get_cluster_snapshot_by_snapshot_id(cmd.cli_ctx, cluster_snapshot_id)
         kubernetes_version = mcsnapshot.managed_cluster_properties_read_only.kubernetes_version
+
+    instance = _update_upgrade_settings(
+        cmd,
+        instance,
+        enable_force_upgrade=enable_force_upgrade,
+        disable_force_upgrade=disable_force_upgrade,
+        upgrade_override_until=upgrade_override_until)
 
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
@@ -1111,6 +1142,58 @@ def aks_upgrade(cmd,
     headers = get_aks_custom_headers(aks_custom_headers)
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers)
+
+
+def _update_upgrade_settings(cmd, instance,
+                             enable_force_upgrade=False,
+                             disable_force_upgrade=False,
+                             upgrade_override_until=None):
+    existing_until = None
+    if (instance.upgrade_settings is not None and instance.upgrade_settings.override_settings is not None
+            and instance.upgrade_settings.override_settings.until is not None):
+        existing_until = instance.upgrade_settings.override_settings.until
+
+    force_upgrade = None
+    if enable_force_upgrade is False and disable_force_upgrade is False:
+        force_upgrade = None
+    elif enable_force_upgrade is not None:
+        force_upgrade = enable_force_upgrade
+    elif disable_force_upgrade is not None:
+        force_upgrade = not disable_force_upgrade
+
+    ClusterUpgradeSettings = cmd.get_models(
+        "ClusterUpgradeSettings",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+
+    UpgradeOverrideSettings = cmd.get_models(
+        "UpgradeOverrideSettings",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+
+    if force_upgrade is not None or upgrade_override_until is not None:
+        if instance.upgrade_settings is None:
+            instance.upgrade_settings = ClusterUpgradeSettings()
+        if instance.upgrade_settings.override_settings is None:
+            instance.upgrade_settings.override_settings = UpgradeOverrideSettings()
+        # sets force_upgrade
+        if force_upgrade is not None:
+            instance.upgrade_settings.override_settings.force_upgrade = force_upgrade
+        # sets until
+        if upgrade_override_until is not None:
+            try:
+                instance.upgrade_settings.override_settings.until = parse(upgrade_override_until)
+            except Exception:  # pylint: disable=broad-except
+                raise InvalidArgumentValueError(
+                    f"{upgrade_override_until} is not a valid datatime format."
+                )
+        elif force_upgrade:
+            default_extended_until = datetime.datetime.utcnow() + datetime.timedelta(days=3)
+            if existing_until is None or existing_until.timestamp() < default_extended_until.timestamp():
+                instance.upgrade_settings.override_settings.until = default_extended_until
+    return instance
 
 
 def _upgrade_single_nodepool_image_version(
@@ -1209,6 +1292,8 @@ def aks_agentpool_add(
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    # static egress gateway - gateway-mode pool
+    gateway_prefix_size=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2927,15 +3012,13 @@ def aks_mesh_enable_egress_gateway(
         client,
         resource_group_name,
         name,
-        egx_gtw_nodeselector,
 ):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
-        enable_egress_gateway=True,
-        egx_gtw_nodeselector=egx_gtw_nodeselector)
+        enable_egress_gateway=True)
 
 
 def aks_mesh_disable_egress_gateway(
@@ -2949,8 +3032,7 @@ def aks_mesh_disable_egress_gateway(
         client,
         resource_group_name,
         name,
-        disable_egress_gateway=True,
-        egx_gtw_nodeselector=None)
+        disable_egress_gateway=True)
 
 
 def aks_mesh_get_revisions(
@@ -3020,12 +3102,15 @@ def aks_mesh_upgrade_complete(
         cmd,
         client,
         resource_group_name,
-        name):
+        name,
+        yes=False
+):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
+        yes=yes,
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE)
 
 
@@ -3033,13 +3118,15 @@ def aks_mesh_upgrade_rollback(
         cmd,
         client,
         resource_group_name,
-        name
+        name,
+        yes=False
 ):
     return _aks_mesh_update(
         cmd,
         client,
         resource_group_name,
         name,
+        yes=yes,
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK)
 
 
@@ -3060,9 +3147,9 @@ def _aks_mesh_update(
         disable_ingress_gateway=None,
         ingress_gateway_type=None,
         enable_egress_gateway=None,
-        egx_gtw_nodeselector=None,
         disable_egress_gateway=None,
         revision=None,
+        yes=False,
         mesh_upgrade_command=None,
 ):
     raw_parameters = locals()
@@ -3076,7 +3163,6 @@ def _aks_mesh_update(
         raw_parameters=raw_parameters,
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
     )
-
     try:
         mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_azure_service_mesh_profile(mc)

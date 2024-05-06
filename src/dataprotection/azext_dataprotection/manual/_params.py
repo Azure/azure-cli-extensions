@@ -137,6 +137,8 @@ def load_arguments(self, _):
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('snapshot_resource_group_id', options_list=['--snapshot-resource-group-id', '--snapshot-rg-id'], type=str,
                    help='ARM id of the snapshot resource group. Required when assigning permissions over snapshot resource group and the --operation is Restore')
+        c.argument('target_storage_account_id', options_list=['--target-storage-account-id'], type=str,
+                   help='ARM id of the target storage account. Required when assigning permissions over target storage account and the --operation is Restore')
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation "Backup" Expected value: '
                    'json-string/@json-file. Required when --operation is Backup')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Request body for operation "Restore" Expected value: '
@@ -296,6 +298,9 @@ def load_arguments(self, _):
                    'json-string/@json-file.')
         c.argument('use_secondary_region', arg_type=get_three_state_flag(),
                    help='Use this flag to restore from a recoverypoint in secondary region.')
+        c.argument('resource_guard_operation_requests', options_list=['--resource-guard-operation-requests', '--operation-requests'],
+                   type=str, nargs='+', help='Critical operation request which is protected by the resourceGuard.')
+        c.argument('tenant_id', type=str, help='ID of the tenant if the Resource Guard protecting the vault exists in a different tenant.')
 
     with self.argument_context('dataprotection resource-guard list-protected-operations') as c:
         c.argument('resource_group_name', resource_group_name_type)

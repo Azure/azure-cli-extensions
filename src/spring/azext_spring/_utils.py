@@ -23,7 +23,7 @@ from azure.cli.core.profiles import ResourceType
 from knack.util import CLIError, todict
 from knack.log import get_logger
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
-from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 
@@ -392,6 +392,14 @@ def get_bearer_auth(cli_ctx):
     creds, _, tenant = profile.get_raw_token()
     token = creds[1]
     return BearerAuth(token)
+
+
+def _get_value_from_dict(input_dict, *keys):
+    for key in keys:
+        if not isinstance(input_dict, dict):
+            return None
+        input_dict = input_dict.get(key)
+    return input_dict
 
 
 class BearerAuth(requests.auth.AuthBase):

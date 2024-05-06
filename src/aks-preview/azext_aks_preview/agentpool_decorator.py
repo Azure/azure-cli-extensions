@@ -33,6 +33,9 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
+    CONST_DEFAULT_NODE_VM_SIZE,
+    CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE,
+    CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
 )
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
 
@@ -103,6 +106,56 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             )
         # this parameter does not need validation
         return vm_set_type
+
+    def get_node_vm_size(self) -> str:
+        """Obtain the value of node_vm_size.
+
+        :return: string
+        """
+        return self._get_node_vm_size(read_only=False)
+
+    def _get_node_vm_size(self, read_only: bool = False) -> str:
+        """Internal function to dynamically obtain the value of node_vm_size according to the context.
+
+        If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
+        from the Snapshot. When determining the value of the parameter, obtaining from `agentpool` takes precedence over
+        user's explicit input over snapshot over default vaule.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("node_vm_size")
+        # try to read the property value corresponding to the parameter from the `agentpool` object
+        value_obtained_from_agentpool = None
+        if self.agentpool:
+            value_obtained_from_agentpool = self.agentpool.vm_size
+        # try to retrieve the value from snapshot
+        value_obtained_from_snapshot = None
+        # skip dynamic completion if read_only is specified
+        if not read_only:
+            snapshot = self.get_snapshot()
+            if snapshot:
+                value_obtained_from_snapshot = snapshot.vm_size
+
+        # set default value
+        if value_obtained_from_agentpool is not None:
+            node_vm_size = value_obtained_from_agentpool
+        elif raw_value is not None:
+            node_vm_size = raw_value
+        elif not read_only and value_obtained_from_snapshot is not None:
+            node_vm_size = value_obtained_from_snapshot
+        else:
+            if self.get_os_type().lower() == "windows":
+                node_vm_size = CONST_DEFAULT_WINDOWS_NODE_VM_SIZE
+            else:
+                node_vm_size = CONST_DEFAULT_NODE_VM_SIZE
+                sku = self.raw_param.get("sku")
+                # if --node-vm-size is not specified, but --sku automatic is explicitly specified
+                if sku is not None and sku == "automatic":
+                    node_vm_size = CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE
+
+        # this parameter does not need validation
+        return node_vm_size
 
     def get_crg_id(self) -> Union[str, None]:
         """Obtain the value of crg_id.
@@ -234,10 +287,11 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.agentpool and
+                hasattr(self.agentpool, "windows_profile") and
                 self.agentpool.windows_profile and
-                self.agentpool.windows_profile.disable_windows_outbound_nat is not None
+                self.agentpool.windows_profile.disable_outbound_nat is not None
             ):
-                disable_windows_outbound_nat = self.agentpool.windows_profile.disable_windows_outbound_nat
+                disable_windows_outbound_nat = self.agentpool.windows_profile.disable_outbound_nat
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -328,6 +382,28 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         # this parameter does not need validation
         return node_taints
+
+    def get_node_initialization_taints(self) -> Union[List[str], None]:
+        """Obtain the value of node_initialization_taints.
+
+        :return: empty list, list of strings or None
+        """
+        # read the original value passed by the command
+        node_init_taints = self.raw_param.get("nodepool_initialization_taints")
+        # normalize, default is an empty list
+        if node_init_taints is not None:
+            node_init_taints = [x.strip() for x in (node_init_taints.split(",") if node_init_taints else [""])]
+        # keep None as None for update mode
+        if node_init_taints is None and self.decorator_mode == DecoratorMode.CREATE:
+            node_init_taints = []
+
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.agentpool and self.agentpool.node_initialization_taints is not None:
+                node_init_taints = self.agentpool.node_initialization_taints
+
+        # this parameter does not need validation
+        return node_init_taints
 
     def get_drain_timeout(self):
         """Obtain the value of drain_timeout.
@@ -536,6 +612,12 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return self.raw_param.get("disable_vtpm")
 
+    def get_gateway_prefix_size(self) -> Union[int, None]:
+        """Obtain the value of gateway_prefix_size.
+        :return: int or None
+        """
+        return self.raw_param.get('gateway_prefix_size')
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -654,6 +736,15 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.node_taints = self.context.get_node_taints()
         return agentpool
 
+    def set_up_init_taints(self, agentpool: AgentPool) -> AgentPool:
+        """Set up label, tag, taint for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+        agentpool.node_initialization_taints = self.context.get_node_initialization_taints()
+        return agentpool
+
     def set_up_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
         """Set up artifact streaming property for the AgentPool object."""
         self._ensure_agentpool(agentpool)
@@ -721,6 +812,19 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         # Default is disabled so no need to worry about that here
         return agentpool
 
+    def set_up_agentpool_gateway_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Set up agentpool gateway profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        gateway_prefix_size = self.context.get_gateway_prefix_size()
+        if gateway_prefix_size is not None:
+            if agentpool.gateway_profile is None:
+                agentpool.gateway_profile = self.models.AgentPoolGatewayProfile()  # pylint: disable=no-member
+
+            agentpool.gateway_profile.public_ip_prefix_size = gateway_prefix_size
+
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -744,6 +848,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_agentpool_network_profile(agentpool)
         # set up taints
         agentpool = self.set_up_taints(agentpool)
+        # set up initialization taints
+        agentpool = self.set_up_init_taints(agentpool)
         # set up artifact streaming
         agentpool = self.set_up_artifact_streaming(agentpool)
         # set up skip_gpu_driver_install
@@ -756,6 +862,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_secure_boot(agentpool)
         # set up vtpm
         agentpool = self.set_up_vtpm(agentpool)
+        # set up agentpool gateway profile
+        agentpool = self.set_up_agentpool_gateway_profile(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool

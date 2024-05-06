@@ -145,6 +145,9 @@ class PolicyGeneratingImageCleanRoom(unittest.TestCase):
         regular_image_json[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
         clean_room_json[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
 
+        regular_image_json[0].pop(config.POLICY_FIELD_CONTAINERS_NAME)
+        clean_room_json[0].pop(config.POLICY_FIELD_CONTAINERS_NAME)
+
         # see if the remote image and the local one produce the same output
         self.assertEqual(
             deepdiff.DeepDiff(regular_image_json, clean_room_json, ignore_order=True),

@@ -13,11 +13,11 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.9.0 azsdk-python-communication-identity/1.5.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AzureCli/1.9.2 azsdk-python-communication-identity/1.4.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
       x-ms-content-sha256:
       - kWpGozyV35fifbpKdY8mbdG64VG0Pdq5upzo7YKAFM0=
       x-ms-date:
-      - Wed, 27 Mar 2024 00:31:27 GMT
+      - Mon, 22 Apr 2024 17:35:51 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
@@ -25,29 +25,29 @@ interactions:
   response:
     body:
       string: '{"identity": {"id": "sanitized"}, "accessToken": {"token": "sanitized",
-        "expiresOn": "2024-03-28T00:31:27.940613+00:00"}}'
+        "expiresOn": "2024-04-23T17:35:52.3938175+00:00"}}'
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
         2021-11-01, 2022-06-01, 2022-10-01, 2023-10-01
       content-length:
-      - '121'
+      - '122'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Mar 2024 00:31:27 GMT
+      - Mon, 22 Apr 2024 17:35:52 GMT
       ms-cv:
-      - q5aKGWfwskuRK7hRlUarEA.0
+      - 8jvC4T8xjEmsn7k89AhBQg.0
       request-context:
       - appId=
       strict-transport-security:
       - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 032gDZgAAAADk+JMrLxR6QYb/6ysXZl5HV1NURURHRTA4MTMAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 0+J8mZgAAAAAnkAl9eDKwQoAYYjU2ljIeU04xRURHRTMxMTAAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 21ms
+      - 100ms
     status:
       code: 201
       message: Created
@@ -65,40 +65,40 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.9.0 azsdk-python-communication-chat/1.2.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AzureCli/1.9.2 azsdk-python-communication-chat/1.3.0 Python/3.8.10 (Windows-10-10.0.22631-SP0)
       repeatability-request-id:
-      - 3afe4b32-06b9-4b0a-9d78-f4e90e89d9c4
+      - b9bde080-e7ff-4975-aef0-9ccae967eca3
     method: POST
-    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2023-11-07
+    uri: https://sanitized.communication.azure.com/chat/threads?api-version=2024-03-07
   response:
     body:
       string: '{"chatThread": {"id": "sanitized", "topic": "some-topic", "createdOn":
-        "2024-03-27T00:31:28Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+        "2024-04-22T17:35:53Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
         "communicationUser": {"id": "sanitized"}}}}'
     headers:
       access-control-expose-headers:
       - '*'
       api-supported-versions:
       - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2023-04-01-preview, 2023-07-01-preview,
-        2023-11-07, 2023-11-15-preview, 2024-03-07, 2024-03-15-preview
+        2023-11-07, 2023-11-15-preview, 2024-03-01-preview, 2024-03-07, 2024-03-15-preview
       content-length:
       - '197'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Mar 2024 00:31:29 GMT
+      - Mon, 22 Apr 2024 17:35:52 GMT
       location:
-      - https://managedidentitylive.unitedstates.communication.azure.com/chat/threads/19%3AsNRExhS2WhIimJ9qWj8uQLWldY1SFQzUiJpof95tfvo1@thread.v2
+      - https://clitest000002.unitedstates.communication.azure.com/chat/threads/19%3AwW8T0Rndv7qB3p2wAo7izQglCX7r6ToU-2p1TFa-S9A1@thread.v2
       ms-cv:
-      - To7Nl92Yh067zsK4cnc1EQ.0
+      - y9YhgiF1yEiQ2bqBQ89LaA.0
       strict-transport-security:
       - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 04GgDZgAAAACnSAMq4R7iSa+ftw6BvU+6V1NURURHRTA4MjEAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 0+J8mZgAAAABsHKe1I5jVSZbfbROcSe6uU04xRURHRTIxMDYAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 1141ms
+      - 583ms
     status:
       code: 201
       message: Created
