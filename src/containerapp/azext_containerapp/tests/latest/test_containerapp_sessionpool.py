@@ -47,7 +47,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         secret_name = "testsecret"
         secret_value = "testsecretvalue"
         self.cmd(
-            'containerapp sessionpool create -g {} -n {} --container-type CustomContainer --environment {} --secrets {}={} --ready-session-instances {} --image {} --cpu 0.5 --memory 1Gi --target-port {}'.format(
+            'containerapp sessionpool create -g {} -n {} --container-type CustomContainer --environment {} --secrets {}={} --ready-sessions {} --image {} --cpu 0.5 --memory 1Gi --target-port {}'.format(
                 resource_group, sessionpool_name_custom, env_name, secret_name, secret_value, ready_instances, image, 80),
             checks=[
                 JMESPathCheck('name', sessionpool_name_custom),
@@ -72,7 +72,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         # max_concurrent_session = 12
         # ready_instances = 1
         # self.cmd(
-        #     'containerapp sessionpool update -g {} -n {} --secrets {}={} --max-concurrent-sessions {}'.format(
+        #     'containerapp sessionpool update -g {} -n {} --secrets {}={} --max-sessions {}'.format(
         #         resource_group, sessionpool_name_custom, secret_name, secret_value, ready_instances),
         #     checks=[
         #         JMESPathCheck('name', sessionpool_name_custom),

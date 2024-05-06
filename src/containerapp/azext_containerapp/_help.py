@@ -1618,7 +1618,7 @@ helps['containerapp sessionpool create'] = """
     - name: Create or update a Session Pool with container type PythonLTS, with max concurrent sessions is 30, ready session instances 20.
       text: |
           az containerapp sessionpool update -n MySessionPool -g MyResourceGroup \\
-              --container-type PythonLTS --max-concurrent-sessions 30 --ready-session-instances 20 \\
+              --container-type PythonLTS --max-sessions 30 --ready-sessions 20 \\
               --location eastasia
     - name: Create or update a Session Pool with container type CustomerContainer with default quickstart image.
       text: |
@@ -1653,7 +1653,7 @@ helps['containerapp sessionpool update'] = """
     - name: Update a session pool's max concurrent sessions configuration.
       text: |
           az containerapp sessionpool update -n MySessionPool -g MyResourceGroup \\
-              --max-concurrent-sessions 20
+              --max-sessions 20
 """
 
 helps['containerapp sessionpool delete'] = """
