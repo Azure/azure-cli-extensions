@@ -3954,19 +3954,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ))
     
     def test_get_disable_local_accounts(self):
-        # default
+        # automatic cluster needs to enable the disable_local_accounts
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict({"sku": "automatic"}),
             self.models,
             DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_disable_local_accounts(), True)
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            disable_local_accounts=True,
-        )
-        ctx_1.attach_mc(mc_1)
         self.assertEqual(ctx_1.get_disable_local_accounts(), True)
 
     def test_get_sku_name(self):
