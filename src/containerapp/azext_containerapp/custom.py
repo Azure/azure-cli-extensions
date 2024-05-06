@@ -78,6 +78,7 @@ from .containerapp_decorator import ContainerAppPreviewCreateDecorator, Containe
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from .java_component_decorator import JavaComponentDecorator
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
+from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterPreviewDecorator, SessionCodeInterpreterExecutePreviewDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
     GitHubActionPreviewClient,
@@ -94,7 +95,8 @@ from ._clients import (
     ConnectedEnvStorageClient,
     ConnectedEnvCertificateClient,
     JavaComponentPreviewClient,
-    SessionPoolPreviewClient
+    SessionPoolPreviewClient,
+    SessionCodeInterpreterPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -2752,3 +2754,131 @@ def delete_session_pool(cmd,
 
     return r
 
+# session code interpreter commands
+def execute_session_code_interpreter(cmd,
+                        name,
+                        resource_group_name,
+                        identifier, 
+                        code,
+                        timeout_in_seconds=None
+                        ):
+    raw_parameters = locals()
+    # stacy fix this implementation
+    session_code_interpreter_decorater = SessionCodeInterpreterExecutePreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    #session_code_interpreter_decorater.validate_arguments()
+    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+
+    session_code_interpreter_decorater.construct_payload()
+    r = session_code_interpreter_decorater.create()
+
+    return r
+
+def upload_session_code_interpreter(cmd,
+                        name,
+                        resource_group_name,
+                        identifier, 
+                        filepath
+                        ):
+    raw_parameters = locals()
+    # stacy fix this implementation
+    session_code_interpreter_decorater = SessionCodeInterpreterExecutePreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    #session_code_interpreter_decorater.validate_arguments()
+    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+
+    #session_code_interpreter_decorater.construct_payload()
+    r = session_code_interpreter_decorater.create()
+
+    return r
+
+def show_file_content_session_code_interpreter(cmd,
+                        name,
+                        resource_group_name,
+                        identifier, 
+                        filename
+                        ):
+    raw_parameters = locals()
+    # stacy fix this implementation
+    session_code_interpreter_decorater = SessionCodeInterpreterPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    #session_code_interpreter_decorater.validate_arguments()
+    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorater.show()
+
+    return r
+
+def show_file_metadata_session_code_interpreter(cmd,
+                        name,
+                        resource_group_name,
+                        identifier, 
+                        filename
+                        ):
+    raw_parameters = locals()
+    # stacy fix this implementation
+    session_code_interpreter_decorater = SessionCodeInterpreterPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    #session_code_interpreter_decorater.validate_arguments()
+    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorater.show()
+
+    return r
+
+def list_files_session_code_interpreter(cmd,
+                        name,
+                        resource_group_name,
+                        identifier, 
+                        ):
+    raw_parameters = locals()
+    # stacy fix this implementation
+    session_code_interpreter_decorater = SessionCodeInterpreterPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    #session_code_interpreter_decorater.validate_arguments()
+    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorater.list()
+
+    return r
+
+def delete_file_session_code_interpreter(cmd,
+                        name,
+                        resource_group_name,
+                        identifier, 
+                        filename
+                        ):
+    raw_parameters = locals()
+    # stacy fix this implementation
+    session_code_interpreter_decorater = SessionCodeInterpreterPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    #session_code_interpreter_decorater.validate_arguments()
+    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorater.delete()
+
+    return r
