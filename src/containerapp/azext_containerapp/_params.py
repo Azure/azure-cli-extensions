@@ -380,3 +380,18 @@ def load_arguments(self, _):
         c.argument('registry_pass', validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in to container registry. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
 
+    # sessions code interpreter commands
+    with self.argument_context('containerapp session code-interpreter') as c:
+        c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('identifier', options_list=['--identifier', '-id'], help="The Session Identifier")
+
+    with self.argument_context('containerapp session code-interpreter', arg_group='file') as c:
+        c.argument('filename', help="The file to delete or show from the session")
+        c.argument('filepath', help="The local path to the file to upload to the session")
+
+    with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
+        c.argument('code', help="The code to execute in the code interpreter session")
+        c.argument('timeout_in_seconds', help="Duration in seconds code in session can run prior to timing out 0 - 60 secs, e.g. 30")
+
+
