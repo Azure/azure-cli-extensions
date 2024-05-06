@@ -32,6 +32,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_MARINER,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
+    CONST_NODEPOOL_MODE_GATEWAY,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 from knack.log import get_logger
@@ -851,3 +852,12 @@ def validate_custom_endpoints(namespace):
         for endpoint in namespace.custom_endpoints:
             if "://" in endpoint:
                 raise InvalidArgumentValueError(f"Custom endpoint {endpoint} should not contain protocol.")
+
+
+def validate_gateway_prefix_size(namespace):
+    """Validates the gateway prefix size."""
+    if namespace.gateway_prefix_size is not None:
+        if not hasattr(namespace, 'mode') or namespace.mode != CONST_NODEPOOL_MODE_GATEWAY:
+            raise ArgumentUsageError("--gateway-prefix-size can only be set for Gateway-mode nodepools")
+        if namespace.gateway_prefix_size < 28 or namespace.gateway_prefix_size > 31:
+            raise CLIError("--gateway-prefix-size must be in the range [28, 31]")
