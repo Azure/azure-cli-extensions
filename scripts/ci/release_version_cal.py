@@ -36,6 +36,7 @@ print("get_ext_repo_paths: ", cli_ext_path)
 
 def extract_module_history_update_info(mod_update_info, mod):
     """
+    re pattern:
     --- a/src/monitor-control-service/HISTORY.rst
     +++ b/src/monitor-control-service/HISTORY.rst
     """
@@ -50,6 +51,7 @@ def extract_module_history_update_info(mod_update_info, mod):
 
 def extract_module_version_update_info(mod_update_info, mod):
     """
+    re pattern:
     --- a/src/monitor-control-service/setup.py
     +++ b/src/monitor-control-service/setup.py
     -VERSION = '1.0.1'
@@ -75,6 +77,7 @@ def extract_module_version_update_info(mod_update_info, mod):
 
 def extract_module_metadata_update_info(mod_update_info, mod):
     """
+    re pattern:
     --- a/src/monitor-control-service/azext_amcs/azext_metadata.json
     +++ b/src/monitor-control-service/azext_amcs/azext_metadata.json
     -    "azext.isPreview": true
@@ -210,7 +213,8 @@ def gen_version_comment_message(mod, mod_update_info, mod_message):
             if mod_update_info.get("version_diff", None):
                 diff_version =  parse(mod_update_info['version_diff'])
                 if diff_version != bot_version:
-                    block_pr = 1
+                    if diff_version < bot_version:
+                        block_pr = 1
                     mod_message.append(" - :warning: Please update `VERSION` to be `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
             else:
                 mod_message.append(" - Update `VERSION` to `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
