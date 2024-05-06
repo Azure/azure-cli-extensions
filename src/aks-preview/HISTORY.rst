@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
 
 3.0.0b10
 ++++++++
@@ -18,7 +19,6 @@ Pending
 * Vendor new SDK and bump API version to 2024-03-02-preview.
 * Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
 * Add option `--enable-force-upgrade`, `--disable-force-upgrade` and `--upgrade-override-until` to `az aks upgrade`.
-* Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
 
 3.0.0b9
 +++++++
