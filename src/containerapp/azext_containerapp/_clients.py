@@ -979,6 +979,7 @@ class PatchClient():
             return True
         return False
 
+
 class JavaComponentPreviewClient():
     api_version = PREVIEW_API_VERSION
 
