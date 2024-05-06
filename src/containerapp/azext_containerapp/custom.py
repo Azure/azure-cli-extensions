@@ -469,7 +469,9 @@ def create_containerapp(cmd,
                         service_principal_client_id=None,
                         service_principal_client_secret=None,
                         service_principal_tenant_id=None,
-                        max_inactive_revisions=None):
+                        max_inactive_revisions=None,
+                        runtime=None,
+                        enable_java_metrics=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -528,7 +530,9 @@ def update_containerapp_logic(cmd,
                               artifact=None,
                               build_env_vars=None,
                               max_inactive_revisions=None,
-                              force_single_container_updates=False):
+                              force_single_container_updates=False,
+                              runtime=None,
+                              enable_java_metrics=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -579,7 +583,9 @@ def update_containerapp(cmd,
                         source=None,
                         artifact=None,
                         build_env_vars=None,
-                        max_inactive_revisions=None):
+                        max_inactive_revisions=None,
+                        runtime=None,
+                        enable_java_metrics=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -615,7 +621,9 @@ def update_containerapp(cmd,
                                      source=source,
                                      artifact=artifact,
                                      build_env_vars=build_env_vars,
-                                     max_inactive_revisions=max_inactive_revisions)
+                                     max_inactive_revisions=max_inactive_revisions,
+                                     runtime=runtime,
+                                     enable_java_metrics=enable_java_metrics)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):

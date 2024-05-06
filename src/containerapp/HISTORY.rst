@@ -8,6 +8,7 @@ upcoming
 * 'az containerapp env java-component config-server-for-spring': Support create/update/show/delete Spring Cloud Config; deprecation of 'az containerapp env java-component spring-cloud-config'
 * 'az containerapp env java-component eureka-server-for-spring': Support create/update/show/delete Spring Cloud Eureka; deprecation of 'az containerapp env java-component spring-cloud-eureka'
 * 'az containerapp up': Fix InvalidResourceType error when cloud is not AzureCloud
+* 'az containerapp create/update': Support enable or disable Java metrics with --runtime and --enable-java-metrics
 
 0.3.50
 ++++++

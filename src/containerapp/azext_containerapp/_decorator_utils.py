@@ -7,6 +7,7 @@ import sys
 
 from azure.cli.core.azclierror import (ValidationError)
 
+from ._constants import (RUNTIME_GENERIC, RUNTIME_JAVA)
 from ._utils import safe_get
 
 
@@ -123,3 +124,11 @@ def process_dapr_component_resiliency_yaml(dapr_component_resiliency):
             del dapr_component_resiliency[nested_property]
 
     return dapr_component_resiliency
+
+
+def infer_runtime_option(runtime, enable_java_metrics):
+    if runtime:
+        return runtime
+    if enable_java_metrics is not None:
+        return RUNTIME_JAVA
+    return None

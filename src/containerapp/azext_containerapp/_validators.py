@@ -14,7 +14,8 @@ from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
 from ._constants import ACR_IMAGE_SUFFIX, \
     CONNECTED_ENVIRONMENT_TYPE, \
     EXTENDED_LOCATION_RP, CUSTOM_LOCATION_RESOURCE_TYPE, MAXIMUM_SECRET_LENGTH, CONTAINER_APPS_RP, \
-    CONNECTED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE
+    CONNECTED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE, \
+    SUPPORTED_RUNTIME_LIST, RUNTIME_GENERIC
 from urllib.parse import urlparse
 
 logger = get_logger(__name__)
@@ -47,6 +48,11 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
         raise InvalidArgumentValueError("--registry-identity must be an identity resource ID or 'system'")
     if registry_identity and ACR_IMAGE_SUFFIX not in (registry_server or ""):
         raise InvalidArgumentValueError("--registry-identity: expected an ACR registry (*.azurecr.io) for --registry-server")
+
+
+def validate_runtime(runtime, enable_java_metrics):
+    if runtime and runtime.lower() == RUNTIME_GENERIC and enable_java_metrics is not None:
+        raise ValidationError("Not support enable Java metrics with --enable-java-metrics for generic runtime with --runtime generic")
 
 
 def validate_env_name_or_id(cmd, namespace):
