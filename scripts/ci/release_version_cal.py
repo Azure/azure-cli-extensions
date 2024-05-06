@@ -204,6 +204,7 @@ def gen_history_comment_message(mod, mod_update_info, mod_message):
 
 
 def gen_version_comment_message(mod, mod_update_info, mod_message):
+    global block_pr
     if not mod_update_info["setup_updated"]:
         if mod_update_info.get("version", None):
             mod_message.append(" - Update `VERSION` to `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
@@ -221,6 +222,7 @@ def gen_version_comment_message(mod, mod_update_info, mod_message):
 
 
 def gen_preview_comment_message(mod, mod_update_info, mod_message):
+    global block_pr
     if mod_update_info.get("preview_tag", "-") == mod_update_info.get("preview_tag_diff", "-"):
         return
     preview_comment_message = " - "
@@ -246,6 +248,7 @@ def gen_preview_comment_message(mod, mod_update_info, mod_message):
 
 
 def gen_exp_comment_message(mod, mod_update_info, mod_message):
+    global block_pr
     if mod_update_info.get("exp_tag", "-") == mod_update_info.get("exp_tag_diff", "-"):
         return
     exp_comment_message = " - "
