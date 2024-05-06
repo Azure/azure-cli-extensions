@@ -6131,7 +6131,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
-        # test update network policy
+        # test update network policy ("" => "azure")
         dec_6 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -6265,6 +6265,72 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
 
         self.assertEqual(dec_mc_9, ground_truth_mc_9)
+
+        # (Uninstall NPM) test update network policy ("azure" => "none")
+        dec_10 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "network_policy": "none",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_policy="azure",
+            ),
+        )
+
+        dec_10.context.attach_mc(mc_10)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_10.update_network_plugin_settings(None)
+        dec_mc_10 = dec_10.update_network_plugin_settings(mc_10)
+
+        ground_truth_mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_policy="none",
+            ),
+        )
+
+        self.assertEqual(dec_mc_10, ground_truth_mc_10)
+
+        # (Uninstall NPM) test update network policy ("calico" => "none")
+        dec_11 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "network_policy": "none",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_11 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_policy="calico",
+            ),
+        )
+
+        dec_11.context.attach_mc(mc_11)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_11.update_network_plugin_settings(None)
+        dec_mc_11 = dec_11.update_network_plugin_settings(mc_11)
+
+        ground_truth_mc_11 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_policy="none",
+            ),
+        )
+
+        self.assertEqual(dec_mc_10, ground_truth_mc_11)
 
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(

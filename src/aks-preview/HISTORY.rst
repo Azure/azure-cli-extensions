@@ -13,6 +13,10 @@ Pending
 +++++++
 * Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
 
+3.0.0b13
+++++++++
+* Add `--network-policy=none` and `--network-policy=calico` to `az aks create/update`.
+
 3.0.0b12
 ++++++++
 * Create three default role assignments for automatic sku clusters.

@@ -215,11 +215,14 @@ helps['aks create'] = f"""
               --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
         - name: --network-policy
           type: string
-          short-summary: (PREVIEW) The Kubernetes network policy to use.
+          short-summary: Network Policy engine to use.
           long-summary: |
-              Using together with "azure" network plugin.
-              Specify "azure" for Azure network policy manager, "calico" for calico network policy controller, "cilium" for Azure CNI Overlay powered by Cilium.
-              Defaults to "" (network policy disabled).
+              Azure provides three Network Policy engines for enforcing network policies that can be used together with "azure" network plugin. The following values can be specified:
+                - "azure" for Azure Network Policy Manager,
+                - "cilium" for Azure CNI Overlay powered by Cilium,
+                - "calico" for open-source network and network security solution founded by Tigera,
+                - "none" to uninstall Azure Network Policy Manager or Calico.
+              Defaults to "none" (network policy disabled).
         - name: --network-dataplane
           type: string
           short-summary: The network dataplane to use.
@@ -959,10 +962,14 @@ helps['aks update'] = """
               --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
         - name: --network-policy
           type: string
-          short-summary: Update the mode of a network policy.
+          short-summary: Update Network Policy engine.
           long-summary: |
-              Specify "azure" for Azure network policy manager, "cilium" for Azure CNI Overlay powered by Cilium.
-              Defaults to "" (network policy disabled).
+              Azure provides three Network Policy engines for enforcing network policies. The following values can be specified:
+                - "azure" for Azure Network Policy Manager,
+                - "cilium" for Azure CNI Overlay powered by Cilium,
+                - "calico" for open-source network and network security solution founded by Tigera,
+                - "none" to uninstall Azure Network Policy Manager or Calico.
+              Defaults to "none" (network policy disabled).
         - name: --network-dataplane
           type: string
           short-summary: The network dataplane to use.
