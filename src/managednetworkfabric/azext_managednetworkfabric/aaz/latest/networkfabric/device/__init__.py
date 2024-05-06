@@ -14,5 +14,6 @@ from ._run_ro import *
 from ._run_rw import *
 from ._show import *
 from ._update import *
+from ._update_admin_state import *
 from ._upgrade import *
 from ._wait import *
