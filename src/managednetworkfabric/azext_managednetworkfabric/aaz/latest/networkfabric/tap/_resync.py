@@ -18,7 +18,7 @@ class Resync(AAZCommand):
     """Implements the operation to the underlying resources.
 
     :example: Resync Operation
-        az networkfabric tap resync --resource-group "example-rg" --resource-name "example-networktap"
+        az networkfabric tap resync --resource-group "example-rg" --network-tap-name "example-networktap"
     """
 
     _aaz_info = {
@@ -45,8 +45,8 @@ class Resync(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
+        _args_schema.network_tap_name = AAZStrArg(
+            options=["--network-tap-name"],
             help="Name of the Network Tap.",
             required=True,
             id_part="name",
@@ -119,7 +119,7 @@ class Resync(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkTapName", self.ctx.args.resource_name,
+                    "networkTapName", self.ctx.args.network_tap_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
