@@ -46,7 +46,7 @@ def load_arguments(self, _):
 
     # Runtime
     with self.argument_context('containerapp create', arg_group='Runtime', is_preview=True) as c:
-        c.argument('runtime', arg_type=get_enum_type(['generic', 'java']), help='The runtime of the container app. Supported values are "generic" and "java".', is_preview=True)
+        c.argument('runtime', arg_type=get_enum_type(['generic', 'java']), help='The runtime of the container app.', is_preview=True)
         c.argument('enable_java_metrics', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java metrics for the app. Only applicable for Java runtime.', is_preview=True)
 
     # Source and Artifact
@@ -65,7 +65,7 @@ def load_arguments(self, _):
 
     # Runtime
     with self.argument_context('containerapp update', arg_group='Runtime', is_preview=True) as c:
-        c.argument('runtime', arg_type=get_enum_type(['generic', 'java']), help='The runtime of the container app. Supported values are "generic" and "java".', is_preview=True)
+        c.argument('runtime', arg_type=get_enum_type(['generic', 'java']), help='The runtime of the container app.', is_preview=True)
         c.argument('enable_java_metrics', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java metrics for the app. Only applicable for Java runtime.', is_preview=True)
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
