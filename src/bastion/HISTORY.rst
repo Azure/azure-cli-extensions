@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.1
+++++++
+* Removing preview flag and update MFA documentation.
+
 0.3.0
 ++++++
 * Removing preview flag.
