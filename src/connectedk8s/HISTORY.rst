@@ -5,6 +5,10 @@ Release History
 
 1.7.1
 ++++++
+* Fixed Broken Import for Service Principal
+
+1.7.1
+++++++
 * Fixed PoP token for proxy command using service principal.
 
 1.7.0
