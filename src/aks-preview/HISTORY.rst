@@ -13,6 +13,10 @@ Pending
 +++++++
 * Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
 
+3.0.0b13
+++++++++
+* Set disable local accounts to true when creating an automatic cluster
+
 3.0.0b12
 ++++++++
 * Create three default role assignments for automatic sku clusters.
