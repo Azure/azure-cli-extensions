@@ -11,6 +11,21 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
+
+3.0.0b12
+++++++++
+* Create three default role assignments for automatic sku clusters.
+    * "Azure Kubernetes Service RBAC Cluster Admin"
+    * "Azure Kubernetes Service RBAC Admin"
+    * "Azure Kubernetes Service Cluster User Role"
+
+3.0.0b11
+++++++++
+* Add `--enable-static-egress-gateway` to `az aks create` and `az aks update`.
+* Add `--disable-static-egress-gateway` to `az aks update` command.
+* Add `--gateway-prefix-size` to `az aks nodepool create` command.
+* Add `Gateway` mode to agentpool mode enum.
 
 3.0.0b10
 ++++++++

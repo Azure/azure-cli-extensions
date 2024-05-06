@@ -603,6 +603,7 @@ def aks_create(
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
     enable_network_observability=None,
+    enable_advanced_network_observability=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -644,6 +645,8 @@ def aks_create(
     enable_secure_boot=False,
     enable_vtpm=False,
     cluster_service_load_balancer_health_probe_mode=None,
+    # Static Egress Gateway
+    enable_static_egress_gateway=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -825,6 +828,8 @@ def aks_update(
     safeguards_excluded_ns=None,
     enable_network_observability=None,
     disable_network_observability=None,
+    enable_advanced_network_observability=None,
+    disable_advanced_network_observability=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
@@ -842,6 +847,9 @@ def aks_update(
     node_provisioning_mode=None,
     ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
+    # Static Egress Gateway
+    enable_static_egress_gateway=False,
+    disable_static_egress_gateway=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1287,6 +1295,8 @@ def aks_agentpool_add(
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    # static egress gateway - gateway-mode pool
+    gateway_prefix_size=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
