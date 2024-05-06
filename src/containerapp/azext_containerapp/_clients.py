@@ -1033,11 +1033,14 @@ class SessionPoolPreviewClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(session_pool_envelope))
 
         if no_wait:
-            return r.json()
+            return
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
-            poll_status(cmd, operation_url)
-            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find the Session Pool")
+            else:
+                return response
 
         return r.json()
 
