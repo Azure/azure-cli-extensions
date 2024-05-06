@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "k8s-runtime bgp-peer show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a BgpPeer
@@ -23,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bgppeers/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/bgppeers/{}", "2024-03-01"],
         ]
     }
 
@@ -122,7 +121,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }

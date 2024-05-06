@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "k8s-runtime load-balancer",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage load balancers of Arc Kubernetes clusters
