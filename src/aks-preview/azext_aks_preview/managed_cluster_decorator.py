@@ -335,7 +335,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             return True
         return enable_msi_auth_for_monitoring
-    
+
     def _get_disable_local_accounts(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of disable_local_accounts.
 
@@ -378,7 +378,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_disable_local_accounts(enable_validation=True)
-    
+
     def _get_enable_local_accounts(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_local_accounts.
 
