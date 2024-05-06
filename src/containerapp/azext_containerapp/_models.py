@@ -587,3 +587,7 @@ CustomDomainConfiguration = {
     "certificatePassword": None,
     "certificateKeyVaultProperties": None
 }
+
+RuntimeJava = {
+    "enableMetrics": False
+}

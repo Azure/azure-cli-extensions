@@ -2765,6 +2765,40 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("bootstrap_container_registry_resource_id")
 
+    def _get_enable_static_egress_gateway(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_static_egress_gateway.
+        When enabled, if both enable_static_egress_gateway and disable_static_egress_gateway are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        enable_static_egress_gateway = self.raw_param.get("enable_static_egress_gateway")
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_static_egress_gateway and self.get_disable_static_egress_gateway():
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-static-egress-gateway and "
+                    "--disable-static-egress-gateway at the same time. "
+                )
+
+        return enable_static_egress_gateway
+
+    def get_enable_static_egress_gateway(self) -> bool:
+        """Obtain the value of enable_static_egress_gateway.
+
+        :return: bool
+        """
+        return self._get_enable_static_egress_gateway(enable_validation=True)
+
+    def get_disable_static_egress_gateway(self) -> bool:
+        """Obtain the value of disable_static_egress_gateway.
+
+        :return: bool
+        """
+        # Note: No need to check for mutually exclusive parameter with enable-static-egress-gateway here
+        # because it's already checked in get_enable_static_egress_gateway
+        return self.raw_param.get("disable_static_egress_gateway")
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -3427,6 +3461,25 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_static_egress_gateway(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_static_egress_gateway():
+            if not mc.network_profile:
+                raise UnknownError(
+                    "Unexpectedly get an empty network profile in the process of "
+                    "updating enable-static-egress-gateway config."
+                )
+            if mc.network_profile.static_egress_gateway_profile is None:
+                mc.network_profile.static_egress_gateway_profile = (
+                    self.models.ManagedClusterStaticEgressGatewayProfile()  # pylint: disable=no-member
+                )
+            # set enabled
+            mc.network_profile.static_egress_gateway_profile.enabled = True
+
+        # Default is disabled so no need to worry about that here
+        return mc
+
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -3489,6 +3542,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_agentpool_profile_ssh_access(mc)
         # set up bootstrap profile
         mc = self.set_up_bootstrap_profile(mc)
+        # set up static egress gateway profile
+        mc = self.set_up_static_egress_gateway(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -5010,6 +5065,36 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_static_egress_gateway(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update static egress gateway addon for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_static_egress_gateway():
+            if not mc.network_profile:
+                raise UnknownError(
+                    "Unexpectedly get an empty network profile in the process of updating static-egress-gateway config."
+                )
+            if mc.network_profile.static_egress_gateway_profile is None:
+                mc.network_profile.static_egress_gateway_profile = (
+                    self.models.ManagedClusterStaticEgressGatewayProfile()  # pylint: disable=no-member
+                )
+            mc.network_profile.static_egress_gateway_profile.enabled = True
+
+        if self.context.get_disable_static_egress_gateway():
+            if not mc.network_profile:
+                raise UnknownError(
+                    "Unexpectedly get an empty network profile in the process of updating static-egress-gateway config."
+                )
+            if mc.network_profile.static_egress_gateway_profile is None:
+                mc.network_profile.static_egress_gateway_profile = (
+                    self.models.ManagedClusterStaticEgressGatewayProfile()  # pylint: disable=no-member
+                )
+            mc.network_profile.static_egress_gateway_profile.enabled = False
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -5085,6 +5170,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_agentpool_profile_ssh_access(mc)
         # update bootstrap profile
         mc = self.update_bootstrap_profile(mc)
+        # update static egress gateway
+        mc = self.update_static_egress_gateway(mc)
 
         return mc
 
