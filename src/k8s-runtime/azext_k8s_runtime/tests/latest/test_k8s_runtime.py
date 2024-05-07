@@ -19,7 +19,7 @@ def _get_test_data_filepath():
         return temp.name
 
 
-CANARY_REGION = "eastus2euap"
+REGION = "eastus"
 
 
 class K8sRuntimeScenario(ScenarioTest):
@@ -31,7 +31,7 @@ class K8sRuntimeScenario(ScenarioTest):
             'name': self.create_random_name(prefix='cc-', length=12),
             'managed_cluster_name': managed_cluster_name,
             "kubeconfig": kubeconfig,
-            'location': CANARY_REGION,
+            'location': REGION,
         })
 
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')

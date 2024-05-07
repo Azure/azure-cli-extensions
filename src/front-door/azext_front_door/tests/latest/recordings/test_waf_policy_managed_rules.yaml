@@ -1,8 +1,50 @@
 interactions:
 - request:
-    body: '{"location": "global", "sku": {"name": "Premium_AzureFrontDoor"}, "properties":
-      {"policySettings": {"enabledState": "Enabled"}, "customRules": {"rules": []},
-      "managedRules": {}}}'
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --sku
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_waf_policy_managed_rules","date":"2024-04-22T03:41:25Z","module":"front-door"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Apr 2024 03:41:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: FF62B5193F5046A59F058521B06B6500 Ref B: MAA201060516045 Ref C: 2024-04-22T03:41:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "sku": {"name": "Premium_AzureFrontDoor"}}'
     headers:
       Accept:
       - application/json
@@ -13,39 +55,41 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '178'
+      - '65'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --name --sku
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '718'
+      - '760'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:24 GMT
+      - Mon, 22 Apr 2024 03:41:34 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 9B276F40EED44C4CA02EAFAD6F8FAA42 Ref B: MAA201060515011 Ref C: 2024-04-22T03:41:31Z'
     status:
       code: 201
       message: Created
@@ -63,43 +107,42 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --version
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '718'
+      - '760'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:26 GMT
+      - Mon, 22 Apr 2024 03:41:36 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: EEDDC25A654245528A1E41347E96574D Ref B: MAA201060515021 Ref C: 2024-04-22T03:41:35Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
+    body: '{"location": "WestUs", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
       "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
-      "requestBodyCheck": "Enabled"}, "customRules": {"rules": []}, "managedRules":
-      {"managedRuleSets": [{"ruleSetType": "DefaultRuleSet", "ruleSetVersion": "1.0"}]}}}'
+      "requestBodyCheck": "Enabled", "javascriptChallengeExpirationInMinutes": 30},
+      "customRules": {"rules": []}, "managedRules": {"managedRuleSets": [{"ruleSetType":
+      "DefaultRuleSet", "ruleSetVersion": "1.0"}]}}}'
     headers:
       Accept:
       - application/json
@@ -110,248 +153,240 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '322'
+      - '368'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g --policy-name --type --version
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '834'
+      - '876'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:27 GMT
+      - Mon, 22 Apr 2024 03:41:38 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy managed-rules override add
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --policy-name --type --rule-group-id --rule-id --action --disabled
-      User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '834'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 17 Oct 2022 06:28:29 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "Global", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
-      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
-      "requestBodyCheck": "Enabled"}, "customRules": {"rules": []}, "managedRules":
-      {"managedRuleSets": [{"ruleSetType": "DefaultRuleSet", "ruleSetVersion": "1.0",
-      "exclusions": [], "ruleGroupOverrides": [{"ruleGroupName": "SQLI", "rules":
-      [{"ruleId": "942100", "enabledState": "Disabled", "action": "Block"}]}]}]}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy managed-rules override add
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '471'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g --policy-name --type --rule-group-id --rule-id --action --disabled
-      User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[{"ruleGroupName":"SQLI","rules":[{"ruleId":"942100","enabledState":"Disabled","action":"Block","exclusions":[]}],"exclusions":[]}],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '963'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 17 Oct 2022 06:28:30 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy managed-rules override remove
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --policy-name --type --rule-group-id --rule-id
-      User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[{"ruleGroupName":"SQLI","rules":[{"ruleId":"942100","enabledState":"Disabled","action":"Block","exclusions":[]}],"exclusions":[]}],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '963'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 17 Oct 2022 06:28:31 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "Global", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
-      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
-      "requestBodyCheck": "Enabled"}, "customRules": {"rules": []}, "managedRules":
-      {"managedRuleSets": [{"ruleSetType": "DefaultRuleSet", "ruleSetVersion": "1.0",
-      "exclusions": [], "ruleGroupOverrides": []}]}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy managed-rules override remove
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '366'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g --policy-name --type --rule-group-id --rule-id
-      User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '834'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 17 Oct 2022 06:28:33 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 5CC401318D4243298BADA09D2DB001BA Ref B: MAA201060515021 Ref C: 2024-04-22T03:41:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy managed-rules override add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --type --rule-group-id --rule-id --action --disabled
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '876'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Apr 2024 03:41:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: E6DE9919831745D581924FED85A44F3C Ref B: MAA201060515027 Ref C: 2024-04-22T03:41:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "WestUs", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
+      "requestBodyCheck": "Enabled", "javascriptChallengeExpirationInMinutes": 30},
+      "customRules": {"rules": []}, "managedRules": {"managedRuleSets": [{"ruleSetType":
+      "DefaultRuleSet", "ruleSetVersion": "1.0", "exclusions": [], "ruleGroupOverrides":
+      [{"ruleGroupName": "SQLI", "rules": [{"ruleId": "942100", "enabledState": "Disabled",
+      "action": "Block"}]}]}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy managed-rules override add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '517'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name --type --rule-group-id --rule-id --action --disabled
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[{"ruleGroupName":"SQLI","rules":[{"ruleId":"942100","enabledState":"Disabled","action":"Block","exclusions":[]}],"exclusions":[]}],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1005'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Apr 2024 03:41:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: D94D4063C85046A083E63ABE9F273F22 Ref B: MAA201060515027 Ref C: 2024-04-22T03:41:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy managed-rules override remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --type --rule-group-id --rule-id
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[{"ruleGroupName":"SQLI","rules":[{"ruleId":"942100","enabledState":"Disabled","action":"Block","exclusions":[]}],"exclusions":[]}],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1005'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Apr 2024 03:41:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 98AB0E8497D44FA7AFBB24D0F85580A1 Ref B: MAA201060516017 Ref C: 2024-04-22T03:41:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "WestUs", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
+      "requestBodyCheck": "Enabled", "javascriptChallengeExpirationInMinutes": 30},
+      "customRules": {"rules": []}, "managedRules": {"managedRuleSets": [{"ruleSetType":
+      "DefaultRuleSet", "ruleSetVersion": "1.0", "exclusions": [], "ruleGroupOverrides":
+      []}]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy managed-rules override remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '412'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name --type --rule-group-id --rule-id
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '876'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Apr 2024 03:41:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: 205D4F9D1CC347E691EB9F3650046860 Ref B: MAA201060516017 Ref C: 2024-04-22T03:41:45Z'
     status:
       code: 200
       message: OK
@@ -369,35 +404,33 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '834'
+      - '876'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:33 GMT
+      - Mon, 22 Apr 2024 03:41:49 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 0BAE11DE30E94F15833EFB3C4744A788 Ref B: MAA201060514023 Ref C: 2024-04-22T03:41:47Z'
     status:
       code: 200
       message: OK
@@ -415,43 +448,41 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"DefaultRuleSet","ruleSetVersion":"1.0","ruleSetAction":null,"ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '834'
+      - '876'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:34 GMT
+      - Mon, 22 Apr 2024 03:41:51 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 38CFE6F35647448B8CF3EDCF35AB6D08 Ref B: MAA201060515011 Ref C: 2024-04-22T03:41:50Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
+    body: '{"location": "WestUs", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
       "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
-      "requestBodyCheck": "Enabled"}, "customRules": {"rules": []}, "managedRules":
-      {"managedRuleSets": []}}}'
+      "requestBodyCheck": "Enabled", "javascriptChallengeExpirationInMinutes": 30},
+      "customRules": {"rules": []}, "managedRules": {"managedRuleSets": []}}}'
     headers:
       Accept:
       - application/json
@@ -462,43 +493,41 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '264'
+      - '310'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g --policy-name --type
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '718'
+      - '760'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:35 GMT
+      - Mon, 22 Apr 2024 03:41:53 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: CBEA4E0D2C6A413AB3D1669C2E03BE17 Ref B: MAA201060515011 Ref C: 2024-04-22T03:41:51Z'
     status:
       code: 200
       message: OK
@@ -516,44 +545,42 @@ interactions:
       ParameterSetName:
       - -g --policy-name --type --version --action
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '718'
+      - '760'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:37 GMT
+      - Mon, 22 Apr 2024 03:41:54 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: E8187AFD318B49B783682F60911223AC Ref B: MAA201060516011 Ref C: 2024-04-22T03:41:54Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
+    body: '{"location": "WestUs", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
       "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
-      "requestBodyCheck": "Enabled"}, "customRules": {"rules": []}, "managedRules":
-      {"managedRuleSets": [{"ruleSetType": "Microsoft_DefaultRuleSet", "ruleSetVersion":
-      "2.0", "ruleSetAction": "Block"}]}}}'
+      "requestBodyCheck": "Enabled", "javascriptChallengeExpirationInMinutes": 30},
+      "customRules": {"rules": []}, "managedRules": {"managedRuleSets": [{"ruleSetType":
+      "Microsoft_DefaultRuleSet", "ruleSetVersion": "2.0", "ruleSetAction": "Block"}]}}}'
     headers:
       Accept:
       - application/json
@@ -564,43 +591,41 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '358'
+      - '404'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g --policy-name --type --version --action
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"Microsoft_DefaultRuleSet","ruleSetVersion":"2.0","ruleSetAction":"Block","ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"routingRuleLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"WestUs","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[{"ruleSetType":"Microsoft_DefaultRuleSet","ruleSetVersion":"2.0","ruleSetAction":"Block","ruleGroupOverrides":[],"exclusions":[]}]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '847'
+      - '889'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:38 GMT
+      - Mon, 22 Apr 2024 03:41:56 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 36C784BBE44640A2AC2618C0A9E408AB Ref B: MAA201060516011 Ref C: 2024-04-22T03:41:55Z'
     status:
       code: 200
       message: OK
@@ -616,216 +641,12 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.41.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/FrontDoorWebApplicationFirewallManagedRuleSets?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/FrontDoorWebApplicationFirewallManagedRuleSets?api-version=2024-02-01
   response:
     body:
-      string: '{"value":[{"id":"/providers/Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets/Microsoft_DefaultRuleSet_2.1","type":"Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets","name":"Microsoft_DefaultRuleSet_2.1","properties":{"ruleSetType":"Microsoft_DefaultRuleSet","ruleSetVersion":"2.1","ruleSetId":"8125d145-ddc5-4d90-9bc3-24c5f2de69a2","ruleGroups":[{"ruleGroupName":"MS-ThreatIntel-WebShells","description":"Web
-        shell attacks","rules":[{"ruleId":"99005002","description":"Web Shell Interaction
-        Attempt (POST)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99005003","description":"Web
-        Shell Upload Attempt (POST) - CHOPPER PHP","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99005004","description":"Web
-        Shell Upload Attempt (POST) - CHOPPER ASPX","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99005005","description":"Web
-        Shell Interaction Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99005006","description":"Spring4Shell
-        Interaction Attempt","defaultAction":"AnomalyScoring","defaultState":"Disabled"}]},{"ruleGroupName":"MS-ThreatIntel-AppSec","description":"Path
-        traversal evasion","rules":[{"ruleId":"99030001","description":"Path Traversal
-        Evasion in Headers (/.././../)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99030002","description":"Path
-        Traversal Evasion in Request Body (/.././../)","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"MS-ThreatIntel-SQLI","description":"SQL
-        injection","rules":[{"ruleId":"99031001","description":"SQL Injection Attack:
-        Common Injection Testing Detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99031002","description":"SQL
-        Comment Sequence Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99031003","description":"SQL
-        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99031004","description":"Detects
-        basic SQL authentication bypass attempts 2/3","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"MS-ThreatIntel-CVEs","description":"Rest
-        API exploitation","rules":[{"ruleId":"99001001","description":"Attempted F5
-        tmui (CVE-2020-5902) REST API Exploitation with known credentials","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001002","description":"Attempted
-        Citrix NSC_USER directory traversal (CVE-2019-19781)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001003","description":"Attempted
-        Atlassian Confluence Widget Connector exploitation (CVE-2019-3396)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001004","description":"Attempted
-        Pulse Secure custom template exploitation (CVE-2020-8243)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001005","description":"Attempted
-        SharePoint type converter exploitation (CVE-2020-0932)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001006","description":"Attempted
-        Pulse Connect directory traversal (CVE-2019-11510)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001007","description":"Attempted
-        Junos OS J-Web local file inclusion (CVE-2020-1631)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001008","description":"Attempted
-        Fortinet path traversal (CVE-2018-13379)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001009","description":"Attempted
-        Apache struts ognl injection (CVE-2017-5638)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001010","description":"Attempted
-        Apache struts ognl injection (CVE-2017-12611)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001011","description":"Attempted
-        Oracle WebLogic path traversal (CVE-2020-14882)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001012","description":"Attempted
-        Telerik WebUI insecure deserialization exploitation (CVE-2019-18935)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001013","description":"Attempted
-        SharePoint insecure XML deserialization (CVE-2019-0604)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001014","description":"Attempted
-        Spring Cloud routing-expression injection (CVE-2022-22963)","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"99001015","description":"Attempted
-        Spring Framework unsafe class object exploitation (CVE-2022-22965)","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"99001016","description":"Attempted
-        Spring Cloud Gateway Actuator injection (CVE-2022-22947)","defaultAction":"AnomalyScoring","defaultState":"Disabled"}]},{"ruleGroupName":"PROTOCOL-ATTACK","description":"Protocol
-        attack","rules":[{"ruleId":"921110","description":"HTTP Request Smuggling
-        Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921120","description":"HTTP
-        Response Splitting Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921130","description":"HTTP
-        Response Splitting Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921140","description":"HTTP
-        Header Injection Attack via headers","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921150","description":"HTTP
-        Header Injection Attack via payload (CR/LF detected)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921160","description":"HTTP
-        Header Injection Attack via payload (CR/LF and header-name detected)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921151","description":"HTTP
-        Header Injection Attack via payload (CR/LF detected)","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"LFI","description":"Local
-        file inclusion","rules":[{"ruleId":"930100","description":"Path Traversal
-        Attack (/../)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"930110","description":"Path
-        Traversal Attack (/../)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"930120","description":"OS
-        File Access Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"930130","description":"Restricted
-        File Access Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"RFI","description":"Remote
-        file inclusion","rules":[{"ruleId":"931100","description":"Possible Remote
-        File Inclusion (RFI) Attack: URL Parameter using IP Address","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"931110","description":"Possible
-        Remote File Inclusion (RFI) Attack: Common RFI Vulnerable Parameter Name used
-        w/URL Payload","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"931120","description":"Possible
-        Remote File Inclusion (RFI) Attack: URL Payload Used w/Trailing Question Mark
-        Character (?)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"931130","description":"Possible
-        Remote File Inclusion (RFI) Attack: Off-Domain Reference/Link","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"RCE","description":"Remote
-        Command Execution attacks","rules":[{"ruleId":"932100","description":"Remote
-        Command Execution: Unix Command Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932105","description":"Remote
-        Command Execution: Unix Command Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932110","description":"Remote
-        Command Execution: Windows Command Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932115","description":"Remote
-        Command Execution: Windows Command Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932120","description":"Remote
-        Command Execution: Windows PowerShell Command Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932130","description":"Remote
-        Command Execution: Unix Shell Expression or Confluence Vulnerability (CVE-2022-26134)
-        Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932140","description":"Remote
-        Command Execution: Windows FOR/IF Command Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932150","description":"Remote
-        Command Execution: Direct Unix Command Execution","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932160","description":"Remote
-        Command Execution: Unix Shell Code Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932170","description":"Remote
-        Command Execution: Shellshock (CVE-2014-6271)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932171","description":"Remote
-        Command Execution: Shellshock (CVE-2014-6271)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932180","description":"Restricted
-        File Upload Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"PHP","description":"PHP
-        attacks","rules":[{"ruleId":"933100","description":"PHP Injection Attack:
-        PHP Open Tag Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933110","description":"PHP
-        Injection Attack: PHP Script File Upload Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933120","description":"PHP
-        Injection Attack: Configuration Directive Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933130","description":"PHP
-        Injection Attack: Variables Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933140","description":"PHP
-        Injection Attack: I/O Stream Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933150","description":"PHP
-        Injection Attack: High-Risk PHP Function Name Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933151","description":"PHP
-        Injection Attack: Medium-Risk PHP Function Name Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933160","description":"PHP
-        Injection Attack: High-Risk PHP Function Call Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933170","description":"PHP
-        Injection Attack: Serialized Object Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933180","description":"PHP
-        Injection Attack: Variable Function Call Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933200","description":"PHP
-        Injection Attack: Wrapper scheme detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933210","description":"PHP
-        Injection Attack: Variable Function Call Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"XSS","description":"Cross-site
-        scripting","rules":[{"ruleId":"941100","description":"XSS Attack Detected
-        via libinjection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941101","description":"XSS
-        Attack Detected via libinjection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941110","description":"XSS
-        Filter - Category 1: Script Tag Vector","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941120","description":"XSS
-        Filter - Category 2: Event Handler Vector","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941130","description":"XSS
-        Filter - Category 3: Attribute Vector","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941140","description":"XSS
-        Filter - Category 4: Javascript URI Vector","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941150","description":"XSS
-        Filter - Category 5: Disallowed HTML Attributes","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941160","description":"NoScript
-        XSS InjectionChecker: HTML Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941170","description":"NoScript
-        XSS InjectionChecker: Attribute Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941180","description":"Node-Validator
-        Blacklist Keywords","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941190","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941200","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941210","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941220","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941230","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941240","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941250","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941260","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941270","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941280","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941290","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941300","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941310","description":"US-ASCII
-        Malformed Encoding XSS Filter - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941320","description":"Possible
-        XSS Attack Detected - HTML Tag Handler","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941330","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941340","description":"IE
-        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941350","description":"UTF-7
-        Encoding IE XSS - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941360","description":"JSFuck
-        / Hieroglyphy obfuscation detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941370","description":"JavaScript
-        global variable found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941380","description":"AngularJS
-        client side template injection detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"SQLI","description":"SQL
-        injection","rules":[{"ruleId":"942100","description":"SQL Injection Attack
-        Detected via libinjection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942110","description":"SQL
-        Injection Attack: Common Injection Testing Detected","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"942120","description":"SQL
-        Injection Attack: SQL Operator Detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942140","description":"SQL
-        Injection Attack: Common DB Names Detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942150","description":"SQL
-        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"942160","description":"Detects
-        blind sqli tests using sleep() or benchmark().","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942170","description":"Detects
-        SQL benchmark and sleep injection attempts including conditional queries","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942180","description":"Detects
-        basic SQL authentication bypass attempts 1/3","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942190","description":"Detects
-        MSSQL code execution and information gathering attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942200","description":"Detects
-        MySQL comment-/space-obfuscated injections and backtick termination","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942210","description":"Detects
-        chained SQL injection attempts 1/2","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942220","description":"Looking
-        for integer overflow attacks, these are taken from skipfish, except 3.0.00738585072007e-308
-        is the \"magic number\" crash","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942230","description":"Detects
-        conditional SQL injection attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942240","description":"Detects
-        MySQL charset switch and MSSQL DoS attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942250","description":"Detects
-        MATCH AGAINST, MERGE and EXECUTE IMMEDIATE injections","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942260","description":"Detects
-        basic SQL authentication bypass attempts 2/3","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"942270","description":"Looking
-        for basic sql injection. Common attack string for mysql, oracle and others.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942280","description":"Detects
-        Postgres pg_sleep injection, waitfor delay attacks and database shutdown attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942290","description":"Finds
-        basic MongoDB SQL injection attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942300","description":"Detects
-        MySQL comments, conditions and ch(a)r injections","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942310","description":"Detects
-        chained SQL injection attempts 2/2","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942320","description":"Detects
-        MySQL and PostgreSQL stored procedure/function injections","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942330","description":"Detects
-        classic SQL injection probings 1/3","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942340","description":"Detects
-        basic SQL authentication bypass attempts 3/3","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942350","description":"Detects
-        MySQL UDF injection and other data/structure manipulation attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942360","description":"Detects
-        concatenated basic SQL injection and SQLLFI attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942361","description":"Detects
-        basic SQL injection based on keyword alter or union","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942370","description":"Detects
-        classic SQL injection probings 2/3","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942380","description":"SQL
-        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942390","description":"SQL
-        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942400","description":"SQL
-        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942410","description":"SQL
-        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942430","description":"Restricted
-        SQL Character Anomaly Detection (args): # of special characters exceeded (12)","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"942440","description":"SQL
-        Comment Sequence Detected.","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"942450","description":"SQL
-        Hex Encoding Identified","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942470","description":"SQL
-        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942480","description":"SQL
-        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942500","description":"MySQL
-        in-line comment detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942510","description":"SQLi
-        bypass attempt by ticks or backticks detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"FIX","description":"Session
-        Fixation attacks","rules":[{"ruleId":"943100","description":"Possible Session
-        Fixation Attack: Setting Cookie Values in HTML","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"943110","description":"Possible
-        Session Fixation Attack: SessionID Parameter Name with Off-Domain Referer","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"943120","description":"Possible
-        Session Fixation Attack: SessionID Parameter Name with No Referer","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"JAVA","description":"Java
-        attacks","rules":[{"ruleId":"944100","description":"Remote Command Execution:
-        Suspicious Java class detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944110","description":"Remote
-        Command Execution: Java process spawn (CVE-2017-9805)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944120","description":"Remote
-        Command Execution: Java serialization (CVE-2015-5842)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944130","description":"Suspicious
-        Java class detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944200","description":"Magic
-        bytes Detected, probable java serialization in use","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944210","description":"Magic
-        bytes Detected Base64 Encoded, probable java serialization in use","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944240","description":"Remote
-        Command Execution: Java serialization and Log4j vulnerability (CVE-2021-44228,
-        CVE-2021-45046)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944250","description":"Remote
-        Command Execution: Suspicious Java method detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"METHOD-ENFORCEMENT","description":"Method
-        Enforcement","rules":[{"ruleId":"911100","description":"Method is not allowed
-        by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"PROTOCOL-ENFORCEMENT","description":"Protocol
-        Enforcement","rules":[{"ruleId":"920100","description":"Invalid HTTP Request
-        Line","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920120","description":"Attempted
-        multipart/form-data bypass","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920121","description":"Attempted
-        multipart/form-data bypass","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920160","description":"Content-Length
-        HTTP header is not numeric.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920170","description":"GET
-        or HEAD Request with Body Content.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920171","description":"GET
-        or HEAD Request with Transfer-Encoding.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920180","description":"POST
-        without Content-Length or Transfer-Encoding headers.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920190","description":"Range:
-        Invalid Last Byte Value.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920200","description":"Range:
-        Too many fields (6 or more)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920201","description":"Range:
-        Too many fields for pdf request (63 or more)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920210","description":"Multiple/Conflicting
-        Connection Header Data Found.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920220","description":"URL
-        Encoding Abuse Attack Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920230","description":"Multiple
-        URL Encoding Detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920240","description":"URL
-        Encoding Abuse Attack Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920260","description":"Unicode
-        Full/Half Width Abuse Attack Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920270","description":"Invalid
-        character in request (null character)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920271","description":"Invalid
-        character in request (non printable characters)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920280","description":"Request
-        Missing a Host Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920290","description":"Empty
-        Host Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920300","description":"Request
-        Missing an Accept Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920310","description":"Request
-        Has an Empty Accept Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920311","description":"Request
-        Has an Empty Accept Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920320","description":"Missing
-        User Agent Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920330","description":"Empty
-        User Agent Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920340","description":"Request
-        Containing Content, but Missing Content-Type header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920341","description":"Request
-        Containing Content Requires Content-Type header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920350","description":"Host
-        header is a numeric IP address","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920420","description":"Request
-        content type is not allowed by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920430","description":"HTTP
-        protocol version is not allowed by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920440","description":"URL
-        file extension is restricted by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920450","description":"HTTP
-        header is restricted by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920470","description":"Illegal
-        Content-Type header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920480","description":"Request
-        content type charset is not allowed by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"General","description":"Method
-        Enforcement","rules":[{"ruleId":"200002","description":"Failed to parse request
-        body.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"200003","description":"Multipart
-        request body failed strict validation","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"NODEJS","description":"Node
-        JS Attacks","rules":[{"ruleId":"934100","description":"Node.js Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]}],"provisioningState":"Succeeded"}},{"id":"/providers/Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets/Microsoft_DefaultRuleSet_2.0","type":"Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets","name":"Microsoft_DefaultRuleSet_2.0","properties":{"ruleSetType":"Microsoft_DefaultRuleSet","ruleSetVersion":"2.0","ruleSetId":"8125d145-ddc5-4d90-9bc3-24c5f2de69a2","ruleGroups":[{"ruleGroupName":"MS-ThreatIntel-WebShells","description":"Web
+      string: '{"value":[{"id":"/providers/Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets/Microsoft_DefaultRuleSet_2.0","type":"Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets","name":"Microsoft_DefaultRuleSet_2.0","properties":{"ruleSetType":"Microsoft_DefaultRuleSet","ruleSetVersion":"2.0","ruleSetId":"8125d145-ddc5-4d90-9bc3-24c5f2de69a2","ruleGroups":[{"ruleGroupName":"MS-ThreatIntel-WebShells","description":"Web
         shell attacks","rules":[{"ruleId":"99005002","description":"Web Shell Interaction
         Attempt (POST)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99005003","description":"Web
         Shell Upload Attempt (POST) - CHOPPER PHP","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99005004","description":"Web
@@ -841,7 +662,8 @@ interactions:
         tmui (CVE-2020-5902) REST API Exploitation with known credentials","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001014","description":"Attempted
         Spring Cloud routing-expression injection (CVE-2022-22963)","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"99001015","description":"Attempted
         Spring Framework unsafe class object exploitation (CVE-2022-22965)","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"99001016","description":"Attempted
-        Spring Cloud Gateway Actuator injection (CVE-2022-22947)","defaultAction":"AnomalyScoring","defaultState":"Disabled"}]},{"ruleGroupName":"PROTOCOL-ATTACK","description":"Protocol
+        Spring Cloud Gateway Actuator injection (CVE-2022-22947)","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"99001017","description":"Attempted
+        Apache Struts file upload exploitation (CVE-2023-50164)","defaultAction":"AnomalyScoring","defaultState":"Disabled"}]},{"ruleGroupName":"PROTOCOL-ATTACK","description":"Protocol
         attack","rules":[{"ruleId":"921110","description":"HTTP Request Smuggling
         Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921120","description":"HTTP
         Response Splitting Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921130","description":"HTTP
@@ -1014,7 +836,234 @@ interactions:
         Enforcement","rules":[{"ruleId":"200002","description":"Failed to parse request
         body.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"200003","description":"Multipart
         request body failed strict validation","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"NODEJS","description":"Node
-        JS Attacks","rules":[{"ruleId":"934100","description":"Node.js Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]}],"provisioningState":"Succeeded"}},{"id":"/providers/Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets/Microsoft_DefaultRuleSet_1.2","type":"Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets","name":"Microsoft_DefaultRuleSet_1.2","properties":{"ruleSetType":"Microsoft_DefaultRuleSet","ruleSetVersion":"1.2","ruleSetId":"8125d145-ddc5-4d90-9bc3-24c5f2de69a2","ruleGroups":[{"ruleGroupName":"MS-ThreatIntel-WebShells","description":"Web
+        JS Attacks","rules":[{"ruleId":"934100","description":"Node.js Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]}],"provisioningState":"Succeeded"}},{"id":"/providers/Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets/Microsoft_DefaultRuleSet_2.1","type":"Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets","name":"Microsoft_DefaultRuleSet_2.1","properties":{"ruleSetType":"Microsoft_DefaultRuleSet","ruleSetVersion":"2.1","ruleSetId":"8125d145-ddc5-4d90-9bc3-24c5f2de69a2","ruleGroups":[{"ruleGroupName":"MS-ThreatIntel-WebShells","description":"Web
+        shell attacks","rules":[{"ruleId":"99005002","description":"Web Shell Interaction
+        Attempt (POST)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99005003","description":"Web
+        Shell Upload Attempt (POST) - CHOPPER PHP","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99005004","description":"Web
+        Shell Upload Attempt (POST) - CHOPPER ASPX","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99005005","description":"Web
+        Shell Interaction Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99005006","description":"Spring4Shell
+        Interaction Attempt","defaultAction":"AnomalyScoring","defaultState":"Disabled"}]},{"ruleGroupName":"MS-ThreatIntel-AppSec","description":"Path
+        traversal evasion","rules":[{"ruleId":"99030001","description":"Path Traversal
+        Evasion in Headers (/.././../)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99030002","description":"Path
+        Traversal Evasion in Request Body (/.././../)","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"MS-ThreatIntel-SQLI","description":"SQL
+        injection","rules":[{"ruleId":"99031001","description":"SQL Injection Attack:
+        Common Injection Testing Detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99031002","description":"SQL
+        Comment Sequence Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99031003","description":"SQL
+        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99031004","description":"Detects
+        basic SQL authentication bypass attempts 2/3","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"MS-ThreatIntel-CVEs","description":"Rest
+        API exploitation","rules":[{"ruleId":"99001001","description":"Attempted F5
+        tmui (CVE-2020-5902) REST API Exploitation with known credentials","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001002","description":"Attempted
+        Citrix NSC_USER directory traversal (CVE-2019-19781)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001003","description":"Attempted
+        Atlassian Confluence Widget Connector exploitation (CVE-2019-3396)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001004","description":"Attempted
+        Pulse Secure custom template exploitation (CVE-2020-8243)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001005","description":"Attempted
+        SharePoint type converter exploitation (CVE-2020-0932)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001006","description":"Attempted
+        Pulse Connect directory traversal (CVE-2019-11510)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001007","description":"Attempted
+        Junos OS J-Web local file inclusion (CVE-2020-1631)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001008","description":"Attempted
+        Fortinet path traversal (CVE-2018-13379)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001009","description":"Attempted
+        Apache struts ognl injection (CVE-2017-5638)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001010","description":"Attempted
+        Apache struts ognl injection (CVE-2017-12611)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001011","description":"Attempted
+        Oracle WebLogic path traversal (CVE-2020-14882)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001012","description":"Attempted
+        Telerik WebUI insecure deserialization exploitation (CVE-2019-18935)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001013","description":"Attempted
+        SharePoint insecure XML deserialization (CVE-2019-0604)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"99001014","description":"Attempted
+        Spring Cloud routing-expression injection (CVE-2022-22963)","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"99001015","description":"Attempted
+        Spring Framework unsafe class object exploitation (CVE-2022-22965)","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"99001016","description":"Attempted
+        Spring Cloud Gateway Actuator injection (CVE-2022-22947)","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"99001017","description":"Attempted
+        Apache Struts file upload exploitation (CVE-2023-50164)","defaultAction":"AnomalyScoring","defaultState":"Disabled"}]},{"ruleGroupName":"PROTOCOL-ATTACK","description":"Protocol
+        attack","rules":[{"ruleId":"921110","description":"HTTP Request Smuggling
+        Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921120","description":"HTTP
+        Response Splitting Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921130","description":"HTTP
+        Response Splitting Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921140","description":"HTTP
+        Header Injection Attack via headers","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921150","description":"HTTP
+        Header Injection Attack via payload (CR/LF detected)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921160","description":"HTTP
+        Header Injection Attack via payload (CR/LF and header-name detected)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921151","description":"HTTP
+        Header Injection Attack via payload (CR/LF detected)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921190","description":"HTTP
+        Splitting (CR/LF in request filename detected)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"921200","description":"LDAP
+        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"LFI","description":"Local
+        file inclusion","rules":[{"ruleId":"930100","description":"Path Traversal
+        Attack (/../)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"930110","description":"Path
+        Traversal Attack (/../)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"930120","description":"OS
+        File Access Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"930130","description":"Restricted
+        File Access Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"RFI","description":"Remote
+        file inclusion","rules":[{"ruleId":"931100","description":"Possible Remote
+        File Inclusion (RFI) Attack: URL Parameter using IP Address","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"931110","description":"Possible
+        Remote File Inclusion (RFI) Attack: Common RFI Vulnerable Parameter Name used
+        w/URL Payload","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"931120","description":"Possible
+        Remote File Inclusion (RFI) Attack: URL Payload Used w/Trailing Question Mark
+        Character (?)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"931130","description":"Possible
+        Remote File Inclusion (RFI) Attack: Off-Domain Reference/Link","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"RCE","description":"Remote
+        Command Execution attacks","rules":[{"ruleId":"932100","description":"Remote
+        Command Execution: Unix Command Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932105","description":"Remote
+        Command Execution: Unix Command Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932110","description":"Remote
+        Command Execution: Windows Command Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932115","description":"Remote
+        Command Execution: Windows Command Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932120","description":"Remote
+        Command Execution: Windows PowerShell Command Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932130","description":"Remote
+        Command Execution: Unix Shell Expression or Confluence Vulnerability (CVE-2022-26134)
+        Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932140","description":"Remote
+        Command Execution: Windows FOR/IF Command Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932150","description":"Remote
+        Command Execution: Direct Unix Command Execution","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932160","description":"Remote
+        Command Execution: Unix Shell Code Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932170","description":"Remote
+        Command Execution: Shellshock (CVE-2014-6271)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932171","description":"Remote
+        Command Execution: Shellshock (CVE-2014-6271)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"932180","description":"Restricted
+        File Upload Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"PHP","description":"PHP
+        attacks","rules":[{"ruleId":"933100","description":"PHP Injection Attack:
+        PHP Open Tag Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933110","description":"PHP
+        Injection Attack: PHP Script File Upload Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933120","description":"PHP
+        Injection Attack: Configuration Directive Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933130","description":"PHP
+        Injection Attack: Variables Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933140","description":"PHP
+        Injection Attack: I/O Stream Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933150","description":"PHP
+        Injection Attack: High-Risk PHP Function Name Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933151","description":"PHP
+        Injection Attack: Medium-Risk PHP Function Name Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933160","description":"PHP
+        Injection Attack: High-Risk PHP Function Call Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933170","description":"PHP
+        Injection Attack: Serialized Object Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933180","description":"PHP
+        Injection Attack: Variable Function Call Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933200","description":"PHP
+        Injection Attack: Wrapper scheme detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"933210","description":"PHP
+        Injection Attack: Variable Function Call Found","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"XSS","description":"Cross-site
+        scripting","rules":[{"ruleId":"941100","description":"XSS Attack Detected
+        via libinjection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941101","description":"XSS
+        Attack Detected via libinjection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941110","description":"XSS
+        Filter - Category 1: Script Tag Vector","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941120","description":"XSS
+        Filter - Category 2: Event Handler Vector","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941130","description":"XSS
+        Filter - Category 3: Attribute Vector","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941140","description":"XSS
+        Filter - Category 4: Javascript URI Vector","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941150","description":"XSS
+        Filter - Category 5: Disallowed HTML Attributes","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941160","description":"NoScript
+        XSS InjectionChecker: HTML Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941170","description":"NoScript
+        XSS InjectionChecker: Attribute Injection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941180","description":"Node-Validator
+        Blacklist Keywords","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941190","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941200","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941210","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941220","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941230","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941240","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941250","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941260","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941270","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941280","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941290","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941300","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941310","description":"US-ASCII
+        Malformed Encoding XSS Filter - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941320","description":"Possible
+        XSS Attack Detected - HTML Tag Handler","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941330","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941340","description":"IE
+        XSS Filters - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941350","description":"UTF-7
+        Encoding IE XSS - Attack Detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941360","description":"JSFuck
+        / Hieroglyphy obfuscation detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941370","description":"JavaScript
+        global variable found","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"941380","description":"AngularJS
+        client side template injection detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"SQLI","description":"SQL
+        injection","rules":[{"ruleId":"942100","description":"SQL Injection Attack
+        Detected via libinjection","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942110","description":"SQL
+        Injection Attack: Common Injection Testing Detected","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"942120","description":"SQL
+        Injection Attack: SQL Operator Detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942140","description":"SQL
+        Injection Attack: Common DB Names Detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942150","description":"SQL
+        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"942160","description":"Detects
+        blind sqli tests using sleep() or benchmark().","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942170","description":"Detects
+        SQL benchmark and sleep injection attempts including conditional queries","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942180","description":"Detects
+        basic SQL authentication bypass attempts 1/3","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942190","description":"Detects
+        MSSQL code execution and information gathering attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942200","description":"Detects
+        MySQL comment-/space-obfuscated injections and backtick termination","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942210","description":"Detects
+        chained SQL injection attempts 1/2","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942220","description":"Looking
+        for integer overflow attacks, these are taken from skipfish, except 3.0.00738585072007e-308
+        is the \"magic number\" crash","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942230","description":"Detects
+        conditional SQL injection attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942240","description":"Detects
+        MySQL charset switch and MSSQL DoS attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942250","description":"Detects
+        MATCH AGAINST, MERGE and EXECUTE IMMEDIATE injections","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942260","description":"Detects
+        basic SQL authentication bypass attempts 2/3","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"942270","description":"Looking
+        for basic sql injection. Common attack string for mysql, oracle and others.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942280","description":"Detects
+        Postgres pg_sleep injection, waitfor delay attacks and database shutdown attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942290","description":"Finds
+        basic MongoDB SQL injection attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942300","description":"Detects
+        MySQL comments, conditions and ch(a)r injections","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942310","description":"Detects
+        chained SQL injection attempts 2/2","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942320","description":"Detects
+        MySQL and PostgreSQL stored procedure/function injections","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942330","description":"Detects
+        classic SQL injection probings 1/3","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942340","description":"Detects
+        basic SQL authentication bypass attempts 3/3","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942350","description":"Detects
+        MySQL UDF injection and other data/structure manipulation attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942360","description":"Detects
+        concatenated basic SQL injection and SQLLFI attempts","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942361","description":"Detects
+        basic SQL injection based on keyword alter or union","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942370","description":"Detects
+        classic SQL injection probings 2/3","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942380","description":"SQL
+        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942390","description":"SQL
+        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942400","description":"SQL
+        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942410","description":"SQL
+        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942430","description":"Restricted
+        SQL Character Anomaly Detection (args): # of special characters exceeded (12)","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"942440","description":"SQL
+        Comment Sequence Detected.","defaultAction":"AnomalyScoring","defaultState":"Disabled"},{"ruleId":"942450","description":"SQL
+        Hex Encoding Identified","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942470","description":"SQL
+        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942480","description":"SQL
+        Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942500","description":"MySQL
+        in-line comment detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"942510","description":"SQLi
+        bypass attempt by ticks or backticks detected.","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"FIX","description":"Session
+        Fixation attacks","rules":[{"ruleId":"943100","description":"Possible Session
+        Fixation Attack: Setting Cookie Values in HTML","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"943110","description":"Possible
+        Session Fixation Attack: SessionID Parameter Name with Off-Domain Referer","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"943120","description":"Possible
+        Session Fixation Attack: SessionID Parameter Name with No Referer","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"JAVA","description":"Java
+        attacks","rules":[{"ruleId":"944100","description":"Remote Command Execution:
+        Suspicious Java class detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944110","description":"Remote
+        Command Execution: Java process spawn (CVE-2017-9805)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944120","description":"Remote
+        Command Execution: Java serialization (CVE-2015-5842)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944130","description":"Suspicious
+        Java class detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944200","description":"Magic
+        bytes Detected, probable java serialization in use","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944210","description":"Magic
+        bytes Detected Base64 Encoded, probable java serialization in use","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944240","description":"Remote
+        Command Execution: Java serialization and Log4j vulnerability (CVE-2021-44228,
+        CVE-2021-45046)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"944250","description":"Remote
+        Command Execution: Suspicious Java method detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"METHOD-ENFORCEMENT","description":"Method
+        Enforcement","rules":[{"ruleId":"911100","description":"Method is not allowed
+        by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"PROTOCOL-ENFORCEMENT","description":"Protocol
+        Enforcement","rules":[{"ruleId":"920100","description":"Invalid HTTP Request
+        Line","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920120","description":"Attempted
+        multipart/form-data bypass","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920121","description":"Attempted
+        multipart/form-data bypass","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920160","description":"Content-Length
+        HTTP header is not numeric.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920170","description":"GET
+        or HEAD Request with Body Content.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920171","description":"GET
+        or HEAD Request with Transfer-Encoding.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920180","description":"POST
+        without Content-Length or Transfer-Encoding headers.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920190","description":"Range:
+        Invalid Last Byte Value.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920200","description":"Range:
+        Too many fields (6 or more)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920201","description":"Range:
+        Too many fields for pdf request (63 or more)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920210","description":"Multiple/Conflicting
+        Connection Header Data Found.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920220","description":"URL
+        Encoding Abuse Attack Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920230","description":"Multiple
+        URL Encoding Detected","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920240","description":"URL
+        Encoding Abuse Attack Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920260","description":"Unicode
+        Full/Half Width Abuse Attack Attempt","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920270","description":"Invalid
+        character in request (null character)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920271","description":"Invalid
+        character in request (non printable characters)","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920280","description":"Request
+        Missing a Host Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920290","description":"Empty
+        Host Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920300","description":"Request
+        Missing an Accept Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920310","description":"Request
+        Has an Empty Accept Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920311","description":"Request
+        Has an Empty Accept Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920320","description":"Missing
+        User Agent Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920330","description":"Empty
+        User Agent Header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920340","description":"Request
+        Containing Content, but Missing Content-Type header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920341","description":"Request
+        Containing Content Requires Content-Type header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920350","description":"Host
+        header is a numeric IP address","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920420","description":"Request
+        content type is not allowed by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920430","description":"HTTP
+        protocol version is not allowed by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920440","description":"URL
+        file extension is restricted by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920450","description":"HTTP
+        header is restricted by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920470","description":"Illegal
+        Content-Type header","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920480","description":"Request
+        content type charset is not allowed by policy","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920181","description":"Content-Length
+        and Transfer-Encoding headers present","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"920500","description":"Attempt
+        to access a backup or working file","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"General","description":"Method
+        Enforcement","rules":[{"ruleId":"200002","description":"Failed to parse request
+        body.","defaultAction":"AnomalyScoring","defaultState":"Enabled"},{"ruleId":"200003","description":"Multipart
+        request body failed strict validation","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]},{"ruleGroupName":"NODEJS","description":"Node
+        JS Attacks","rules":[{"ruleId":"934100","description":"Node.js Injection Attack","defaultAction":"AnomalyScoring","defaultState":"Enabled"}]}],"provisioningState":"Succeeded"}},{"id":"/providers/Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets/Microsoft_BotManagerRuleSet_1.1","type":"Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets","name":"Microsoft_BotManagerRuleSet_1.1","properties":{"ruleSetType":"Microsoft_BotManagerRuleSet","ruleSetVersion":"1.1","ruleSetId":"e44514af-018d-49e9-8070-c9edac0f3a0d","ruleGroups":[{"ruleGroupName":"BadBots","description":"Bad
+        bots","rules":[{"ruleId":"Bot100100","description":"Malicious bots detected
+        by threat intelligence","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"Bot100200","description":"Malicious
+        bots that have falsified their identity","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"Bot100300","description":"High
+        risk bots detected by threat intelligence","defaultAction":"Block","defaultState":"Enabled"}]},{"ruleGroupName":"GoodBots","description":"Good
+        bots","rules":[{"ruleId":"Bot200100","description":"Search engine crawlers","defaultAction":"Allow","defaultState":"Enabled"},{"ruleId":"Bot200200","description":"Verified
+        misc bots","defaultAction":"Allow","defaultState":"Enabled"},{"ruleId":"Bot200300","description":"Verified
+        link checker bots","defaultAction":"Allow","defaultState":"Enabled"},{"ruleId":"Bot200400","description":"Verified
+        social media bots","defaultAction":"Allow","defaultState":"Enabled"},{"ruleId":"Bot200500","description":"Verified
+        content fetchers","defaultAction":"Allow","defaultState":"Enabled"},{"ruleId":"Bot200600","description":"Verified
+        feed fetchers","defaultAction":"Allow","defaultState":"Enabled"},{"ruleId":"Bot200700","description":"Verified
+        Advertising bots","defaultAction":"Allow","defaultState":"Enabled"}]},{"ruleGroupName":"UnknownBots","description":"Unknown
+        bots","rules":[{"ruleId":"Bot300100","description":"Unspecified identity","defaultAction":"Log","defaultState":"Enabled"},{"ruleId":"Bot300200","description":"Tools
+        and frameworks for web crawling and attacks","defaultAction":"Log","defaultState":"Enabled"},{"ruleId":"Bot300300","description":"General
+        purpose HTTP clients and SDKs","defaultAction":"Log","defaultState":"Enabled"},{"ruleId":"Bot300400","description":"Service
+        agents","defaultAction":"Log","defaultState":"Enabled"},{"ruleId":"Bot300500","description":"Site
+        health monitoring services","defaultAction":"Log","defaultState":"Enabled"},{"ruleId":"Bot300600","description":"Unknown
+        bots detected by threat intelligence","defaultAction":"Log","defaultState":"Enabled"},{"ruleId":"Bot300700","description":"Other
+        bots","defaultAction":"Log","defaultState":"Enabled"}]}],"provisioningState":"Succeeded"}},{"id":"/providers/Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets/Microsoft_DefaultRuleSet_1.2","type":"Microsoft.Network/frontdoorwebapplicationfirewallmanagedrulesets","name":"Microsoft_DefaultRuleSet_1.2","properties":{"ruleSetType":"Microsoft_DefaultRuleSet","ruleSetVersion":"1.2","ruleSetId":"8125d145-ddc5-4d90-9bc3-24c5f2de69a2","ruleGroups":[{"ruleGroupName":"MS-ThreatIntel-WebShells","description":"Web
         shell attacks","rules":[{"ruleId":"99005002","description":"Web Shell Interaction
         Attempt (POST)","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"99005003","description":"Web
         Shell Upload Attempt (POST) - CHOPPER PHP","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"99005004","description":"Web
@@ -1045,7 +1094,8 @@ interactions:
         SharePoint insecure XML deserialization (CVE-2019-0604)","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"99001014","description":"Attempted
         Spring Cloud routing-expression injection (CVE-2022-22963)","defaultAction":"Block","defaultState":"Disabled"},{"ruleId":"99001015","description":"Attempted
         Spring Framework unsafe class object exploitation (CVE-2022-22965)","defaultAction":"Block","defaultState":"Disabled"},{"ruleId":"99001016","description":"Attempted
-        Spring Cloud Gateway Actuator injection (CVE-2022-22947)","defaultAction":"Block","defaultState":"Disabled"}]},{"ruleGroupName":"PROTOCOL-ATTACK","description":"Protocol
+        Spring Cloud Gateway Actuator injection (CVE-2022-22947)","defaultAction":"Block","defaultState":"Disabled"},{"ruleId":"99001017","description":"Attempted
+        Apache Struts file upload exploitation (CVE-2023-50164)","defaultAction":"Block","defaultState":"Disabled"}]},{"ruleGroupName":"PROTOCOL-ATTACK","description":"Protocol
         attack","rules":[{"ruleId":"921110","description":"HTTP Request Smuggling
         Attack","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"921120","description":"HTTP
         Response Splitting Attack","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"921130","description":"HTTP
@@ -1187,7 +1237,8 @@ interactions:
         tmui (CVE-2020-5902) REST API Exploitation with known credentials","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"99001014","description":"Attempted
         Spring Cloud routing-expression injection (CVE-2022-22963)","defaultAction":"Block","defaultState":"Disabled"},{"ruleId":"99001015","description":"Attempted
         Spring Framework unsafe class object exploitation (CVE-2022-22965)","defaultAction":"Block","defaultState":"Disabled"},{"ruleId":"99001016","description":"Attempted
-        Spring Cloud Gateway Actuator injection (CVE-2022-22947)","defaultAction":"Block","defaultState":"Disabled"}]},{"ruleGroupName":"PROTOCOL-ATTACK","description":"Protocol
+        Spring Cloud Gateway Actuator injection (CVE-2022-22947)","defaultAction":"Block","defaultState":"Disabled"},{"ruleId":"99001017","description":"Attempted
+        Apache Struts file upload exploitation (CVE-2023-50164)","defaultAction":"Block","defaultState":"Disabled"}]},{"ruleGroupName":"PROTOCOL-ATTACK","description":"Protocol
         attack","rules":[{"ruleId":"921110","description":"HTTP Request Smuggling
         Attack","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"921120","description":"HTTP
         Response Splitting Attack","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"921130","description":"HTTP
@@ -1331,7 +1382,8 @@ interactions:
         API exploitation","rules":[{"ruleId":"99001014","description":"Attempted Spring
         Cloud routing-expression injection (CVE-2022-22963)","defaultAction":"Block","defaultState":"Disabled"},{"ruleId":"99001015","description":"Attempted
         Spring Framework unsafe class object exploitation (CVE-2022-22965)","defaultAction":"Block","defaultState":"Disabled"},{"ruleId":"99001016","description":"Attempted
-        Spring Cloud Gateway Actuator injection (CVE-2022-22947)","defaultAction":"Block","defaultState":"Disabled"}]},{"ruleGroupName":"PROTOCOL-ATTACK","description":"Protocol
+        Spring Cloud Gateway Actuator injection (CVE-2022-22947)","defaultAction":"Block","defaultState":"Disabled"},{"ruleId":"99001017","description":"Attempted
+        Apache Struts file upload exploitation (CVE-2023-50164)","defaultAction":"Block","defaultState":"Disabled"}]},{"ruleGroupName":"PROTOCOL-ATTACK","description":"Protocol
         attack","rules":[{"ruleId":"921110","description":"HTTP Request Smuggling
         Attack","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"921120","description":"HTTP
         Response Splitting Attack","defaultAction":"Block","defaultState":"Enabled"},{"ruleId":"921130","description":"HTTP
@@ -1582,21 +1634,23 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '126870'
+      - '130824'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Oct 2022 06:28:40 GMT
+      - Mon, 22 Apr 2024 03:41:58 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: ACB7B8F9958B49E6967893757B303E28 Ref B: MAA201060513011 Ref C: 2024-04-22T03:41:58Z'
     status:
       code: 200
       message: OK
