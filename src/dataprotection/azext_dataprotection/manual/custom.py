@@ -83,26 +83,44 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
     })
 
 
-def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excluded_resource_types=None,
+def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasource_type, excluded_resource_types=None,
                                                            included_resource_types=None, excluded_namespaces=None,
                                                            included_namespaces=None, label_selectors=None,
-                                                           snapshot_volumes=None, include_cluster_scope_resources=None,
+                                                           snapshot_volumes=None,
+                                                           include_cluster_scope_resources=None,
+                                                           vaulted_backup_containers=None,
+                                                           include_all_containers=None,
+                                                           storage_account_name=None, storage_account_resource_group=None,
                                                            backup_hook_references=None):
-    if snapshot_volumes is None:
-        snapshot_volumes = True
-    if include_cluster_scope_resources is None:
-        include_cluster_scope_resources = True
+    if datasource_type == "AzureKubernetesService":
+        if any([vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group]):
+            raise InvalidArgumentValueError('Invalid argument --vaulted-backup-containers, --include-all-containers, '
+                                            '--storage-account-name, --storage-account-resource-group for given datasource type.')
+        if snapshot_volumes is None:
+            snapshot_volumes = True
+        if include_cluster_scope_resources is None:
+            include_cluster_scope_resources = True
+        return {
+            "object_type": "KubernetesClusterBackupDatasourceParameters",
+            "excluded_resource_types": excluded_resource_types,
+            "included_resource_types": included_resource_types,
+            "excluded_namespaces": excluded_namespaces,
+            "included_namespaces": included_namespaces,
+            "label_selectors": label_selectors,
+            "snapshot_volumes": snapshot_volumes,
+            "include_cluster_scope_resources": include_cluster_scope_resources,
+            "backup_hook_references": backup_hook_references
+        }
+    if datasource_type == "AzureBlob":
+        if any([excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces,
+                label_selectors, snapshot_volumes, include_cluster_scope_resources, backup_hook_references]):
+            raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
+                                            ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources, '
+                                            ' --backup-hook-references for given datasource type.')
+        return helper.get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group)
 
-    return {
-        "excluded_resource_types": excluded_resource_types,
-        "included_resource_types": included_resource_types,
-        "excluded_namespaces": excluded_namespaces,
-        "included_namespaces": included_namespaces,
-        "label_selectors": label_selectors,
-        "snapshot_volumes": snapshot_volumes,
-        "include_cluster_scope_resources": include_cluster_scope_resources,
-        "backup_hook_references": backup_hook_references
-    }
+    raise InvalidArgumentValueError('Given datasource type is not supported currently. '
+                                    'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
@@ -135,13 +153,29 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     backup_instance_name = helper.get_backup_instance_name(datasource_type, datasourceset_info, datasource_info)
 
     if manifest["addBackupDatasourceParametersList"]:
-        if backup_configuration is None:
-            raise RequiredArgumentMissingError("Please input parameter backup-configuration for AKS cluster backup. \
-                           Use command az dataprotection backup-instance initialize-backupconfig \
-                           for creating the backup-configuration")
-        backup_configuration["object_type"] = "KubernetesClusterBackupDatasourceParameters"
-        policy_info["policy_parameters"]["backup_datasource_parameters_list"] = []
-        policy_info["policy_parameters"]["backup_datasource_parameters_list"].append(backup_configuration)
+        if manifest["backupConfigurationRequired"] and backup_configuration is None:
+            raise RequiredArgumentMissingError("Please input parameter backup-configuration for given datasource type. \
+                                                Use command az dataprotection backup-instance initialize-backupconfig \
+                                                for creating the backup-configuration")
+        if backup_configuration:
+            if datasource_type == "AzureBlob":
+                for key in ['excluded_resource_types', 'included_resource_types', 'excluded_namespaces', 'included_namespaces',
+                            'label_selectors', 'snapshot_volumes', 'include_cluster_scope_resources']:
+                    if key in backup_configuration:
+                        raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
+                                                        ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
+                                                        ' for given datasource type. Please check the backup configuration.')
+
+            if datasource_type == "AzureKubernetesService":
+                if "containers_list" in backup_configuration:
+                    raise InvalidArgumentValueError('Invalid argument --vaulted-backup-containers for given datasource type. '
+                                                    'Please check the backup configuration.')
+
+            if not policy_info["policy_parameters"]:
+                policy_info["policy_parameters"] = {}
+
+            policy_info["policy_parameters"]["backup_datasource_parameters_list"] = []
+            policy_info["policy_parameters"]["backup_datasource_parameters_list"].append(backup_configuration)
     else:
         if backup_configuration is not None:
             logger.warning("--backup-configuration is not required for the given DatasourceType, and will not be used")
@@ -160,23 +194,54 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     }
 
 
-def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):
+def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, backup_instance_name,
+                                          vaulted_blob_container_list=None, no_wait=False):
     from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as BackupInstanceShow
     backup_instance = BackupInstanceShow(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name,
         "backup_instance_name": backup_instance_name
     })
-    policy_info = backup_instance['properties']['policyInfo']
-    policy_info['policyId'] = policy_id
 
-    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Update
-    return Update(cli_ctx=cmd.cli_ctx)(command_args={
+    backup_instance['properties']['policyInfo']['policyParameters']['backupDatasourceParametersList'] = \
+        [vaulted_blob_container_list,]
+
+    backup_instance = helper.convert_backup_instance_show_to_input(backup_instance)
+
+    from azext_dataprotection.manual.aaz_operations.backup_instance import UpdateWithBI
+    return UpdateWithBI(cli_ctx=cmd.cli_ctx)(command_args={
         "no_wait": no_wait,
-        "backup_instance_name": backup_instance_name,
+        "backup_instance": backup_instance,
         "resource_group": resource_group_name,
         "vault_name": vault_name,
-        "policy_info": policy_info
+    })
+
+
+def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):
+    # For some reason, the auto-generated Backup Instance Update does not contain some fields. Prominently
+    # in this situation, it is missing the properties.policyInfo.policyParameters section entirely, even though
+    # Backup Instance Create contains it. To get around this, we have a modified Update function that basically
+    # does a Create with an entire backup instance input.
+
+    # To achieve that, we have to fetch the currently present backup instance, make any necessary changes
+    # to that, and then remove any extranous fields that might be present.
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as BackupInstanceShow
+    backup_instance = BackupInstanceShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "backup_instance_name": backup_instance_name
+    })
+
+    backup_instance['properties']['policyInfo']['policyId'] = policy_id
+
+    backup_instance = helper.convert_backup_instance_show_to_input(backup_instance)
+
+    from azext_dataprotection.manual.aaz_operations.backup_instance import UpdateWithBI
+    return UpdateWithBI(cli_ctx=cmd.cli_ctx)(command_args={
+        "no_wait": no_wait,
+        "backup_instance": backup_instance,
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
     })
 
 
@@ -858,7 +923,7 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
     if datasource_type == 'AzureKubernetesService':
         restore_request["restore_target_info"]["object_type"] = "ItemLevelRestoreTargetInfo"
         restore_request["restore_target_info"]["restore_criteria"] = helper.get_resource_criteria_list(datasource_type, restore_configuration,
-                                                                                                       None, None, None)
+                                                                                                       None, None, None, None)
 
     return restore_request
 
@@ -906,13 +971,14 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
 
 def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore, restore_location, backup_instance_id=None,
                                          target_resource_id=None, recovery_point_id=None, point_in_time=None, container_list=None,
-                                         from_prefix_pattern=None, to_prefix_pattern=None, restore_configuration=None):
+                                         from_prefix_pattern=None, to_prefix_pattern=None, restore_configuration=None,
+                                         vaulted_blob_prefix_pattern=None):
     restore_request = {}
     restore_mode = None
     manifest = helper.load_manifest(datasource_type)
 
     # Workload should allow for item level recovery
-    if manifest is not None and not manifest["itemLevelRecoveyEnabled"]:
+    if manifest is not None and not manifest["itemLevelRecoveryEnabled"]:
         raise InvalidArgumentValueError("Specified DatasourceType " + datasource_type + " doesn't support Item Level Recovery")
 
     # Setting up restore request according to Recovery-Point/Point-in-time style of restore
@@ -937,6 +1003,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
     restore_request["restore_target_info"]["restore_criteria"] = helper.get_resource_criteria_list(datasource_type, restore_configuration,
                                                                                                    container_list, from_prefix_pattern,
-                                                                                                   to_prefix_pattern)
+                                                                                                   to_prefix_pattern, recovery_point_id,
+                                                                                                   vaulted_blob_prefix_pattern)
 
     return restore_request
