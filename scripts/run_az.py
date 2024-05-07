@@ -5,6 +5,7 @@
 
 import sys
 
+
 from azure.cli import __main__ as cli_main
 
 sys.exit(cli_main(sys.argv))
