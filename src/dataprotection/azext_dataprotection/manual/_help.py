@@ -25,6 +25,14 @@ helps['dataprotection backup-instance initialize'] = """
         text: az dataprotection backup-instance initialize --datasource-type AzureDisk -l southeastasia --policy-id {disk_policy_id} --datasource-id {disk_id}
 """
 
+helps['dataprotection backup-instance update'] = """
+    type: command
+    short-summary: Update properties associated with a backup instance.
+    examples:
+      - name: Update backed up containers for a vaulted blob backup instance
+        text: az dataprotection backup-instance update --backup-instance-name MyDisk1 --vaulted-blob-container-list {backup_configuration} -g MyResourceGroup --vault-name MyVault
+"""
+
 helps['dataprotection backup-instance update-policy'] = """
     type: command
     short-summary: Update backup policy associated with backup instance.
@@ -184,10 +192,12 @@ helps['dataprotection resource-guard list-protected-operations'] = """
 
 helps['dataprotection backup-instance initialize-backupconfig'] = """
     type: command
-    short-summary: Initialize JSON request body for initializing and configuring backup of an AzureKubernetesService resource.
+    short-summary: Initialize JSON request body for initializing and configuring backup for AzureKubernetesService or AzureBlobs (for vaulted backups) resources.
     examples:
-      - name: Initialize backup configuration
+      - name: Initialize backup configuration for AzureKubernetesService
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService --label-selectors key=val foo=bar --excluded-namespaces excludeNS1 excludeNS2
+      - name: Initialize backup configuration for AzureBlob
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type "AzureBlob" --include-all-containers --storage-account-rg "sampleRG" --storage-account-name "samplestorage"
 """
 
 helps['dataprotection backup-instance initialize-restoreconfig'] = """

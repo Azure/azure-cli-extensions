@@ -302,8 +302,18 @@ interactions:
     body: '{"properties": {"datasourceTypes": ["Microsoft.Storage/storageAccounts/blobServices"],
       "name": "BlobPolicy1", "objectType": "BackupPolicy", "policyRules": [{"isDefault":
       true, "lifecycles": [{"deleteAfter": {"duration": "P30D", "objectType": "AbsoluteDeleteOption"},
-      "sourceDataStore": {"dataStoreType": "OperationalStore", "objectType": "DataStoreInfoBase"}}],
-      "name": "Default", "objectType": "AzureRetentionRule"}]}}'
+      "sourceDataStore": {"dataStoreType": "OperationalStore", "objectType": "DataStoreInfoBase"},
+      "targetDataStoreCopySettings": []}], "name": "Default", "objectType": "AzureRetentionRule"},
+      {"isDefault": true, "lifecycles": [{"deleteAfter": {"duration": "P7D", "objectType":
+      "AbsoluteDeleteOption"}, "sourceDataStore": {"dataStoreType": "VaultStore",
+      "objectType": "DataStoreInfoBase"}, "targetDataStoreCopySettings": []}], "name":
+      "Default", "objectType": "AzureRetentionRule"}, {"backupParameters": {"backupType":
+      "Discrete", "objectType": "AzureBackupParams"}, "dataStore": {"dataStoreType":
+      "VaultStore", "objectType": "DataStoreInfoBase"}, "name": "BackupDaily", "objectType":
+      "AzureBackupRule", "trigger": {"objectType": "ScheduleBasedTriggerContext",
+      "schedule": {"repeatingTimeIntervals": ["R/2023-06-28T07:30:00+00:00/P1D"],
+      "timeZone": "UTC"}, "taggingCriteria": [{"isDefault": true, "tagInfo": {"id":
+      "Default_", "tagName": "Default"}, "taggingPriority": 99}]}}]}}'
     headers:
       Accept:
       - application/json
@@ -314,7 +324,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '419'
+      - '1238'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -325,12 +335,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backuppolicy-000001/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault/backupPolicies/blobpolicy?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"policyRules":[{"lifecycles":[{"deleteAfter":{"objectType":"AbsoluteDeleteOption","duration":"P30D"},"sourceDataStore":{"dataStoreType":"OperationalStore","objectType":"DataStoreInfoBase"}}],"isDefault":true,"name":"Default","objectType":"AzureRetentionRule"}],"datasourceTypes":["Microsoft.Storage/storageAccounts/blobServices"],"objectType":"BackupPolicy"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backuppolicy-000001/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault/backupPolicies/blobpolicy","name":"blobpolicy","type":"Microsoft.DataProtection/backupVaults/backupPolicies"}'
+      string: '{"properties":{"policyRules":[{"lifecycles":[{"deleteAfter":{"objectType":"AbsoluteDeleteOption","duration":"P30D"},"targetDataStoreCopySettings":[],"sourceDataStore":{"dataStoreType":"OperationalStore","objectType":"DataStoreInfoBase"}}],"isDefault":true,"name":"Default","objectType":"AzureRetentionRule"},{"lifecycles":[{"deleteAfter":{"objectType":"AbsoluteDeleteOption","duration":"P7D"},"targetDataStoreCopySettings":[],"sourceDataStore":{"dataStoreType":"VaultStore","objectType":"DataStoreInfoBase"}}],"isDefault":true,"name":"Default","objectType":"AzureRetentionRule"},{"backupParameters":{"backupType":"Discrete","objectType":"AzureBackupParams"},"trigger":{"schedule":{"repeatingTimeIntervals":["R/2023-06-28T07:30:00+00:00/P1D"],"timeZone":"UTC"},"taggingCriteria":[{"tagInfo":{"tagName":"Default","id":"Default_"},"taggingPriority":99,"isDefault":true}],"objectType":"ScheduleBasedTriggerContext"},"dataStore":{"dataStoreType":"VaultStore","objectType":"DataStoreInfoBase"},"name":"BackupDaily","objectType":"AzureBackupRule"}],"datasourceTypes":["Microsoft.Storage/storageAccounts/blobServices"],"objectType":"BackupPolicy"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backuppolicy-000001/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault/backupPolicies/blobpolicy","name":"blobpolicy","type":"Microsoft.DataProtection/backupVaults/backupPolicies"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '1420'
       content-type:
       - application/json; charset=utf-8
       date:

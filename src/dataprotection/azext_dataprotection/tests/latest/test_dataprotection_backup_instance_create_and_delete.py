@@ -89,13 +89,22 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
         test.kwargs.update({
             'dataSourceType': "AzureBlob",
             'permissionsScope': "Resource",
-            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/opBlobPolicy',
+            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/blobpolicy',
             'storageAccountName': 'clitestsadonotdelete',
-            'storageAccountId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestsadonotdelete'
+            'storageAccountId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestsadonotdelete',
+            'policyRuleName': "BackupWeekly"
         })
+        backup_config_json = test.cmd('az dataprotection backup-instance initialize-backupconfig --datasource-type "{dataSourceType}" '
+                                      '--include-all-containers --storage-account-rg "{rg}" --storage-account-name "{storageAccountName}"').get_output_in_json()
+        print(backup_config_json)
+        test.kwargs.update({
+            "backupConfig": backup_config_json
+        })
+
         backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fa1"
         backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type "{dataSourceType}" '
-                                        '-l "{location}" --policy-id "{policyId}" --datasource-id "{storageAccountId}" --snapshot-rg "{rg}" --tags Owner=dppclitest Purpose=Testing').get_output_in_json()
+                                        '-l "{location}" --policy-id "{policyId}" --datasource-id "{storageAccountId}" --snapshot-rg "{rg}" --tags Owner=dppclitest Purpose=Testing '
+                                        '--backup-config "{backupConfig}" ').get_output_in_json()
         backup_instance_json["backup_instance_name"] = test.kwargs['storageAccountName'] + "-" + test.kwargs['storageAccountName'] + "-" + backup_instance_guid
         test.kwargs.update({
             "backupInstance": backup_instance_json,
@@ -109,3 +118,9 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
         # time.sleep(30)
 
         backup_instance_validate_create(test)
+
+        # Trigger ad-hoc backup for vaulted blob. Ad-hoc backup job may fail as backup-instance will get deleted before backup completes.,
+        # but the test will pass as the job is triggered successfully.
+        adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
+                                         '-n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}" --rule-name "{policyRuleName}"').get_output_in_json()
+        test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})

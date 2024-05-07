@@ -7,6 +7,7 @@
 # pylint: disable=too-many-locals
 # pylint: disable=line-too-long
 
+from azure.cli.command_modules.storage._client_factory import cf_blob_container_mgmt
 from azext_dataprotection.manual._client_factory import cf_resource_graph_client
 from ._exception_handler import exception_handler
 
@@ -23,7 +24,7 @@ def load_command_table(self, _):
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_vault_list_from_resourcegraph', client_factory=cf_resource_graph_client)
 
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
-        g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
+        g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig", client_factory=cf_blob_container_mgmt)
         g.custom_command('initialize-restoreconfig', "dataprotection_backup_instance_initialize_restoreconfig")
         g.custom_command('initialize', "dataprotection_backup_instance_initialize")
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
@@ -110,6 +111,7 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True)
+        g.custom_command('update', 'dataprotection_backup_instance_update', supports_no_wait=True)
 
     with self.command_group('dataprotection backup-instance restore', exception_handler=exception_handler) as g:
         g.custom_command('trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)

@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.3.0
++++++
+* Added support for vaulted blob backup and restore
+* `az dataprotection backup-instance initialize-backupconfig`: Added parameters `--vaulted-backup-containers` to provide list of containers to backup
+* `az dataprotection backup-instance initialize-backupconfig`: Added parameters `--include-all-containers`, `--storage-account-name`, `storage-account-resource-group` to backup all containers in a storage storage-account-resource-group
+* `az dataprotection backup-instance update`: New command, which takes `--vaulted-blob-container-list` to which we pass the output of `initialize-backupconfig`
+* `az dataprotection backup-instance update-policy`: Had a bug where policy update for a vaulted blob container would remove the backed up containers entirely. This was rewritten to fix that
+* `az dataprotection backup-instance restore initialize-for-item-recovery`: now takes `--vaulted-blob-prefix-pattern`, a new prefix pattern for vaulted blobs restore
 
 1.2.0
 +++++
