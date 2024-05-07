@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Improve Windows OutboundNat test case by removing Windows OSSKU limitation
 
 4.0.0b1
 +++++++
