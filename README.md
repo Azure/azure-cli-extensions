@@ -8,6 +8,7 @@ This repository serves two purposes and they are independent:
 
 For documentation on authoring an extension, see [Extension Documentation](https://github.com/Azure/azure-cli/tree/master/doc/extensions)
 
+
 ## About index.json
 
 - The index is at `src/index.json`.
