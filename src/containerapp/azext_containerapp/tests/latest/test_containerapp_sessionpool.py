@@ -83,6 +83,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', "0.5"),
                 JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', "1Gi"),
                 JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
+                JMESPathCheck('properties.sessionNetworkConfiguration.status', "EgressDisabled"),
             ])
 
         # Show a Session Pool

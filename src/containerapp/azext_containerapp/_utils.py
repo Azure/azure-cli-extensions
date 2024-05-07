@@ -736,13 +736,6 @@ def is_cloud_supported_by_connected_env(cli_ctx):
     return False
 
 
-def convert_egress_parameter(egress_enabled):
-    if egress_enabled:
-        return "egressEnabled"
-    else:
-        return "egressDisabled"
-
-
 class AppType(Enum):
     ContainerApp = 1
     ContainerAppJob = 2

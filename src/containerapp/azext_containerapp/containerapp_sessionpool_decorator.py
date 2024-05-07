@@ -25,7 +25,7 @@ from azure.cli.command_modules.containerapp._client_factory import handle_non_40
 
 from ._models import SessionPool as SessionPoolModel
 from ._client_factory import handle_raw_exception
-from ._utils import AppType, convert_egress_parameter
+from ._utils import AppType
 
 logger = get_logger(__name__)
 
@@ -67,11 +67,11 @@ class SessionPoolPreviewDecorator(BaseResource):
     def get_argument_secrets(self):
         return self.get_param('secrets')
 
-    def get_argument_egress_enabled(self):
-        return self.get_param('egress_enabled')
+    def get_argument_network_status(self):
+        return self.get_param('network_status')
 
-    def set_argument_egress_enabled(self, egress_enabled):
-        self.set_param('egress_enabled', egress_enabled)
+    def set_argument_network_status(self, network_status):
+        self.set_param('network_status', network_status)
 
     def get_argument_max_concurrent_sessions(self):
         return self.get_param('max_concurrent_sessions')
@@ -204,9 +204,9 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
 
     def set_up_network_configuration(self):
         session_network_def = {}
-        if self.get_argument_egress_enabled() is None:
-            self.set_argument_egress_enabled(False)
-        session_network_def['status'] = convert_egress_parameter(self.get_argument_egress_enabled())
+        if self.get_argument_network_status() is None:
+            self.set_argument_network_status("EgressDisabled")
+        session_network_def['status'] = self.get_argument_network_status()
         return session_network_def
 
     def set_up_scale_configuration(self):
@@ -214,7 +214,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         if self.get_argument_max_concurrent_sessions() is None:
             self.set_argument_max_concurrent_sessions(10)
         if self.get_argument_ready_session_instances() is None:
-            self.set_argument_ready_session_instances(10)
+            self.set_argument_ready_session_instances(5)
         session_scale_def["maxConcurrentSessions"] = self.get_argument_max_concurrent_sessions()
         session_scale_def["readySessionInstances"] = self.get_argument_ready_session_instances()
         return session_scale_def
@@ -326,9 +326,9 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
 
     def set_up_network_configuration(self):
         session_network_def = None
-        if self.get_argument_egress_enabled() is None:
+        if self.get_argument_network_status() is not None:
             session_network_def = {}
-            session_network_def['status'] = convert_egress_parameter(self.get_argument_egress_enabled())
+            session_network_def['status'] = self.get_argument_network_status()
         return session_network_def
 
     def set_up_scale_configuration(self):

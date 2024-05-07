@@ -1613,35 +1613,35 @@ helps['containerapp sessionpool create'] = """
     examples:
     - name: Create or update a Session Pool with container type PythonLTS default settings.
       text: |
-          az containerapp sessionpool create -n MySessionPool -g MyResourceGroup \\
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --location eastasia
     - name: Create or update a Session Pool with container type PythonLTS, with max concurrent sessions is 30, ready session instances 20.
       text: |
-          az containerapp sessionpool create -n MySessionPool -g MyResourceGroup \\
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --container-type PythonLTS --max-sessions 30 --ready-sessions 20 \\
               --location eastasia
     - name: Create or update a Session Pool with container type CustomerContainer with default quickstart image.
       text: |
-          az containerapp sessionpool create -n MySessionPool -g MyResourceGroup \\
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --container-type CustomerContainer --environment MyEnvironment \\
               --cpu 0.5 --memory 1Gi --target-port 80 --location eastasia
     - name: Create or update a Session Pool with container type CustomerContainer that has secrets and environment variables.
       text: |
-          az containerapp sessionpool create -n MySessionPool -g MyResourceGroup \\
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --container-type CustomerContainer --environment MyEnvironment \\
               --cpu 0.5 --memory 1Gi --target-port 80 \\
               --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret \\
               --secrets mysecret=secretvalue1 anothersecret="secret value 2" --location eastasia
     - name: Create or update a Session Pool with container type CustomerContainer that from private registry
       text: |
-          az containerapp sessionpool create -n MySessionPool -g MyResourceGroup \\
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --container-type CustomerContainer --environment MyEnvironment \\
               --cpu 0.5 --memory 1Gi --target-port 80 --registry-server myregistry.azurecr.io \\
               --registry-username myregistry --registry-password $REGISTRY_PASSWORD \\
               --location eastasia
     - name: Create or update a Session Pool with container type CustomerContainer with cooldown period 120s
       text: |
-          az containerapp sessionpool create -n MySessionPool -g MyResourceGroup \\
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 \\
               --cooldown-period 120 --location eastasia
 """
@@ -1652,7 +1652,7 @@ helps['containerapp sessionpool update'] = """
     examples:
     - name: Update a session pool's max concurrent sessions configuration.
       text: |
-          az containerapp sessionpool update -n MySessionPool -g MyResourceGroup --max-sessions 20
+          az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --max-sessions 20
 """
 
 helps['containerapp sessionpool delete'] = """
@@ -1660,7 +1660,7 @@ helps['containerapp sessionpool delete'] = """
     short-summary: Delete a session pool.
     examples:
     - name: Delete a session pool.
-      text: az containerapp sessionpool delete -n MySessionPool -g MyResourceGroup
+      text: az containerapp sessionpool delete -n mysessionpool -g MyResourceGroup
 """
 
 helps['containerapp sessionpool show'] = """
@@ -1669,7 +1669,7 @@ helps['containerapp sessionpool show'] = """
     examples:
     - name: Show the details of a Session Pool.
       text: |
-          az containerapp sessionpool show -n MySessionPool -g MyResourceGroup
+          az containerapp sessionpool show -n mysessionpool -g MyResourceGroup
 """
 
 helps['containerapp sessionpool list'] = """
