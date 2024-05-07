@@ -369,48 +369,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     )
         return disable_local_accounts
 
-    def get_disable_local_accounts(self) -> bool:
-        """Obtain the value of disable_local_accounts.
-
-        This function will verify the parameter by default. If both disable_local_accounts and enable_local_accounts
-        are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_disable_local_accounts(enable_validation=True)
-
-    def _get_enable_local_accounts(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of enable_local_accounts.
-
-        This function supports the option of enable_validation. When enabled, if both disable_local_accounts and
-        enable_local_accounts are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        enable_local_accounts = self.raw_param.get("enable_local_accounts")
-        # We do not support this option in create mode, therefore we do not read the value from `mc`.
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if enable_local_accounts and self._get_disable_local_accounts(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --disable-local-accounts and "
-                    "--enable-local-accounts at the same time."
-                )
-        return enable_local_accounts
-
-    def get_enable_local_accounts(self) -> bool:
-        """Obtain the value of enable_local_accounts.
-
-        This function will verify the parameter by default. If both disable_local_accounts and enable_local_accounts
-        are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_enable_local_accounts(enable_validation=True)
-
     def _get_outbound_type(
         self,
         enable_validation: bool = False,
