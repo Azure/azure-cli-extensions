@@ -1256,6 +1256,9 @@ def load_arguments(self, _):
                        help=f'Maximum number of seconds an execution is allowed to run. You can use {JOB_TIMEOUT_RESET_VALUE} to reset timeout.')
             c.argument('retry_limit', type=int, help=retry_limit_help)
 
+    with self.argument_context('spring job deploy') as c:
+        c.argument('version', help='Deployment version, keep unchanged if not set.')
+
     with self.argument_context('spring job start') as c:
         c.argument('wait_until_finished', help='If true, wait until the job execution is finished.', arg_type=get_three_state_flag(), default=False)
 
