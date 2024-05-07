@@ -612,6 +612,12 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return self.raw_param.get("disable_vtpm")
 
+    def get_gateway_prefix_size(self) -> Union[int, None]:
+        """Obtain the value of gateway_prefix_size.
+        :return: int or None
+        """
+        return self.raw_param.get('gateway_prefix_size')
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -806,6 +812,19 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         # Default is disabled so no need to worry about that here
         return agentpool
 
+    def set_up_agentpool_gateway_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Set up agentpool gateway profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        gateway_prefix_size = self.context.get_gateway_prefix_size()
+        if gateway_prefix_size is not None:
+            if agentpool.gateway_profile is None:
+                agentpool.gateway_profile = self.models.AgentPoolGatewayProfile()  # pylint: disable=no-member
+
+            agentpool.gateway_profile.public_ip_prefix_size = gateway_prefix_size
+
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -843,6 +862,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_secure_boot(agentpool)
         # set up vtpm
         agentpool = self.set_up_vtpm(agentpool)
+        # set up agentpool gateway profile
+        agentpool = self.set_up_agentpool_gateway_profile(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool

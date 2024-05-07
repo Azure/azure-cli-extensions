@@ -588,6 +588,10 @@ CustomDomainConfiguration = {
     "certificateKeyVaultProperties": None
 }
 
+RuntimeJava = {
+    "enableMetrics": False
+}
+
 DotNetComponent = {
     "properties": {
         "componentType": "AspireDashboard"
