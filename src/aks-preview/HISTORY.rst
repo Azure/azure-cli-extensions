@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+3.0.0b14
+++++++++
+* Add etag support to some aks commands for optimistic concurrency control.
+
 3.0.0b10
 ++++++++
 * Support to enable azure monitor profile when the sku name is automatic.

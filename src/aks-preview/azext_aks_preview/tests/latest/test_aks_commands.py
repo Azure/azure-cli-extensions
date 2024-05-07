@@ -4246,6 +4246,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "windows_admin_password": "replace-Password1234$",
                 "nodepool2_name": "npwin",
                 "ssh_key_value": self.generate_ssh_keys(),
+                "if_match": "*",
+                "if_none_match": "mno"
             }
         )
 
@@ -4275,7 +4277,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update Windows license type
         self.cmd(
-            "aks update --resource-group={resource_group} --name={name} --enable-ahub",
+            "aks update --resource-group={resource_group} --name={name} --enable-ahub --if-none-match={if_none_match}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("windowsProfile.licenseType", "Windows_Server"),
@@ -4284,13 +4286,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # nodepool delete
         self.cmd(
-            "aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait",
+            "aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait --if-match={if_match}",
             checks=[self.is_empty()],
         )
 
         # delete
         self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            "aks delete -g {resource_group} -n {name} --yes --no-wait  --if-match={if_match}",
             checks=[self.is_empty()],
         )
 

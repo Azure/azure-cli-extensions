@@ -5233,15 +5233,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             else:
                 raise CLIError('Keyvault secrets provider addon must be enabled to attach keyvault.\n')
 
-    def put_mc(self, mc: ManagedCluster, if_match: Optional[str] = None, if_none_match: Optional[str] = None) -> ManagedCluster:
+    def put_mc(self, mc: ManagedCluster) -> ManagedCluster:
         if self.check_is_postprocessing_required(mc):
             # send request
             poller = self.client.begin_create_or_update(
                 resource_group_name=self.context.get_resource_group_name(),
                 resource_name=self.context.get_name(),
                 parameters=mc,
-                if_match=if_match,
-                if_none_match=if_none_match,
+                if_match=self.context.get_if_match(),
+                if_none_match=self.context.get_if_none_match(),
                 headers=self.context.get_aks_custom_headers(),
             )
             self.immediate_processing_after_request(mc)
@@ -5255,17 +5255,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 resource_group_name=self.context.get_resource_group_name(),
                 resource_name=self.context.get_name(),
                 parameters=mc,
-                if_match=if_match,
-                if_none_match=if_none_match,
+                if_match=self.context.get_if_match(),
+                if_none_match=self.context.get_if_none_match(),
                 headers=self.context.get_aks_custom_headers(),
             )
         return cluster
-
-    def update_mc(self, mc: ManagedCluster, if_match: Optional[str] = None, if_none_match: Optional[str] = None) -> ManagedCluster:
-        """Send request to update the existing managed cluster.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        return self.put_mc(mc, if_match, if_none_match)

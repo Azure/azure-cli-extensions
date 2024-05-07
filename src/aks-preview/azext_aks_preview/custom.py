@@ -1627,6 +1627,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
         resource_group_name,
         cluster_name,
         nodepool_name,
+        if_match=if_match,
         ignore_pod_disruption_budget=ignore_pod_disruption_budget,
     )
 

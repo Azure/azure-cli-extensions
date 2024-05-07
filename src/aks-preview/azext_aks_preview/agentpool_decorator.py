@@ -26,6 +26,7 @@ from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import read_file_content
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
+from azure.cli.core.util import sdk_no_wait
 
 from azext_aks_preview._client_factory import cf_agent_pools
 from azext_aks_preview._consts import (
@@ -611,6 +612,20 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
 
         return self.raw_param.get("disable_vtpm")
+    
+    def get_if_match(self) -> str:
+        """Obtain the value of if_match.
+
+        :return: string
+        """
+        return self.raw_param.get("if_match")
+    
+    def get_if_none_match(self) -> str:
+        """Obtain the value of if_none_match.
+
+        :return: string
+        """
+        return self.raw_param.get("if_none_match")
 
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
@@ -1070,3 +1085,25 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.upgrade_settings = upgrade_settings
 
         return agentpool
+    
+    def update_agentpool(self, agentpool: AgentPool) -> AgentPool:
+        """Send request to add a new agentpool.
+
+        The function "sdk_no_wait" will be called to use the Agentpool operations of ContainerServiceClient to send a
+        reqeust to update an existing agent pool of the cluster.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        return sdk_no_wait(
+            self.context.get_no_wait(),
+            self.client.begin_create_or_update,
+            self.context.get_resource_group_name(),
+            self.context.get_cluster_name(),
+            self.context.get_nodepool_name(),
+            agentpool,
+            if_match=self.context.get_if_match(),
+            if_none_match=self.context.get_if_none_match(),
+            headers=self.context.get_aks_custom_headers(),
+        )
