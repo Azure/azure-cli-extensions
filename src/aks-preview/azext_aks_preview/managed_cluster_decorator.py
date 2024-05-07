@@ -336,6 +336,39 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return True
         return enable_msi_auth_for_monitoring
 
+    def _get_disable_local_accounts(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_local_accounts.
+
+        This function supports the option of enable_validation. When enabled, if both disable_local_accounts and
+        enable_local_accounts are specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_local_accounts = self.raw_param.get("disable_local_accounts")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                hasattr(self.mc, "disable_local_accounts") and      # backward compatibility
+                self.mc.disable_local_accounts is not None
+            ):
+                disable_local_accounts = self.mc.disable_local_accounts
+            sku_name = self.get_sku_name()
+            if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+                disable_local_accounts = True
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if disable_local_accounts and self._get_enable_local_accounts(enable_validation=False):
+                    raise MutuallyExclusiveArgumentError(
+                        "Cannot specify --disable-local-accounts and "
+                        "--enable-local-accounts at the same time."
+                    )
+        return disable_local_accounts
+
     def _get_outbound_type(
         self,
         enable_validation: bool = False,

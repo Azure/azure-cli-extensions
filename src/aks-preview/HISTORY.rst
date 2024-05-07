@@ -11,11 +11,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
+
+3.0.0b14
+++++++++
+* Add `--network-policy=none` to `az aks create/update`.
 
 3.0.0b13
 ++++++++
-* Add `--network-policy=none` and `--network-policy=calico` to `az aks create/update`.
+* Set disable local accounts to true when creating an automatic cluster
+* Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
 
 3.0.0b12
 ++++++++
