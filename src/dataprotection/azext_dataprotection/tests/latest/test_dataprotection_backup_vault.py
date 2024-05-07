@@ -16,7 +16,9 @@ class BackupVaultScenarioTest(ScenarioTest):
         super().setUp()
         test.kwargs.update({
             'location': 'centraluseuap',
-            'vaultName': 'cli-test-backup-vault'
+            'vaultName': 'cli-test-backup-vault',
+            # 'cmkKeyUri': "",
+            'cmkUami': "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourcegroups/clitest-dpp-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cmk-cli-test-uami"
         })
 
     @AllowLargeResponse()
@@ -44,6 +46,26 @@ class BackupVaultScenarioTest(ScenarioTest):
             test.check('name', "{vaultName}")
         ])
         test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
+        
+    # @AllowLargeResponse()
+    # @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
+    # def test_dataprotection_backup_vault_create_with_cmk_and_delete(test):
+    #     test.cmd('az dataprotection backup-vault create '
+    #              '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
+    #              '--storage-settings datastore-type="VaultStore" type="GeoRedundant" --type UserAssigned '
+    #              '--user-assigned-identities $userJson ` --cmk-encryption-key-uri "{cmkKeyUri}" '
+    #              '--cmk-encryption-state Enabled ` --cmk-identity-type UserAssigned ` '
+    #              '--cmk-infrastructure-encryption Enabled --cmk-user-assigned-identity-id  "{cmkUami}" ',
+    #              checks=[
+    #                  test.check('name', "{vaultName}"),
+    #                  test.check('identity.type', "UserAssigned"),
+    #                  test.check('properties.securitySettings.encryptionSettings.state', "Enabled"),
+    #                  test.check('properties.securitySettings.encryptionSettings.infrastructureEncryption', "Enabled"),
+    #                  test.check('properties.securitySettings.encryptionSettings.keyVaultProperties.keyUri', "{cmkKeyUri}"),
+    #                  test.check('properties.securitySettings.encryptionSettings.kekIdentity.identityId', "{cmkUami}"),
+    #                  test.check('properties.securitySettings.encryptionSettings.kekIdentity.identityType', "UserAssigned")
+    #              ])
+    #     test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
@@ -91,3 +113,11 @@ class BackupVaultScenarioTest(ScenarioTest):
             test.check('properties.featureSettings.crossRegionRestoreSettings.state', "Enabled")
         ])
         test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --cross-region-restore-state "Disabled"', expect_failure=True)
+        
+        # # Cmk-encryption-settings updates
+        # test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --cmk-encryption-key-uri "{cmkKeyUri} --cmk-identity-type SystemAssigned', checks=[
+        #     test.check('properties.securitySettings.encryptionSettings.keyVaultProperties.keyUri', "{cmkKeyUri}"),
+        #     test.check('properties.securitySettings.encryptionSettings.kekIdentity.identityType', "SystemAssigned"),
+        # ])
+
+        # test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')

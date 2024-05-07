@@ -24,8 +24,7 @@ class Create(AAZCommand):
         az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
 
     :example: Create BackupVault With CMK Encryption
-        az create json
-        az dataprotection backup-vault create ` -g resourceGroupName ` -v vaultName ` --location eastasia ` --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]" ` --type UserAssigned ` --user-assigned-identities .\uami.json ` --cmk-encryption-key-uri "https://samplekvazbckp.vault.azure.net/keys/testkey/3cd5235ad6ac4c11b40a6f35444bcbe1" ` --cmk-encryption-state Enabled ` --cmk-identity-type UserAssigned ` --cmk-infrastructure-encryption Enabled ` --cmk-user-assigned-identity-id  "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourcegroups/samplerg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sampleuami" `
+        az dataprotection backup-vault create  -g resourceGroupName  -v vaultName  --location eastasia  --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]"  --type UserAssigned  --user-assigned-identities path_to_uami.json  --cmk-encryption-key-uri "https://samplekvazbckp.vault.azure.net/keys/testkey/3cd5235ad6ac4c11b40a6f35444bcbe1"  --cmk-encryption-state Enabled  --cmk-identity-type UserAssigned  --cmk-infrastructure-encryption Enabled  --cmk-user-assigned-identity-id  "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourcegroups/samplerg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sampleuami"
     """
 
     _aaz_info = {
@@ -52,9 +51,6 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.x_ms_authorization_auxiliary = AAZStrArg(
-            options=["--x-ms-authorization-auxiliary"],
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -122,7 +118,7 @@ class Create(AAZCommand):
         _args_schema.type = AAZStrArg(
             options=["--type"],
             arg_group="Identity",
-            help="The identityType which can be either SystemAssigned or None",
+            help="The identityType which can be \"SystemAssigned\", \"UserAssigned\", \"SystemAssigned,UserAssigned\" or \"None\"",
         )
         _args_schema.user_assigned_identities = AAZDictArg(
             options=["--user-assigned-identities"],
@@ -173,11 +169,6 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.resource_guard_operation_requests = AAZListArg(
-            options=["--resource-guard-operation-requests"],
-            arg_group="Properties",
-            help="ResourceGuardOperationRequests on which LAC check will be performed",
-        )
         _args_schema.storage_setting = AAZListArg(
             options=["--storage-setting"],
             singular_options=["--storage-settings"],
@@ -185,9 +176,6 @@ class Create(AAZCommand):
             help={"short-summary": "Storage Settings. Usage: --storage-setting \"[{type:'LocallyRedundant',datastore-type:'VaultStore'}]\"", "long-summary": "Multiple actions can be specified by using more than one --storage-setting argument.\nThe \"--storage-settings\" parameter exists for backwards compatibility. The updated command is --storage-setting.\nUsage for --storage-settings: --storage-settings type=XX datastore-type=XX."},
             required=True,
         )
-
-        resource_guard_operation_requests = cls._args_schema.resource_guard_operation_requests
-        resource_guard_operation_requests.Element = AAZStrArg()
 
         storage_setting = cls._args_schema.storage_setting
         storage_setting.Element = AAZObjectArg()
@@ -323,9 +311,6 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "x-ms-authorization-auxiliary", self.ctx.args.x_ms_authorization_auxiliary,
-                ),
-                **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
                 **self.serialize_header_param(
@@ -360,7 +345,6 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("featureSettings", AAZObjectType)
                 properties.set_prop("monitoringSettings", AAZObjectType)
-                properties.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
                 properties.set_prop("securitySettings", AAZObjectType)
                 properties.set_prop("storageSettings", AAZListType, ".storage_setting", typ_kwargs={"flags": {"required": True}})
 
@@ -384,10 +368,6 @@ class Create(AAZCommand):
             azure_monitor_alert_settings = _builder.get(".properties.monitoringSettings.azureMonitorAlertSettings")
             if azure_monitor_alert_settings is not None:
                 azure_monitor_alert_settings.set_prop("alertsForAllJobFailures", AAZStrType, ".azure_monitor_alerts_for_job_failures")
-
-            resource_guard_operation_requests = _builder.get(".properties.resourceGuardOperationRequests")
-            if resource_guard_operation_requests is not None:
-                resource_guard_operation_requests.set_elements(AAZStrType, ".")
 
             security_settings = _builder.get(".properties.securitySettings")
             if security_settings is not None:

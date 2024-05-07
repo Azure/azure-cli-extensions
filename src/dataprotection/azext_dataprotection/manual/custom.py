@@ -21,6 +21,7 @@ from azure.cli.core.azclierror import (
     ForbiddenError,
     UnauthorizedError
 )
+# from azure.cli.core.aaz import has_value
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 from knack.log import get_logger
@@ -30,6 +31,7 @@ from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as BackupVaultGet
+# from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Update as BackupVaultUpdate
 
 logger = get_logger(__name__)
 
@@ -940,3 +942,13 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                                                                                                    to_prefix_pattern)
 
     return restore_request
+
+# class backup_vault_update(BackupVaultUpdate):
+
+#     def pre_operations(self):
+#         args = self.ctx.args
+#         if has_value(args.cmk_identity_type):
+#             cmk_identity_type = args.cmk_identity_type.to_serialized_data()
+#             if cmk_identity_type == "SystemAssigned":
+#                 args.cmk_user_assigned_identity_id = None
+
