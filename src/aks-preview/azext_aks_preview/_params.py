@@ -1125,6 +1125,8 @@ def load_arguments(self, _):
             action="store_true",
         )
         c.argument("aks_custom_headers")
+        c.argument("if_match")
+        c.argument("if_none_match")
         # extensions
         # managed cluster
         c.argument(
@@ -1588,6 +1590,8 @@ def load_arguments(self, _):
             is_preview=True,
             action="store_true"
         )
+        c.argument("if_match")
+        c.argument("if_none_match")
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)
@@ -1610,6 +1614,8 @@ def load_arguments(self, _):
             is_preview=True,
             help="delete an AKS nodepool by ignoring PodDisruptionBudget setting",
         )
+        c.argument("if_match")
+        c.argument("if_none_match")
 
     with self.argument_context("aks nodepool delete-machines") as c:
         c.argument(

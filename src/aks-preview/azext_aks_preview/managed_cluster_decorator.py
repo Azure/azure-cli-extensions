@@ -9,6 +9,8 @@ import datetime
 import os
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
+from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.commands import LongRunningOperation
 
 import semver
 from azext_aks_preview._consts import (
@@ -824,6 +826,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return self.raw_param.get("upgrade_override_until")
+    
+    def get_if_match(self) -> Union[str, None]:
+        """Obtain the value of if_match.
+        :return: string or None
+        """
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return self.raw_param.get("if_match")
+    
+    def get_if_none_match(self) -> Union[str, None]:
+        """Obtain the value of if_none_match.
+        :return: string or None
+        """
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return self.raw_param.get("if_none_match")
 
     def get_force_upgrade(self) -> Union[bool, None]:
         """Obtain the value of force_upgrade.
@@ -5214,3 +5232,40 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     raise CLIError('App Routing must be enabled to attach keyvault.\n')
             else:
                 raise CLIError('Keyvault secrets provider addon must be enabled to attach keyvault.\n')
+
+    def put_mc(self, mc: ManagedCluster, if_match: Optional[str] = None, if_none_match: Optional[str] = None) -> ManagedCluster:
+        if self.check_is_postprocessing_required(mc):
+            # send request
+            poller = self.client.begin_create_or_update(
+                resource_group_name=self.context.get_resource_group_name(),
+                resource_name=self.context.get_name(),
+                parameters=mc,
+                if_match=if_match,
+                if_none_match=if_none_match,
+                headers=self.context.get_aks_custom_headers(),
+            )
+            self.immediate_processing_after_request(mc)
+            # poll until the result is returned
+            cluster = LongRunningOperation(self.cmd.cli_ctx)(poller)
+            self.postprocessing_after_mc_created(cluster)
+        else:
+            cluster = sdk_no_wait(
+                self.context.get_no_wait(),
+                self.client.begin_create_or_update,
+                resource_group_name=self.context.get_resource_group_name(),
+                resource_name=self.context.get_name(),
+                parameters=mc,
+                if_match=if_match,
+                if_none_match=if_none_match,
+                headers=self.context.get_aks_custom_headers(),
+            )
+        return cluster
+
+    def update_mc(self, mc: ManagedCluster, if_match: Optional[str] = None, if_none_match: Optional[str] = None) -> ManagedCluster:
+        """Send request to update the existing managed cluster.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        return self.put_mc(mc, if_match, if_none_match)

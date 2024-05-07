@@ -882,6 +882,12 @@ helps['aks update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --if-match
+          type: string
+          short-summary: The ETag of the managed cluster. Omit this value to create a managed cluster.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
         - name: --auto-upgrade-channel
           type: string
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
@@ -1946,6 +1952,12 @@ helps['aks nodepool update'] = """
         - name: --disable-vtpm
           type: bool
           short-summary: Disable vTPM on an existing Trusted Launch enabled agent node pool.
+        - name: --if-match
+          type: string
+          short-summary: The ETag of the node pool. Omit this value to always update the node pool.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -1999,6 +2011,9 @@ helps['aks nodepool delete'] = """
         - name: --ignore-pod-disruption-budget -i
           type: bool
           short-summary: (PREVIEW) ignore-pod-disruption-budget deletes an existing nodepool without considering Pod Disruption Budget.
+        - name: --if-match
+          type: string
+          short-summary: The ETag of the node pool. Omit this value to always delete the node pool.
     examples:
         - name: Delete an agent pool with ignore-pod-disruption-budget
           text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget=true
