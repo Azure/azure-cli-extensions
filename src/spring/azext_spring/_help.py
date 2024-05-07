@@ -1623,7 +1623,7 @@ helps['spring component'] = """
 
 helps['spring component logs'] = """
     type: command
-    short-summary: (Enterprise Tier Only) Show logs for managed components. Logs will be streamed when setting '-f/--follow'. For now, only supports subcomponents of (a) Application Configuration Service (b) Spring Cloud Gateway
+    short-summary: (Enterprise Tier Only) Show logs for managed components. Logs will be streamed when setting '-f/--follow'. For now, only supports subcomponents of (a) Application Configuration Service (b) Spring Cloud Gateway (c) Spring Cloud Config Server
     examples:
         - name: Show logs for all instances of flux in Application Configuration Serice (Gen2)
           text: az spring component logs --name flux-source-controller --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --all-instances
