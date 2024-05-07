@@ -7,7 +7,7 @@
 from azure.cli.core.commands import CliCommandType
 from azext_spring._utils import handle_asc_exception
 
-from ._client_factory import (cf_spring, 
+from ._client_factory import (cf_spring,
                               cf_eureka_servers)
 from ._transformers import (transform_spring_table_output,
                             transform_app_table_output,
@@ -37,7 +37,6 @@ from .jobs import job_validators
 from .managed_components.validators_managed_component import (validate_component_logs, validate_component_list, validate_instance_list)
 from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
                                               validate_app_identity_assign_or_warning)
-
 
 
 # pylint: disable=too-many-statements

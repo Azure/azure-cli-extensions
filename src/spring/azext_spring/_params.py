@@ -553,7 +553,7 @@ def load_arguments(self, _):
                        validator=validate_config_file_patterns)
             c.argument('custom_actuator_port', type=int,
                        help='(Enterprise Tier Only) Custom actuator port for the app. Default to 8080.', validator=validate_custom_actuator_port)
-            c.argument('custom_actuator_path', 
+            c.argument('custom_actuator_path',
                        help='(Enterprise Tier Only) Custom actuator path for the app. Default to "/actuator".', validator=validate_custom_actuator_path)
 
     with self.argument_context('spring app scale') as c:
@@ -698,10 +698,10 @@ def load_arguments(self, _):
         c.argument('config_file',
                    help='A yaml file path for the configuration of Spring Cloud config server')
 
-    with self.argument_context('spring config-server'.format(scope)) as c:
-        c.argument('service', options_list=['--service', '-s', c.deprecate(target='--name', redirect='--service', hide=True), 
-                    c.deprecate(target='-n', redirect='-s', hide=True)],
-                    help="The name of Azure Spring Apps instance.")
+    with self.argument_context('spring config-server') as c:
+        c.argument('service', options_list=['--service', '-s', c.deprecate(target='--name', redirect='--service', hide=True),
+                                            c.deprecate(target='-n', redirect='-s', hide=True)],
+                   help="The name of Azure Spring Apps instance.")
 
     for scope in ['bind', 'unbind', 'create', 'delete']:
         with self.argument_context('spring config-server {}'.format(scope)) as c:
@@ -1235,10 +1235,10 @@ def load_arguments(self, _):
             c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
             c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
             c.argument('envs', nargs='*',
-                   help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
+                       help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
             c.argument('secret_envs', nargs='*',
-                   help='Sensitive properties for environment variables. Once put, it will be encrypted and not returned.'
-                        'Format "key[=value]" and separated by space.')
+                       help='Sensitive properties for environment variables. Once put, it will be encrypted and not returned.'
+                            'Format "key[=value]" and separated by space.')
             c.argument('args', help='The arguments of the job execution.')
 
     job_parallelism_help = 'Maximum number of replicas to run per execution'

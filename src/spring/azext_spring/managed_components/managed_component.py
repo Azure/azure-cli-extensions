@@ -165,7 +165,7 @@ class ConfigServer(ManagedComponent):
         try:
             return self._list_instances(client, resource_group, service)
         except ResourceNotFoundError:
-            raise CLIError(f"Failed to perform operations when Config Server is not enabled.")
+            raise CLIError("Failed to perform operations when Config Server is not enabled.")
 
     def _list_instances(self, client, resource_group, service):
         config_server_arm_resource = client.config_servers.get(resource_group, service)

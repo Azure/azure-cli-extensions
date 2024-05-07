@@ -214,7 +214,7 @@ def job_execution_cancel(cmd, client,
                          resource_group,
                          service,
                          job,
-                         name, # execution name
+                         name,  # execution name
                          no_wait=False):
     return sdk_no_wait(no_wait, client.job_execution.begin_cancel,
                        resource_group, service, job, name)
@@ -483,7 +483,7 @@ def _list_job_execution_instances(cmd, client, resource_group, service, job, exe
 
 def _get_list_job_execution_instances_url(cmd, client, resource_group, service, job, execution):
     hostname = get_hostname(cmd, client, resource_group, service)
-    return f"https://{hostname}/api/jobs/{job}/executions/{execution}/instances";
+    return f"https://{hostname}/api/jobs/{job}/executions/{execution}/instances"
 
 
 def _handle_and_raise_list_job_execution_instance_error(url, response):
