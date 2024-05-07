@@ -842,6 +842,8 @@ def aks_update(
     node_provisioning_mode=None,
     ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
+    if_match=None,
+    if_none_match=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1347,6 +1349,8 @@ def aks_agentpool_update(
     disable_secure_boot=False,
     enable_vtpm=False,
     disable_vtpm=False,
+    if_match=None,
+    if_none_match=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1602,7 +1606,8 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
                          cluster_name,
                          nodepool_name,
                          ignore_pod_disruption_budget=None,
-                         no_wait=False):
+                         no_wait=False,
+                         if_match=None):
     agentpool_exists = False
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
