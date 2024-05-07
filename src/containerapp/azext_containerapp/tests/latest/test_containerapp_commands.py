@@ -262,7 +262,10 @@ class ContainerappIngressTests(ScenarioTest):
     @ResourceGroupPreparer(location="northeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live) and vnet command error in cli pipeline
     def test_containerapp_tcp_ingress(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='env', length=24)
         logs = self.create_random_name(prefix='logs', length=24)
@@ -314,7 +317,6 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('transport', "Tcp"),
             JMESPathCheck('exposedPort', 3020),
         ])
-
 
         app = self.create_random_name(prefix='containerapp', length=24)
 
@@ -1656,7 +1658,7 @@ class ContainerappScaleTests(ScenarioTest):
         env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.cmd(
-            f'containerapp create -g {resource_group} -n {app} --image redis --ingress internal --target-port 6379 --environment {env}',
+            f'containerapp create -g {resource_group} -n {app} --image redis --transport tcp --ingress internal --target-port 6379 --environment {env}',
             checks=[
                 JMESPathCheck("properties.provisioningState", "Succeeded"),
                 JMESPathCheck("properties.configuration.ingress.transport", "Tcp"),
