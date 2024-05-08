@@ -1030,7 +1030,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 if not check_is_msi_cluster(self.mc) and self._get_enable_pod_identity(enable_validation=False):
                     raise RequiredArgumentMissingError(
                         "--enable-pod-identity can only be specified for cluster enabled managed identity"
-                    )            
+                    )
         return enable_managed_identity
 
     def _get_enable_pod_identity(self, enable_validation: bool = False) -> bool:
