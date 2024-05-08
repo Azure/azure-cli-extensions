@@ -47,7 +47,6 @@ setup(
     description='Microsoft Azure Command-Line Tools Acrabac Extension',
     author='Microsoft Corporation',
     author_email='KraterDev@microsoft.com',
-    # TODO: change to your extension source code repo if the code will not be put in azure-cli-extensions repo
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/acrabac',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
