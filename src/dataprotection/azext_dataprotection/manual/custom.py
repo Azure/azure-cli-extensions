@@ -1009,13 +1009,3 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                                                                                                    vaulted_blob_prefix_pattern)
 
     return restore_request
-
-# class backup_vault_update(BackupVaultUpdate):
-
-#     def pre_operations(self):
-#         args = self.ctx.args
-#         if has_value(args.cmk_identity_type):
-#             cmk_identity_type = args.cmk_identity_type.to_serialized_data()
-#             if cmk_identity_type == "SystemAssigned":
-#                 args.cmk_user_assigned_identity_id = None
-

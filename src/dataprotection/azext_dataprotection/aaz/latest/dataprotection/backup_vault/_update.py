@@ -72,7 +72,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cmk_user_assigned_identity_id = AAZStrArg(
-            options=["--cmk-user-assigned-identity-id"],
+            options=["--cmk-uami", "--cmk-user-assigned-identity-id"],
             arg_group="EncryptionSettings",
             help="This parameter is required if the identity type is UserAssigned. Add the user assigned managed identity id to be used which has access permissions to the Key Vault.",
             nullable=True,
@@ -119,7 +119,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.user_assigned_identities = AAZDictArg(
-            options=["--user-assigned-identities"],
+            options=["--uami", "--user-assigned-identities"],
             arg_group="Identity",
             help="Gets or sets the user assigned identities.",
             nullable=True,

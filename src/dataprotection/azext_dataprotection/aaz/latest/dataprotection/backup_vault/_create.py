@@ -24,7 +24,7 @@ class Create(AAZCommand):
         az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
 
     :example: Create BackupVault With CMK Encryption
-        az dataprotection backup-vault create  -g resourceGroupName  -v vaultName  --location eastasia  --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]"  --type UserAssigned  --user-assigned-identities path_to_uami.json  --cmk-encryption-key-uri "https://samplekvazbckp.vault.azure.net/keys/testkey/3cd5235ad6ac4c11b40a6f35444bcbe1"  --cmk-encryption-state Enabled  --cmk-identity-type UserAssigned  --cmk-infrastructure-encryption Enabled  --cmk-user-assigned-identity-id  "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourcegroups/samplerg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sampleuami"
+        az dataprotection backup-vault create -g resourceGroupName -v vaultName --location eastasia --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]" --type UserAssigned --user-assigned-identities path_to_uami.json --cmk-encryption-key-uri "https://samplekvazbckp.vault.azure.net/keys/testkey/3cd5235ad6ac4c11b40a6f35444bcbe1" --cmk-encryption-state Enabled --cmk-identity-type UserAssigned --cmk-infrastructure-encryption Enabled --cmk-user-assigned-identity-id  "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourcegroups/samplerg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sampleuami"
     """
 
     _aaz_info = {
@@ -74,13 +74,13 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cmk_infrastructure_encryption = AAZStrArg(
-            options=["--cmk-infrastructure-encryption"],
+            options=["--cmk-infra-encryption", "--cmk-infrastructure-encryption"],
             arg_group="EncryptionSettings",
             help="Enable/Disable infrastructure encryption with CMK on this vault. Infrastructure encryption must be configured only when creating the vault.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.cmk_user_assigned_identity_id = AAZStrArg(
-            options=["--cmk-user-assigned-identity-id"],
+            options=["--cmk-uami", "--cmk-user-assigned-identity-id"],
             arg_group="EncryptionSettings",
             help="This parameter is required if the identity type is UserAssigned. Add the user assigned managed identity id to be used which has access permissions to the Key Vault.",
         )
@@ -121,7 +121,7 @@ class Create(AAZCommand):
             help="The identityType which can be \"SystemAssigned\", \"UserAssigned\", \"SystemAssigned,UserAssigned\" or \"None\"",
         )
         _args_schema.user_assigned_identities = AAZDictArg(
-            options=["--user-assigned-identities"],
+            options=["--uami", "--user-assigned-identities"],
             arg_group="Identity",
             help="Gets or sets the user assigned identities.",
         )
