@@ -31,7 +31,6 @@ from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as BackupVaultGet
-# from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Update as BackupVaultUpdate
 
 logger = get_logger(__name__)
 
