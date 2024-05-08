@@ -10,13 +10,15 @@ on:
         - '**.py'
         - '!**/test_*.py'
 
-permissions:
-  pull-requests: write
+permissions: {}
 
 jobs:
   version-cal:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-cal-version') && (!contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) || github.event.label.name != 'do-not-merge') }}
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-cal-version') && (!contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) || github.event.label.name != 'release-version-block') }}
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
     steps:
       - name: Set Init Version Message
         env:
@@ -143,8 +145,14 @@ jobs:
         run: |
            echo steps.get_comment_message.outputs.BlockPR
            echo ${{ steps.get_comment_message.outputs.BlockPR }}
-      - name: add label
+      - name: Add block release label
         uses: actions-ecosystem/action-add-labels@v1
         if: ${{ steps.get_comment_message.outputs.BlockPR == 1 }}
         with:
-          labels: do-not-merge
+          labels: release-version-block
+      - name: Remove block release label
+        uses: mondeja/remove-labels-gh-action@v2
+        if: ${{ steps.get_comment_message.outputs.BlockPR == 0 }}
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: release-version-block
