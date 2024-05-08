@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
@@ -15,7 +14,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class AcrabacScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_acrabac_')
-    def test_acr_create_abac(self, resource_group):
+    def test_acr_create_abac(self):
 
         self.kwargs.update({
             'name': self.create_random_name('clitestabac', length=16),
@@ -48,7 +47,7 @@ class AcrabacScenarioTest(ScenarioTest):
         self.cmd('acr delete -g {rg} -n {name} --yes')
 
     @ResourceGroupPreparer(name_prefix='cli_test_acrabac_')
-    def test_acr_create_normal(self, resource_group):
+    def test_acr_create_normal(self):
 
         self.kwargs.update({
             'name': self.create_random_name('clitestabac', length=16),
