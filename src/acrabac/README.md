@@ -1,7 +1,7 @@
 Microsoft Azure CLI 'acrabac' Extension
 =======================================
 
-The 'acrabac' extension is for private preview of an Azure Container Registry feature ABAC-based Repository Permission.
+The 'acrabac' extension is for private preview of an Azure Container Registry feature "ABAC-based Repository Permission".
 
 
 Usage
