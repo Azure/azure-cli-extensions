@@ -16,8 +16,12 @@ class AcrabacCommandsLoader(AzCommandsLoader):
             operation_group="registries")
 
     def load_command_table(self, args):
-        from azext_acrabac.commands import load_command_table
+        # Load commands from Azure CLI command
+        from azure.cli.command_modules.acr.commands import load_command_table
         load_command_table(self, args)
+        # Load extra commands for ABAC Repo Permission
+        from azext_acrabac.commands import load_command_table_preview
+        load_command_table_preview(self, args)
         return self.command_table
 
     def load_arguments(self, command):

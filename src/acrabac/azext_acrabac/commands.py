@@ -8,7 +8,7 @@ from azure.cli.command_modules.acr._format import registry_output_format
 from azext_acrabac._client_factory import cf_acrabac
 
 
-def load_command_table(self, _):
+def load_command_table_preview(self, _):
 
     acr_custom_util = CliCommandType(
         operations_tmpl='azext_acrabac.custom#{}',

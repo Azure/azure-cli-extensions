@@ -11,6 +11,7 @@ def load_arguments_preview(self, _):
     with self.argument_context("acr create", arg_group="Permissions and Role Assignment") as c:
         c.argument(
             "abac_permissions_enabled",
+            options_list=['--abac-permissions-enabled', '--abac'],
             arg_type=get_three_state_flag(),
             is_preview=True,
             help="Create a registry with ABAC-enabled Repository Permissions. "
@@ -21,6 +22,7 @@ def load_arguments_preview(self, _):
     with self.argument_context("acr update", arg_group="Permissions and Role Assignment") as c:
         c.argument(
             "abac_permissions_enabled",
+            options_list=['--abac-permissions-enabled', '--abac'],
             arg_type=get_three_state_flag(),
             is_preview=True,
             help="Update a registry to enable or disable ABAC-enabled Repository Permissions. "
