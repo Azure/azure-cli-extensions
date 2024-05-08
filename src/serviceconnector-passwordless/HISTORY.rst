@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.1
+++++++
+* Fix old api-version issue
+
 2.0.0
 ++++++
 * Update to be compatible with Azure CLI 2.60.0
