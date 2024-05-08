@@ -55,7 +55,10 @@ from azext_aks_preview._podidentity import (
     _is_pod_identity_addon_enabled,
     _update_addon_pod_identity,
 )
-from azext_aks_preview._roleassignments import add_role_assignment
+from azext_aks_preview._roleassignments import (
+    add_role_assignment,
+    _add_role_assignment_executor_new
+)
 from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolUpdateDecorator,
@@ -67,6 +70,7 @@ from azext_aks_preview.azurecontainerstorage.acstor_ops import (
 from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites,
 )
+from azure.cli.command_modules.acs._client_factory import get_graph_client
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
@@ -188,6 +192,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ] = ensure_azure_monitor_profile_prerequisites
             # temp workaround for the breaking change caused by default API version bump of the auth SDK
             external_functions["add_role_assignment"] = add_role_assignment
+            external_functions["_add_role_assignment_executor_new"] = _add_role_assignment_executor_new
             # azure container storage functions
             external_functions["perform_enable_azure_container_storage"] = perform_enable_azure_container_storage
             external_functions["perform_disable_azure_container_storage"] = perform_disable_azure_container_storage
@@ -330,6 +335,39 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             return True
         return enable_msi_auth_for_monitoring
+
+    def _get_disable_local_accounts(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_local_accounts.
+
+        This function supports the option of enable_validation. When enabled, if both disable_local_accounts and
+        enable_local_accounts are specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_local_accounts = self.raw_param.get("disable_local_accounts")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                hasattr(self.mc, "disable_local_accounts") and      # backward compatibility
+                self.mc.disable_local_accounts is not None
+            ):
+                disable_local_accounts = self.mc.disable_local_accounts
+            sku_name = self.get_sku_name()
+            if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+                disable_local_accounts = True
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if disable_local_accounts and self._get_enable_local_accounts(enable_validation=False):
+                    raise MutuallyExclusiveArgumentError(
+                        "Cannot specify --disable-local-accounts and "
+                        "--enable-local-accounts at the same time."
+                    )
+        return disable_local_accounts
 
     def _get_outbound_type(
         self,
@@ -680,6 +718,26 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return enable_network_observability
         if disable_network_observability is not None:
             return not disable_network_observability
+        return None
+
+    def get_enable_advanced_network_observability(self) -> Optional[bool]:
+        """Get the value of enable_advanced_network_observability
+
+        :return: bool or None
+        """
+        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
+        disable_advanced_network_observability = self.raw_param.get("disable_advanced_network_observability")
+        if enable_advanced_network_observability and disable_advanced_network_observability:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-advanced-network-observability and "
+                "--disable-advanced-network-observability at the same time."
+            )
+        if enable_advanced_network_observability is False and disable_advanced_network_observability is False:
+            return None
+        if enable_advanced_network_observability is not None:
+            return enable_advanced_network_observability
+        if disable_advanced_network_observability is not None:
+            return not disable_advanced_network_observability
         return None
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
@@ -2760,6 +2818,40 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("bootstrap_container_registry_resource_id")
 
+    def _get_enable_static_egress_gateway(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_static_egress_gateway.
+        When enabled, if both enable_static_egress_gateway and disable_static_egress_gateway are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        enable_static_egress_gateway = self.raw_param.get("enable_static_egress_gateway")
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_static_egress_gateway and self.get_disable_static_egress_gateway():
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-static-egress-gateway and "
+                    "--disable-static-egress-gateway at the same time. "
+                )
+
+        return enable_static_egress_gateway
+
+    def get_enable_static_egress_gateway(self) -> bool:
+        """Obtain the value of enable_static_egress_gateway.
+
+        :return: bool
+        """
+        return self._get_enable_static_egress_gateway(enable_validation=True)
+
+    def get_disable_static_egress_gateway(self) -> bool:
+        """Obtain the value of disable_static_egress_gateway.
+
+        :return: bool
+        """
+        # Note: No need to check for mutually exclusive parameter with enable-static-egress-gateway here
+        # because it's already checked in get_enable_static_egress_gateway
+        return self.raw_param.get("disable_static_egress_gateway")
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -2877,6 +2969,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if network_observability is not None:
             network_profile.monitoring = self.models.NetworkMonitoring(  # pylint: disable=no-member
                 enabled=network_observability
+            )
+        advanced_network_observability = self.context.get_enable_advanced_network_observability()
+        if advanced_network_observability is not None:
+            network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
+                    enabled=advanced_network_observability
+                )
             )
         return mc
 
@@ -3422,6 +3521,25 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_static_egress_gateway(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_static_egress_gateway():
+            if not mc.network_profile:
+                raise UnknownError(
+                    "Unexpectedly get an empty network profile in the process of "
+                    "updating enable-static-egress-gateway config."
+                )
+            if mc.network_profile.static_egress_gateway_profile is None:
+                mc.network_profile.static_egress_gateway_profile = (
+                    self.models.ManagedClusterStaticEgressGatewayProfile()  # pylint: disable=no-member
+                )
+            # set enabled
+            mc.network_profile.static_egress_gateway_profile.enabled = True
+
+        # Default is disabled so no need to worry about that here
+        return mc
+
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -3484,6 +3602,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_agentpool_profile_ssh_access(mc)
         # set up bootstrap profile
         mc = self.set_up_bootstrap_profile(mc)
+        # set up static egress gateway profile
+        mc = self.set_up_static_egress_gateway(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -3551,6 +3671,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     "Could not create a role assignment for subnet. Are you an Owner on this subscription?"
                 )
 
+    # pylint: disable=too-many-locals
     def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
         """Postprocessing performed after the cluster is created.
 
@@ -3695,6 +3816,35 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 True,
                 is_called_from_extension=True,
             )
+
+        # Add role assignments for automatic sku
+        if cluster.sku is not None and cluster.sku.name == "Automatic":
+            try:
+                user = get_graph_client(self.cmd.cli_ctx).signed_in_user_get()
+            except Exception as e:  # pylint: disable=broad-except
+                logger.warning("Could not get signed in user: %s", str(e))
+            else:
+                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
+                    self.cmd,
+                    "Azure Kubernetes Service RBAC Cluster Admin",
+                    user["id"],
+                    scope=cluster.id,
+                    resolve_assignee=False,
+                )
+                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
+                    self.cmd,
+                    "Azure Kubernetes Service RBAC Admin",
+                    user["id"],
+                    scope=cluster.id,
+                    resolve_assignee=False,
+                )
+                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
+                    self.cmd,
+                    "Azure Kubernetes Service Cluster User Role",
+                    user["id"],
+                    scope=cluster.id,
+                    resolve_assignee=False,
+                )
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
@@ -3847,6 +3997,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if network_observability is not None:
             mc.network_profile.monitoring = self.models.NetworkMonitoring(  # pylint: disable=no-member
                 enabled=network_observability
+            )
+        return mc
+
+    def update_enable_advanced_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update enable advanced network observability of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        advanced_network_observability = self.context.get_enable_advanced_network_observability()
+        if advanced_network_observability is not None:
+            mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
+                    enabled=advanced_network_observability
+                )
             )
         return mc
 
@@ -4975,6 +5141,36 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_static_egress_gateway(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update static egress gateway addon for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_static_egress_gateway():
+            if not mc.network_profile:
+                raise UnknownError(
+                    "Unexpectedly get an empty network profile in the process of updating static-egress-gateway config."
+                )
+            if mc.network_profile.static_egress_gateway_profile is None:
+                mc.network_profile.static_egress_gateway_profile = (
+                    self.models.ManagedClusterStaticEgressGatewayProfile()  # pylint: disable=no-member
+                )
+            mc.network_profile.static_egress_gateway_profile.enabled = True
+
+        if self.context.get_disable_static_egress_gateway():
+            if not mc.network_profile:
+                raise UnknownError(
+                    "Unexpectedly get an empty network profile in the process of updating static-egress-gateway config."
+                )
+            if mc.network_profile.static_egress_gateway_profile is None:
+                mc.network_profile.static_egress_gateway_profile = (
+                    self.models.ManagedClusterStaticEgressGatewayProfile()  # pylint: disable=no-member
+                )
+            mc.network_profile.static_egress_gateway_profile.enabled = False
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -5036,6 +5232,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_initialization_taints_mc(mc)
         # update network_observability in network_profile
         mc = self.update_enable_network_observability_in_network_profile(mc)
+        # update advanced_network_observability in network_profile
+        mc = self.update_enable_advanced_network_observability_in_network_profile(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update metrics profile
@@ -5050,6 +5248,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_agentpool_profile_ssh_access(mc)
         # update bootstrap profile
         mc = self.update_bootstrap_profile(mc)
+        # update static egress gateway
+        mc = self.update_static_egress_gateway(mc)
 
         return mc
 

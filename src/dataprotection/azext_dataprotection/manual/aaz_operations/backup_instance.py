@@ -15,6 +15,7 @@ from azext_dataprotection.aaz.latest.dataprotection.backup_instance import (
     Create as _Create,
     ValidateForBackup as _ValidateForBackup,
     ValidateForRestore as _ValidateForRestore,
+    Update as _Update,
     StopProtection as _StopProtection,
     SuspendBackup as _SuspendBackup,
 )
@@ -28,6 +29,45 @@ from ..helpers import (
     convert_dict_keys_snake_to_camel, critical_operation_map,
     transform_resource_guard_operation_request
 )
+
+
+class UpdateWithBI(_Update):
+    # For some reason, the auto-generated Backup Instance Update does not contain some fields. Prominently
+    # in this situation, it is missing the properties.policyInfo.policyParameters section entirely, even though
+    # Backup Instance Create contains it. To get around this, we have a modified Update function that basically
+    # does a Create with an entire backup instance input.
+
+    # To achieve that, we have to fetch the currently present backup instance, make any necessary changes
+    # to that, and then remove any extranous fields that might be present.
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        cls._args_schema = super()._build_arguments_schema(cls, *args, **kwargs)
+
+        _args_schema = cls._args_schema
+        _args_schema.backup_instance = AAZFreeFormDictArg(
+            options=["--backup-instance"],
+            help="Request backup instance object for operation.",
+            required=True,
+        )
+        _args_schema.backup_instance_name._registered = False
+        _args_schema.backup_instance_name._required = False
+        return cls._args_schema
+
+    def _execute_operations(self):
+        self.pre_operations()
+        yield self.BackupInstancesCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    def pre_operations(self):
+        self.ctx.args.backup_instance_name = self.ctx.args.backup_instance['backup_instance_name']
+        self.ctx.set_var(
+            "instance",
+            self.ctx.args.backup_instance.to_serialized_data(),
+            schema_builder=self.BackupInstancesCreateOrUpdate._build_schema_on_200_201
+        )
 
 
 class ValidateAndCreate(_Create):
