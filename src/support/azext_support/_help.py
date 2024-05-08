@@ -16,7 +16,6 @@ parameters:
 
   - name: --file-path
     short-summary: File Path
-
 examples:
   - name: Upload a file to a file workspace (different from the account subscription).
     text: |
