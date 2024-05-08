@@ -54,19 +54,19 @@ jobs:
             git --version
             git log --oneline | head -n 30
             git branch -a
-            git fetch https://github.com/Azure/azure-cli-extensions.git $base_branch:$base_branch_pre/$base_branch
-            git checkout $base_branch_pre/$base_branch
+            git fetch https://github.com/Azure/azure-cli-extensions.git "$base_branch":"$base_branch_pre"/"$base_branch"
+            git checkout "$base_branch_pre"/"$base_branch"
             git log --oneline | head -n 30
-            git checkout $diff_branch
+            git checkout "$diff_branch"
             git log --oneline | head -n 30
-            git --no-pager diff --name-only --diff-filter=ACMRT $base_branch_pre/$base_branch...$diff_branch > changed_files
+            git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > changed_files
             cat changed_files
             cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq > changed_modules
             echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
-            git --no-pager diff --diff-filter=ACMRT $base_branch_pre/$base_branch...$diff_branch > $diff_code_file
+            git --no-pager diff --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > "$diff_code_file"
       - name: Display Diff Modules
         run: |
-            for mod in $changed_module_list
+            for mod in "$changed_module_list"
             do
               echo changed module: "${mod}"
             done
@@ -113,23 +113,23 @@ jobs:
            chmod +x env/bin/activate
            source ./env/bin/activate
            set -ev
-           git checkout $base_branch_pre/$base_branch
-           mkdir $base_meta_path
-           for mod in $changed_module_list
+           git checkout "$base_branch_pre"/"$base_branch"
+           mkdir "$base_meta_path"
+           for mod in "$changed_module_list"
            do
               echo changed module: "${mod}"
-              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./$base_meta_path/ && azdev extension remove "${mod}"
+              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$base_meta_path"/ && azdev extension remove "${mod}"
            done
-           git checkout $diff_branch
-           mkdir $diff_meta_path
-           for mod in $changed_module_list
+           git checkout "$diff_branch"
+           mkdir "$diff_meta_path"
+           for mod in "$changed_module_list"
            do
               echo changed module: "${mod}"
-              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./$diff_meta_path/ && azdev extension remove "${mod}"
+              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$diff_meta_path"/ && azdev extension remove "${mod}"
            done
-           ls ./$base_meta_path/
-           ls ./$diff_meta_path/
-           git checkout $base_branch_pre/$base_branch
+           ls ./"$base_meta_path"/
+           ls ./"$diff_meta_path"/
+           git checkout "$base_branch_pre"/"$base_branch"
            python scripts/ci/release_version_cal.py
            # echo "commit_message=$(cat $output_file)" >> $GITHUB_ENV
       - name: Comment on the pull request
@@ -141,10 +141,6 @@ jobs:
             version_update.txt
            message-failure: |
             Please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md) to update release versions.
-      - name: Check output
-        run: |
-           echo steps.get_comment_message.outputs.BlockPR
-           echo ${{ steps.get_comment_message.outputs.BlockPR }}
       - name: Add block release label
         uses: actions-ecosystem/action-add-labels@v1
         if: ${{ steps.get_comment_message.outputs.BlockPR == 1 }}
