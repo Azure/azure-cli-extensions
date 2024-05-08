@@ -6,51 +6,66 @@
 
 from knack.help_files import helps
 
-helps[
-    "support in-subscription file upload"
-] = """
+
+helps['support in-subscription file upload'] = """
 type: command
 short-summary: Uploads a file to a workspace for the specified subscription.
-long-summary: Given a file-path, file-workspace-name (this can be either a Support Request ID or
-frindly workspace name), and subscription-id (optional), this command will upload all the contents of the file.
+parameters:
+  - name: --file-workspace-name
+    short-summary: File Workspace Name
+
+  - name: --file-path
+    short-summary: File Path
+
+  - name: --subscription-id
+    short-summary: Subscription Id
+examples:
   - name: Upload a file to a file workspace (different from the account subscription).
     text: |
           az support in-subscription file upload \\
             --file-workspace-name "TestFileWorkspaceName" \\
             --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-            --subscription "TestSubscription"
+            --subscription-id "TestSubscription"
+
   - name: Upload a file to a to an Azure support ticket (different from the account subscription).
     text: |
           az support in-subscription file upload \\
             --file-workspace-name "2300000000000358" \\
             --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-            --subscription "TestSubscription"
+            --subscription-id "TestSubscription"
+
   - name: Upload a file to a file workspace (same as the account subscription).
     text: |
           az support in-subscription file upload \\
             --file-workspace-name "TestFileWorkspaceName" \\
-            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-  - name: Upload a file to a to an Azure support ticket (same as the account subscription).
+            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt"
+
+  - name: Upload a file to an Azure support ticket (same as the account subscription).
     text: |
           az support in-subscription file upload \\
             --file-workspace-name "2300000000000358" \\
-            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
+            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt"
 """
-helps[
-    "support no-subscription file upload"
-] = """
+
+helps['support no-subscription file upload'] = """
 type: command
 short-summary: Uploads a file to a workspace.
-long-summary: Given a file-path and file-workspace-name (this can be either a Support Request ID or
-frindly workspace name) this command will upload all the contents of the file.
+parameters:
+  - name: --file-workspace-name
+    short-summary: File Workspace Name
+
+  - name: --file-path
+    short-summary: File Path
+examples:
   - name: Upload a file to a file workspace.
     text: |
           az support no-subscription file upload \\
             --file-workspace-name "TestFileWorkspaceName" \\
-            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-  - name: Upload a file to a to an Azure support ticket..
+            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt"
+
+  - name: Upload a file to an Azure support ticket..
     text: |
           az support no-subscription file upload \\
             --file-workspace-name "2300000000000358" \\
-            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
+            --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt"
 """
