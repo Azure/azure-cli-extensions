@@ -9,20 +9,15 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 from .common import TEST_LOCATION, STAGE_LOCATION
-from .utils import create_containerapp_env
-
 
 class ContainerappDotNetComponentTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
     def test_containerapp_dotnet_component(self, resource_group):
-        location = "northcentralusstage"
-        self.cmd('configure --defaults location={}'.format(location))
-
         env_name = self.create_random_name(prefix='aca-dotnet-env', length=24)
         dotnet_component_name = self.create_random_name(prefix='dotnet-aca', length=24)
 
-        env_create_cmd = f'containerapp env create -g {resource_group} -n {env_name} --location {location}'
+        env_create_cmd = f'containerapp env create -g {resource_group} -n {env_name} --location {STAGE_LOCATION} --logs-destination none --enable-workload-profiles'
         self.cmd(env_create_cmd)
 
         # List DotNet Components
