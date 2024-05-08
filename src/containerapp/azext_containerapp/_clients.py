@@ -7,6 +7,8 @@
 import json
 import time
 import sys
+import os
+import requests
 
 from azure.cli.core.azclierror import AzureResponseError, ResourceNotFoundError
 from azure.cli.core.util import send_raw_request
@@ -34,6 +36,7 @@ POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exitin
 POLLING_INTERVAL_FOR_MANAGED_CERTIFICATE = 4  # how many seconds between requests
 HEADER_AZURE_ASYNC_OPERATION = "azure-asyncoperation"
 HEADER_LOCATION = "location"
+SESSION_RESOURCE = "https://dynamicsessions.io"
 
 
 class GitHubActionPreviewClient(GitHubActionClient):
@@ -991,7 +994,6 @@ class JavaComponentPreviewClient():
 
         return java_component_list
 
-
 class SessionPoolPreviewClient():
     api_version = PREVIEW_API_VERSION
 
@@ -1134,19 +1136,15 @@ class SessionCodeInterpreterPreviewClient():
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def execute(cls, cmd, resource_group_name, name, code_interpreter_envelope, no_wait=False):
-        # stacy - check sessions endpoint
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/sessionPools/{}/code/execute?api-version={}"
+    def execute(cls, cmd, identifier, code_interpreter_envelope, session_pool_endpoint, no_wait=False):
+        url_fmt = "{}/code/execute?identifier={}&api-version={}"
         request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
-            cls.api_version)
-
-        r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(code_interpreter_envelope))
+            session_pool_endpoint,
+            identifier,
+            PREVIEW_API_VERSION)
+        logger.warning(request_url)
+        logger.warning(code_interpreter_envelope)
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(code_interpreter_envelope), resource=SESSION_RESOURCE)
 
         if no_wait:
             return r.json()
@@ -1158,86 +1156,86 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def upload(cls, cmd, resource_group_name, name, code_interpreter_envelope, no_wait=False):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/sessionPools/{}/files/upload?api-version={}"
+    def upload(cls,cmd,identifier,filepath,session_pool_endpoint, no_wait=False):
+        url_fmt = "{}/files/upload?identifier={}&api-version={}"
         request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
-            cls.api_version)
+            session_pool_endpoint,
+            identifier,
+            PREVIEW_API_VERSION)
 
-        r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(code_interpreter_envelope))
+        from azure.cli.core._profile import Profile
+        profile = Profile(cli_ctx=cmd.cli_ctx)
+        token_info, _, _ = profile.get_raw_token(resource=SESSION_RESOURCE)
+        _, token, _ = token_info
+        headers = {'Authorization': 'Bearer ' + token}
+        
+        try:
+            data_file = open(filepath, "rb")
+            file_name = os.path.basename(filepath)
+            files = [("file", (file_name, data_file))]
 
+            r = requests.post(
+                request_url,
+                files=files,
+                headers=headers)
+            
+            data_file.close()
+        except Exception as e:
+            logger.error("error occurred while uploading file")
+            return str(e)
+
+        # stacy: TO DO add success line
         if no_wait:
             return r.json()
         elif r.status_code == 202:
+            logger.warning("upload success")
             operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
             poll_status(cmd, operation_url)
-            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
 
         return r.json()
 
     @classmethod
-    def show_file_content(cls, cmd, resource_group_name, name, filename,no_wait=False):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/sessionPools/{}/files/content/{}?api-version={}"
+    def show_file_content(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):
+        url_fmt = "{}/files/content/{}?identifier={}&api-version={}"
         request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
+            session_pool_endpoint,
             filename,
-            cls.api_version)
+            identifier,
+            PREVIEW_API_VERSION)
 
-        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-
-        # stacy - check if this is correct
-        if no_wait:
-            return  # API doesn't return JSON (it returns no content)
-        elif r.status_code in [200, 201, 202, 204]:
-            if r.status_code == 202:
-                operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
-                poll_status(cmd, operation_url)
-                r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        logger.warning(request_url)
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
+        logger.warning(r.content)
+        return json.dumps(str(r.content))
 
     @classmethod
-    def show_file_metadata(cls, cmd, resource_group_name, name,filename):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/sessionPools/{}/files/{}?api-version={}"
+    def show_file_metadata(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):
+        url_fmt = "{}/files/{}?identifier={}&api-version={}"
         request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
+            session_pool_endpoint,
             filename,
-            cls.api_version)
+            identifier,
+            PREVIEW_API_VERSION)
 
-        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
 
         return r.json()
 
     @classmethod
-    def delete_file(cls, cmd, resource_group_name, name,filename,no_wait=False):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/sessionPools/{}/files/{}?api-version={}"
+    def delete_file(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):
+        url_fmt = "{}/files/{}?identifier={}&api-version={}"
         request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            name,
+            session_pool_endpoint,
             filename,
-            cls.api_version)
+            identifier,
+            PREVIEW_API_VERSION)
+        logger.warning(request_url)
 
-        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
-        r = r.json()
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url, resource=SESSION_RESOURCE)
 
         if no_wait:
+            logger.warning('file successfully deleted')
             return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
             if r.status_code == 202:
@@ -1245,22 +1243,26 @@ class SessionCodeInterpreterPreviewClient():
                 poll_results(cmd, operation_url)
                 logger.warning('file successfully deleted')
 
-    #stacy - fix this identifier from query 
     @classmethod
-    def list_files(cls, cmd, resource_group_name):
+    def list_files(cls, cmd, identifier, path, session_pool_endpoint, no_wait=False):
         files_list = []
 
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroupss/{}/providers/Microsoft.App/sessionPools/files?api-version={}"
+        if path is None:
+            path = ""
+            
+        url_fmt = "{}/files?identifier={}&path={}&api-version={}"
         request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            cls.api_version)
-
-        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            session_pool_endpoint,
+            identifier,
+            path,
+            PREVIEW_API_VERSION)
+        
+        logger.warning(request_url)
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         r = r.json()
+
+        logger.warning(r)
+
 
         for file in r["value"]:
             files_list.append(file)

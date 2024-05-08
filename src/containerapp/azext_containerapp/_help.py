@@ -1697,7 +1697,7 @@ helps['containerapp session code-interpreter execute'] = """
     - name: Execute a simple hello world.
       text: |
           az containerapp session code-interpreter execute -n MySessionPool -g MyResourceGroup --identifier MySession\\
-              --code print("Hello, world!") --timeout-in-seconds 30
+              --code 'print("'"Hello world"'")' --timeout-in-seconds 30
 """
 
 helps['containerapp session code-interpreter upload'] = """
@@ -1743,5 +1743,5 @@ helps['containerapp session code-interpreter list-files'] = """
     examples:
     - name: List files uploaded in a code-interpreter session.
       text: |
-          az containerapp sessionpool list-files -n MySessionPool -g MyResourceGroup --identifier MySession
+          az containerapp sessionpool list-files -n MySessionPool -g MyResourceGroup --identifier MySession --path /example
 """
