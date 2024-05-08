@@ -3952,6 +3952,16 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             mode="Istio",
             istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),
         ))
+    
+    def test_get_disable_local_accounts(self):
+        # automatic cluster needs to enable the disable_local_accounts
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"sku": "automatic"}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_disable_local_accounts(), True)
 
     def test_get_sku_name(self):
         ctx1 = AKSPreviewManagedClusterContext(
