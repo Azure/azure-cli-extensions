@@ -261,11 +261,11 @@ def upload_files_no_subscription(cmd, file_path, file_workspace_name):
         Upload,
     )
 
-    upload_file(cmd, file_path, file_workspace_name, False, Create, Upload)
+    upload_file(cmd, file_path, file_workspace_name, Create, Upload)
 
 
 def upload_files_in_subscription(
-    cmd, file_path, file_workspace_name, subscription_id=None
+    cmd, file_path, file_workspace_name
 ):
     from .aaz.latest.support.in_subscription.file import (
         Create as Create_Sub,
@@ -276,8 +276,6 @@ def upload_files_in_subscription(
         cmd,
         file_path,
         file_workspace_name,
-        True,
         Create_Sub,
         Upload_Sub,
-        subscription_id,
     )

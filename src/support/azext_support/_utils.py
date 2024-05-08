@@ -65,10 +65,8 @@ def upload_file(
     cmd,
     file_path,
     file_workspace_name,
-    is_subscription_scenerio,
     Create,
     Upload,
-    subscription_id=None,
 ):
     from azext_support._validators import _validate_file_path, _validate_file_size
     from azext_support._validators import _validate_file_extension, _validate_file_name
@@ -89,23 +87,13 @@ def upload_file(
     chunk_size = int(min(max_chunk_size, file_size))
     number_of_chunks = int(math.ceil(file_size / chunk_size))
 
-    if is_subscription_scenerio and subscription_id is not None:
-        create_input = {
-            "file_name": full_file_name,
-            "file_workspace_name": file_workspace_name,
-            "file_size": file_size,
-            "chunk_size": chunk_size,
-            "number_of_chunks": number_of_chunks,
-            "subscription": subscription_id,
-        }
-    else:
-        create_input = {
-            "file_name": full_file_name,
-            "file_workspace_name": file_workspace_name,
-            "file_size": file_size,
-            "chunk_size": chunk_size,
-            "number_of_chunks": number_of_chunks,
-        }
+    create_input = {
+        "file_name": full_file_name,
+        "file_workspace_name": file_workspace_name,
+        "file_size": file_size,
+        "chunk_size": chunk_size,
+        "number_of_chunks": number_of_chunks,
+    }
 
     Create(cli_ctx=cmd.cli_ctx)(command_args=create_input)
 
@@ -115,21 +103,12 @@ def upload_file(
         ]
         string_encoded_content = encode_string_content(chunk_content)
 
-    if is_subscription_scenerio and subscription_id is not None:
-        upload_input = {
-            "file_name": full_file_name,
-            "file_workspace_name": file_workspace_name,
-            "chunk_index": chunk_index,
-            "content": string_encoded_content,
-            "subscription": subscription_id,
-        }
-    else:
-        upload_input = {
-            "file_name": full_file_name,
-            "file_workspace_name": file_workspace_name,
-            "chunk_index": chunk_index,
-            "content": string_encoded_content,
-        }
+    upload_input = {
+        "file_name": full_file_name,
+        "file_workspace_name": file_workspace_name,
+        "chunk_index": chunk_index,
+        "content": string_encoded_content,
+    }
 
     Upload(cli_ctx=cmd.cli_ctx)(command_args=upload_input)
     print("File '{}' has been succesfully uploaded.".format(full_file_name))
