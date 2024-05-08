@@ -10,6 +10,7 @@ upcoming
 * 'az containerapp up': Fix InvalidResourceType error when cloud is not AzureCloud
 * 'az containerapp create/update': Support enable or disable Java metrics with --runtime and --enable-java-metrics
 * 'az containerapp env dotnet-component': Support create/show/list/delete for dotnet components
+* 'az containerapp update': Fix --scale-rule-tcp-concurrency for TCP scale rule
 
 0.3.50
 ++++++
