@@ -15,7 +15,7 @@ jobs:
         with:
           script: |
             const labels = context.payload.pull_request.labels.map(label => label.name);
-            const blockedLabels = ["do-not-merge", "needs-author-feedback"];
+            const blockedLabels = ["do-not-merge", "needs-author-feedback", "release-version-block"];
             
             if (labels.some(label => blockedLabels.includes(label))) {
               console.log(`It is not allowed to merge a PR with any blocked labels: ${blockedLabels}`);
