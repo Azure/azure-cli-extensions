@@ -379,6 +379,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp session code-interpreter', arg_group='file') as c:
         c.argument('filename', help="The file to delete or show from the session")
         c.argument('filepath', help="The local path to the file to upload to the session")
+        c.argument('path', help="The path to list files from the session")
 
     with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
         c.argument('code', help="The code to execute in the code interpreter session")
