@@ -17,22 +17,20 @@ parameters:
   - name: --file-path
     short-summary: File Path
 
-  - name: --subscription-id
-    short-summary: Subscription Id
 examples:
   - name: Upload a file to a file workspace (different from the account subscription).
     text: |
           az support in-subscription file upload \\
             --file-workspace-name "TestFileWorkspaceName" \\
             --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-            --subscription-id "TestSubscription"
+            --subscription "TestSubscription"
 
   - name: Upload a file to a to an Azure support ticket (different from the account subscription).
     text: |
           az support in-subscription file upload \\
             --file-workspace-name "2300000000000358" \\
             --file-path "C:/Users/TestUsers/TestFolder/ExampleFile.txt" \\
-            --subscription-id "TestSubscription"
+            --subscription "TestSubscription"
 
   - name: Upload a file to a file workspace (same as the account subscription).
     text: |

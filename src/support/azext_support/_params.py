@@ -13,7 +13,6 @@ def load_file_argument(self, _):
     with self.argument_context('support in-subscription file upload') as c:
         c.argument('file-workspace-name', help='File Workspace Name', required=True)
         c.argument('file-path', help='File Path', required=True)
-        c.argument('subscription-id', help='Subscription Id')
 
     with self.argument_context('support no-subscription file upload') as c:
         c.argument('file-workspace-name', help='File Workspace Name', required=True)
