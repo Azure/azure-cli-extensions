@@ -1392,10 +1392,11 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     except CLIInternalError:  # pylint: disable=W0702
         logger.info(  # pylint: disable=W1203
             f"Creating the Container Apps managed environment {managed_env_name} under {env_rg} in {location}.")
-        managed_environment = create_containerapps_compose_environment(cmd,
-                                                                       managed_env_name,
-                                                                       env_rg,
-                                                                       tags=tags)
+        managed_environment = create_managed_environment(cmd,
+                                                         name=managed_env_name,
+                                                         resource_group_name=env_rg,
+                                                         tags=tags,
+                                                         location=location)
 
     compose_yaml = load_yaml_file(compose_file_path)
     parsed_compose_file = ComposeFile(compose_yaml)
