@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+3.0.0b14
+++++++++
+* Add `--vm-sizes` to `az aks create` and `az aks nodepool add`.
+* Add `az aks nodepool manual-scale add/update/delete` commands.
+
 3.0.0b13
 ++++++++
 * Set disable local accounts to true when creating an automatic cluster
