@@ -52,6 +52,7 @@ class BackupVaultScenarioTest(ScenarioTest):
             'cmkKeyUri': "https://cmk-cli-test-keyvault.vault.azure.net/keys/cmk-cli-key1/24efffaddbe84838a1c39b6135edbdf5",
             'cmkKeyUriUpdate': "https://cmk-cli-test-keyvault.vault.azure.net/keys/cmk-cli-key2/864fe3c0fcf14d75bd7d576a148ba51c",
             'cmkUami': "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourcegroups/clitest-dpp-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cmk-cli-test-uami",
+            'cmkUamiName': "cmk-cli-test-uami",
         })
         test.cmd('az dataprotection backup-vault create '
                  '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
@@ -65,7 +66,7 @@ class BackupVaultScenarioTest(ScenarioTest):
                      test.check('properties.securitySettings.encryptionSettings.state', "Enabled"),
                      test.check('properties.securitySettings.encryptionSettings.infrastructureEncryption', "Enabled"),
                      test.check('properties.securitySettings.encryptionSettings.keyVaultProperties.keyUri', "{cmkKeyUri}"),
-                     test.check('properties.securitySettings.encryptionSettings.kekIdentity.identityId', "{cmkUami}"),
+                     test.check("contains(properties.securitySettings.encryptionSettings.kekIdentity.identityId, '/{cmkUamiName}')", True),
                      test.check('properties.securitySettings.encryptionSettings.kekIdentity.identityType', "UserAssigned")
                  ])
         test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --cmk-encryption-key-uri "{cmkKeyUriUpdate}"', checks=[
