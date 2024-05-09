@@ -37,8 +37,8 @@ print("get_ext_repo_paths: ", cli_ext_path)
 def extract_module_history_update_info(mod_update_info, mod):
     """
     re pattern:
-    --- a/src/monitor-control-service/HISTORY.rst/md
-    +++ b/src/monitor-control-service/HISTORY.rst/md
+    --- a/src/monitor-control-service/HISTORY.(rst|md)
+    +++ b/src/monitor-control-service/HISTORY.(rst|md)
     """
     mod_update_info["history_updated"] = False
     module_history_update_pattern = re.compile(r"\+\+\+.*?src/%s/HISTORY\.(rst|md)" % mod)
