@@ -41,7 +41,7 @@ def extract_module_history_update_info(mod_update_info, mod):
     +++ b/src/monitor-control-service/HISTORY.rst/md
     """
     mod_update_info["history_updated"] = False
-    module_history_update_pattern = re.compile(r"\+\+\+.*?src/%s/HISTORY.[rstmd]" % mod)
+    module_history_update_pattern = re.compile(r"\+\+\+.*?src/%s/HISTORY\.(rst|md)" % mod)
     with open(diff_code_file, "r") as f:
         for line in f:
             mod_history_update_match = re.findall(module_history_update_pattern, line)
