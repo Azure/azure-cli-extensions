@@ -260,7 +260,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
 
     def create(self):
         try:
-            #raise RequiredArgumentMissingError(self.session_pool_def)
+            logger.warning(self.session_pool_def)
             return self.client.create(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                 name=self.get_argument_name(),
@@ -272,6 +272,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
 class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
     def update(self):
         try:
+            logger.warning(self.session_pool_def)
             return self.client.update(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                 name=self.get_argument_name(),
