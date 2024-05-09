@@ -186,6 +186,11 @@ class TargetHandler:
         self.aad_username = "aad_" + connection_name
         self.connection_name = connection_name
         self.skip_prompt = skip_prompt
+        self.endpoint = ""
+        self.user_object_id = ""
+        self.identity_name = ""
+        self.identity_client_id = ""
+        self.identity_object_id = ""
 
     def enable_target_aad_auth(self):
         return
