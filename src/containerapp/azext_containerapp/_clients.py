@@ -1206,8 +1206,8 @@ class SessionCodeInterpreterPreviewClient():
 
         logger.warning(request_url)
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
-        logger.warning(r.content)
-        return json.dumps(str(r.content))
+        logger.warning(r.content.decode())
+        return json.dumps(r.content.decode())
 
     @classmethod
     def show_file_metadata(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):

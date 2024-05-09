@@ -66,6 +66,7 @@ class SessionCodeInterpreterPreviewDecorator(BaseResource):
 
 class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPreviewDecorator):
     #def validate_arguments(self):
+        #validate_session_location(se)
         # validate here but i'm not sure
 
     def construct_payload(self):
