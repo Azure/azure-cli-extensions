@@ -2071,9 +2071,6 @@ helps['aks nodepool manual-scale add'] = """
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the manual.
-        - name: --aks-custom-headers
-          type: string
-          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks nodepool manual-scale update'] = """
@@ -2089,10 +2086,6 @@ helps['aks nodepool manual-scale update'] = """
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the manual.
-        - name: --aks-custom-headers
-          type: string
-          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
-        
 """
 
 helps['aks nodepool manual-scale delete'] = """
@@ -2102,9 +2095,6 @@ helps['aks nodepool manual-scale delete'] = """
         - name: --current-vm-sizes
           type: string
           short-summary: Comma-separated list of sizes in the manual to be deleted.
-        - name: --aks-custom-headers
-          type: string
-          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks machine'] = """

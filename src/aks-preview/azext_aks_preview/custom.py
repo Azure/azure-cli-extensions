@@ -1738,7 +1738,6 @@ def aks_agentpool_manual_scale_add(cmd,
                                    nodepool_name,
                                    vm_sizes,
                                    node_count,
-                                   aks_custom_headers=None,
                                    no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
@@ -1751,15 +1750,13 @@ def aks_agentpool_manual_scale_add(cmd,
     new_manual_scale_profile = ManualScaleProfile(sizes=vm_sizes.split(","), count=int(node_count))
     instance.virtual_machines_profile.scale.manual.append(new_manual_scale_profile)
 
-    headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
         resource_group_name,
         cluster_name,
         nodepool_name,
-        instance,
-        headers=headers
+        instance
     )
 
 
@@ -1771,7 +1768,6 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
                                       current_vm_sizes,
                                       vm_sizes=None,
                                       node_count=None,
-                                      aks_custom_headers=None,
                                       no_wait=False):
     if vm_sizes is None and node_count is None:
         raise RequiredArgumentMissingError("specify --vm-sizes or --node-count or both.")
@@ -1793,15 +1789,13 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
             f"Manual with sizes {','.join(current_vm_sizes)} doesn't exist in node pool {nodepool_name}"
         )
 
-    headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
         resource_group_name,
         cluster_name,
         nodepool_name,
-        instance,
-        headers=headers
+        instance
     )
 
 
@@ -1811,7 +1805,6 @@ def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
                                       cluster_name,
                                       nodepool_name,
                                       current_vm_sizes,
-                                      aks_custom_headers=None,
                                       no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
@@ -1827,15 +1820,13 @@ def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
             f"Manual with sizes {','.join(current_vm_sizes)} doesn't exist in node pool {nodepool_name}"
         )
 
-    headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
         resource_group_name,
         cluster_name,
         nodepool_name,
-        instance,
-        headers=headers
+        instance
     )
 
 

@@ -11712,8 +11712,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks scale "
             "--resource-group={resource_group} "
             "--name={name} "
-            "--node-count 3 "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            "--node-count 3",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "3"),
@@ -11745,8 +11744,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--resource-group {resource_group} "
             "--cluster-name {name} "
             "--name {node_pool_name} "
-            "--node-count 3 "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            "--node-count 3",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("virtualMachinesProfile.scale.manual[0].count", "3"),
@@ -11759,8 +11757,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--cluster-name={name} "
             "--name {node_pool_name} "
             "--vm-sizes=Standard_D2s_v3,Standard_DS2_v2 "
-            "--node-count=2 "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            "--node-count=2",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("typePropertiesType", "VirtualMachines"),
@@ -11779,8 +11776,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--name={node_pool_name} "
             "--current-vm-sizes=Standard_D2s_v3,Standard_DS2_v2 "
             "--vm-sizes=Standard_D2s_v3,Standard_DS2_v2,Standard_DC2s_v3 "
-            "--node-count=5 "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            "--node-count=5",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("typePropertiesType", "VirtualMachines"),
