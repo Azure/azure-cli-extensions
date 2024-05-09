@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.2
+++++++
+* Fix no attribute error
+
 2.0.1
 ++++++
 * Fix old api-version issue
