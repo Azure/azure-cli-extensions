@@ -162,29 +162,7 @@ def getTargetHandler(cmd, target_id, target_type, auth_info, client_type, connec
 
 
 class TargetHandler:
-    cmd = None
-    auth_type = ""
-    auth_info = None
 
-    tenant_id = ""
-    subscription = ""
-    resource_group = ""
-    target_id = ""
-    target_type = ""
-    endpoint = ""
-
-    login_username = ""
-    login_usertype = ""  # servicePrincipal, user
-    user_object_id = ""
-    aad_username = ""
-
-    identity_name = ""
-    identity_client_id = ""
-    identity_object_id = ""
-
-    connection_name = ""
-
-    skip_prompt = False
 
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         self.cmd = cmd
@@ -209,6 +187,11 @@ class TargetHandler:
         self.aad_username = "aad_" + connection_name
         self.connection_name = connection_name
         self.skip_prompt = skip_prompt
+        self.endpoint = ""
+        self.user_object_id = ""
+        self.identity_name = ""
+        self.identity_client_id = ""
+        self.identity_object_id = ""
 
     def enable_target_aad_auth(self):
         return
