@@ -11,7 +11,51 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+3.0.0b13
+++++++++
+* Set disable local accounts to true when creating an automatic cluster
+* Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
+3.0.0b12
+++++++++
+* Create three default role assignments for automatic sku clusters.
+    * "Azure Kubernetes Service RBAC Cluster Admin"
+    * "Azure Kubernetes Service RBAC Admin"
+    * "Azure Kubernetes Service Cluster User Role"
+
+3.0.0b11
+++++++++
+* Add `--enable-static-egress-gateway` to `az aks create` and `az aks update`.
+* Add `--disable-static-egress-gateway` to `az aks update` command.
+* Add `--gateway-prefix-size` to `az aks nodepool create` command.
+* Add `Gateway` mode to agentpool mode enum.
+
+3.0.0b10
+++++++++
+* Support to enable azure monitor profile when the sku name is automatic.
+* Vendor new SDK and bump API version to 2024-03-02-preview.
+* Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
+* Add option `--enable-force-upgrade`, `--disable-force-upgrade` and `--upgrade-override-until` to `az aks upgrade`.
+
+3.0.0b9
++++++++
+* Support to enable azure container insight monitoring when the sku name is automatic.
+* Add AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview to test_aks_automatic_sku.
+
+3.0.0b8
++++++++
+* Ignore invalid ip error for `--api-server-authorized-ip-ranges`.
+
+3.0.0b7
++++++++
+* Support `--yes` for `az aks mesh upgrade rollback` and `az aks mesh upgrade complete` commands.
+* Correct the property disable_outbound_nat in windows_profile and add UT.
 * Minimise the roles needed to introduce for Elastic SAN for enabling Azure Container Storage with elasticSan storagepool type.
+
+3.0.0b6
++++++++
+* Add `--enable-azure-monitor-app-monitoring` to the `az aks create` command.
+* Add `--enable-azure-monitor-app-monitoring` and `--disable-azure-monitor-app-monitoring` to the `az aks update` command.
 
 3.0.0b5
 +++++++
