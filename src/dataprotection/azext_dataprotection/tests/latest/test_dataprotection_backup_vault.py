@@ -53,16 +53,18 @@ class BackupVaultScenarioTest(ScenarioTest):
             'cmkKeyUriUpdate': "https://cmk-cli-test-keyvault.vault.azure.net/keys/cmk-cli-key2/864fe3c0fcf14d75bd7d576a148ba51c",
             'cmkUami': "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourcegroups/clitest-dpp-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cmk-cli-test-uami",
             'cmkUamiName': "cmk-cli-test-uami",
+            'role': "Key Vault Crypto Service Encryption User",
+            'keyVaultName': "cmk-cli-test-keyvault",
         })
         test.cmd('az dataprotection backup-vault create '
                  '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
-                 '--storage-settings datastore-type="VaultStore" type="GeoRedundant" --type "UserAssigned" '
+                 '--storage-settings datastore-type="VaultStore" type="GeoRedundant" --type "SystemAssigned,UserAssigned" '
                  '--user-assigned-identities {{"{cmkUami}":{{}}}} --cmk-encryption-key-uri "{cmkKeyUri}" '
                  '--cmk-encryption-state Enabled --cmk-identity-type UserAssigned '
                  '--cmk-infrastructure-encryption Enabled --cmk-user-assigned-identity-id  "{cmkUami}" ',
                  checks=[
                      test.check('name', "{vaultName}"),
-                     test.check('identity.type', "UserAssigned"),
+                     test.check('identity.type', "SystemAssigned,UserAssigned"),
                      test.check('properties.securitySettings.encryptionSettings.state', "Enabled"),
                      test.check('properties.securitySettings.encryptionSettings.infrastructureEncryption', "Enabled"),
                      test.check('properties.securitySettings.encryptionSettings.keyVaultProperties.keyUri', "{cmkKeyUri}"),
@@ -71,6 +73,14 @@ class BackupVaultScenarioTest(ScenarioTest):
                  ])
         test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --cmk-encryption-key-uri "{cmkKeyUriUpdate}"', checks=[
             test.check('properties.securitySettings.encryptionSettings.keyVaultProperties.keyUri', "{cmkKeyUriUpdate}"),
+        ])
+        backupVault = test.cmd('az dataprotection backup-vault show -g "{rg}" -v "{vaultName}"').get_output_in_json()
+        test.kwargs.update({'vaultId': backupVault['identity']['principalId']})
+        keyvault = test.cmd('az keyvault show --name "{keyVaultName}"').get_output_in_json()
+        test.kwargs.update({'scope': keyvault['id']})
+        test.cmd('az role assignment create --role "{role}" --assignee-object-id "{vaultId}" --scope "{scope}"')
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --cmk-identity-type "SystemAssigned"', checks=[
+            test.check('properties.securitySettings.encryptionSettings.kekIdentity.identityType', "SystemAssigned"),
         ])
         test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
 
