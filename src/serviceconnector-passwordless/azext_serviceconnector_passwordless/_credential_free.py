@@ -162,6 +162,29 @@ def getTargetHandler(cmd, target_id, target_type, auth_info, client_type, connec
 
 
 class TargetHandler:
+    cmd = None
+    auth_type = ""
+    auth_info = None
+
+    tenant_id = ""
+    subscription = ""
+    resource_group = ""
+    target_id = ""
+    target_type = ""
+    endpoint = ""
+
+    login_username = ""
+    login_usertype = ""  # servicePrincipal, user
+    user_object_id = ""
+    aad_username = ""
+
+    identity_name = ""
+    identity_client_id = ""
+    identity_object_id = ""
+
+    connection_name = ""
+
+    skip_prompt = False
 
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         self.cmd = cmd
