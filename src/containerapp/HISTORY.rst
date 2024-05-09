@@ -10,6 +10,7 @@ upcoming
 * 'az containerapp up': Fix InvalidResourceType error when cloud is not AzureCloud
 * 'az containerapp create/update': Support enable or disable Java metrics with --runtime and --enable-java-metrics
 * 'az containerapp update': Fix --scale-rule-tcp-concurrency for TCP scale rule
+* 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
 
 0.3.50
 ++++++
