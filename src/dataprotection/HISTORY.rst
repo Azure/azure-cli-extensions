@@ -2,6 +2,15 @@
 
 Release History
 ===============
+1.4.0
++++++
+* Added support for cmk encryption on backup vault
+* `az dataprotection backup-vault create ` Added parameters `--user-assigned-identities` to provide list of user assigned managed identities to backup-vault
+* `az dataprotection backup-vault create ` Added parameters `--cmk-encryption-state`, `cmk-infrastructure-encryption`, `--cmk-encryption-key-uri`, `--cmk-identity-type`, `--cmk-user-assigned-identity-id` to enable cmk encryption on backup-vault
+* `az dataprotection backup-vault update ` Added parameters `--user-assigned-identities` to update list of user assigned managed identities to backup-vault
+* `az dataprotection backup-vault update ` Added parameters `--cmk-encryption-state`, `--cmk-encryption-key-uri`, `--cmk-identity-type`, `--cmk-user-assigned-identity-id` to update cmk encryption settings on backup-vault
+
+
 1.3.0
 +++++
 * Added support for vaulted blob backup and restore

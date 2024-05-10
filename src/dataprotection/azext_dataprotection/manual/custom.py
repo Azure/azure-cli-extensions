@@ -21,6 +21,7 @@ from azure.cli.core.azclierror import (
     ForbiddenError,
     UnauthorizedError
 )
+# from azure.cli.core.aaz import has_value
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 from knack.log import get_logger

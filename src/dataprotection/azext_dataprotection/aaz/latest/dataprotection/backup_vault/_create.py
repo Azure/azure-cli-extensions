@@ -22,6 +22,9 @@ class Create(AAZCommand):
 
     :example: Create BackupVault With MSI
         az dataprotection backup-vault create --type "systemAssigned" --location "WestUS" --azure-monitor-alerts-for-job-failures "Enabled" --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]" --tags key1="val1" --resource-group "SampleResourceGroup" --vault-name "swaggerExample"
+
+    :example: Create BackupVault With CMK Encryption
+        az dataprotection backup-vault create -g "resourceGroupName" -v "vaultName" --location "eastasia" --storage-setting "[{type:'LocallyRedundant',datastore-type:'VaultStore'}]" --type "UserAssigned" --user-assigned-identities '{"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourcegroups/samplerg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sampleuami":{}}' --cmk-encryption-key-uri "https://samplekvazbckp.vault.azure.net/keys/testkey/3cd5235ad6ac4c11b40a6f35444bcbe1" --cmk-encryption-state "Enabled" --cmk-identity-type "UserAssigned" --cmk-infrastructure-encryption "Enabled" --cmk-user-assigned-identity-id  "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourcegroups/samplerg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sampleuami"
     """
 
     _aaz_info = {
@@ -67,6 +70,38 @@ class Create(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
+        # define Arg Group "EncryptionSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.cmk_infrastructure_encryption = AAZStrArg(
+            options=["--cmk-infra-encryption", "--cmk-infrastructure-encryption"],
+            arg_group="EncryptionSettings",
+            help="Enable/Disable infrastructure encryption with CMK on this vault. Infrastructure encryption must be configured only when creating the vault.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.cmk_user_assigned_identity_id = AAZStrArg(
+            options=["--cmk-uami", "--cmk-user-assigned-identity-id"],
+            arg_group="EncryptionSettings",
+            help="This parameter is required if the identity type is UserAssigned. Add the user assigned managed identity id to be used which has access permissions to the Key Vault.",
+        )
+        _args_schema.cmk_identity_type = AAZStrArg(
+            options=["--cmk-identity-type"],
+            arg_group="EncryptionSettings",
+            help="The identity type to be used for CMK encryption - SystemAssigned or UserAssigned Identity.",
+            enum={"SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
+        )
+        _args_schema.cmk_encryption_key_uri = AAZStrArg(
+            options=["--cmk-encryption-key-uri"],
+            arg_group="EncryptionSettings",
+            help="The Key URI of the CMK key to be used for encryption.  To enable auto-rotation of keys, exclude the version component from the Key URI.",
+        )
+        _args_schema.cmk_encryption_state = AAZStrArg(
+            options=["--cmk-encryption-state"],
+            arg_group="EncryptionSettings",
+            help="Enable CMK encryption state for a Backup Vault.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled", "Inconsistent": "Inconsistent"},
+        )
+
         # define Arg Group "FeatureSettings"
 
         _args_schema = cls._args_schema
@@ -83,7 +118,17 @@ class Create(AAZCommand):
         _args_schema.type = AAZStrArg(
             options=["--type"],
             arg_group="Identity",
-            help="The identityType which can be either SystemAssigned or None",
+            help="The identityType which can be \"SystemAssigned\", \"UserAssigned\", \"SystemAssigned,UserAssigned\" or \"None\"",
+        )
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--uami", "--user-assigned-identities"],
+            arg_group="Identity",
+            help="Gets or sets the user assigned identities.",
+        )
+
+        user_assigned_identities = cls._args_schema.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            blank={},
         )
 
         # define Arg Group "Monitoring Settings Azure Monitor Alert Settings"
@@ -290,6 +335,11 @@ class Create(AAZCommand):
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type")
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -321,8 +371,25 @@ class Create(AAZCommand):
 
             security_settings = _builder.get(".properties.securitySettings")
             if security_settings is not None:
+                security_settings.set_prop("encryptionSettings", AAZObjectType)
                 security_settings.set_prop("immutabilitySettings", AAZObjectType)
                 security_settings.set_prop("softDeleteSettings", AAZObjectType)
+
+            encryption_settings = _builder.get(".properties.securitySettings.encryptionSettings")
+            if encryption_settings is not None:
+                encryption_settings.set_prop("infrastructureEncryption", AAZStrType, ".cmk_infrastructure_encryption")
+                encryption_settings.set_prop("kekIdentity", AAZObjectType)
+                encryption_settings.set_prop("keyVaultProperties", AAZObjectType)
+                encryption_settings.set_prop("state", AAZStrType, ".cmk_encryption_state")
+
+            kek_identity = _builder.get(".properties.securitySettings.encryptionSettings.kekIdentity")
+            if kek_identity is not None:
+                kek_identity.set_prop("identityId", AAZStrType, ".cmk_user_assigned_identity_id")
+                kek_identity.set_prop("identityType", AAZStrType, ".cmk_identity_type")
+
+            key_vault_properties = _builder.get(".properties.securitySettings.encryptionSettings.keyVaultProperties")
+            if key_vault_properties is not None:
+                key_vault_properties.set_prop("keyUri", AAZStrType, ".cmk_encryption_key_uri")
 
             immutability_settings = _builder.get(".properties.securitySettings.immutabilitySettings")
             if immutability_settings is not None:

@@ -43,3 +43,7 @@ class Update(_Update):
         if has_value(self.ctx.args.tenant_id):
             # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
             self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))
+        if has_value(self.ctx.args.cmk_identity_type):
+            cmk_identity_type = self.ctx.args.cmk_identity_type.to_serialized_data()
+            if cmk_identity_type == "SystemAssigned":
+                self.ctx.args.cmk_user_assigned_identity_id = None
