@@ -84,7 +84,9 @@ class TicketCreate(_CreateTicket):
             )
         else:
             _validate_tickets_create(
-                self.cli_ctx, args.problem_classification.to_serialized_data(), args.ticket_name.to_serialized_data()
+                self.cli_ctx,
+                args.problem_classification.to_serialized_data(),
+                args.ticket_name.to_serialized_data(),
             )
 
     class SupportTicketsCreate(_CreateTicket.SupportTicketsCreate):
@@ -127,7 +129,9 @@ class TicketCreateNoSubscription(_CreateTicketNoSubscription):
             )
         else:
             _validate_tickets_create_no_subscription(
-                self.cli_ctx, args.problem_classification.to_serialized_data(), args.ticket_name.to_serialized_data()
+                self.cli_ctx,
+                args.problem_classification.to_serialized_data(),
+                args.ticket_name.to_serialized_data(),
             )
 
     class SupportTicketsNoSubscriptionCreate(
@@ -155,16 +159,11 @@ class TicketList(_List):
 
     class SupportTicketsList(_List.SupportTicketsList):
 
-        @property
-        def query_parameters(self):
+        def pre_operations(self):
 
-            parameters = super().query_parameters
             args = self.ctx.args
-            if has_value(args.filter) and has_value(args.pagination_limit):
-                parameters["$filter"] = "CreatedDate ge " + str(
-                    date.today() - timedelta(days=7)
-                )
-            return parameters
+            if not has_value(args.filter) and not has_value(args.pagination_limit):
+                args.filter = "CreatedDate ge " + str(date.today() - timedelta(days=7))
 
 
 class TicketListNoSubscription(_ListNoSubscription):
@@ -173,16 +172,11 @@ class TicketListNoSubscription(_ListNoSubscription):
         _ListNoSubscription.SupportTicketsNoSubscriptionList
     ):
 
-        @property
-        def query_parameters(self):
+        def pre_operations(self):
 
-            parameters = super().query_parameters
             args = self.ctx.args
-            if has_value(args.filter) and has_value(args.pagination_limit):
-                parameters["$filter"] = "CreatedDate ge " + str(
-                    date.today() - timedelta(days=7)
-                )
-            return parameters
+            if not has_value(args.filter) and not has_value(args.pagination_limit):
+                args.filter = "CreatedDate ge " + str(date.today() - timedelta(days=7))
 
 
 class CommunicationCreate(_CreateCommunication):
@@ -253,9 +247,7 @@ def upload_files_no_subscription(cmd, file_path, file_workspace_name):
     upload_file(cmd, file_path, file_workspace_name, Create, Upload)
 
 
-def upload_files_in_subscription(
-    cmd, file_path, file_workspace_name
-):
+def upload_files_in_subscription(cmd, file_path, file_workspace_name):
     from .aaz.latest.support.in_subscription.file import (
         Create as Create_Sub,
         Upload as Upload_Sub,
