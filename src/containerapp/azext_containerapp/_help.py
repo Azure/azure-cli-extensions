@@ -1696,7 +1696,7 @@ helps['containerapp session code-interpreter execute'] = """
     examples:
     - name: Execute a simple hello world.
       text: |
-          az containerapp session code-interpreter execute -n MySessionPool -g MyResourceGroup --identifier MySession\\
+          az containerapp session code-interpreter execute -n MySessionPool -g MyResourceGroup --identifier MySession \\
               --code 'print("'"Hello world"'")' --timeout-in-seconds 30
 """
 
@@ -1706,7 +1706,7 @@ helps['containerapp session code-interpreter upload-file'] = """
     examples:
     - name: Upload a file to a session.
       text: |
-          az containerapp containerapp session code-interpreter upload -n MySessionPool -g MyResourceGroup --identifier MySession\\
+          az containerapp containerapp session code-interpreter upload -n MySessionPool -g MyResourceGroup --identifier MySession \\
               --filepath example.txt  
 """
 
@@ -1715,7 +1715,7 @@ helps['containerapp session code-interpreter show-file-content'] = """
     short-summary: Show the content a file uploaded to a code interpreter session.
     examples:
     - name: Show content of file.
-      text: az containerapp session code-interpreter show-file-content -n MySessionPool -g MyResourceGroup --identifier MySession\\
+      text: az containerapp session code-interpreter show-file-content -n MySessionPool -g MyResourceGroup --identifier MySession \\
               --filename example.txt
 """
 
@@ -1724,7 +1724,7 @@ helps['containerapp session code-interpreter show-file-metadata'] = """
     short-summary: Shows the meta-data content a file uploaded to a code interpreter session.
     examples:
     - name: Show the meta-data details of a file uploaded to a session.
-      text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession\\
+      text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession \\
               --filename example.txt
 """
 
@@ -1733,7 +1733,7 @@ helps['containerapp session code-interpreter delete-file'] = """
     short-summary: Delete a file uploaded to a code interpreter session.
     examples:
     - name: Delete a file .
-      text: az containerapp session code-interpreter delete-file -n MySessionPool -g MyResourceGroup --identifier MySession\\
+      text: az containerapp session code-interpreter delete-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
               --filename example.txt
 """
 
@@ -1743,5 +1743,5 @@ helps['containerapp session code-interpreter list-files'] = """
     examples:
     - name: List files uploaded in a code-interpreter session.
       text: |
-          az containerapp sessionpool list-files -n MySessionPool -g MyResourceGroup --identifier MySession
+          az containerapp session list-files -n MySessionPool -g MyResourceGroup --identifier MySession
 """
