@@ -86,6 +86,18 @@ class Update(AAZCommand):
             help={"short-summary": "This is an array of files required for the config set-up. Cannot be used with packages", "long-summary": "One of the files virtual-path should match the root file. For a multi-file config set-up, the root file needs to have references to the other file(s) in an include directive.\nUsage: --files [{\"content\":\"<Base64 content of config file>\",\"virtual-path\":\"<path>\"}]."},
             nullable=True,
         )
+        _args_schema.package = AAZObjectArg(
+            options=["--package"],
+            arg_group="Properties",
+            help="Compressed files",
+            nullable=True,
+        )
+        _args_schema.protected_files = AAZListArg(
+            options=["--protected-files"],
+            arg_group="Properties",
+            help="Protected files",
+            nullable=True,
+        )
         _args_schema.root_file = AAZStrArg(
             options=["--root-file"],
             arg_group="Properties",
@@ -98,6 +110,27 @@ class Update(AAZCommand):
             nullable=True,
         )
         cls._build_args_nginx_configuration_file_update(files.Element)
+
+        package = cls._args_schema.package
+        package.data = AAZStrArg(
+            options=["data"],
+            nullable=True,
+        )
+        package.protected_files = AAZListArg(
+            options=["protected-files"],
+            nullable=True,
+        )
+
+        protected_files = cls._args_schema.package.protected_files
+        protected_files.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        protected_files = cls._args_schema.protected_files
+        protected_files.Element = AAZObjectArg(
+            nullable=True,
+        )
+        cls._build_args_nginx_configuration_file_update(protected_files.Element)
         return cls._args_schema
 
     _args_nginx_configuration_file_update = None
@@ -375,11 +408,26 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("files", AAZListType, ".files")
+                properties.set_prop("package", AAZObjectType, ".package")
+                properties.set_prop("protectedFiles", AAZListType, ".protected_files")
                 properties.set_prop("rootFile", AAZStrType, ".root_file")
 
             files = _builder.get(".properties.files")
             if files is not None:
                 _UpdateHelper._build_schema_nginx_configuration_file_update(files.set_elements(AAZObjectType, "."))
+
+            package = _builder.get(".properties.package")
+            if package is not None:
+                package.set_prop("data", AAZStrType, ".data")
+                package.set_prop("protectedFiles", AAZListType, ".protected_files")
+
+            protected_files = _builder.get(".properties.package.protectedFiles")
+            if protected_files is not None:
+                protected_files.set_elements(AAZStrType, ".")
+
+            protected_files = _builder.get(".properties.protectedFiles")
+            if protected_files is not None:
+                _UpdateHelper._build_schema_nginx_configuration_file_update(protected_files.set_elements(AAZObjectType, "."))
 
             return _instance_value
 
