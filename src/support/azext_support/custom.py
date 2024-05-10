@@ -7,6 +7,7 @@
 # pylint: disable=too-many-locals
 
 from datetime import date, datetime, timedelta
+from azure.cli.core.aaz import has_value
 
 from azext_support._utils import (
     parse_support_area_path,
@@ -72,27 +73,24 @@ class TicketCreate(_CreateTicket):
 
     def pre_operations(self):
         from azext_support._validators import _validate_tickets_create
-        from azure.cli.core.aaz import AAZUndefined
 
-        super().pre_operations()
         args = self.ctx.args
-        if args.technical_resource != AAZUndefined:
+        if has_value(args.technical_resource):
             _validate_tickets_create(
                 self.cli_ctx,
-                str(args.problem_classification),
-                str(args.ticket_name),
-                str(args.technical_resource),
+                args.problem_classification.to_serialized_data(),
+                args.ticket_name.to_serialized_data(),
+                args.technical_resource.to_serialized_data(),
             )
         else:
             _validate_tickets_create(
-                self.cli_ctx, str(args.problem_classification), str(args.ticket_name)
+                self.cli_ctx, args.problem_classification.to_serialized_data(), args.ticket_name.to_serialized_data()
             )
 
     class SupportTicketsCreate(_CreateTicket.SupportTicketsCreate):
 
         @property
         def content(self):
-            from azure.cli.core.aaz import AAZUndefined
 
             body = super().content
             args = self.ctx.args
@@ -102,7 +100,7 @@ class TicketCreate(_CreateTicket):
             body["properties"]["serviceId"] = (
                 "/providers/Microsoft.Support/services/{0}".format(service_name)
             )
-            if args.start_time == AAZUndefined:
+            if has_value(args.start_time):
                 start_time = datetime.utcnow().strftime(("%Y-%m-%dT%H:%M:%SZ"))
                 body["properties"]["problemStartTime"] = start_time
             return body
@@ -118,20 +116,18 @@ class TicketCreateNoSubscription(_CreateTicketNoSubscription):
         from azext_support._validators import (
             _validate_tickets_create_no_subscription,
         )
-        from azure.cli.core.aaz import AAZUndefined
 
-        super().pre_operations()
         args = self.ctx.args
-        if args.technical_resource != AAZUndefined:
+        if has_value(args.technical_resource):
             _validate_tickets_create_no_subscription(
                 self.cli_ctx,
-                str(args.problem_classification),
-                str(args.ticket_name),
-                str(args.technical_resource),
+                args.problem_classification.to_serialized_data(),
+                args.ticket_name.to_serialized_data(),
+                args.technical_resource.to_serialized_data(),
             )
         else:
             _validate_tickets_create_no_subscription(
-                self.cli_ctx, str(args.problem_classification), str(args.ticket_name)
+                self.cli_ctx, args.problem_classification.to_serialized_data(), args.ticket_name.to_serialized_data()
             )
 
     class SupportTicketsNoSubscriptionCreate(
@@ -140,7 +136,6 @@ class TicketCreateNoSubscription(_CreateTicketNoSubscription):
 
         @property
         def content(self):
-            from azure.cli.core.aaz import AAZUndefined
 
             body = super().content
             args = self.ctx.args
@@ -150,7 +145,7 @@ class TicketCreateNoSubscription(_CreateTicketNoSubscription):
             body["properties"]["serviceId"] = (
                 "/providers/Microsoft.Support/services/{0}".format(service_name)
             )
-            if args.start_time == AAZUndefined:
+            if has_value(args.start_time):
                 start_time = datetime.utcnow().strftime(("%Y-%m-%dT%H:%M:%SZ"))
                 body["properties"]["problemStartTime"] = start_time
             return body
@@ -162,11 +157,10 @@ class TicketList(_List):
 
         @property
         def query_parameters(self):
-            from azure.cli.core.aaz import AAZUndefined
 
             parameters = super().query_parameters
             args = self.ctx.args
-            if args.filter == AAZUndefined and args.pagination_limit == AAZUndefined:
+            if has_value(args.filter) and has_value(args.pagination_limit):
                 parameters["$filter"] = "CreatedDate ge " + str(
                     date.today() - timedelta(days=7)
                 )
@@ -181,11 +175,10 @@ class TicketListNoSubscription(_ListNoSubscription):
 
         @property
         def query_parameters(self):
-            from azure.cli.core.aaz import AAZUndefined
 
             parameters = super().query_parameters
             args = self.ctx.args
-            if args.filter == AAZUndefined and args.pagination_limit == AAZUndefined:
+            if has_value(args.filter) and has_value(args.pagination_limit):
                 parameters["$filter"] = "CreatedDate ge " + str(
                     date.today() - timedelta(days=7)
                 )
@@ -199,12 +192,11 @@ class CommunicationCreate(_CreateCommunication):
             _check_name_availability_subscription_ticket,
         )
 
-        super().pre_operations()
         args = self.ctx.args
         _check_name_availability_subscription_ticket(
             self.cli_ctx,
-            str(args.ticket_name),
-            str(args.communication_name),
+            args.ticket_name.to_serialized_data(),
+            args.communication_name.to_serialized_data(),
             "Microsoft.Support/communications",
         )
 
@@ -216,12 +208,11 @@ class CommunicationNoSubscriptionCreate(_CreateNoSubscriptionCommunication):
             _check_name_availability_no_subscription_ticket,
         )
 
-        super().pre_operations()
         args = self.ctx.args
         _check_name_availability_no_subscription_ticket(
             self.cli_ctx,
-            str(args.ticket_name),
-            str(args.communication_name),
+            args.ticket_name.to_serialized_data(),
+            args.communication_name.to_serialized_data(),
             "Microsoft.Support/communications",
         )
 
@@ -231,11 +222,10 @@ class FileWorkspaceCreateNoSubscription(_CreateNoSubscriptionFileWorkspace):
     def pre_operations(self):
         from azext_support._validators import _check_name_availability_no_subscription
 
-        super().pre_operations()
         args = self.ctx.args
         _check_name_availability_no_subscription(
             self.cli_ctx,
-            str(args.file_workspace_name),
+            args.file_workspace_name.to_serialized_data(),
             "Microsoft.Support/fileWorkspaces",
         )
 
@@ -245,11 +235,10 @@ class FileWorkspaceCreateSubscription(_CreateFileWorkspace):
     def pre_operations(self):
         from azext_support._validators import _check_name_availability_subscription
 
-        super().pre_operations()
         args = self.ctx.args
         _check_name_availability_subscription(
             self.cli_ctx,
-            str(args.file_workspace_name),
+            args.file_workspace_name.to_serialized_data(),
             "Microsoft.Support/fileWorkspaces",
         )
 

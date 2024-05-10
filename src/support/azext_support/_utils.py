@@ -103,12 +103,12 @@ def upload_file(
         ]
         string_encoded_content = encode_string_content(chunk_content)
 
-    upload_input = {
-        "file_name": full_file_name,
-        "file_workspace_name": file_workspace_name,
-        "chunk_index": chunk_index,
-        "content": string_encoded_content,
-    }
+        upload_input = {
+            "file_name": full_file_name,
+            "file_workspace_name": file_workspace_name,
+            "chunk_index": chunk_index,
+            "content": string_encoded_content,
+        }
 
-    Upload(cli_ctx=cmd.cli_ctx)(command_args=upload_input)
+        Upload(cli_ctx=cmd.cli_ctx)(command_args=upload_input)
     print("File '{}' has been succesfully uploaded.".format(full_file_name))
