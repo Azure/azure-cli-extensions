@@ -16,6 +16,7 @@ import uuid
 from io import open
 from re import (search, match, compile)
 from json import dumps
+from threading import Thread
 
 from azure.cli.core._profile import Profile
 from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
@@ -409,3 +410,39 @@ class BearerAuth(requests.auth.AuthBase):
     def __call__(self, r):
         r.headers["authorization"] = "Bearer " + self.token
         return r
+
+
+def _contains_alive_thread(threads: [Thread]):
+    for t in threads:
+        if t.is_alive():
+            return True
+
+
+def parallel_start_threads(threads: [Thread]):
+    for t in threads:
+        t.daemon = True
+        t.start()
+
+    while _contains_alive_thread(threads):
+        sleep(1)
+        # so that ctrl+c can stop the command
+
+
+def sequential_start_threads(threads: [Thread]):
+    for idx, t in enumerate(threads):
+        t.daemon = True
+        t.start()
+
+        while t.is_alive():
+            sleep(1)
+            # so that ctrl+c can stop the command
+
+
+def string_equals_ignore_case(left: str, right: str):
+    if left is None and right is None:
+        return True
+
+    if left is None or right is None:
+        return False
+
+    return left.casefold() == right.casefold()

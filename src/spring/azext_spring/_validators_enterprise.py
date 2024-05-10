@@ -732,8 +732,8 @@ def validate_create_app_binding_default_config_server(cmd, namespace):
     if namespace.bind_config_server:
         namespace.bind_config_server \
             = _get_exactly_one_config_server_resource_id(cmd,
-                                                        namespace.resource_group,
-                                                        namespace.service)
+                                                         namespace.resource_group,
+                                                         namespace.service)
 
 
 def _get_exactly_one_config_server_resource_id(cmd, resource_group, service):

@@ -9,6 +9,8 @@ import requests
 import re
 import os
 import time
+from azext_spring.jobs.job import (append_managed_component_ref, backfill_secret_envs,
+                                   job_has_resource_id_ref_ignore_case, remove_managed_component_ref)
 from azure.cli.core._profile import Profile
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as ResourceNotFoundException
 from azure.mgmt.loganalytics import LogAnalyticsManagementClient
@@ -21,7 +23,7 @@ import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
-from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
+from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth, wait_till_end)
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2024_05_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
@@ -46,7 +48,7 @@ logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
 DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL = 5
 APP_CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
-CONFIG_SERVER_DEFAULT_NAME="default"
+CONFIG_SERVER_DEFAULT_NAME = "default"
 CONFIG_SERVER_ADDON_NAME = "configServer"
 RESOURCE_ID_KEY_NAME = "resourceId"
 
@@ -91,7 +93,7 @@ def _update_application_insights_asc_create(cmd,
 def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                   disable_app_insights=None, sku=None, tags=None, build_pool_size=None,
                   enable_log_stream_public_endpoint=None, enable_dataplane_public_endpoint=None,
-                  enable_private_storage_access=None, ingress_read_timeout=None, 
+                  enable_private_storage_access=None, ingress_read_timeout=None,
                   enable_planned_maintenance=False, planned_maintenance_day=None,
                   planned_maintenance_start_hour=None, no_wait=False):
     """
@@ -128,8 +130,8 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
         if updated_resource_properties.vnet_addons is None:
             updated_resource_properties.vnet_addons = models.ServiceVNetAddons(
                 # explicitly set as none in case unexpected update
-                data_plane_public_endpoint = None,
-                log_stream_public_endpoint = None
+                data_plane_public_endpoint=None,
+                log_stream_public_endpoint=None
             )
         val = "Enabled" if enable_private_storage_access else "Disabled"
         updated_resource_properties.vnet_addons.private_storage_access = val
@@ -762,6 +764,7 @@ def config_disable(cmd, client, resource_group, service):
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
     return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, service).result()
 
+
 def config_set(cmd, client, resource_group, service, config_file, no_wait=False):
     config_server_resource = client.config_servers.get(resource_group, service)
     if config_server_resource.properties.enabled_state and config_server_resource.properties.enabled_state == "Disabled":
@@ -821,6 +824,7 @@ def config_get(cmd, client, resource_group, service):
     if not config_server_resource.properties.enabled_state and not config_server_resource.properties.config_server and not config_server_resource.properties.resource_requests:
         raise CLIError("Config server not set.")
     return config_server_resource
+
 
 def config_clear(cmd, client, resource_group, service):
     config_server_resource = client.config_servers.get(resource_group, service)
@@ -1007,9 +1011,10 @@ def config_repo_list(cmd, client, resource_group, service):
 
     return config_server.git_property.repositories
 
+
 def config_create(cmd, client, service, resource_group):
     try:
-        config_server_resource = client.config_servers.get(resource_group, service) 
+        config_server_resource = client.config_servers.get(resource_group, service)
         if config_server_resource is not None:
             raise CLIError("Config server '{}' already exists.".format(CONFIG_SERVER_DEFAULT_NAME))
     except ResourceNotFoundException:
@@ -1020,14 +1025,28 @@ def config_create(cmd, client, service, resource_group):
     logger.warning("Creating config server")
     return client.config_servers.begin_update_put(resource_group, service, config_server_resource)
 
+
 def config_delete(cmd, client, service, resource_group):
     return client.config_servers.begin_delete(resource_group, service)
 
-def config_bind(cmd, client, service, resource_group, app):
-    return _config_bind_or_unbind_app(cmd, client, service, resource_group, app, True)
 
-def config_unbind(cmd, client, service, resource_group, app):
-    return _config_bind_or_unbind_app(cmd, client, service, resource_group, app, False)
+def config_bind(cmd, client, service, resource_group, app=None, job=None):
+    """app and job will be validated so that one and only one is not None.
+        """
+    if app is not None:
+        return _config_bind_or_unbind_app(cmd, client, service, resource_group, app, True)
+    else:
+        return _config_bind_or_unbind_job(cmd, client, service, resource_group, job, True)
+
+
+def config_unbind(cmd, client, service, resource_group, app=None, job=None):
+    """app and job will be validated so that one and only one is not None.
+            """
+    if app is not None:
+        return _config_bind_or_unbind_app(cmd, client, service, resource_group, app, False)
+    else:
+        return _config_bind_or_unbind_job(cmd, client, service, resource_group, job, False)
+
 
 def _config_bind_or_unbind_app(cmd, client, service, resource_group, app_name, enabled):
     app = client.apps.get(resource_group, service, app_name)
@@ -1037,7 +1056,36 @@ def _config_bind_or_unbind_app(cmd, client, service, resource_group, app_name, e
         logger.warning('App "{}" has been {}binded'.format(app_name, '' if enabled else 'un'))
         return app
 
-    config_server_id = resource_id(
+    config_server_id = _get_config_server_resource_id(cmd, resource_group, service)
+    if enabled:
+        app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = config_server_id
+    else:
+        app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = ""
+    return client.apps.begin_update(resource_group, service, app_name, app)
+
+
+def _config_bind_or_unbind_job(cmd, client, service, resource_group, job_name, enabled):
+    job: models.JobResource = client.job.get(resource_group, service, job_name)
+    job = backfill_secret_envs(client, resource_group, service, job_name, job)
+    config_server_id = _get_config_server_resource_id(cmd, resource_group, service)
+    is_job_already_binded = _is_job_already_binded_to_cs(job, config_server_id)
+    if is_job_already_binded == enabled:
+        logger.warning(f'Job {job_name} has been {"" if enabled else "un"}binded.')
+        return job
+
+    if enabled:
+        job = _append_config_server_reference(job, config_server_id)
+    else:
+        job = _remove_config_server_reference(job, config_server_id)
+    """TODO(jiec): There seems to be issues in SDK if we directly return client.job.begin_create_or_update.
+    """
+    poller = client.job.begin_create_or_update(resource_group, service, job_name, job)
+    wait_till_end(cmd, poller)
+    return client.job.get(resource_group, service, job_name)
+
+
+def _get_config_server_resource_id(cmd, resource_group, service):
+    return resource_id(
         subscription=get_subscription_id(cmd.cli_ctx),
         resource_group=resource_group,
         namespace='Microsoft.AppPlatform',
@@ -1046,12 +1094,20 @@ def _config_bind_or_unbind_app(cmd, client, service, resource_group, app_name, e
         child_type_1="configServers",
         child_name_1=CONFIG_SERVER_DEFAULT_NAME
     )
-    if enabled:
-        app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = config_server_id
-    else:
-        app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = ""
-    return client.apps.begin_update(resource_group, service, app_name, app)
-	
+
+
+def _is_job_already_binded_to_cs(job: models.JobResource, config_server_id: str):
+    return job_has_resource_id_ref_ignore_case(job, config_server_id)
+
+
+def _append_config_server_reference(job: models.JobResource, config_server_id) -> models.JobResource:
+    return append_managed_component_ref(job, config_server_id)
+
+
+def _remove_config_server_reference(job: models.JobResource, config_server_id) -> models.JobResource:
+    return remove_managed_component_ref(job, config_server_id)
+
+
 def _get_app_addon_configs_with_config_server(addon_configs):
     addon_configs = addon_configs or {}
     addon_configs.setdefault(CONFIG_SERVER_ADDON_NAME, {})

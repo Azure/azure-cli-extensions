@@ -12,7 +12,7 @@ from ..log_stream.writer import (DefaultWriter, PrefixWriter)
 from ..log_stream.log_stream_operations import (attach_logs_query_options, log_stream_from_url,
                                                 LogStreamBaseQueryOptions)
 from ..log_stream.log_stream_validators import validate_thread_number
-from .._utils import (get_bearer_auth, get_hostname)
+from .._utils import (get_bearer_auth, get_hostname, parallel_start_threads, sequential_start_threads)
 
 
 logger = get_logger(__name__)
@@ -44,9 +44,9 @@ def managed_component_logs(cmd, client, resource_group, service,
         threads = _get_log_threads(all_instances, url_dict, auth, exceptions)
 
     if follow and len(threads) > 1:
-        _parallel_start_threads(threads)
+        parallel_start_threads(threads)
     else:
-        _sequential_start_threads(threads)
+        sequential_start_threads(threads)
 
     if exceptions:
         raise exceptions[0]
@@ -134,32 +134,6 @@ def _get_log_threads(all_instances, url_dict, auth, exceptions):
             writer = _get_prefix_writer(prefix)
         threads.append(Thread(target=log_stream_from_url, args=(url, auth, None, exceptions, writer)))
     return threads
-
-
-def _contains_alive_thread(threads: [Thread]):
-    for t in threads:
-        if t.is_alive():
-            return True
-
-
-def _parallel_start_threads(threads: [Thread]):
-    for t in threads:
-        t.daemon = True
-        t.start()
-
-    while _contains_alive_thread(threads):
-        sleep(1)
-        # so that ctrl+c can stop the command
-
-
-def _sequential_start_threads(threads: [Thread]):
-    for idx, t in enumerate(threads):
-        t.daemon = True
-        t.start()
-
-        while t.is_alive():
-            sleep(1)
-            # so that ctrl+c can stop the command
 
 
 def _get_log_threads_without_component(cmd, client, resource_group, service, instance_name, auth, exceptions,

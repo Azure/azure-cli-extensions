@@ -46,6 +46,7 @@ def create_application_configuration_service(cmd, client, resource_group, servic
 
         return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
 
+
 def create_config_server(cmd, client, resource_group, service, enable_config_server, **_):
     if enable_config_server:
         logger.warning(" - Creating Config Server ..")
@@ -53,6 +54,7 @@ def create_config_server(cmd, client, resource_group, service, enable_config_ser
         config_server_resource.properties = models.ConfigServerProperties()
 
         return client.config_servers.begin_update_put(resource_group, service, config_server_resource)
+
 
 def create_service_registry(cmd, client, resource_group, service, enable_service_registry, **_):
     if enable_service_registry:

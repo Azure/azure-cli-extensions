@@ -1,5 +1,9 @@
 Release History
 ===============
+1.24.0
+---
+* Add Job support
+
 1.23.0
 ---
 * For Application Configuration Service Version Gen2, show the Git revisions in command `az spring application-configuration-service config show`.
