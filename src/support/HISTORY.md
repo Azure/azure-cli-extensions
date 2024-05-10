@@ -4,6 +4,9 @@ Release History
 2.0.0
 -----
 * Upgrade CLI Support extension to new Support RP API 2024-04-01
+* Remove command groups `support tickets`
+* Add command groups `support in-subscription`
+* Add command groups `support no-subscription` 
 
 1.0.4
 -----

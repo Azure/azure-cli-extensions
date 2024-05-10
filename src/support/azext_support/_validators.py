@@ -15,9 +15,9 @@ import os
 logger = get_logger(__name__)
 
 # file constants
-max_file_name_length = 110
-min_file_size = 1
-max_file_size = 1024 * 1024 * 5
+MAX_FILE_NAME_LENGTH = 110
+MIN_FILE_SIZE = 1
+MAX_FILE_SIZE = 1024 * 1024 * 5
 unsupported_file_extensions_set = {
     ".bat",
     ".cmd",
@@ -177,12 +177,12 @@ def _validate_file_path(file_path):
 
 
 def _validate_file_name(file_name):
-    if len(file_name) > max_file_name_length:
+    if len(file_name) > MAX_FILE_NAME_LENGTH:
         raise CLIError("File name should not be more than 110 characters.")
 
 
 def _validate_file_size(file_size):
-    if (file_size > max_file_size) or (file_size < min_file_size):
+    if (file_size > MAX_FILE_SIZE) or (file_size < MIN_FILE_SIZE):
         raise CLIError("The file must be between 1 and 5242880 bytes")
 
 
