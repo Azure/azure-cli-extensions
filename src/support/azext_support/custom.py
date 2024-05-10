@@ -102,7 +102,7 @@ class TicketCreate(_CreateTicket):
             body["properties"]["serviceId"] = (
                 "/providers/Microsoft.Support/services/{0}".format(service_name)
             )
-            if has_value(args.start_time):
+            if not has_value(args.start_time):
                 start_time = datetime.utcnow().strftime(("%Y-%m-%dT%H:%M:%SZ"))
                 body["properties"]["problemStartTime"] = start_time
             return body
@@ -149,7 +149,7 @@ class TicketCreateNoSubscription(_CreateTicketNoSubscription):
             body["properties"]["serviceId"] = (
                 "/providers/Microsoft.Support/services/{0}".format(service_name)
             )
-            if has_value(args.start_time):
+            if not has_value(args.start_time):
                 start_time = datetime.utcnow().strftime(("%Y-%m-%dT%H:%M:%SZ"))
                 body["properties"]["problemStartTime"] = start_time
             return body
