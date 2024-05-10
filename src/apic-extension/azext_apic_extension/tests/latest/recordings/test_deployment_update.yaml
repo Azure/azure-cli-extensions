@@ -1,0 +1,116 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api deployment update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-id --deployment-id --title
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/mock-deployment?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/deployments","properties":{"title":"test
+        deployment","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example.com"]},"customProperties":{},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/clitest000007","name":"clitest000007","systemData":{"createdAt":"2024-05-08T06:32:00.6011074Z","lastModifiedAt":"2024-05-08T06:32:00.6010925Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '700'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 08 May 2024 06:32:02 GMT
+      etag:
+      - da02239c-0000-0100-0000-663b1c600000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8BE729DC525C46C5AD1A4F3E25B9FA2B Ref B: MAA201060516021 Ref C: 2024-05-08T06:32:02Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"customProperties": {}, "definitionId": "/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006",
+      "environmentId": "/workspaces/default/environments/clitest000003", "server":
+      {"runtimeUri": ["https://example.com"]}, "title": "updated deployment"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api deployment update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '296'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --api-id --deployment-id --title
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/mock-deployment?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/deployments","properties":{"title":"updated
+        deployment","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example.com"]},"customProperties":{},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/clitest000007","name":"clitest000007","systemData":{"lastModifiedAt":"2024-05-08T06:32:05.4910553Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '660'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 08 May 2024 06:32:04 GMT
+      etag:
+      - da024e9c-0000-0100-0000-663b1c650000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 6B5D4553DF0344A487E8A79A64FCACEC Ref B: MAA201060516021 Ref C: 2024-05-08T06:32:03Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
