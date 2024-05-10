@@ -2798,8 +2798,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        # add Windows2019 nodepool
-        # Windows2022 does not support this feature yet
+        # add Windows nodepool with disable windows outbound NAT
         self.cmd(
             "aks nodepool add "
             "--resource-group={resource_group} "
@@ -2807,7 +2806,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--name={windows_nodepool_name} "
             "--node-count=1 "
             "--os-type Windows "
-            "--os-sku Windows2019 "
             "--disable-windows-outbound-nat "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableWindowsOutboundNATPreview",
             checks=[
