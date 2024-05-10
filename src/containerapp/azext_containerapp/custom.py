@@ -2689,7 +2689,7 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     # Check if DotNet component already exists in environment
     existing_dotnet_component = _get_dotnet_component_if_exists(cmd, dotnet_component_name, environment_name, resource_group_name)
     if existing_dotnet_component:
-        raise ValidationError("DotNet Component '{}' already exists in environment '{}' in resource group '{}'. Please disable Aspire Dashboard by deleting the DotNet Component before creating a new one.".format(dotnet_component_name, environment_name, resource_group_name))
+        raise ValidationError("DotNet Component '{}' already exists in environment '{}' in resource group '{}'. Please delete the DotNet Component before creating a new one.".format(dotnet_component_name, environment_name, resource_group_name))
     raw_parameters = locals()
     dotnet_component_decorator = DotNetComponentDecorator(
         cmd=cmd,
@@ -2706,7 +2706,10 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     logger.warning("Creating DotNet Component '%s' in environment '%s' in resource group '%s.", dotnet_component_name, environment_name, resource_group_name)
     r = dotnet_component_decorator.create()
     if r is not None:
-        logger.warning("Successfully created DotNet Component '%s' in environment '%s' in resource group '%s'. Access your Aspire Dashboard at %s.", dotnet_component_name, environment_name, resource_group_name, aspire_dashboard_url)
+        logger.warning("Successfully created DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
+    component_type = safe_get(r, "properties", "componentType")
+    if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
+        logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
     return r
 
 def _get_dotnet_component_if_exists(cmd, dotnet_component_name, environment_name, resource_group_name):

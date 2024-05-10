@@ -14,6 +14,7 @@ from knack.log import get_logger
 from ._models import DotNetComponent as DotNetComponentModel
 
 from ._client_factory import handle_raw_exception
+from ._constants import DOTNET_COMPONENT_RESOURCE_TYPE
 
 logger = get_logger(__name__)
 
@@ -36,10 +37,10 @@ class DotNetComponentDecorator(BaseResource):
         self.set_param("dotnet_component_type", component_type)
 
     def construct_payload(self):
-        if self.get_argument_component_type() != "AspireDashboard":
+        if self.get_argument_component_type() == "":
             logger.warning("Supported DotNet component type is: AspireDashboard. Setting component type to AspireDashboard.")
-            self.set_argument_component_type("AspireDashboard")
-        self.dotnet_component_def["properties"]["componentType"] = self.get_argument_component_type()
+            self.set_argument_component_type(DOTNET_COMPONENT_RESOURCE_TYPE)
+        self.safe_set(self.dotnet_component_def, "properties","componentType", self.get_argument_component_type())
 
     def create(self):
         try:
