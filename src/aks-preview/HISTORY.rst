@@ -12,15 +12,22 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-3.0.0b14
+4.0.0b2
 ++++++++
 * Add `--vm-sizes` to `az aks create` and `az aks nodepool add`.
 * Add `az aks nodepool manual-scale add/update/delete` commands.
+
+4.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: Specifying `--enable-managed-identity` and `--service-principal`/`--client-secret` at the same time will cause a `MutuallyExclusiveArgumentError`
+* [BREAKING CHANGE]: `az aks create`: Change the default value of option `--enable-managed-identity` from `True` to `False`
+* `az aks create`: When options `--service-principal` and `--client-secret` are not specified at the same time, CLI will backfill the value of `--enable-managed-identity` to `True` to maintain the same behavior as before (that is, create an cluster with managed system assigned identity by default)
 
 3.0.0b13
 ++++++++
 * Set disable local accounts to true when creating an automatic cluster
 * Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
+
 3.0.0b12
 ++++++++
 * Create three default role assignments for automatic sku clusters.

@@ -1085,9 +1085,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        # fail on enable_managed_identity not specified
-        with self.assertRaises(RequiredArgumentMissingError):
-            self.assertEqual(ctx_1.get_enable_managed_identity(), False)
+        # managed identity is enabled if sp is not provided
+        self.assertEqual(ctx_1.get_enable_managed_identity(), True)
+        self.assertEqual(ctx_1.get_enable_managed_identity(), True)
 
         # custom value
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -1123,9 +1123,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             pod_identity_profile=pod_identity_profile,
         )
         ctx_1.attach_mc(mc)
-        # fail on enable_managed_identity not specified
-        with self.assertRaises(RequiredArgumentMissingError):
-            self.assertEqual(ctx_1.get_enable_pod_identity(), True)
+        self.assertEqual(ctx_1.get_enable_pod_identity(), True)
 
         # custom value
         ctx_2 = AKSPreviewManagedClusterContext(
