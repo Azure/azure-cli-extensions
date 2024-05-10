@@ -1405,7 +1405,15 @@ def _infer_existing_connected_env(
         custom_location: "CustomLocation",
 ):
     if not env.resource_type or (env.is_connected_environment() and (not env.name or not resource_group.name or not env.custom_location_id)):
-        connected_env_list = list_connected_environments(cmd=cmd, resource_group_name=resource_group.name)
+        connected_env_list = []
+        # If no resource group is provided, we need to search for the connected environments in all resource groups
+        if not resource_group.name and not resource_group.exists:
+            connected_env_list = list_connected_environments(cmd=cmd)
+
+        # If a resource group is provided, we need to search for the connected environments in that resource group
+        if resource_group.name and resource_group.exists:
+            connected_env_list = list_connected_environments(cmd=cmd, resource_group_name=resource_group.name)
+
         env_list = []
         for e in connected_env_list:
             if env.name and env.name != e["name"]:
