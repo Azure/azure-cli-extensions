@@ -16,8 +16,9 @@ class ContainerappDotNetComponentTests(ScenarioTest):
     def test_containerapp_dotnet_component(self, resource_group):
         env_name = self.create_random_name(prefix='aca-dotnet-env', length=24)
         dotnet_component_name = self.create_random_name(prefix='dotnet-aca', length=24)
+        location = "westus2"
 
-        env_create_cmd = f'containerapp env create -g {resource_group} -n {env_name} --location {STAGE_LOCATION} --logs-destination none --enable-workload-profiles'
+        env_create_cmd = f'containerapp env create -g {resource_group} -n {env_name} --location {location} --logs-destination none --enable-workload-profiles'
         self.cmd(env_create_cmd)
 
         # List DotNet Components

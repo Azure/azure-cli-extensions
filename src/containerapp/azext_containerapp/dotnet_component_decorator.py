@@ -40,7 +40,7 @@ class DotNetComponentDecorator(BaseResource):
         if self.get_argument_component_type() == "":
             logger.warning("Supported DotNet component type is: AspireDashboard. Setting component type to AspireDashboard.")
             self.set_argument_component_type(DOTNET_COMPONENT_RESOURCE_TYPE)
-        self.safe_set(self.dotnet_component_def, "properties","componentType", self.get_argument_component_type())
+        self.dotnet_component_def["properties"]["componentType"] = self.get_argument_component_type()
 
     def create(self):
         try:
