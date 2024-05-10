@@ -64,6 +64,10 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 raise ValidationError("Cannot use --certificate-file with --certificate-akv-url at the same time")
             if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
                 raise ValidationError("Either --certificate-file or --certificate-akv-url should be set when --dns-suffix is set")
+            
+        # validate mtls and p2p traffic encryption
+        if self.get_argument_p2p_encryption_enabled() is False and self.get_argument_mtls_enabled() is True:
+            raise ValidationError("Cannot use '--enable-mtls' with '--enable-peer-to-peer-encryption False'")
 
     def set_up_dynamic_json_columns(self):
         if self.get_argument_logs_destination() == "log-analytics" and self.get_argument_logs_dynamic_json_columns() is not None:
@@ -151,17 +155,12 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
     def set_up_peer_to_peer_encryption(self):
         is_p2p_encryption_enabled = self.get_argument_p2p_encryption_enabled()
         is_mtls_enabled = self.get_argument_mtls_enabled()
-        logger.info("mtls: p2p_encryption: %s, mtls: %s", is_p2p_encryption_enabled, is_mtls_enabled)
 
         if is_p2p_encryption_enabled is not None:
             safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=is_p2p_encryption_enabled)
-            if is_p2p_encryption_enabled is False:  # keep the two properties consistent.
-                safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=False)
 
         if is_mtls_enabled is not None:
             safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=is_mtls_enabled)
-            if is_mtls_enabled is True:  # keep the two properties consistent.
-                safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=True)
 
     def get_argument_enable_workload_profiles(self):
         return self.get_param("enable_workload_profiles")
@@ -195,6 +194,10 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         # validate custom domain configuration
         if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
             raise ValidationError("Cannot use certificate --certificate-file with --certificate-akv-url at the same time")
+        
+        # validate mtls and p2p traffic encryption
+        if self.get_argument_p2p_encryption_enabled() is False and self.get_argument_mtls_enabled() is True:
+            raise ValidationError("Cannot use '--enable-mtls' with '--enable-peer-to-peer-encryption False'")
 
     def construct_payload(self):
         super().construct_payload()
@@ -242,17 +245,12 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
     def set_up_peer_to_peer_encryption(self):
         is_p2p_encryption_enabled = self.get_argument_p2p_encryption_enabled()
         is_mtls_enabled = self.get_argument_mtls_enabled()
-        logger.info("mtls: p2p_encryption: %s, mtls: %s", is_p2p_encryption_enabled, is_mtls_enabled)
 
         if is_p2p_encryption_enabled is not None:
             safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=is_p2p_encryption_enabled)
-            if is_p2p_encryption_enabled is False:  # keep the two properties consistent.
-                safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=False)
 
         if is_mtls_enabled is not None:
             safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=is_mtls_enabled)
-            if is_mtls_enabled is True:  # keep the two properties consistent.
-                safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=True)
 
     def get_argument_logs_dynamic_json_columns(self):
         return self.get_param("logs_dynamic_json_columns")
