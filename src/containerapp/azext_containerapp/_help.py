@@ -1700,7 +1700,7 @@ helps['containerapp session code-interpreter execute'] = """
               --code 'print("'"Hello world"'")' --timeout-in-seconds 30
 """
 
-helps['containerapp session code-interpreter upload'] = """
+helps['containerapp session code-interpreter upload-file'] = """
     type: command
     short-summary: Upload a file to a code interpreter session .
     examples:
@@ -1724,7 +1724,7 @@ helps['containerapp session code-interpreter show-file-metadata'] = """
     short-summary: Shows the meta-data content a file uploaded to a code interpreter session.
     examples:
     - name: Show the meta-data details of a file uploaded to a session.
-       text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession\\
+      text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession\\
               --filename example.txt
 """
 

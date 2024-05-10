@@ -9,6 +9,7 @@ import time
 import sys
 import os
 import requests
+import uuid
 
 from azure.cli.core.azclierror import AzureResponseError, ResourceNotFoundError
 from azure.cli.core.util import send_raw_request
@@ -37,7 +38,7 @@ POLLING_INTERVAL_FOR_MANAGED_CERTIFICATE = 4  # how many seconds between request
 HEADER_AZURE_ASYNC_OPERATION = "azure-asyncoperation"
 HEADER_LOCATION = "location"
 SESSION_RESOURCE = "https://dynamicsessions.io"
-
+SESSION_CREATOR_ROLE_ID = "0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0"
 
 class GitHubActionPreviewClient(GitHubActionClient):
     api_version = PREVIEW_API_VERSION
@@ -1010,6 +1011,34 @@ class SessionPoolPreviewClient():
             cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(session_pool_envelope))
+
+        # try to add user as session pool creator role to the session pool
+        try:
+            # get princpalId of the user
+            principal_id_url = "https://graph.microsoft.com/v1.0/me"
+            principal_id = send_raw_request(cmd.cli_ctx,"GET",principal_id_url).json()['id']
+            scope = "subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/sessionPools/{}".format(sub_id, resource_group_name, name)
+            role_assignment_fmt = "{}/{}/providers/Microsoft.Authorization/roleAssignments/{}?api-version=2022-04-01"
+            role_assignment_url = role_assignment_fmt.format(
+                management_hostname.strip('/'),
+                scope,
+                sub_id,
+                resource_group_name,
+                name,
+                uuid.uuid4()
+            )
+            role_definition_id = "/{}/providers/Microsoft.Authorization/roleDefinitions/{}".format(
+                scope,
+                SESSION_CREATOR_ROLE_ID)
+            assign_role_r = send_raw_request(cmd.cli_ctx,"PUT", role_assignment_url, body=json.dumps({
+                "properties": {
+                    "roleDefinitionId": role_definition_id,
+                    "principalId": principal_id
+                }
+            }))
+        except Exception as e:
+            logger.warning("Could not add user as session pool creator role to the session pool, please follow the docs here to add this role through portal")
+            logger.warning(e)
 
         if no_wait:
             return r.json()

@@ -26,7 +26,6 @@ from azure.cli.command_modules.containerapp._client_factory import handle_non_40
 
 from ._models import SessionCodeInterpreterPythonExecution as SessionPoolModel
 from ._client_factory import handle_raw_exception
-from ._utils import AppType, convert_egress_parameter
 
 logger = get_logger(__name__)
 

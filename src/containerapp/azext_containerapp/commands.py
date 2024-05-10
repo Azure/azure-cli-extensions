@@ -214,7 +214,7 @@ def load_command_table(self, args):
 
     with self.command_group('containerapp session code-interpreter', is_preview=True) as g:
         g.custom_command('execute', 'execute_session_code_interpreter', supports_no_wait=True)
-        g.custom_command('upload', 'upload_session_code_interpreter', supports_no_wait=True)
+        g.custom_command('upload-file', 'upload_session_code_interpreter', supports_no_wait=True)
         g.custom_show_command('show-file-content', 'show_file_content_session_code_interpreter')
         g.custom_show_command('show-file-metadata', 'show_file_metadata_session_code_interpreter')
         g.custom_show_command('list-files', 'list_files_session_code_interpreter')
