@@ -197,12 +197,13 @@ def job_start(cmd, client, resource_group, service, name,
         resource_requests=_update_resource_requests(None, cpu, memory))
 
     if wait_until_finished is False:
-        """TODO(jiec): There seems to be SDK issue when directly return client.job.begin_start
-        """
-        poller = client.job.begin_start(resource_group, service, name, job_execution_template)
-        execution_name = poller.result().name
-        wait_till_end(poller)
-        return client.job_execution.get(resource_group, service, name, execution_name)
+        return client.job.begin_start(resource_group, service, name, job_execution_template)
+        # """TODO(jiec): There seems to be SDK issue when directly return client.job.begin_start
+        # """
+        # poller = client.job.begin_start(resource_group, service, name, job_execution_template)
+        # execution_name = poller.result().name
+        # wait_till_end(poller)
+        # return client.job_execution.get(resource_group, service, name, execution_name)
     else:
         poller = sdk_no_wait(False, client.job.begin_start,
                              resource_group, service, name, job_execution_template)
