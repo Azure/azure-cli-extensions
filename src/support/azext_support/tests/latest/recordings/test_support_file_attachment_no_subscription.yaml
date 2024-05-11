@@ -1,0 +1,332 @@
+interactions:
+- request:
+    body: '{"name": "no_sub_000001", "type": "Microsoft.Support/fileWorkspaces"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription file-workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --file-workspace-name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
+  response:
+    body:
+      string: '{"nameAvailable":true}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: D6B57A8EC58A487E882A838F1DA4A70C Ref B: CO6AA3150219039 Ref C: 2024-05-10T19:05:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription file-workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --file-workspace-name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Support/fileWorkspaces/no_sub_000001?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/fileWorkspaces/no_sub_000001","name":"no_sub_000001","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-05-11T19:05:07Z","createdOn":"2024-05-10T19:05:07Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '221'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:08 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Support/fileWorkspaces/no_sub_000001?api-version=2024-04-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 964C4FA0F97B452CAC83359CDE6D9886 Ref B: CO6AA3150219047 Ref C: 2024-05-10T19:05:06Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription file-workspace show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --file-workspace-name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/fileWorkspaces/no_sub_000001?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/fileWorkspaces/no_sub_000001","name":"no_sub_000001","type":"Microsoft.Support/fileWorkspaces","properties":{"expirationTime":"2024-05-11T19:05:07Z","createdOn":"2024-05-10T19:05:07Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '221'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: C57B812CE78641E9A4B9A6F40663A277 Ref B: CO6AA3150220051 Ref C: 2024-05-10T19:05:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"chunkSize": 171, "fileSize": 171, "numberOfChunks": 1}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription file upload
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '72'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --file-workspace-name --file-path
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Support/fileWorkspaces/no_sub_000001/files/testFile.txt?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/fileWorkspaces/no_sub_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-05-10T19:05:14Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '240'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:14 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Support/fileWorkspaces/no_sub_000001/files/testFile.txt?api-version=2024-04-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: E672E65355ED4309B016723C90941B50 Ref B: CO6AA3150219037 Ref C: 2024-05-10T19:05:11Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"chunkIndex": 0, "content": "VGhpcyBpcyBhIHRlc3QgZmlsZSB0aGF0IHdpbGwgYmUgdXNlZCB0byB1cGxvYWQgZm9yIHRoZSBGaWxlIFVwbG9hZCBUZXN0IHdpdGggdGVzdF9zdXBwb3J0X3NjZW5hcmlvLiBQbGVhc2UgZG8gbm90IHRvdWNoIHRoaXMgZmlsZSBvciBjaGFuZ2UgYW55dGhpbmcgYWJvdXQgaXQsIHRoYW5rcyA6KSEg"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription file upload
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '260'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --file-workspace-name --file-path
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Support/fileWorkspaces/no_sub_000001/files/testFile.txt/upload?api-version=2024-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Fri, 10 May 2024 19:05:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: E1C8D4166AD94EB5998F04D007E7CE2E Ref B: CO6AA3150219051 Ref C: 2024-05-10T19:05:15Z'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription file list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --file-workspace-name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/fileWorkspaces/no_sub_000001/files?api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Support/fileWorkspaces/no_sub_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-05-10T19:05:14Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '252'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 08BA390FAD3449D9B280308072D1D48C Ref B: CO6AA3150218035 Ref C: 2024-05-10T19:05:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription file show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --file-workspace-name --file-name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/fileWorkspaces/no_sub_000001/files/testFile.txt?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/fileWorkspaces/no_sub_000001/files/testFile.txt","name":"testFile.txt","type":"Microsoft.Support/files","properties":{"createdOn":"2024-05-10T19:05:14Z","fileSize":171,"chunkSize":171,"numberOfChunks":1}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '240'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 126DCE53A9ED49BCB02E36EE66A96257 Ref B: CO6AA3150217023 Ref C: 2024-05-10T19:05:27Z'
+    status:
+      code: 200
+      message: OK
+version: 1
