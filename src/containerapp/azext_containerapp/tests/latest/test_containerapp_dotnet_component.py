@@ -26,11 +26,7 @@ class ContainerappDotNetComponentTests(ScenarioTest):
         self.assertTrue(len(dotnet_component_list) == 0)
 
         # Create DotNet Component
-        self.cmd('containerapp env dotnet-component create -g {} -n {} --environment {}'.format(resource_group, dotnet_component_name, env_name), checks=[
-            JMESPathCheck('name', dotnet_component_name),
-            JMESPathCheck('properties.componentType', "AspireDashboard"),
-            JMESPathCheck('properties.provisioningState', "Succeeded")
-        ])
+        self.cmd('containerapp env dotnet-component create -g {} -n {} --environment {}'.format(resource_group, dotnet_component_name, env_name))
 
         # Show DotNet Component
         self.cmd('containerapp env dotnet-component show -g {} -n {} --environment {}'.format(resource_group, dotnet_component_name, env_name), checks=[

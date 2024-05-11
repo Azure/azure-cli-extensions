@@ -2664,6 +2664,11 @@ def show_dotnet_component(cmd, dotnet_component_name, environment_name, resource
     result = dotnet_component_decorator.show()
     if result is not None:
         logger.warning("Found DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
+
+    aspire_dashboard_url = _get_aspire_dashboard_url(cmd, environment_name, resource_group_name, dotnet_component_name)
+    component_type = safe_get(result, "properties", "componentType")
+    if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
+        logger.warning("Aspire Dashboard URL: %s.", aspire_dashboard_url)
     return result
 
 
@@ -2698,11 +2703,7 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
         models=CONTAINER_APPS_SDK_MODELS
     )
     dotnet_component_decorator.construct_payload()
-    managed_environment = show_managed_environment(cmd, environment_name, resource_group_name)
-    default_domain = safe_get(managed_environment, "properties", "defaultDomain")
-    if not default_domain:
-        raise ValidationError("The containerapp environment '{}' does not have a default domain.".format(environment_name))
-    aspire_dashboard_url = f"https://{dotnet_component_name}.ext.{default_domain}"
+    aspire_dashboard_url = _get_aspire_dashboard_url(cmd, environment_name, resource_group_name, dotnet_component_name)
     logger.warning("Creating DotNet Component '%s' in environment '%s' in resource group '%s.", dotnet_component_name, environment_name, resource_group_name)
     r = dotnet_component_decorator.create()
     if r is not None:
@@ -2710,10 +2711,17 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     component_type = safe_get(r, "properties", "componentType")
     if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
         logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
-    return r
+    return
 
 def _get_dotnet_component_if_exists(cmd, dotnet_component_name, environment_name, resource_group_name):
     try:
         return show_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name)
     except Exception as e:
         return None
+
+def _get_aspire_dashboard_url(cmd, environment_name, resource_group_name, dotnet_component_name):
+    managed_environment = show_managed_environment(cmd, environment_name, resource_group_name)
+    default_domain = safe_get(managed_environment, "properties", "defaultDomain")
+    if not default_domain:
+        raise ValidationError("The containerapp environment '{}' does not have a default domain.".format(environment_name))
+    return f"https://{dotnet_component_name}.ext.{default_domain}"
