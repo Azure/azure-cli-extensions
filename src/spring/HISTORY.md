@@ -1,5 +1,9 @@
 Release History
 ===============
+1.24.1
+---
+* Fix commands `az spring config-server enable` and `az spring config-server disable`.
+
 1.24.0
 ---
 * Add Job support
