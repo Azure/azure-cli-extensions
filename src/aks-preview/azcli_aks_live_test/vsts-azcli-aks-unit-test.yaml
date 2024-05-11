@@ -1,4 +1,4 @@
-name: $(Date:yyyyMMdd)$(Rev:.r)_Python$(PYTHON_VERSION)_Coverage-$(COVERAGE)_Mode-$(TEST_MODE)
+name: $(Date:yyyyMMdd)$(Rev:.r).$(COVERAGE).$(TEST_MODE)
 
 trigger: none
 
@@ -14,7 +14,7 @@ pr:
     - src/aks-preview/
 
 variables:
-  - group: azcli-aks-tool
+  - group: "AZCLI AKS Live Test"
   - name: ContainerName
     value: "azcli-aks-unit-test"
   - name: REPO_NAME

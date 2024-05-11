@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
 # check var
-# specify the version of python3, e.g. 3.6
+# specify the version of python3, this environment variable should be set in the image
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
+# trim the version to major.minor
+if [[ $(echo $PYTHON_VERSION | grep "\." -o | wc -l) == 2 ]]; then
+  PYTHON_VERSION=${PYTHON_VERSION%.*}
+fi
 [[ -z "${ACS_BASE_DIR}" ]] && (echo "ACS_BASE_DIR is empty"; exit 1)
 
 setupVenv(){
