@@ -11,6 +11,7 @@ upcoming
 * 'az containerapp create/update': Support enable or disable Java metrics with --runtime and --enable-java-metrics
 * 'az containerapp env dotnet-component': Support create/show/list/delete for dotnet components
 * 'az containerapp update': Fix --scale-rule-tcp-concurrency for TCP scale rule
+* 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
 
 0.3.50
 ++++++
