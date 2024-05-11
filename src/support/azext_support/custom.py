@@ -157,26 +157,20 @@ class TicketCreateNoSubscription(_CreateTicketNoSubscription):
 
 class TicketList(_List):
 
-    class SupportTicketsList(_List.SupportTicketsList):
+    def pre_operations(self):
 
-        def pre_operations(self):
-
-            args = self.ctx.args
-            if not has_value(args.filter) and not has_value(args.pagination_limit):
-                args.filter = "CreatedDate ge " + str(date.today() - timedelta(days=7))
+        args = self.ctx.args
+        if not has_value(args.filter) and not has_value(args.pagination_limit):
+            args.filter = "CreatedDate ge " + str(date.today() - timedelta(days=7))
 
 
 class TicketListNoSubscription(_ListNoSubscription):
 
-    class SupportTicketsNoSubscriptionList(
-        _ListNoSubscription.SupportTicketsNoSubscriptionList
-    ):
+    def pre_operations(self):
 
-        def pre_operations(self):
-
-            args = self.ctx.args
-            if not has_value(args.filter) and not has_value(args.pagination_limit):
-                args.filter = "CreatedDate ge " + str(date.today() - timedelta(days=7))
+        args = self.ctx.args
+        if not has_value(args.filter) and not has_value(args.pagination_limit):
+            args.filter = "CreatedDate ge " + str(date.today() - timedelta(days=7))
 
 
 class CommunicationCreate(_CreateCommunication):
