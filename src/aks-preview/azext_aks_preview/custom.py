@@ -1018,7 +1018,7 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
                 if len(agent_profile.virtual_machines_profile.scale.manual) == 1:
                     agent_profile.virtual_machines_profile.scale.manual[0].count = int(node_count)
                 else:
-                    raise CLIError("Cannot scale virtual machines node pool with more than one size.")
+                    raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
             else:
                 agent_profile.count = int(node_count)
             # null out the SP profile because otherwise validation complains
@@ -1411,7 +1411,7 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
         if len(instance.virtual_machines_profile.scale.manual) == 1:
             instance.virtual_machines_profile.scale.manual[0].count = new_node_count
         else:
-            raise CLIError("Cannot scale virtual machines node pool with more than one size.")
+            raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
     else:
         instance.count = new_node_count  # pylint: disable=no-member
     return sdk_no_wait(
@@ -1741,7 +1741,7 @@ def aks_agentpool_manual_scale_add(cmd,
                                    no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
-        raise CLIError("Cannot add manual to a non-virtualmachines node pool.")
+        raise ClientRequestError("Cannot add manual to a non-virtualmachines node pool.")
     ManualScaleProfile = cmd.get_models(
         "ManualScaleProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -1774,7 +1774,7 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
-        raise CLIError("Cannot update manual in a non-virtualmachines node pool.")
+        raise ClientRequestError("Cannot update manual in a non-virtualmachines node pool.")
     manual_exists = False
     for m in instance.virtual_machines_profile.scale.manual:
         if m.sizes == current_vm_sizes.split(","):
