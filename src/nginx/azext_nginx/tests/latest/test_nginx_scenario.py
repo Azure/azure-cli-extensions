@@ -6,16 +6,15 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import json
-import time
 
 class NginxScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='AZCLIDeploymentTestRG_', random_name_length=34, location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='AZCLIDepTestRG_', random_name_length=34, location='eastus2')
     def test_nginx(self, resource_group):
         self.kwargs.update({
             'deployment_name': 'azclitest-deployment',
-            'location': 'eastus2euap',
+            'location': 'eastus2',
             'rg': resource_group,
             'sku': 'preview_Monthly_gmz7xq9ge3py',
             'public_ip_name': 'azclitest-public-ip',
