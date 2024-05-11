@@ -1022,9 +1022,6 @@ class SessionPoolPreviewClient():
             role_assignment_url = role_assignment_fmt.format(
                 management_hostname.strip('/'),
                 scope,
-                sub_id,
-                resource_group_name,
-                name,
                 uuid.uuid4()
             )
             role_definition_id = "/{}/providers/Microsoft.Authorization/roleDefinitions/{}".format(
