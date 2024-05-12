@@ -28,9 +28,19 @@ from .aaz.latest.devcenter.admin.catalog import (
     Sync as _CatalogSync,
     Update as _CatalogUpdate,
     Wait as _CatalogWait,
+    Connect as _CatalogConnect,
+    GetSyncErrorDetail as _CatalogGetSyncErrorDetail,
+)
+from .aaz.latest.devcenter.admin.catalog_task import (
+    GetErrorDetail as _CatalogTaskGetErrorDetail,
+    List as _CatalogTaskList,
+    Show as _CatalogTaskShow,
 )
 from .aaz.latest.devcenter.admin.check_name_availability import (
     Execute as _CheckNameAvailabilityExecute,
+)
+from .aaz.latest.devcenter.admin.check_scoped_name_availability import (
+    Execute as _CheckScopedNameAvailabilityExecute,
 )
 from .aaz.latest.devcenter.admin.devbox_definition import (
     Create as _DevBoxDefinitionCreate,
@@ -39,6 +49,11 @@ from .aaz.latest.devcenter.admin.devbox_definition import (
     Show as _DevBoxDefinitionShow,
     Update as _DevBoxDefinitionUpdate,
     Wait as _DevBoxDefinitionWait,
+)
+from .aaz.latest.devcenter.admin.environment_definition import (
+    List as _EnvironmentDefinitionList,
+    Show as _EnvironmentDefinitionShow,
+    GetErrorDetail as _EnvironmentDefinitionGetErrorDetail,
 )
 from .aaz.latest.devcenter.admin.environment_type import (
     Create as _EnvironmentTypeCreate,
@@ -65,6 +80,7 @@ from .aaz.latest.devcenter.admin.image_version import (
 from .aaz.latest.devcenter.admin.network_connection import (
     Create as _NetworkConnectionCreate,
 )
+from .aaz.latest.devcenter.admin.plan_member import Create as _PlanMemberCreate
 from .aaz.latest.devcenter.admin.pool import (
     Create as _PoolCreate,
     Delete as _PoolDelete,
@@ -78,6 +94,22 @@ from .aaz.latest.devcenter.admin.project import Create as _ProjectCreate
 from .aaz.latest.devcenter.admin.project_allowed_environment_type import (
     List as _ProjectAllowedEnvironmentTypeList,
     Show as _ProjectAllowedEnvironmentTypeShow,
+)
+from .aaz.latest.devcenter.admin.project_catalog import (
+    Create as _ProjectCatalogCreate,
+    Delete as _ProjectCatalogDelete,
+    List as _ProjectCatalogList,
+    Show as _ProjectCatalogShow,
+    Sync as _ProjectCatalogSync,
+    Update as _ProjectCatalogUpdate,
+    Wait as _ProjectCatalogWait,
+    Connect as _ProjectCatalogConnect,
+    GetSyncErrorDetail as _ProjectCatalogGetSyncErrorDetail,
+)
+from .aaz.latest.devcenter.admin.project_environment_definition import (
+    List as _ProjectEnvironmentDefinitionList,
+    Show as _ProjectEnvironmentDefinitionShow,
+    GetErrorDetail as _ProjectEnvironmentDefinitionGetErrorDetail,
 )
 from .aaz.latest.devcenter.admin.project_environment_type import (
     Create as _ProjectEnvironmentTypeCreate,
@@ -168,6 +200,14 @@ class CheckNameAvailabilityExecute(_CheckNameAvailabilityExecute):
         args_schema.type._required = True
         return args_schema
 
+class CheckScopedNameAvailabilityExecute(_CheckScopedNameAvailabilityExecute):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.type._required = True
+        args_schema.scope._required = True
+        return args_schema
 
 class CatalogCreate(_CatalogCreate):
     def _cli_arguments_loader(self):
@@ -214,6 +254,30 @@ class CatalogWait(_CatalogWait):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+class CatalogConnect(_CatalogConnect):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class CatalogGetSyncErrorDetail(_CatalogGetSyncErrorDetail):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class CatalogTaskGetErrorDetail(_CatalogTaskGetErrorDetail):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class CatalogTaskList(_CatalogTaskList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class CatalogTaskShow(_CatalogTaskShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 class DevBoxDefinitionCreate(_DevBoxDefinitionCreate):
     @classmethod
@@ -266,6 +330,21 @@ class DevBoxDefinitionUpdate(_DevBoxDefinitionUpdate):
 
 
 class DevBoxDefinitionWait(_DevBoxDefinitionWait):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class EnvironmentDefinitionGetErrorDetail(_EnvironmentDefinitionGetErrorDetail):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class EnvironmentDefinitionList(_EnvironmentDefinitionList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class EnvironmentDefinitionShow(_EnvironmentDefinitionShow):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -369,6 +448,13 @@ class NetworkConnectionCreate(_NetworkConnectionCreate):
         args_schema.domain_join_type._required = True
         return args_schema
 
+class PlanMemberCreate(_PlanMemberCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.member_id._required = True
+        args_schema.member_type._required = True
+        return args_schema
 
 class PoolCreate(_PoolCreate):
     @classmethod
@@ -453,6 +539,75 @@ class ProjectAllowedEnvironmentTypeShow(_ProjectAllowedEnvironmentTypeShow):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+class ProjectCatalogCreate(_ProjectCatalogCreate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+    @register_callback
+    def pre_operations(self):
+        validate_repo_git(self.ctx.args.ado_git, self.ctx.args.git_hub)
+
+
+class ProjectCatalogDelete(_ProjectCatalogDelete):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectCatalogList(_ProjectCatalogList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectCatalogShow(_ProjectCatalogShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectCatalogSync(_ProjectCatalogSync):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectCatalogUpdate(_ProjectCatalogUpdate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectCatalogWait(_ProjectCatalogWait):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class ProjectCatalogConnect(_ProjectCatalogConnect):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class ProjectCatalogGetSyncErrorDetail(_ProjectCatalogGetSyncErrorDetail):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class ProjectEnvironmentDefinitionGetErrorDetail(_ProjectEnvironmentDefinitionGetErrorDetail):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class ProjectEnvironmentDefinitionList(_ProjectEnvironmentDefinitionList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+class ProjectEnvironmentDefinitionShow(_ProjectEnvironmentDefinitionShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 class ProjectEnvironmentTypeCreate(_ProjectEnvironmentTypeCreate):
     @classmethod

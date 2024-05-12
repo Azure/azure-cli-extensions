@@ -19,6 +19,8 @@ from .custom import (
     AttachedNetworkShow,
     AttachedNetworkWait,
     CheckNameAvailabilityExecute,
+    CheckScopedNameAvailabilityExecute,
+    CatalogConnect,
     CatalogCreate,
     CatalogDelete,
     CatalogList,
@@ -26,12 +28,19 @@ from .custom import (
     CatalogSync,
     CatalogUpdate,
     CatalogWait,
+    CatalogGetSyncErrorDetail,
+    CatalogTaskGetErrorDetail,
+    CatalogTaskList,
+    CatalogTaskShow,
     DevBoxDefinitionCreate,
     DevBoxDefinitionDelete,
     DevBoxDefinitionList,
     DevBoxDefinitionShow,
     DevBoxDefinitionUpdate,
     DevBoxDefinitionWait,
+    EnvironmentDefinitionGetErrorDetail,
+    EnvironmentDefinitionList,
+    EnvironmentDefinitionShow,
     EnvironmentTypeCreate,
     EnvironmentTypeDelete,
     EnvironmentTypeList,
@@ -47,6 +56,7 @@ from .custom import (
     ImageVersionList,
     ImageVersionShow,
     NetworkConnectionCreate,
+    PlanMemberCreate,
     PoolCreate,
     PoolDelete,
     PoolList,
@@ -56,6 +66,18 @@ from .custom import (
     ProjectCreate,
     ProjectAllowedEnvironmentTypeList,
     ProjectAllowedEnvironmentTypeShow,
+    ProjectCatalogConnect,
+    ProjectCatalogCreate,
+    ProjectCatalogDelete,
+    ProjectCatalogList,
+    ProjectCatalogShow,
+    ProjectCatalogSync,
+    ProjectCatalogUpdate,
+    ProjectCatalogWait,
+    ProjectCatalogGetSyncErrorDetail,
+    ProjectEnvironmentDefinitionGetErrorDetail,
+    ProjectEnvironmentDefinitionList,
+    ProjectEnvironmentDefinitionShow,
     ProjectEnvironmentTypeCreate,
     ProjectEnvironmentTypeDelete,
     ProjectEnvironmentTypeList,
@@ -91,6 +113,10 @@ def load_command_table(self, _):
         "devcenter admin check-name-availability execute"
     ] = CheckNameAvailabilityExecute(loader=self)
 
+    self.command_table[
+        "devcenter admin check-scoped-name-availability execute"
+    ] = CheckScopedNameAvailabilityExecute(loader=self)
+
     self.command_table["devcenter admin catalog create"] = CatalogCreate(loader=self)
     self.command_table["devcenter admin catalog delete"] = CatalogDelete(loader=self)
     self.command_table["devcenter admin catalog list"] = CatalogList(loader=self)
@@ -98,6 +124,16 @@ def load_command_table(self, _):
     self.command_table["devcenter admin catalog sync"] = CatalogSync(loader=self)
     self.command_table["devcenter admin catalog update"] = CatalogUpdate(loader=self)
     self.command_table["devcenter admin catalog wait"] = CatalogWait(loader=self)
+    self.command_table["devcenter admin catalog connect"] = CatalogConnect(loader=self)
+    self.command_table["devcenter admin catalog get-sync-error-detail"] = CatalogGetSyncErrorDetail(loader=self)
+
+    self.command_table["devcenter admin catalog-task get-error-detail"] = CatalogTaskGetErrorDetail(loader=self)
+    self.command_table["devcenter admin catalog-task list"] = CatalogTaskList(loader=self)
+    self.command_table["devcenter admin catalog-task show"] = CatalogTaskShow(loader=self)
+
+    self.command_table["devcenter admin environment-definition get-error-detail"] = EnvironmentDefinitionGetErrorDetail(loader=self)
+    self.command_table["devcenter admin environment-definition list"] = EnvironmentDefinitionList(loader=self)
+    self.command_table["devcenter admin environment-definition show"] = EnvironmentDefinitionShow(loader=self)
 
     self.command_table[
         "devcenter admin devbox-definition create"
@@ -154,6 +190,8 @@ def load_command_table(self, _):
         "devcenter admin network-connection create"
     ] = NetworkConnectionCreate(loader=self)
 
+    self.command_table["devcenter admin plan-member create"] = PlanMemberCreate(loader=self)
+
     self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
     self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
     self.command_table["devcenter admin pool list"] = PoolList(loader=self)
@@ -169,6 +207,20 @@ def load_command_table(self, _):
     self.command_table[
         "devcenter admin project-allowed-environment-type show"
     ] = ProjectAllowedEnvironmentTypeShow(loader=self)
+
+    self.command_table["devcenter admin project-catalog create"] = ProjectCatalogCreate(loader=self)
+    self.command_table["devcenter admin project-catalog delete"] = ProjectCatalogDelete(loader=self)
+    self.command_table["devcenter admin project-catalog list"] = ProjectCatalogList(loader=self)
+    self.command_table["devcenter admin project-catalog show"] = ProjectCatalogShow(loader=self)
+    self.command_table["devcenter admin project-catalog sync"] = ProjectCatalogSync(loader=self)
+    self.command_table["devcenter admin project-catalog update"] = ProjectCatalogUpdate(loader=self)
+    self.command_table["devcenter admin project-catalog wait"] = ProjectCatalogWait(loader=self)
+    self.command_table["devcenter admin project-catalog connect"] = ProjectCatalogConnect(loader=self)
+    self.command_table["devcenter admin project-catalog get-sync-error-detail"] = ProjectCatalogGetSyncErrorDetail(loader=self)
+
+    self.command_table["devcenter admin project-environment-definition get-error-detail"] = ProjectEnvironmentDefinitionGetErrorDetail(loader=self)
+    self.command_table["devcenter admin project-environment-definition list"] = ProjectEnvironmentDefinitionList(loader=self)
+    self.command_table["devcenter admin project-environment-definition show"] = ProjectEnvironmentDefinitionShow(loader=self)
 
     self.command_table[
         "devcenter admin project-environment-type create"
