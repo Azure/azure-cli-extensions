@@ -399,6 +399,9 @@ def load_arguments(self, _):
         c.argument(
             'https_proxy', help="HTTPS proxy server url for the VM.",
         )
+        c.argument(
+            'private_link_scope', help="The resource id of the private link scope this machine is assigned to.",
+        )
 
     with self.argument_context('connectedvmware vm guest-agent show') as c:
         c.argument(

@@ -726,3 +726,9 @@ def parse_build_env_vars(env_list):
         })
 
     return env_var_def
+
+
+def is_cloud_supported_by_connected_env(cli_ctx):
+    if cli_ctx.cloud.name == 'AzureCloud':
+        return True
+    return False

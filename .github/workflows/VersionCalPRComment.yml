@@ -10,15 +10,20 @@ on:
         - '**.py'
         - '!**/test_*.py'
 
-permissions:
-  pull-requests: write
+permissions: {}
 
 jobs:
   version-cal:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-cal-version') }}
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-cal-version') && (!contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) || github.event.label.name != 'release-version-block') }}
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
     steps:
       - name: Set Init Version Message
+        env:
+           action: ${{ toJSON(github.event.action) }}
+           label: ${{ toJSON(github.event.label) }}
         run: |
           echo "message=$(echo 'Suggested init version: 1.0.0b1 for preview release and 1.0.0 for stable release')" >> $GITHUB_ENV
       - name: Set up Python 3.10
@@ -40,6 +45,7 @@ jobs:
           bash_sha: ${{ github.event.pull_request.base.sha }}
           base_branch: ${{ github.event.pull_request.base.ref }}
           base_branch_pre: "upstream"
+          diff_code_file: "diff_codes.txt"
           diff_sha: ${{ github.event.pull_request.head.sha }}
           diff_branch: ${{ github.event.pull_request.head.ref }}
           repo_full_name: ${{ github.event.pull_request.head.repo.full_name }}
@@ -48,22 +54,23 @@ jobs:
             git --version
             git log --oneline | head -n 30
             git branch -a
-            git fetch https://github.com/Azure/azure-cli-extensions.git ${{ env.base_branch }}:${{ env.base_branch_pre }}/${{ env.base_branch }}
-            git checkout ${{ env.base_branch_pre }}/${{ env.base_branch }}
+            git fetch https://github.com/Azure/azure-cli-extensions.git "$base_branch":"$base_branch_pre"/"$base_branch"
+            git checkout "$base_branch_pre"/"$base_branch"
             git log --oneline | head -n 30
-            git checkout ${{ env.diff_branch }}
+            git checkout "$diff_branch"
             git log --oneline | head -n 30
-            git --no-pager diff --name-only --diff-filter=ACMRT ${{ env.base_branch_pre }}/${{ env.base_branch }}...${{ env.diff_branch }} > changed_files
+            git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > changed_files
             cat changed_files
             cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq > changed_modules
             echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
+            git --no-pager diff --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > "$diff_code_file"
       - name: Display Diff Modules
         run: |
-            for mod in ${{ env.changed_module_list }}
+            for mod in "$changed_module_list"
             do
               echo changed module: "${mod}"
             done
-      - name: Checkout CLI main repo 
+      - name: Checkout CLI main repo
         uses: actions/checkout@master
         with:
            repository: Azure/azure-cli
@@ -97,6 +104,7 @@ jobs:
           pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
           base_branch: ${{ github.event.pull_request.base.ref }}
           base_branch_pre: "upstream"
+          diff_code_file: "diff_codes.txt"
           diff_branch: ${{ github.event.pull_request.head.ref }}
           base_meta_path: "./base_meta/"
           diff_meta_path: "./diff_meta/"
@@ -105,25 +113,25 @@ jobs:
            chmod +x env/bin/activate
            source ./env/bin/activate
            set -ev
-           git checkout ${{ env.base_branch_pre }}/${{ env.base_branch }}
-           mkdir ${{ env.base_meta_path }}
-           for mod in ${{ env.changed_module_list }}
+           git checkout "$base_branch_pre"/"$base_branch"
+           mkdir "$base_meta_path"
+           for mod in "$changed_module_list"
            do
               echo changed module: "${mod}"
-              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./${{ env.base_meta_path }}/ && azdev extension remove "${mod}"
+              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$base_meta_path"/ && azdev extension remove "${mod}"
            done
-           git checkout ${{ env.diff_branch }}
-           mkdir ${{ env.diff_meta_path }}
-           for mod in ${{ env.changed_module_list }}
+           git checkout "$diff_branch"
+           mkdir "$diff_meta_path"
+           for mod in "$changed_module_list"
            do
               echo changed module: "${mod}"
-              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./${{ env.diff_meta_path }}/ && azdev extension remove "${mod}"
+              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$diff_meta_path"/ && azdev extension remove "${mod}"
            done
-           ls ./${{ env.base_meta_path }}/
-           ls ./${{ env.diff_meta_path }}/
-           git checkout ${{ env.base_branch_pre }}/${{ env.base_branch }}
+           ls ./"$base_meta_path"/
+           ls ./"$diff_meta_path"/
+           git checkout "$base_branch_pre"/"$base_branch"
            python scripts/ci/release_version_cal.py
-           # echo "commit_message=$(cat ${{ env.output_file }})" >> $GITHUB_ENV
+           # echo "commit_message=$(cat $output_file)" >> $GITHUB_ENV
       - name: Comment on the pull request
         uses: mshick/add-pr-comment@v2
         with:
@@ -133,3 +141,14 @@ jobs:
             version_update.txt
            message-failure: |
             Please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md) to update release versions.
+      - name: Add block release label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: ${{ steps.get_comment_message.outputs.BlockPR == 1 }}
+        with:
+          labels: release-version-block
+      - name: Remove block release label
+        uses: mondeja/remove-labels-gh-action@v2
+        if: ${{ steps.get_comment_message.outputs.BlockPR == 0 }}
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: release-version-block
