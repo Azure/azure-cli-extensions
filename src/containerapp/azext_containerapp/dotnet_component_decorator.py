@@ -87,7 +87,7 @@ class DotNetComponentDecorator(BaseResource):
             return None
 
     def validate_arguments(self, dotnet_component_name, environment_name, resource_group_name, validation_error):
-          # Check if DotNet component already exists in environment
+        # Check if DotNet component already exists in environment
         existing_dotnet_component = self._get_dotnet_component_if_exists(dotnet_component_name, environment_name, resource_group_name)
         if existing_dotnet_component:
             raise ValidationError(validation_error)
