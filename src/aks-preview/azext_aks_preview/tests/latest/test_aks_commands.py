@@ -1338,7 +1338,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        create_cmd = "aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}"
+        create_cmd = "
+        
+        
+        
+        
+         --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}"
         self.cmd(
             create_cmd,
             checks=[
@@ -4247,7 +4252,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "nodepool2_name": "npwin",
                 "ssh_key_value": self.generate_ssh_keys(),
                 "if_match": "*",
-                "if_none_match": "mno"
+                "if_none_match": "*"
             }
         )
 
@@ -4288,6 +4293,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait --if-match={if_match}",
             checks=[self.is_empty()],
+        )
+
+        self.kwargs.update(
+            {
+                "if_match": "abc",
+            }
         )
 
         # delete
