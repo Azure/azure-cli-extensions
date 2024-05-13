@@ -349,4 +349,4 @@ def load_arguments(self, _):
         c.argument('dotnet_component_name', options_list=['--name', '-n'], help="The DotNet component name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('dotnet_component_type', options_list = ['--type'], arg_type=get_enum_type(['AspireDashboard']), help="The type of DotNet component. Supported type is 'AspireDashboard'.")
+        c.argument('dotnet_component_type', options_list = ['--type'], arg_type=get_enum_type(['AspireDashboard']), help="The type of DotNet component.")

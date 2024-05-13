@@ -11,11 +11,12 @@ from azure.cli.core.azclierror import CLIInternalError, ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from ._client_factory import handle_non_404_status_code_exception
 from knack.log import get_logger
+from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 
 from ._models import DotNetComponent as DotNetComponentModel
 
 from ._client_factory import handle_raw_exception
-from ._constants import DOTNET_COMPONENT_RESOURCE_TYPE
+from ._clients import ManagedEnvironmentPreviewClient
 
 logger = get_logger(__name__)
 
@@ -38,7 +39,7 @@ class DotNetComponentDecorator(BaseResource):
         self.set_param("dotnet_component_type", component_type)
 
     def construct_payload(self):
-        self.dotnet_component_def["properties"]["componentType"] = self.get_argument_component_type()
+        safe_set(self.dotnet_component_def, "properties", "componentType", self.get_argument_component_type())
 
     def create(self):
         try:
@@ -91,4 +92,9 @@ class DotNetComponentDecorator(BaseResource):
         if existing_dotnet_component:
             raise ValidationError(validation_error)
 
-
+    def _get_aspire_dashboard_url(self, environment_name, resource_group_name, dotnet_component_name):
+        managed_environment = ManagedEnvironmentPreviewClient.show(self.cmd, environment_name, resource_group_name)
+        default_domain = safe_get(managed_environment, "properties", "defaultDomain")
+        if not default_domain:
+            raise ValidationError("The containerapp environment '{}' does not have a default domain.".format(environment_name))
+        return f"https://{dotnet_component_name}.ext.{default_domain}"

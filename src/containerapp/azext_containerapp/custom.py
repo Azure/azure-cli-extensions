@@ -2668,12 +2668,12 @@ def show_dotnet_component(cmd, dotnet_component_name, environment_name, resource
 
     component_type = safe_get(result, "properties", "componentType")
     if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
-        aspire_dashboard_url = _get_aspire_dashboard_url(cmd, environment_name, resource_group_name, dotnet_component_name)
+        aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
         logger.warning("Aspire Dashboard URL: %s.", aspire_dashboard_url)
     return result
 
 
-def delete_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait):
+def delete_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait=False):
     raw_parameters = locals()
     dotnet_component_decorator = DotNetComponentDecorator(
         cmd=cmd,
@@ -2688,7 +2688,7 @@ def delete_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     logger.warning("Successfully deleted DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
 
 
-def create_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait, dotnet_component_type=DOTNET_COMPONENT_RESOURCE_TYPE):
+def create_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, dotnet_component_type=DOTNET_COMPONENT_RESOURCE_TYPE, no_wait=False):
     raw_parameters = locals()
     dotnet_component_decorator = DotNetComponentDecorator(
         cmd=cmd,
@@ -2699,7 +2699,7 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     validation_error = "DotNet Component '{}' already exists in environment '{}' in resource group '{}'. Please delete the DotNet Component before creating a new one.".format(dotnet_component_name, environment_name, resource_group_name)
     dotnet_component_decorator.validate_arguments(dotnet_component_name, environment_name, resource_group_name, validation_error)
     dotnet_component_decorator.construct_payload()
-    aspire_dashboard_url = _get_aspire_dashboard_url(cmd, environment_name, resource_group_name, dotnet_component_name)
+    aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
     logger.warning("Creating DotNet Component '%s' in environment '%s' in resource group '%s.", dotnet_component_name, environment_name, resource_group_name)
     r = dotnet_component_decorator.create()
     if r is not None:
@@ -2709,9 +2709,3 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
         logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
     return
 
-def _get_aspire_dashboard_url(cmd, environment_name, resource_group_name, dotnet_component_name):
-    managed_environment = show_managed_environment(cmd, environment_name, resource_group_name)
-    default_domain = safe_get(managed_environment, "properties", "defaultDomain")
-    if not default_domain:
-        raise ValidationError("The containerapp environment '{}' does not have a default domain.".format(environment_name))
-    return f"https://{dotnet_component_name}.ext.{default_domain}"
