@@ -6,14 +6,35 @@
 import os
 import unittest
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only, JMESPathCheck)
 
-from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_up, create_and_verify_containerapp_up_with_multiple_environments, create_and_verify_containerapp_up_for_default_registry_image
+from .utils import (create_and_verify_containerapp_up,
+                    create_and_verify_containerapp_up_with_multiple_environments,
+                    create_and_verify_containerapp_up_for_default_registry_image,
+                    prepare_containerapp_env_for_app_e2e_tests)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerAppUpImageTest(ScenarioTest):
+
+    def test_containerapp_up_create_resource_group(self):
+        resource_group = self.create_random_name(prefix='cli.group', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        self.cmd(
+            'containerapp up -g {} -n {} --image {} --environment {} --ingress external --target-port 80'.format(
+                resource_group, ca_name, image, env), expect_failure=False)
+
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("resourceGroup", resource_group),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+        ])
+        self.cmd(f'group delete -n {resource_group} --yes --no-wait', expect_failure=False)
+
     @live_only()
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_up_image_e2e(self, resource_group):
