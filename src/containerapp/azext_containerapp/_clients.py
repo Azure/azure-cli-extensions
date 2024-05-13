@@ -1196,7 +1196,6 @@ class SessionCodeInterpreterPreviewClient():
             session_pool_endpoint,
             identifier,
             PREVIEW_API_VERSION)
-        logger.warning(request_url)
 
         from azure.cli.core._profile import Profile
         profile = Profile(cli_ctx=cmd.cli_ctx)
@@ -1221,11 +1220,12 @@ class SessionCodeInterpreterPreviewClient():
 
         if no_wait:
             return r.json()
-        elif r.status_code == 202:
+        elif r.status_code in [200, 201, 202, 204]:
             logger.warning("upload success")
-            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
-            poll_status(cmd, operation_url)
-            r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
+            if r.status_code == 202:
+                operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+                poll_status(cmd, operation_url)
+                r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
 
         return r.json()
 
@@ -1263,23 +1263,19 @@ class SessionCodeInterpreterPreviewClient():
             filename,
             identifier,
             PREVIEW_API_VERSION)
-        logger.warning(request_url)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url, resource=SESSION_RESOURCE)
 
         if no_wait:
-            logger.warning('file successfully deleted')
             return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
+            logger.warning('file successfully deleted')
             if r.status_code == 202:
                 operation_url = r.headers.get(HEADER_LOCATION)
                 poll_results(cmd, operation_url)
-                logger.warning('file successfully deleted')
 
     @classmethod
     def list_files(cls, cmd, identifier, path, session_pool_endpoint, no_wait=False):
-        files_list = []
-
         if path is None:
             path = ""
             
@@ -1290,11 +1286,5 @@ class SessionCodeInterpreterPreviewClient():
             path,
             PREVIEW_API_VERSION)
         
-        logger.warning(request_url)
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
-        r = r.json()
-
-        for file in r["value"]:
-            files_list.append(file)
-
-        return files_list
+        return r.json()
