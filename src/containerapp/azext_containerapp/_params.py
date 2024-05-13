@@ -18,7 +18,7 @@ from azure.cli.command_modules.containerapp._validators import (validate_memory,
 from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
-                          validate_otlp_headers, validate_target_port_range)
+                          validate_otlp_headers, validate_target_port_range,validate_timeout_in_seconds)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
 
 
@@ -385,6 +385,7 @@ def load_arguments(self, _):
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('identifier', options_list=['--identifier', '-id'], help="The Session Identifier")
+        c.argument('session_pool_location', help="The location of the session pool")
 
     with self.argument_context('containerapp session code-interpreter', arg_group='file') as c:
         c.argument('filename', help="The file to delete or show from the session")
@@ -393,6 +394,6 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
         c.argument('code', help="The code to execute in the code interpreter session")
-        c.argument('timeout_in_seconds', help="Duration in seconds code in session can run prior to timing out 0 - 60 secs, e.g. 30")
+        c.argument('timeout_in_seconds', type=int, validator=validate_timeout_in_seconds, help="Duration in seconds code in session can run prior to timing out 0 - 60 secs, e.g. 30")
 
 

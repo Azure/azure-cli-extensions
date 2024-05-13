@@ -2766,21 +2766,21 @@ def execute_session_code_interpreter(cmd,
                         resource_group_name,
                         identifier, 
                         code,
-                        timeout_in_seconds=None
+                        session_pool_location=None,
+                        timeout_in_seconds=None,
                         ):
     raw_parameters = locals()
-    # stacy fix this implementation
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    #session_code_interpreter_decorater.validate_arguments()
+    session_code_interpreter_decorater.validate_arguments()
     session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
 
     session_code_interpreter_decorater.construct_payload()
-    r = session_code_interpreter_decorater.create()
+    r = session_code_interpreter_decorater.execute()
 
     return r
 
@@ -2791,18 +2791,16 @@ def upload_session_code_interpreter(cmd,
                         filepath
                         ):
     raw_parameters = locals()
-    # stacy fix this implementation
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    #session_code_interpreter_decorater.validate_arguments()
     session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
-
-    #session_code_interpreter_decorater.construct_payload()
+    
     r = session_code_interpreter_decorater.upload()
+
     return r
 
 def show_file_content_session_code_interpreter(cmd,
@@ -2812,14 +2810,12 @@ def show_file_content_session_code_interpreter(cmd,
                         filename
                         ):
     raw_parameters = locals()
-    # stacy fix this implementation
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    #session_code_interpreter_decorater.validate_arguments()
     session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
 
     r = session_code_interpreter_decorater.show_file_content()
@@ -2833,14 +2829,12 @@ def show_file_metadata_session_code_interpreter(cmd,
                         filename
                         ):
     raw_parameters = locals()
-    # stacy fix this implementation
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    #session_code_interpreter_decorater.validate_arguments()
     session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
 
     r = session_code_interpreter_decorater.show_file_metadata()
@@ -2854,14 +2848,12 @@ def list_files_session_code_interpreter(cmd,
                         path=None
                         ):
     raw_parameters = locals()
-    # stacy fix this implementation
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    #session_code_interpreter_decorater.validate_arguments()
     session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
 
     r = session_code_interpreter_decorater.list_files()
@@ -2875,14 +2867,12 @@ def delete_file_session_code_interpreter(cmd,
                         filename
                         ):
     raw_parameters = locals()
-    # stacy fix this implementation
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    #session_code_interpreter_decorater.validate_arguments()
     session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
 
     r = session_code_interpreter_decorater.delete_file()

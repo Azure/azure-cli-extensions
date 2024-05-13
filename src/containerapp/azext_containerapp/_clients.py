@@ -5,8 +5,6 @@
 # pylint: disable=line-too-long, super-with-arguments, too-many-instance-attributes, consider-using-f-string, no-else-return, no-self-use
 
 import json
-import time
-import sys
 import os
 import requests
 import uuid
@@ -1198,6 +1196,7 @@ class SessionCodeInterpreterPreviewClient():
             session_pool_endpoint,
             identifier,
             PREVIEW_API_VERSION)
+        logger.warning(request_url)
 
         from azure.cli.core._profile import Profile
         profile = Profile(cli_ctx=cmd.cli_ctx)
@@ -1220,7 +1219,6 @@ class SessionCodeInterpreterPreviewClient():
             logger.error("error occurred while uploading file")
             return str(e)
 
-        # stacy: TO DO add success line
         if no_wait:
             return r.json()
         elif r.status_code == 202:
@@ -1239,8 +1237,8 @@ class SessionCodeInterpreterPreviewClient():
             filename,
             identifier,
             PREVIEW_API_VERSION)
-
         logger.warning(request_url)
+
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         return json.dumps(r.content.decode())
 
@@ -1252,7 +1250,7 @@ class SessionCodeInterpreterPreviewClient():
             filename,
             identifier,
             PREVIEW_API_VERSION)
-
+        logger.warning(request_url)
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
 
         return r.json()
@@ -1295,9 +1293,6 @@ class SessionCodeInterpreterPreviewClient():
         logger.warning(request_url)
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         r = r.json()
-
-        logger.warning(r)
-
 
         for file in r["value"]:
             files_list.append(file)

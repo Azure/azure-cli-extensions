@@ -1697,7 +1697,7 @@ helps['containerapp session code-interpreter execute'] = """
     - name: Execute a simple hello world.
       text: |
           az containerapp session code-interpreter execute -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --code 'print("'"Hello world"'")' --timeout-in-seconds 30
+              --code 'print("'"Hello world"'")' --timeout-in-seconds 30 --session-pool-location eastasia
 """
 
 helps['containerapp session code-interpreter upload-file'] = """
