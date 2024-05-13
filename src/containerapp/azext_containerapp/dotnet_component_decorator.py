@@ -7,8 +7,9 @@
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
-from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import CLIInternalError, ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
+from ._client_factory import handle_non_404_status_code_exception
 from knack.log import get_logger
 
 from ._models import DotNetComponent as DotNetComponentModel
@@ -49,8 +50,8 @@ class DotNetComponentDecorator(BaseResource):
                 environment_name=self.get_argument_environment_name(), name=self.get_argument_dotnet_component_name(),
                 dotnet_component_envelope=self.dotnet_component_def, no_wait=self.get_argument_no_wait())
         except Exception as e:
-            stringErr = str(e)
-            if "DotNetComponentsNotAllowedForSubscription" in stringErr:
+            string_err = str(e)
+            if "DotNetComponentsNotAllowedForSubscription" in string_err:
                 raise CLIInternalError("DotNet Components operations are not allowed for the subscription, please use 'az feature register --namespace  Microsoft.App --name DotNetComponentsPreview' to register this feature.")
 
             handle_raw_exception(e)
@@ -79,3 +80,18 @@ class DotNetComponentDecorator(BaseResource):
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
+
+    def _get_dotnet_component_if_exists(self, dotnet_component_name, environment_name, resource_group_name):
+        try:
+            return self.client.show(self.cmd, dotnet_component_name, environment_name, resource_group_name)
+        except Exception as e:
+            handle_non_404_status_code_exception(e)
+            return None
+
+    def validate_arguments(self, dotnet_component_name, environment_name, resource_group_name, validation_error):
+          # Check if DotNet component already exists in environment
+        existing_dotnet_component = self._get_dotnet_component_if_exists(dotnet_component_name, environment_name, resource_group_name)
+        if existing_dotnet_component:
+            raise ValidationError(validation_error)
+
+
