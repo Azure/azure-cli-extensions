@@ -42,7 +42,7 @@ class GetSyncErrorDetail(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.catalog_name = AAZStrArg(
-            options=["--catalog-name"],
+            options=["-n", "--name", "--catalog-name"],
             help="The name of the catalog.",
             required=True,
             id_part="child_name_1",
