@@ -1620,30 +1620,30 @@ helps['containerapp sessionpool create'] = """
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --container-type PythonLTS --max-sessions 30 --ready-sessions 20 \\
               --location eastasia
-    - name: Create or update a Session Pool with container type CustomerContainer with default quickstart image.
+    - name: Create or update a Session Pool with container type CustomContainer with default quickstart image.
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
-              --container-type CustomerContainer --environment MyEnvironment \\
-              --cpu 0.5 --memory 1Gi --target-port 80 --location eastasia
-    - name: Create or update a Session Pool with container type CustomerContainer that has secrets and environment variables.
+              --container-type CustomContainer --environment MyEnvironment \\
+              --cpu 0.5 --memory 1Gi --target-port 80 --location eastasia --image mcr.microsoft.com/k8se/quickstart:latest
+    - name: Create or update a Session Pool with container type CustomContainer that has secrets and environment variables.
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
-              --container-type CustomerContainer --environment MyEnvironment \\
-              --cpu 0.5 --memory 1Gi --target-port 80 \\
+              --container-type CustomContainer --environment MyEnvironment \\
+              --cpu 0.5 --memory 1Gi --target-port 80 --image MyImage \\
               --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret \\
               --secrets mysecret=secretvalue1 anothersecret="secret value 2" --location eastasia
-    - name: Create or update a Session Pool with container type CustomerContainer that from private registry
+    - name: Create or update a Session Pool with container type CustomContainer that from private registry
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
-              --container-type CustomerContainer --environment MyEnvironment \\
+              --container-type CustomContainer --environment MyEnvironment --image MyImage \\
               --cpu 0.5 --memory 1Gi --target-port 80 --registry-server myregistry.azurecr.io \\
               --registry-username myregistry --registry-password $REGISTRY_PASSWORD \\
               --location eastasia
-    - name: Create or update a Session Pool with container type CustomerContainer with cooldown period 120s
+    - name: Create or update a Session Pool with container type CustomContainer with cooldown period 360s
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
-              --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 \\
-              --cooldown-period 120 --location eastasia
+              --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --container-type CustomContainer \\
+              --cooldown-period 360 --location eastasia
 """
 
 helps['containerapp sessionpool update'] = """
