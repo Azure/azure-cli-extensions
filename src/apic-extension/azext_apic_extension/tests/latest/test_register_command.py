@@ -113,3 +113,16 @@ class RegisterCommandTests(ScenarioTest):
             assert exported_content == input_content, "The exported content is not the same as the input file."
         finally:
             os.remove(exported_file_path)
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    def test_register_with_long_openapi_description(self):
+        self.kwargs.update({
+          'spec_file': os.path.join(test_assets_dir, 'spec_with_long_description.json')
+        })
+        self.cmd('az apic api register -g {rg} -s {s} -l "{spec_file}"')
+
+        # verify command results
+        self.cmd('az apic api show -g {rg} -s {s} --api-id swaggerpetstore-openapi30', checks=[
+            self.check('description', 'This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we\'ve switched to the design first approach!\nYou can now help us improve the API whether it\'s by making changes to the definition itself or to the code.\nThat way, with time, we can improve the API in general, and expose some of the new features in OAS3.\n\nSome useful links:\n- [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)\n- [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we\'ve switched to the design first approach!\nYou can now help us improve the API whether it\'s by making changes to the')
+        ])
