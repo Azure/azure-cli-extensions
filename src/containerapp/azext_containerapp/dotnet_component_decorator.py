@@ -39,7 +39,7 @@ class DotNetComponentDecorator(BaseResource):
         self.set_param("dotnet_component_type", component_type)
 
     def construct_payload(self):
-        safe_set(self.dotnet_component_def, "properties", "componentType", self.get_argument_component_type())
+        safe_set(self.dotnet_component_def, "properties", "componentType", value=self.get_argument_component_type())
 
     def create(self):
         try:
