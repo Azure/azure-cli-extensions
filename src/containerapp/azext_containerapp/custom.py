@@ -2699,13 +2699,13 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     validation_error = "DotNet Component '{}' already exists in environment '{}' in resource group '{}'. Please delete the DotNet Component before creating a new one.".format(dotnet_component_name, environment_name, resource_group_name)
     dotnet_component_decorator.validate_arguments(dotnet_component_name, environment_name, resource_group_name, validation_error)
     dotnet_component_decorator.construct_payload()
-    aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
     logger.warning("Creating DotNet Component '%s' in environment '%s' in resource group '%s.", dotnet_component_name, environment_name, resource_group_name)
     r = dotnet_component_decorator.create()
     if r is not None:
         logger.warning("Successfully created DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
     component_type = safe_get(r, "properties", "componentType")
     if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
+        aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
         logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
     return
 
