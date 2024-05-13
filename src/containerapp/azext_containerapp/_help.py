@@ -1650,9 +1650,9 @@ helps['containerapp sessionpool update'] = """
     type: command
     short-summary: Update a Session pool.
     examples:
-    - name: Update a session pool's max concurrent sessions configuration.
+    - name: Update a session pool's max concurrent sessions configuration and image.
       text: |
-          az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --max-sessions 20
+          az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --max-sessions 20 --image MyNewImage
 """
 
 helps['containerapp sessionpool delete'] = """

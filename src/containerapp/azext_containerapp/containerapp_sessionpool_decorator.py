@@ -4,7 +4,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-
+import os
 from knack.log import get_logger
 from enum import Enum
 from typing import Any, Dict
@@ -16,12 +16,13 @@ from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._models import (ContainerResources as ContainerResourcesModel,
                                                             Container as ContainerModel)
 from azure.cli.command_modules.containerapp._constants import HELLO_WORLD_IMAGE
-from azure.cli.command_modules.containerapp._utils import (parse_env_var_flags, parse_secret_flags, store_as_secret_and_return_secret_ref,
-                                                            _ensure_location_allowed, CONTAINER_APPS_RP, validate_container_app_name,
-                                                           safe_set)
+from azure.cli.command_modules.containerapp._utils import (parse_env_var_flags, parse_secret_flags,
+                                                           store_as_secret_and_return_secret_ref,
+                                                           _ensure_location_allowed, CONTAINER_APPS_RP,
+                                                           validate_container_app_name,
+                                                           safe_set, safe_get)
 from azure.cli.command_modules.containerapp._clients import ManagedEnvironmentClient
 from azure.cli.command_modules.containerapp._client_factory import handle_non_404_status_code_exception
-
 
 from ._models import SessionPool as SessionPoolModel
 from ._client_factory import handle_raw_exception
@@ -39,6 +40,7 @@ class SessionPoolPreviewDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
         self.session_pool_def = SessionPoolModel
+        self.existing_pool_def = None
 
     def get_argument_name(self):
         return self.get_param('name')
@@ -121,27 +123,6 @@ class SessionPoolPreviewDecorator(BaseResource):
     def get_environment_client(self):
         return ManagedEnvironmentClient
 
-    def set_up_secrets(self):
-        secrets_def = None
-        if self.get_argument_secrets() is not None:
-            secrets_def = parse_secret_flags(self.get_argument_secrets())
-        return secrets_def
-
-    def set_up_registry_auth_configuration(self, secrets_def):
-        registry_def = None
-        if self.get_argument_registry_server() is not None:
-            registry_def = {}
-            registry_def["registryServer"] = self.get_argument_registry_server()
-            registry_def["username"] = self.get_argument_registry_user()
-
-            if secrets_def is None:
-                secrets_def = []
-            registry_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def,
-                                                                                      self.get_argument_registry_user(),
-                                                                                      self.get_argument_registry_server(),
-                                                                                      self.get_argument_registry_pass())
-        return registry_def
-
 
 class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
     def validate_arguments(self):
@@ -154,7 +135,8 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
 
         if container_type == ContainerType.CustomContainer.name:
             if environment_name is None:
-                raise RequiredArgumentMissingError(f'Must provide environment name when container type is {ContainerType.CustomContainer.name}')
+                raise RequiredArgumentMissingError(
+                    f'Must provide environment name when container type is {ContainerType.CustomContainer.name}')
         else:
             if environment_name is not None:
                 raise ValidationError(f"Do not pass environment name when using container type {container_type}")
@@ -240,6 +222,27 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         container_def["resources"] = self.set_up_resource()
         return container_def
 
+    def set_up_secrets(self):
+        secrets_def = None
+        if self.get_argument_secrets() is not None:
+            secrets_def = parse_secret_flags(self.get_argument_secrets())
+        return secrets_def
+
+    def set_up_registry_auth_configuration(self, secrets_def):
+        registry_def = None
+        if self.get_argument_registry_server() is not None:
+            registry_def = {}
+            registry_def["registryServer"] = self.get_argument_registry_server()
+            registry_def["username"] = self.get_argument_registry_user()
+
+            if secrets_def is None:
+                secrets_def = []
+            registry_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def,
+                                                                                      self.get_argument_registry_user(),
+                                                                                      self.get_argument_registry_server(),
+                                                                                      self.get_argument_registry_pass())
+        return registry_def
+
     def set_up_ingress(self):
         if self.get_argument_target_port() is None:
             raise RequiredArgumentMissingError("Required argument 'target_port' is not specified.")
@@ -281,100 +284,121 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
 
     def construct_payload(self):
         self.session_pool_def = {}
-        self.session_pool_def["location"] = self.get_argument_location()
+        self.existing_pool_def = self.client.show(cmd=self.cmd,
+                                                  resource_group_name=self.get_argument_resource_group_name(),
+                                                  name=self.get_argument_name())
 
-        dynamic_pool_def = self.set_up_dynamic_configuration()
-        session_network_def = self.set_up_network_configuration()
-        session_scale_def = self.set_up_scale_configuration()
-        secrets_def = self.set_up_secrets()
+        if ((self.get_argument_container_type() is not None and safe_get(self.existing_pool_def, "properties", "containerType").lower() == self.get_argument_container_type().lower()) or
+                (self.get_argument_managed_env() is not None and safe_get(self.existing_pool_def, "properties", "environmentId").lower() == self.get_argument_managed_env().lower())):
+            raise ValidationError("containerType and environmentId cannot be updated.")
 
-        # CustomerContainerTemplate
-        customer_container_template = {}
-        container_def = self.set_up_container()
-        ingress_def = self.set_up_ingress()
-        registry_def = self.set_up_registry_auth_configuration(secrets_def)
-        if registry_def is None and ingress_def is None and container_def is None:
-            customer_container_template = None
-        else:
-            if container_def is not None:
-                customer_container_template["containers"] = [container_def]
-            if ingress_def is not None:
-                customer_container_template["ingress"] = ingress_def
-            if registry_def is not None:
-                customer_container_template["registryCredentials"] = registry_def
-
-        if self.get_argument_container_type() is not None:
-            safe_set(self.session_pool_def, "properties", "containerType", value=self.get_argument_container_type())
-        if self.get_argument_managed_env() is not None:
-            safe_set(self.session_pool_def, "properties", "environmentId", value=self.get_argument_managed_env())
-        if customer_container_template is not None:
-            safe_set(self.session_pool_def, "properties", "customContainerTemplate", value=customer_container_template)
-        if secrets_def is not None:
-            safe_set(self.session_pool_def, "properties", "secrets", value=secrets_def)
-        if dynamic_pool_def is not None:
-            safe_set(self.session_pool_def, "properties", "dynamicPoolConfiguration", value=dynamic_pool_def)
-        if session_network_def is not None:
-            safe_set(self.session_pool_def, "properties", "sessionNetworkConfiguration", value=session_network_def)
-        if session_scale_def is not None:
-            safe_set(self.session_pool_def, "properties", "scaleConfiguration", value=session_scale_def)
+        self.set_up_dynamic_configuration()
+        self.set_up_network_configuration()
+        self.set_up_scale_configuration()
+        self.set_up_secrets()
+        self.set_up_custom_container_template(safe_get(self.session_pool_def, "properties", "secrets"))
 
     def set_up_dynamic_configuration(self):
-        dynamic_pool_def = None
         if self.get_argument_cooldown_period_in_seconds() is not None:
             dynamic_pool_def = {}
             dynamic_pool_def["cooldownPeriodInSeconds"] = self.get_argument_cooldown_period_in_seconds()
-        return dynamic_pool_def
+            safe_set(self.session_pool_def, "properties", "dynamicPoolConfiguration", value=dynamic_pool_def)
 
     def set_up_network_configuration(self):
-        session_network_def = None
         if self.get_argument_network_status() is not None:
             session_network_def = {}
             session_network_def['status'] = self.get_argument_network_status()
-        return session_network_def
+            safe_set(self.session_pool_def, "properties", "sessionNetworkConfiguration", value=session_network_def)
 
     def set_up_scale_configuration(self):
-        session_scale_def = None
         if self.get_argument_max_concurrent_sessions() is not None or self.get_argument_ready_session_instances() is not None:
             session_scale_def = {}
             if self.get_argument_max_concurrent_sessions() is not None:
                 session_scale_def["maxConcurrentSessions"] = self.get_argument_max_concurrent_sessions()
             if self.get_argument_ready_session_instances():
                 session_scale_def["readySessionInstances"] = self.get_argument_ready_session_instances()
-        return session_scale_def
+            safe_set(self.session_pool_def, "properties", "scaleConfiguration", value=session_scale_def)
 
-    def set_up_container(self):
-        container_def = {}
-        container_has_update = False
+    def set_up_custom_container_template(self, secrets_def):
+        if self.has_registry_change() or self.has_container_change() or self.has_target_port_change():
+            customer_container_template = self.existing_pool_def["properties"]["customContainerTemplate"]
+
+            if (self.has_container_change() and self.get_argument_container_name() is None and
+                    len(safe_get(customer_container_template, "containers")) > 1):
+                raise ValidationError("Must provide container name if multiple containers provided")
+
+            self.set_up_container(customer_container_template)
+            self.set_up_ingress(customer_container_template)
+            self.set_up_registry_auth_configuration(secrets_def, customer_container_template)
+
+            safe_set(self.session_pool_def, "properties", "customContainerTemplate", value=customer_container_template)
+
+    def set_up_container(self, customer_container_template):
+        container_def = None
+        containers = customer_container_template["containers"]
+        if len(containers) == 1:
+            container_def = containers[0]
+        else:
+            for i, c in containers:
+                if c['name'].lower() == self.get_argument_container_name().lower():
+                    container_def = containers[i]
+            if container_def is None:
+                raise ValidationError(f"Cannot find the corresponding container for container name {self.get_argument_container_name()}")
+
+        # Update those properties when set, otherwise, we keep the original ones
         if self.get_argument_container_name() is not None:
             container_def["name"] = self.get_argument_container_name()
-            container_has_update = True
         if self.get_argument_image() is not None:
             container_def["image"] = self.get_argument_image()
-            container_has_update = True
         if self.get_argument_env_vars() is not None:
             container_def["env"] = parse_env_var_flags(self.get_argument_env_vars())
-            container_has_update = True
         if self.get_argument_startup_command() is not None:
             container_def["command"] = self.get_argument_startup_command()
-            container_has_update = True
         if self.get_argument_args() is not None:
             container_def["args"] = self.get_argument_args()
-            container_has_update = True
         if self.get_argument_cpu() is not None or self.get_argument_memory() is not None:
-            resources_def = ContainerResourcesModel
             if self.get_argument_cpu() is not None:
-                resources_def["cpu"] = self.get_argument_cpu()
+                container_def["resources"]["cpu"] = self.get_argument_cpu()
             if self.get_argument_memory() is not None:
-                resources_def["memory"] = self.get_argument_memory()
-            container_def["resources"] = resources_def
-            container_has_update = True
-        if not container_has_update:
-            container_def = None
+                container_def["resources"]["memory"] = self.get_argument_memory()
         return container_def
 
-    def set_up_ingress(self):
-        ingress_def = None
+    def set_up_registry_auth_configuration(self, secrets_def, customer_container_template):
+        if self.get_argument_registry_server() is not None:
+            safe_set(customer_container_template, "registryCredentials", "registryServer", value=self.get_argument_registry_server())
+        if self.get_argument_registry_user() is not None:
+            safe_set(customer_container_template, "registryCredentials", "username", value=self.get_argument_registry_user())
+        if secrets_def is None:
+            secrets_def = []
+        if self.get_argument_registry_pass() is not None:
+            safe_set(customer_container_template, "registryCredentials", "passwordSecretRef",
+                     value=store_as_secret_and_return_secret_ref(secrets_def,
+                                                                 self.get_argument_registry_user(),
+                                                                 self.get_argument_registry_server(),
+                                                                 self.get_argument_registry_pass()))
+
+    def set_up_ingress(self, customer_container_template):
         if self.get_argument_target_port() is not None:
-            ingress_def = {}
-            ingress_def["targetPort"] = self.get_argument_target_port()
-        return ingress_def
+            safe_set(customer_container_template, "ingress", "targetPort", value=self.get_argument_target_port())
+
+    def set_up_secrets(self):
+        if self.get_argument_secrets() is not None:
+            secrets_def = parse_secret_flags(self.get_argument_secrets())
+            safe_set(self.session_pool_def, "properties", "secrets", value=secrets_def)
+
+    def has_container_change(self):
+        return (self.get_argument_container_name() is not None or
+                self.get_argument_image() is not None or
+                self.get_argument_cpu() is not None or
+                self.get_argument_memory() is not None or
+                self.get_argument_env_vars() is not None or
+                self.get_argument_args() is not None or
+                self.get_argument_startup_command() is not None)
+
+    def has_registry_change(self):
+        return (self.get_argument_registry_server() is not None or
+                self.get_argument_registry_user() is not None or
+                self.get_argument_registry_pass() is not None)
+
+    def has_target_port_change(self):
+        return self.get_argument_target_port() is not None
