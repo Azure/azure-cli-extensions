@@ -1485,6 +1485,7 @@ def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_na
 
 
 def patch_list(cmd, resource_group_name=None, managed_env=None, container_app_name=None, show_all=False):
+    from azure.cli.command_modules.containerapp._utils import format_location
     if container_app_name:
         # Use cloud patching if container app name is provided
         logger.warning("Container app name is provided. List cloud patches available for the container app.")
@@ -1493,13 +1494,12 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, container_app_na
         if app is None:
             logger.error("Container app {0} not found in resource group {1}.".format(container_app_name, resource_group_name))
             return
-        if app["location"] != "North Central US (Stage)":
+        if format_location(app["location"]) != format_location("North Central US (Stage)"):
             logger.warning("Cloud patching is not supported in the location of the container app. Defaulted back to use local patching.")
             logger.warning("Container App name will not be used in local patching.")
         else:
             from ._clients import PatchClient
-            patch_client = PatchClient()
-            patches = patch_client.list(cmd, resource_group_name, container_app_name)
+            patches = PatchClient.list(cmd, resource_group_name, container_app_name)
             if patches:
                 return patches["value"]
 
@@ -1559,15 +1559,20 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, container_app_na
 
 
 def patch_show(cmd, resource_group_name=None, container_app_name=None, patch_name=None):
+    from azure.cli.command_modules.containerapp._utils import format_location
     logger.warning("This command is currently only available for container app cloud patches in North Central US (Stage).")
     if patch_name is None:
         logger.error("Please provide the name of the patch to show.")
         return
-    app = show_containerapp(cmd, container_app_name, resource_group_name)
+    try:
+        app = show_containerapp(cmd, container_app_name, resource_group_name)
+    except Exception as e:
+        logger.error("Failed to fetch container app {0} in resource group {1}. Error: {2}".format(container_app_name, resource_group_name, str(e)))
+        return
     if app is None:
         logger.error("Container app {0} not found in resource group {1}.".format(container_app_name, resource_group_name))
         return
-    if app["location"] != "North Central US (Stage)":
+    if format_location(app["location"]) != format_location("North Central US (Stage)"):
         logger.warning("Cloud patching is not supported in the location of the container app.")
         return
     from ._clients import PatchClient
@@ -1576,15 +1581,20 @@ def patch_show(cmd, resource_group_name=None, container_app_name=None, patch_nam
 
 
 def patch_delete(cmd, resource_group_name=None, container_app_name=None, patch_name=None):
+    from azure.cli.command_modules.containerapp._utils import format_location
     logger.warning("This command is currently only available for container app cloud patches in North Central US (Stage).")
     if patch_name is None:
         logger.error("Please provide the name of the patch to delete.")
         return
-    app = show_containerapp(cmd, container_app_name, resource_group_name)
+    try:
+        app = show_containerapp(cmd, container_app_name, resource_group_name)
+    except Exception as e:
+        logger.error("Failed to fetch container app {0} in resource group {1}. Error: {2}".format(container_app_name, resource_group_name, str(e)))
+        return
     if app is None:
         logger.error("Container app {0} not found in resource group {1}.".format(container_app_name, resource_group_name))
         return
-    if app["location"] != "North Central US (Stage)":
+    if format_location(app["location"]) != format_location("North Central US (Stage)"):
         logger.warning("Cloud patching is not supported in the location of the container app.")
         return
     from ._clients import PatchClient
@@ -1597,12 +1607,17 @@ def patch_delete(cmd, resource_group_name=None, container_app_name=None, patch_n
 
 
 def patch_mode_configure(cmd, resource_group_name=None, container_app_name=None, patch_mode=None):
+    from azure.cli.command_modules.containerapp._utils import format_location
     logger.warning("This command is currently only available for container app Cloud Patches in North Central US (Stage).")
-    app = show_containerapp(cmd, container_app_name, resource_group_name)
+    try:
+        app = show_containerapp(cmd, container_app_name, resource_group_name)
+    except Exception as e:
+        logger.error("Failed to fetch container app {0} in resource group {1}. Error: {2}".format(container_app_name, resource_group_name, str(e)))
+        return
     if app is None:
         logger.error("Container app {0} not found in resource group {1}.".format(container_app_name, resource_group_name))
         return
-    if app["location"] != "North Central US (Stage)":
+    if format_location(app["location"]) != format_location("North Central US (Stage)"):
         logger.warning("Cloud patching is not supported in the location of the container app.")
         return
     if patch_mode not in ["Automatic", "Manual", "Disabled"]:
@@ -1733,7 +1748,11 @@ def patch_apply(cmd, resource_group_name=None, managed_env=None, container_app_n
 
 
 def use_cloud_patch(cmd, container_app_name, resource_group_name, patch_name):
-    app = show_containerapp(cmd, container_app_name, resource_group_name)
+    try:
+        app = show_containerapp(cmd, container_app_name, resource_group_name)
+    except Exception as e:
+        logger.error("Failed to fetch container app {0} in resource group {1}. Error: {2}".format(container_app_name, resource_group_name, str(e)))
+        return
     if app is None:
         logger.error("Container app {0} not found in resource group {1}.".format(container_app_name, resource_group_name))
         return
