@@ -200,6 +200,7 @@ class CheckNameAvailabilityExecute(_CheckNameAvailabilityExecute):
         args_schema.type._required = True
         return args_schema
 
+
 class CheckScopedNameAvailabilityExecute(_CheckScopedNameAvailabilityExecute):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -208,6 +209,7 @@ class CheckScopedNameAvailabilityExecute(_CheckScopedNameAvailabilityExecute):
         args_schema.type._required = True
         args_schema.scope._required = True
         return args_schema
+
 
 class CatalogCreate(_CatalogCreate):
     def _cli_arguments_loader(self):
@@ -254,30 +256,36 @@ class CatalogWait(_CatalogWait):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class CatalogConnect(_CatalogConnect):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
+
 
 class CatalogGetSyncErrorDetail(_CatalogGetSyncErrorDetail):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class CatalogTaskGetErrorDetail(_CatalogTaskGetErrorDetail):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
+
 
 class CatalogTaskList(_CatalogTaskList):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class CatalogTaskShow(_CatalogTaskShow):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
+
 
 class DevBoxDefinitionCreate(_DevBoxDefinitionCreate):
     @classmethod
@@ -334,15 +342,18 @@ class DevBoxDefinitionWait(_DevBoxDefinitionWait):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class EnvironmentDefinitionGetErrorDetail(_EnvironmentDefinitionGetErrorDetail):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class EnvironmentDefinitionList(_EnvironmentDefinitionList):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
+
 
 class EnvironmentDefinitionShow(_EnvironmentDefinitionShow):
     def _cli_arguments_loader(self):
@@ -448,6 +459,7 @@ class NetworkConnectionCreate(_NetworkConnectionCreate):
         args_schema.domain_join_type._required = True
         return args_schema
 
+
 class PlanMemberCreate(_PlanMemberCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -455,6 +467,7 @@ class PlanMemberCreate(_PlanMemberCreate):
         args_schema.member_id._required = True
         args_schema.member_type._required = True
         return args_schema
+
 
 class PoolCreate(_PoolCreate):
     @classmethod
@@ -539,6 +552,7 @@ class ProjectAllowedEnvironmentTypeShow(_ProjectAllowedEnvironmentTypeShow):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class ProjectCatalogCreate(_ProjectCatalogCreate):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -584,30 +598,38 @@ class ProjectCatalogWait(_ProjectCatalogWait):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class ProjectCatalogConnect(_ProjectCatalogConnect):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
+
 
 class ProjectCatalogGetSyncErrorDetail(_ProjectCatalogGetSyncErrorDetail):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
-class ProjectEnvironmentDefinitionGetErrorDetail(_ProjectEnvironmentDefinitionGetErrorDetail):
+
+class ProjectEnvironmentDefinitionGetErrorDetail(
+    _ProjectEnvironmentDefinitionGetErrorDetail
+):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
+
 
 class ProjectEnvironmentDefinitionList(_ProjectEnvironmentDefinitionList):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class ProjectEnvironmentDefinitionShow(_ProjectEnvironmentDefinitionShow):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
+
 
 class ProjectEnvironmentTypeCreate(_ProjectEnvironmentTypeCreate):
     @classmethod
@@ -1491,4 +1513,157 @@ def devcenter_environment_operation_update_environment(
         user_id=user_id,
         environment_name=environment_name,
         body=body,
+    )
+
+
+def devcenter_customization_group_create(
+    cmd,
+    project_name,
+    dev_box_name,
+    customization_group_name,
+    user_id="me",
+    tasks=None,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+    body = {}
+    if tasks is not None:
+        body["tasks"] = tasks
+    else:
+        body["tasks"] = []
+    return cf_dataplane.dev_boxes.create_customization_group(
+        project_name=project_name,
+        dev_box_name=dev_box_name,
+        customization_group_name=customization_group_name,
+        user_id=user_id,
+        body=body,
+    )
+
+
+def devcenter_customization_group_show(
+    cmd,
+    project_name,
+    dev_box_name,
+    customization_group_name,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.dev_boxes.get_customization_group(
+        project_name=project_name,
+        dev_box_name=dev_box_name,
+        customization_group_name=customization_group_name,
+        user_id=user_id,
+    )
+
+
+def devcenter_customization_group_list(
+    cmd,
+    project_name,
+    dev_box_name,
+    user_id="me",
+    include_tasks=None,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    include = None
+    if include_tasks:
+        include = ["tasks"]
+
+    return cf_dataplane.dev_boxes.list_customization_groups(
+        project_name=project_name,
+        dev_box_name=dev_box_name,
+        user_id=user_id,
+        include=include,
+    )
+
+
+def devcenter_customization_task_definition_show(
+    cmd,
+    project_name,
+    catalog_name,
+    task_name,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.projects.get_customization_task_definition(
+        project_name=project_name,
+        catalog_name=catalog_name,
+        task_name=task_name,
+    )
+
+
+def devcenter_customization_task_definition_list(
+    cmd,
+    project_name,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.projects.list_customization_task_definitions(
+        project_name=project_name,
+    )
+
+
+def devcenter_customization_task_definition_validate(
+    cmd,
+    project_name,
+    tasks,
+    no_wait=False,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    body = {}
+    body["tasks"] = tasks
+
+    return sdk_no_wait(
+        no_wait,
+        cf_dataplane.projects.begin_validate_customization_tasks,
+        project_name=project_name,
+        body=body,
+    )
+
+
+def devcenter_customization_task_log_show(
+    cmd,
+    project_name,
+    dev_box_name,
+    customization_group_name,
+    customization_task_id,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.dev_boxes.get_customization_task_log(
+        project_name=project_name,
+        dev_box_name=dev_box_name,
+        customization_group_name=customization_group_name,
+        customization_task_id=customization_task_id,
+        user_id=user_id,
     )
