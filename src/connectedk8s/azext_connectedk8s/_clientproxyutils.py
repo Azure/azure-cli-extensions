@@ -18,6 +18,7 @@ from azure.cli.core import telemetry
 from azure.cli.core.azclierror import CLIInternalError
 from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess, net_connections
 from knack.log import get_logger
+from azure.cli.core.auth.msal_authentication import ServicePrincipalCredential
 logger = get_logger(__name__)
 
 

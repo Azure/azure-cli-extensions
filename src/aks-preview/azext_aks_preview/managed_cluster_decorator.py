@@ -336,6 +336,39 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return True
         return enable_msi_auth_for_monitoring
 
+    def _get_disable_local_accounts(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_local_accounts.
+
+        This function supports the option of enable_validation. When enabled, if both disable_local_accounts and
+        enable_local_accounts are specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_local_accounts = self.raw_param.get("disable_local_accounts")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                hasattr(self.mc, "disable_local_accounts") and      # backward compatibility
+                self.mc.disable_local_accounts is not None
+            ):
+                disable_local_accounts = self.mc.disable_local_accounts
+            sku_name = self.get_sku_name()
+            if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+                disable_local_accounts = True
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if disable_local_accounts and self._get_enable_local_accounts(enable_validation=False):
+                    raise MutuallyExclusiveArgumentError(
+                        "Cannot specify --disable-local-accounts and "
+                        "--enable-local-accounts at the same time."
+                    )
+        return disable_local_accounts
+
     def _get_outbound_type(
         self,
         enable_validation: bool = False,
@@ -950,9 +983,44 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        enable_managed_identity = super()._get_enable_managed_identity(enable_validation, read_only)
-        # additional validation
+        # read the original value passed by the command
+        enable_managed_identity = self.raw_param.get("enable_managed_identity")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.mc and self.mc.identity:
+                enable_managed_identity = check_is_msi_cluster(self.mc)
+
+        # skip dynamic completion & validation if option read_only is specified
+        if read_only:
+            return enable_managed_identity
+
+        # dynamic completion for create mode only
+        if self.decorator_mode == DecoratorMode.CREATE:
+            # if user does not specify service principal or client secret,
+            # backfill the value of enable_managed_identity to True
+            (
+                service_principal,
+                client_secret,
+            ) = self._get_service_principal_and_client_secret(read_only=True)
+            if not (service_principal or client_secret) and not enable_managed_identity:
+                enable_managed_identity = True
+
+        # validation
         if enable_validation:
+            if self.decorator_mode == DecoratorMode.CREATE:
+                (
+                    service_principal,
+                    client_secret,
+                ) = self._get_service_principal_and_client_secret(read_only=True)
+                if (service_principal or client_secret) and enable_managed_identity:
+                    raise MutuallyExclusiveArgumentError(
+                        "Cannot specify --enable-managed-identity and --service-principal/--client-secret at same time"
+                    )
+            if not enable_managed_identity and self._get_assign_identity(enable_validation=False):
+                raise RequiredArgumentMissingError(
+                    "--assign-identity can only be specified when --enable-managed-identity is specified"
+                )
+            # additional validation in aks-preview
             if self.decorator_mode == DecoratorMode.CREATE:
                 if not enable_managed_identity and self._get_enable_pod_identity(enable_validation=False):
                     raise RequiredArgumentMissingError(
