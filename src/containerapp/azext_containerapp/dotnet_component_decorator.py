@@ -93,7 +93,7 @@ class DotNetComponentDecorator(BaseResource):
             raise ValidationError(validation_error)
 
     def _get_aspire_dashboard_url(self, environment_name, resource_group_name, dotnet_component_name):
-        managed_environment = ManagedEnvironmentPreviewClient.show(self.cmd, environment_name, resource_group_name)
+        managed_environment = ManagedEnvironmentPreviewClient.show(self.cmd, resource_group_name, environment_name)
         default_domain = safe_get(managed_environment, "properties", "defaultDomain")
         if not default_domain:
             raise ValidationError("The containerapp environment '{}' does not have a default domain.".format(environment_name))
