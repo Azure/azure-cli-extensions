@@ -350,3 +350,6 @@ def load_arguments(self, _):
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('dotnet_component_type', options_list=['--type'], arg_type=get_enum_type(['AspireDashboard']), help="The type of DotNet component.")
+
+    with self.argument_context('containerapp env', arg_group='Peer Traffic Configuration') as c:
+        c.argument('p2p_encryption_enabled', arg_type=get_three_state_flag(), options_list=['--enable-peer-to-peer-encryption'], is_preview=True, help='Boolean indicating whether the peer-to-peer traffic encryption is enabled for the environment.')
