@@ -1615,7 +1615,6 @@ def load_arguments(self, _):
             help="delete an AKS nodepool by ignoring PodDisruptionBudget setting",
         )
         c.argument("if_match")
-        c.argument("if_none_match")
 
     with self.argument_context("aks nodepool delete-machines") as c:
         c.argument(
