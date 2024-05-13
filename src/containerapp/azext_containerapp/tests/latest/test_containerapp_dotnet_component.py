@@ -12,7 +12,7 @@ from .common import TEST_LOCATION, STAGE_LOCATION
 
 class ContainerappDotNetComponentTests(ScenarioTest):
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(location="westus2")
     def test_containerapp_dotnet_component(self, resource_group):
         env_name = self.create_random_name(prefix='aca-dotnet-env', length=24)
         dotnet_component_name = self.create_random_name(prefix='dotnet-aca', length=24)
@@ -47,7 +47,7 @@ class ContainerappDotNetComponentTests(ScenarioTest):
         self.assertTrue(len(dotnet_component_list) == 0)
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(location="westus2")
     def test_containerapp_dotnet_component_create_with_unsupported_component_type(self, resource_group):
         env_name = self.create_random_name(prefix='aca-dotnet-env', length=24)
         dotnet_component_name = self.create_random_name(prefix='dotnet-aca', length=24)
@@ -68,7 +68,7 @@ class ContainerappDotNetComponentTests(ScenarioTest):
         self.assertTrue(len(dotnet_component_list) == 0)
 
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(location="westus2")
     def test_containerapp_dotnet_component_with_component_type(self, resource_group):
         env_name = self.create_random_name(prefix='aca-dotnet-env', length=24)
         dotnet_component_name = self.create_random_name(prefix='dotnet-aca', length=24)

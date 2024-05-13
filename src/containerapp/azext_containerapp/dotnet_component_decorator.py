@@ -12,6 +12,7 @@ from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from ._client_factory import handle_non_404_status_code_exception
 from knack.log import get_logger
 from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
+from copy import deepcopy
 
 from ._models import DotNetComponent as DotNetComponentModel
 
@@ -24,7 +25,7 @@ logger = get_logger(__name__)
 class DotNetComponentDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
-        self.dotnet_component_def = DotNetComponentModel
+        self.dotnet_component_def = deepcopy(DotNetComponentModel)
 
     def get_argument_environment_name(self):
         return self.get_param("environment_name")
