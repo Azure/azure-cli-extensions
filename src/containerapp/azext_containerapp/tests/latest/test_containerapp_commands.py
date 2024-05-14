@@ -2615,14 +2615,9 @@ class ContainerappRuntimeTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         app = self.create_random_name(prefix='aca', length=24)
-
-        print("rg: " + resource_group)
-        print("app name: " + app)
-
         image = "mcr.microsoft.com/azurespringapps/samples/hello-world:0.0.1"
 
         env = prepare_containerapp_env_for_app_e2e_tests(self)
-        print("env: " + env)
 
         def create_containerapp_with_runtime_java_agent_args_and_check(args, expect_failure=False, checks=[]):
             self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} {args}',
