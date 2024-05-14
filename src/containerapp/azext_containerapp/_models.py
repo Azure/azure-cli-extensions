@@ -610,6 +610,12 @@ RuntimeJava = {
     }
 }
 
+DotNetComponent = {
+    "properties": {
+        "componentType": "AspireDashboard"
+    }
+}
+
 JavaLoggerSetting = {
     "logger": None,
     "level": None
