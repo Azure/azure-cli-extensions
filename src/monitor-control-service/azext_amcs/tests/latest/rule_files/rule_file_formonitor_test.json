@@ -1,0 +1,40 @@
+{
+  "properties": {
+    "dataSources": {
+      "performanceCounters": [
+        {
+          "streams": [
+            "Microsoft-InsightsMetrics"
+          ],
+          "scheduledTransferPeriod": "PT1M",
+          "samplingFrequencyInSeconds": 60,
+          "counterSpecifiers": [
+            "\\Processor Information(_Total)\\% Processor Time"
+          ],
+          "name": "perfCounter01"
+        }
+      ]
+    },
+    "destinations": {
+      "logAnalytics":[
+        {
+          "workspaceResourceId":"/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourcegroups/tbtest/providers/microsoft.operationalinsights/workspaces/wsn1",
+          "name":"wsn1"
+        }
+      ],
+      "azureMonitorMetrics": {
+        "name": "azureMonitorMetrics-default"
+      }
+    },
+    "dataFlows": [
+      {
+        "streams": [
+          "Microsoft-InsightsMetrics"
+        ],
+        "destinations": [
+          "azureMonitorMetrics-default"
+        ]
+      }
+    ]
+  }
+}
