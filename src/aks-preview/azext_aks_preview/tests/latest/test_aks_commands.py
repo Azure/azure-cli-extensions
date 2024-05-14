@@ -4247,6 +4247,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "nodepool2_name": "npwin",
                 "ssh_key_value": self.generate_ssh_keys(),
                 "if_match": "*",
+                "if_none_match": "*",
             }
         )
 
