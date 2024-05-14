@@ -2656,6 +2656,9 @@ def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
+
+    containerapp_java_logger_decorator.validate_enabled_java_agent()
+
     return containerapp_java_logger_decorator.create_or_update()
 
 def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
@@ -2674,6 +2677,7 @@ def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=Non
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
+    containerapp_java_logger_decorator.validate_enabled_java_agent()
     return containerapp_java_logger_decorator.delete()
 
 def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
@@ -2692,6 +2696,7 @@ def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
+    containerapp_java_logger_decorator.validate_enabled_java_agent()
     return containerapp_java_logger_decorator.show()
 
 def create_session_pool(cmd,

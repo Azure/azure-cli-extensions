@@ -24,6 +24,18 @@ logger = get_logger(__name__)
 class ContainerappJavaLoggerDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
+        self.containerapp_def = None
+        try:
+            self.containerapp_def = self.client.show(cmd=cmd,
+                                                resource_group_name=self.get_argument_resource_group_name(),
+                                                name=self.get_argument_name())
+        except Exception as e:
+            handle_non_404_status_code_exception(e)
+
+        if not self.containerapp_def:
+            raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
+
+        _get_existing_secrets(cmd, self.get_argument_resource_group_name, self.get_argument_name(), self.containerapp_def)
 
     def get_argument_logger_name(self):
         return self.get_param("logger_name")
@@ -36,138 +48,97 @@ class ContainerappJavaLoggerDecorator(BaseResource):
 
     def get_argument_all(self):
         return self.get_param("all")
-
-    def _get_containerapp(self, cmd, resource_group_name, name):
-        containerapp_def = None
-        try:
-            containerapp_def = self.client.show(cmd=cmd,
-                                                resource_group_name=resource_group_name,
-                                                name=name)
-        except Exception as e:
-            handle_non_404_status_code_exception(e)
-
-        if not containerapp_def:
-            raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
-
-        _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
-
-        return containerapp_def
-
-    def _check_java_agent_enabled(self, containerapp_def):
-        if 'configuration' not in containerapp_def['properties']:
-            return False
-        if 'runtime' not in containerapp_def['properties']['configuration']:
-            return False
-        if 'java' not in containerapp_def['properties']['configuration']['runtime']:
-            return False
-        if 'javaAgent' not in containerapp_def['properties']['configuration']['runtime']['java']:
-            return False
-
-        return safe_get(containerapp_def['properties']['configuration']['runtime']['java']['javaAgent'], "enabled",
-                        default=False) == True
-
-    def _list_java_loggers(self, containerapp_def):
-        if 'logging' not in containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']:
+    
+    def _list_java_loggers(self):
+        if 'logging' not in self.containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']:
             return []
 
-        if 'loggerSettings' not in containerapp_def['properties']['configuration']['runtime']['java']['javaAgent'][
+        if 'loggerSettings' not in self.containerapp_def['properties']['configuration']['runtime']['java']['javaAgent'][
             'logging']:
             return []
 
-        return containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']['logging'][
+        return self.containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']['logging'][
             'loggerSettings']
 
-    def _construct_loggers(self, containerapp_def, loggers):
-        if 'logging' not in containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']:
-            containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']['logging'] = {}
+    def _construct_payload(self, loggers):
+        if 'logging' not in self.containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']:
+            self.containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']['logging'] = {}
 
-        if 'loggerSettings' not in containerapp_def['properties']['configuration']['runtime']['java']['javaAgent'][
+        if 'loggerSettings' not in self.containerapp_def['properties']['configuration']['runtime']['java']['javaAgent'][
             'logging']:
-            containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']['logging']['loggerSettings'] = {}
+            self.containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']['logging']['loggerSettings'] = {}
 
-        containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']['logging'][
+        self.containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']['logging'][
             'loggerSettings'] = loggers
 
+    def validate_enabled_java_agent(self):
+        if 'configuration' not in self.containerapp_def['properties']:
+            return False
+        if 'runtime' not in self.containerapp_def['properties']['configuration']:
+            return False
+        if 'java' not in self.containerapp_def['properties']['configuration']['runtime']:
+            return False
+        if 'javaAgent' not in self.containerapp_def['properties']['configuration']['runtime']['java']:
+            return False
+
+        return safe_get(self.containerapp_def['properties']['configuration']['runtime']['java']['javaAgent'], "enabled",
+                        default=False) == True
+
     def create_or_update(self):
-        containerapp_def = self._get_containerapp(self.cmd, self.get_argument_resource_group_name(),
-                                                  self.get_argument_name())
 
-        if not self._check_java_agent_enabled(containerapp_def):
-            raise ValidationError(
-                "The containerapp '{}' does not enable java agent, "
-                "please run `az containerapp java --name {} --resource-group {} --enable-java-agent true` to enable java agent".format(
-                    self.get_argument_name(), self.get_argument_name(), self.get_argument_resource_group_name()))
-
-        loggers = self._list_java_loggers(containerapp_def)
+        loggers = self._list_java_loggers()
 
         exist_loggers = [logger["logger"].lower() for logger in loggers]
 
-        if self.get_argument_logger_name().lower() not in exist_loggers: # create
+        if self.get_argument_logger_name().lower() not in exist_loggers:  # create
             new_logger = JavaLoggerSetting
             new_logger["logger"] = self.get_argument_logger_name()
             new_logger["level"] = self.get_argument_logger_level()
             loggers.append(new_logger)
-        else: # update
+        else:  # update
             for logger in loggers:
                 if logger["logger"] == self.get_argument_logger_name():
                     logger["level"] = self.get_argument_logger_level()
 
-        self._construct_loggers(containerapp_def, loggers)
+        self._construct_payload(loggers)
 
         try:
             r = self.client.create_or_update(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                name=self.get_argument_name(), container_app_envelope=containerapp_def,
+                name=self.get_argument_name(), container_app_envelope=self.containerapp_def,
                 no_wait=self.get_argument_no_wait())
             return r["properties"]['configuration']['runtime']['java']['javaAgent']['logging']['loggerSettings']
         except Exception as e:
             handle_raw_exception(e)
 
     def show(self):
-        containerapp_def = self._get_containerapp(self.cmd, self.get_argument_resource_group_name(),
-                                                  self.get_argument_name())
-
-        if not self._check_java_agent_enabled(containerapp_def):
-            raise ValidationError(
-                "The containerapp '{}' does not enable java agent, "
-                "please run `az containerapp java --name {} --resource-group {} --enable-java-agent true` to enable java agent".format(
-                    self.get_argument_name(), self.get_argument_name(), self.get_argument_resource_group_name()))
-
         if self.get_argument_all() is None:
-            loggers = self._list_java_loggers(containerapp_def)
+            loggers = self._list_java_loggers(self.containerapp_def)
             for logger in loggers:
                 if logger["logger"] == self.get_argument_logger_name():
                     return logger
             raise ValidationError(
                 f"logger {self.get_argument_logger_name().lower()} does not exists, please use the exist logger name")
         else:
-            return self._list_java_loggers(containerapp_def)
+            return self._list_java_loggers(self.containerapp_def)
 
     def delete(self):
-        containerapp_def = self._get_containerapp(self.cmd, self.get_argument_resource_group_name(),
-                                                  self.get_argument_name())
-
-        if not self._check_java_agent_enabled(containerapp_def):
-            raise ValidationError(
-                "The containerapp '{}' does not enable java agent, please run `az containerapp java --enable-java-agent true` to enable java agent".format(
-                    self.get_argument_name()))
-
         if self.get_argument_all() is not None:
             new_loggers = []
         else:
-            loggers = self._list_java_loggers(containerapp_def)
+            loggers = self._list_java_loggers(self.containerapp_def)
             exist_loggers = [logger["logger"].lower() for logger in loggers]
             if self.get_argument_logger_name().lower() not in exist_loggers:
                 raise ValidationError(
                     f"logger {self.get_argument_logger_name().lower()} does not exists, please use the exist logger name")
             new_loggers = list(filter(lambda logger: logger["logger"] != self.get_argument_logger_name(), loggers))
 
-        self._construct_loggers(containerapp_def, new_loggers)
+        self._construct_payload(new_loggers)
 
         try:
             r = self.client.create_or_update(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                name=self.get_argument_name(), container_app_envelope=containerapp_def,
+                name=self.get_argument_name(), container_app_envelope=self.containerapp_def,
                 no_wait=self.get_argument_no_wait())
             if 'loggerSettings' in r["properties"]['configuration']['runtime']['java']['javaAgent']['logging']:
                 return r["properties"]['configuration']['runtime']['java']['javaAgent']['logging']['loggerSettings']
