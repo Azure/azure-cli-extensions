@@ -491,7 +491,7 @@ def aks_create(
     disable_public_fqdn=False,
     service_principal=None,
     client_secret=None,
-    enable_managed_identity=True,
+    enable_managed_identity=False,
     assign_identity=None,
     assign_kubelet_identity=None,
     enable_aad=False,
@@ -603,6 +603,7 @@ def aks_create(
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
     enable_network_observability=None,
+    enable_advanced_network_observability=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -827,6 +828,8 @@ def aks_update(
     safeguards_excluded_ns=None,
     enable_network_observability=None,
     disable_network_observability=None,
+    enable_advanced_network_observability=None,
+    disable_advanced_network_observability=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,

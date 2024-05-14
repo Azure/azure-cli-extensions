@@ -797,6 +797,12 @@ def load_arguments(self, _):
             help="enable network observability for cluster",
         )
         c.argument(
+            "enable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="enable advanced network observability functionalities for cluster",
+        )
+        c.argument(
             "custom_ca_trust_certificates",
             options_list=["--custom-ca-trust-certificates", "--ca-certs"],
             is_preview=True,
@@ -1278,6 +1284,18 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
             help="disable network observability for cluster",
+        )
+        c.argument(
+            "enable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="enable advanced network observability functionalities for cluster",
+        )
+        c.argument(
+            "disable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="disable advanced network observability functionalities for cluster",
         )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")

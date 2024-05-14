@@ -9,6 +9,10 @@ upcoming
 * 'az containerapp env java-component eureka-server-for-spring': Support create/update/show/delete Spring Cloud Eureka; deprecation of 'az containerapp env java-component spring-cloud-eureka'
 * 'az containerapp up': Fix InvalidResourceType error when cloud is not AzureCloud
 * 'az containerapp create/update': Support enable or disable Java metrics with --runtime and --enable-java-metrics
+* 'az containerapp env create/update': Support peer-to-peer traffic encryption with --enable-peer-to-peer-encryption
+* 'az containerapp update': Fix --scale-rule-tcp-concurrency for TCP scale rule
+* 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
+* 'az containerapp up': Fix an issue about creating resource group automatically
 
 0.3.50
 ++++++

@@ -319,10 +319,11 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
-        time.sleep(30)
+        time.sleep(60)
 
         self.cmd('containerapp env show -n {} -g {}'.format(env, resource_group), checks=[
             JMESPathCheck('name', env),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
             JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
         ])
@@ -335,6 +336,21 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         self.assertEqual(profiles[0]["properties"]["workloadProfileType"].lower(), "consumption")
 
         self.cmd("az containerapp env workload-profile add -g {} -n {} --workload-profile-name my-d4 --workload-profile-type D4 --min-nodes 2 --max-nodes 3".format(resource_group, env))
+        containerapp_env = self.cmd(
+            'containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd(
+                'containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        time.sleep(30)
+
+        self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env), checks=[
+            JMESPathCheck('name', env),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
+        ]).get_output_in_json()
 
         self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/k8se/quickstart:latest --revision-suffix suf1 --environment {} -n {} --workload-profile-name my-d4 --cpu 0.5 --memory 1Gi".format(resource_group, env, app1))
 

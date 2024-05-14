@@ -346,3 +346,6 @@ def load_arguments(self, _):
         c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services, bindings or other Java components to be connected to this Java Component. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
         c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services, bindings or Java components to be removed from this app. e.g. BIND_NAME1...")
         c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value>\" \"<propertyName>=<value>\"...")
+
+    with self.argument_context('containerapp env', arg_group='Peer Traffic Configuration') as c:
+        c.argument('p2p_encryption_enabled', arg_type=get_three_state_flag(), options_list=['--enable-peer-to-peer-encryption'], is_preview=True, help='Boolean indicating whether the peer-to-peer traffic encryption is enabled for the environment.')

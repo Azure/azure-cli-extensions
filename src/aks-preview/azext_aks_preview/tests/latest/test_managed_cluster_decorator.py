@@ -1010,6 +1010,71 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_5.get_enable_network_observability(), False)
 
+    def test_mc_get_enable_advanced_network_observability(self):
+        # Default, not set.
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_advanced_network_observability(), None)
+
+        # Flag set to True.
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_advanced_network_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_advanced_network_observability(), True)
+
+        # Flag set to True.
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_advanced_network_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_3.get_enable_advanced_network_observability(), True)
+
+        # Flag set to True and False.
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_advanced_network_observability": True,
+                    "disable_advanced_network_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on get_enable_network_observability mutual exclusive error
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_4.get_enable_advanced_network_observability()
+
+        # Flag set to False.
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_advanced_network_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_5.get_enable_advanced_network_observability(), False)
+
     def test_get_enable_managed_identity(self):
         # custom value
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -1020,9 +1085,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        # fail on enable_managed_identity not specified
-        with self.assertRaises(RequiredArgumentMissingError):
-            self.assertEqual(ctx_1.get_enable_managed_identity(), False)
+        # managed identity is enabled if sp is not provided
+        self.assertEqual(ctx_1.get_enable_managed_identity(), True)
+        self.assertEqual(ctx_1.get_enable_managed_identity(), True)
 
         # custom value
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -1058,9 +1123,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             pod_identity_profile=pod_identity_profile,
         )
         ctx_1.attach_mc(mc)
-        # fail on enable_managed_identity not specified
-        with self.assertRaises(RequiredArgumentMissingError):
-            self.assertEqual(ctx_1.get_enable_pod_identity(), True)
+        self.assertEqual(ctx_1.get_enable_pod_identity(), True)
 
         # custom value
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -3887,6 +3950,16 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             mode="Istio",
             istio=self.models.IstioServiceMesh(revisions=["asm-1-17", "asm-1-18"]),
         ))
+    
+    def test_get_disable_local_accounts(self):
+        # automatic cluster needs to enable the disable_local_accounts
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"sku": "automatic"}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_disable_local_accounts(), True)
 
     def test_get_sku_name(self):
         ctx1 = AKSPreviewManagedClusterContext(
