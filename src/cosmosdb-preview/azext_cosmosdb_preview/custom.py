@@ -55,10 +55,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ManagedServiceIdentity,
     AnalyticalStorageConfiguration,
     ManagedServiceIdentityUserAssignedIdentity,
-    MongoCluster,
-    NodeGroupSpec,
-    NodeKind,
-    FirewallRule,
     CosmosCassandraDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
     CosmosMongoDataTransferDataSourceSink
@@ -113,7 +109,7 @@ def cli_cosmosdb_mongocluster_firewall_rule_create(client,
 
     '''Creates an Azure Cosmos DB Mongo Cluster Firewall rule'''
 
-    firewall_rule = FirewallRule(start_ip_address=start_ip_address, end_ip_address=end_ip_address)
+    firewall_rule = None
 
     return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, rule_name, firewall_rule)
 
@@ -135,7 +131,7 @@ def cli_cosmosdb_mongocluster_firewall_rule_update(client,
     if end_ip_address is None:
         end_ip_address = mongo_cluster_firewallRule.endIpAddress
 
-    firewall_rule = FirewallRule(start_ip_address=start_ip_address, end_ip_address=end_ip_address)
+    firewall_rule = None
 
     return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, rule_name, firewall_rule)
 
@@ -179,23 +175,10 @@ def cli_cosmosdb_mongocluster_create(client,
     if ((administrator_login is None and administrator_login_password is not None) or (administrator_login is not None and administrator_login_password is None)):
         raise InvalidArgumentValueError('Both(administrator_login and administrator_login_password) Mongo Cluster admin user parameters must be provided together')
 
-    node_group_spec = NodeGroupSpec(
-        sku=shard_node_tier,
-        disk_size_gb=shard_node_disk_size_gb,
-        enable_ha=shard_node_ha,
-        kind=NodeKind.SHARD.value,
-        node_count=shard_node_count
-    )
+    node_group_spec = None
 
     node_group_specs = [node_group_spec]
-    mongodb_cluster = MongoCluster(
-        location=location,
-        tags=tags,
-        create_mode=CreateMode.DEFAULT.value,
-        administrator_login=administrator_login,
-        administrator_login_password=administrator_login_password,
-        server_version=server_version,
-        node_group_specs=node_group_specs)
+    mongodb_cluster = None
 
     return client.begin_create_or_update(resource_group_name, cluster_name, mongodb_cluster)
 
@@ -239,23 +222,10 @@ def cli_cosmosdb_mongocluster_update(client,
     if shard_node_ha is None:
         shard_node_ha = mongo_cluster_resource.node_group_specs[0].enable_ha
 
-    node_group_spec = NodeGroupSpec(
-        sku=shard_node_tier,
-        disk_size_gb=shard_node_disk_size_gb,
-        enable_ha=shard_node_ha,
-        kind=NodeKind.SHARD.value,
-        node_count=None,
-    )
+    node_group_spec = None
 
     node_group_specs = [node_group_spec]
-    mongodb_cluster = MongoCluster(
-        location=location,
-        tags=tags,
-        create_mode=CreateMode.DEFAULT.value,
-        administrator_login=administrator_login,
-        administrator_login_password=administrator_login_password,
-        server_version=server_version,
-        node_group_specs=node_group_specs)
+    mongodb_cluster = None
 
     return client.begin_create_or_update(resource_group_name, cluster_name, mongodb_cluster)
 
