@@ -13,7 +13,7 @@ from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer, SpringSubResourceWrapper)
 
 
-class PrivateDnsZoneTests(BasicTest):
+class PrivateDnsZoneTests(ScenarioTest):
 
     @SpringResourceGroupPreparer(
         dev_setting_name=SpringTestEnvironmentEnum.STANDARD_VNet['resource_group_name'])
