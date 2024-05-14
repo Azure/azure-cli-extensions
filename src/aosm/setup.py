@@ -36,7 +36,7 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     "oras~=0.1.19",
     "azure-storage-blob>=12.15.0",
-    "jinja2>=3.1.2",
+    "jinja2>=3.1.4",
     "genson>=1.2.2",
     "ruamel.yaml>=0.17.4",
 ]
