@@ -233,4 +233,4 @@ def _validate_job_has_been_deployed(cmd, namespace):
     if job.properties.source is None:
         raise ClientRequestError('Please deploy to your job before starting it. You can deploy with following exmaple command and learn more from `az spring job deploy --help`.\n'
                                  'Example: `az spring job deploy --name {} --service {} --resource-group {} --source-path /path/to/source/code/folder`'.format(
-            namespace.name, namespace.service, namespace.resource_group))
+                                    namespace.name, namespace.service, namespace.resource_group))
