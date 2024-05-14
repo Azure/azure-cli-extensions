@@ -79,6 +79,7 @@ from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from .java_component_decorator import JavaComponentDecorator
+from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -96,6 +97,7 @@ from ._clients import (
     ConnectedEnvStorageClient,
     ConnectedEnvCertificateClient,
     JavaComponentPreviewClient,
+    SessionPoolPreviewClient,
     DotNetComponentPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
@@ -2643,6 +2645,123 @@ def list_environment_telemetry_otlp(cmd,
         handle_non_404_status_code_exception(e)
 
     return containerapp_env_def
+
+
+def create_session_pool(cmd,
+                        name,
+                        resource_group_name,
+                        location=None,
+                        managed_env=None,
+                        container_type=None,
+                        cooldown_period=None,
+                        secrets=None,
+                        network_status=None,
+                        max_concurrent_sessions=None,
+                        ready_session_instances=None,
+                        image=None,
+                        container_name=None,
+                        cpu=None,
+                        memory=None,
+                        env_vars=None,
+                        startup_command=None,
+                        args=None,
+                        target_port=None,
+                        registry_server=None,
+                        registry_pass=None,
+                        registry_user=None):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolCreateDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.validate_arguments()
+    session_pool_decorator.register_provider(CONTAINER_APPS_RP)
+
+    session_pool_decorator.construct_payload()
+    r = session_pool_decorator.create()
+
+    return r
+
+
+def update_session_pool(cmd,
+                        name,
+                        resource_group_name,
+                        location=None,
+                        cooldown_period=None,
+                        secrets=None,
+                        network_status=None,
+                        max_concurrent_sessions=None,
+                        ready_session_instances=None,
+                        image=None,
+                        container_name=None,
+                        cpu=None,
+                        memory=None,
+                        env_vars=None,
+                        startup_command=None,
+                        args=None,
+                        target_port=None,
+                        registry_server=None,
+                        registry_pass=None,
+                        registry_user=None):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolUpdateDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.construct_payload()
+    r = session_pool_decorator.update()
+
+    return r
+
+
+def show_session_pool(cmd,
+                      name,
+                      resource_group_name):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolPreviewDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    r = session_pool_decorator.show()
+
+    return r
+
+
+def list_session_pool(cmd,
+                      resource_group_name=None):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolPreviewDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    r = session_pool_decorator.list()
+
+    return r
+
+
+def delete_session_pool(cmd,
+                        name,
+                        resource_group_name):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolPreviewDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    r = session_pool_decorator.delete()
+
+    return r
 
 
 def list_dotnet_components(cmd, environment_name, resource_group_name):
