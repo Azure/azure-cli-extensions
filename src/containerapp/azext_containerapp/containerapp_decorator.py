@@ -645,7 +645,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind is single.")
-        validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics())
+        validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -955,17 +955,20 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             return ManagedEnvironmentPreviewClient
 
     def set_up_runtime(self):
-        if self.get_argument_runtime() is not None or self.get_argument_enable_java_metrics() is not None:
-            runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_metrics())
+        if self.get_argument_runtime() is not None or self.get_argument_enable_java_metrics() is not None or self.get_argument_enable_java_agent() is not None:
+            runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
             runtime_def = None  # default value for runtime_option == RUNTIME_GENERIC, set None to erase runtime info
             if runtime_option == RUNTIME_JAVA:
-                if self.get_argument_enable_java_metrics() is None:
+                if self.get_argument_enable_java_metrics() is None and self.get_argument_enable_java_agent() is None:
                     runtime_def = {
                         "java": {}  # empty to keep or setup default java runtime
                     }
                 else:
                     runtime_java_def = RuntimeJavaModel
-                    runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics()
+                    if self.get_argument_enable_java_metrics() is not None:
+                        runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics()
+                    if self.get_argument_enable_java_agent() is not None:
+                        runtime_java_def["javaAgent"]["enabled"] = self.get_argument_enable_java_agent()
                     runtime_def = {
                         "java": runtime_java_def
                     }
@@ -1019,6 +1022,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_enable_java_metrics(self):
         return self.get_param("enable_java_metrics")
 
+    def get_argument_enable_java_agent(self):
+        return self.get_param("enable_java_agent")
+
 
 # decorator for preview update
 class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
@@ -1055,6 +1061,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_enable_java_metrics(self):
         return self.get_param("enable_java_metrics")
 
+    def get_argument_enable_java_agent(self):
+        return self.get_param("enable_java_agent")
+
     # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is
     def get_argument_force_single_container_updates(self):
         return self.get_param("force_single_container_updates")
@@ -1064,7 +1073,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError(
                 "--bind have multiple values, but --customized-keys only can be set when --bind is single.")
-        validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics())
+        validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
 
     def construct_payload(self):
         super().construct_payload()
@@ -1270,20 +1279,25 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         return c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_force_single_container_updates()
 
     def set_up_runtime(self):
-        if self.get_argument_runtime() is not None or self.get_argument_enable_java_metrics() is not None:
-            runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_metrics())
+        if self.get_argument_runtime() is not None or self.get_argument_enable_java_metrics() is not None or self.get_argument_enable_java_agent() is not None:
+            runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
             runtime_def = None  # default value for runtime_option == RUNTIME_GENERIC, set None to erase runtime info
             if runtime_option == RUNTIME_JAVA:
-                if self.get_argument_enable_java_metrics() is None:
-                    runtime_def = {
-                        "java": {}  # empty to keep or setup default java runtime
-                    }
-                else:
-                    runtime_java_def = RuntimeJavaModel
+                runtime_java_def = {}
+                if self.get_argument_enable_java_metrics() is not None:
                     runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics()
-                    runtime_def = {
-                        "java": runtime_java_def
-                    }
+
+                if self.get_argument_enable_java_agent() is not None:
+                    runtime_java_def["javaAgent"] = {}
+                    runtime_java_def["javaAgent"]["enabled"] = self.get_argument_enable_java_agent()
+                    if self.get_argument_enable_java_agent() == False:
+                        runtime_java_def["javaAgent"]["logging"] = { # clear logger settings when disable java agent
+                            "loggerSettings": []
+                        }
+
+                runtime_def = {
+                    "java": runtime_java_def
+                }
             safe_set(self.new_containerapp, "properties", "configuration", "runtime", value=runtime_def)
 
 

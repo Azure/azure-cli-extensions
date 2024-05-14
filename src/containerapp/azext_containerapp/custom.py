@@ -53,6 +53,7 @@ from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertif
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
+from .java_decorator import JavaLoggerDecorator
 from .containerapp_resiliency_decorator import (
     ContainerAppResiliencyPreviewCreateDecorator,
     ContainerAppResiliencyPreviewShowDecorator,
@@ -471,7 +472,8 @@ def create_containerapp(cmd,
                         service_principal_tenant_id=None,
                         max_inactive_revisions=None,
                         runtime=None,
-                        enable_java_metrics=None):
+                        enable_java_metrics=None,
+                        enable_java_agent=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -532,7 +534,8 @@ def update_containerapp_logic(cmd,
                               max_inactive_revisions=None,
                               force_single_container_updates=False,
                               runtime=None,
-                              enable_java_metrics=None):
+                              enable_java_metrics=None,
+                              enable_java_agent=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -585,7 +588,8 @@ def update_containerapp(cmd,
                         build_env_vars=None,
                         max_inactive_revisions=None,
                         runtime=None,
-                        enable_java_metrics=None):
+                        enable_java_metrics=None,
+                        enable_java_agent=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -623,7 +627,8 @@ def update_containerapp(cmd,
                                      build_env_vars=build_env_vars,
                                      max_inactive_revisions=max_inactive_revisions,
                                      runtime=runtime,
-                                     enable_java_metrics=enable_java_metrics)
+                                     enable_java_metrics=enable_java_metrics,
+                                     enable_java_agent=enable_java_agent)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -2640,3 +2645,49 @@ def list_environment_telemetry_otlp(cmd,
 
     return containerapp_env_def
 
+def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+
+    java_logger_decorator = JavaLoggerDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return java_logger_decorator.create_or_update_logger()
+
+def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
+    if all is None and logger_name is None:
+        raise CLIError(
+            'Either of --logger-name/--all needs to be specified.')
+
+    if all is not None and logger_name is not None:
+        raise CLIError(
+            'Both --logger-name and --all cannot be specified together.')
+
+    raw_parameters = locals()
+    java_logger_decorator = JavaLoggerDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return java_logger_decorator.delete_logger()
+
+def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
+    if all is None and logger_name is None:
+        raise CLIError(
+            'Either of --logger-name/--all needs to be specified.')
+
+    if all is not None and logger_name is not None:
+        raise CLIError(
+            'Both --logger-name and --all cannot be specified together.')
+
+    raw_parameters = locals()
+    java_logger_decorator = JavaLoggerDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return java_logger_decorator.show_logger()

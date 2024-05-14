@@ -589,5 +589,14 @@ CustomDomainConfiguration = {
 }
 
 RuntimeJava = {
-    "enableMetrics": False
+    "enableMetrics": False,
+    "javaAgent": {
+        "enabled": False,
+        "logging": {}
+    }
+}
+
+JavaLoggerSetting = {
+    "logger": None,
+    "level": None
 }

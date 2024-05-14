@@ -50,9 +50,10 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
         raise InvalidArgumentValueError("--registry-identity: expected an ACR registry (*.azurecr.io) for --registry-server")
 
 
-def validate_runtime(runtime, enable_java_metrics):
-    if runtime and runtime.lower() == RUNTIME_GENERIC and enable_java_metrics is not None:
-        raise ValidationError("Not support enable Java metrics with --enable-java-metrics for generic runtime with --runtime generic")
+def validate_runtime(runtime, enable_java_metrics, enable_java_agent):
+    if runtime and runtime.lower() == RUNTIME_GENERIC and (enable_java_metrics is not None or enable_java_agent is not None):
+        raise ValidationError("Not support enable Java metrics or Java agent enhancement "
+                              "with --enable-java-metrics or --enable-java-agent for generic runtime with --runtime generic")
 
 
 def validate_env_name_or_id(cmd, namespace):

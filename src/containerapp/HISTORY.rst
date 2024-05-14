@@ -13,6 +13,11 @@ upcoming
 * 'az containerapp update': Fix --scale-rule-tcp-concurrency for TCP scale rule
 * 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
 * 'az containerapp up': Fix an issue about creating resource group automatically
+* 'az containerapp create/update': Support enable or disable Java agent with --runtime and --enable-java-agent
+* 'az containerapp java logger set': Support create/update java logger setting with --logger-name and --logger-level
+* 'az containerapp java logger delete': Support delete java logger setting with --logger-name and --all
+* 'az containerapp java logger show': Support display java logger setting with --logger-name and --all
+
 
 0.3.50
 ++++++
