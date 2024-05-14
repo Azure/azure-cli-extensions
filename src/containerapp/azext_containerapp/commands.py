@@ -210,3 +210,22 @@ def load_command_table(self, args):
 
     with self.command_group('containerapp job replica') as g:
         g.custom_show_command('list', 'list_replica_containerappsjob')
+    
+    with self.command_group('containerapp env dotnet-component', is_preview=True) as g:
+        g.custom_command('list', 'list_dotnet_components')
+        g.custom_show_command('show', 'show_dotnet_component')
+        g.custom_command('create', 'create_dotnet_component', supports_no_wait=True)
+        g.custom_command('delete', 'delete_dotnet_component', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp env dotnet-component', is_preview=True) as g:
+        g.custom_command('list', 'list_dotnet_components')
+        g.custom_show_command('show', 'show_dotnet_component')
+        g.custom_command('create', 'create_dotnet_component', supports_no_wait=True)
+        g.custom_command('delete', 'delete_dotnet_component', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp sessionpool', is_preview=True) as g:
+        g.custom_show_command('show', 'show_session_pool')
+        g.custom_show_command('list', 'list_session_pool')
+        g.custom_command('create', 'create_session_pool', supports_no_wait=True)
+        g.custom_command('update', 'update_session_pool', supports_no_wait=True)
+        g.custom_command('delete', 'delete_session_pool', confirmation=True, supports_no_wait=True)
