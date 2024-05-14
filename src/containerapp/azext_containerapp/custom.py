@@ -10,6 +10,8 @@ from urllib.parse import urlparse
 import json
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
+from ._constants import DOTNET_COMPONENT_RESOURCE_TYPE
+
 
 from azure.cli.core import telemetry as telemetry_core
 from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
@@ -77,6 +79,8 @@ from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from .java_component_decorator import JavaComponentDecorator
+from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
+from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
     GitHubActionPreviewClient,
@@ -92,7 +96,9 @@ from ._clients import (
     ConnectedEnvironmentClient,
     ConnectedEnvStorageClient,
     ConnectedEnvCertificateClient,
-    JavaComponentPreviewClient
+    JavaComponentPreviewClient,
+    SessionPoolPreviewClient,
+    DotNetComponentPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -2758,3 +2764,183 @@ def list_environment_telemetry_otlp(cmd,
         handle_non_404_status_code_exception(e)
 
     return containerapp_env_def
+
+
+def create_session_pool(cmd,
+                        name,
+                        resource_group_name,
+                        location=None,
+                        managed_env=None,
+                        container_type=None,
+                        cooldown_period=None,
+                        secrets=None,
+                        network_status=None,
+                        max_concurrent_sessions=None,
+                        ready_session_instances=None,
+                        image=None,
+                        container_name=None,
+                        cpu=None,
+                        memory=None,
+                        env_vars=None,
+                        startup_command=None,
+                        args=None,
+                        target_port=None,
+                        registry_server=None,
+                        registry_pass=None,
+                        registry_user=None):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolCreateDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.validate_arguments()
+    session_pool_decorator.register_provider(CONTAINER_APPS_RP)
+
+    session_pool_decorator.construct_payload()
+    r = session_pool_decorator.create()
+
+    return r
+
+
+def update_session_pool(cmd,
+                        name,
+                        resource_group_name,
+                        location=None,
+                        cooldown_period=None,
+                        secrets=None,
+                        network_status=None,
+                        max_concurrent_sessions=None,
+                        ready_session_instances=None,
+                        image=None,
+                        container_name=None,
+                        cpu=None,
+                        memory=None,
+                        env_vars=None,
+                        startup_command=None,
+                        args=None,
+                        target_port=None,
+                        registry_server=None,
+                        registry_pass=None,
+                        registry_user=None):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolUpdateDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.construct_payload()
+    r = session_pool_decorator.update()
+
+    return r
+
+
+def show_session_pool(cmd,
+                      name,
+                      resource_group_name):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolPreviewDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    r = session_pool_decorator.show()
+
+    return r
+
+
+def list_session_pool(cmd,
+                      resource_group_name=None):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolPreviewDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    r = session_pool_decorator.list()
+
+    return r
+
+
+def delete_session_pool(cmd,
+                        name,
+                        resource_group_name):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolPreviewDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    r = session_pool_decorator.delete()
+
+    return r
+
+
+def list_dotnet_components(cmd, environment_name, resource_group_name):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return dotnet_component_decorator.list()
+
+
+def show_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    result = dotnet_component_decorator.show()
+    if result is not None:
+        logger.warning("Found DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
+
+    component_type = safe_get(result, "properties", "componentType")
+    if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
+        aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
+        logger.warning("Aspire Dashboard URL: %s.", aspire_dashboard_url)
+    return result
+
+
+def delete_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    logger.warning("Deleting DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
+    dotnet_component_decorator.delete()
+    logger.warning("Successfully deleted DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
+
+
+def create_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, dotnet_component_type=DOTNET_COMPONENT_RESOURCE_TYPE, no_wait=False):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    dotnet_component_decorator.construct_payload()
+    logger.warning("Creating DotNet Component '%s' in environment '%s' in resource group '%s.", dotnet_component_name, environment_name, resource_group_name)
+    r = dotnet_component_decorator.create()
+    if r is not None:
+        logger.warning("Successfully created DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
+    component_type = safe_get(r, "properties", "componentType")
+    if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
+        aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
+        logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
+    return
