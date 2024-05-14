@@ -205,6 +205,18 @@ def load_command_table(self, args):
         g.custom_show_command('show', 'show_eureka_server_for_spring')
         g.custom_command('delete', 'delete_eureka_server_for_spring', confirmation=True, supports_no_wait=True)
 
+    with self.command_group('containerapp env dotnet-component', is_preview=True) as g:
+        g.custom_command('list', 'list_dotnet_components')
+        g.custom_show_command('show', 'show_dotnet_component')
+        g.custom_command('create', 'create_dotnet_component', supports_no_wait=True)
+        g.custom_command('delete', 'delete_dotnet_component', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp env dotnet-component', is_preview=True) as g:
+        g.custom_command('list', 'list_dotnet_components')
+        g.custom_show_command('show', 'show_dotnet_component')
+        g.custom_command('create', 'create_dotnet_component', supports_no_wait=True)
+        g.custom_command('delete', 'delete_dotnet_component', confirmation=True, supports_no_wait=True)
+
     with self.command_group('containerapp sessionpool', is_preview=True) as g:
         g.custom_show_command('show', 'show_session_pool')
         g.custom_show_command('list', 'list_session_pool')

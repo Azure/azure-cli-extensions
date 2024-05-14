@@ -1684,3 +1684,49 @@ helps['containerapp sessionpool list'] = """
           az containerapp sessionpool list -g MyResourceGroup
 """
 
+# DotNet Components Commands
+helps['containerapp env dotnet-component'] = """
+    type: group
+    short-summary: Commands to manage DotNet components within the environment.
+"""
+
+helps['containerapp env dotnet-component list'] = """
+    type: command
+    short-summary: Command to list DotNet components within the environment.
+    examples:
+    - name: List all DotNet components within an environment.
+      text: |
+          az containerapp env dotnet-component list -g MyResourceGroup --environment MyEnvironment
+"""
+
+helps['containerapp env dotnet-component create'] = """
+    type: command
+    short-summary: Command to create DotNet component to enable Aspire Dashboard. Supported DotNet component type is Aspire Dashboard.
+    examples:
+    - name: Create a DotNet component to enable Aspire Dashboard.
+      text: |
+          az containerapp env dotnet-component create -g MyResourceGroup \\
+              -n MyDotNetComponentName \\
+              --environment MyEnvironment \\
+              --type AspireDashboard
+"""
+
+helps['containerapp env dotnet-component delete'] = """
+    type: command
+    short-summary: Command to delete DotNet component to disable Aspire Dashboard.
+    examples:
+    - name: Delete DotNet component.
+      text: |
+          az containerapp env dotnet-component delete -g MyResourceGroup \\
+              -n MyDotNetComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env dotnet-component show'] = """
+    type: command
+    short-summary: Command to show DotNet component in environment.
+    examples:
+    - name: Show the details of an environment.
+      text: |
+          az containerapp env dotnet-component show -n MyDotNetComponentName --environment MyContainerappEnvironment -g MyResourceGroup
+"""
