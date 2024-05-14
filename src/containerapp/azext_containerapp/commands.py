@@ -208,4 +208,4 @@ def load_command_table(self, args):
     with self.command_group('containerapp java logger') as g:
         g.custom_command('set', 'create_or_update_java_logger', is_preview=True)
         g.custom_command('delete', 'delete_java_logger', is_preview=True)
-        g.custom_command('show', 'show_java_logger', is_preview=True)
+        g.custom_show_command('show', 'show_java_logger', is_preview=True)
