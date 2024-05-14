@@ -920,6 +920,8 @@ def load_arguments(self, _):
             is_preview=True,
             arg_type=get_enum_type(health_probe_modes),
         )
+        c.argument("if_match")
+        c.argument("if_none_match")
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1511,6 +1513,8 @@ def load_arguments(self, _):
             is_preview=True,
             action="store_true"
         )
+        c.argument("if_match")
+        c.argument("if_none_match")
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(

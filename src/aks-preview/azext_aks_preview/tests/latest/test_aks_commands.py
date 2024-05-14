@@ -4247,7 +4247,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "nodepool2_name": "npwin",
                 "ssh_key_value": self.generate_ssh_keys(),
                 "if_match": "*",
-                "if_none_match": "*"
             }
         )
 
@@ -4277,7 +4276,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update Windows license type
         self.cmd(
-            "aks update --resource-group={resource_group} --name={name} --enable-ahub",
+            "aks update --resource-group={resource_group} --name={name} --enable-ahub --if-match={if_match}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("windowsProfile.licenseType", "Windows_Server"),

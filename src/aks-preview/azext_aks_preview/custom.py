@@ -644,6 +644,8 @@ def aks_create(
     enable_secure_boot=False,
     enable_vtpm=False,
     cluster_service_load_balancer_health_probe_mode=None,
+    if_match=None,
+    if_none_match=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1289,6 +1291,8 @@ def aks_agentpool_add(
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    if_match=None,
+    if_none_match=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

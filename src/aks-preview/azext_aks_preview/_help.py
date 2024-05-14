@@ -628,6 +628,12 @@ helps['aks create'] = f"""
         - name: --bootstrap-container-registry-resource-id
           type: string
           short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
+        - name: --if-match
+          type: string
+          short-summary: The ETag of the managed cluster. Omit this value to create a managed cluster.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -1817,6 +1823,12 @@ helps['aks nodepool add'] = """
         - name: --enable-vtpm
           type: bool
           short-summary: Enable vTPM on agent node pool. Must use VMSS agent pool type.
+        - name: --if-match
+          type: string
+          short-summary: The ETag of the agentpool. Omit this value to create an agentpool.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new agentpool to be created, but to prevent updating an existing agentpool. Other values will be ignored.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
