@@ -2684,7 +2684,7 @@ def delete_dotnet_component(cmd, dotnet_component_name, environment_name, resour
         models=CONTAINER_APPS_SDK_MODELS
     )
     validation_error = "DotNet Component '{}' does not exist in environment '{}' in resource group '{}'.".format(dotnet_component_name, environment_name, resource_group_name)
-    dotnet_component_decorator.validate_arguments(dotnet_component_name, environment_name, resource_group_name, validation_error)
+    dotnet_component_decorator.validate_delete_arguments(dotnet_component_name, environment_name, resource_group_name, validation_error)
     logger.warning("Deleting DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
     dotnet_component_decorator.delete()
     logger.warning("Successfully deleted DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
@@ -2699,7 +2699,7 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
         models=CONTAINER_APPS_SDK_MODELS
     )
     validation_error = "DotNet Component '{}' already exists in environment '{}' in resource group '{}'. Please delete the DotNet Component before creating a new one.".format(dotnet_component_name, environment_name, resource_group_name)
-    dotnet_component_decorator.validate_arguments(dotnet_component_name, environment_name, resource_group_name, validation_error)
+    dotnet_component_decorator.validate_create_arguments(dotnet_component_name, environment_name, resource_group_name, validation_error)
     dotnet_component_decorator.construct_payload()
     logger.warning("Creating DotNet Component '%s' in environment '%s' in resource group '%s.", dotnet_component_name, environment_name, resource_group_name)
     r = dotnet_component_decorator.create()
