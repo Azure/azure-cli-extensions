@@ -1687,7 +1687,7 @@ helps['containerapp sessionpool list'] = """
 # code interpreter commands
 helps['containerapp session'] = """
     type: group
-    short-summary: Commands to manage sessions.
+    short-summary: Commands to manage sessions.To learn more about individual commands under each subgroup run containerapp session [subgroup name] --help.
 """
 
 helps['containerapp session code-interpreter execute'] = """

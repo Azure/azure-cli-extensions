@@ -1034,15 +1034,14 @@ class SessionPoolPreviewClient():
         except Exception as e:
             try:
                 if isinstance(e, HTTPError):
-                    try:
-                        error_code = json.loads(e.response.text)["error"]["code"]
-                        if error_code == "RoleAssignmentExists":
-                            pass
-                    except:
-                        logger.warning("Could not add user as session pool creator role to the session pool, please follow the docs https://learn.microsoft.com/en-us/azure/container-apps/sessions-code-interpreter to add this role through portal")
-                        logger.warning(e)
+                    error_code = json.loads(e.response.text)["error"]["code"]
+                    if error_code == "RoleAssignmentExists":
+                        pass
+                else:
+                    logger.warning("Could not add user as session pool creator role to the session pool, please follow the docs https://learn.microsoft.com/en-us/azure/container-apps/sessions-code-interpreter?tabs=azure-cli#authentication to add the needed roll for authentication")
+                    logger.warning(e)
             except:
-                logger.warning("Could not add user as session pool creator role to the session pool, please follow the docs https://learn.microsoft.com/en-us/azure/container-apps/sessions-code-interpreter to add this role through portal")
+                logger.warning("Could not add user as session pool creator role to the session pool, please follow the docs https://learn.microsoft.com/en-us/azure/container-apps/sessions-code-interpreter?tabs=azure-cli#authentication to add the needed roll for authentication")
                 logger.warning(e)
 
         if no_wait:
@@ -1237,11 +1236,11 @@ class SessionCodeInterpreterPreviewClient():
             filename,
             identifier,
             PREVIEW_API_VERSION)
-        logger.warning(request_url)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
-        return json.dumps(r.content.decode())
-
+        # print out the file content as bytes decoded as string
+        logger.warning(r.content.decode())
+    
     @classmethod
     def show_file_metadata(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):
         url_fmt = "{}/files/{}?identifier={}&api-version={}"
