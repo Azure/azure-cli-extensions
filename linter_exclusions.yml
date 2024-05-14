@@ -377,6 +377,14 @@ containerapp env create:
     platform_reserved_dns_ip:
       rule_exclusions:
       - option_length_too_long
+    p2p_encryption_enabled:
+      rule_exclusions:
+      - option_length_too_long
+containerapp env update:
+  parameters:
+    p2p_encryption_enabled:
+      rule_exclusions:
+      - option_length_too_long
 containerapp github-action add:
   parameters:
     service_principal_client_id:
@@ -2951,13 +2959,16 @@ support services problem-classifications show:
     problem_classification_name:
       rule_exclusions:
       - option_length_too_long
-support tickets communications create:
+support in-subscription communication create:
   parameters:
     communication_subject:
       rule_exclusions:
       - option_length_too_long
-support tickets create:
+support in-subscription tickets create:
   parameters:
+    advanced_diagnostic_consent:
+      rule_exclusions:
+      - option_length_too_long
     contact_additional_emails:
       rule_exclusions:
       - option_length_too_long
@@ -2967,8 +2978,38 @@ support tickets create:
     require_24_by_7_response:
       rule_exclusions:
       - option_length_too_long
-support tickets update:
+support in-subscription tickets update:
   parameters:
+    advanced_diagnostic_consent:
+      rule_exclusions:
+      - option_length_too_long
+    contact_additional_emails:
+      rule_exclusions:
+      - option_length_too_long
+support no-subscription communication create:
+  parameters:
+    communication_subject:
+      rule_exclusions:
+      - option_length_too_long
+support no-subscription tickets create:
+  parameters:
+    advanced_diagnostic_consent:
+      rule_exclusions:
+      - option_length_too_long
+    contact_additional_emails:
+      rule_exclusions:
+      - option_length_too_long
+    problem_classification:
+      rule_exclusions:
+      - option_length_too_long
+    require_24_by_7_response:
+      rule_exclusions:
+      - option_length_too_long
+support no-subscription tickets update:
+  parameters:
+    advanced_diagnostic_consent:
+      rule_exclusions:
+      - option_length_too_long
     contact_additional_emails:
       rule_exclusions:
       - option_length_too_long

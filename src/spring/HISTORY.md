@@ -1,9 +1,13 @@
 Release History
 ===============
-1.23.1
+1.24.1
 ---
 * Add command group `az spring private-dns-zone` to configure constumer private DNS zone with Azure Spring Apps.
 * Add new command `az spring private-dns-zone add`,  `az spring private-dns-zone update` and `az spring private-dns-zone clean`
+
+1.24.0
+---
+* Add Job support
 
 1.23.0
 ---
