@@ -2676,6 +2676,24 @@ def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=Non
     )
     return java_logger_decorator.delete_logger()
 
+def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
+    if all is None and logger_name is None:
+        raise CLIError(
+            'Either of --logger-name/--all needs to be specified.')
+
+    if all is not None and logger_name is not None:
+        raise CLIError(
+            'Both --logger-name and --all cannot be specified together.')
+
+    raw_parameters = locals()
+    java_logger_decorator = JavaLoggerDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return java_logger_decorator.show_logger()
+
 def create_session_pool(cmd,
                         name,
                         resource_group_name,
