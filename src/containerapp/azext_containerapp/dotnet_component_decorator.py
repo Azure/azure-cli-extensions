@@ -80,27 +80,6 @@ class DotNetComponentDecorator(BaseResource):
         except Exception as e:
             handle_raw_exception(e)
 
-    def _get_dotnet_component_if_exists(self, dotnet_component_name, environment_name, resource_group_name):
-        try:
-            return self.client.show(
-                cmd=self.cmd, resource_group_name=resource_group_name,
-                environment_name=environment_name, name=dotnet_component_name)
-        except Exception as e:
-            handle_non_404_status_code_exception(e)
-            return None
-
-    def validate_create_arguments(self, dotnet_component_name, environment_name, resource_group_name, validation_error):
-        # Check if DotNet component already exists in environment
-        existing_dotnet_component = self._get_dotnet_component_if_exists(dotnet_component_name, environment_name, resource_group_name)
-        if existing_dotnet_component:
-            raise ValidationError(validation_error)
-
-    def validate_delete_arguments(self, dotnet_component_name, environment_name, resource_group_name, validation_error):
-        # Check if DotNet component exists in environment
-        existing_dotnet_component = self._get_dotnet_component_if_exists(dotnet_component_name, environment_name, resource_group_name)
-        if not existing_dotnet_component:
-            raise ValidationError(validation_error)
-
     def _get_aspire_dashboard_url(self, environment_name, resource_group_name, dotnet_component_name):
         managed_environment = ManagedEnvironmentPreviewClient.show(self.cmd, resource_group_name, environment_name)
         default_domain = safe_get(managed_environment, "properties", "defaultDomain")
