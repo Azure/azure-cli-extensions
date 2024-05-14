@@ -204,3 +204,10 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_eureka_server_for_spring', supports_no_wait=True)
         g.custom_show_command('show', 'show_eureka_server_for_spring')
         g.custom_command('delete', 'delete_eureka_server_for_spring', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp sessionpool', is_preview=True) as g:
+        g.custom_show_command('show', 'show_session_pool')
+        g.custom_show_command('list', 'list_session_pool')
+        g.custom_command('create', 'create_session_pool', supports_no_wait=True)
+        g.custom_command('update', 'update_session_pool', supports_no_wait=True)
+        g.custom_command('delete', 'delete_session_pool', confirmation=True, supports_no_wait=True)
