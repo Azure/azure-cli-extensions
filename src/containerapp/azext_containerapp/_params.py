@@ -385,16 +385,7 @@ def load_arguments(self, _):
         c.argument('registry_pass', validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in to container registry. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
 
-
-    with self.argument_context('containerapp java logger set') as c:
-        c.argument('logger_name', help="The existing logger name to update or new logger name.")
+    with self.argument_context('containerapp java logger') as c:
+        c.argument('logger_name', help="The logger name.")
         c.argument('logger_level', arg_type=get_enum_type(["off", "error", "info", "debug", "trace", "warn"]), help="Set the log level for the specific logger name. Allowed values: off, error, info, debug, trace, warn.")
-
-    with self.argument_context('containerapp java logger delete') as c:
-        c.argument('logger_name', help="The existing logger name to be deleted.")
-        c.argument('all', help="The flag to indicate delete all logger settings.", action="store_true")
-
-    with self.argument_context('containerapp java logger show') as c:
-        c.argument('logger_name', help="The existing logger name to display.")
-        c.argument('all', help="The flag to indicate display all logger settings.", action="store_true")
-
+        c.argument('all', help="The flag to indicate all logger settings.", action="store_true")

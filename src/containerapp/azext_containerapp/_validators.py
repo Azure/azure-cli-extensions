@@ -51,7 +51,12 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
 
 
 def validate_runtime(runtime, enable_java_metrics, enable_java_agent):
-    if runtime and runtime.lower() == RUNTIME_GENERIC and (enable_java_metrics is not None or enable_java_agent is not None):
+    def is_java_enhancement_enabled():
+        return enable_java_agent is not None or enable_java_metrics is not None
+
+    if runtime is None:
+        return
+    if runtime.lower() == RUNTIME_GENERIC and is_java_enhancement_enabled():
         raise ValidationError("Not support enable Java metrics or Java agent enhancement "
                               "with --enable-java-metrics or --enable-java-agent for generic runtime with --runtime generic")
 

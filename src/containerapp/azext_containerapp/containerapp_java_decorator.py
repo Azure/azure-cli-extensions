@@ -16,12 +16,12 @@ from azure.cli.command_modules.containerapp._utils import _get_existing_secrets
 
 from ._models import JavaLoggerSetting
 
-from ._client_factory import handle_raw_exception
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 
 logger = get_logger(__name__)
 
 
-class JavaLoggerDecorator(BaseResource):
+class ContainerappJavaLoggerDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -43,8 +43,9 @@ class JavaLoggerDecorator(BaseResource):
             containerapp_def = self.client.show(cmd=cmd,
                                                 resource_group_name=resource_group_name,
                                                 name=name)
-        except:
-            pass
+        except Exception as e:
+            handle_non_404_status_code_exception(e)
+
         if not containerapp_def:
             raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
 
@@ -87,7 +88,7 @@ class JavaLoggerDecorator(BaseResource):
         containerapp_def['properties']['configuration']['runtime']['java']['javaAgent']['logging'][
             'loggerSettings'] = loggers
 
-    def create_or_update_logger(self):
+    def create_or_update(self):
         containerapp_def = self._get_containerapp(self.cmd, self.get_argument_resource_group_name(),
                                                   self.get_argument_name())
 
@@ -122,7 +123,7 @@ class JavaLoggerDecorator(BaseResource):
         except Exception as e:
             handle_raw_exception(e)
 
-    def show_logger(self):
+    def show(self):
         containerapp_def = self._get_containerapp(self.cmd, self.get_argument_resource_group_name(),
                                                   self.get_argument_name())
 
@@ -142,7 +143,7 @@ class JavaLoggerDecorator(BaseResource):
         else:
             return self._list_java_loggers(containerapp_def)
 
-    def delete_logger(self):
+    def delete(self):
         containerapp_def = self._get_containerapp(self.cmd, self.get_argument_resource_group_name(),
                                                   self.get_argument_name())
 

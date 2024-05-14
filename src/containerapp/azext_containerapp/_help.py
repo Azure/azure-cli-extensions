@@ -964,7 +964,7 @@ helps['containerapp update'] = """
       text: |
           az containerapp update -n my-containerapp -g MyResourceGroup \\
               --enable-java-agent
-    - name: Update a container app without java metrics/java agent enabled
+    - name: Update a container app to erase java enhancement capabilities, like java metrics, java agent, etc.
       text: |
           az containerapp update -n my-containerapp -g MyResourceGroup \\
               --runtime generic
@@ -1701,7 +1701,7 @@ helps['containerapp java'] = """
 # Java Logging logger Commands
 helps['containerapp java logger'] = """
     type: group
-    short-summary: Dynamic change log level for Java workloads.
+    short-summary: Dynamically change log level for Java workloads.
 """
 
 # Java Logging logger Commands
