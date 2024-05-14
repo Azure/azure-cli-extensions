@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+from copy import deepcopy
 from knack.log import get_logger
 from enum import Enum
 from typing import Any, Dict
@@ -39,7 +40,7 @@ class ContainerType(Enum):
 class SessionPoolPreviewDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
-        self.session_pool_def = SessionPoolModel
+        self.session_pool_def = deepcopy(SessionPoolModel)
         self.existing_pool_def = None
 
     def get_argument_name(self):

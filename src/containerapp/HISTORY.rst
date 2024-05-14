@@ -13,7 +13,7 @@ upcoming
 * 'az containerapp update': Fix --scale-rule-tcp-concurrency for TCP scale rule
 * 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
 * 'az containerapp up': Fix an issue about creating resource group automatically
-* 'az containerapp sessionpool: Support create/update/show/delete/list session pools
+* 'az containerapp sessionpool': Support create/update/show/delete/list session pools
 
 0.3.50
 ++++++
