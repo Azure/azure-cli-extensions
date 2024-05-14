@@ -1658,6 +1658,11 @@ helps['spring component instance list'] = """
           text: az spring component instance list --component spring-cloud-gateway-operator --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
 """
 
+helps['spring job'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage jobs of Azure Spring Apps service.
+"""
+
 helps['spring job create'] = """
     type: command
     short-summary: Create a new job in Azure Spring Apps service.
@@ -1803,9 +1808,4 @@ helps['spring private-dns-zone clean'] = """
     examples:
         - name: Clean up private DNS zone with Azure Spring Apps.
           text: az spring private-dns-zone clean --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
-"""
-
-helps['spring job'] = """
-    type: group
-    short-summary: (Enterprise Tier Only) Commands to manage jobs of Azure Spring Apps service.
 """
