@@ -1130,3 +1130,118 @@ class SessionPoolPreviewClient():
 
         return sessionpools
 
+
+class DotNetComponentPreviewClient():
+    api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def create(cls, cmd, resource_group_name, environment_name, name, dotnet_component_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/dotNetComponents/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(dotnet_component_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            poll_status(cmd, operation_url)
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
+        return r.json()
+
+    @classmethod
+    def update(cls, cmd, resource_group_name, environment_name, name, dotnet_component_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/dotNetComponents/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(dotnet_component_envelope))
+
+        if no_wait:
+            return
+        elif r.status_code == 202:
+            operation_url = r.headers.get(HEADER_LOCATION)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find the DotNet component")
+            else:
+                return response
+
+        return r.json()
+
+    @classmethod
+    def delete(cls, cmd, resource_group_name, environment_name, name, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/dotNetComponents/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+
+        if no_wait:
+            return  # API doesn't return JSON (it returns no content)
+        elif r.status_code in [200, 201, 202, 204]:
+            if r.status_code == 202:
+                operation_url = r.headers.get(HEADER_LOCATION)
+                poll_results(cmd, operation_url)
+
+    @classmethod
+    def show(cls, cmd, resource_group_name, environment_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/dotNetComponents/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
+        return r.json()
+
+    @classmethod
+    def list(cls, cmd, resource_group_name, environment_name):
+        dotNet_component_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/dotNetComponents?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        r = r.json()
+
+        for component in r["value"]:
+            dotNet_component_list.append(component)
+
+        return dotNet_component_list
