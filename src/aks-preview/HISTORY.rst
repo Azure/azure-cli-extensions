@@ -11,7 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+4.0.0b2
++++++++
 * Improve Windows OutboundNat test case by removing Windows OSSKU limitation
+* `az aks create/update`: add support for new outbound type none
 
 4.0.0b1
 +++++++
