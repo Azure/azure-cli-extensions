@@ -176,6 +176,7 @@ def validate_build_env_vars(cmd, namespace):
                     env=key_val[0]))
         env_pairs[key_val[0]] = key_val[1]
 
+
 def validate_otlp_headers(cmd, namespace):
     headers = namespace.headers
 
@@ -194,3 +195,9 @@ def validate_otlp_headers(cmd, namespace):
                     header=key_val[0]))
         header_pairs[key_val[0]] = key_val[1]
 
+
+def validate_target_port_range(cmd, namespace):
+    target_port = namespace.target_port
+    if target_port is not None:
+        if target_port < 1 or target_port > 65535:
+            raise ValidationError("Port must be in range [1, 65535].")

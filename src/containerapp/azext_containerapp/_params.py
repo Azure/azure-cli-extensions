@@ -9,11 +9,16 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
                                                 file_type,
                                                 get_three_state_flag, get_enum_type, tags_type)
+from azure.cli.command_modules.containerapp._validators import (validate_memory, validate_cpu,
+                                                                validate_managed_env_name_or_id,
+                                                                validate_registry_server,
+                                                                validate_registry_user, validate_registry_pass
+                                                                )
 
 from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
-                          validate_otlp_headers)
+                          validate_otlp_headers, validate_target_port_range)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
 
 
@@ -344,3 +349,37 @@ def load_arguments(self, _):
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
+
+    with self.argument_context('containerapp env', arg_group='Peer Traffic Configuration') as c:
+        c.argument('p2p_encryption_enabled', arg_type=get_three_state_flag(), options_list=['--enable-peer-to-peer-encryption'], is_preview=True, help='Boolean indicating whether the peer-to-peer traffic encryption is enabled for the environment.')
+    
+    with self.argument_context('containerapp sessionpool') as c:
+        c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp sessionpool', arg_group='Configuration') as c:
+        c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS"]), help="The pool type of the Session Pool, default='PythonLTS'")
+        c.argument('cooldown_period', help="Period (in seconds), after which the session will be deleted, default=300")
+        c.argument('secrets', nargs='*', options_list=['--secrets', '-s'], help="A list of secret(s) for the session pool. Space-separated values in 'key=value' format. Empty string to clear existing values.")
+        c.argument('network_status', arg_type=get_enum_type(["EgressEnabled", "EgressDisabled"]), help="Egress is enabled for the Sessions or not.")
+
+    with self.argument_context('containerapp sessionpool', arg_group='Scale') as c:
+        c.argument('max_concurrent_sessions', options_list=['--max-sessions'], help="Max count of sessions can be run at the same time.", type=int)
+        c.argument('ready_session_instances', options_list=['--ready-sessions'], help="The number of sessions that will be ready in the session pool all the time.", type=int)
+
+    with self.argument_context('containerapp sessionpool', arg_group='Container') as c:
+        c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
+        c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
+        c.argument('container_name', help="Name of the container.")
+        c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores from 0.25 - 2.0, e.g. 0.5")
+        c.argument('memory', validator=validate_memory, help="Required memory from 0.5 - 4.0 ending with \"Gi\", e.g. 1.0Gi")
+        c.argument('env_vars', nargs='*',  help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
+        c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
+        c.argument('args', nargs='*',  help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
+        c.argument('target_port', type=int, validator=validate_target_port_range, help="The session port used for ingress traffic.")
+
+    with self.argument_context('containerapp sessionpool', arg_group='Registry') as c:
+        c.argument('registry_server', validator=validate_registry_server, help="The container registry server hostname, e.g. myregistry.azurecr.io.")
+        c.argument('registry_pass', validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in to container registry. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
+        c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
+
