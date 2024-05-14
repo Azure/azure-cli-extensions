@@ -1240,6 +1240,8 @@ class SessionCodeInterpreterPreviewClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         # print out the file content as bytes decoded as string
         logger.warning(r.content.decode())
+
+        return json.dumps(r.content.decode())
     
     @classmethod
     def show_file_metadata(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):
