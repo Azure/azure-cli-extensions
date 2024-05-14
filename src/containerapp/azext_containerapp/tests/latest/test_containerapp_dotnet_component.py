@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.command_modules.containerapp._utils import format_location
+from azure.cli.core.util import CLIError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
@@ -60,8 +61,10 @@ class ContainerappDotNetComponentTests(ScenarioTest):
         dotnet_component_list = self.cmd("containerapp env dotnet-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()
         self.assertTrue(len(dotnet_component_list) == 0)
 
-        # Create DotNet Component
-        self.cmd('containerapp env dotnet-component create -g {} -n {} --environment {} --type {}'.format(resource_group, dotnet_component_name, env_name, "test-component-type"), expect_failure=True)
+        # Creating DotNet Component with unsupported component type should fail
+        with self.assertRaises(SystemExit) as exec_info:
+            self.cmd('containerapp env dotnet-component create -g {} -n {} --environment {} --type {}'.format(resource_group, dotnet_component_name, env_name, "test-component-type"), expect_failure=True)
+        self.assertEqual(exec_info.exception.code, 2)
 
         # List DotNet Components
         dotnet_component_list = self.cmd("containerapp env dotnet-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()
