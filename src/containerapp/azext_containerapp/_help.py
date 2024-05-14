@@ -1419,12 +1419,12 @@ helps['containerapp env java-component eureka-server-for-spring create'] = """
     type: command
     short-summary: Command to create the Eureka Server for Spring.
     examples:
-    - name: Create a Eureka Server for Spring with default configuration.
+    - name: Create an Eureka Server for Spring with default configuration.
       text: |
           az containerapp env java-component eureka-server-for-spring create -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment
-    - name: Create a Eureka Server for Spring with custom configurations.
+    - name: Create an Eureka Server for Spring with custom configurations.
       text: |
           az containerapp env java-component eureka-server-for-spring create -g MyResourceGroup \\
               -n MyJavaComponentName \\
@@ -1436,7 +1436,7 @@ helps['containerapp env java-component eureka-server-for-spring delete'] = """
     type: command
     short-summary: Command to delete the Eureka Server for Spring.
     examples:
-    - name: Delete a Eureka Server for Spring.
+    - name: Delete an Eureka Server for Spring.
       text: |
           az containerapp env java-component eureka-server-for-spring delete -g MyResourceGroup \\
               -n MyJavaComponentName \\
@@ -1447,7 +1447,7 @@ helps['containerapp env java-component eureka-server-for-spring show'] = """
     type: command
     short-summary: Command to show the Eureka Server for Spring.
     examples:
-    - name: Show a Eureka Server for Spring.
+    - name: Show an Eureka Server for Spring.
       text: |
           az containerapp env java-component eureka-server-for-spring show -g MyResourceGroup \\
               -n MyJavaComponentName \\
@@ -1464,9 +1464,133 @@ helps['containerapp env java-component eureka-server-for-spring update'] = """
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration
-    - name: Update a Eureka Server for Spring with custom configurations.
+    - name: Update an Eureka Server for Spring with custom configurations.
       text: |
           az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component admin-for-spring'] = """
+    type: group
+    short-summary: Commands to manage the Admin for Spring for the Container Apps environment.
+"""
+
+helps['containerapp env java-component admin-for-spring create'] = """
+    type: command
+    short-summary: Command to create the Admin for Spring.
+    examples:
+    - name: Create an Admin for Spring with default configuration.
+      text: |
+          az containerapp env java-component admin-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+    - name: Create an Admin for Spring with custom configurations.
+      text: |
+          az containerapp env java-component admin-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component admin-for-spring delete'] = """
+    type: command
+    short-summary: Command to delete the Admin for Spring.
+    examples:
+    - name: Delete an Admin for Spring.
+      text: |
+          az containerapp env java-component admin-for-spring delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component admin-for-spring show'] = """
+    type: command
+    short-summary: Command to show the Admin for Spring.
+    examples:
+    - name: Show an Admin for Spring.
+      text: |
+          az containerapp env java-component admin-for-spring show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component admin-for-spring update'] = """
+    type: command
+    short-summary: Command to update the Admin for Spring.
+    examples:
+    - name: Delete all configurations of the Admin for Spring.
+      text: |
+          az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update an Admin for Spring with custom configurations.
+      text: |
+          az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component nacos'] = """
+    type: group
+    short-summary: Commands to manage the Nacos for the Container Apps environment.
+"""
+
+helps['containerapp env java-component nacos create'] = """
+    type: command
+    short-summary: Command to create the Nacos.
+    examples:
+    - name: Create a Nacos with default configuration.
+      text: |
+          az containerapp env java-component nacos create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+    - name: Create a Nacos with custom configurations.
+      text: |
+          az containerapp env java-component nacos create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component nacos delete'] = """
+    type: command
+    short-summary: Command to delete the Nacos.
+    examples:
+    - name: Delete a Nacos.
+      text: |
+          az containerapp env java-component nacos delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component nacos show'] = """
+    type: command
+    short-summary: Command to show the Nacos.
+    examples:
+    - name: Show an Nacos.
+      text: |
+          az containerapp env java-component nacos show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component nacos update'] = """
+    type: command
+    short-summary: Command to update the Nacos.
+    examples:
+    - name: Delete all configurations of the Nacos.
+      text: |
+          az containerapp env java-component nacos update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update an Nacos with custom configurations.
+      text: |
+          az containerapp env java-component nacos update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
