@@ -1601,3 +1601,86 @@ helps['containerapp env telemetry otlp list'] = """
           az containerapp env telemetry otlp list -n MyContainerappEnvironment -g MyResourceGroup
 """
 
+# SessionPool Commands
+helps['containerapp sessionpool'] = """
+    type: group
+    short-summary: Commands to manage session pools.
+"""
+
+helps['containerapp sessionpool create'] = """
+    type: command
+    short-summary: Create or update a Session pool. 
+    examples:
+    - name: Create or update a Session Pool with container type PythonLTS default settings.
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --location eastasia
+    - name: Create or update a Session Pool with container type PythonLTS, with max concurrent sessions is 30, ready session instances 20.
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --container-type PythonLTS --max-sessions 30 --ready-sessions 20 \\
+              --location eastasia
+    - name: Create or update a Session Pool with container type CustomContainer with default quickstart image.
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --container-type CustomContainer --environment MyEnvironment \\
+              --cpu 0.5 --memory 1Gi --target-port 80 --location eastasia --image mcr.microsoft.com/k8se/quickstart:latest
+    - name: Create or update a Session Pool with container type CustomContainer that has secrets and environment variables.
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --container-type CustomContainer --environment MyEnvironment \\
+              --cpu 0.5 --memory 1Gi --target-port 80 --image MyImage \\
+              --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret \\
+              --secrets mysecret=secretvalue1 anothersecret="secret value 2" --location eastasia
+    - name: Create or update a Session Pool with container type CustomContainer that from private registry
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --container-type CustomContainer --environment MyEnvironment --image MyImage \\
+              --cpu 0.5 --memory 1Gi --target-port 80 --registry-server myregistry.azurecr.io \\
+              --registry-username myregistry --registry-password $REGISTRY_PASSWORD \\
+              --location eastasia
+    - name: Create or update a Session Pool with container type CustomContainer with cooldown period 360s
+      text: |
+          az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
+              --environment MyEnvironment --cpu 0.5 --memory 1Gi --target-port 80 --container-type CustomContainer \\
+              --cooldown-period 360 --location eastasia
+"""
+
+helps['containerapp sessionpool update'] = """
+    type: command
+    short-summary: Update a Session pool.
+    examples:
+    - name: Update a session pool's max concurrent sessions configuration and image.
+      text: |
+          az containerapp sessionpool update -n mysessionpool -g MyResourceGroup --max-sessions 20 --image MyNewImage
+"""
+
+helps['containerapp sessionpool delete'] = """
+    type: command
+    short-summary: Delete a session pool.
+    examples:
+    - name: Delete a session pool.
+      text: az containerapp sessionpool delete -n mysessionpool -g MyResourceGroup
+"""
+
+helps['containerapp sessionpool show'] = """
+    type: command
+    short-summary: Show details of a Session Pool.
+    examples:
+    - name: Show the details of a Session Pool.
+      text: |
+          az containerapp sessionpool show -n mysessionpool -g MyResourceGroup
+"""
+
+helps['containerapp sessionpool list'] = """
+    type: command
+    short-summary: List Session Pools by subscription or resource group.
+    examples:
+    - name: List Session Pools in the current subscription.
+      text: |
+          az containerapp sessionpool list
+    - name: List Session Pools by resource group.
+      text: |
+          az containerapp sessionpool list -g MyResourceGroup
+"""
+
