@@ -80,7 +80,7 @@ def load_arguments(self, _):
         c.argument('logs_dynamic_json_columns', options_list=['--logs-dynamic-json-columns', '-j'], arg_type=get_three_state_flag(),
                    help='Boolean indicating whether to parse json string log into dynamic json columns. Only work for destination log-analytics.', is_preview=True)
 
-    # Telemetry 
+    # Telemetry
     with self.argument_context('containerapp env telemetry') as c:
         c.argument('name', id_part=None)
 
@@ -114,7 +114,7 @@ def load_arguments(self, _):
                    help="Name of the share on the AzureFile or nfs AzureFile storage.")
         c.argument('server', options_list=["--server", "-s"],
                    help="Server of the NfsAzureFile storage account.", is_preview=True)
-        
+
     # App Resiliency
     with self.argument_context('containerapp resiliency') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
@@ -164,7 +164,7 @@ def load_arguments(self, _):
                    help='Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.', is_preview=True)
         c.argument('certificate_key_vault_url', options_list=['--custom-domain-certificate-akv-url', '--certificate-akv-url'],
                    help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
-     
+
     with self.argument_context('containerapp env create') as c:
         c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
         c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"],
@@ -175,9 +175,9 @@ def load_arguments(self, _):
         c.argument('user_assigned', options_list=['--mi-user-assigned'], nargs='+', help='Space-separated user identities to be assigned.')
 
     with self.argument_context('containerapp env certificate upload') as c:
-        c.argument('certificate_identity', options_list=['--certificate-identity', '--identity'], 
+        c.argument('certificate_identity', options_list=['--certificate-identity', '--identity'],
                    help='Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.', is_preview=True)
-        c.argument('certificate_key_vault_url', options_list=['--certificate-akv-url', '--akv-url'], 
+        c.argument('certificate_key_vault_url', options_list=['--certificate-akv-url', '--akv-url'],
                    help='The URL pointing to the Azure Key Vault secret that holds the certificate.', is_preview=True)
 
     with self.argument_context('containerapp env certificate create') as c:
@@ -225,7 +225,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env dapr-component init') as c:
         c.argument('statestore', help="The state store component and dev service to create.")
         c.argument('pubsub', help="The pubsub component and dev service to create.")
-    
+
     with self.argument_context('containerapp env identity', is_preview=True) as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
         c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
@@ -349,6 +349,12 @@ def load_arguments(self, _):
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
+
+    with self.argument_context('containerapp env dotnet-component') as c:
+        c.argument('dotnet_component_name', options_list=['--name', '-n'], help="The DotNet component name.")
+        c.argument('environment_name', options_list=['--environment'], help="The environment name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('dotnet_component_type', options_list=['--type'], arg_type=get_enum_type(['AspireDashboard']), help="The type of DotNet component.")
 
     with self.argument_context('containerapp env', arg_group='Peer Traffic Configuration') as c:
         c.argument('p2p_encryption_enabled', arg_type=get_three_state_flag(), options_list=['--enable-peer-to-peer-encryption'], is_preview=True, help='Boolean indicating whether the peer-to-peer traffic encryption is enabled for the environment.')
