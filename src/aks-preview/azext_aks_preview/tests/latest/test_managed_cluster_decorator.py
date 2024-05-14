@@ -96,7 +96,6 @@ from azure.cli.command_modules.acs._consts import (
     DecoratorMode,
 )
 
-
 class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
