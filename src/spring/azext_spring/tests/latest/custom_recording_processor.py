@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import re
+
 from azure.cli.testsdk.scenario_tests import RecordingProcessor
 from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
 

@@ -730,8 +730,7 @@ def parse_build_env_vars(env_list):
 
 
 def is_cloud_supported_by_connected_env(cli_ctx):
-    from azure.cli.core.cloud import CloudNameEnum
-    if cli_ctx.cloud.name == CloudNameEnum.AzureCloud:
+    if cli_ctx.cloud.name == 'AzureCloud':
         return True
     return False
 

@@ -540,6 +540,8 @@ helps['spring config-server bind'] = """
     examples:
         - name: Bind an app to the default Config Server in service instance MyService.
           text: az spring config-server bind --app MyApp -s MyService -g MyResourceGroup
+        - name: Bind a job to the default Config Server in service instance MyService.
+          text: az spring config-server bind --job job-name -s MyService -g MyResourceGroup
 """
 
 helps['spring config-server unbind'] = """
@@ -548,6 +550,8 @@ helps['spring config-server unbind'] = """
     examples:
         - name: Unbind an app from the default Config Server in service instance MyService.
           text: az spring config-server unbind --app MyApp -s MyService -g MyResourceGroup
+        - name: Unbind a job from the default Config Server in service instance MyService.
+          text: az spring config-server unbind --job job-name -s MyService -g MyResourceGroup
 """
 
 helps['spring eureka-server'] = """
@@ -777,18 +781,22 @@ helps['spring service-registry show'] = """
 
 helps['spring service-registry bind'] = """
     type: command
-    short-summary: Bind an app to Service Registry.
+    short-summary: Bind an app or a job to Service Registry.
     examples:
         - name: Bind an app to Service Registry.
           text: az spring service-registry bind --app MyApp -s MyService -g MyResourceGroup
+        - name: Bind a job to Service Registry.
+          text: az spring service-registry bind --job job-name -s MyService -g MyResourceGroup
 """
 
 helps['spring service-registry unbind'] = """
     type: command
-    short-summary: Unbind an app from Service Registry.
+    short-summary: Unbind an app or a job from Service Registry.
     examples:
         - name: Unbind an app from Service Registry.
           text: az spring service-registry unbind --app MyApp -s MyService -g MyResourceGroup
+        - name: Unbind a job from Service Registry.
+          text: az spring service-registry unbind --job job-name -s MyService -g MyResourceGroup
 """
 
 helps['spring build-service'] = """
@@ -1615,7 +1623,7 @@ helps['spring component'] = """
 
 helps['spring component logs'] = """
     type: command
-    short-summary: (Enterprise Tier Only) Show logs for managed components. Logs will be streamed when setting '-f/--follow'. For now, only supports subcomponents of (a) Application Configuration Service (b) Spring Cloud Gateway
+    short-summary: (Enterprise Tier Only) Show logs for managed components. Logs will be streamed when setting '-f/--follow'. For now, only supports subcomponents of (a) Application Configuration Service (b) Spring Cloud Gateway (c) Spring Cloud Config Server
     examples:
         - name: Show logs for all instances of flux in Application Configuration Serice (Gen2)
           text: az spring component logs --name flux-source-controller --service MyAzureSpringAppsInstance --resource-group MyResourceGroup --all-instances
@@ -1648,4 +1656,127 @@ helps['spring component instance list'] = """
           text: az spring component instance list --component spring-cloud-gateway --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
         - name: List instances for spring-cloud-gateway-operator of Spring Cloud Gateway
           text: az spring component instance list --component spring-cloud-gateway-operator --service MyAzureSpringAppsInstance --resource-group MyResourceGroup
+"""
+
+helps['spring job'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage jobs of Azure Spring Apps service.
+"""
+
+helps['spring job create'] = """
+    type: command
+    short-summary: Create a new job in Azure Spring Apps service.
+    examples:
+    - name: Create a job with the default configuration.
+      text: az spring job create -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job update'] = """
+    type: command
+    short-summary: Update configurations of a job.
+    examples:
+    - name: Add plain text environment variables for the job.
+      text: az spring job update -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup --envs foo=bar
+    - name: Remove all plain text environment variables and keep all existed secrets for the job.
+      text: az spring job update -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup --envs
+    - name: Remove all secrets and keep all the plain text environment variables for the job.
+      text: az spring job update -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup --secret-envs
+"""
+
+helps['spring job delete'] = """
+    type: command
+    short-summary: Delete a job in the Azure Spring Apps.
+    examples:
+    - name: Delete a job
+      text: az spring job delete -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job list'] = """
+    type: command
+    short-summary: List all jobs in the Azure Spring Apps.
+    examples:
+    - name: List jobs
+      text: az spring job list -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job show'] = """
+    type: command
+    short-summary: Show the details of a job in the Azure Spring Apps.
+    exmaples:
+    - name: Show details of a job
+      text: az spring job show -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job start'] = """
+    type: command
+    short-summary: Start an execution of the job.
+    examples:
+    - name: Start an execution of the job
+      text: az spring job start -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job execution'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage job executions of Azure Spring Apps service.
+"""
+
+helps['spring job execution cancel'] = """
+    type: command
+    short-summary: Cancel a job execution.
+    examples:
+    - name: Cancel a job execution
+      text: az spring job execution cancel -n job-execution-name --job job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job execution show'] = """
+    type: command
+    short-summary: Show status and results of an execution of the job.
+    examples:
+    - name: Show status and results of an execution of the job
+      text: az spring job execution show -n job-execution-name --job job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job execution list'] = """
+    type: command
+    short-summary: List all executions of the job.
+    examples:
+    - name: List all executions of the job
+      text: az spring job execution list --job job-name -s MyAzureSpringAppsInstance -g MyResourceGroup
+"""
+
+helps['spring job execution instance'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage job execution instances of Azure Spring Apps service.
+"""
+
+helps['spring job execution instance list'] = """
+    type: command
+    short-summary: List all instances of the job execution.
+    examples:
+        - name: List all instances of the job execution.
+          text: az spring job execution instance list --job job-name --execution job-execution-name -s MyService -g MyResourceGroup
+"""
+
+helps['spring job deploy'] = """
+    type: command
+    short-summary: Deploy artifact to a job and update related configurations.
+    examples:
+    - name: Deploy a pre-built jar to a job with environment variables.
+      text: az spring job deploy -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup --artifact-path app.jar --env foo=bar
+    - name: Deploy a pre-built jar to a job with build env.
+      text: az spring job deploy -n job-name -s MyAzureSpringAppsInstance -g MyResourceGroup --artifact-path app.jar --build-env BP_JVM_VERSION=11.*
+"""
+
+helps['spring job logs'] = """
+    type: command
+    short-summary: Show logs for job execution instances. Logs will be streamed when setting '-f/--follow'.
+    examples:
+        - name: Show logs for all instances of a job execution.
+          text: az spring job logs --name job-name --execution job-execution-nam --all-instances -s MyService -g MyResourceGroup
+        - name: Show logs for a specific instance of a job execution.
+          text: az spring job logs --name job-name --execution job-execution-nam --instance job-execution-instance -s MyService -g MyResourceGroup
+        - name: Stream and watch logs for all instances of a job execution.
+          text: az spring job logs --name job-name --execution job-execution-nam --all-instances --follow -s MyService -g MyResourceGroup
+        - name: Stream and watch logs for a specific instance of a job execution.
+          text: az spring job logs --name job-name --execution job-execution-nam --instance MyJobExecutionInstance --follow -s MyService -g MyResourceGroup
 """
