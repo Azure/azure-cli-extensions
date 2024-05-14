@@ -4257,7 +4257,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--dns-name-prefix={dns_name_prefix} --node-count=1 "
             "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
             "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
-            "--ssh-key-value={ssh_key_value}"
+            "--ssh-key-value={ssh_key_value} --if-none-match={if_none_match}"
         )
         self.cmd(
             create_cmd,
@@ -4277,7 +4277,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update Windows license type
         self.cmd(
-            "aks update --resource-group={resource_group} --name={name} --enable-ahub --if-none-match={if_none_match}",
+            "aks update --resource-group={resource_group} --name={name} --enable-ahub",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("windowsProfile.licenseType", "Windows_Server"),
