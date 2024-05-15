@@ -83,7 +83,7 @@ class ContainerappJavaLoggerSetDecorator(ContainerappJavaLoggerDecorator):
 
     def construct_payload(self):
         loggers = safe_get(self.containerapp_def['properties'], 'configuration', 'runtime', 'java', 'javaAgent', 'logging', 'loggerSettings', default=[])
-        exist_loggers = [logger["logger"].lower() for logger in loggers]
+        exist_loggers = [java_logger["logger"].lower() for java_logger in loggers]
         if self.get_argument_logger_name().lower() not in exist_loggers:  # create
             new_logger = JavaLoggerSetting
             new_logger["logger"] = self.get_argument_logger_name()
@@ -115,7 +115,7 @@ class ContainerappJavaLoggerDeleteDecorator(ContainerappJavaLoggerDecorator):
             new_loggers = []
         else:
             loggers = safe_get(self.containerapp_def['properties'], 'configuration', 'runtime', 'java', 'javaAgent', 'logging', 'loggerSettings', default=[])
-            exist_loggers = [logger["logger"].lower() for logger in loggers]
+            exist_loggers = [java_logger["logger"].lower() for java_logger in loggers]
             if self.get_argument_logger_name().lower() not in exist_loggers:
                 raise ValidationError(
                     f"logger {self.get_argument_logger_name().lower()} does not exists, please use the exist logger name")
