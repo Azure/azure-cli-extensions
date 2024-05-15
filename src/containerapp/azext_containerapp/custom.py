@@ -2651,6 +2651,7 @@ def list_environment_telemetry_otlp(cmd,
 
     return containerapp_env_def
 
+
 def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_group_name, no_wait=False):
     raw_parameters = locals()
     containerapp_java_logger_set_decorator = ContainerappJavaLoggerSetDecorator(
@@ -2662,6 +2663,7 @@ def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_
     containerapp_java_logger_set_decorator.validate_arguments()
     containerapp_java_logger_set_decorator.construct_payload()
     return containerapp_java_logger_set_decorator.create_or_update()
+
 
 def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
     raw_parameters = locals()
@@ -2675,6 +2677,7 @@ def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=Non
     containerapp_java_logger_decorator.construct_payload()
     return containerapp_java_logger_decorator.delete()
 
+
 def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
     raw_parameters = locals()
     containerapp_java_logger_decorator = ContainerappJavaLoggerDecorator(
@@ -2685,6 +2688,7 @@ def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None,
     )
     containerapp_java_logger_decorator.validate_arguments()
     return containerapp_java_logger_decorator.show()
+
 
 def create_session_pool(cmd,
                         name,

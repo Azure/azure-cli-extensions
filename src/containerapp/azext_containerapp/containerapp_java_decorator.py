@@ -28,9 +28,10 @@ class ContainerappJavaLoggerDecorator(BaseResource):
         super().__init__(cmd, client, raw_parameters, models)
         self.containerapp_def = None
         try:
-            self.containerapp_def = self.client.show(cmd=cmd,
-                                                resource_group_name=raw_parameters.get("resource_group_name"),
-                                                name=raw_parameters.get("name"))
+            self.containerapp_def = self.client.show(
+                cmd=cmd,
+                resource_group_name=raw_parameters.get("resource_group_name"),
+                name=raw_parameters.get("name"))
         except Exception as e:
             handle_non_404_status_code_exception(e)
 
@@ -58,9 +59,9 @@ class ContainerappJavaLoggerDecorator(BaseResource):
         loggers = safe_get(self.containerapp_def['properties'], 'configuration', 'runtime', 'java', 'javaAgent',
                            'logging', 'loggerSettings', default=[])
         if self.get_argument_all() is None:
-            for logger in loggers:
-                if logger["logger"] == self.get_argument_logger_name():
-                    return logger
+            for java_logger in loggers:
+                if java_logger["logger"] == self.get_argument_logger_name():
+                    return java_logger
             raise ValidationError(
                 f"logger {self.get_argument_logger_name().lower()} does not exists, please use the exist logger name")
         else:
@@ -74,6 +75,7 @@ class ContainerappJavaLoggerDecorator(BaseResource):
 
     def get_argument_all(self):
         return self.get_param("all")
+
 
 class ContainerappJavaLoggerSetDecorator(ContainerappJavaLoggerDecorator):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
