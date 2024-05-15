@@ -311,7 +311,6 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             try:
                 self.assign_session_create_role()
             except Exception as e:
-                logger.warning("Could not add user as session pool creator role to the session pool, please follow the docs https://learn.microsoft.com/en-us/azure/container-apps/sessions-code-interpreter?tabs=azure-cli#authentication to add the needed roll for authentication")
                 logger.warning(e)
             return create_result
         except Exception as e:
