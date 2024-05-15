@@ -9,9 +9,7 @@ from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
-from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
-                     clean_up_test_file,
-                     )
+from .common import (TEST_LOCATION)
 from .utils import create_containerapp_env
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -57,13 +55,14 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             JMESPathCheck('properties.stdout', 'Hello world\n')
         ])
 
-        # upload a file
+        # upload a file also add session pool location
         txt_file = os.path.join(TEST_DIR, 'cert.txt')
-        self.cmd("containerapp session code-interpreter upload -n {} -g {} --identifier {} --filepath {}".format(
+        self.cmd("containerapp session code-interpreter upload-file -n {} -g {} --identifier {} --filepath {} --session-pool-location {}".format(
             sessionpool_name_python,
             resource_group,
             identifier_name,
-            txt_file
+            txt_file,
+            TEST_LOCATION
             ),
             checks=[
             JMESPathCheck('value[0].properties.filename', 'cert.txt'),
@@ -75,7 +74,7 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             resource_group,
             identifier_name
             )).get_output_in_json()
-        self.assertTrue(len(files_list) == 1)
+        self.assertTrue(len(files_list["value"]) == 1)
 
         # check content
         file_content = self.cmd("containerapp session code-interpreter show-file-content -n {} -g {} --identifier {} --filename {}".format(
@@ -84,18 +83,27 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             identifier_name,
             "cert.txt"
             )).get_output_in_json()
-        print(file_content)
         self.assertTrue(file_content == '\"testing\"')
 
         # delete file
-        delete_response = self.cmd("containerapp session code-interpreter delete-file -n {} -g {} --identifier {} --filename {} --yes".format(
+        self.cmd("containerapp session code-interpreter delete-file -n {} -g {} --identifier {} --filename {} --yes".format(
             sessionpool_name_python,
             resource_group,
             identifier_name,
             "cert.txt"
             ))
+        files_list = self.cmd("containerapp session code-interpreter list-files -n {} -g {} --identifier {}".format(
+            sessionpool_name_python,
+            resource_group,
+            identifier_name
+            )).get_output_in_json()
+        self.assertTrue(len(files_list["value"]) == 0)
+
+        # delete sessionpool to clean up test resources
+        self.cmd("containerapp sessionpool delete -n {} -g {} --yes".format(
+            sessionpool_name_python,
+            resource_group,
+            ))
         
-
-
-        
-
+        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(sessionpool_list) == 0)

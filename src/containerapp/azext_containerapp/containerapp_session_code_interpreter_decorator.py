@@ -10,7 +10,7 @@ from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
-from azure.cli.command_modules.containerapp._utils import ( _ensure_location_allowed, CONTAINER_APPS_RP)
+from azure.cli.command_modules.containerapp._utils import (_ensure_location_allowed, CONTAINER_APPS_RP)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from ._clients import SessionPoolPreviewClient
 
@@ -32,27 +32,27 @@ class SessionCodeInterpreterPreviewDecorator(BaseResource):
 
     def get_argument_identifier(self):
         return self.get_param('identifier')
-    
+
     def get_argument_code(self):
         return self.get_param('code')
-    
+
     def get_argument_timeout_in_seconds(self):
         return self.get_param('timeout_in_seconds')
-        
+
     def get_argument_filename(self):
         return self.get_param('filename')
-    
+
     def get_argument_filepath(self):
-        return self.get_param('filepath')    
+        return self.get_param('filepath')
         
     def get_argument_path(self):
-        return self.get_param('path')    
+        return self.get_param('path')
           
     def get_argument_sessionpool_location(self):
         return self.get_param('session_pool_location')    
-        
+
     def get_sessionpool_endpoint(self):
-        # if the user provides the session pool location get session pool endpoint by 
+        # if the user provides the session pool location get session pool endpoint by
         # constructing the url endpoint ourselves so command runs faster
         # otherwise get the session pool endpoint by doing a get on the session pool
         session_pool_endpoint = None
@@ -61,11 +61,10 @@ class SessionCodeInterpreterPreviewDecorator(BaseResource):
             session_pool_endpoint = session_pool_endpoint_fmt.format(
                 self.get_argument_sessionpool_location(),
                 get_subscription_id(self.cmd.cli_ctx),
-                self.get_argument_resource_group_name() ,
+                self.get_argument_resource_group_name(),
                 self.get_argument_name())
         else:
-            sessionpool =  SessionPoolPreviewClient.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                    name=self.get_argument_name())
+            sessionpool =  SessionPoolPreviewClient.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),name=self.get_argument_name())
             session_pool_endpoint = sessionpool["properties"]["poolManagementEndpoint"]
         return session_pool_endpoint
 
@@ -92,9 +91,8 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
                 code_interpreter_envelope=self.session_code_interpreter_def, 
-                session_pool_endpoint = self.get_sessionpool_endpoint(),
-                no_wait=self.get_argument_no_wait(),
-                )
+                session_pool_endpoint=self.get_sessionpool_endpoint(),
+                no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
 
@@ -103,10 +101,9 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.upload(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                filepath = self.get_argument_filepath(), 
-                session_pool_endpoint = self.get_sessionpool_endpoint(),
-                no_wait=self.get_argument_no_wait(),
-                )
+                filepath=self.get_argument_filepath(), 
+                session_pool_endpoint=self.get_sessionpool_endpoint(),
+                no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
 
@@ -115,10 +112,9 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.show_file_content(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                filename = self.get_argument_filename(), 
-                session_pool_endpoint = self.get_sessionpool_endpoint(),
-                no_wait=self.get_argument_no_wait(),
-                )
+                filename=self.get_argument_filename(), 
+                session_pool_endpoint=self.get_sessionpool_endpoint(),
+                no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
     
@@ -127,10 +123,9 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.show_file_metadata(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                filename = self.get_argument_filename(), 
-                session_pool_endpoint = self.get_sessionpool_endpoint(),
-                no_wait=self.get_argument_no_wait(),
-                )
+                filename=self.get_argument_filename(), 
+                session_pool_endpoint=self.get_sessionpool_endpoint(),
+                no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
     
@@ -139,10 +134,9 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.list_files(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                path = self.get_argument_path(), 
-                session_pool_endpoint = self.get_sessionpool_endpoint(),
-                no_wait=self.get_argument_no_wait(),
-                )
+                path=self.get_argument_path(), 
+                session_pool_endpoint=self.get_sessionpool_endpoint(),
+                no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
     
@@ -151,9 +145,8 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.delete_file(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                filename = self.get_argument_filename(), 
-                session_pool_endpoint = self.get_sessionpool_endpoint(),
-                no_wait=self.get_argument_no_wait(),
-                )
+                filename=self.get_argument_filename(), 
+                session_pool_endpoint=self.get_sessionpool_endpoint(),
+                no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
