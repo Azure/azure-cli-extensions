@@ -1688,7 +1688,10 @@ helps['containerapp session'] = """
     type: group
     short-summary: Commands to manage sessions.To learn more about individual commands under each subgroup run containerapp session [subgroup name] --help.
 """
-
+helps['containerapp session code-interpreter'] = """
+    type: group
+    short-summary: Commands to interact with and manage code interpreter sessions.
+"""
 helps['containerapp session code-interpreter execute'] = """
     type: command
     short-summary: Execute code in a code interpreter session. 
@@ -1705,7 +1708,7 @@ helps['containerapp session code-interpreter upload-file'] = """
     examples:
     - name: Upload a file to a session.
       text: |
-          az containerapp containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
+          az containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
               --filepath example.txt  
 """
 

@@ -393,7 +393,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp session code-interpreter') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('identifier', options_list=['--identifier', '-id'], help="The Session Identifier")
+        c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
         c.argument('session_pool_location', help="The location of the session pool")
 
     with self.argument_context('containerapp session code-interpreter', arg_group='file') as c:
