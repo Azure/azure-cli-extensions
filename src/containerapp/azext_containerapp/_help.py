@@ -1705,7 +1705,7 @@ helps['containerapp session code-interpreter upload-file'] = """
     examples:
     - name: Upload a file to a session.
       text: |
-          az containerapp containerapp session code-interpreter upload -n MySessionPool -g MyResourceGroup --identifier MySession \\
+          az containerapp containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
               --filepath example.txt  
 """
 
@@ -1742,7 +1742,7 @@ helps['containerapp session code-interpreter list-files'] = """
     examples:
     - name: List files uploaded in a code-interpreter session.
       text: |
-          az containerapp session list-files -n MySessionPool -g MyResourceGroup --identifier MySession
+          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession
 """
 
 # DotNet Components Commands

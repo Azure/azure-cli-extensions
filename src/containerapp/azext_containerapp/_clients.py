@@ -1011,7 +1011,7 @@ class SessionPoolPreviewClient():
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(session_pool_envelope))
 
-         # try to add user as session pool creator role to the session pool
+        # try to add user as session pool creator role to the session pool
         try:
             # get princpalId of the user
             principal_id_url = "https://graph.microsoft.com/v1.0/me"

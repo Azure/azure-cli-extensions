@@ -81,7 +81,6 @@ from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from .java_component_decorator import JavaComponentDecorator
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
 from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
-from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -2768,13 +2767,12 @@ def delete_session_pool(cmd,
 
 # session code interpreter commands
 def execute_session_code_interpreter(cmd,
-                        name,
-                        resource_group_name,
-                        identifier, 
-                        code,
-                        session_pool_location=None,
-                        timeout_in_seconds=None,
-                        ):
+                                     name,
+                                     resource_group_name,
+                                     identifier, 
+                                     code,
+                                     session_pool_location=None,
+                                     timeout_in_seconds=None):
     raw_parameters = locals()
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
@@ -2791,11 +2789,11 @@ def execute_session_code_interpreter(cmd,
     return r
 
 def upload_session_code_interpreter(cmd,
-                        name,
-                        resource_group_name,
-                        identifier, 
-                        filepath
-                        ):
+                                    name,
+                                    resource_group_name,
+                                    identifier, 
+                                    filepath,
+                                    session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
@@ -2810,11 +2808,11 @@ def upload_session_code_interpreter(cmd,
     return r
 
 def show_file_content_session_code_interpreter(cmd,
-                        name,
-                        resource_group_name,
-                        identifier, 
-                        filename
-                        ):
+                                               name,
+                                               resource_group_name,
+                                               identifier, 
+                                               filename,
+                                               session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
@@ -2829,11 +2827,11 @@ def show_file_content_session_code_interpreter(cmd,
     return r
 
 def show_file_metadata_session_code_interpreter(cmd,
-                        name,
-                        resource_group_name,
-                        identifier, 
-                        filename
-                        ):
+                                                name,
+                                                resource_group_name,
+                                                identifier, 
+                                                filename,
+                                                session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
@@ -2848,11 +2846,11 @@ def show_file_metadata_session_code_interpreter(cmd,
     return r
 
 def list_files_session_code_interpreter(cmd,
-                        name,
-                        resource_group_name,
-                        identifier,
-                        path=None
-                        ):
+                                        name,
+                                        resource_group_name,
+                                        identifier,
+                                        path=None,
+                                        session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
@@ -2867,11 +2865,11 @@ def list_files_session_code_interpreter(cmd,
     return r
 
 def delete_file_session_code_interpreter(cmd,
-                        name,
-                        resource_group_name,
-                        identifier, 
-                        filename
-                        ):
+                                         name,
+                                         resource_group_name,
+                                         identifier, 
+                                         filename,
+                                         session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
