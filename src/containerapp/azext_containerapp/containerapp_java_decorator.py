@@ -90,9 +90,9 @@ class ContainerappJavaLoggerSetDecorator(ContainerappJavaLoggerDecorator):
             new_logger["level"] = self.get_argument_logger_level()
             loggers.append(new_logger)
         else:  # update
-            for logger in loggers:
-                if logger["logger"] == self.get_argument_logger_name():
-                    logger["level"] = self.get_argument_logger_level()
+            for java_logger in loggers:
+                if java_logger["logger"] == self.get_argument_logger_name():
+                    java_logger["level"] = self.get_argument_logger_level()
         safe_set(self.containerapp_def['properties'], 'configuration', 'runtime', 'java', 'javaAgent', 'logging', 'loggerSettings', value=loggers)
 
     def create_or_update(self):
