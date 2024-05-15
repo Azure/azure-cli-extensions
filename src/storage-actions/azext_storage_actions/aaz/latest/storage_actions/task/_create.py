@@ -333,23 +333,23 @@ class Create(AAZCommand):
 
             action = _builder.get(".properties.action")
             if action is not None:
-                action.set_prop("else", AAZObjectType, ".else")
-                action.set_prop("if", AAZObjectType, ".if", typ_kwargs={"flags": {"required": True}})
+                action.set_prop("else", AAZObjectType, ".else_")
+                action.set_prop("if", AAZObjectType, ".if_", typ_kwargs={"flags": {"required": True}})
 
-            else_ = _builder.get(".properties.action.else_")
+            else_ = _builder.get(".properties.action.else")
             if else_ is not None:
                 else_.set_prop("operations", AAZListType, ".operations", typ_kwargs={"flags": {"required": True}})
 
-            operations = _builder.get(".properties.action.else_.operations")
+            operations = _builder.get(".properties.action.else.operations")
             if operations is not None:
                 _CreateHelper._build_schema_storage_task_operation_create(operations.set_elements(AAZObjectType, "."))
 
-            if_ = _builder.get(".properties.action.if_")
+            if_ = _builder.get(".properties.action.if")
             if if_ is not None:
                 if_.set_prop("condition", AAZStrType, ".condition", typ_kwargs={"flags": {"required": True}})
                 if_.set_prop("operations", AAZListType, ".operations", typ_kwargs={"flags": {"required": True}})
 
-            operations = _builder.get(".properties.action.if_.operations")
+            operations = _builder.get(".properties.action.if.operations")
             if operations is not None:
                 _CreateHelper._build_schema_storage_task_operation_create(operations.set_elements(AAZObjectType, "."))
 
@@ -461,16 +461,16 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
-            else_ = cls._schema_on_200_201.properties.action.else_
+            else_ = cls._schema_on_200_201.properties.action["else"]
             else_.operations = AAZListType(
                 flags={"required": True},
             )
 
-            operations = cls._schema_on_200_201.properties.action.else_.operations
+            operations = cls._schema_on_200_201.properties.action["else"].operations
             operations.Element = AAZObjectType()
             _CreateHelper._build_schema_storage_task_operation_read(operations.Element)
 
-            if_ = cls._schema_on_200_201.properties.action.if_
+            if_ = cls._schema_on_200_201.properties.action["if"]
             if_.condition = AAZStrType(
                 flags={"required": True},
             )
@@ -478,7 +478,7 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
-            operations = cls._schema_on_200_201.properties.action.if_.operations
+            operations = cls._schema_on_200_201.properties.action["if"].operations
             operations.Element = AAZObjectType()
             _CreateHelper._build_schema_storage_task_operation_read(operations.Element)
 

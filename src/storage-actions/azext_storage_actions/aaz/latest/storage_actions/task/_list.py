@@ -243,16 +243,16 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            else_ = cls._schema_on_200.value.Element.properties.action.else_
+            else_ = cls._schema_on_200.value.Element.properties.action["else"]
             else_.operations = AAZListType(
                 flags={"required": True},
             )
 
-            operations = cls._schema_on_200.value.Element.properties.action.else_.operations
+            operations = cls._schema_on_200.value.Element.properties.action["else"].operations
             operations.Element = AAZObjectType()
             _ListHelper._build_schema_storage_task_operation_read(operations.Element)
 
-            if_ = cls._schema_on_200.value.Element.properties.action.if_
+            if_ = cls._schema_on_200.value.Element.properties.action["if"]
             if_.condition = AAZStrType(
                 flags={"required": True},
             )
@@ -260,7 +260,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            operations = cls._schema_on_200.value.Element.properties.action.if_.operations
+            operations = cls._schema_on_200.value.Element.properties.action["if"].operations
             operations.Element = AAZObjectType()
             _ListHelper._build_schema_storage_task_operation_read(operations.Element)
 
@@ -458,16 +458,16 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            else_ = cls._schema_on_200.value.Element.properties.action.else_
+            else_ = cls._schema_on_200.value.Element.properties.action["else"]
             else_.operations = AAZListType(
                 flags={"required": True},
             )
 
-            operations = cls._schema_on_200.value.Element.properties.action.else_.operations
+            operations = cls._schema_on_200.value.Element.properties.action["else"].operations
             operations.Element = AAZObjectType()
             _ListHelper._build_schema_storage_task_operation_read(operations.Element)
 
-            if_ = cls._schema_on_200.value.Element.properties.action.if_
+            if_ = cls._schema_on_200.value.Element.properties.action["if"]
             if_.condition = AAZStrType(
                 flags={"required": True},
             )
@@ -475,7 +475,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            operations = cls._schema_on_200.value.Element.properties.action.if_.operations
+            operations = cls._schema_on_200.value.Element.properties.action["if"].operations
             operations.Element = AAZObjectType()
             _ListHelper._build_schema_storage_task_operation_read(operations.Element)
 

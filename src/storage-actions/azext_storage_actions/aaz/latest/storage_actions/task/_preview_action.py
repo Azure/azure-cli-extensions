@@ -256,9 +256,9 @@ class PreviewAction(AAZCommand):
             action = _builder.get(".properties.action")
             if action is not None:
                 action.set_prop("elseBlockExists", AAZBoolType, ".else_block_exists", typ_kwargs={"flags": {"required": True}})
-                action.set_prop("if", AAZObjectType, ".if", typ_kwargs={"flags": {"required": True}})
+                action.set_prop("if", AAZObjectType, ".if_", typ_kwargs={"flags": {"required": True}})
 
-            if_ = _builder.get(".properties.action.if_")
+            if_ = _builder.get(".properties.action.if")
             if if_ is not None:
                 if_.set_prop("condition", AAZStrType, ".condition")
 
@@ -338,7 +338,7 @@ class PreviewAction(AAZCommand):
                 flags={"required": True},
             )
 
-            if_ = cls._schema_on_200.properties.action.if_
+            if_ = cls._schema_on_200.properties.action["if"]
             if_.condition = AAZStrType()
 
             blobs = cls._schema_on_200.properties.blobs

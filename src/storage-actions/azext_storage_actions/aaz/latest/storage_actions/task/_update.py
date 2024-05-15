@@ -462,23 +462,23 @@ class Update(AAZCommand):
 
             action = _builder.get(".properties.action")
             if action is not None:
-                action.set_prop("else", AAZObjectType, ".else")
-                action.set_prop("if", AAZObjectType, ".if", typ_kwargs={"flags": {"required": True}})
+                action.set_prop("else", AAZObjectType, ".else_")
+                action.set_prop("if", AAZObjectType, ".if_", typ_kwargs={"flags": {"required": True}})
 
-            else_ = _builder.get(".properties.action.else_")
+            else_ = _builder.get(".properties.action.else")
             if else_ is not None:
                 else_.set_prop("operations", AAZListType, ".operations", typ_kwargs={"flags": {"required": True}})
 
-            operations = _builder.get(".properties.action.else_.operations")
+            operations = _builder.get(".properties.action.else.operations")
             if operations is not None:
                 _UpdateHelper._build_schema_storage_task_operation_update(operations.set_elements(AAZObjectType, "."))
 
-            if_ = _builder.get(".properties.action.if_")
+            if_ = _builder.get(".properties.action.if")
             if if_ is not None:
                 if_.set_prop("condition", AAZStrType, ".condition", typ_kwargs={"flags": {"required": True}})
                 if_.set_prop("operations", AAZListType, ".operations", typ_kwargs={"flags": {"required": True}})
 
-            operations = _builder.get(".properties.action.if_.operations")
+            operations = _builder.get(".properties.action.if.operations")
             if operations is not None:
                 _UpdateHelper._build_schema_storage_task_operation_update(operations.set_elements(AAZObjectType, "."))
 
@@ -648,16 +648,16 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
-        else_ = _schema_storage_task_read.properties.action.else_
+        else_ = _schema_storage_task_read.properties.action["else"]
         else_.operations = AAZListType(
             flags={"required": True},
         )
 
-        operations = _schema_storage_task_read.properties.action.else_.operations
+        operations = _schema_storage_task_read.properties.action["else"].operations
         operations.Element = AAZObjectType()
         cls._build_schema_storage_task_operation_read(operations.Element)
 
-        if_ = _schema_storage_task_read.properties.action.if_
+        if_ = _schema_storage_task_read.properties.action["if"]
         if_.condition = AAZStrType(
             flags={"required": True},
         )
@@ -665,7 +665,7 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
-        operations = _schema_storage_task_read.properties.action.if_.operations
+        operations = _schema_storage_task_read.properties.action["if"].operations
         operations.Element = AAZObjectType()
         cls._build_schema_storage_task_operation_read(operations.Element)
 
