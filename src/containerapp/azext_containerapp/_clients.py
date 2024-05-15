@@ -995,7 +995,6 @@ class JavaComponentPreviewClient():
 
 class SessionPoolPreviewClient():
     api_version = PREVIEW_API_VERSION
-    
     @classmethod
     def create(cls, cmd, resource_group_name, name, session_pool_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -1195,7 +1194,7 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def show_file_content(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):
+    def show_file_content(cls, cmd, identifier, filename, session_pool_endpoint):
         url_fmt = "{}/files/content/{}?identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
@@ -1210,7 +1209,7 @@ class SessionCodeInterpreterPreviewClient():
         return json.dumps(r.content.decode())
 
     @classmethod
-    def show_file_metadata(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):
+    def show_file_metadata(cls, cmd, identifier, filename, session_pool_endpoint):
         url_fmt = "{}/files/{}?identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
@@ -1242,7 +1241,7 @@ class SessionCodeInterpreterPreviewClient():
                 poll_results(cmd, operation_url)
 
     @classmethod
-    def list_files(cls, cmd, identifier, path, session_pool_endpoint, no_wait=False):
+    def list_files(cls, cmd, identifier, path, session_pool_endpoint):
         if path is None:
             path = ""
 
