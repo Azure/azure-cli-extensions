@@ -22,7 +22,8 @@ from ._clients import BuilderClient, BuildClient, ContainerAppPreviewClient
 from ._utils import (
     log_in_file,
     remove_ansi_characters,
-    parse_build_env_vars
+    parse_build_env_vars,
+    safe_get,
 )
 
 
@@ -118,7 +119,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         done_spinner = False
         thread = display_spinner("Retrieving the authentication token")
         token_retrieval_json_content = ContainerAppPreviewClient.get_auth_token(cmd, resource_group_name, container_app_name)
-        token = token_retrieval_json_content["properties"]["token"]
+        token = safe_get(token_retrieval_json_content, "properties", "token")
         done_spinner = True
         thread.join()
 
@@ -136,8 +137,12 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         # File upload
         done_spinner = False
         thread = display_spinner("Uploading data")
-        base_proxy_endpoint = container_app_result["properties"]["eventStreamEndpoint"].rstrip("/eventstream")
+        base_proxy_endpoint_not_stripped = safe_get(container_app_result, "properties", "eventStreamEndpoint")
+        str_list = base_proxy_endpoint_not_stripped.split("/eventstream")
+        base_proxy_endpoint = "".join(str_list)
+        print(base_proxy_endpoint)
         upload_endpoint = f"{base_proxy_endpoint}/upload?token={token}"
+        print(upload_endpoint)
         headers = {'Authorization': 'Bearer ' + token}
         if build_env_vars:
             import json
