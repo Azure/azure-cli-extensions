@@ -1683,15 +1683,18 @@ helps['containerapp sessionpool list'] = """
       text: |
           az containerapp sessionpool list -g MyResourceGroup
 """
+
 # code interpreter commands
 helps['containerapp session'] = """
     type: group
     short-summary: Commands to manage sessions.To learn more about individual commands under each subgroup run containerapp session [subgroup name] --help.
 """
+
 helps['containerapp session code-interpreter'] = """
     type: group
     short-summary: Commands to interact with and manage code interpreter sessions.
 """
+
 helps['containerapp session code-interpreter execute'] = """
     type: command
     short-summary: Execute code in a code interpreter session. 
