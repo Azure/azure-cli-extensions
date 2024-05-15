@@ -27,15 +27,15 @@ class ContainerappJavaLoggerDecorator(BaseResource):
         self.containerapp_def = None
         try:
             self.containerapp_def = self.client.show(cmd=cmd,
-                                                resource_group_name=self.get_argument_resource_group_name(),
-                                                name=self.get_argument_name())
+                                                resource_group_name=raw_parameters.get("resource_group_name"),
+                                                name=raw_parameters.get("name"))
         except Exception as e:
             handle_non_404_status_code_exception(e)
 
         if not self.containerapp_def:
-            raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
+            raise ResourceNotFoundError("The containerapp '{}' does not exist".format(raw_parameters.get("name")))
 
-        _get_existing_secrets(cmd, self.get_argument_resource_group_name, self.get_argument_name(), self.containerapp_def)
+        _get_existing_secrets(cmd, raw_parameters.get("resource_group_name"), raw_parameters.get("name"), self.containerapp_def)
 
     def get_argument_logger_name(self):
         return self.get_param("logger_name")
@@ -113,20 +113,20 @@ class ContainerappJavaLoggerDecorator(BaseResource):
 
     def show(self):
         if self.get_argument_all() is None:
-            loggers = self._list_java_loggers(self.containerapp_def)
+            loggers = self._list_java_loggers()
             for logger in loggers:
                 if logger["logger"] == self.get_argument_logger_name():
                     return logger
             raise ValidationError(
                 f"logger {self.get_argument_logger_name().lower()} does not exists, please use the exist logger name")
         else:
-            return self._list_java_loggers(self.containerapp_def)
+            return self._list_java_loggers()
 
     def delete(self):
         if self.get_argument_all() is not None:
             new_loggers = []
         else:
-            loggers = self._list_java_loggers(self.containerapp_def)
+            loggers = self._list_java_loggers()
             exist_loggers = [logger["logger"].lower() for logger in loggers]
             if self.get_argument_logger_name().lower() not in exist_loggers:
                 raise ValidationError(
