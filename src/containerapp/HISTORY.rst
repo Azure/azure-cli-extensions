@@ -15,7 +15,7 @@ upcoming
 * 'az containerapp up': Fix an issue about creating resource group automatically
 * 'az containerapp env java-component admin-for-spring': Support create/update/show/delete Admin for spring
 * 'az containerapp env java-component nacos': Support create/update/show/delete Nacos
-* 'az containerapp env java-component': Support --service-binds, --unbind_service_bindings
+* 'az containerapp env java-component': Support --bind, --unbind to bind or unbind with other Java Components
 
 0.3.50
 ++++++
