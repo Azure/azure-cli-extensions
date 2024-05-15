@@ -140,9 +140,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         base_proxy_endpoint_not_stripped = safe_get(container_app_result, "properties", "eventStreamEndpoint")
         str_list = base_proxy_endpoint_not_stripped.split("/eventstream")
         base_proxy_endpoint = "".join(str_list)
-        print(base_proxy_endpoint)
         upload_endpoint = f"{base_proxy_endpoint}/upload?token={token}"
-        print(upload_endpoint)
         headers = {'Authorization': 'Bearer ' + token}
         if build_env_vars:
             import json
