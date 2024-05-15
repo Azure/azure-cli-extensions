@@ -3869,20 +3869,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     scope=cluster.id,
                     resolve_assignee=False,
                 )
-                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
-                    self.cmd,
-                    "Azure Kubernetes Service RBAC Admin",
-                    user["id"],
-                    scope=cluster.id,
-                    resolve_assignee=False,
-                )
-                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
-                    self.cmd,
-                    "Azure Kubernetes Service Cluster User Role",
-                    user["id"],
-                    scope=cluster.id,
-                    resolve_assignee=False,
-                )
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
