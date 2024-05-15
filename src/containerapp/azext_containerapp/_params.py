@@ -403,5 +403,5 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
         c.argument('code', help="The code to execute in the code interpreter session")
-        c.argument('timeout_in_seconds', type=int, validator=validate_timeout_in_seconds, help="Duration in seconds code in session can run prior to timing out 0 - 60 secs, e.g. 30")
+        c.argument('timeout_in_seconds', type=int, validator=validate_timeout_in_seconds, default=60, help="Duration in seconds code in session can run prior to timing out 0 - 60 secs, e.g. 30")
 

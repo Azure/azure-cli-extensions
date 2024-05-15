@@ -1744,6 +1744,7 @@ helps['containerapp session code-interpreter list-files'] = """
       text: |
           az containerapp session list-files -n MySessionPool -g MyResourceGroup --identifier MySession
 """
+
 # DotNet Components Commands
 helps['containerapp env dotnet-component'] = """
     type: group
