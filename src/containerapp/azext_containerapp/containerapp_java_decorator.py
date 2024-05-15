@@ -72,17 +72,12 @@ class ContainerappJavaLoggerDecorator(BaseResource):
             'loggerSettings'] = loggers
 
     def validate_enabled_java_agent(self):
-        if 'configuration' not in self.containerapp_def['properties']:
-            return False
-        if 'runtime' not in self.containerapp_def['properties']['configuration']:
-            return False
-        if 'java' not in self.containerapp_def['properties']['configuration']['runtime']:
-            return False
-        if 'javaAgent' not in self.containerapp_def['properties']['configuration']['runtime']['java']:
-            return False
+        if not safe_get(self.containerapp_def['properties'], "configuration", "runtime", "java", "javaAgent", "enabled", default=False):
+            raise ValidationError(
+                "The containerapp '{}' does not enable java agent, "
+                "please run `az containerapp update --name {} --resource-group {} --enable-java-agent true` to enable java agent".format(
+                    self.get_argument_name(), self.get_argument_name(), self.get_argument_resource_group_name()))
 
-        return safe_get(self.containerapp_def['properties']['configuration']['runtime']['java']['javaAgent'], "enabled",
-                        default=False) == True
 
     def create_or_update(self):
 
