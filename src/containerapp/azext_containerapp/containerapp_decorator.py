@@ -1153,6 +1153,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.new_containerapp["properties"]["template"]["containers"] = containers
         # Update image in the container app
         self.new_containerapp["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+        self.new_containerapp["properties"]["template"]["containers"][0]["name"] = self.get_argument_name()
 
     def post_process(self, r):
         # Delete managed bindings
