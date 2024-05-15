@@ -605,3 +605,9 @@ CustomDomainConfiguration = {
 RuntimeJava = {
     "enableMetrics": False
 }
+
+DotNetComponent = {
+    "properties": {
+        "componentType": "AspireDashboard"
+    }
+}
