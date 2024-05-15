@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List the relevant Azure diagnostics and solutions using problemClassificationId API.
 
     :example: List DiscoverySolution results for a resource
-        az self-help discovery-solution list --filter "ProblemClassificationId eq '00000000-0000-0000-0000-000000000000' --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'" 
+        az self-help discovery-solution list --filter "ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'" 
     """
 
     _aaz_info = {
@@ -46,11 +46,6 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.scope = AAZStrArg(
-            options=["--scope"],
-            help="This is an extension resource provider and only resource level extension is supported at the moment.",
-            required=True,
-        )
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
             help="'ProblemClassificationId' or 'Id' is a mandatory filter to get solutions ids. It also supports optional 'ResourceType' and 'SolutionType' filters. The filter supports only 'and', 'or' and 'eq' operators. Example: $filter=ProblemClassificationId eq '1ddda5b4-cf6c-4d4f-91ad-bc38ab0e811e'",
