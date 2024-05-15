@@ -55,7 +55,7 @@ from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertif
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
-from .containerapp_java_decorator import ContainerappJavaLoggerDecorator
+from .containerapp_java_decorator import ContainerappJavaLoggerDecorator, ContainerappJavaLoggerSetDecorator, ContainerappJavaLoggerDeleteDecorator
 from .containerapp_resiliency_decorator import (
     ContainerAppResiliencyPreviewCreateDecorator,
     ContainerAppResiliencyPreviewShowDecorator,
@@ -2653,46 +2653,29 @@ def list_environment_telemetry_otlp(cmd,
 
 def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_group_name, no_wait=False):
     raw_parameters = locals()
-
-    containerapp_java_logger_decorator = ContainerappJavaLoggerDecorator(
+    containerapp_java_logger_set_decorator = ContainerappJavaLoggerSetDecorator(
         cmd=cmd,
         client=ContainerAppPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-
-    containerapp_java_logger_decorator.validate_enabled_java_agent()
-
-    return containerapp_java_logger_decorator.create_or_update()
+    containerapp_java_logger_set_decorator.validate_arguments()
+    containerapp_java_logger_set_decorator.construct_payload()
+    return containerapp_java_logger_set_decorator.create_or_update()
 
 def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
-    if all is None and logger_name is None:
-        raise CLIError(
-            'Either of --logger-name/--all needs to be specified.')
-
-    if all is not None and logger_name is not None:
-        raise CLIError(
-            'Both --logger-name and --all cannot be specified together.')
-
     raw_parameters = locals()
-    containerapp_java_logger_decorator = ContainerappJavaLoggerDecorator(
+    containerapp_java_logger_decorator = ContainerappJavaLoggerDeleteDecorator(
         cmd=cmd,
         client=ContainerAppPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_java_logger_decorator.validate_enabled_java_agent()
+    containerapp_java_logger_decorator.validate_arguments()
+    containerapp_java_logger_decorator.construct_payload()
     return containerapp_java_logger_decorator.delete()
 
 def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
-    if all is None and logger_name is None:
-        raise CLIError(
-            'Either of --logger-name/--all needs to be specified.')
-
-    if all is not None and logger_name is not None:
-        raise CLIError(
-            'Both --logger-name and --all cannot be specified together.')
-
     raw_parameters = locals()
     containerapp_java_logger_decorator = ContainerappJavaLoggerDecorator(
         cmd=cmd,
@@ -2700,7 +2683,7 @@ def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_java_logger_decorator.validate_enabled_java_agent()
+    containerapp_java_logger_decorator.validate_arguments()
     return containerapp_java_logger_decorator.show()
 
 def create_session_pool(cmd,

@@ -393,5 +393,5 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp java logger') as c:
         c.argument('logger_name', help="The logger name.")
-        c.argument('logger_level', arg_type=get_enum_type(["off", "error", "info", "debug", "trace", "warn"]), help="Set the log level for the specific logger name. Allowed values: off, error, info, debug, trace, warn.")
+        c.argument('logger_level', arg_type=get_enum_type(["off", "error", "info", "debug", "trace", "warn"]), help="Set the log level for the specific logger name.")
         c.argument('all', help="The flag to indicate all logger settings.", action="store_true")

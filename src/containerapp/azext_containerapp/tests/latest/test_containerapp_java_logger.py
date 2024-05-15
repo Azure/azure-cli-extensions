@@ -26,6 +26,15 @@ class ContainerappJavaLoggerTests(ScenarioTest):
             JMESPathCheck("properties.configuration.runtime", None)
         ])
 
+        self.cmd(f'containerapp java logger set --logger-name root --logger-level debug -g {resource_group} -n {app}',
+                 expect_failure=True)
+
+        self.cmd(f'containerapp java logger delete --logger-name testpkg -g {resource_group} -n {app}',
+                 expect_failure=True)
+
+        self.cmd(f'containerapp java logger show --logger-name "org.springframework.boot" -g {resource_group} -n {app}',
+                 expect_failure=True)
+
         # Enable java agent
         self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-agent', checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -58,6 +67,9 @@ class ContainerappJavaLoggerTests(ScenarioTest):
             JMESPathCheck("[1].logger", "testpkg")
         ])
 
+        # Delete not exist logger
+        self.cmd(f'containerapp java logger delete --logger-name notexistlogger -g {resource_group} -n {app}', expect_failure=True)
+
         # Delete logger
         self.cmd(f'containerapp java logger delete --logger-name testpkg -g {resource_group} -n {app}', checks=[
             JMESPathCheck("length([*])", 1),
@@ -79,6 +91,9 @@ class ContainerappJavaLoggerTests(ScenarioTest):
             JMESPathCheck('logger', "org.springframework.boot"),
             JMESPathCheck('level', "debug")
         ])
+
+        # Display not exist logger
+        self.cmd(f'containerapp java logger show --logger-name "notexistlogger" -g {resource_group} -n {app}', expect_failure=True)
 
         # Display all loggers
         self.cmd(f'containerapp java logger show --all -g {resource_group} -n {app}', checks=[

@@ -1297,10 +1297,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                     runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics()
 
                 if self.get_argument_enable_java_agent() is not None:
-                    runtime_java_def["javaAgent"] = {}
-                    runtime_java_def["javaAgent"]["enabled"] = self.get_argument_enable_java_agent()
-                    if self.get_argument_enable_java_agent() == False:
-                        runtime_java_def["javaAgent"]["logging"] = { # clear logger settings when disable java agent
+                    safe_set(runtime_java_def, "javaAgent", "enabled", value=self.get_argument_enable_java_agent())
+                    if self.get_argument_enable_java_agent() is False:
+                        runtime_java_def["javaAgent"]["logging"] = {  # clear logger settings when disable java agent
                             "loggerSettings": []
                         }
 
@@ -1310,11 +1309,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             safe_set(self.new_containerapp, "properties", "configuration", "runtime", value=runtime_def)
 
     def should_set_up_runtime(self):
-        if self.get_argument_runtime() is not None:
-            return True
-        if self.get_argument_enable_java_metrics() is not None:
-            return True
-        if self.get_argument_enable_java_agent() is not None:
+        if self.get_argument_runtime() is not None or self.get_argument_enable_java_metrics() is not None or self.get_argument_enable_java_agent() is not None:
             return True
         return False
 
