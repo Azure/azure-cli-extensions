@@ -13,6 +13,9 @@ upcoming
 * 'az containerapp update': Fix --scale-rule-tcp-concurrency for TCP scale rule
 * 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
 * 'az containerapp up': Fix an issue about creating resource group automatically
+* 'az containerapp env java-component admin-for-spring': Support create/update/show/delete Admin for spring
+* 'az containerapp env java-component nacos': Support create/update/show/delete Nacos
+* 'az containerapp env java-component': Support --service-binds, --unbind_service_bindings
 
 0.3.50
 ++++++
