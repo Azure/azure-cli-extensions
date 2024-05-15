@@ -57,8 +57,7 @@ def validate_runtime(runtime, enable_java_metrics, enable_java_agent):
     if runtime is None:
         return
     if runtime.lower() == RUNTIME_GENERIC and is_java_enhancement_enabled():
-        raise ValidationError("Not support enable Java metrics or Java agent enhancement "
-                              "with --enable-java-metrics or --enable-java-agent for generic runtime with --runtime generic")
+        raise ValidationError("Usage error: --runtime java is required when using --enable-java-metrics or --enable-java-agent")
 
 
 def validate_env_name_or_id(cmd, namespace):
