@@ -180,14 +180,14 @@ def load_command_table(self, args):
         g.custom_command('list', 'list_java_components')
 
     with self.command_group('containerapp env java-component spring-cloud-config',
-                                deprecate_info=self.deprecate(redirect='containerapp env java-component config-server-for-spring', hide=True)) as g:
+                            deprecate_info=self.deprecate(redirect='containerapp env java-component config-server-for-spring', hide=True)) as g:
         g.custom_command('create', 'create_config_server_for_spring', supports_no_wait=True)
         g.custom_command('update', 'update_config_server_for_spring', supports_no_wait=True)
         g.custom_show_command('show', 'show_config_server_for_spring')
         g.custom_command('delete', 'delete_config_server_for_spring', confirmation=True, supports_no_wait=True)
 
     with self.command_group('containerapp env java-component spring-cloud-eureka',
-                                deprecate_info=self.deprecate(redirect='containerapp env java-component eureka-server-for-spring', hide=True)) as g:
+                            deprecate_info=self.deprecate(redirect='containerapp env java-component eureka-server-for-spring', hide=True)) as g:
         g.custom_command('create', 'create_eureka_server_for_spring', supports_no_wait=True)
         g.custom_command('update', 'update_eureka_server_for_spring', supports_no_wait=True)
         g.custom_show_command('show', 'show_eureka_server_for_spring')
@@ -223,7 +223,7 @@ def load_command_table(self, args):
         g.custom_command('create', 'create_session_pool', supports_no_wait=True)
         g.custom_command('update', 'update_session_pool', supports_no_wait=True)
         g.custom_command('delete', 'delete_session_pool', confirmation=True, supports_no_wait=True)
-    
+
     with self.command_group('containerapp session code-interpreter', is_preview=True) as g:
         g.custom_command('execute', 'execute_session_code_interpreter', supports_no_wait=True)
         g.custom_command('upload-file', 'upload_session_code_interpreter', supports_no_wait=True)

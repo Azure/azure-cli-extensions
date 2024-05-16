@@ -6,7 +6,7 @@
 
 from knack.arguments import CLIArgumentType
 
-from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
+from azure.cli.core.commands.parameters import (resource_group_name_type,
                                                 file_type,
                                                 get_three_state_flag, get_enum_type, tags_type)
 from azure.cli.command_modules.containerapp._validators import (validate_memory, validate_cpu,
@@ -18,7 +18,7 @@ from azure.cli.command_modules.containerapp._validators import (validate_memory,
 from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
-                          validate_otlp_headers, validate_target_port_range,validate_timeout_in_seconds)
+                          validate_otlp_headers, validate_target_port_range, validate_timeout_in_seconds)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
 
 
@@ -358,7 +358,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env', arg_group='Peer Traffic Configuration') as c:
         c.argument('p2p_encryption_enabled', arg_type=get_three_state_flag(), options_list=['--enable-peer-to-peer-encryption'], is_preview=True, help='Boolean indicating whether the peer-to-peer traffic encryption is enabled for the environment.')
-    
+
     with self.argument_context('containerapp sessionpool') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
@@ -379,9 +379,9 @@ def load_arguments(self, _):
         c.argument('container_name', help="Name of the container.")
         c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores from 0.25 - 2.0, e.g. 0.5")
         c.argument('memory', validator=validate_memory, help="Required memory from 0.5 - 4.0 ending with \"Gi\", e.g. 1.0Gi")
-        c.argument('env_vars', nargs='*',  help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
+        c.argument('env_vars', nargs='*', help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
         c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
-        c.argument('args', nargs='*',  help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
+        c.argument('args', nargs='*', help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
         c.argument('target_port', type=int, validator=validate_target_port_range, help="The session port used for ingress traffic.")
 
     with self.argument_context('containerapp sessionpool', arg_group='Registry') as c:
@@ -404,4 +404,3 @@ def load_arguments(self, _):
     with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
         c.argument('code', help="The code to execute in the code interpreter session")
         c.argument('timeout_in_seconds', type=int, validator=validate_timeout_in_seconds, default=60, help="Duration in seconds code in session can run prior to timing out 0 - 60 secs, e.g. 30")
-

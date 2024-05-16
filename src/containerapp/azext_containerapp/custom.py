@@ -2769,79 +2769,79 @@ def delete_session_pool(cmd,
 def execute_session_code_interpreter(cmd,
                                      name,
                                      resource_group_name,
-                                     identifier, 
+                                     identifier,
                                      code,
                                      session_pool_location=None,
                                      timeout_in_seconds=None):
     raw_parameters = locals()
-    session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    session_code_interpreter_decorater.validate_arguments()
-    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+    session_code_interpreter_decorator.validate_arguments()
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
 
-    session_code_interpreter_decorater.construct_payload()
-    r = session_code_interpreter_decorater.execute()
+    session_code_interpreter_decorator.construct_payload()
+    r = session_code_interpreter_decorator.execute()
 
     return r
 
 def upload_session_code_interpreter(cmd,
                                     name,
                                     resource_group_name,
-                                    identifier, 
+                                    identifier,
                                     filepath,
                                     session_pool_location=None):
     raw_parameters = locals()
-    session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
-    
-    r = session_code_interpreter_decorater.upload()
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.upload()
 
     return r
 
 def show_file_content_session_code_interpreter(cmd,
                                                name,
                                                resource_group_name,
-                                               identifier, 
+                                               identifier,
                                                filename,
                                                session_pool_location=None):
     raw_parameters = locals()
-    session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
 
-    r = session_code_interpreter_decorater.show_file_content()
+    r = session_code_interpreter_decorator.show_file_content()
 
     return r
 
 def show_file_metadata_session_code_interpreter(cmd,
                                                 name,
                                                 resource_group_name,
-                                                identifier, 
+                                                identifier,
                                                 filename,
                                                 session_pool_location=None):
     raw_parameters = locals()
-    session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
 
-    r = session_code_interpreter_decorater.show_file_metadata()
+    r = session_code_interpreter_decorator.show_file_metadata()
 
     return r
 
@@ -2852,34 +2852,34 @@ def list_files_session_code_interpreter(cmd,
                                         path=None,
                                         session_pool_location=None):
     raw_parameters = locals()
-    session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
 
-    r = session_code_interpreter_decorater.list_files()
+    r = session_code_interpreter_decorator.list_files()
 
     return r
 
 def delete_file_session_code_interpreter(cmd,
                                          name,
                                          resource_group_name,
-                                         identifier, 
+                                         identifier,
                                          filename,
                                          session_pool_location=None):
     raw_parameters = locals()
-    session_code_interpreter_decorater = SessionCodeInterpreterCommandsPreviewDecorator(
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
         cmd=cmd,
         client=SessionCodeInterpreterPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    session_code_interpreter_decorater.register_provider(CONTAINER_APPS_RP)
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
 
-    r = session_code_interpreter_decorater.delete_file()
+    r = session_code_interpreter_decorator.delete_file()
 
     return r
 
@@ -2943,4 +2943,5 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
         aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
         logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
+
     return

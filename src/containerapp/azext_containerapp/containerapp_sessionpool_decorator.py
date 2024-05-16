@@ -15,7 +15,7 @@ from azure.cli.core.azclierror import HTTPError
 import json
 
 from azure.cli.core.commands import AzCliCommand
-from azure.cli.core.azclierror import ValidationError, CLIInternalError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._models import (ContainerResources as ContainerResourcesModel,
                                                             Container as ContainerModel)
@@ -26,7 +26,8 @@ from azure.cli.command_modules.containerapp._utils import (parse_env_var_flags, 
                                                            validate_container_app_name,
                                                            safe_set, safe_get)
 from azure.cli.command_modules.containerapp._clients import ManagedEnvironmentClient
-from azure.cli.command_modules.containerapp._client_factory import handle_non_404_status_code_exception,get_subscription_id
+from azure.cli.command_modules.containerapp._client_factory import handle_non_404_status_code_exception
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 from ._models import SessionPool as SessionPoolModel
 from ._client_factory import handle_raw_exception
@@ -272,18 +273,19 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         try:
             # get princpalId of the user
             principal_id_url = "https://graph.microsoft.com/v1.0/me"
-            principal_id = send_raw_request(self.cmd.cli_ctx,"GET",principal_id_url).json()['id']
+            principal_id = send_raw_request(self.cmd.cli_ctx, "GET", principal_id_url).json()['id']
+            management_hostname = self.cmd.cli_ctx.cloud.endpoints.resource_manager
             scope = "subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/sessionPools/{}".format(get_subscription_id(self.cmd.cli_ctx), self.get_argument_resource_group_name, self.get_argument_name)
             role_assignment_fmt = "{}/{}/providers/Microsoft.Authorization/roleAssignments/{}?api-version=2022-04-01"
             role_assignment_url = role_assignment_fmt.format(
-                self.cmd.management_hostname.strip('/'),
+                management_hostname.strip('/'),
                 scope,
                 uuid.uuid4()
             )
             role_definition_id = "/{}/providers/Microsoft.Authorization/roleDefinitions/{}".format(
                 scope,
                 SESSION_CREATOR_ROLE_ID)
-            assign_role_r = send_raw_request( self.cmd.cli_ctx,"PUT", role_assignment_url, body=json.dumps({
+            send_raw_request(self.cmd.cli_ctx, "PUT", role_assignment_url, body=json.dumps({
                 "properties": {
                     "roleDefinitionId": role_definition_id,
                     "principalId": principal_id

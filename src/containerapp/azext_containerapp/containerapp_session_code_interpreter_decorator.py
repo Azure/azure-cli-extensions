@@ -19,6 +19,7 @@ from ._client_factory import handle_raw_exception
 
 logger = get_logger(__name__)
 
+
 class SessionCodeInterpreterPreviewDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
@@ -45,12 +46,12 @@ class SessionCodeInterpreterPreviewDecorator(BaseResource):
 
     def get_argument_filepath(self):
         return self.get_param('filepath')
-        
+
     def get_argument_path(self):
         return self.get_param('path')
-          
+
     def get_argument_sessionpool_location(self):
-        return self.get_param('session_pool_location')    
+        return self.get_param('session_pool_location')
 
     def get_sessionpool_endpoint(self):
         # if the user provides the session pool location get session pool endpoint by
@@ -65,24 +66,30 @@ class SessionCodeInterpreterPreviewDecorator(BaseResource):
                 self.get_argument_resource_group_name(),
                 self.get_argument_name())
         else:
-            sessionpool =  self.session_pool_client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),name=self.get_argument_name())
+            sessionpool = self.session_pool_client.show(cmd=self.cmd,
+                                                        resource_group_name=self.get_argument_resource_group_name(),
+                                                        name=self.get_argument_name())
             session_pool_endpoint = sessionpool["properties"]["poolManagementEndpoint"]
         return session_pool_endpoint
+
 
 class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPreviewDecorator):
     def validate_arguments(self):
         if self.get_argument_sessionpool_location() is not None:
-           _ensure_location_allowed(self.cmd, self.get_argument_sessionpool_location(), CONTAINER_APPS_RP, "sessionPools")
+            _ensure_location_allowed(self.cmd,
+                                     self.get_argument_sessionpool_location(),
+                                     CONTAINER_APPS_RP,
+                                     "sessionPools")
 
     def construct_payload(self):
         self.session_code_interpreter_def["properties"]["identifier"] = self.get_argument_identifier()
 
         self.session_code_interpreter_def["properties"]["codeInputType"] = "inline"
         self.session_code_interpreter_def["properties"]["executionType"] = "synchronous"
-        
+
         if self.get_argument_timeout_in_seconds() is not None:
             self.session_code_interpreter_def["properties"]["timeoutInSeconds"] = self.get_argument_timeout_in_seconds()
-        else :
+        else:
             self.session_code_interpreter_def["properties"]["timeoutInSeconds"] = 60
         self.session_code_interpreter_def["properties"]["code"] = self.get_argument_code()
 
@@ -118,7 +125,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
-    
+
     def show_file_metadata(self):
         try:
             return self.client.show_file_metadata(
@@ -129,7 +136,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
-    
+
     def list_files(self):
         try:
             return self.client.list_files(
@@ -140,7 +147,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
-    
+
     def delete_file(self):
         try:
             return self.client.delete_file(

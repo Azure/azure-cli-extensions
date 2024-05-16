@@ -7,9 +7,8 @@
 import json
 import os
 import requests
-import uuid
 
-from azure.cli.core.azclierror import AzureResponseError, ResourceNotFoundError
+from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp._clients import (
@@ -21,7 +20,6 @@ from azure.cli.command_modules.containerapp._clients import (
     ContainerAppsJobClient,
     DaprComponentClient,
     ManagedEnvironmentClient,
-    WorkloadProfileClient,
     StorageClient)
 
 from knack.log import get_logger
@@ -36,6 +34,7 @@ POLLING_INTERVAL_FOR_MANAGED_CERTIFICATE = 4  # how many seconds between request
 HEADER_AZURE_ASYNC_OPERATION = "azure-asyncoperation"
 HEADER_LOCATION = "location"
 SESSION_RESOURCE = "https://dynamicsessions.io"
+
 
 class GitHubActionPreviewClient(GitHubActionClient):
     api_version = PREVIEW_API_VERSION
@@ -1131,6 +1130,7 @@ class SessionPoolPreviewClient():
 
         return sessionpools
 
+
 class SessionCodeInterpreterPreviewClient():
     api_version = PREVIEW_API_VERSION
 
@@ -1155,7 +1155,7 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def upload(cls,cmd,identifier,filepath,session_pool_endpoint, no_wait=False):
+    def upload(cls, cmd, identifier, filepath, session_pool_endpoint, no_wait=False):
         url_fmt = "{}/files/upload?identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
