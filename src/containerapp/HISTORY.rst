@@ -15,6 +15,8 @@ upcoming
 * 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
 * 'az containerapp up': Fix an issue about creating resource group automatically
 * 'az containerapp sessionpool': Support create/update/show/delete/list session pools
+* 'az containerapp session code-interpreter': Support execute/upload-file/list-files/show-file-content/show-file-metadata/delete-file for code interpreter sessions
+
 
 0.3.50
 ++++++
