@@ -612,14 +612,14 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
 
         return self.raw_param.get("disable_vtpm")
-    
+
     def get_if_match(self) -> str:
         """Obtain the value of if_match.
 
         :return: string
         """
         return self.raw_param.get("if_match")
-    
+
     def get_if_none_match(self) -> str:
         """Obtain the value of if_none_match.
 
@@ -1106,7 +1106,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.upgrade_settings = upgrade_settings
 
         return agentpool
-    
+
     def update_agentpool(self, agentpool: AgentPool) -> AgentPool:
         """Send request to add a new agentpool.
 
@@ -1128,7 +1128,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             if_none_match=self.context.get_if_none_match(),
             headers=self.context.get_aks_custom_headers(),
         )
-    
+
     # pylint: disable=protected-access
     def add_agentpool(self, agentpool: AgentPool) -> AgentPool:
         """Send request to add a new agentpool.

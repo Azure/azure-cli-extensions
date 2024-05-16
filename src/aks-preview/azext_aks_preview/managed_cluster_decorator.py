@@ -887,7 +887,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return self.raw_param.get("upgrade_override_until")
-    
+
     def get_if_match(self) -> Union[str, None]:
         """Obtain the value of if_match.
         :return: string or None
@@ -895,7 +895,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return self.raw_param.get("if_match")
-    
+
     def get_if_none_match(self) -> Union[str, None]:
         """Obtain the value of if_none_match.
         :return: string or None
