@@ -14,7 +14,7 @@ from azure.cli.command_modules.containerapp._utils import (_ensure_location_allo
 from azure.cli.core.commands.client_factory import get_subscription_id
 from ._clients import SessionPoolPreviewClient
 
-from ._models import SessionCodeInterpreterPythonExecution as SessionPoolModel
+from ._models import SessionCodeInterpreterPythonExecution as SessionCodeInterpreterPythonExecutionPreviewModel
 from ._client_factory import handle_raw_exception
 
 logger = get_logger(__name__)
@@ -22,7 +22,8 @@ logger = get_logger(__name__)
 class SessionCodeInterpreterPreviewDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
-        self.session_code_interpreter_def = SessionPoolModel
+        self.session_code_interpreter_def = SessionCodeInterpreterPythonExecutionPreviewModel
+        self.session_pool_client = SessionPoolPreviewClient
 
     def get_argument_name(self):
         return self.get_param('name')
@@ -64,7 +65,7 @@ class SessionCodeInterpreterPreviewDecorator(BaseResource):
                 self.get_argument_resource_group_name(),
                 self.get_argument_name())
         else:
-            sessionpool =  SessionPoolPreviewClient.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),name=self.get_argument_name())
+            sessionpool =  self.session_pool_client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),name=self.get_argument_name())
             session_pool_endpoint = sessionpool["properties"]["poolManagementEndpoint"]
         return session_pool_endpoint
 
