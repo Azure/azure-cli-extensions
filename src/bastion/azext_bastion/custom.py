@@ -149,7 +149,7 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     if not resource_port:
         resource_port = 22
 
-    if not _is_sku_in_allowed_skus(bastion['sku']['name']) or bastion['enableTunneling'] is not True:\
+    if _is_sku_standard_or_higher(bastion['sku']['name']) is not True or bastion['enableTunneling'] is not True:\
         raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
@@ -243,7 +243,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     if not resource_port:
         resource_port = 3389
 
-    if not _is_sku_in_allowed_skus(bastion['sku']['name']) or bastion['enableTunneling'] is not True:\
+    if _is_sku_standard_or_higher(bastion['sku']['name']) is not True or bastion['enableTunneling'] is not True:\
         raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
@@ -325,10 +325,10 @@ def _is_ipconnect_request(bastion, target_ip_address):
         raise InvalidArgumentValueError(err_msg)
     return False
 
-def _is_sku_in_allowed_skus(sku):
+def _is_sku_standard_or_higher(sku):
     allowed_skus = {
-        BastionSku.Standard,
-        BastionSku.Premium
+        BastionSku.Standard.value,
+        BastionSku.Premium.value
     }
     return sku in allowed_skus
 
@@ -395,7 +395,7 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
         "name": bastion_host_name
     })
 
-    if not _is_sku_in_allowed_skus(bastion['sku']['name']) or bastion['enableTunneling'] is not True:\
+    if _is_sku_standard_or_higher(bastion['sku']['name']) is not True or bastion['enableTunneling'] is not True:\
         raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
