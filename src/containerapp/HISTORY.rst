@@ -21,6 +21,7 @@ upcoming
 * 'az containerapp java logger set': Support create/update java logger setting with --logger-name and --logger-level
 * 'az containerapp java logger delete': Support delete java logger setting with --logger-name and --all
 * 'az containerapp java logger show': Support display java logger setting with --logger-name and --all
+* 'az containerapp update': Update test to validate name of cloud build container is equal to container app name
 
 0.3.50
 ++++++
