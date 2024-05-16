@@ -206,3 +206,10 @@ def validate_target_port_range(cmd, namespace):
     if target_port is not None:
         if target_port < 1 or target_port > 65535:
             raise ValidationError("Port must be in range [1, 65535].")
+
+
+def validate_timeout_in_seconds(cmd, namespace):
+    timeout_in_seconds = namespace.timeout_in_seconds
+    if timeout_in_seconds is not None:
+        if timeout_in_seconds < 0 or timeout_in_seconds > 60:
+            raise ValidationError("timeout in seconds must be in range [0, 60].")
