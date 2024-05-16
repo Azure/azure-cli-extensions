@@ -292,6 +292,20 @@ ContainerAppsJob = {
     "tags": None
 }
 
+SessionPool = {
+    "location": None,
+    "properties": {
+        "environmentId": None,
+        "poolManagementType": None,
+        "containerType": None,
+        "customContainerTemplate": None,
+        "secrets": None,
+        "dynamicPoolConfiguration": None,
+        "scaleConfiguration": None,
+        "sessionNetworkConfiguration": None
+    }
+}
+
 DaprComponentResiliency = {
     "properties": {
         "inboundPolicy": {
@@ -590,5 +604,20 @@ CustomDomainConfiguration = {
 }
 
 RuntimeJava = {
-    "enableMetrics": False
+    "enableMetrics": False,
+    "javaAgent": {
+        "enabled": False,
+        "logging": {}
+    }
+}
+
+DotNetComponent = {
+    "properties": {
+        "componentType": "AspireDashboard"
+    }
+}
+
+JavaLoggerSetting = {
+    "logger": None,
+    "level": None
 }

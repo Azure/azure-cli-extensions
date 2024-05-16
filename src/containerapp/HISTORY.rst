@@ -9,6 +9,7 @@ upcoming
 * 'az containerapp env java-component eureka-server-for-spring': Support create/update/show/delete Spring Cloud Eureka; deprecation of 'az containerapp env java-component spring-cloud-eureka'
 * 'az containerapp up': Fix InvalidResourceType error when cloud is not AzureCloud
 * 'az containerapp create/update': Support enable or disable Java metrics with --runtime and --enable-java-metrics
+* 'az containerapp env dotnet-component': Support create/show/list/delete for dotnet components
 * 'az containerapp env create/update': Support peer-to-peer traffic encryption with --enable-peer-to-peer-encryption
 * 'az containerapp update': Fix --scale-rule-tcp-concurrency for TCP scale rule
 * 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
@@ -16,6 +17,12 @@ upcoming
 * 'az containerapp env java-component admin-for-spring': Support create/update/show/delete Admin for spring
 * 'az containerapp env java-component nacos': Support create/update/show/delete Nacos
 * 'az containerapp env java-component': Support --bind, --unbind to bind or unbind with other Java Components
+* 'az containerapp sessionpool': Support create/update/show/delete/list session pools
+* 'az containerapp create/update': Support enable or disable Java agent with --runtime and --enable-java-agent
+* 'az containerapp java logger set': Support create/update java logger setting with --logger-name and --logger-level
+* 'az containerapp java logger delete': Support delete java logger setting with --logger-name and --all
+* 'az containerapp java logger show': Support display java logger setting with --logger-name and --all
+
 
 0.3.50
 ++++++
