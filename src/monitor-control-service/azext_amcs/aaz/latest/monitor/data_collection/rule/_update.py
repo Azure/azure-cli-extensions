@@ -64,6 +64,8 @@ class Update(AAZCommand):
             options=["--kind"],
             help="The kind of the resource. Such as `Linux`, `Windows`.",
             nullable=True,
+            enum={"Linux": "Linux", "Windows": "Windows"},
+            enum_support_extension=True,
         )
         _args_schema.data_collection_endpoint_id = AAZStrArg(
             options=["--endpoint-id", "--data-collection-endpoint-id"],
@@ -86,6 +88,7 @@ class Update(AAZCommand):
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+            enum_support_extension=True,
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
@@ -159,9 +162,10 @@ class Update(AAZCommand):
         _element = cls._args_schema.agent_settings.logs.Element
         _element.name = AAZStrArg(
             options=["name"],
-            help="The name of the setting. Must be part of the list of supported settings",
+            help="The name of the setting.  Must be part of the list of supported settings",
             nullable=True,
             enum={"MaxDiskQuotaInMB": "MaxDiskQuotaInMB", "UseTimeReceivedForForwardedEvents": "UseTimeReceivedForForwardedEvents"},
+            enum_support_extension=True,
         )
         _element.value = AAZStrArg(
             options=["value"],
@@ -215,6 +219,7 @@ class Update(AAZCommand):
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-Event": "Microsoft-Event", "Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf", "Microsoft-Syslog": "Microsoft-Syslog", "Microsoft-WindowsEvent": "Microsoft-WindowsEvent"},
+            enum_support_extension=True,
         )
 
         data_sources = cls._args_schema.data_sources
@@ -333,6 +338,7 @@ class Update(AAZCommand):
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-Event": "Microsoft-Event", "Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf", "Microsoft-Syslog": "Microsoft-Syslog", "Microsoft-WindowsEvent": "Microsoft-WindowsEvent"},
+            enum_support_extension=True,
         )
 
         iis_logs = cls._args_schema.data_sources.iis_logs
@@ -385,6 +391,7 @@ class Update(AAZCommand):
             options=["format"],
             help="The data format of the log files",
             enum={"json": "json", "text": "text"},
+            enum_support_extension=True,
         )
         _element.name = AAZStrArg(
             options=["name"],
@@ -423,6 +430,7 @@ class Update(AAZCommand):
             options=["record-start-timestamp-format"],
             help="One of the supported timestamp formats",
             enum={"ISO 8601": "ISO 8601", "M/D/YYYY HH:MM:SS AM/PM": "M/D/YYYY HH:MM:SS AM/PM", "MMM d hh:mm:ss": "MMM d hh:mm:ss", "Mon DD, YYYY HH:MM:SS": "Mon DD, YYYY HH:MM:SS", "YYYY-MM-DD HH:MM:SS": "YYYY-MM-DD HH:MM:SS", "dd/MMM/yyyy:HH:mm:ss zzz": "dd/MMM/yyyy:HH:mm:ss zzz", "ddMMyy HH:mm:ss": "ddMMyy HH:mm:ss", "yyMMdd HH:mm:ss": "yyMMdd HH:mm:ss", "yyyy-MM-ddTHH:mm:ssK": "yyyy-MM-ddTHH:mm:ssK"},
+            enum_support_extension=True,
         )
 
         streams = cls._args_schema.data_sources.log_files.Element.streams
@@ -471,6 +479,7 @@ class Update(AAZCommand):
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf"},
+            enum_support_extension=True,
         )
 
         platform_telemetry = cls._args_schema.data_sources.platform_telemetry
@@ -525,6 +534,7 @@ class Update(AAZCommand):
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-PrometheusMetrics": "Microsoft-PrometheusMetrics"},
+            enum_support_extension=True,
         )
 
         syslog = cls._args_schema.data_sources.syslog
@@ -563,18 +573,21 @@ class Update(AAZCommand):
         facility_names.Element = AAZStrArg(
             nullable=True,
             enum={"*": "*", "alert": "alert", "audit": "audit", "auth": "auth", "authpriv": "authpriv", "clock": "clock", "cron": "cron", "daemon": "daemon", "ftp": "ftp", "kern": "kern", "local0": "local0", "local1": "local1", "local2": "local2", "local3": "local3", "local4": "local4", "local5": "local5", "local6": "local6", "local7": "local7", "lpr": "lpr", "mail": "mail", "mark": "mark", "news": "news", "nopri": "nopri", "ntp": "ntp", "syslog": "syslog", "user": "user", "uucp": "uucp"},
+            enum_support_extension=True,
         )
 
         log_levels = cls._args_schema.data_sources.syslog.Element.log_levels
         log_levels.Element = AAZStrArg(
             nullable=True,
             enum={"*": "*", "Alert": "Alert", "Critical": "Critical", "Debug": "Debug", "Emergency": "Emergency", "Error": "Error", "Info": "Info", "Notice": "Notice", "Warning": "Warning"},
+            enum_support_extension=True,
         )
 
         streams = cls._args_schema.data_sources.syslog.Element.streams
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-Syslog": "Microsoft-Syslog"},
+            enum_support_extension=True,
         )
 
         windows_event_logs = cls._args_schema.data_sources.windows_event_logs
@@ -608,6 +621,7 @@ class Update(AAZCommand):
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-Event": "Microsoft-Event", "Microsoft-WindowsEvent": "Microsoft-WindowsEvent"},
+            enum_support_extension=True,
         )
 
         x_path_queries = cls._args_schema.data_sources.windows_event_logs.Element.x_path_queries
@@ -640,6 +654,7 @@ class Update(AAZCommand):
         profile_filter.Element = AAZStrArg(
             nullable=True,
             enum={"Domain": "Domain", "Private": "Private", "Public": "Public"},
+            enum_support_extension=True,
         )
 
         streams = cls._args_schema.data_sources.windows_firewall_logs.Element.streams
@@ -712,7 +727,7 @@ class Update(AAZCommand):
         )
         _element.name = AAZStrArg(
             options=["name"],
-            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
+            help="A friendly name for the destination.  This name should be unique across all destinations (regardless of type) within the data collection rule.",
             nullable=True,
         )
         _element.resource_id = AAZStrArg(
@@ -802,7 +817,7 @@ class Update(AAZCommand):
         )
         _element.name = AAZStrArg(
             options=["name"],
-            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
+            help="A friendly name for the destination.  This name should be unique across all destinations (regardless of type) within the data collection rule.",
             nullable=True,
         )
         _element.tenant_id = AAZStrArg(
@@ -892,6 +907,7 @@ class Update(AAZCommand):
             help="The type of lookup to perform on the blob",
             nullable=True,
             enum={"Cidr": "Cidr", "String": "String"},
+            enum_support_extension=True,
         )
         _element.name = AAZStrArg(
             options=["name"],
@@ -932,6 +948,7 @@ class Update(AAZCommand):
             help="The type of the column data.",
             nullable=True,
             enum={"boolean": "boolean", "datetime": "datetime", "dynamic": "dynamic", "int": "int", "long": "long", "real": "real", "string": "string"},
+            enum_support_extension=True,
         )
         return cls._args_schema
 

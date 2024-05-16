@@ -64,6 +64,8 @@ class Update(AAZCommand):
             options=["--kind"],
             help="The kind of the resource. Such as `Linux`, `Windows`.",
             nullable=True,
+            enum={"Linux": "Linux", "Windows": "Windows"},
+            enum_support_extension=True,
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
@@ -81,6 +83,7 @@ class Update(AAZCommand):
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+            enum_support_extension=True,
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
@@ -108,6 +111,7 @@ class Update(AAZCommand):
             help="The configuration to set whether network access from public internet to the endpoints are allowed.",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled", "SecuredByPerimeter": "SecuredByPerimeter"},
+            enum_support_extension=True,
         )
 
         # define Arg Group "Properties"

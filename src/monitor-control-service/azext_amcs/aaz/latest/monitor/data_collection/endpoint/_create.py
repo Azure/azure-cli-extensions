@@ -58,7 +58,9 @@ class Create(AAZCommand):
         )
         _args_schema.kind = AAZStrArg(
             options=["--kind"],
-            help="The kind of the resource. Such as `Linux`, `Windows`.",
+            help="The kind of the resource.",
+            enum={"Linux": "Linux", "Windows": "Windows"},
+            enum_support_extension=True,
         )
         _args_schema.location = AAZResourceLocationArg(
             help="The geo-location where the resource lives.",
@@ -81,6 +83,7 @@ class Create(AAZCommand):
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+            enum_support_extension=True,
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
@@ -104,6 +107,7 @@ class Create(AAZCommand):
             arg_group="Network Acls",
             help="The configuration to set whether network access from public internet to the endpoints are allowed.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled", "SecuredByPerimeter": "SecuredByPerimeter"},
+            enum_support_extension=True,
         )
 
         # define Arg Group "Properties"
