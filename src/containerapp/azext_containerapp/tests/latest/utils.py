@@ -498,7 +498,7 @@ def create_and_verify_containerapp_create_and_update_env_vars(test_cls, resource
 
     # Update and verify Container App using cloud build
     test_cls.cmd(f'containerapp update -g {resource_group} -n {name} --source \"{source_path}\"')
-    app = test_cls.cmd(f'containerapp show -g {resource_group} -n {name}', checks=[
+    test_cls.cmd(f'containerapp show -g {resource_group} -n {name}', checks=[
         JMESPathCheck('properties.template.containers[0].name', name),
         JMESPathCheck('properties.template.containers[0].env', [{'name': 'testkey1', 'value': 'value1'}, {'name': 'testkey2', 'value': 'value2'}])
     ])
