@@ -16,7 +16,7 @@ import sys
 import shutil
 from tempfile import TemporaryDirectory
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
 from knack.log import get_logger
 from azext_aosm.tests.latest.integration_tests.scenario_tests.recording_processors import (
     TokenReplacer,
@@ -63,6 +63,7 @@ class VnfNsdTest(ScenarioTest):
         )
 
     @ResourceGroupPreparer(name_prefix="cli_test_vnf_nsd_", location="uksouth")
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_vnf_nsd_build_and_publish(self, resource_group):
         """
         This test creates a vnf nfd and nsd, publishes them.
