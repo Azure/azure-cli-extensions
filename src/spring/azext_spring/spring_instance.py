@@ -21,7 +21,9 @@ from ._tanzu_component import (create_application_configuration_service,
                                create_application_accelerator)
 
 from ._validators import (_parse_sku_name, validate_instance_not_existed)
+from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 from ._marketplace import _spring_list_marketplace_plan
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PUBLISHER_ID, AKS_RP)
@@ -278,3 +280,47 @@ def spring_list_marketplace_plan(cmd, client):
 
 def spring_list_support_server_versions(cmd, client, resource_group, service):
     return client.services.list_supported_server_versions(resource_group, service)
+
+
+def spring_private_dns_zone_add(cmd, client, resource_group, service, zone_id):
+    resource = client.services.get(resource_group, service)
+    if resource.properties.vnet_addons is not None and resource.properties.vnet_addons.private_dns_zone_id is not None:
+        raise ClientRequestError("A private DNS zone is already configured for this service. Please remove the existing private DNS zone before adding a new one")
+    if zone_id is None:
+        raise InvalidArgumentValueError("A private DNS zone ID must be provided. The value cannot be None.")
+    updated_resource = models.ServiceResource()
+    updated_resource.properties = models.ClusterResourceProperties()
+    if resource.properties.vnet_addons is None:
+        updated_resource.properties.vnet_addons = models.ServiceVNetAddons()
+    else:
+        updated_resource.properties.vnet_addons = resource.properties.vnet_addons
+    updated_resource.properties.vnet_addons.private_dns_zone_id = zone_id
+    return sdk_no_wait(False, client.services.begin_update,
+                       resource_group_name=resource_group, service_name=service, resource=updated_resource)
+
+
+def spring_private_dns_zone_update(cmd, client, resource_group, service, zone_id):
+    resource = client.services.get(resource_group, service)
+    if resource.properties.vnet_addons is None or resource.properties.vnet_addons.private_dns_zone_id is None:
+        raise ClientRequestError("The service instance does not have a Private DNS Zone configured. Please use add command instead.")
+    if zone_id is None:
+        raise InvalidArgumentValueError("A private DNS zone ID must be provided. The value cannot be None.")
+    updated_resource = models.ServiceResource()
+    updated_resource.properties = models.ClusterResourceProperties()
+    if resource.properties.vnet_addons is None:
+        updated_resource.properties.vnet_addons = models.ServiceVNetAddons()
+    else:
+        updated_resource.properties.vnet_addons = resource.properties.vnet_addons
+    updated_resource.properties.vnet_addons.private_dns_zone_id = zone_id
+    return sdk_no_wait(False, client.services.begin_update,
+                       resource_group_name=resource_group, service_name=service, resource=updated_resource)
+
+
+def spring_private_dns_zone_clean(cmd, client, resource_group, service):
+    resource = client.services.get(resource_group, service)
+    if resource.properties.vnet_addons is None or resource.properties.vnet_addons.private_dns_zone_id is None:
+        raise ClientRequestError("The service instance does not have a Private DNS Zone configured. No action is required.")
+    resource.properties.vnet_addons.private_dns_zone_id = None
+    updated_resource = models.ServiceResource(location=resource.location, sku=resource.sku, properties=resource.properties, tags=resource.tags)
+    return sdk_no_wait(False, client.services.begin_create_or_update,
+                       resource_group_name=resource_group, service_name=service, resource=updated_resource)
