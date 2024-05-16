@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.6
+++++++
++ Add support for Python versions 3.9, 3.10 and 3.11 for dependency of psycopg2
+
 1.0.5
 ++++++
 + Use compatible release for `setproctitle` to support Python 3.11
