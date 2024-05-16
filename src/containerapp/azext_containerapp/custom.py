@@ -28,7 +28,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
 from azure.cli.command_modules.containerapp.containerapp_decorator import BaseContainerAppDecorator
-from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvUpdateDecorator, ContainerAppEnvDecorator
+from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvDecorator
 from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
 from azure.cli.command_modules.containerapp._github_oauth import get_github_access_token
 from azure.cli.command_modules.containerapp._utils import (_validate_subscription_registered,
@@ -55,6 +55,7 @@ from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertif
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
+from .containerapp_java_decorator import ContainerappJavaLoggerDecorator, ContainerappJavaLoggerSetDecorator, ContainerappJavaLoggerDeleteDecorator
 from .containerapp_resiliency_decorator import (
     ContainerAppResiliencyPreviewCreateDecorator,
     ContainerAppResiliencyPreviewShowDecorator,
@@ -80,6 +81,7 @@ from .containerapp_decorator import ContainerAppPreviewCreateDecorator, Containe
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from .java_component_decorator import JavaComponentDecorator
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
+from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -98,6 +100,7 @@ from ._clients import (
     ConnectedEnvCertificateClient,
     JavaComponentPreviewClient,
     SessionPoolPreviewClient,
+    SessionCodeInterpreterPreviewClient,
     DotNetComponentPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
@@ -477,7 +480,8 @@ def create_containerapp(cmd,
                         service_principal_tenant_id=None,
                         max_inactive_revisions=None,
                         runtime=None,
-                        enable_java_metrics=None):
+                        enable_java_metrics=None,
+                        enable_java_agent=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -538,7 +542,8 @@ def update_containerapp_logic(cmd,
                               max_inactive_revisions=None,
                               force_single_container_updates=False,
                               runtime=None,
-                              enable_java_metrics=None):
+                              enable_java_metrics=None,
+                              enable_java_agent=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -591,7 +596,8 @@ def update_containerapp(cmd,
                         build_env_vars=None,
                         max_inactive_revisions=None,
                         runtime=None,
-                        enable_java_metrics=None):
+                        enable_java_metrics=None,
+                        enable_java_agent=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -629,7 +635,8 @@ def update_containerapp(cmd,
                                      build_env_vars=build_env_vars,
                                      max_inactive_revisions=max_inactive_revisions,
                                      runtime=runtime,
-                                     enable_java_metrics=enable_java_metrics)
+                                     enable_java_metrics=enable_java_metrics,
+                                     enable_java_agent=enable_java_agent)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -2647,6 +2654,44 @@ def list_environment_telemetry_otlp(cmd,
     return containerapp_env_def
 
 
+def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    containerapp_java_logger_set_decorator = ContainerappJavaLoggerSetDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_set_decorator.validate_arguments()
+    containerapp_java_logger_set_decorator.construct_payload()
+    return containerapp_java_logger_set_decorator.create_or_update()
+
+
+def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
+    raw_parameters = locals()
+    containerapp_java_logger_decorator = ContainerappJavaLoggerDeleteDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_decorator.validate_arguments()
+    containerapp_java_logger_decorator.construct_payload()
+    return containerapp_java_logger_decorator.delete()
+
+
+def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None):
+    raw_parameters = locals()
+    containerapp_java_logger_decorator = ContainerappJavaLoggerDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_decorator.validate_arguments()
+    return containerapp_java_logger_decorator.show()
+
+
 def create_session_pool(cmd,
                         name,
                         resource_group_name,
@@ -2763,6 +2808,123 @@ def delete_session_pool(cmd,
 
     return r
 
+# session code interpreter commands
+def execute_session_code_interpreter(cmd,
+                                     name,
+                                     resource_group_name,
+                                     identifier,
+                                     code,
+                                     session_pool_location=None,
+                                     timeout_in_seconds=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.validate_arguments()
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    session_code_interpreter_decorator.construct_payload()
+    r = session_code_interpreter_decorator.execute()
+
+    return r
+
+def upload_session_code_interpreter(cmd,
+                                    name,
+                                    resource_group_name,
+                                    identifier,
+                                    filepath,
+                                    session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.upload()
+
+    return r
+
+def show_file_content_session_code_interpreter(cmd,
+                                               name,
+                                               resource_group_name,
+                                               identifier,
+                                               filename,
+                                               session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.show_file_content()
+
+    return r
+
+def show_file_metadata_session_code_interpreter(cmd,
+                                                name,
+                                                resource_group_name,
+                                                identifier,
+                                                filename,
+                                                session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.show_file_metadata()
+
+    return r
+
+def list_files_session_code_interpreter(cmd,
+                                        name,
+                                        resource_group_name,
+                                        identifier,
+                                        path=None,
+                                        session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.list_files()
+
+    return r
+
+def delete_file_session_code_interpreter(cmd,
+                                         name,
+                                         resource_group_name,
+                                         identifier,
+                                         filename,
+                                         session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.delete_file()
+
+    return r
 
 def list_dotnet_components(cmd, environment_name, resource_group_name):
     raw_parameters = locals()
@@ -2824,4 +2986,5 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
         aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
         logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
+
     return
