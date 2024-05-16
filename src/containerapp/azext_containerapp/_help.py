@@ -1760,7 +1760,6 @@ helps['containerapp session code-interpreter list-files'] = """
           az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession
 """
 
-=======
 helps['containerapp java'] = """
     type: group
     short-summary: Commands to manage Java workloads.
