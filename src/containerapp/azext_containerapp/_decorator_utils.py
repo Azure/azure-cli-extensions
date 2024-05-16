@@ -126,9 +126,11 @@ def process_dapr_component_resiliency_yaml(dapr_component_resiliency):
     return dapr_component_resiliency
 
 
-def infer_runtime_option(runtime, enable_java_metrics):
+def infer_runtime_option(runtime, enable_java_metrics, enable_java_agent):
     if runtime:
         return runtime
     if enable_java_metrics is not None:
+        return RUNTIME_JAVA
+    if enable_java_agent is not None:
         return RUNTIME_JAVA
     return None
