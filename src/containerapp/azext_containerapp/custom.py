@@ -2678,7 +2678,7 @@ def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=Non
     return containerapp_java_logger_decorator.delete()
 
 
-def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
+def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None):
     raw_parameters = locals()
     containerapp_java_logger_decorator = ContainerappJavaLoggerDecorator(
         cmd=cmd,
