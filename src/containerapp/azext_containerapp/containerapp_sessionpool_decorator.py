@@ -275,7 +275,10 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             principal_id_url = "https://graph.microsoft.com/v1.0/me"
             principal_id = send_raw_request(self.cmd.cli_ctx, "GET", principal_id_url).json()['id']
             management_hostname = self.cmd.cli_ctx.cloud.endpoints.resource_manager
-            scope = "subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/sessionPools/{}".format(get_subscription_id(self.cmd.cli_ctx), self.get_argument_resource_group_name, self.get_argument_name)
+            scope = "subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/sessionPools/{}".format(
+                get_subscription_id(self.cmd.cli_ctx),
+                self.get_argument_resource_group_name(),
+                self.get_argument_name())
             role_assignment_fmt = "{}/{}/providers/Microsoft.Authorization/roleAssignments/{}?api-version=2022-04-01"
             role_assignment_url = role_assignment_fmt.format(
                 management_hostname.strip('/'),
