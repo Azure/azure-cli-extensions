@@ -15,6 +15,7 @@ upcoming
 * 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
 * 'az containerapp up': Fix an issue about creating resource group automatically
 * 'az containerapp sessionpool': Support create/update/show/delete/list session pools
+* 'az containerapp update': Update container name to container app name for source to cloud builds
 
 0.3.50
 ++++++
