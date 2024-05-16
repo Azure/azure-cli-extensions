@@ -613,11 +613,20 @@ CustomDomainConfiguration = {
 }
 
 RuntimeJava = {
-    "enableMetrics": False
+    "enableMetrics": False,
+    "javaAgent": {
+        "enabled": False,
+        "logging": {}
+    }
 }
 
 DotNetComponent = {
     "properties": {
         "componentType": "AspireDashboard"
     }
+}
+
+JavaLoggerSetting = {
+    "logger": None,
+    "level": None
 }

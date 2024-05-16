@@ -55,6 +55,7 @@ from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertif
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
+from .containerapp_java_decorator import ContainerappJavaLoggerDecorator, ContainerappJavaLoggerSetDecorator, ContainerappJavaLoggerDeleteDecorator
 from .containerapp_resiliency_decorator import (
     ContainerAppResiliencyPreviewCreateDecorator,
     ContainerAppResiliencyPreviewShowDecorator,
@@ -479,7 +480,8 @@ def create_containerapp(cmd,
                         service_principal_tenant_id=None,
                         max_inactive_revisions=None,
                         runtime=None,
-                        enable_java_metrics=None):
+                        enable_java_metrics=None,
+                        enable_java_agent=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -540,7 +542,8 @@ def update_containerapp_logic(cmd,
                               max_inactive_revisions=None,
                               force_single_container_updates=False,
                               runtime=None,
-                              enable_java_metrics=None):
+                              enable_java_metrics=None,
+                              enable_java_agent=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -593,7 +596,8 @@ def update_containerapp(cmd,
                         build_env_vars=None,
                         max_inactive_revisions=None,
                         runtime=None,
-                        enable_java_metrics=None):
+                        enable_java_metrics=None,
+                        enable_java_agent=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -631,7 +635,8 @@ def update_containerapp(cmd,
                                      build_env_vars=build_env_vars,
                                      max_inactive_revisions=max_inactive_revisions,
                                      runtime=runtime,
-                                     enable_java_metrics=enable_java_metrics)
+                                     enable_java_metrics=enable_java_metrics,
+                                     enable_java_agent=enable_java_agent)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -2647,6 +2652,44 @@ def list_environment_telemetry_otlp(cmd,
         handle_non_404_status_code_exception(e)
 
     return containerapp_env_def
+
+
+def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    containerapp_java_logger_set_decorator = ContainerappJavaLoggerSetDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_set_decorator.validate_arguments()
+    containerapp_java_logger_set_decorator.construct_payload()
+    return containerapp_java_logger_set_decorator.create_or_update()
+
+
+def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
+    raw_parameters = locals()
+    containerapp_java_logger_decorator = ContainerappJavaLoggerDeleteDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_decorator.validate_arguments()
+    containerapp_java_logger_decorator.construct_payload()
+    return containerapp_java_logger_decorator.delete()
+
+
+def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None):
+    raw_parameters = locals()
+    containerapp_java_logger_decorator = ContainerappJavaLoggerDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_decorator.validate_arguments()
+    return containerapp_java_logger_decorator.show()
 
 
 def create_session_pool(cmd,
