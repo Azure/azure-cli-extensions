@@ -15,6 +15,12 @@ upcoming
 * 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
 * 'az containerapp up': Fix an issue about creating resource group automatically
 * 'az containerapp sessionpool': Support create/update/show/delete/list session pools
+* 'az containerapp update': Update container name to container app name for source to cloud builds
+* 'az containerapp session code-interpreter': Support execute/upload-file/list-files/show-file-content/show-file-metadata/delete-file for code interpreter sessions
+* 'az containerapp create/update': Support enable or disable Java agent with --runtime and --enable-java-agent
+* 'az containerapp java logger set': Support create/update java logger setting with --logger-name and --logger-level
+* 'az containerapp java logger delete': Support delete java logger setting with --logger-name and --all
+* 'az containerapp java logger show': Support display java logger setting with --logger-name and --all
 
 0.3.50
 ++++++
