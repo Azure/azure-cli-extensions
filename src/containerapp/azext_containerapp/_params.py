@@ -53,6 +53,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp create', arg_group='Runtime', is_preview=True) as c:
         c.argument('runtime', arg_type=get_enum_type(['generic', 'java']), help='The runtime of the container app.', is_preview=True)
         c.argument('enable_java_metrics', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java metrics for the app. Only applicable for Java runtime.', is_preview=True)
+        c.argument('enable_java_agent', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java agent for the app. Only applicable for Java runtime.', is_preview=True)
 
     # Source and Artifact
     with self.argument_context('containerapp update') as c:
@@ -72,6 +73,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp update', arg_group='Runtime', is_preview=True) as c:
         c.argument('runtime', arg_type=get_enum_type(['generic', 'java']), help='The runtime of the container app.', is_preview=True)
         c.argument('enable_java_metrics', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java metrics for the app. Only applicable for Java runtime.', is_preview=True)
+        c.argument('enable_java_agent', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java agent for the app. Only applicable for Java runtime.', is_preview=True)
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
         c.argument('infrastructure_resource_group', options_list=['--infrastructure-resource-group', '-i'], help='Name for resource group that will contain infrastructure resources. If not provided, a resource group name will be generated.', is_preview=True)
@@ -358,7 +360,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env', arg_group='Peer Traffic Configuration') as c:
         c.argument('p2p_encryption_enabled', arg_type=get_three_state_flag(), options_list=['--enable-peer-to-peer-encryption'], is_preview=True, help='Boolean indicating whether the peer-to-peer traffic encryption is enabled for the environment.')
-    
+
     with self.argument_context('containerapp sessionpool') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
@@ -389,3 +391,7 @@ def load_arguments(self, _):
         c.argument('registry_pass', validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in to container registry. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
 
+    with self.argument_context('containerapp java logger') as c:
+        c.argument('logger_name', help="The logger name.")
+        c.argument('logger_level', arg_type=get_enum_type(["off", "error", "info", "debug", "trace", "warn"]), help="Set the log level for the specific logger name.")
+        c.argument('all', help="The flag to indicate all logger settings.", action="store_true")
