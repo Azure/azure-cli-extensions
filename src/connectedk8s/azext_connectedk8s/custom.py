@@ -618,7 +618,7 @@ def install_helm_client():
     install_location = os.path.expanduser(os.path.join('~', install_location_string))
 
     # Download compressed Helm binary if not already present
-    if not os.path.isfile(download_location):
+    if not os.path.isfile(install_location):
         # Creating the helm folder if it doesnt exist
         if not os.path.exists(download_dir):
             try:
@@ -658,9 +658,7 @@ def install_helm_client():
                                     summary='Unable to create helm executable')
             raise ClientRequestError("Failed to create helm executable." + str(
                 e), recommendation="Please ensure that you delete the directory '{}' before trying again.".format(download_dir))
-
-    # Extract compressed helm binary
-    if not os.path.isfile(install_location):
+        # Extract the archive.
         try:
             shutil.unpack_archive(download_location, download_dir)
             os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
