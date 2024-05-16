@@ -98,7 +98,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.execute(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                code_interpreter_envelope=self.session_code_interpreter_def, 
+                code_interpreter_envelope=self.session_code_interpreter_def,
                 session_pool_endpoint=self.get_sessionpool_endpoint(),
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
@@ -109,7 +109,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.upload(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                filepath=self.get_argument_filepath(), 
+                filepath=self.get_argument_filepath(),
                 session_pool_endpoint=self.get_sessionpool_endpoint(),
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
@@ -120,9 +120,8 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.show_file_content(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                filename=self.get_argument_filename(), 
-                session_pool_endpoint=self.get_sessionpool_endpoint(),
-                no_wait=self.get_argument_no_wait())
+                filename=self.get_argument_filename(),
+                session_pool_endpoint=self.get_sessionpool_endpoint())
         except Exception as e:
             handle_raw_exception(e)
 
@@ -131,9 +130,8 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.show_file_metadata(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                filename=self.get_argument_filename(), 
-                session_pool_endpoint=self.get_sessionpool_endpoint(),
-                no_wait=self.get_argument_no_wait())
+                filename=self.get_argument_filename(),
+                session_pool_endpoint=self.get_sessionpool_endpoint())
         except Exception as e:
             handle_raw_exception(e)
 
@@ -143,8 +141,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
                 path=self.get_argument_path(), 
-                session_pool_endpoint=self.get_sessionpool_endpoint(),
-                no_wait=self.get_argument_no_wait())
+                session_pool_endpoint=self.get_sessionpool_endpoint())
         except Exception as e:
             handle_raw_exception(e)
 

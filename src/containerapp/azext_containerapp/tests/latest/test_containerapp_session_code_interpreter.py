@@ -62,8 +62,7 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             resource_group,
             identifier_name,
             txt_file,
-            TEST_LOCATION
-            ),
+            TEST_LOCATION),
             checks=[
             JMESPathCheck('value[0].properties.filename', 'cert.txt'),
         ])
@@ -72,8 +71,7 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
         files_list = self.cmd("containerapp session code-interpreter list-files -n {} -g {} --identifier {}".format(
             sessionpool_name_python,
             resource_group,
-            identifier_name
-            )).get_output_in_json()
+            identifier_name)).get_output_in_json()
         self.assertTrue(len(files_list["value"]) == 1)
 
         # check content
@@ -81,9 +79,18 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             sessionpool_name_python,
             resource_group,
             identifier_name,
-            "cert.txt"
-            )).get_output_in_json()
+            "cert.txt")).get_output_in_json()
         self.assertTrue(file_content == '\"testing\"')
+
+        # check metadata
+        self.cmd("containerapp session code-interpreter show-file-metadata -n {} -g {} --identifier {} --filename {}".format(
+            sessionpool_name_python,
+            resource_group,
+            identifier_name,
+            "cert.txt"),
+            checks=[
+            JMESPathCheck('properties.filename', 'cert.txt'),
+        ])
 
         # delete file
         self.cmd("containerapp session code-interpreter delete-file -n {} -g {} --identifier {} --filename {} --yes".format(
