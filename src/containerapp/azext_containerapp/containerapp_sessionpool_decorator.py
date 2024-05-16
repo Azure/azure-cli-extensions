@@ -4,15 +4,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
+import uuid
 from copy import deepcopy
 from knack.log import get_logger
 from enum import Enum
 from typing import Any, Dict
 from msrestazure.tools import parse_resource_id
+from azure.cli.core.util import send_raw_request
+from azure.cli.core.azclierror import HTTPError
+import json
 
 from azure.cli.core.commands import AzCliCommand
-from azure.cli.core.azclierror import ValidationError, CLIInternalError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._models import (ContainerResources as ContainerResourcesModel,
                                                             Container as ContainerModel)
@@ -24,10 +27,13 @@ from azure.cli.command_modules.containerapp._utils import (parse_env_var_flags, 
                                                            safe_set, safe_get)
 from azure.cli.command_modules.containerapp._clients import ManagedEnvironmentClient
 from azure.cli.command_modules.containerapp._client_factory import handle_non_404_status_code_exception
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 from ._models import SessionPool as SessionPoolModel
 from ._client_factory import handle_raw_exception
 from ._utils import AppType
+
+SESSION_CREATOR_ROLE_ID = "0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0"
 
 logger = get_logger(__name__)
 
@@ -262,12 +268,56 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         except Exception as e:
             handle_non_404_status_code_exception(e)
 
+    def assign_session_create_role(self):
+        # try to add user as session pool creator role to the session pool
+        try:
+            # get princpalId of the user
+            principal_id_url = "https://graph.microsoft.com/v1.0/me"
+            principal_id = send_raw_request(self.cmd.cli_ctx, "GET", principal_id_url).json()['id']
+            management_hostname = self.cmd.cli_ctx.cloud.endpoints.resource_manager
+            scope = "subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/sessionPools/{}".format(
+                get_subscription_id(self.cmd.cli_ctx),
+                self.get_argument_resource_group_name(),
+                self.get_argument_name())
+            role_assignment_fmt = "{}/{}/providers/Microsoft.Authorization/roleAssignments/{}?api-version=2022-04-01"
+            role_assignment_url = role_assignment_fmt.format(
+                management_hostname.strip('/'),
+                scope,
+                uuid.uuid4()
+            )
+            role_definition_id = "/{}/providers/Microsoft.Authorization/roleDefinitions/{}".format(
+                scope,
+                SESSION_CREATOR_ROLE_ID)
+            send_raw_request(self.cmd.cli_ctx, "PUT", role_assignment_url, body=json.dumps({
+                "properties": {
+                    "roleDefinitionId": role_definition_id,
+                    "principalId": principal_id
+                }
+            }))
+        # if anything goes wrong print error but do not throw error
+        except Exception as e:
+            try:
+                if isinstance(e, HTTPError):
+                    error_code = json.loads(e.response.text)["error"]["code"]
+                    if error_code == "RoleAssignmentExists":
+                        pass
+                else:
+                    raise Exception(e)
+            except:
+                logger.warning("Could not add user as session pool creator role to the session pool, please follow the docs https://learn.microsoft.com/en-us/azure/container-apps/sessions-code-interpreter?tabs=azure-cli#authentication to add the needed roll for authentication")
+                logger.warning(e)
+
     def create(self):
         try:
-            return self.client.create(
+            create_result = self.client.create(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                 name=self.get_argument_name(),
                 session_pool_envelope=self.session_pool_def, no_wait=self.get_argument_no_wait())
+            try:
+                self.assign_session_create_role()
+            except Exception as e:
+                logger.warning(e)
+            return create_result
         except Exception as e:
             handle_raw_exception(e)
 

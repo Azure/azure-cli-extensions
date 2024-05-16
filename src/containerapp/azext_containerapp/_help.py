@@ -1693,6 +1693,73 @@ helps['containerapp sessionpool list'] = """
           az containerapp sessionpool list -g MyResourceGroup
 """
 
+# code interpreter commands
+helps['containerapp session'] = """
+    type: group
+    short-summary: Commands to manage sessions.To learn more about individual commands under each subgroup run containerapp session [subgroup name] --help.
+"""
+
+helps['containerapp session code-interpreter'] = """
+    type: group
+    short-summary: Commands to interact with and manage code interpreter sessions.
+"""
+
+helps['containerapp session code-interpreter execute'] = """
+    type: command
+    short-summary: Execute code in a code interpreter session. 
+    examples:
+    - name: Execute a simple hello world.
+      text: |
+          az containerapp session code-interpreter execute -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --code 'print("'"Hello world"'")' --timeout-in-seconds 30 --session-pool-location eastasia
+"""
+
+helps['containerapp session code-interpreter upload-file'] = """
+    type: command
+    short-summary: Upload a file to a code interpreter session .
+    examples:
+    - name: Upload a file to a session.
+      text: |
+          az containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filepath example.txt  
+"""
+
+helps['containerapp session code-interpreter show-file-content'] = """
+    type: command
+    short-summary: Show the content a file uploaded to a code interpreter session.
+    examples:
+    - name: Show content of file.
+      text: az containerapp session code-interpreter show-file-content -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filename example.txt
+"""
+
+helps['containerapp session code-interpreter show-file-metadata'] = """
+    type: command
+    short-summary: Shows the meta-data content a file uploaded to a code interpreter session.
+    examples:
+    - name: Show the meta-data details of a file uploaded to a session.
+      text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filename example.txt
+"""
+
+helps['containerapp session code-interpreter delete-file'] = """
+    type: command
+    short-summary: Delete a file uploaded to a code interpreter session.
+    examples:
+    - name: Delete a file .
+      text: az containerapp session code-interpreter delete-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filename example.txt
+"""
+
+helps['containerapp session code-interpreter list-files'] = """
+    type: command
+    short-summary: List files uploaded to a code interpreter session
+    examples:
+    - name: List files uploaded in a code-interpreter session.
+      text: |
+          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession
+"""
+
 helps['containerapp java'] = """
     type: group
     short-summary: Commands to manage Java workloads.
@@ -1740,6 +1807,7 @@ helps['containerapp java logger delete'] = """
       text: |
           az containerapp java logger delete --logger-name root -n my-containerapp -g MyResourceGroup
 """
+
 # DotNet Components Commands
 helps['containerapp env dotnet-component'] = """
     type: group
