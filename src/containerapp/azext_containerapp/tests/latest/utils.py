@@ -490,19 +490,19 @@ def create_and_verify_containerapp_create_and_update_env_vars(test_cls, resource
     env_name = test_cls.create_random_name(prefix='env', length=24)
     create_containerapp_env(test_cls=test_cls, resource_group=resource_group, env_name=env_name)
 
-    # Create the Container App using cloud build
+    # Create and verify Container App using cloud build
     test_cls.cmd(f'containerapp create -g {resource_group} -n {name} --environment {env_name} --source \"{source_path}\" --env-vars "testkey1=value1" "testkey2=value2"')
-    app = test_cls.cmd(f'containerapp show -g {resource_group} -n {name}').get_output_in_json()
+    test_cls.cmd(f'containerapp show -g {resource_group} -n {name}', checks=[
+        JMESPathCheck('properties.template.containers[0].env', [{'name': 'testkey1', 'value': 'value1'}, {'name': 'testkey2', 'value': 'value2'}])
+    ])
 
-    # Verify that the Container App has the correct environment variables
-    test_cls.assertEqual(app["properties"]["template"]["containers"][0]["env"], [{"name": "testkey1", "value": "value1"}, {"name": "testkey2", "value": "value2"}])
-
-    # Update the Container App using cloud build
+    # Update and verify Container App using cloud build
     test_cls.cmd(f'containerapp update -g {resource_group} -n {name} --source \"{source_path}\"')
-    app = test_cls.cmd(f'containerapp show -g {resource_group} -n {name}').get_output_in_json()
+    test_cls.cmd(f'containerapp show -g {resource_group} -n {name}', checks=[
+        JMESPathCheck('properties.template.containers[0].env', [{'name': 'testkey1', 'value': 'value1'}, {'name': 'testkey2', 'value': 'value2'}])
+    ])
 
-    # Verify that the Container App has the correct environment variables
-    test_cls.assertEqual(app["properties"]["template"]["containers"][0]["env"], [{"name": "testkey1", "value": "value1"}, {"name": "testkey2", "value": "value2"}])
+    # Delete the Container App
     test_cls.cmd('containerapp delete -g {} -n {} --yes'.format(resource_group, name))
 
 
