@@ -32,6 +32,7 @@ from azext_aosm.vendored_sdks.azure_storagev2.blob.v2022_11_02 import (
 from azext_aosm.common.registry import ContainerRegistry, AzureContainerRegistry
 from azext_aosm.vendored_sdks.models import ArtifactType
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
+from azure.core.exceptions import ServiceResponseError
 from knack.log import get_logger
 from oras.client import OrasClient
 
@@ -82,12 +83,26 @@ class BaseACRArtifact(BaseArtifact):
         aosm_client: HybridNetworkManagementClient,
     ) -> MutableMapping[str, Any]:
         """Gets the details for uploading the artifacts in the manifest."""
-        return aosm_client.artifact_manifests.list_credential(
-            resource_group_name=config.publisherResourceGroupName,
-            publisher_name=config.publisherName,
-            artifact_store_name=config.acrArtifactStoreName,
-            artifact_manifest_name=config.acrManifestName,
-        ).as_dict()
+        retries = 0
+        # This retry logic is to handle the ServiceResponseError that is hit in the integration tests.
+        # This error is not hit when running the cli normally because the CLI framework automatically retries,
+        # the testing framework does not support automatic retries.
+        while retries < 2:
+            try:
+                credential_dict = aosm_client.artifact_manifests.list_credential(
+                    resource_group_name=config.publisherResourceGroupName,
+                    publisher_name=config.publisherName,
+                    artifact_store_name=config.acrArtifactStoreName,
+                    artifact_manifest_name=config.acrManifestName,
+                ).as_dict()
+                break
+            except ServiceResponseError as error:
+                retries += 1
+                if retries == 2:
+                    logger.debug(error, exc_info=True)
+                    raise ServiceResponseError("Failed to get manifest credentials.")
+
+        return credential_dict
 
     @staticmethod
     def _get_oras_client(manifest_credentials: MutableMapping[str, Any]) -> OrasClient:

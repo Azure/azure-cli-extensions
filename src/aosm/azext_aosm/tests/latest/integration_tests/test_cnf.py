@@ -67,7 +67,7 @@ class TestCNF(unittest.TestCase):
 
                 expected_deploy_params = {
                     "location": "uksouth",
-                    "publisherName": "automated-cli-tests-nginx-publisher",
+                    "publisherName": "automated-cli-test-nginx-publisher",
                     "publisherResourceGroupName": "cli_test_cnf_nfd",
                     "acrArtifactStoreName": "nginx-acr",
                     "acrManifestName": "nginx-acr-manifest-1-0-0",
