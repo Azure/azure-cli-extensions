@@ -16,9 +16,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2024-04-01"],
         ]
     }
 
@@ -113,6 +113,12 @@ class Update(AAZCommand):
             options=["--policy-info"],
             arg_group="Properties",
             help="Gets or sets the policy information.",
+        )
+        _args_schema.resource_guard_operation_requests = AAZListArg(
+            options=["--resource-guard-operation-requests"],
+            arg_group="Properties",
+            help="ResourceGuardOperationRequests on which LAC check will be performed",
+            nullable=True,
         )
         _args_schema.validation_type = AAZStrArg(
             options=["--validation-type"],
@@ -251,6 +257,11 @@ class Update(AAZCommand):
         policy_info.policy_id = AAZStrArg(
             options=["policy-id"],
         )
+
+        resource_guard_operation_requests = cls._args_schema.resource_guard_operation_requests
+        resource_guard_operation_requests.Element = AAZStrArg(
+            nullable=True,
+        )
         return cls._args_schema
 
     _args_base_resource_properties_update = None
@@ -356,7 +367,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -459,7 +470,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -529,6 +540,7 @@ class Update(AAZCommand):
                 properties.set_prop("identityDetails", AAZObjectType, ".identity_details")
                 properties.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("policyInfo", AAZObjectType, ".policy_info", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
                 properties.set_prop("validationType", AAZStrType, ".validation_type")
 
             data_source_info = _builder.get(".properties.dataSourceInfo")
@@ -576,6 +588,10 @@ class Update(AAZCommand):
             policy_info = _builder.get(".properties.policyInfo")
             if policy_info is not None:
                 policy_info.set_prop("policyId", AAZStrType, ".policy_id", typ_kwargs={"flags": {"required": True}})
+
+            resource_guard_operation_requests = _builder.get(".properties.resourceGuardOperationRequests")
+            if resource_guard_operation_requests is not None:
+                resource_guard_operation_requests.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -672,6 +688,9 @@ class _UpdateHelper:
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
+        )
+        properties.resource_guard_operation_requests = AAZListType(
+            serialized_name="resourceGuardOperationRequests",
         )
         properties.validation_type = AAZStrType(
             serialized_name="validationType",
@@ -873,6 +892,9 @@ class _UpdateHelper:
         )
         cls._build_schema_user_facing_error_read(protection_status.error_details)
         protection_status.status = AAZStrType()
+
+        resource_guard_operation_requests = _schema_backup_instance_resource_read.properties.resource_guard_operation_requests
+        resource_guard_operation_requests.Element = AAZStrType()
 
         system_data = _schema_backup_instance_resource_read.system_data
         system_data.created_at = AAZStrType(

@@ -12,7 +12,7 @@ class FrontDoorBasicScenarioTests(ScenarioTest):
     @ResourceGroupPreparer(location='westus')
     def test_front_door_basic_scenario(self, resource_group):
         front_endpoint_name = f"{self.create_random_name('clife', 16)}"
-        front_endpoint_host_name = f"{front_endpoint_name}.cdne2e.azfdtest.xyz"
+        front_endpoint_host_name = f"{front_endpoint_name}.clitest.azfdtest.xyz"
         self.kwargs.update({
             'front_door': self.create_random_name('clifrontdoor', 20),
             'front_endpoint_host_name': front_endpoint_host_name,
@@ -29,7 +29,7 @@ class FrontDoorBasicScenarioTests(ScenarioTest):
         # Create CNAME record which point to front door CANME
         # Custom frontend endpoint must have a CNAME pointing to the default frontend host.
         # More information can be found in https://docs.microsoft.com/en-us/azure/frontdoor/front-door-custom-domain#create-a-cname-dns-record
-        self.cmd(f'network dns record-set cname set-record -g azfdtest.xyz -n {front_endpoint_name} -z cdne2e.azfdtest.xyz -c {output["frontendEndpoints"][0]["hostName"]}')
+        self.cmd(f'network dns record-set cname set-record -g azfdtest.xyz -n {front_endpoint_name} -z clitest.azfdtest.xyz -c {output["frontendEndpoints"][0]["hostName"]}')
 
         check_custom_domain_check = [JMESPathCheck('customDomainValidated', True),
                                      JMESPathCheck('reason', None)]
