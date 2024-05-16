@@ -920,6 +920,11 @@ helps['containerapp create'] = """
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --enable-java-metrics
+    - name: Create a container app with java agent enabled
+      text: |
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --enable-java-agent
 """
 
 # containerapp update for preview
@@ -955,7 +960,11 @@ helps['containerapp update'] = """
       text: |
           az containerapp update -n my-containerapp -g MyResourceGroup \\
               --enable-java-metrics
-    - name: Update a container app without java metrics enabled
+    - name: Update a container app with java agent enabled
+      text: |
+          az containerapp update -n my-containerapp -g MyResourceGroup \\
+              --enable-java-agent
+    - name: Update a container app to erase java enhancement capabilities, like java metrics, java agent, etc.
       text: |
           az containerapp update -n my-containerapp -g MyResourceGroup \\
               --runtime generic
@@ -1684,6 +1693,53 @@ helps['containerapp sessionpool list'] = """
           az containerapp sessionpool list -g MyResourceGroup
 """
 
+helps['containerapp java'] = """
+    type: group
+    short-summary: Commands to manage Java workloads.
+"""
+
+# Java Logging logger Commands
+helps['containerapp java logger'] = """
+    type: group
+    short-summary: Dynamically change log level for Java workloads.
+"""
+
+# Java Logging logger Commands
+helps['containerapp java logger set'] = """
+    type: command
+    short-summary: Create or update logger for Java workloads.
+    examples:
+    - name: Create root logger with debug level.
+      text: |
+          az containerapp java logger set --logger-name root --logger-level debug -n my-containerapp -g MyResourceGroup
+    - name: Update root logger with debug level.
+      text: |
+          az containerapp java logger set --logger-name root --logger-level info -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp java logger show'] = """
+    type: command
+    short-summary: Display logger setting for Java workloads.
+    examples:
+    - name: Display all logger settings for Java workloads.
+      text: |
+          az containerapp java logger show --all -n my-containerapp -g MyResourceGroup
+    - name: Display specific logger with name for Java workloads.
+      text: |
+          az containerapp java logger show --logger-name root -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp java logger delete'] = """
+    type: command
+    short-summary: Delete logger for Java workloads.
+    examples:
+    - name: Delete all logger settings for Java workloads.
+      text: |
+          az containerapp java logger delete --all -n my-containerapp -g MyResourceGroup
+    - name: Delete specific logger with name for Java workloads.
+      text: |
+          az containerapp java logger delete --logger-name root -n my-containerapp -g MyResourceGroup
+"""
 # DotNet Components Commands
 helps['containerapp env dotnet-component'] = """
     type: group
