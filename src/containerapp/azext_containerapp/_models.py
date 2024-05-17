@@ -613,7 +613,7 @@ CustomDomainConfiguration = {
 }
 
 RuntimeJava = {
-    "enableMetrics": False,
+    "enableMetrics": True,
     "javaAgent": {
         "enabled": False,
         "logging": {}
