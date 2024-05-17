@@ -9,8 +9,6 @@ import datetime
 import os
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
-from azure.cli.core.util import sdk_no_wait
-from azure.cli.core.commands import LongRunningOperation
 
 import semver
 from azext_aks_preview._consts import (
@@ -103,6 +101,8 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     UnknownError,
 )
+from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json, read_file_content

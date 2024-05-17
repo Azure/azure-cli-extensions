@@ -9,7 +9,6 @@ from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorMode, DecoratorEarlyExitException
-
 from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolAddDecorator,
     AKSAgentPoolContext,
@@ -23,10 +22,12 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.util import read_file_content
+from azure.cli.core.util import (
+    read_file_content,
+    sdk_no_wait,
+)
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
-from azure.cli.core.util import sdk_no_wait
 
 from azext_aks_preview._client_factory import cf_agent_pools
 from azext_aks_preview._consts import (
