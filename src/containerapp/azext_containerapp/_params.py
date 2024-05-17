@@ -26,6 +26,11 @@ def load_arguments(self, _):
 
     name_type = CLIArgumentType(options_list=['--name', '-n'])
 
+    # Scale
+    with self.argument_context('containerapp', arg_group='Scale') as c:
+        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'], 
+                   help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
+
     with self.argument_context('containerapp create') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
         c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)

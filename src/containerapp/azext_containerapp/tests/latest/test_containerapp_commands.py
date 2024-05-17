@@ -168,6 +168,31 @@ class ContainerappIdentityTests(ScenarioTest):
             JMESPathCheck('type', 'None'),
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_identity_keda(self, resource_group):
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        user_identity_name1 = self.create_random_name(prefix='containerapp-user1', length=24)
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
+
+        user_identity_id = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name1)).get_output_in_json()["id"]
+
+        self.cmd(f'containerapp create -g {resource_group} -n {ca_name} --environment {env} --system-assigned --user-assigned {user_identity_name1} --scale-rule-name azure-queue --scale-rule-type azure-queue --scale-rule-metadata "accountName=account1" "queueName=queue1" "queueLength=1" --scale-rule-identity {user_identity_name1}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "azure-queue"),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.accountName", "account1"),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.queueName", "queue1"),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.queueLength", "1"),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.identity", user_identity_id),
+        ])
 
 class ContainerappIngressTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
