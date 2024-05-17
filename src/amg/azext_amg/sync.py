@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
+
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 from azure.cli.core.azclierror import ArgumentUsageError
@@ -11,7 +13,8 @@ from azure.cli.core.style import print_styled_text, Style
 from .custom import list_folders, create_folder
 from .custom import list_data_sources
 from .custom import list_dashboards, show_dashboard, delete_dashboard
-from .custom import _health_endpoint_reachable, _create_dashboard
+from .custom import _health_endpoint_reachable, _create_dashboard, _get_grafana_endpoint, _get_data_plane_creds
+from .utils import send_grafana_get, send_grafana_post, send_grafana_patch
 
 logger = get_logger(__name__)
 
@@ -41,6 +44,11 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
                                subscription=source_subscription)
     _health_endpoint_reachable(cmd, destination_workspace, resource_group_name=destination_resource_group,
                                subscription=destination_subscription)
+    creds = _get_data_plane_creds(cmd, api_key_or_token=None, subscription=None)
+    http_headers = {
+        "content-type": "application/json",
+        "authorization": "Bearer " + creds[1]
+    }
 
     # TODO: skip READ-ONLY destination dashboard (rare case)
     destination_folders = list_folders(cmd, destination_workspace, resource_group_name=destination_resource_group,
@@ -59,6 +67,7 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
                                         subscription=source_subscription)
 
     folders_created_summary = []
+    library_panels_synced_summary = {}
     dashboards_synced_summary = {}
     dashboards_skipped_summary = {}
     data_source_missed = set()
@@ -69,7 +78,6 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
                                           subscription=source_subscription)
         folder_title = source_dashboard["meta"]["folderTitle"]
         dashboard_title = source_dashboard["dashboard"]["title"]
-        dashboard_path = folder_title + "/" + dashboard_title
 
         should_skip = False
         if source_dashboard["meta"].get("provisioned"):
@@ -114,9 +122,37 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
         if folder_title not in dashboards_synced_summary:
             dashboards_synced_summary[folder_title] = []
         dashboards_synced_summary[folder_title].append(dashboard_title)
+            
+        # sync library panels
+        library_panel_uids = set([panel["libraryPanel"]["uid"] for panel in source_dashboard["dashboard"]["panels"] if "libraryPanel" in panel])
+        source_endpoint = _get_grafana_endpoint(cmd, source_resource_group, source_workspace, source_subscription)
+        destination_endpoint = _get_grafana_endpoint(cmd, destination_resource_group, destination_workspace, destination_subscription)
+        for library_panel_uid in library_panel_uids:
+            (status, content) = send_grafana_get(f'{source_endpoint}/api/library-elements/{library_panel_uid}', http_headers)
+            # TODO: error handling
+            if status == 200:
+                library_panel_name = content["result"]['name']
+                library_panel_folder_name = content["result"]["meta"]["folderName"]
+
+                if not dry_run:
+                    logger.warning("Syncing library panel: %s", library_panel_folder_name + "/" + library_panel_name)
+                    payload = {
+                        'uid': content["result"]["uid"],
+                        'folderUid': content["result"]["folderUid"],
+                        'name': library_panel_name,
+                        'model': content["result"]["model"],
+                        'kind': content["result"]["kind"],
+                    }
+                    (status, content) = send_grafana_post(f'{destination_endpoint}/api/library-elements/', json.dumps(payload), http_headers)
+                    if status >= 400 and ('name or UID already exists' in content.get('message', '')):
+                        send_grafana_patch(f'{destination_endpoint}/api/library-elements/{library_panel_uid}', json.dumps(payload), http_headers)
+
+                if library_panel_folder_name not in library_panels_synced_summary:
+                    library_panels_synced_summary[library_panel_folder_name] = set()
+                library_panels_synced_summary[library_panel_folder_name].add(library_panel_name)
 
         if not dry_run:
-            logger.warning("Syncing dashboard: %s", dashboard_path)
+            logger.warning("Syncing dashboard: %s", folder_title + "/" + dashboard_title)
             _create_dashboard(cmd, destination_workspace, definition=source_dashboard, overwrite=True,
                               folder_id=folder_id, resource_group_name=destination_resource_group,
                               for_sync=True)
@@ -126,18 +162,21 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
                         ". Please manually configure them."), ", ".join(data_source_missed))
 
     output = [
-        (Style.ACTION, "\n\nFolders created:"),
+        (Style.SUCCESS, "\n\nFolders created:"),
         (Style.PRIMARY, "\n    " + "\n    ".join(folders_created_summary)),
     ]
 
-    output.append((Style.SUCCESS, "\n\nDashboards synced:"))
+    output.append((Style.SUCCESS, "\n\nLibrary panels synced:"))
+    for folder, panels in library_panels_synced_summary.items():
+        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+        output.append((Style.SECONDARY, "\n        ".join(panels)))
 
+    output.append((Style.SUCCESS, "\n\nDashboards synced:"))
     for folder, dashboards in dashboards_synced_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(dashboards)))
 
     output.append((Style.WARNING, "\n\nDashboards skipped:"))
-
     for folder, dashboards in dashboards_skipped_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(dashboards)))
