@@ -238,16 +238,16 @@ class Wait(AAZWaitCommand):
                 flags={"required": True},
             )
 
-            else_ = cls._schema_on_200.properties.action.else_
+            else_ = cls._schema_on_200.properties.action["else"]
             else_.operations = AAZListType(
                 flags={"required": True},
             )
 
-            operations = cls._schema_on_200.properties.action.else_.operations
+            operations = cls._schema_on_200.properties.action["else"].operations
             operations.Element = AAZObjectType()
             _WaitHelper._build_schema_storage_task_operation_read(operations.Element)
 
-            if_ = cls._schema_on_200.properties.action.if_
+            if_ = cls._schema_on_200.properties.action["if"]
             if_.condition = AAZStrType(
                 flags={"required": True},
             )
@@ -255,7 +255,7 @@ class Wait(AAZWaitCommand):
                 flags={"required": True},
             )
 
-            operations = cls._schema_on_200.properties.action.if_.operations
+            operations = cls._schema_on_200.properties.action["if"].operations
             operations.Element = AAZObjectType()
             _WaitHelper._build_schema_storage_task_operation_read(operations.Element)
 

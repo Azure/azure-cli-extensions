@@ -648,16 +648,16 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
-        else_ = _schema_storage_task_read.properties.action["else"]
+        else_ = _schema_storage_task_read.properties.action.else_
         else_.operations = AAZListType(
             flags={"required": True},
         )
 
-        operations = _schema_storage_task_read.properties.action["else"].operations
+        operations = _schema_storage_task_read.properties.action.else_.operations
         operations.Element = AAZObjectType()
         cls._build_schema_storage_task_operation_read(operations.Element)
 
-        if_ = _schema_storage_task_read.properties.action["if"]
+        if_ = _schema_storage_task_read.properties.action.if_
         if_.condition = AAZStrType(
             flags={"required": True},
         )
@@ -665,7 +665,7 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
-        operations = _schema_storage_task_read.properties.action["if"].operations
+        operations = _schema_storage_task_read.properties.action.if_.operations
         operations.Element = AAZObjectType()
         cls._build_schema_storage_task_operation_read(operations.Element)
 
