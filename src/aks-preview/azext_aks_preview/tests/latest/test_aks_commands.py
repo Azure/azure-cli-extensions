@@ -197,6 +197,48 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
+    def test_aks_create_with_loadbalancer_and_update_to_none_outbound(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--vm-set-type VirtualMachineScaleSets -c 1 "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.outboundType", "loadBalancer"),
+            ],
+        )
+
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOutboundTypeNoneAndBlock "
+            "--outbound-type none "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.outboundType", "none"),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
     def test_aks_update_outbound_from_slb_to_natgateway(
         self, resource_group, resource_group_location
     ):
@@ -2358,6 +2400,58 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         machine_show = self.cmd(show_cmd).get_output_in_json()
         assert machine_show["name"] == machine_name
         print(machine_show)
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_operations_cmds(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --enable-managed-identity "
+            "--ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.openServiceMesh", None),
+            ],
+        )
+
+        show_latest_cmd = (
+            "aks operation show-latest "
+            "--resource-group={resource_group} --name={name} "
+            "-o json"
+        )
+        operation_show_latest = self.cmd(show_latest_cmd).get_output_in_json()
+        assert operation_show_latest["status"] == "Succeeded"
+        assert operation_show_latest["error"] is None
+        operation_id = operation_show_latest["name"]
+        self.kwargs.update(
+            {
+                "operation_id": operation_id,
+            }
+        )
+
+        show_cmd = (
+            "aks operation show "
+            "--resource-group={resource_group} --name={name} "
+            "--operation-id={operation_id} -o json"
+        )
+        operation_show = self.cmd(show_cmd).get_output_in_json()
+        assert operation_show["id"] == operation_show_latest["id"]
+        assert operation_show["status"] == "Succeeded"
+        assert operation_show["error"] is None
+        assert operation_show["name"] == operation_id
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(

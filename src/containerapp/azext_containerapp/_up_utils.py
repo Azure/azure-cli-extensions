@@ -17,7 +17,7 @@ from azure.cli.core.azclierror import (
     ValidationError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
-    CLIError,
+    CLIError, CLIInternalError,
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice._create_util import (
@@ -531,7 +531,14 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         try:
             resource_group_name = self.resource_group.name
-            return run_cloud_build(self.cmd, source, build_env_vars, location, resource_group_name, self.env.name, run_full_id, logs_file, logs_file_path)
+            container_app_name = self.name
+
+            if not self.exists:
+                # Make sure that a container app exists before triggering the cloud build
+                logger.warning("Creating the base container app required to build")
+                self.image = "mcr.microsoft.com/k8se/quickstart:latest"
+                self.create(no_registry=True)
+            return run_cloud_build(self.cmd, source, build_env_vars, location, resource_group_name, self.env.name, container_app_name, run_full_id, logs_file, logs_file_path)
         except Exception as exception:
             logs_file.close()
             raise exception
@@ -1405,7 +1412,17 @@ def _infer_existing_connected_env(
         custom_location: "CustomLocation",
 ):
     if not env.resource_type or (env.is_connected_environment() and (not env.name or not resource_group.name or not env.custom_location_id)):
-        connected_env_list = list_connected_environments(cmd=cmd, resource_group_name=resource_group.name)
+        connected_env_list = []
+        try:
+            connected_env_list = list_connected_environments(cmd=cmd, resource_group_name=resource_group.name)
+        except CLIInternalError as e:
+            string_err = str(e)
+            # If a resource group is provided but not found, we will automatically create it in a subsequent step
+            if "ResourceGroupNotFound" in string_err:
+                pass
+            else:
+                raise e
+
         env_list = []
         for e in connected_env_list:
             if env.name and env.name != e["name"]:
