@@ -21,6 +21,8 @@ Pending
 +++++++
 * Improve Windows OutboundNat test case by removing Windows OSSKU limitation
 * `az aks create/update`: add support for new outbound type none
+* Add `az operation show` command to show the details of a specific operation.
+* Add `az operation show-latest` command to show the details of the latest operation.
 
 4.0.0b1
 +++++++
