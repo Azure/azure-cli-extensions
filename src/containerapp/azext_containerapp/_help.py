@@ -920,6 +920,11 @@ helps['containerapp create'] = """
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --enable-java-metrics
+    - name: Create a container app with java agent enabled
+      text: |
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --enable-java-agent
 """
 
 # containerapp update for preview
@@ -955,7 +960,11 @@ helps['containerapp update'] = """
       text: |
           az containerapp update -n my-containerapp -g MyResourceGroup \\
               --enable-java-metrics
-    - name: Update a container app without java metrics enabled
+    - name: Update a container app with java agent enabled
+      text: |
+          az containerapp update -n my-containerapp -g MyResourceGroup \\
+              --enable-java-agent
+    - name: Update a container app to erase java enhancement capabilities, like java metrics, java agent, etc.
       text: |
           az containerapp update -n my-containerapp -g MyResourceGroup \\
               --runtime generic
@@ -1682,6 +1691,121 @@ helps['containerapp sessionpool list'] = """
     - name: List Session Pools by resource group.
       text: |
           az containerapp sessionpool list -g MyResourceGroup
+"""
+
+# code interpreter commands
+helps['containerapp session'] = """
+    type: group
+    short-summary: Commands to manage sessions.To learn more about individual commands under each subgroup run containerapp session [subgroup name] --help.
+"""
+
+helps['containerapp session code-interpreter'] = """
+    type: group
+    short-summary: Commands to interact with and manage code interpreter sessions.
+"""
+
+helps['containerapp session code-interpreter execute'] = """
+    type: command
+    short-summary: Execute code in a code interpreter session. 
+    examples:
+    - name: Execute a simple hello world.
+      text: |
+          az containerapp session code-interpreter execute -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --code 'print("'"Hello world"'")' --timeout-in-seconds 30 --session-pool-location eastasia
+"""
+
+helps['containerapp session code-interpreter upload-file'] = """
+    type: command
+    short-summary: Upload a file to a code interpreter session .
+    examples:
+    - name: Upload a file to a session.
+      text: |
+          az containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filepath example.txt  
+"""
+
+helps['containerapp session code-interpreter show-file-content'] = """
+    type: command
+    short-summary: Show the content a file uploaded to a code interpreter session.
+    examples:
+    - name: Show content of file.
+      text: az containerapp session code-interpreter show-file-content -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filename example.txt
+"""
+
+helps['containerapp session code-interpreter show-file-metadata'] = """
+    type: command
+    short-summary: Shows the meta-data content a file uploaded to a code interpreter session.
+    examples:
+    - name: Show the meta-data details of a file uploaded to a session.
+      text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filename example.txt
+"""
+
+helps['containerapp session code-interpreter delete-file'] = """
+    type: command
+    short-summary: Delete a file uploaded to a code interpreter session.
+    examples:
+    - name: Delete a file .
+      text: az containerapp session code-interpreter delete-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filename example.txt
+"""
+
+helps['containerapp session code-interpreter list-files'] = """
+    type: command
+    short-summary: List files uploaded to a code interpreter session
+    examples:
+    - name: List files uploaded in a code-interpreter session.
+      text: |
+          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession
+"""
+
+helps['containerapp java'] = """
+    type: group
+    short-summary: Commands to manage Java workloads.
+"""
+
+# Java Logging logger Commands
+helps['containerapp java logger'] = """
+    type: group
+    short-summary: Dynamically change log level for Java workloads.
+"""
+
+# Java Logging logger Commands
+helps['containerapp java logger set'] = """
+    type: command
+    short-summary: Create or update logger for Java workloads.
+    examples:
+    - name: Create root logger with debug level.
+      text: |
+          az containerapp java logger set --logger-name root --logger-level debug -n my-containerapp -g MyResourceGroup
+    - name: Update root logger with debug level.
+      text: |
+          az containerapp java logger set --logger-name root --logger-level info -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp java logger show'] = """
+    type: command
+    short-summary: Display logger setting for Java workloads.
+    examples:
+    - name: Display all logger settings for Java workloads.
+      text: |
+          az containerapp java logger show --all -n my-containerapp -g MyResourceGroup
+    - name: Display specific logger with name for Java workloads.
+      text: |
+          az containerapp java logger show --logger-name root -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp java logger delete'] = """
+    type: command
+    short-summary: Delete logger for Java workloads.
+    examples:
+    - name: Delete all logger settings for Java workloads.
+      text: |
+          az containerapp java logger delete --all -n my-containerapp -g MyResourceGroup
+    - name: Delete specific logger with name for Java workloads.
+      text: |
+          az containerapp java logger delete --logger-name root -n my-containerapp -g MyResourceGroup
 """
 
 # DotNet Components Commands

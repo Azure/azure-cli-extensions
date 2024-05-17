@@ -492,6 +492,12 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'managed_component_instance_list', validator=validate_instance_list)
 
+    with self.command_group('spring private-dns-zone', custom_command_type=spring_routing_util,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('add', 'spring_private_dns_zone_add', supports_no_wait=True)
+        g.custom_command('update', 'spring_private_dns_zone_update', supports_no_wait=True)
+        g.custom_command('clean', 'spring_private_dns_zone_clean', supports_no_wait=True)
+
     with self.command_group('spring job', custom_command_type=job_cmd_group,
                             exception_handler=handle_asc_exception, is_preview=True) as g:
         g.custom_command('create', 'job_create', validator=job_validators.validate_job_create)

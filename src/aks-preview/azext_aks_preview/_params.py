@@ -1677,6 +1677,14 @@ def load_arguments(self, _):
             "machine_name", help="to display specific information for all machines."
         )
 
+    with self.argument_context("aks operation") as c:
+        c.argument(
+            "nodepool_name",
+            required=False,
+            validator=validate_nodepool_name,
+            default="",
+        )
+
     with self.argument_context("aks maintenanceconfiguration") as c:
         c.argument("cluster_name", help="The cluster name.")
 
