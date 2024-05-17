@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp patch': Support Cloud Patch scenario in North Central US Staging region
 
 0.3.51
 ++++++
@@ -25,7 +26,6 @@ upcoming
 * 'az containerapp java logger set': Support create/update java logger setting with --logger-name and --logger-level
 * 'az containerapp java logger delete': Support delete java logger setting with --logger-name and --all
 * 'az containerapp java logger show': Support display java logger setting with --logger-name and --all
-* 'az containerapp patch': Support Cloud Patch scenario in North Central US Staging region
 
 0.3.50
 ++++++
