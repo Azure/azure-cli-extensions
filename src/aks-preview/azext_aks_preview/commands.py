@@ -14,6 +14,7 @@ from azext_aks_preview._client_factory import (
     cf_trustedaccess_role,
     cf_trustedaccess_role_binding,
     cf_machines,
+    cf_operations,
 )
 from azext_aks_preview._format import (
     aks_addon_list_available_table_format,
@@ -23,6 +24,7 @@ from azext_aks_preview._format import (
     aks_agentpool_show_table_format,
     aks_machine_list_table_format,
     aks_machine_show_table_format,
+    aks_operation_show_table_format,
     aks_list_nodepool_snapshot_table_format,
     aks_list_snapshot_table_format,
     aks_list_table_format,
@@ -97,6 +99,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
         "operations._machine_operations#MachinesOperations.{}",
         client_factory=cf_managed_clusters,
+    )
+
+    operations_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._operationstatusresult_operations#OperationStatusResultOperations.{}",
+        client_factory=cf_operations,
     )
 
     maintenance_configuration_sdk = CliCommandType(
@@ -245,6 +253,16 @@ def load_command_table(self, _):
         )
         g.custom_show_command(
             "show", "aks_machine_show", table_transformer=aks_machine_show_table_format
+        )
+
+    with self.command_group(
+        "aks operation", operations_sdk, client_factory=cf_operations
+    ) as g:
+        g.custom_show_command(
+            "show", "aks_operation_show", table_transformer=aks_operation_show_table_format
+        )
+        g.custom_command(
+            "show-latest", "aks_operation_show_latest", table_transformer=aks_operation_show_table_format
         )
 
     # AKS draft commands
