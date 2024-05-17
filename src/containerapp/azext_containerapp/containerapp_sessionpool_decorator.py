@@ -218,7 +218,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
 
     def set_up_container(self):
         container_def = ContainerModel
-        container_def["name"] = self.get_argument_container_name() if self.get_argument_container_name() else self.get_argument_name()
+        container_def["name"] = self.get_argument_container_name() if self.get_argument_container_name() else self.get_argument_name().lower()
         container_def["image"] = self.get_argument_image() if self.get_argument_image() else HELLO_WORLD_IMAGE
         if self.get_argument_env_vars() is not None:
             container_def["env"] = parse_env_var_flags(self.get_argument_env_vars())

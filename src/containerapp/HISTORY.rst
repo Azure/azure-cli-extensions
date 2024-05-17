@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp sessionpool create': fix default container name to be lower case letters
 
 0.3.51
 ++++++
