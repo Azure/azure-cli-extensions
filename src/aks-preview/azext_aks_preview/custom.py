@@ -1715,6 +1715,27 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
     )
 
 
+def aks_operation_show(cmd,
+                       client,
+                       resource_group_name,
+                       name,
+                       nodepool_name,
+                       operation_id,):
+    if nodepool_name:
+        return client.get_by_agent_pool(resource_group_name, name, nodepool_name, operation_id)
+    return client.get(resource_group_name, name, operation_id)
+
+
+def aks_operation_show_latest(cmd,
+                              client,
+                              resource_group_name,
+                              name,
+                              nodepool_name,):
+    if nodepool_name:
+        return client.get_by_agent_pool(resource_group_name, name, nodepool_name, "latest")
+    return client.get(resource_group_name, name, "latest")
+
+
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument
                         client,
                         resource_group_name,

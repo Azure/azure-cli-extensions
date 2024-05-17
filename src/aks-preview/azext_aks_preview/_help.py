@@ -2084,6 +2084,44 @@ helps['aks machine show'] = """
          text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
 """
 
+helps['aks operation'] = """
+    type: group
+    short-summary: Commands to manage and view operations on managed Kubernetes cluster.
+"""
+
+helps['aks operation show'] = """
+    type: command
+    short-summary: Show the details for a specific operation on managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster
+        - name: --nodepool-name
+          type: string
+          short-summary: The name of the nodepool.
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
+        - name: --operation-id
+          type: string
+          short-summary: The ID of the operation.
+"""
+
+helps['aks operation show-latest'] = """
+    type: command
+    short-summary: Show the details for the latest operation on managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster
+        - name: --nodepool-name
+          type: string
+          short-summary: The name of the nodepool.
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
+"""
+
 helps['aks operation-abort'] = """
     type: command
     short-summary: Abort last running operation on managed cluster.
