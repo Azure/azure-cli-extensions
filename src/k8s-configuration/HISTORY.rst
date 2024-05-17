@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.8.0
+2.0.0
 ++++++++++++++++++
 * Remove the deprecated flux v1 `create` cmd
 
