@@ -578,11 +578,11 @@ def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_toke
             response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
                                      api_key_or_token=api_key_or_token)
             if response.status_code >= 400:
-                raise ArgumentUsageError(f"Could't find the folder '{folder}'. Ex: {response.status_code}")
+                raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
             result = json.loads(response.content)
             result = [f for f in result if f["title"] == folder]
             if len(result) == 0:
-                raise ArgumentUsageError(f"Could't find the folder '{folder}'. Ex: {response.status_code}")
+                raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
             if len(result) > 1:
                 raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
                                           f"unique identifiers"))
