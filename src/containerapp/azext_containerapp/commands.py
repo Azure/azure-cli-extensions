@@ -14,6 +14,7 @@ from ._transformers import (transform_usages_output,
                             transform_telemetry_app_insights_values,
                             transform_telemetry_otlp_values,
                             transform_telemetry_otlp_values_by_name_wrapper)
+from ._utils import is_cloud_supported_by_connected_env
 
 
 def load_command_table(self, args):
@@ -151,41 +152,42 @@ def load_command_table(self, args):
         g.custom_command('apply', 'patch_apply')
         g.custom_command('interactive', 'patch_interactive')
 
-    with self.command_group('containerapp connected-env', is_preview=True) as g:
-        g.custom_show_command('show', 'show_connected_environment')
-        g.custom_command('list', 'list_connected_environments')
-        g.custom_command('create', 'create_connected_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
-        g.custom_command('delete', 'delete_connected_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+    if is_cloud_supported_by_connected_env(self.cli_ctx):
+        with self.command_group('containerapp connected-env', is_preview=True) as g:
+            g.custom_show_command('show', 'show_connected_environment')
+            g.custom_command('list', 'list_connected_environments')
+            g.custom_command('create', 'create_connected_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
+            g.custom_command('delete', 'delete_connected_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
-    with self.command_group('containerapp connected-env dapr-component', is_preview=True) as g:
-        g.custom_command('list', 'connected_env_list_dapr_components')
-        g.custom_show_command('show', 'connected_env_show_dapr_component')
-        g.custom_command('set', 'connected_env_create_or_update_dapr_component')
-        g.custom_command('remove', 'connected_env_remove_dapr_component')
+        with self.command_group('containerapp connected-env dapr-component', is_preview=True) as g:
+            g.custom_command('list', 'connected_env_list_dapr_components')
+            g.custom_show_command('show', 'connected_env_show_dapr_component')
+            g.custom_command('set', 'connected_env_create_or_update_dapr_component')
+            g.custom_command('remove', 'connected_env_remove_dapr_component')
 
-    with self.command_group('containerapp connected-env certificate', is_preview=True) as g:
-        g.custom_command('list', 'connected_env_list_certificates')
-        g.custom_command('upload', 'connected_env_upload_certificate')
-        g.custom_command('delete', 'connected_env_delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
+        with self.command_group('containerapp connected-env certificate', is_preview=True) as g:
+            g.custom_command('list', 'connected_env_list_certificates')
+            g.custom_command('upload', 'connected_env_upload_certificate')
+            g.custom_command('delete', 'connected_env_delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
 
-    with self.command_group('containerapp connected-env storage', is_preview=True) as g:
-        g.custom_show_command('show', 'connected_env_show_storage')
-        g.custom_command('list', 'connected_env_list_storages')
-        g.custom_command('set', 'connected_env_create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
-        g.custom_command('remove', 'connected_env_remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+        with self.command_group('containerapp connected-env storage', is_preview=True) as g:
+            g.custom_show_command('show', 'connected_env_show_storage')
+            g.custom_command('list', 'connected_env_list_storages')
+            g.custom_command('set', 'connected_env_create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
+            g.custom_command('remove', 'connected_env_remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env java-component', is_preview=True) as g:
         g.custom_command('list', 'list_java_components')
-    
+
     with self.command_group('containerapp env java-component spring-cloud-config',
-                                deprecate_info=self.deprecate(redirect='containerapp env java-component config-server-for-spring', hide=True)) as g:
+                            deprecate_info=self.deprecate(redirect='containerapp env java-component config-server-for-spring', hide=True)) as g:
         g.custom_command('create', 'create_config_server_for_spring', supports_no_wait=True)
         g.custom_command('update', 'update_config_server_for_spring', supports_no_wait=True)
         g.custom_show_command('show', 'show_config_server_for_spring')
         g.custom_command('delete', 'delete_config_server_for_spring', confirmation=True, supports_no_wait=True)
 
     with self.command_group('containerapp env java-component spring-cloud-eureka',
-                                deprecate_info=self.deprecate(redirect='containerapp env java-component eureka-server-for-spring', hide=True)) as g:
+                            deprecate_info=self.deprecate(redirect='containerapp env java-component eureka-server-for-spring', hide=True)) as g:
         g.custom_command('create', 'create_eureka_server_for_spring', supports_no_wait=True)
         g.custom_command('update', 'update_eureka_server_for_spring', supports_no_wait=True)
         g.custom_show_command('show', 'show_eureka_server_for_spring')
@@ -202,3 +204,37 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_eureka_server_for_spring', supports_no_wait=True)
         g.custom_show_command('show', 'show_eureka_server_for_spring')
         g.custom_command('delete', 'delete_eureka_server_for_spring', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp env dotnet-component', is_preview=True) as g:
+        g.custom_command('list', 'list_dotnet_components')
+        g.custom_show_command('show', 'show_dotnet_component')
+        g.custom_command('create', 'create_dotnet_component', supports_no_wait=True)
+        g.custom_command('delete', 'delete_dotnet_component', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp env dotnet-component', is_preview=True) as g:
+        g.custom_command('list', 'list_dotnet_components')
+        g.custom_show_command('show', 'show_dotnet_component')
+        g.custom_command('create', 'create_dotnet_component', supports_no_wait=True)
+        g.custom_command('delete', 'delete_dotnet_component', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp sessionpool', is_preview=True) as g:
+        g.custom_show_command('show', 'show_session_pool')
+        g.custom_show_command('list', 'list_session_pool')
+        g.custom_command('create', 'create_session_pool', supports_no_wait=True)
+        g.custom_command('update', 'update_session_pool', supports_no_wait=True)
+        g.custom_command('delete', 'delete_session_pool', confirmation=True, supports_no_wait=True)
+
+
+    with self.command_group('containerapp session code-interpreter', is_preview=True) as g:
+        g.custom_command('execute', 'execute_session_code_interpreter', supports_no_wait=True)
+        g.custom_command('upload-file', 'upload_session_code_interpreter', supports_no_wait=True)
+        g.custom_show_command('show-file-content', 'show_file_content_session_code_interpreter')
+        g.custom_show_command('show-file-metadata', 'show_file_metadata_session_code_interpreter')
+        g.custom_show_command('list-files', 'list_files_session_code_interpreter')
+        g.custom_command('delete-file', 'delete_file_session_code_interpreter', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp java logger', is_preview=True) as g:
+        g.custom_command('set', 'create_or_update_java_logger', supports_no_wait=True)
+        g.custom_command('delete', 'delete_java_logger', supports_no_wait=True)
+        g.custom_show_command('show', 'show_java_logger')
+

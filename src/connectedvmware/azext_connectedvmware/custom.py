@@ -17,7 +17,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
-from msrestazure.tools import is_valid_resource_id
+from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 from .pwinput import pwinput
 from .vmware_utils import get_logger, get_resource_id
@@ -1007,7 +1007,9 @@ def create_vm(
     # The subscription of the vCenter can be different from the machine resource.
     # There was no straightforward way to change the subscription for vcenter client factory.
     # Hence using the generic get client.
-    vcenter_sub = vcenter_id.split("/")[2]
+    vcenter_parts = parse_resource_id(vcenter_id)
+    vcenter_sub = vcenter_parts["subscription"]
+    vcenter_rg = vcenter_parts["resource_group"]
     resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
     vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
 
@@ -1061,7 +1063,9 @@ def create_vm(
             "type": "str"
         }
         inventory_item_client = cf_inventory_item(cmd.cli_ctx)
-        inventory_items = inventory_item_client.list_by_v_center(resource_group_name, vcenter.name)
+        inventory_items = inventory_item_client.list_by_v_center(
+            vcenter_rg, vcenter.name
+        )
         for inv_item in inventory_items:
             if not hasattr(inv_item, "smbiosUuid"):
                 raise CLIInternalError(
@@ -2088,6 +2092,7 @@ def enable_guest_agent(
     username,
     password,
     https_proxy=None,
+    private_link_scope=None,
     no_wait=False,
 ):
     """
@@ -2114,6 +2119,7 @@ def enable_guest_agent(
 
     guest_agent = GuestAgent(
         credentials=vm_creds,
+        private_link_scope_resource_id=private_link_scope,
         http_proxy_config=https_proxy_config,
         provisioning_action=GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
     )

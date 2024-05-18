@@ -73,6 +73,7 @@ from azext_aks_preview._consts import (
     CONST_NODE_OS_CHANNEL_UNMANAGED,
     CONST_NODEPOOL_MODE_SYSTEM,
     CONST_NODEPOOL_MODE_USER,
+    CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NONE_UPGRADE_CHANNEL,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
@@ -84,6 +85,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWSANNUAL,
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_RAPID_UPGRADE_CHANNEL,
     CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
@@ -119,6 +121,7 @@ from azext_aks_preview._consts import (
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
+    CONST_OUTBOUND_TYPE_NONE,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -183,6 +186,7 @@ from azext_aks_preview._validators import (
     validate_artifact_streaming,
     validate_custom_endpoints,
     validate_bootstrap_container_registry_resource_id,
+    validate_gateway_prefix_size,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -209,7 +213,7 @@ node_eviction_policies = [
     CONST_SPOT_EVICTION_POLICY_DEALLOCATE,
 ]
 node_os_disk_types = [CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]
-node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
+node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER, CONST_NODEPOOL_MODE_GATEWAY]
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_UBUNTU,
@@ -219,6 +223,7 @@ node_os_skus_create = [
 node_os_skus = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWSANNUAL,
 ]
 node_os_skus_update = [CONST_OS_SKU_AZURELINUX, CONST_OS_SKU_UBUNTU]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
@@ -264,6 +269,7 @@ outbound_types = [
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_NONE,
 ]
 auto_upgrade_channels = [
     CONST_RAPID_UPGRADE_CHANNEL,
@@ -793,6 +799,12 @@ def load_arguments(self, _):
             help="enable network observability for cluster",
         )
         c.argument(
+            "enable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="enable advanced network observability functionalities for cluster",
+        )
+        c.argument(
             "custom_ca_trust_certificates",
             options_list=["--custom-ca-trust-certificates", "--ca-certs"],
             is_preview=True,
@@ -858,6 +870,7 @@ def load_arguments(self, _):
         c.argument("ksm_metric_annotations_allow_list")
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
+        c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
@@ -911,6 +924,7 @@ def load_arguments(self, _):
             is_preview=True,
             action="store_true"
         )
+        c.argument("enable_static_egress_gateway", is_preview=True, action="store_true")
 
         c.argument(
             "cluster_service_load_balancer_health_probe_mode",
@@ -1062,6 +1076,16 @@ def load_arguments(self, _):
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
         )
         c.argument("http_proxy_config")
+        c.argument(
+            "bootstrap_artifact_source",
+            arg_type=get_enum_type(bootstrap_artifact_source_types),
+            is_preview=True,
+        )
+        c.argument(
+            "bootstrap_container_registry_resource_id",
+            validator=validate_bootstrap_container_registry_resource_id,
+            is_preview=True,
+        )
         # addons
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("disable_secret_rotation", action="store_true")
@@ -1206,6 +1230,8 @@ def load_arguments(self, _):
             ),
         )
         c.argument("disable_azure_monitor_metrics", action="store_true")
+        c.argument("enable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
+        c.argument("disable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
         c.argument(
             "enable_vpa",
             action="store_true",
@@ -1261,6 +1287,18 @@ def load_arguments(self, _):
             is_preview=True,
             help="disable network observability for cluster",
         )
+        c.argument(
+            "enable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="enable advanced network observability functionalities for cluster",
+        )
+        c.argument(
+            "disable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="disable advanced network observability functionalities for cluster",
+        )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
@@ -1309,6 +1347,8 @@ def load_arguments(self, _):
         )
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
+        c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')
+        c.argument('disable_static_egress_gateway', is_preview=True, action='store_true')
 
         c.argument(
             "cluster_service_load_balancer_health_probe_mode",
@@ -1329,6 +1369,12 @@ def load_arguments(self, _):
             help="Do not prompt for confirmation.",
             action="store_true",
         )
+        c.argument('enable_force_upgrade', action='store_true')
+        c.argument(
+            'disable_force_upgrade', action='store_true',
+            validator=validate_force_upgrade_disable_and_enable_parameters
+        )
+        c.argument('upgrade_override_until')
 
     with self.argument_context("aks scale") as c:
         c.argument(
@@ -1488,6 +1534,12 @@ def load_arguments(self, _):
             is_preview=True,
             action="store_true"
         )
+        c.argument(
+            "gateway_prefix_size",
+            type=int,
+            validator=validate_gateway_prefix_size,
+            is_preview=True,
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1609,6 +1661,14 @@ def load_arguments(self, _):
     with self.argument_context("aks machine show") as c:
         c.argument(
             "machine_name", help="to display specific information for all machines."
+        )
+
+    with self.argument_context("aks operation") as c:
+        c.argument(
+            "nodepool_name",
+            required=False,
+            validator=validate_nodepool_name,
+            default="",
         )
 
     with self.argument_context("aks maintenanceconfiguration") as c:
@@ -2133,6 +2193,22 @@ def load_arguments(self, _):
     with self.argument_context("aks mesh upgrade start") as c:
         c.argument(
             "revision", validator=validate_azure_service_mesh_revision, required=True
+        )
+
+    with self.argument_context("aks mesh upgrade rollback") as c:
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true"
+        )
+
+    with self.argument_context("aks mesh upgrade complete") as c:
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true"
         )
 
     with self.argument_context("aks approuting enable") as c:

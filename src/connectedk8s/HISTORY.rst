@@ -3,6 +3,19 @@
 Release History
 ===============
 
+1.7.2
+++++++
+* Fixed Broken Import for Service Principal
+
+1.7.1
+++++++
+* Fixed PoP token for proxy command using service principal.
+
+1.7.0
+++++++
+* Update helm binary download source.
+* Introduce "--skip-ssl-verification" flag.
+
 1.6.8
 ++++++
 * Add support for running multiple proxy instances on the same machine using different ports.

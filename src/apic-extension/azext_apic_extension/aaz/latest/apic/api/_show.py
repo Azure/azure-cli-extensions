@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get details of the API.
 
     :example: Show API details
-        az apic api show -g contoso-resources -s contoso --name echo-api
+        az apic api show -g contoso-resources -s contoso --api-id echo-api
     """
 
     _aaz_info = {
@@ -44,12 +44,13 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.api_name = AAZStrArg(
-            options=["--api", "--name", "--api-name"],
-            help="The name of the API.",
+        _args_schema.api_id = AAZStrArg(
+            options=["--api-id"],
+            help="The id of the API.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -63,6 +64,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -74,6 +76,7 @@ class Show(AAZCommand):
             id_part="child_name_1",
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -127,7 +130,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "apiName", self.ctx.args.api_name,
+                    "apiName", self.ctx.args.api_id,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -193,7 +196,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -205,7 +208,7 @@ class Show(AAZCommand):
 
             properties = cls._schema_on_200.properties
             properties.contacts = AAZListType()
-            properties.custom_properties = AAZObjectType(
+            properties.custom_properties = AAZFreeFormDictType(
                 serialized_name="customProperties",
             )
             properties.description = AAZStrType()
@@ -218,6 +221,7 @@ class Show(AAZCommand):
             properties.license = AAZObjectType()
             properties.lifecycle_stage = AAZStrType(
                 serialized_name="lifecycleStage",
+                flags={"read_only": True},
             )
             properties.summary = AAZStrType()
             properties.terms_of_service = AAZObjectType(

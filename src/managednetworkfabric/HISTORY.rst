@@ -2,6 +2,14 @@
 
 Release History
 ===============
+6.1.0
+++++++
+* Added device update-admin-state support
+
+6.0.0
+++++++
+* Added device run rw support
+
 5.2.4
 ++++++
 * Added device run ro support

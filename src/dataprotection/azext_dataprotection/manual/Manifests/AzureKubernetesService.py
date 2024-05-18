@@ -12,8 +12,9 @@ manifest = '''
   "datasourceType": "Microsoft.ContainerService/managedClusters",
   "allowedRestoreModes": [ "RecoveryPointBased" ],
   "allowedRestoreTargetTypes": [ "AlternateLocation", "OriginalLocation" ],
-  "itemLevelRecoveyEnabled": true,
+  "itemLevelRecoveryEnabled": true,
   "addBackupDatasourceParametersList": true,
+  "backupConfigurationRequired":  true,
   "addDataStoreParametersList": true,
   "friendlyNameRequired": true,
   "supportSecretStoreAuthentication": false,
@@ -28,6 +29,22 @@ manifest = '''
     }
   ],
   "dataSourcePermissions": [
+    {
+        "roleDefinitionName": "Contributor",
+        "type": "SnapshotRG"
+    }
+  ],
+  "backupVaultRestorePermissions": [
+    {
+        "roleDefinitionName": "Reader",
+        "type": "DataSource"
+    },
+    {
+        "roleDefinitionName": "Reader",
+        "type": "SnapshotRG"
+    }
+  ],
+  "dataSourceRestorePermissions": [
     {
         "roleDefinitionName": "Contributor",
         "type": "SnapshotRG"

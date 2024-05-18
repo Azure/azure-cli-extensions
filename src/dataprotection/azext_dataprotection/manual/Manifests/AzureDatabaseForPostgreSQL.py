@@ -12,7 +12,7 @@ manifest = '''
   "datasourceType": "Microsoft.DBforPostgreSQL/servers/databases",
   "allowedRestoreModes": [ "RecoveryPointBased" ],
   "allowedRestoreTargetTypes": [ "AlternateLocation", "RestoreAsFiles" ],
-  "itemLevelRecoveyEnabled": false,
+  "itemLevelRecoveryEnabled": false,
   "addBackupDatasourceParametersList": false,
   "addDataStoreParametersList": false,
   "friendlyNameRequired": false,

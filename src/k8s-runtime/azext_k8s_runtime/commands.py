@@ -19,6 +19,6 @@ def load_command_table(self: K8sRuntimeCommandsLoader, _):  # pylint: disable=un
         g.custom_command("enable", enable_storage_class_cmd.__name__)
         g.custom_command("disable", disable_storage_class_cmd.__name__)
 
-    with self.command_group("k8s-runtime load-balancer", is_preview=True) as g:
+    with self.command_group("k8s-runtime load-balancer") as g:
         g.custom_command("enable", enable_load_balancer_cmd.__name__)
         g.custom_command("disable", disable_load_balancer_cmd.__name__)

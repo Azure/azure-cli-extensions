@@ -91,6 +91,13 @@ def load_arguments(self, _):
         c.argument('include_cluster_scope_resources', arg_type=get_three_state_flag(),
                    options_list=['--include-cluster-scope-resources', '--include-cluster-scope'],
                    help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
+        c.argument('vaulted_backup_containers', type=str, nargs='+', options_list=["--container-list", "--vaulted-backup-containers"],
+                   help="List of containers to be backed up inside the VaultStore. Use this parameter for DatasourceType AzureBlob.")
+        c.argument('include_all_containers', arg_type=get_three_state_flag(),
+                   help='Switch parameter to include all containers to be backed up inside the VaultStore. Use this parameter for DatasourceType AzureBlob.')
+        c.argument('storage_account_name', type=str, help='Storage account where the Datasource is present. Use this parameter for DatasourceType AzureBlob.')
+        c.argument('storage_account_resource_group', options_list=['--storage-account-resource-group', '--storage-account-rg'], type=str,
+                   help='Storage account resource group name where the Datasource is present. Use this parameter for DatasourceType AzureBlob.')
         c.argument('backup_hook_references',
                    type=namespaced_name_resource_type,
                    options_list=['--backup-hook-references', '--backup-hook-refs'],
@@ -107,6 +114,14 @@ def load_arguments(self, _):
         c.argument('secret_store_uri', type=str, help="specify the secret store uri to use for authentication")
         c.argument('snapshot_resource_group_name', options_list=['--snapshot-resource-group-name', '--snapshot-rg'], type=str, help="Name of the resource group in which the backup snapshots should be stored")
         c.argument('tags', tags_type)
+
+    with self.argument_context('dataprotection backup-instance update') as c:
+        c.argument('backup_instance_name', type=str, help="Backup instance name.")
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', vault_name_type)
+        c.argument('vaulted_blob_container_list', type=validate_file_or_dict, options_list=['--vaulted-blob-container-list', '--container-blob-list'],
+                   help="Enter the container list to modify a vaulted blob backup. The output for "
+                   "'az dataprotection backup-instance initialize-backupconfig' needs to be provided as input")
 
     with self.argument_context('dataprotection backup-instance update-policy') as c:
         c.argument('backup_instance_name', type=str, help="Backup instance name.")
@@ -137,6 +152,8 @@ def load_arguments(self, _):
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('snapshot_resource_group_id', options_list=['--snapshot-resource-group-id', '--snapshot-rg-id'], type=str,
                    help='ARM id of the snapshot resource group. Required when assigning permissions over snapshot resource group and the --operation is Restore')
+        c.argument('target_storage_account_id', options_list=['--target-storage-account-id'], type=str,
+                   help='ARM id of the target storage account. Required when assigning permissions over target storage account and the --operation is Restore')
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation "Backup" Expected value: '
                    'json-string/@json-file. Required when --operation is Backup')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Request body for operation "Restore" Expected value: '
@@ -278,6 +295,8 @@ def load_arguments(self, _):
         c.argument('from_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for start range.")
         c.argument('to_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for end range.")
         c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
+        c.argument('vaulted_blob_prefix_pattern', options_list=['--vaulted-blob-prefix-pattern', '--vaulted-blob-prefix'],
+                   type=validate_file_or_dict, help="Specify the prefix pattern for vaulted blobs.")
 
     with self.argument_context('dataprotection backup-instance validate-for-restore') as c:
         c.argument('backup_instance_name', options_list=['--backup-instance-name', '--name', '-n'], type=str, help="Backup instance name.")
@@ -296,6 +315,9 @@ def load_arguments(self, _):
                    'json-string/@json-file.')
         c.argument('use_secondary_region', arg_type=get_three_state_flag(),
                    help='Use this flag to restore from a recoverypoint in secondary region.')
+        c.argument('resource_guard_operation_requests', options_list=['--resource-guard-operation-requests', '--operation-requests'],
+                   type=str, nargs='+', help='Critical operation request which is protected by the resourceGuard.')
+        c.argument('tenant_id', type=str, help='ID of the tenant if the Resource Guard protecting the vault exists in a different tenant.')
 
     with self.argument_context('dataprotection resource-guard list-protected-operations') as c:
         c.argument('resource_group_name', resource_group_name_type)

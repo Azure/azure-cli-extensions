@@ -12,6 +12,79 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+4.0.0b3
++++++++
+* Leave only one role assignment for automatic sku clusters.
+    * "Azure Kubernetes Service RBAC Cluster Admin"
+
+4.0.0b2
++++++++
+* Improve Windows OutboundNat test case by removing Windows OSSKU limitation
+* `az aks create/update`: add support for new outbound type none
+* Add `az operation show` command to show the details of a specific operation.
+* Add `az operation show-latest` command to show the details of the latest operation.
+
+4.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: Specifying `--enable-managed-identity` and `--service-principal`/`--client-secret` at the same time will cause a `MutuallyExclusiveArgumentError`
+* [BREAKING CHANGE]: `az aks create`: Change the default value of option `--enable-managed-identity` from `True` to `False`
+* `az aks create`: When options `--service-principal` and `--client-secret` are not specified at the same time, CLI will backfill the value of `--enable-managed-identity` to `True` to maintain the same behavior as before (that is, create an cluster with managed system assigned identity by default)
+
+3.0.0b13
+++++++++
+* Set disable local accounts to true when creating an automatic cluster
+* Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
+
+3.0.0b12
+++++++++
+* Create three default role assignments for automatic sku clusters.
+    * "Azure Kubernetes Service RBAC Cluster Admin"
+    * "Azure Kubernetes Service RBAC Admin"
+    * "Azure Kubernetes Service Cluster User Role"
+
+3.0.0b11
+++++++++
+* Add `--enable-static-egress-gateway` to `az aks create` and `az aks update`.
+* Add `--disable-static-egress-gateway` to `az aks update` command.
+* Add `--gateway-prefix-size` to `az aks nodepool create` command.
+* Add `Gateway` mode to agentpool mode enum.
+
+3.0.0b10
+++++++++
+* Support to enable azure monitor profile when the sku name is automatic.
+* Vendor new SDK and bump API version to 2024-03-02-preview.
+* Add option `WindowsAnnual` to `--os-sku` for `az aks nodepool add`.
+* Add option `--enable-force-upgrade`, `--disable-force-upgrade` and `--upgrade-override-until` to `az aks upgrade`.
+
+3.0.0b9
++++++++
+* Support to enable azure container insight monitoring when the sku name is automatic.
+* Add AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview to test_aks_automatic_sku.
+
+3.0.0b8
++++++++
+* Ignore invalid ip error for `--api-server-authorized-ip-ranges`.
+
+3.0.0b7
++++++++
+* Support `--yes` for `az aks mesh upgrade rollback` and `az aks mesh upgrade complete` commands.
+* Correct the property disable_outbound_nat in windows_profile and add UT.
+* Minimise the roles needed to introduce for Elastic SAN for enabling Azure Container Storage with elasticSan storagepool type.
+
+3.0.0b6
++++++++
+* Add `--enable-azure-monitor-app-monitoring` to the `az aks create` command.
+* Add `--enable-azure-monitor-app-monitoring` and `--disable-azure-monitor-app-monitoring` to the `az aks update` command.
+
+3.0.0b5
++++++++
+* Add `--bootstrap-artifact-source` and `--bootstrap-container-registry-resource-id` to `az aks update`.
+
+3.0.0b4
++++++++
+* Fix the issue that option `--uptime-sla` is ignored in command `az aks create`.
+* Fix the issue that option `--uptime-sla` and `--no-uptime-sla` are ignored in command `az aks update`.
+
 3.0.0b3
 +++++++
 * Add `--nodepool-initialization-taints` to `az aks create` and `az aks update`.

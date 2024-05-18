@@ -8,7 +8,7 @@ from azure.cli.testsdk import (ScenarioTest)
 from .common.test_utils import get_test_cmd
 from .custom_preparers import SpringPreparer, SpringResourceGroupPreparer
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
-from ...vendored_sdks.appplatform.v2024_01_01_preview import models
+from ...vendored_sdks.appplatform.v2024_05_01_preview import models
 from ...application_live_view import (create, delete)
 
 try:
