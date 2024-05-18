@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class PreviewAction(AAZCommand):
     """Runs the input conditions against input object metadata properties and designates matched objects in response.
+
+    :example: storage-actions task preview-action
+        az storage-actions task preview-action -l eastus2euap --action "{if:{condition:'[[equals(AccessTier,'/Cool'/)]]'},else-block-exists:True}" --blobs "[{name:'folder2/file1.txt',properties:[{key:'Creation-Time',value:'Wed, 06 Jun 2023 05:23:29 GMT'},{key:'Last-Modified',value:'Wed, 06 Jun 2023 05:23:29 GMT'},{key:'Etag',value:'0x6FB67175454D36D'}],metadata:[{key:'mKey2',value:'mValue2'}],tags:[{key:'tKey2',value:'tValue2'}]}]" --container "{name:'firstContainer',metadata:[{key:'mContainerKey1',value:'mContainerValue1'}]}"
     """
 
     _aaz_info = {

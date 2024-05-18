@@ -13,7 +13,6 @@ class StorageActionsScenario(ScenarioTest):
     def test_storage_actions_task_scenarios(self):
         self.kwargs.update({
             "task_name": self.create_random_name('satasks', 18)
-
         })
         self.cmd("az storage-actions task create -g {rg} -n {task_name} --identity {{type:SystemAssigned}} "
                  "--tags {{key1:value1}} --action {{if:{{condition:\\'[[equals(AccessTier,\\'/Cool\\'/)]]\\',"
@@ -55,3 +54,37 @@ class StorageActionsScenario(ScenarioTest):
                          JMESPathCheck('action.else.operations[0].onFailure', "break")])
         self.cmd('az storage-actions task delete -g {rg} -n {task_name} -y')
         self.cmd('az storage-actions task list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
+
+    def test_storage_actions_task_preview_action_scenarios(self):
+        self.cmd("az storage-actions task preview-action -l eastus2euap "
+                 "--action {{if:{{condition:\\'[[equals(AccessTier,\\'/Hot\\'/)]]\\'}},else-block-exists:True}} "
+                 "--blobs [{{name:'folder1/file1.txt',"
+                 "properties:[{{key:'Creation-Time',value:\\''Wed, 07 Jun 2023 05:23:29 GMT'\\'}},"
+                 "{{key:'Last-Modified',value:\\''Wed, 07 Jun 2023 05:23:29 GMT'\\'}},"
+                 "{{key:'Etag',value:'0x8DB67175454D36D'}},"
+                 "{{key:'Content-Length',value:'38619'}},"
+                 "{{key:'Content-Type',value:'text/xml'}},"
+                 "{{key:'Content-Encoding',value:\\'''\\'}},"
+                 "{{key:'Content-Language',value:\\'''\\'}},"
+                 "{{key:'Content-CRC64',value:\\'''\\'}},"
+                 "{{key:'Content-MD5',value:'njr6iDrmU9+FC89WMK22EA=='}},"
+                 "{{key:'Cache-Control',value:\\'''\\'}},"
+                 "{{key:'Content-Disposition',value:\\'''\\'}},"
+                 "{{key:'BlobType',value:'BlockBlob'}},"
+                 "{{key:'AccessTier',value:'Hot'}},"
+                 "{{key:'AccessTierInferred',value:'true'}},"
+                 "{{key:'LeaseStatus',value:'unlocked'}},"
+                 "{{key:'LeaseState',value:'available'}},"
+                 "{{key:'ServerEncrypted',value:'true'}},"
+                 "{{key:'TagCount',value:'1'}}],"
+                 "metadata:[{{key:'mKey1',value:'mValue1'}}],"
+                 "tags:[{{key:'tKey1',value:'tValue1'}}]}},"
+                 "{{name:'folder2/file1.txt',"
+                 "properties:[{{key:'Creation-Time',value:\\''Wed, 06 Jun 2023 05:23:29 GMT'\\'}},"
+                 "{{key:'Last-Modified',value:\\''Wed, 06 Jun 2023 05:23:29 GMT'\\'}},"
+                 "{{key:'Etag',value:'0x6FB67175454D36D'}}],"
+                 "metadata:[{{key:'mKey2',value:'mValue2'}}],"
+                 "tags:[{{key:'tKey2',value:'tValue2'}}]}}] "
+                 "--container {{name:'firstContainer',metadata:[{{key:'mContainerKey1',value:'mContainerValue1'}}]}}",
+                 checks=[JMESPathCheck('blobs[0].matchedBlock', "If"),
+                         JMESPathCheck('blobs[1].matchedBlock', "Else"),])
