@@ -16,20 +16,42 @@ class StorageActionsScenario(ScenarioTest):
 
         })
         self.cmd("az storage-actions task create -g {rg} -n {task_name} --identity {{type:SystemAssigned}} "
-                 "--tags {{key1:value1}} --action {{if:{{condition:'[[equals(AccessTier,'/Cool'/)]]',"
+                 "--tags {{key1:value1}} --action {{if:{{condition:\\'[[equals(AccessTier,\\'/Cool\\'/)]]\\',"
                  "operations:[{{name:'SetBlobTier',parameters:{{tier:'Hot'}},"
                  "onSuccess:'continue',onFailure:'break'}}]}},"
                  "else:{{operations:[{{name:'DeleteBlob',onSuccess:'continue',onFailure:'break'}}]}}}} "
                  "--description StorageTask1 --enabled true")
-        # self.cmd('az storage-mover show -g {rg} -n {mover_name}',
-        #          checks=[JMESPathCheck('name', self.kwargs.get('mover_name', '')),
-        #                  JMESPathCheck('location', "eastus2euap"),
-        #                  JMESPathCheck('tags', {"key1": "value1"}),
-        #                  JMESPathCheck('description', "ExampleDesc")])
-        # self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
-        # self.cmd('az storage-mover update -g {rg} -n {mover_name} '
-        #          '--tags {{key2:value2}} --description ExampleDesc2',
-        #          checks=[JMESPathCheck('tags', {"key2": "value2"}),
-        #                  JMESPathCheck('description', "ExampleDesc2")])
-        # self.cmd('az storage-mover delete -g {rg} -n {mover_name} -y')
+        self.cmd('az storage-actions task show -g {rg} -n {task_name}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('task_name', '')),
+                         JMESPathCheck('location', "eastus2euap"),
+                         JMESPathCheck('tags', {"key1": "value1"}),
+                         JMESPathCheck('description', "StorageTask1"),
+                         JMESPathCheck('action.if.condition', "[[equals(AccessTier,'Cool')]]"),
+                         JMESPathCheck('action.if.operations[0].name', "SetBlobTier"),
+                         JMESPathCheck('action.if.operations[0].onSuccess', "continue"),
+                         JMESPathCheck('action.if.operations[0].onFailure', "break"),
+                         JMESPathCheck('action.if.operations[0].parameters', {"tier": "Hot"}),
+                         JMESPathCheck('action.else.operations[0].name', "DeleteBlob"),
+                         JMESPathCheck('action.else.operations[0].onSuccess', "continue"),
+                         JMESPathCheck('action.else.operations[0].onFailure', "break")])
+        self.cmd('az storage-actions task list-assignment -g {rg} -n {task_name}')
+        self.cmd('az storage-actions task list-report -g {rg} -n {task_name}')
         self.cmd('az storage-actions task list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd("az storage-actions task update -g {rg} -n {task_name} --identity {{type:SystemAssigned}} "
+                 "--tags {{key2:value2}} --action {{if:{{condition:\\'[[equals(BlobType,\\'/BlockBlob\\'/)]]\\',"
+                 "operations:[{{name:'SetBlobTags',parameters:{{Archive-Status:'Archived'}},"
+                 "onSuccess:'continue',onFailure:'break'}}]}},"
+                 "else:{{operations:[{{name:'UndeleteBlob',onSuccess:'continue',onFailure:'break'}}]}}}} "
+                 "--description StorageTask1Update --enabled true",
+                 checks=[JMESPathCheck('tags', {"key2": "value2"}),
+                         JMESPathCheck('description', "StorageTask1Update"),
+                         JMESPathCheck('action.if.condition', "[[equals(BlobType,'BlockBlob')]]"),
+                         JMESPathCheck('action.if.operations[0].name', "SetBlobTags"),
+                         JMESPathCheck('action.if.operations[0].onSuccess', "continue"),
+                         JMESPathCheck('action.if.operations[0].onFailure', "break"),
+                         JMESPathCheck('action.if.operations[0].parameters', {"Archive-Status":"Archived"}),
+                         JMESPathCheck('action.else.operations[0].name', "UndeleteBlob"),
+                         JMESPathCheck('action.else.operations[0].onSuccess', "continue"),
+                         JMESPathCheck('action.else.operations[0].onFailure', "break")])
+        self.cmd('az storage-actions task delete -g {rg} -n {task_name} -y')
+        self.cmd('az storage-actions task list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])

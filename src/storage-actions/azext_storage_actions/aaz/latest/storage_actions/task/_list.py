@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the storage tasks available under the subscription.
+
+    :example: storage-actions task list
+        az storage-actions task list -g rgteststorageactions
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a storage task resource with the specified parameters. If a storage task is already created and a subsequent update request is issued with different properties, the storage task properties will be updated. If a storage task is already created and a subsequent update request is issued with the exact same set of properties, the request will succeed.
+
+    :example: storage-actions task update
+        az storage-actions task update -g rgteststorageactions -n testtask1 --identity "{type:SystemAssigned}" --tags "{key2:value2}" --action "{if:{condition:'[[equals(BlobType,'/BlockBlob'/)]]',operations:[{name:'SetBlobTags',parameters:{Archive-Status:'Archived'},onSuccess:'continue',onFailure:'break'}]},else:{operations:[{name:'UndeleteBlob',onSuccess:'continue',onFailure:'break'}]}}" --description StorageTask1Update --enabled true
     """
 
     _aaz_info = {
@@ -648,16 +651,16 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
-        else_ = _schema_storage_task_read.properties.action.else_
+        else_ = _schema_storage_task_read.properties.action["else"]
         else_.operations = AAZListType(
             flags={"required": True},
         )
 
-        operations = _schema_storage_task_read.properties.action.else_.operations
+        operations = _schema_storage_task_read.properties.action["else"].operations
         operations.Element = AAZObjectType()
         cls._build_schema_storage_task_operation_read(operations.Element)
 
-        if_ = _schema_storage_task_read.properties.action.if_
+        if_ = _schema_storage_task_read.properties.action["if"]
         if_.condition = AAZStrType(
             flags={"required": True},
         )
@@ -665,7 +668,7 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
-        operations = _schema_storage_task_read.properties.action.if_.operations
+        operations = _schema_storage_task_read.properties.action["if"].operations
         operations.Element = AAZObjectType()
         cls._build_schema_storage_task_operation_read(operations.Element)
 

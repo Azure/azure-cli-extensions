@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class ListAssignment(AAZCommand):
     """List all the storage task assignments available under the given resource group.
+
+    :example: storage-actions task list-assignment
+        az storage-actions task list-assignment -g rgteststorageactions -n testtask1
     """
 
     _aaz_info = {
@@ -47,7 +50,7 @@ class ListAssignment(AAZCommand):
             required=True,
         )
         _args_schema.storage_task_name = AAZStrArg(
-            options=["--storage-task-name"],
+            options=["-n", "--name", "--storage-task-name"],
             help="The name of the storage task within the specified resource group. Storage task names must be between 3 and 18 characters in length and use numbers and lower-case letters only.",
             required=True,
             fmt=AAZStrArgFormat(

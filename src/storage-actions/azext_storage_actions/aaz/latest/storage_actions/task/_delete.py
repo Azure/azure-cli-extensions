@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the storage task resource.
+
+    :example: storage-actions task delete
+        az storage-actions task delete -g rgteststorageactions -n testtask1
     """
 
     _aaz_info = {

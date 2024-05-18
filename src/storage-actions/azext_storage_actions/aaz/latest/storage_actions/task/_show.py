@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the storage task properties
+
+    :example: storage-actions task show
+        az storage-actions task show -g rgteststorageactions -n testtask1
     """
 
     _aaz_info = {

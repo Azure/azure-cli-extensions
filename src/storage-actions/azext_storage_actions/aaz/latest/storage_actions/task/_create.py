@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new storage task resource with the specified parameters. If a storage task is already created and a subsequent create request is issued with different properties, the storage task properties will be updated. If a storage task is already created and a subsequent create request is issued with the exact same set of properties, the request will succeed.
+
+    :example: storage-actions task create
+        az storage-actions task create -g rgteststorageactions -n testtask1 --identity "{type:SystemAssigned}" --tags "{key1:value1}" --action "{if:{condition:'[[equals(AccessTier,'/Cool'/)]]',operations:[{name:'SetBlobTier',parameters:{tier:'Hot'},onSuccess:'continue',onFailure:'break'}]},else:{operations:[{name:'DeleteBlob',onSuccess:'continue',onFailure:'break'}]}}" --description StorageTask1 --enabled true
     """
 
     _aaz_info = {
