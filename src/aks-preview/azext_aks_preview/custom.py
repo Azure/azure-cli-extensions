@@ -491,7 +491,7 @@ def aks_create(
     disable_public_fqdn=False,
     service_principal=None,
     client_secret=None,
-    enable_managed_identity=True,
+    enable_managed_identity=False,
     assign_identity=None,
     assign_kubelet_identity=None,
     enable_aad=False,
@@ -1713,6 +1713,27 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
         nodepool_name,
         machines,
     )
+
+
+def aks_operation_show(cmd,
+                       client,
+                       resource_group_name,
+                       name,
+                       nodepool_name,
+                       operation_id,):
+    if nodepool_name:
+        return client.get_by_agent_pool(resource_group_name, name, nodepool_name, operation_id)
+    return client.get(resource_group_name, name, operation_id)
+
+
+def aks_operation_show_latest(cmd,
+                              client,
+                              resource_group_name,
+                              name,
+                              nodepool_name,):
+    if nodepool_name:
+        return client.get_by_agent_pool(resource_group_name, name, nodepool_name, "latest")
+    return client.get(resource_group_name, name, "latest")
 
 
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument

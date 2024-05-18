@@ -37,11 +37,11 @@ print("get_ext_repo_paths: ", cli_ext_path)
 def extract_module_history_update_info(mod_update_info, mod):
     """
     re pattern:
-    --- a/src/monitor-control-service/HISTORY.rst
-    +++ b/src/monitor-control-service/HISTORY.rst
+    --- a/src/monitor-control-service/HISTORY.(rst|md)
+    +++ b/src/monitor-control-service/HISTORY.(rst|md)
     """
     mod_update_info["history_updated"] = False
-    module_history_update_pattern = re.compile(r"\+\+\+.*?src/%s/HISTORY.rst" % mod)
+    module_history_update_pattern = re.compile(r"\+\+\+.*?src/%s/HISTORY\.(rst|md)" % mod)
     with open(diff_code_file, "r") as f:
         for line in f:
             mod_history_update_match = re.findall(module_history_update_pattern, line)
@@ -64,7 +64,7 @@ def extract_module_version_update_info(mod_update_info, mod):
     with open(diff_code_file, "r") as f:
         for line in f:
             if mod_update_info["setup_updated"]:
-                if line.find("---") != -1:
+                if line.find("---") != -1 or mod_update_info.get("version_diff", None):
                     break
                 mod_version_update_match = re.findall(module_version_update_pattern, line)
                 if mod_version_update_match and len(mod_version_update_match) == 1:
@@ -86,7 +86,7 @@ def extract_module_metadata_update_info(mod_update_info, mod):
     """
     mod_update_info["meta_updated"] = False
     module_meta_update_pattern = re.compile(r"\+\+\+.*?src/%s/azext_.*?/azext_metadata.json" % mod)
-    module_ispreview_add_pattern = re.compile(r"\-.*?azext.isPreview.*?true")
+    module_ispreview_add_pattern = re.compile(r"\+.*?azext.isPreview.*?true")
     module_ispreview_remove_pattern = re.compile(r"\-.*?azext.isPreview.*?true")
     module_isexp_add_pattern = re.compile(r"\+.*?azext.isExperimental.*?true")
     module_isexp_remove_pattern = re.compile(r"\-.*?azext.isExperimental.*?true")
