@@ -335,15 +335,15 @@ def list_dashboards(cmd, grafana_name, resource_group_name=None, api_key_or_toke
 
 def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, resource_group_name=None,
                      overwrite=None, api_key_or_token=None):
-    folder_id = None
+    folder_uid = None
     if folder:
-        folder_id = _find_folder(cmd, resource_group_name, grafana_name, folder)["id"]
-    return _create_dashboard(cmd, grafana_name, definition=definition, title=title, folder_id=folder_id,
+        folder_uid = _find_folder(cmd, resource_group_name, grafana_name, folder)["uid"]
+    return _create_dashboard(cmd, grafana_name, definition=definition, title=title, folder_uid=folder_uid,
                              resource_group_name=resource_group_name, overwrite=overwrite,
                              api_key_or_token=api_key_or_token)
 
 
-def _create_dashboard(cmd, grafana_name, definition, title=None, folder_id=None, resource_group_name=None,
+def _create_dashboard(cmd, grafana_name, definition, title=None, folder_uid=None, resource_group_name=None,
                       overwrite=None, api_key_or_token=None, for_sync=True, subscription=None):
     if "dashboard" in definition:
         payload = definition
@@ -355,8 +355,8 @@ def _create_dashboard(cmd, grafana_name, definition, title=None, folder_id=None,
     if title:
         payload['dashboard']['title'] = title
 
-    if folder_id:
-        payload['folderId'] = folder_id
+    if folder_uid:
+        payload['folderUid'] = folder_uid
 
     payload['overwrite'] = overwrite or False
 
