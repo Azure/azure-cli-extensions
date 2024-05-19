@@ -2643,13 +2643,13 @@ class ContainerappRuntimeTests(ScenarioTest):
         # Create container app with runtime=java, it should have default java runtime settings
         create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java', checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded"),
-            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
         ])
 
         # Create container app with runtime=java and enable java agent
         create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java --enable-java-agent', checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded"),
-            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
             JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
         ])
 
@@ -2770,7 +2770,7 @@ class ContainerappRuntimeTests(ScenarioTest):
         # Update container app with runtime=java, it should setup default java runtime settings if not set before
         self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded"),
-            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
             JMESPathCheckNotExists("properties.configuration.runtime.java.javaAgent")
         ])
 
