@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create/update': Update default value of enableMetrics to True for java runtime setting
 
 0.3.51
 ++++++
