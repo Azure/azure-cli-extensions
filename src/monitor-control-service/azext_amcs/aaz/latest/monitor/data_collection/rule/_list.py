@@ -317,7 +317,7 @@ class List(AAZCommand):
                 serialized_name="extensionName",
                 flags={"required": True},
             )
-            _element.extension_settings = AAZObjectType(
+            _element.extension_settings = AAZFreeFormDictType(
                 serialized_name="extensionSettings",
             )
             _element.input_data_sources = AAZListType(
@@ -858,7 +858,7 @@ class List(AAZCommand):
                 serialized_name="extensionName",
                 flags={"required": True},
             )
-            _element.extension_settings = AAZObjectType(
+            _element.extension_settings = AAZFreeFormDictType(
                 serialized_name="extensionSettings",
             )
             _element.input_data_sources = AAZListType(

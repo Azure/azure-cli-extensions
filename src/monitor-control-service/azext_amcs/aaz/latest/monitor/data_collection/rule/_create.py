@@ -58,8 +58,7 @@ class Create(AAZCommand):
         )
         _args_schema.kind = AAZStrArg(
             options=["--kind"],
-            help="The kind of the resource.",
-            enum={"Linux": "Linux", "Windows": "Windows"},
+            help="The kind of the resource. Such as `Linux`, `Windows`.",
         )
         _args_schema.location = AAZResourceLocationArg(
             help="The geo-location where the resource lives.",
@@ -229,10 +228,9 @@ class Create(AAZCommand):
             help="The name of the VM extension.",
             required=True,
         )
-        _element.extension_settings = AAZObjectArg(
+        _element.extension_settings = AAZFreeFormDictArg(
             options=["extension-settings"],
             help="The extension settings. The format is specific for particular extension.",
-            blank={},
         )
         _element.input_data_sources = AAZListArg(
             options=["input-data-sources"],
@@ -422,7 +420,7 @@ class Create(AAZCommand):
 
         facility_names = cls._args_schema.data_sources.syslog.Element.facility_names
         facility_names.Element = AAZStrArg(
-            enum={"*": "*", "auth": "auth", "authpriv": "authpriv", "cron": "cron", "daemon": "daemon", "kern": "kern", "local0": "local0", "local1": "local1", "local2": "local2", "local3": "local3", "local4": "local4", "local5": "local5", "local6": "local6", "local7": "local7", "lpr": "lpr", "mail": "mail", "mark": "mark", "news": "news", "syslog": "syslog", "user": "user", "uucp": "uucp"},
+            enum={"*": "*", "alert": "alert", "audit": "audit", "auth": "auth", "authpriv": "authpriv", "clock": "clock", "cron": "cron", "daemon": "daemon", "ftp": "ftp", "kern": "kern", "local0": "local0", "local1": "local1", "local2": "local2", "local3": "local3", "local4": "local4", "local5": "local5", "local6": "local6", "local7": "local7", "lpr": "lpr", "mail": "mail", "mark": "mark", "news": "news", "nopri": "nopri", "ntp": "ntp", "syslog": "syslog", "user": "user", "uucp": "uucp"},
         )
 
         log_levels = cls._args_schema.data_sources.syslog.Element.log_levels
@@ -812,10 +810,14 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.dataSources.extensions[]")
             if _elements is not None:
                 _elements.set_prop("extensionName", AAZStrType, ".extension_name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("extensionSettings", AAZObjectType, ".extension_settings")
+                _elements.set_prop("extensionSettings", AAZFreeFormDictType, ".extension_settings")
                 _elements.set_prop("inputDataSources", AAZListType, ".input_data_sources")
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("streams", AAZListType, ".streams")
+
+            extension_settings = _builder.get(".properties.dataSources.extensions[].extensionSettings")
+            if extension_settings is not None:
+                extension_settings.set_anytype_elements(".")
 
             input_data_sources = _builder.get(".properties.dataSources.extensions[].inputDataSources")
             if input_data_sources is not None:
@@ -1239,7 +1241,7 @@ class Create(AAZCommand):
                 serialized_name="extensionName",
                 flags={"required": True},
             )
-            _element.extension_settings = AAZObjectType(
+            _element.extension_settings = AAZFreeFormDictType(
                 serialized_name="extensionSettings",
             )
             _element.input_data_sources = AAZListType(

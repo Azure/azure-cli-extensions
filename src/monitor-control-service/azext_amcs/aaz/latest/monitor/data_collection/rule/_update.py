@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a data collection rule.
+
+    :example: Update data collection rule
+        az monitor data-collection rule update --resource-group "myResourceGroup" --name "myCollectionRule" --data-flows destinations="centralWorkspace" streams="Microsoft-Perf" streams="Microsoft-Syslog" streams="Microsoft-WindowsEvent" --log-analytics name="centralWorkspace" resource-id="/subscriptions/703362b3-f278-4e4b-9179- c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.OperationalInsights/workspac es/centralTeamWorkspace" --performance-counters name="appTeamExtraCounters" counter- specifiers="\\Process(_Total)\\Thread Count" sampling-frequency=30 streams="Microsoft-Perf" --syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" log-levels="Emergency" streams="Microsoft-Syslog" --windows-event-logs name="cloudSecurityTeamEvents" streams="Microsoft-WindowsEvent" x-path-queries="Security!"
     """
 
     _aaz_info = {
@@ -59,9 +62,8 @@ class Update(AAZCommand):
         )
         _args_schema.kind = AAZStrArg(
             options=["--kind"],
-            help="The kind of the resource.",
+            help="The kind of the resource. Such as `Linux`, `Windows`.",
             nullable=True,
-            enum={"Linux": "Linux", "Windows": "Windows"},
         )
         _args_schema.data_collection_endpoint_id = AAZStrArg(
             options=["--endpoint-id", "--data-collection-endpoint-id"],
@@ -259,11 +261,10 @@ class Update(AAZCommand):
             options=["extension-name"],
             help="The name of the VM extension.",
         )
-        _element.extension_settings = AAZObjectArg(
+        _element.extension_settings = AAZFreeFormDictArg(
             options=["extension-settings"],
             help="The extension settings. The format is specific for particular extension.",
             nullable=True,
-            blank={},
         )
         _element.input_data_sources = AAZListArg(
             options=["input-data-sources"],
@@ -499,7 +500,7 @@ class Update(AAZCommand):
         facility_names = cls._args_schema.data_sources.syslog.Element.facility_names
         facility_names.Element = AAZStrArg(
             nullable=True,
-            enum={"*": "*", "auth": "auth", "authpriv": "authpriv", "cron": "cron", "daemon": "daemon", "kern": "kern", "local0": "local0", "local1": "local1", "local2": "local2", "local3": "local3", "local4": "local4", "local5": "local5", "local6": "local6", "local7": "local7", "lpr": "lpr", "mail": "mail", "mark": "mark", "news": "news", "syslog": "syslog", "user": "user", "uucp": "uucp"},
+            enum={"*": "*", "alert": "alert", "audit": "audit", "auth": "auth", "authpriv": "authpriv", "clock": "clock", "cron": "cron", "daemon": "daemon", "ftp": "ftp", "kern": "kern", "local0": "local0", "local1": "local1", "local2": "local2", "local3": "local3", "local4": "local4", "local5": "local5", "local6": "local6", "local7": "local7", "lpr": "lpr", "mail": "mail", "mark": "mark", "news": "news", "nopri": "nopri", "ntp": "ntp", "syslog": "syslog", "user": "user", "uucp": "uucp"},
         )
 
         log_levels = cls._args_schema.data_sources.syslog.Element.log_levels
@@ -1077,10 +1078,14 @@ class Update(AAZCommand):
             _elements = _builder.get(".properties.dataSources.extensions[]")
             if _elements is not None:
                 _elements.set_prop("extensionName", AAZStrType, ".extension_name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("extensionSettings", AAZObjectType, ".extension_settings")
+                _elements.set_prop("extensionSettings", AAZFreeFormDictType, ".extension_settings")
                 _elements.set_prop("inputDataSources", AAZListType, ".input_data_sources")
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("streams", AAZListType, ".streams")
+
+            extension_settings = _builder.get(".properties.dataSources.extensions[].extensionSettings")
+            if extension_settings is not None:
+                extension_settings.set_anytype_elements(".")
 
             input_data_sources = _builder.get(".properties.dataSources.extensions[].inputDataSources")
             if input_data_sources is not None:
@@ -1526,7 +1531,7 @@ class _UpdateHelper:
             serialized_name="extensionName",
             flags={"required": True},
         )
-        _element.extension_settings = AAZObjectType(
+        _element.extension_settings = AAZFreeFormDictType(
             serialized_name="extensionSettings",
         )
         _element.input_data_sources = AAZListType(
