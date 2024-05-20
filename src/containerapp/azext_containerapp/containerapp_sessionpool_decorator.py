@@ -171,7 +171,8 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
 
             container_def = self.set_up_container()
             ingress_def = self.set_up_ingress()
-            registry_def = self.set_up_registry_auth_configuration(secrets_def)
+            registry_def, updated_secret_def = self.set_up_registry_auth_configuration(secrets_def)
+            secrets_def = updated_secret_def
 
             customer_container_template["containers"] = [container_def]
             customer_container_template["ingress"] = ingress_def
@@ -239,7 +240,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         registry_def = None
         if self.get_argument_registry_server() is not None:
             registry_def = {}
-            registry_def["registryServer"] = self.get_argument_registry_server()
+            registry_def["server"] = self.get_argument_registry_server()
             registry_def["username"] = self.get_argument_registry_user()
 
             if secrets_def is None:
@@ -248,7 +249,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
                                                                                       self.get_argument_registry_user(),
                                                                                       self.get_argument_registry_server(),
                                                                                       self.get_argument_registry_pass())
-        return registry_def
+        return registry_def, secrets_def
 
     def set_up_ingress(self):
         if self.get_argument_target_port() is None:
@@ -415,7 +416,7 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
 
     def set_up_registry_auth_configuration(self, secrets_def, customer_container_template):
         if self.get_argument_registry_server() is not None:
-            safe_set(customer_container_template, "registryCredentials", "registryServer", value=self.get_argument_registry_server())
+            safe_set(customer_container_template, "registryCredentials", "server", value=self.get_argument_registry_server())
         if self.get_argument_registry_user() is not None:
             safe_set(customer_container_template, "registryCredentials", "username", value=self.get_argument_registry_user())
         if secrets_def is None:
