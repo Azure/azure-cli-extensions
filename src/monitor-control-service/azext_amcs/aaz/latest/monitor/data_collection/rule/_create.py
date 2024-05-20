@@ -270,6 +270,7 @@ class Create(AAZCommand):
         _element.extension_settings = AAZFreeFormDictArg(
             options=["extension-settings"],
             help="The extension settings. The format is specific for particular extension.",
+            blank={},
         )
         _element.input_data_sources = AAZListArg(
             options=["input-data-sources"],

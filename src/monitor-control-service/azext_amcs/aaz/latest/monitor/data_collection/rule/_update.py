@@ -62,7 +62,7 @@ class Update(AAZCommand):
         )
         _args_schema.kind = AAZStrArg(
             options=["--kind"],
-            help="The kind of the resource. Such as `Linux`, `Windows`.",
+            help="The kind of the resource.",
             nullable=True,
             enum={"Linux": "Linux", "Windows": "Windows"},
             enum_support_extension=True,
@@ -312,6 +312,7 @@ class Update(AAZCommand):
             options=["extension-settings"],
             help="The extension settings. The format is specific for particular extension.",
             nullable=True,
+            blank={},
         )
         _element.input_data_sources = AAZListArg(
             options=["input-data-sources"],
