@@ -4,7 +4,6 @@ Release History
 ===============
 upcoming
 ++++++
-=======
 * 'az containerapp create/update': Update default value of enableMetrics to True for java runtime 
 * 'az containerapp sessionpool create': Fix default container name to be lower case letters
 
