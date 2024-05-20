@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/projects", "2023-10-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/projects", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects", "2024-05-01-preview"],
         ]
     }
 
@@ -99,7 +99,7 @@ class List(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -119,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -167,6 +167,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -185,7 +186,39 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
+            properties.catalog_settings = AAZObjectType(
+                serialized_name="catalogSettings",
+            )
             properties.description = AAZStrType()
             properties.dev_center_id = AAZStrType(
                 serialized_name="devCenterId",
@@ -204,6 +237,14 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            catalog_settings = cls._schema_on_200.value.Element.properties.catalog_settings
+            catalog_settings.catalog_item_sync_types = AAZListType(
+                serialized_name="catalogItemSyncTypes",
+            )
+
+            catalog_item_sync_types = cls._schema_on_200.value.Element.properties.catalog_settings.catalog_item_sync_types
+            catalog_item_sync_types.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -254,7 +295,7 @@ class List(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -270,7 +311,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -318,6 +359,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -336,7 +378,39 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
+            properties.catalog_settings = AAZObjectType(
+                serialized_name="catalogSettings",
+            )
             properties.description = AAZStrType()
             properties.dev_center_id = AAZStrType(
                 serialized_name="devCenterId",
@@ -355,6 +429,14 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            catalog_settings = cls._schema_on_200.value.Element.properties.catalog_settings
+            catalog_settings.catalog_item_sync_types = AAZListType(
+                serialized_name="catalogItemSyncTypes",
+            )
+
+            catalog_item_sync_types = cls._schema_on_200.value.Element.properties.catalog_settings.catalog_item_sync_types
+            catalog_item_sync_types.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

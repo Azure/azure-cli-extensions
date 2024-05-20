@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -80,6 +80,16 @@ class Create(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
+        # define Arg Group "DevBoxProvisioningSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.install_azure_monitor_agent_enable_status = AAZStrArg(
+            options=["--install-azure-monitor-agent-enable-status", "-a"],
+            arg_group="DevBoxProvisioningSettings",
+            help="Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -100,6 +110,26 @@ class Create(AAZCommand):
             blank={},
         )
 
+        # define Arg Group "NetworkSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.microsoft_hosted_network_enable_status = AAZStrArg(
+            options=["--microsoft-hosted-network-enable-status", "-m"],
+            arg_group="NetworkSettings",
+            help="Indicates whether pools in this Dev Center can use Microsoft Hosted Networks. Defaults to Enabled if not set.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        # define Arg Group "ProjectCatalogSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.project_catalog_item_sync_enable_status = AAZStrArg(
+            options=["--project-catalog-item-sync-enable-status", "-c"],
+            arg_group="ProjectCatalogSettings",
+            help="Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -107,6 +137,12 @@ class Create(AAZCommand):
             options=["--display-name"],
             arg_group="Properties",
             help="The display name of the devcenter.",
+        )
+        _args_schema.plan_id = AAZStrArg(
+            options=["--plan-id"],
+            arg_group="Properties",
+            help="Resource Id of an associated Plan",
+            is_preview=True,
         )
         return cls._args_schema
 
@@ -167,7 +203,7 @@ class Create(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -191,7 +227,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -232,23 +268,23 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("devBoxProvisioningSettings", AAZObjectType)
                 properties.set_prop("displayName", AAZStrType, ".display_name")
-                properties.set_prop("encryption", AAZObjectType, ".encryption")
+                properties.set_prop("networkSettings", AAZObjectType)
+                properties.set_prop("planId", AAZStrType, ".plan_id")
+                properties.set_prop("projectCatalogSettings", AAZObjectType)
 
-            encryption = _builder.get(".properties.encryption")
-            if encryption is not None:
-                encryption.set_prop("customerManagedKeyEncryption", AAZObjectType, ".customer_managed_key_encryption")
+            dev_box_provisioning_settings = _builder.get(".properties.devBoxProvisioningSettings")
+            if dev_box_provisioning_settings is not None:
+                dev_box_provisioning_settings.set_prop("installAzureMonitorAgentEnableStatus", AAZStrType, ".install_azure_monitor_agent_enable_status")
 
-            customer_managed_key_encryption = _builder.get(".properties.encryption.customerManagedKeyEncryption")
-            if customer_managed_key_encryption is not None:
-                customer_managed_key_encryption.set_prop("keyEncryptionKeyIdentity", AAZObjectType, ".key_encryption_key_identity")
-                customer_managed_key_encryption.set_prop("keyEncryptionKeyUrl", AAZStrType, ".key_encryption_key_url")
+            network_settings = _builder.get(".properties.networkSettings")
+            if network_settings is not None:
+                network_settings.set_prop("microsoftHostedNetworkEnableStatus", AAZStrType, ".microsoft_hosted_network_enable_status")
 
-            key_encryption_key_identity = _builder.get(".properties.encryption.customerManagedKeyEncryption.keyEncryptionKeyIdentity")
-            if key_encryption_key_identity is not None:
-                key_encryption_key_identity.set_prop("delegatedIdentityClientId", AAZStrType, ".delegated_identity_client_id")
-                key_encryption_key_identity.set_prop("identityType", AAZStrType, ".identity_type")
-                key_encryption_key_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id")
+            project_catalog_settings = _builder.get(".properties.projectCatalogSettings")
+            if project_catalog_settings is not None:
+                project_catalog_settings.set_prop("catalogItemSyncEnableStatus", AAZStrType, ".project_catalog_item_sync_enable_status")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -326,6 +362,9 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.dev_box_provisioning_settings = AAZObjectType(
+                serialized_name="devBoxProvisioningSettings",
+            )
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
@@ -334,9 +373,23 @@ class Create(AAZCommand):
                 serialized_name="displayName",
             )
             properties.encryption = AAZObjectType()
+            properties.network_settings = AAZObjectType(
+                serialized_name="networkSettings",
+            )
+            properties.plan_id = AAZStrType(
+                serialized_name="planId",
+            )
+            properties.project_catalog_settings = AAZObjectType(
+                serialized_name="projectCatalogSettings",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            dev_box_provisioning_settings = cls._schema_on_200_201.properties.dev_box_provisioning_settings
+            dev_box_provisioning_settings.install_azure_monitor_agent_enable_status = AAZStrType(
+                serialized_name="installAzureMonitorAgentEnableStatus",
             )
 
             encryption = cls._schema_on_200_201.properties.encryption
@@ -361,6 +414,16 @@ class Create(AAZCommand):
             )
             key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
                 serialized_name="userAssignedIdentityResourceId",
+            )
+
+            network_settings = cls._schema_on_200_201.properties.network_settings
+            network_settings.microsoft_hosted_network_enable_status = AAZStrType(
+                serialized_name="microsoftHostedNetworkEnableStatus",
+            )
+
+            project_catalog_settings = cls._schema_on_200_201.properties.project_catalog_settings
+            project_catalog_settings.catalog_item_sync_enable_status = AAZStrType(
+                serialized_name="catalogItemSyncEnableStatus",
             )
 
             system_data = cls._schema_on_200_201.system_data

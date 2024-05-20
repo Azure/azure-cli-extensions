@@ -45,7 +45,7 @@ class DevCenterClient:  # pylint: disable=client-accepts-api-version-keyword
     :type endpoint: str
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
-    :keyword api_version: Api Version. Default value is "2023-10-01-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2024-05-01-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no

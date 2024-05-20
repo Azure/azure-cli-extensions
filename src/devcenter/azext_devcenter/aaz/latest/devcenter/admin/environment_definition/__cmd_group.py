@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "devcenter admin environment-definition",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Mange environment definitions in the catalog.
+    """Manage environment definitions in the catalog.
     """
     pass
 

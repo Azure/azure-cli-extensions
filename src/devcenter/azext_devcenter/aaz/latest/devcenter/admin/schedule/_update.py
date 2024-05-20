@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -95,6 +95,12 @@ class Update(AAZCommand):
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
+            nullable=True,
+        )
         _args_schema.time = AAZStrArg(
             options=["--time"],
             arg_group="Properties",
@@ -104,6 +110,11 @@ class Update(AAZCommand):
             options=["--time-zone"],
             arg_group="Properties",
             help="The IANA timezone id at which the schedule should execute.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
+            nullable=True,
         )
         return cls._args_schema
 
@@ -161,7 +172,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -193,7 +204,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -268,7 +279,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -300,7 +311,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -363,8 +374,13 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("state", AAZStrType, ".state")
+                properties.set_prop("tags", AAZDictType, ".tags")
                 properties.set_prop("time", AAZStrType, ".time", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("timeZone", AAZStrType, ".time_zone", typ_kwargs={"flags": {"required": True}})
+
+            tags = _builder.get(".properties.tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -414,11 +430,13 @@ class _UpdateHelper:
         properties.frequency = AAZStrType(
             flags={"required": True},
         )
+        properties.location = AAZStrType()
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
         properties.state = AAZStrType()
+        properties.tags = AAZDictType()
         properties.time = AAZStrType(
             flags={"required": True},
         )
@@ -429,6 +447,9 @@ class _UpdateHelper:
         properties.type = AAZStrType(
             flags={"required": True},
         )
+
+        tags = _schema_schedule_read.properties.tags
+        tags.Element = AAZStrType()
 
         system_data = _schema_schedule_read.system_data
         system_data.created_at = AAZStrType(

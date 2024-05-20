@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -89,7 +89,7 @@ class Create(AAZCommand):
             options=["--domain-join-type"],
             arg_group="Properties",
             help="AAD Join type.",
-            enum={"AzureADJoin": "AzureADJoin", "HybridAzureADJoin": "HybridAzureADJoin"},
+            enum={"AzureADJoin": "AzureADJoin", "HybridAzureADJoin": "HybridAzureADJoin", "None": "None"},
         )
         _args_schema.domain_name = AAZStrArg(
             options=["--domain-name"],
@@ -183,7 +183,7 @@ class Create(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -207,7 +207,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }

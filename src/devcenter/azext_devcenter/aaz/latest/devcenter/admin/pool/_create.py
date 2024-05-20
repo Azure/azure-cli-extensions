@@ -17,14 +17,20 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a pool.
 
-    :example: Create
-        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled"
+    :example: Create pool using unmanaged network
+        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled" --virtual-network-type "Unmanaged" --single-sign-on-status "Enabled"
+
+    :example: Create pool using managed network
+        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled" --virtual-network-type "Managed" --managed-virtual-network-region ["westus3"] --single-sign-on-status "Enabled"
+
+    :example: Create a pool with stop on disconnect enabled
+        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled" --virtual-network-type "Unmanaged" --single-sign-on-status "Enabled" --stop-on-disconnect status="Enabled" grace-period-minutes="60"
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -131,6 +137,12 @@ class Create(AAZCommand):
             help="Indicates whether Dev Boxes in this pool are created with single sign on enabled. The also requires that single sign on be enabled on the tenant.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
+        _args_schema.stop_on_disconnect = AAZObjectArg(
+            options=["--stop-on-disconnect"],
+            arg_group="Properties",
+            help="Stop on disconnect configuration settings for dev boxes created in this pool.",
+            is_preview=True,
+        )
         _args_schema.virtual_network_type = AAZStrArg(
             options=["--virtual-network-type"],
             arg_group="Properties",
@@ -140,6 +152,17 @@ class Create(AAZCommand):
 
         managed_virtual_network_regions = cls._args_schema.managed_virtual_network_regions
         managed_virtual_network_regions.Element = AAZStrArg()
+
+        stop_on_disconnect = cls._args_schema.stop_on_disconnect
+        stop_on_disconnect.grace_period_minutes = AAZIntArg(
+            options=["grace-period-minutes"],
+            help="The specified time in minutes to wait before stopping a dev box once disconnect is detected.",
+        )
+        stop_on_disconnect.status = AAZStrArg(
+            options=["status"],
+            help="Whether the feature to stop the dev box on disconnect once the grace period has lapsed is enabled.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -199,7 +222,7 @@ class Create(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -227,7 +250,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -265,11 +288,17 @@ class Create(AAZCommand):
                 properties.set_prop("managedVirtualNetworkRegions", AAZListType, ".managed_virtual_network_regions")
                 properties.set_prop("networkConnectionName", AAZStrType, ".network_connection_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("singleSignOnStatus", AAZStrType, ".single_sign_on_status")
+                properties.set_prop("stopOnDisconnect", AAZObjectType, ".stop_on_disconnect")
                 properties.set_prop("virtualNetworkType", AAZStrType, ".virtual_network_type")
 
             managed_virtual_network_regions = _builder.get(".properties.managedVirtualNetworkRegions")
             if managed_virtual_network_regions is not None:
                 managed_virtual_network_regions.set_elements(AAZStrType, ".")
+
+            stop_on_disconnect = _builder.get(".properties.stopOnDisconnect")
+            if stop_on_disconnect is not None:
+                stop_on_disconnect.set_prop("gracePeriodMinutes", AAZIntType, ".grace_period_minutes")
+                stop_on_disconnect.set_prop("status", AAZStrType, ".status")
 
             tags = _builder.get(".tags")
             if tags is not None:

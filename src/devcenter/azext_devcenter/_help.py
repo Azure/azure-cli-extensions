@@ -807,4 +807,133 @@ helps[
         text: |-
               az devcenter dev environment update-expiration-date --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --expiration "2025-11-30T22:35:00+00:00"
+
+"""
+
+helps[
+    "devcenter dev customization-group"
+] = """
+    type: group
+    short-summary: Manage customization groups.
+"""
+
+helps[
+    "devcenter dev customization-group create"
+] = """
+    type: command
+    short-summary: "Create a customization group."
+    examples:
+      - name: Create using dev center
+        text: |-
+               az devcenter dev customization-group create --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--dev-box-name "myDevBox" --tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\
+\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Create using endpoint
+        text: |-
+               az devcenter dev customization-group create --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--dev-box-name "myDevBox" --tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\
+\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev customization-group show"
+] = """
+    type: command
+    short-summary: "Get a customization group."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev customization-group show --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--dev-box-name "myDevBox" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev customization-group show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--dev-box-name "myDevBox" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev customization-group list"
+] = """
+    type: command
+    short-summary: "List customization groups on the dev box"
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev customization-group list --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--dev-box-name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000" --include-tasks
+      - name: List using endpoint
+        text: |-
+               az devcenter dev customization-group list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--dev-box-name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000" --include-tasks
+"""
+
+helps[
+    "devcenter dev customization-task"
+] = """
+    type: group
+    short-summary: Manage customization tasks.
+"""
+
+helps[
+    "devcenter dev customization-task show"
+] = """
+    type: command
+    short-summary: "Get a customization task."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev customization-task show --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--task-name "choco" --catalog-name "myCatalog"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev customization-task show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--task-name "choco" --catalog-name "myCatalog"
+"""
+
+helps[
+    "devcenter dev customization-task list"
+] = """
+    type: command
+    short-summary: "List customization task."
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev customization-task list --dev-center-name "ContosoDevCenter" --project-name "DevProject"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev customization-task list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject"
+"""
+
+helps[
+    "devcenter dev customization-task validate"
+] = """
+    type: command
+    short-summary: "Validate customization tasks."
+    examples:
+      - name: Validate using dev center
+        text: |-
+               az devcenter dev customization-task validate --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\
+\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]"
+      - name: Validate using endpoint
+        text: |-
+               az devcenter dev customization-task validate --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\
+\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]"
+"""
+
+helps[
+    "devcenter dev customization-task show-logs"
+] = """
+    type: command
+    short-summary: "Show logs of a customization task."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev customization-task show-logs --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--dev-box-name "myDevBox" --customization-group-name "Provisioning" --customization-task-id "91835dc0-ef5a-4f58-9e3a-099aea8481f4" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev customization-task show-logs --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--dev-box-name "myDevBox" --customization-group-name "Provisioning" --customization-task-id "91835dc0-ef5a-4f58-9e3a-099aea8481f4" --user-id "00000000-0000-0000-0000-000000000000"
 """

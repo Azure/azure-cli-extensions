@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -97,7 +97,7 @@ class Wait(AAZWaitCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -121,7 +121,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -206,6 +206,9 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.dev_box_provisioning_settings = AAZObjectType(
+                serialized_name="devBoxProvisioningSettings",
+            )
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
@@ -214,9 +217,23 @@ class Wait(AAZWaitCommand):
                 serialized_name="displayName",
             )
             properties.encryption = AAZObjectType()
+            properties.network_settings = AAZObjectType(
+                serialized_name="networkSettings",
+            )
+            properties.plan_id = AAZStrType(
+                serialized_name="planId",
+            )
+            properties.project_catalog_settings = AAZObjectType(
+                serialized_name="projectCatalogSettings",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            dev_box_provisioning_settings = cls._schema_on_200.properties.dev_box_provisioning_settings
+            dev_box_provisioning_settings.install_azure_monitor_agent_enable_status = AAZStrType(
+                serialized_name="installAzureMonitorAgentEnableStatus",
             )
 
             encryption = cls._schema_on_200.properties.encryption
@@ -241,6 +258,16 @@ class Wait(AAZWaitCommand):
             )
             key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
                 serialized_name="userAssignedIdentityResourceId",
+            )
+
+            network_settings = cls._schema_on_200.properties.network_settings
+            network_settings.microsoft_hosted_network_enable_status = AAZStrType(
+                serialized_name="microsoftHostedNetworkEnableStatus",
+            )
+
+            project_catalog_settings = cls._schema_on_200.properties.project_catalog_settings
+            project_catalog_settings.catalog_item_sync_enable_status = AAZStrType(
+                serialized_name="catalogItemSyncEnableStatus",
             )
 
             system_data = cls._schema_on_200.system_data
