@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 
+import unittest
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from datetime import datetime
@@ -45,6 +46,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
     # Uses a persistent vault and DS
     @AllowLargeResponse()
+    @unittest.skip("Resource setup issue with PGFlex Single Server. Scenarios covered in Cross Region Restore tests.")
     def test_dataprotection_backup_and_restore_oss(test):
         test.kwargs.update({
             'location': 'centraluseuap',
@@ -76,19 +78,19 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         })
 
         # Uncomment if validate-for-backup fails due to permission error. Only uncomment when running live.
-        # test.cmd('az dataprotection backup-instance update-msi-permissions '
-        #          '-g "{rg}" '
-        #          '--vault-name "{vaultName}" '
-        #          '--backup-instance "{backupInstance}" '
-        #          '--datasource-type "{dataSourceType}" '
-        #          '--permissions-scope "{permissionsScope}" '
-        #          '--operation "{operation}" '
-        #          '--keyvault-id "{keyVaultId}" --yes')
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" '
+                 '--vault-name "{vaultName}" '
+                 '--backup-instance "{backupInstance}" '
+                 '--datasource-type "{dataSourceType}" '
+                 '--permissions-scope "{permissionsScope}" '
+                 '--operation "{operation}" '
+                 '--keyvault-id "{keyVaultId}" --yes')
 
         backup_instance_validate_create(test)
 
-        # Ensure no other jobs running on datasource. Required to avoid operation clashes. Requries dataSourceId kwarg to run.
-        wait_for_job_exclusivity_on_datasource(test)
+        # Uncomment if test runs into parallelization errors
+        # wait_for_job_exclusivity_on_datasource(test)
 
         # Trigger ad-hoc backup and track to completion
         adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
@@ -207,8 +209,8 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
         backup_instance_validate_create(test)
 
-        # Ensure no other jobs running on datasource. Required to avoid operation clashes. Requries dataSourceId kwarg to run.
-        wait_for_job_exclusivity_on_datasource(test)
+        # Uncomment if test runs into parallelization errors
+        # wait_for_job_exclusivity_on_datasource(test)
 
         # Trigger ad-hoc backup and track to completion
         adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
@@ -279,7 +281,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
             'operation': 'Backup',
             'restoreOperation': 'Restore',
             'pgflexName': 'clitest-pgflex-server',
-            'pgflexDsId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforPostgreSQL/flexibleServers/clitest-pgflex-server',
+            'pgflexDsId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforPostgreSQL/flexibleServers/clitest-pgflex-server-2',
             'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupPolicies/pgflexpolicy',
             'policyRuleName': 'BackupWeekly',
             'targetBlobContainerUrl': 'https://clitestecysa.blob.core.windows.net/clitestpgflexblob',

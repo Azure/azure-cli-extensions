@@ -62,9 +62,8 @@ class Update(AAZCommand):
         )
         _args_schema.kind = AAZStrArg(
             options=["--kind"],
-            help="The kind of the resource.",
+            help="The kind of the resource. Such as `Linux`, `Windows`.",
             nullable=True,
-            enum={"Linux": "Linux", "Windows": "Windows"},
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],

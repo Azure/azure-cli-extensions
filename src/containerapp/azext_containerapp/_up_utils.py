@@ -17,7 +17,7 @@ from azure.cli.core.azclierror import (
     ValidationError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
-    CLIError,
+    CLIError, CLIInternalError,
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice._create_util import (
@@ -60,7 +60,7 @@ from ._utils import (
     get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
     create_extension, create_custom_location, get_cluster_extension, validate_environment_location,
     list_environment_locations, get_randomized_name_with_dash, get_randomized_name, get_connected_k8s,
-    list_cluster_extensions, list_custom_location
+    list_cluster_extensions, list_custom_location, is_cloud_supported_by_connected_env
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -531,7 +531,14 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         try:
             resource_group_name = self.resource_group.name
-            return run_cloud_build(self.cmd, source, build_env_vars, location, resource_group_name, self.env.name, run_full_id, logs_file, logs_file_path)
+            container_app_name = self.name
+
+            if not self.exists:
+                # Make sure that a container app exists before triggering the cloud build
+                logger.warning("Creating the base container app required to build")
+                self.image = "mcr.microsoft.com/k8se/quickstart:latest"
+                self.create(no_registry=True)
+            return run_cloud_build(self.cmd, source, build_env_vars, location, resource_group_name, self.env.name, container_app_name, run_full_id, logs_file, logs_file_path)
         except Exception as exception:
             logs_file.close()
             raise exception
@@ -1381,9 +1388,10 @@ def _set_up_defaults(
                 "Please specify which resource group your Containerapp environment is in."
             )    # get ACR details from --image, if possible
 
-    _infer_existing_connected_env(cmd, location, resource_group, env, custom_location)
+    if is_cloud_supported_by_connected_env(cmd.cli_ctx):
+        _infer_existing_connected_env(cmd, location, resource_group, env, custom_location)
 
-    _infer_existing_custom_location_or_extension(cmd, name, location, resource_group, env, custom_location, extension)
+        _infer_existing_custom_location_or_extension(cmd, name, location, resource_group, env, custom_location, extension)
 
     if not is_registry_server_params_set:
         _get_acr_from_image(cmd, app)
@@ -1404,7 +1412,17 @@ def _infer_existing_connected_env(
         custom_location: "CustomLocation",
 ):
     if not env.resource_type or (env.is_connected_environment() and (not env.name or not resource_group.name or not env.custom_location_id)):
-        connected_env_list = list_connected_environments(cmd=cmd, resource_group_name=resource_group.name)
+        connected_env_list = []
+        try:
+            connected_env_list = list_connected_environments(cmd=cmd, resource_group_name=resource_group.name)
+        except CLIInternalError as e:
+            string_err = str(e)
+            # If a resource group is provided but not found, we will automatically create it in a subsequent step
+            if "ResourceGroupNotFound" in string_err:
+                pass
+            else:
+                raise e
+
         env_list = []
         for e in connected_env_list:
             if env.name and env.name != e["name"]:

@@ -628,6 +628,12 @@ helps['aks create'] = f"""
         - name: --bootstrap-container-registry-resource-id
           type: string
           short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
+        - name: --enable-static-egress-gateway
+          type: bool
+          short-summary: Enable Static Egress Gateway addon to the cluster.
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -705,6 +711,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-app-monitoring
         - name: Create a kubernetes cluster with a nodepool having ip allocation mode set to "StaticBlock"
           text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu --max-pods MaxPodsPerNode --network-plugin azure --vnet-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/NodeSubnet --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/PodSubnet --pod-ip-allocation-mode StaticBlock
+        - name: Create a kubernetes cluster with a VirtualMachines nodepool
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "VMSize1,VMSize2" --node-count 3
 
 """
 
@@ -752,6 +760,16 @@ helps['aks upgrade'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --enable-force-upgrade
+          type: bool
+          short-summary: Enable forceUpgrade cluster upgrade settings override.
+        - name: --disable-force-upgrade
+          type: bool
+          short-summary: Disable forceUpgrade cluster upgrade settings override.
+        - name: --upgrade-override-until
+          type: string
+          short-summary: Until when the cluster upgradeSettings overrides are effective.
+          long-summary: It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
     examples:
       - name: Upgrade a existing managed cluster to a managed cluster snapshot.
         text: az aks upgrade -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
@@ -1183,6 +1201,12 @@ helps['aks update'] = """
         - name: --disable-network-observability
           type: bool
           short-summary: Disable network observability on a cluster
+        - name: --enable-advanced-network-observability
+          type: bool
+          short-summary: Enable advanced network observability functionalities on a cluster.
+        - name: --disable-advanced-network-observability
+          type: bool
+          short-summary: Disable advanced network observability functionalities on a cluster
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -1212,6 +1236,12 @@ helps['aks update'] = """
         - name: --bootstrap-container-registry-resource-id
           type: string
           short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
+        - name: --enable-static-egress-gateway
+          type: bool
+          short-summary: Enable Static Egress Gateway addon to the cluster.
+        - name: --disable-static-egress-gateway
+          type: bool
+          short-summary: Disable Static Egress Gateway addon to the cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1801,6 +1831,12 @@ helps['aks nodepool add'] = """
         - name: --enable-vtpm
           type: bool
           short-summary: Enable vTPM on agent node pool. Must use VMSS agent pool type.
+        - name: --gateway-prefix-size
+          type: int
+          short-summary: The size of Public IPPrefix attached to the Gateway-mode node pool. The node pool must be in Gateway mode.
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1818,6 +1854,8 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n MyNodePool --cluster-name MyMC --host-group-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/hostGroups/myHostGroup --node-vm-size VMSize
         - name: Create a nodepool with ip allocation mode set to "StaticBlock" and using a pod subnet ID
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MySubnet --pod-ip-allocation-mode StaticBlock
+        - name: Create a nodepool of type VirtualMachines
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "Standard_D4s_v3,Standard_D8s_v3" --node-count 3
 """
 
 helps['aks nodepool scale'] = """
@@ -2018,6 +2056,47 @@ helps['aks nodepool delete-machines'] = """
           text: az aks nodepool delete-machines -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster --machine-names machine1
 """
 
+helps['aks nodepool manual-scale'] = """
+    type: group
+    short-summary: Commands to manage nodepool virtualMachineProfile.scale.manual.
+"""
+
+helps['aks nodepool manual-scale add'] = """
+    type: command
+    short-summary: Add a new manual to a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes in the manual.
+        - name: --node-count -c
+          type: int
+          short-summary: Number of nodes in the manual.
+"""
+
+helps['aks nodepool manual-scale update'] = """
+    type: command
+    short-summary: Update an existing manual of a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes in the manual to be updated.
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of new sizes.
+        - name: --node-count -c
+          type: int
+          short-summary: Number of nodes in the manual.
+"""
+
+helps['aks nodepool manual-scale delete'] = """
+    type: command
+    short-summary: Delete an existing manual to a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes in the manual to be deleted.
+"""
+
 helps['aks machine'] = """
    type: group
    short-summary: Get information about machines in a nodepool of a managed clusters
@@ -2054,6 +2133,44 @@ helps['aks machine show'] = """
    exmaples:
        - name: Get IP Addresses, Hostname for a specific machine in an agentpool
          text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
+"""
+
+helps['aks operation'] = """
+    type: group
+    short-summary: Commands to manage and view operations on managed Kubernetes cluster.
+"""
+
+helps['aks operation show'] = """
+    type: command
+    short-summary: Show the details for a specific operation on managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster
+        - name: --nodepool-name
+          type: string
+          short-summary: The name of the nodepool.
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
+        - name: --operation-id
+          type: string
+          short-summary: The ID of the operation.
+"""
+
+helps['aks operation show-latest'] = """
+    type: command
+    short-summary: Show the details for the latest operation on managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster
+        - name: --nodepool-name
+          type: string
+          short-summary: The name of the nodepool.
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
 """
 
 helps['aks operation-abort'] = """

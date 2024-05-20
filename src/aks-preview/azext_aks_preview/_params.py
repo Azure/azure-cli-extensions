@@ -73,6 +73,7 @@ from azext_aks_preview._consts import (
     CONST_NODE_OS_CHANNEL_UNMANAGED,
     CONST_NODEPOOL_MODE_SYSTEM,
     CONST_NODEPOOL_MODE_USER,
+    CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NONE_UPGRADE_CHANNEL,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
@@ -120,6 +121,7 @@ from azext_aks_preview._consts import (
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
+    CONST_OUTBOUND_TYPE_NONE,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -184,6 +186,7 @@ from azext_aks_preview._validators import (
     validate_artifact_streaming,
     validate_custom_endpoints,
     validate_bootstrap_container_registry_resource_id,
+    validate_gateway_prefix_size,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -210,7 +213,7 @@ node_eviction_policies = [
     CONST_SPOT_EVICTION_POLICY_DEALLOCATE,
 ]
 node_os_disk_types = [CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]
-node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
+node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER, CONST_NODEPOOL_MODE_GATEWAY]
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_UBUNTU,
@@ -266,6 +269,7 @@ outbound_types = [
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_NONE,
 ]
 auto_upgrade_channels = [
     CONST_RAPID_UPGRADE_CHANNEL,
@@ -795,6 +799,12 @@ def load_arguments(self, _):
             help="enable network observability for cluster",
         )
         c.argument(
+            "enable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="enable advanced network observability functionalities for cluster",
+        )
+        c.argument(
             "custom_ca_trust_certificates",
             options_list=["--custom-ca-trust-certificates", "--ca-certs"],
             is_preview=True,
@@ -914,12 +924,15 @@ def load_arguments(self, _):
             is_preview=True,
             action="store_true"
         )
+        c.argument("enable_static_egress_gateway", is_preview=True, action="store_true")
 
         c.argument(
             "cluster_service_load_balancer_health_probe_mode",
             is_preview=True,
             arg_type=get_enum_type(health_probe_modes),
         )
+        # virtual machines
+        c.argument("vm_sizes", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1276,6 +1289,18 @@ def load_arguments(self, _):
             is_preview=True,
             help="disable network observability for cluster",
         )
+        c.argument(
+            "enable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="enable advanced network observability functionalities for cluster",
+        )
+        c.argument(
+            "disable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="disable advanced network observability functionalities for cluster",
+        )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
@@ -1324,6 +1349,8 @@ def load_arguments(self, _):
         )
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
+        c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')
+        c.argument('disable_static_egress_gateway', is_preview=True, action='store_true')
 
         c.argument(
             "cluster_service_load_balancer_health_probe_mode",
@@ -1344,6 +1371,12 @@ def load_arguments(self, _):
             help="Do not prompt for confirmation.",
             action="store_true",
         )
+        c.argument('enable_force_upgrade', action='store_true')
+        c.argument(
+            'disable_force_upgrade', action='store_true',
+            validator=validate_force_upgrade_disable_and_enable_parameters
+        )
+        c.argument('upgrade_override_until')
 
     with self.argument_context("aks scale") as c:
         c.argument(
@@ -1503,6 +1536,14 @@ def load_arguments(self, _):
             is_preview=True,
             action="store_true"
         )
+        c.argument(
+            "gateway_prefix_size",
+            type=int,
+            validator=validate_gateway_prefix_size,
+            is_preview=True,
+        )
+        # virtual machines
+        c.argument("vm_sizes", is_preview=True)
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1613,6 +1654,16 @@ def load_arguments(self, _):
             help="Space-separated machine names to delete.",
         )
 
+    with self.argument_context("aks nodepool manual-scale add") as c:
+        c.argument("vm_sizes", is_preview=True)
+
+    with self.argument_context("aks nodepool manual-scale update") as c:
+        c.argument("current_vm_sizes", is_preview=True)
+        c.argument("vm_sizes", is_preview=True)
+
+    with self.argument_context("aks nodepool manual-scale delete") as c:
+        c.argument("current_vm_sizes", is_preview=True)
+
     with self.argument_context("aks machine") as c:
         c.argument("cluster_name", help="The cluster name.")
         c.argument(
@@ -1624,6 +1675,14 @@ def load_arguments(self, _):
     with self.argument_context("aks machine show") as c:
         c.argument(
             "machine_name", help="to display specific information for all machines."
+        )
+
+    with self.argument_context("aks operation") as c:
+        c.argument(
+            "nodepool_name",
+            required=False,
+            validator=validate_nodepool_name,
+            default="",
         )
 
     with self.argument_context("aks maintenanceconfiguration") as c:
