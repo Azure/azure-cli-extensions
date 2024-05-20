@@ -1,0 +1,46 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "title": "ConfigGroupSchema",
+    "type": "object",
+    "properties": {
+        "ubuntu": {
+            "type": "object",
+            "properties": {
+                "nfdv": {
+                    "type": "string"
+                },
+                "deployParameters": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "location": {
+                                "type": "string"
+                            },
+                            "subnetName": {
+                                "type": "string"
+                            },
+                            "virtualNetworkId": {
+                                "type": "string"
+                            },
+                            "sshPublicKeyAdmin": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "managedIdentityId": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "nfdv",
+                "deployParameters",
+                "managedIdentityId"
+            ]
+        }
+    },
+    "required": [
+        "ubuntu"
+    ]
+}
