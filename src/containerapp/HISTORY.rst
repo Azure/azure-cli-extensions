@@ -18,6 +18,9 @@ upcoming
 * 'az containerapp update': Fix --scale-rule-tcp-concurrency for TCP scale rule
 * 'az containerapp compose create': Fix an issue where the environment's location is not resolved from --location
 * 'az containerapp up': Fix an issue about creating resource group automatically
+* 'az containerapp env java-component admin-for-spring': Support create/update/show/delete Admin for spring
+* 'az containerapp env java-component nacos': Support create/update/show/delete Nacos
+* 'az containerapp env java-component': Support --bind, --unbind to bind or unbind with other Java Components
 * 'az containerapp sessionpool': Support create/update/show/delete/list session pools
 * 'az containerapp update': Update container name to container app name for source to cloud builds
 * 'az containerapp session code-interpreter': Support execute/upload-file/list-files/show-file-content/show-file-metadata/delete-file for code interpreter sessions
