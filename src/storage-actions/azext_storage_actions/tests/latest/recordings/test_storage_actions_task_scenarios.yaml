@@ -1,0 +1,732 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity --tags --action --description --enabled
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_storage_actions_task_scenarios","date":"2024-05-18T08:32:33Z","module":"storage-actions"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 18 May 2024 08:32:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2euap", "properties":
+      {"action": {"else": {"operations": [{"name": "DeleteBlob", "onFailure": "break",
+      "onSuccess": "continue"}]}, "if": {"condition": "[[equals(AccessTier,''Cool'')]]",
+      "operations": [{"name": "SetBlobTier", "onFailure": "break", "onSuccess": "continue",
+      "parameters": {"tier": "Hot"}}]}}, "description": "StorageTask1", "enabled":
+      true}, "tags": {"key1": "value1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '441'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --identity --tags --action --description --enabled
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002?api-version=2023-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/8bc3696a-6a17-4a7a-8dc8-ba5642307c60?monitor=true&api-version=2023-01-01&asynclink=true
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Sat, 18 May 2024 08:32:41 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/8bc3696a-6a17-4a7a-8dc8-ba5642307c60?monitor=true&api-version=2023-01-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/2d5525c2-a3a4-46a4-9fed-ef1addcede23
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity --tags --action --description --enabled
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/8bc3696a-6a17-4a7a-8dc8-ba5642307c60?monitor=true&api-version=2023-01-01&asynclink=true
+  response:
+    body:
+      string: '{"status":"Succeeded","startTime":"2024-05-18T08:32:41.4901269Z","endTime":"2024-05-18T08:32:41.8026084Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '106'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/4456bd7f-b4cf-4ccd-8b54-1c9b54b14448
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity --tags --action --description --enabled
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/8bc3696a-6a17-4a7a-8dc8-ba5642307c60?monitor=true&api-version=2023-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002","name":"satasks000002","type":"Microsoft.StorageActions/storageTasks","location":"eastus2euap","tags":{"key1":"value1"},"identity":{"principalId":"e6cf53fc-2a82-435b-8379-8dae3cc39bcf","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"enabled":true,"description":"StorageTask1","action":{"if":{"condition":"[[equals(AccessTier,''Cool'')]]","operations":[{"name":"SetBlobTier","parameters":{"tier":"Hot"},"onSuccess":"continue","onFailure":"break"}]},"else":{"operations":[{"name":"DeleteBlob","onSuccess":"continue","onFailure":"break"}]}},"taskVersion":1,"provisioningState":"Succeeded","creationTimeInUtc":"2024-05-18T08:32:41.4901269Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '832'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/fa69774a-362e-45c1-b6be-bade34ffb2cd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002?api-version=2023-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002","name":"satasks000002","type":"Microsoft.StorageActions/storageTasks","location":"eastus2euap","tags":{"key1":"value1"},"identity":{"principalId":"e6cf53fc-2a82-435b-8379-8dae3cc39bcf","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"enabled":true,"description":"StorageTask1","action":{"if":{"condition":"[[equals(AccessTier,''Cool'')]]","operations":[{"name":"SetBlobTier","parameters":{"tier":"Hot"},"onSuccess":"continue","onFailure":"break"}]},"else":{"operations":[{"name":"DeleteBlob","onSuccess":"continue","onFailure":"break"}]}},"taskVersion":1,"provisioningState":"Succeeded","creationTimeInUtc":"2024-05-18T08:32:41.4901269Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '832'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task list-assignment
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002/storageTaskAssignments?api-version=2023-01-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/8eefa9ff-0228-439d-9c31-391639a57cf8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task list-report
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002/reports?api-version=2023-01-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/75c85002-4c02-4de3-bc1e-1578773f7bf9
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks?api-version=2023-01-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002","name":"satasks000002","type":"Microsoft.StorageActions/storageTasks","location":"eastus2euap","tags":{"key1":"value1"},"identity":{"principalId":"e6cf53fc-2a82-435b-8379-8dae3cc39bcf","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"enabled":true,"description":"StorageTask1","action":{"if":{"condition":"[[equals(AccessTier,''Cool'')]]","operations":[{"name":"SetBlobTier","parameters":{"tier":"Hot"},"onSuccess":"continue","onFailure":"break"}]},"else":{"operations":[{"name":"DeleteBlob","onSuccess":"continue","onFailure":"break"}]}},"taskVersion":1,"provisioningState":"Succeeded","creationTimeInUtc":"2024-05-18T08:32:41.4901269Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '844'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity --tags --action --description --enabled
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002?api-version=2023-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002","name":"satasks000002","type":"Microsoft.StorageActions/storageTasks","location":"eastus2euap","tags":{"key1":"value1"},"identity":{"principalId":"e6cf53fc-2a82-435b-8379-8dae3cc39bcf","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"enabled":true,"description":"StorageTask1","action":{"if":{"condition":"[[equals(AccessTier,''Cool'')]]","operations":[{"name":"SetBlobTier","parameters":{"tier":"Hot"},"onSuccess":"continue","onFailure":"break"}]},"else":{"operations":[{"name":"DeleteBlob","onSuccess":"continue","onFailure":"break"}]}},"taskVersion":1,"provisioningState":"Succeeded","creationTimeInUtc":"2024-05-18T08:32:41.4901269Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '832'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2euap", "properties":
+      {"action": {"else": {"operations": [{"name": "UndeleteBlob", "onFailure": "break",
+      "onSuccess": "continue"}]}, "if": {"condition": "[[equals(BlobType,''BlockBlob'')]]",
+      "operations": [{"name": "SetBlobTags", "onFailure": "break", "onSuccess": "continue",
+      "parameters": {"Archive-Status": "Archived"}}]}}, "description": "StorageTask1Update",
+      "enabled": true}, "tags": {"key2": "value2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '467'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --identity --tags --action --description --enabled
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002?api-version=2023-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/8c87367f-ec7b-454d-b0e9-b26006d24651?monitor=true&api-version=2023-01-01&asynclink=true
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Sat, 18 May 2024 08:32:51 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/8c87367f-ec7b-454d-b0e9-b26006d24651?monitor=true&api-version=2023-01-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/e57b84b7-bb48-44cb-9ae9-08f7d1e5a997
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity --tags --action --description --enabled
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/8c87367f-ec7b-454d-b0e9-b26006d24651?monitor=true&api-version=2023-01-01&asynclink=true
+  response:
+    body:
+      string: '{"status":"Succeeded","endTime":"2024-05-18T08:32:51.84957Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '61'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/77325944-27c5-4821-9a48-f02f735ab7b8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity --tags --action --description --enabled
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/8c87367f-ec7b-454d-b0e9-b26006d24651?monitor=true&api-version=2023-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002","name":"satasks000002","type":"Microsoft.StorageActions/storageTasks","location":"eastus2euap","tags":{"key2":"value2"},"identity":{"principalId":"e6cf53fc-2a82-435b-8379-8dae3cc39bcf","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"enabled":true,"description":"StorageTask1Update","action":{"if":{"condition":"[[equals(BlobType,''BlockBlob'')]]","operations":[{"name":"SetBlobTags","parameters":{"Archive-Status":"Archived"},"onSuccess":"continue","onFailure":"break"}]},"else":{"operations":[{"name":"UndeleteBlob","onSuccess":"continue","onFailure":"break"}]}},"taskVersion":1,"provisioningState":"Succeeded","creationTimeInUtc":"2024-05-18T08:32:41.4901269Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '858'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/c5f626e8-ad05-455d-83c2-1bffa4404215
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks/satasks000002?api-version=2023-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/ccfd71d7-f975-45f6-b12f-df9f775fb126?monitor=true&api-version=2023-01-01&asynclink=true
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Sat, 18 May 2024 08:32:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/ccfd71d7-f975-45f6-b12f-df9f775fb126?monitor=true&api-version=2023-01-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/78199ad0-7543-4243-9018-97298fc92415
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/ccfd71d7-f975-45f6-b12f-df9f775fb126?monitor=true&api-version=2023-01-01&asynclink=true
+  response:
+    body:
+      string: '{"status":"Succeeded","endTime":"2024-05-18T08:32:54.8027056Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '63'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/0e485ce8-a508-455e-be5b-670e0e5cc4f7
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2euap/asyncoperations/ccfd71d7-f975-45f6-b12f-df9f775fb126?monitor=true&api-version=2023-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Sat, 18 May 2024 08:32:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/38bc938b-71ca-4ac8-8754-e2f94b95d6f6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-actions task list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.60.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageActions/storageTasks?api-version=2023-01-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json
+      date:
+      - Sat, 18 May 2024 08:32:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
