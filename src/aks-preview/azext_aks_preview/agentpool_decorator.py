@@ -618,6 +618,17 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         return self.raw_param.get('gateway_prefix_size')
 
+    def get_vm_sizes(self) -> List[str]:
+        """Obtain the value of vm_sizes.
+        :return: list of strings
+        """
+        raw_value = self.raw_param.get("vm_sizes")
+        if raw_value is not None:
+            vm_sizes = raw_value.split(",")
+        else:
+            vm_sizes = [self.get_node_vm_size()]
+        return vm_sizes
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -825,6 +836,30 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         return agentpool
 
+    def set_up_virtual_machines_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Set up virtual machines profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_vm_set_type() != CONST_VIRTUAL_MACHINES:
+            return agentpool
+
+        sizes = self.context.get_vm_sizes()
+        count, _, _, _ = self.context.get_node_count_and_enable_cluster_autoscaler_min_max_count()
+        agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
+            scale=self.models.ScaleProfile(
+                manual=[
+                    self.models.ManualScaleProfile(
+                        sizes=sizes,
+                        count=count,
+                    )
+                ]
+            )
+        )
+        agentpool.vm_size = None
+        agentpool.count = None
+
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -864,6 +899,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_vtpm(agentpool)
         # set up agentpool gateway profile
         agentpool = self.set_up_agentpool_gateway_profile(agentpool)
+        # set up virtual machines profile
+        agentpool = self.set_up_virtual_machines_profile(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
