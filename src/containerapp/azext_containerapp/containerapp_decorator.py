@@ -961,7 +961,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             if runtime_option == RUNTIME_JAVA:
                 if self.get_argument_enable_java_metrics() is None and self.get_argument_enable_java_agent() is None:
                     runtime_def = {
-                        "java": {}  # empty to keep or setup default java runtime
+                        "java": {
+                            "enableMetrics": True
+                        }
                     }
                 else:
                     runtime_java_def = RuntimeJavaModel
@@ -1296,6 +1298,11 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 runtime_java_def = {}
                 if self.get_argument_enable_java_metrics() is not None:
                     runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics()
+                else:
+                    try:
+                        runtime_java_def["enableMetrics"] = self.containerapp_def["properties"]["configuration"]["runtime"]["java"]["enableMetrics"]
+                    except TypeError:
+                        runtime_java_def["enableMetrics"] = True
 
                 if self.get_argument_enable_java_agent() is not None:
                     safe_set(runtime_java_def, "javaAgent", "enabled", value=self.get_argument_enable_java_agent())

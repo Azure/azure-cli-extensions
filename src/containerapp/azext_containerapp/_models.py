@@ -601,7 +601,8 @@ ManagedServiceIdentity = {
 
 JavaComponent = {
     "properties": {
-        "componentType": None
+        "componentType": None,
+        "serviceBinds": None
     }
 }
 
@@ -613,7 +614,7 @@ CustomDomainConfiguration = {
 }
 
 RuntimeJava = {
-    "enableMetrics": False,
+    "enableMetrics": True,
     "javaAgent": {
         "enabled": False,
         "logging": {}
