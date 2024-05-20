@@ -1,0 +1,18 @@
+{
+    "publisher_name": "jamie-mobile-publisher",
+    "publisher_resource_group_name": "Jamie-publisher",
+    "nf_name": "ubuntu-vm",
+    "version": "1.0.0",
+    "acr_artifact_store_name": "ubuntu-acr",
+    "location": "eastus",
+    "blob_artifact_store_name": "ubuntu-blob-store",
+    "image_name_parameter": "imageName",
+    "arm_template": {
+        "file_path": "ubuntu-template.json",
+        "version": "1.0.0"
+    },
+    "vhd": {
+        "file_path": "livecd.ubuntu-cpc.azure.vhd",
+        "version": "1-0-0"
+    }
+}

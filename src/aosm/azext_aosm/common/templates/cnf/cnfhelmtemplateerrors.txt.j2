@@ -1,0 +1,14 @@
+Errors were found in the following Helm charts (see below for details). Please fix them and try again.
+
+{% for chart_name in errors.keys() %}
+- {{ chart_name }}
+{% endfor %}
+
+{% for chart_name, error_message in errors.items() %}
+----------------------------------------
+Error in Helm chart: {{ chart_name }}
+----------------------------------------
+
+{{ error_message }}
+
+{% endfor %}

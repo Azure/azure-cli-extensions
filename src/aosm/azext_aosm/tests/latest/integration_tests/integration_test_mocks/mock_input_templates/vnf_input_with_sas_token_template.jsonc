@@ -1,0 +1,46 @@
+{
+  // Azure location to use when creating resources.
+  "location": "uksouth",
+  // Name of the Publisher resource you want your definition published to.
+  // Will be created if it does not exist.
+  "publisher_name": "automated-cli-test-ubuntu-publisher",
+  // Optional. Resource group for the Publisher resource.
+  // Will be created if it does not exist (with a default name if none is supplied).
+  "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+  // Optional. Name of the ACR Artifact Store resource.
+  // Will be created if it does not exist (with a default name if none is supplied).
+  "acr_artifact_store_name": "ubuntu-acr",
+  // Name of NF definition.
+  "nf_name": "ubuntu-vm",
+  // Version of the NF definition in A.B.C format.
+  "version": "1.0.0",
+  // Optional. Name of the storage account Artifact Store resource.
+  // Will be created if it does not exist (with a default name if none is supplied).
+  "blob_artifact_store_name": "ubuntu-blob-store",
+  // ARM template configuration.
+  "arm_templates": [
+    {
+      "artifact_name": "automated-cli-tests-artifact",
+      "file_path": "{{arm_template_path}}",
+      "version": "1.0.0"
+    }
+  ],
+  // VHD image configuration.
+  "vhd": {
+    // Version of the artifact in A-B-C format. Note the '-' (dash) not '.' (dot).
+    "version": "1-0-0",
+    // Supply either file_path or blob_sas_url, not both.
+    // SAS URL of the blob artifact you wish to copy to your Artifact Store.
+    // Leave as empty string if not required. Use Linux slash (/) file separator even if running on Windows.
+    "blob_sas_url": "https://a/dummy/sas-url",
+    // Optional. Specifies the size of empty data disks in gigabytes.
+    // This value cannot be larger than 1023 GB. Delete if not required.
+    "image_disk_size_GB": "30",
+    // Optional. Specifies the HyperVGenerationType of the VirtualMachine created from the image.
+    // Valid values are V1 and V2. V1 is the default if not specified. Delete if not required.
+    "image_hyper_v_generation": "V1",
+    // Optional. The ARM API version used to create the Microsoft.Compute/images resource.
+    // Delete if not required.
+    "image_api_version": "2023-03-01"
+  }
+}

@@ -1,0 +1,50 @@
+{
+    // Azure location to use when creating resources.
+    "location": "",
+    // Name of the Publisher resource you want your definition published to. Will be created if it does not exist.
+    "publisher_name": "",
+    // Optional. Resource group for the Publisher resource. Will be created if it does not exist (with a default name if none is supplied).
+    "publisher_resource_group_name": "",
+    // Optional. Name of the ACR Artifact Store resource. Will be created if it does not exist (with a default name if none is supplied).
+    "acr_artifact_store_name": "",
+    // Network Service Design (NSD) name. This is the collection of Network Service Design Versions. Will be created if it does not exist.
+    "nsd_name": "",
+    // Version of the NSD to be created. This should be in the format A.B.C
+    "nsd_version": "",
+    // Description of the Network Service Design Version (NSDV).
+    "nsdv_description": "",
+    // List of Resource Element Templates.
+    "resource_element_templates": [
+        {
+            // Type of Resource Element. Either NF or ArmTemplate
+            "resource_element_type": "",
+            "properties": {
+                // The name of the existing publisher for the NSD.
+                "publisher": "",
+                // The resource group that the publisher is hosted in.
+                "publisher_resource_group": "",
+                // The name of the existing Network Function Definition Group to deploy using this NSD.
+                "name": "",
+                // The version of the existing Network Function Definition to base this NSD on.
+                //  This NSD will be able to deploy any NFDV with deployment parameters compatible with this version.
+                "version": "",
+                // The region that the NFDV is published to.
+                "publisher_offering_location": "",
+                "type": ""
+            }
+        },
+        {
+            // Type of Resource Element. Either NF or ArmTemplate
+            "resource_element_type": "",
+            // Properties of the Resource Element.
+            "properties": {
+                // Optional. Name of the artifact.
+                "artifact_name": "",
+                // Version of the artifact in A.B.C format.
+                "version": "",
+                // File path of the artifact you wish to upload from your local disk. Relative paths are relative to the configuration file. On Windows escape any backslash with another backslash.
+                "file_path": ""
+            }
+        }
+    ]
+}

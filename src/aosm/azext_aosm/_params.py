@@ -6,7 +6,15 @@
 from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
 
-from .util.constants import CNF, VNF, BICEP_PUBLISH, ARTIFACT_UPLOAD, IMAGE_UPLOAD
+from .common.constants import (
+    CNF,
+    VNF,
+    VNF_NEXUS,
+    BICEP_PUBLISH,
+    ARTIFACT_UPLOAD,
+    HELM_TEMPLATE,
+    IMAGE_UPLOAD,
+)
 
 
 def load_arguments(self: AzCommandsLoader, _):
@@ -16,8 +24,10 @@ def load_arguments(self: AzCommandsLoader, _):
         get_three_state_flag,
     )
 
-    definition_type = get_enum_type([VNF, CNF])
-    nf_skip_steps = get_enum_type([BICEP_PUBLISH, ARTIFACT_UPLOAD, IMAGE_UPLOAD])
+    definition_type = get_enum_type([VNF, CNF, VNF_NEXUS])
+    nf_skip_steps = get_enum_type(
+        [BICEP_PUBLISH, ARTIFACT_UPLOAD, IMAGE_UPLOAD, HELM_TEMPLATE]
+    )
     ns_skip_steps = get_enum_type([BICEP_PUBLISH, ARTIFACT_UPLOAD])
 
     # Set the argument context so these options are only available when this specific command
@@ -27,15 +37,27 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument(
             "definition_type",
             arg_type=definition_type,
-            help="Type of AOSM definition.",
+            help=(
+                "Type of AOSM definition to be published. The config file differs"
+                " depending on type."
+            ),
             required=True,
+        )
+        c.argument(
+            "output_file",
+            options_list=["--output-file"],
+            help="The name of the output file to write the generated config text to.",
+            required=False,
         )
         c.argument(
             "config_file",
             options_list=["--config-file", "-f"],
             type=file_type,
-            completer=FilesCompleter(allowednames="*.json"),
-            help="The path to the configuration file.",
+            completer=FilesCompleter(allowednames="*.jsonc"),
+            help=(
+                "The path to the configuration file. This is a JSONC file that contains"
+                " the required parameters for building the NFD."
+            ),
         )
         c.argument(
             "clean",
@@ -43,77 +65,14 @@ def load_arguments(self: AzCommandsLoader, _):
             help="Also delete artifact stores, NFD Group and Publisher. Use with care.",
         )
         c.argument(
-            "definition_file",
-            options_list=["--definition-file", "-b"],
+            "build_output_folder",
+            options_list=["--build-output-folder", "-b"],
             type=file_type,
             completer=FilesCompleter(allowednames="*.json"),
-            help=(
-                "Optional path to a bicep file to publish. Use to override publish of"
-                " the built definition with an alternative file."
-            ),
+            help="Path to the folder to publish, created by the build command.",
         )
-        c.argument(
-            "design_file",
-            options_list=["--design-file", "-b"],
-            type=file_type,
-            completer=FilesCompleter(allowednames="*.bicep"),
-            help=(
-                "Optional path to a bicep file to publish. Use to override publish of"
-                " the built design with an alternative file."
-            ),
-        )
-        c.argument(
-            "order_params",
-            arg_type=get_three_state_flag(),
-            help=(
-                "VNF definition_type only - ignored for CNF. Order deploymentParameters"
-                " schema and configMappings to have the parameters without default"
-                " values at the top and those with default values at the bottom. Can"
-                " make it easier to remove those with defaults which you do not want to"
-                " expose as NFD parameters."
-            ),
-        )
-        c.argument(
-            "interactive",
-            options_list=["--interactive", "-i"],
-            arg_type=get_three_state_flag(),
-            help=(
-                "Prompt user to choose every parameter to expose as an NFD parameter."
-                " Those without defaults are automatically included."
-            ),
-        )
-        c.argument(
-            "parameters_json_file",
-            options_list=["--parameters-file", "-p"],
-            type=file_type,
-            completer=FilesCompleter(allowednames="*.json"),
-            help=(
-                "Optional path to a parameters file for the bicep definition file. Use"
-                " to override publish of the built definition and config with"
-                " alternative parameters."
-            ),
-        )
-        c.argument(
-            "manifest_file",
-            options_list=["--manifest-file", "-m"],
-            type=file_type,
-            completer=FilesCompleter(allowednames="*.json"),
-            help=(
-                "Optional path to a bicep file to publish manifests. Use to override"
-                " publish of the built definition with an alternative file."
-            ),
-        )
-        c.argument(
-            "manifest_params_file",
-            options_list=["--manifest-params-file"],
-            type=file_type,
-            completer=FilesCompleter(allowednames="*.json"),
-            help=(
-                "Optional path to a parameters file for the manifest definition file."
-                " Use to override publish of the built definition and config with"
-                " alternative parameters."
-            ),
-        )
+        # This will only ever output one string and will fail if more than one
+        # skip steps are provided. It might be good to change that.
         c.argument(
             "skip",
             arg_type=nf_skip_steps,
@@ -121,7 +80,8 @@ def load_arguments(self: AzCommandsLoader, _):
                 "Optional skip steps. 'bicep-publish' will skip deploying the bicep "
                 "template; 'artifact-upload' will skip uploading any artifacts; "
                 "'image-upload' will skip uploading the VHD image (for VNFs) or the "
-                "container images (for CNFs)."
+                "container images (for CNFs); 'helm-template' will skip templating the "
+                "helm charts (for CNFs)."
             ),
         )
         c.argument(
@@ -129,28 +89,59 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=["--no-subscription-permissions", "-u"],
             arg_type=get_three_state_flag(),
             help=(
-                "CNF definition_type publish only - ignored for VNF."
-                " Set to True if you do not "
-                "have permission to import to the Publisher subscription (Contributor "
-                "role + AcrPush role, or a custom role that allows the importImage "
-                "action and AcrPush over the "
-                "whole subscription). This means that the image artifacts will be "
-                "pulled to your local machine and then pushed to the Artifact Store. "
-                "Requires Docker to be installed locally."
+                "Used only for CNF publish - ignored in all other scenarios. Pass this"
+                " flag if you do not have permission to import to the Publisher"
+                " subscription (Contributor role + AcrPush role, or a custom role that"
+                " allows the importImage action and AcrPush over the whole"
+                " subscription). Using this flag causes image artifacts to be pulled to"
+                " your local machine and then pushed to the Artifact Store. This is"
+                " slower than a copy entirely within Azure, but is an alternative if"
+                " you do not have the required permissions. Requires Docker to be"
+                " installed locally."
             ),
         )
 
     with self.argument_context("aosm nsd") as c:
         c.argument(
+            "output_file",
+            options_list=["--output-file"],
+            help="The name of the output file to write the generated config text to.",
+            required=False,
+        )
+        c.argument(
             "config_file",
             options_list=["--config-file", "-f"],
             type=file_type,
-            completer=FilesCompleter(allowednames="*.json"),
-            help="The path to the configuration file.",
+            completer=FilesCompleter(allowednames="*.jsonc"),
+            help=(
+                "The path to the configuration file. This is a JSONC file that contains"
+                " the required parameters for building the NSD."
+            ),
         )
         c.argument("skip", arg_type=ns_skip_steps, help="Optional skip steps")
         c.argument(
             "clean",
             arg_type=get_three_state_flag(),
             help="Also delete NSD Group. Use with care.",
+        )
+        c.argument(
+            "build_output_folder",
+            options_list=["--build-output-folder", "-b"],
+            type=file_type,
+            completer=FilesCompleter(allowednames="*.json"),
+            help="Path to the folder to publish, created by the build command.",
+        )
+        c.argument(
+            "no_subscription_permissions",
+            options_list=["--no-subscription-permissions", "-u"],
+            completer=FilesCompleter(allowednames="*.json"),
+            help=(
+                "CNF definition_type publish only - ignored for VNF. "
+                "Pass this flag if you do not have permission to import to the "
+                "Publisher subscription (Contributor role + AcrPush role, or a "
+                "custom role that allows the importImage action and AcrPush over the "
+                "whole subscription). This means that the image artifacts will be "
+                "pulled to your local machine and then pushed to the Artifact Store. "
+                "Requires Docker to be installed locally."
+            ),
         )
