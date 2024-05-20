@@ -19,21 +19,10 @@ class ConfigScenarioTest(ScenarioTest):
     @unittest.skip("Tests are passing in local but not getting recorded and failing on cloud. Finding a fix.")
     def test_dataprotection_aks_backup_and_restore_initialize_configs(test):
         test.kwargs.update({
-            # 'location': 'eastus2euap',
-            # 'restoreLocation': 'eastus2euap',
-            # 'rg': 'clitest-dpp-rg',
-            # 'rgId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg',
-            # 'vaultName': "clitest-bkp-vault-aks-donotdelete",
-            # 'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupPolicies/akspolicy',
             'dataSourceType': 'AzureKubernetesService',
-            # 'sourceDataStore': 'OperationalStore',
-            # 'aksClusterName': 'clitest-cluster1-donotdelete',
-            # 'aksClusterId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster1-donotdelete',
-            # 'friendlyName': "clitest-friendly-aks",
-            # 'permissionsScope': "ResourceGroup",
-            # 'policyRuleName': 'BackupHourly',
             'payloadBackupHooks': "[{ \'name\':\'name1\',\'namespace\':\'ns1\' },{ \'name\':\'name2\',\'namespace\':\'ns2\'}]",
             'payloadRestoreHooks': "[{'name':'restorehookname','namespace':'default'},{'name':'restorehookname1','namespace':'hrweb'}]",
+            'payloadResourceModifier': "{'CustomerResourceName': 'targetNamespace'}",
         })
 
         # backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
@@ -54,4 +43,10 @@ class ConfigScenarioTest(ScenarioTest):
                      test.check("include_cluster_scope_resources", True),
                      test.check('length(restore_hook_references)', 2),
                      test.check('restore_hook_references[0].name', 'restorehookname')
+                 ])
+
+        test.cmd('az dataprotection backup-instance initialize-restoreconfig --datasource-type "{dataSourceType}" '
+                 '--resource-modifier "{payloadResourceModifier}"',
+                 checks=[
+                     test.check("resource_modifier_reference.CustomerResourceName", 'targetNamespace')
                  ])
