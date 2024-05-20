@@ -306,6 +306,16 @@ SessionPool = {
     }
 }
 
+SessionCodeInterpreterPythonExecution = {
+    "properties": {
+        "identifier": None,
+        "codeInputType": None,
+        "executionType": None,
+        "code": None,
+        "timeoutInSeconds": None
+    }
+}
+
 DaprComponentResiliency = {
     "properties": {
         "inboundPolicy": {
@@ -591,7 +601,8 @@ ManagedServiceIdentity = {
 
 JavaComponent = {
     "properties": {
-        "componentType": None
+        "componentType": None,
+        "serviceBinds": None
     }
 }
 
@@ -603,11 +614,20 @@ CustomDomainConfiguration = {
 }
 
 RuntimeJava = {
-    "enableMetrics": False
+    "enableMetrics": True,
+    "javaAgent": {
+        "enabled": False,
+        "logging": {}
+    }
 }
 
 DotNetComponent = {
     "properties": {
         "componentType": "AspireDashboard"
     }
+}
+
+JavaLoggerSetting = {
+    "logger": None,
+    "level": None
 }

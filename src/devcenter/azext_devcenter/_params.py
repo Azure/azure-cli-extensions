@@ -641,7 +641,9 @@ def load_arguments(self, _):
             help="The name " "of the environment.",
         )
 
-    with self.argument_context("devcenter dev environment create", validator=is_iso8601) as c:
+    with self.argument_context(
+        "devcenter dev environment create", validator=is_iso8601
+    ) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -688,7 +690,9 @@ def load_arguments(self, _):
             " and associated resources will be deleted. The string format is ISO format.",
         )
 
-    with self.argument_context("devcenter dev environment update", validator=is_iso8601) as c:
+    with self.argument_context(
+        "devcenter dev environment update", validator=is_iso8601
+    ) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -726,7 +730,9 @@ def load_arguments(self, _):
             help="The date of environment expiration. Must be an ISO string",
         )
 
-    with self.argument_context("devcenter dev environment deploy", validator=is_iso8601) as c:
+    with self.argument_context(
+        "devcenter dev environment deploy", validator=is_iso8601
+    ) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -1120,7 +1126,9 @@ def load_arguments(self, _):
             help="The name " "of the environment.",
         )
 
-    with self.argument_context("devcenter dev environment update-expiration-date", validator=is_iso8601) as c:
+    with self.argument_context(
+        "devcenter dev environment update-expiration-date", validator=is_iso8601
+    ) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -1151,4 +1159,194 @@ def load_arguments(self, _):
             type=str,
             help="The time the expiration date will be triggered (UTC), after which the environment "
             "and associated resources will be deleted. The string format is ISO format.",
+        )
+
+    with self.argument_context("devcenter dev customization-group create") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "tasks",
+            type=validate_file_or_dict,
+            help="Parameters object for the tasks. Expected "
+            "value: json-string/json-file/@json-file.",
+        )
+        c.argument(
+            "customization_group_name",
+            options_list=["--name", "-n", "--customization-group-name"],
+            type=str,
+            help="The name of customization group",
+        )
+
+    with self.argument_context("devcenter dev customization-group show") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "customization_group_name",
+            options_list=["--name", "-n", "--customization-group-name"],
+            type=str,
+            help="The name of customization group",
+        )
+
+    with self.argument_context("devcenter dev customization-group list") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "include_tasks",
+            arg_type=get_three_state_flag(),
+            help="Optional parameter to include task information in the response.",
+            is_preview=True,
+        )
+
+    with self.argument_context("devcenter dev customization-task show") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument("catalog_name", type=str, help="The name of the catalog")
+        c.argument("task_name", type=str, help="The name of the task")
+
+    with self.argument_context("devcenter dev customization-task list") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+
+    with self.argument_context("devcenter dev customization-task validate") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "tasks",
+            type=validate_file_or_dict,
+            help="Parameters object for the tasks. Expected "
+            "value: json-string/json-file/@json-file.",
+        )
+
+    with self.argument_context("devcenter dev customization-task show-logs") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--dev-box-name", "--dev-box"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "customization_task_id",
+            options_list=["--customization-task-id", "--task-id" "-t"],
+            type=str,
+            help="The name " "of the dev box.",
+        )
+        c.argument(
+            "customization_group_name",
+            options_list=["--name", "-n", "--customization-group-name"],
+            type=str,
+            help="The name of customization group",
         )

@@ -6,7 +6,7 @@
 
 from knack.arguments import CLIArgumentType
 
-from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
+from azure.cli.core.commands.parameters import (resource_group_name_type,
                                                 file_type,
                                                 get_three_state_flag, get_enum_type, tags_type)
 from azure.cli.command_modules.containerapp._validators import (validate_memory, validate_cpu,
@@ -18,7 +18,7 @@ from azure.cli.command_modules.containerapp._validators import (validate_memory,
 from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
-                          validate_otlp_headers, validate_target_port_range)
+                          validate_otlp_headers, validate_target_port_range, validate_timeout_in_seconds)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
 
 
@@ -53,6 +53,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp create', arg_group='Runtime', is_preview=True) as c:
         c.argument('runtime', arg_type=get_enum_type(['generic', 'java']), help='The runtime of the container app.', is_preview=True)
         c.argument('enable_java_metrics', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java metrics for the app. Only applicable for Java runtime.', is_preview=True)
+        c.argument('enable_java_agent', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java agent for the app. Only applicable for Java runtime.', is_preview=True)
 
     # Source and Artifact
     with self.argument_context('containerapp update') as c:
@@ -72,6 +73,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp update', arg_group='Runtime', is_preview=True) as c:
         c.argument('runtime', arg_type=get_enum_type(['generic', 'java']), help='The runtime of the container app.', is_preview=True)
         c.argument('enable_java_metrics', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java metrics for the app. Only applicable for Java runtime.', is_preview=True)
+        c.argument('enable_java_agent', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java agent for the app. Only applicable for Java runtime.', is_preview=True)
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
         c.argument('infrastructure_resource_group', options_list=['--infrastructure-resource-group', '-i'], help='Name for resource group that will contain infrastructure resources. If not provided, a resource group name will be generated.', is_preview=True)
@@ -348,7 +350,9 @@ def load_arguments(self, _):
         c.argument('java_component_name', options_list=['--name', '-n'], help="The Java component name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
+        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services, bindings or other Java components to be connected to this Java Component. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services, bindings or Java components to be removed from this Java Component. e.g. BIND_NAME1...")
+        c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value>\" \"<propertyName>=<value>\"...")
 
     with self.argument_context('containerapp env dotnet-component') as c:
         c.argument('dotnet_component_name', options_list=['--name', '-n'], help="The DotNet component name.")
@@ -358,7 +362,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env', arg_group='Peer Traffic Configuration') as c:
         c.argument('p2p_encryption_enabled', arg_type=get_three_state_flag(), options_list=['--enable-peer-to-peer-encryption'], is_preview=True, help='Boolean indicating whether the peer-to-peer traffic encryption is enabled for the environment.')
-    
+
     with self.argument_context('containerapp sessionpool') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
@@ -379,9 +383,9 @@ def load_arguments(self, _):
         c.argument('container_name', help="Name of the container.")
         c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores from 0.25 - 2.0, e.g. 0.5")
         c.argument('memory', validator=validate_memory, help="Required memory from 0.5 - 4.0 ending with \"Gi\", e.g. 1.0Gi")
-        c.argument('env_vars', nargs='*',  help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
+        c.argument('env_vars', nargs='*', help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
         c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
-        c.argument('args', nargs='*',  help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
+        c.argument('args', nargs='*', help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
         c.argument('target_port', type=int, validator=validate_target_port_range, help="The session port used for ingress traffic.")
 
     with self.argument_context('containerapp sessionpool', arg_group='Registry') as c:
@@ -389,3 +393,23 @@ def load_arguments(self, _):
         c.argument('registry_pass', validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in to container registry. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
 
+    # sessions code interpreter commands
+    with self.argument_context('containerapp session code-interpreter') as c:
+        c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
+        c.argument('session_pool_location', help="The location of the session pool")
+
+    with self.argument_context('containerapp session code-interpreter', arg_group='file') as c:
+        c.argument('filename', help="The file to delete or show from the session")
+        c.argument('filepath', help="The local path to the file to upload to the session")
+        c.argument('path', help="The path to list files from the session")
+
+    with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
+        c.argument('code', help="The code to execute in the code interpreter session")
+        c.argument('timeout_in_seconds', type=int, validator=validate_timeout_in_seconds, default=60, help="Duration in seconds code in session can run prior to timing out 0 - 60 secs, e.g. 30")
+
+    with self.argument_context('containerapp java logger') as c:
+        c.argument('logger_name', help="The logger name.")
+        c.argument('logger_level', arg_type=get_enum_type(["off", "error", "info", "debug", "trace", "warn"]), help="Set the log level for the specific logger name.")
+        c.argument('all', help="The flag to indicate all logger settings.", action="store_true")

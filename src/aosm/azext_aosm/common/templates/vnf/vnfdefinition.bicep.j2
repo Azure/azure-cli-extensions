@@ -1,0 +1,132 @@
+// Copyright (c) Microsoft Corporation.
+
+// This file creates an NF definition for a VNF
+param location string
+@description('Name of an existing publisher, expected to be in the resource group where you deploy the template')
+param publisherName string
+@description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
+param acrArtifactStoreName string
+{%- if sa_nf_applications %}
+@description('Name of an existing Storage Account-backed Artifact Store, deployed under the publisher.')
+param saArtifactStoreName string
+{%- endif %}
+@description('Name of an existing Network Function Definition Group')
+param nfDefinitionGroup string
+@description('The version of the NFDV you want to deploy, in format A.B.C')
+param nfDefinitionVersion string
+
+// The publisher resource is the top level AOSM resource under which all other designer resources
+// are created.
+// If using publish command, this is created from deploying the vnfbase.bicep
+resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing =  {
+  name: publisherName
+}
+
+// The artifact store is the resource in which all the artifacts (except VHD images) required to deploy the NF are stored.
+// If using publish command, this is created from deploying the vnfbase.bicep
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+  parent: publisher
+  name: acrArtifactStoreName
+}
+
+{%- if sa_nf_applications %}
+// The storage account is the resource in which the VHD images are stored.
+// If using publish command, this is created from deploying the vnfbase.bicep
+resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+  parent: publisher
+  name: saArtifactStoreName
+}
+{%- endif %}
+
+// The NFD Group is the parent resource under which all NFD versions will be created.
+// If using publish command, this is created from deploying the vnfbase.bicep
+resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2023-09-01' existing = {
+  parent: publisher
+  name: nfDefinitionGroup
+}
+
+// This will deploy an NFDV in 'Preview' state. It should be changed to 'Active' once it is finalised.
+resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2023-09-01' = {
+  parent: nfdg
+  name: nfDefinitionVersion
+  location: location
+  properties: {
+    {#- Note that all paths in bicep must be specified using the forward slash #}
+    {#-  (/) character even if running on Windows. #}
+    {#- See https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/modules#local-file #}
+    deployParameters: string(loadJsonContent('{{deploy_parameters_file}}'))
+    networkFunctionType: 'VirtualNetworkFunction'
+    networkFunctionTemplate: {
+      nfviType: '{{ nfvi_type }}'
+      networkFunctionApplications: [
+        {%- for configuration in sa_nf_applications %}
+        {
+          artifactType: 'VhdImageFile'
+          name: '{{ configuration.artifact_profile.vhd_artifact_profile.vhd_name }}'
+          dependsOnProfile: null
+          artifactProfile: {
+            vhdArtifactProfile: {
+              vhdName: '{{ configuration.artifact_profile.vhd_artifact_profile.vhd_name }}'
+              vhdVersion: '{{ configuration.artifact_profile.vhd_artifact_profile.vhd_version }}'
+            }
+            artifactStore: {
+              id: saArtifactStore.id
+            }
+          }
+          // mapping deploy param vals to vals required by this network function application object
+          deployParametersMappingRuleProfile: {
+            vhdImageMappingRuleProfile: {
+              userConfiguration: string(loadJsonContent('{{vhd_parameters_file}}'))
+            }
+            applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
+          }
+        }
+      {%- endfor %}
+      {%- for configuration in acr_nf_applications %}
+        {
+          artifactType: 'ArmTemplate'
+          name: '{{ configuration.name }}'
+          dependsOnProfile: null
+          artifactProfile: {
+            templateArtifactProfile: {
+              templateName: '{{ configuration.artifact_profile.template_artifact_profile.template_name }}'
+              templateVersion: '{{ configuration.artifact_profile.template_artifact_profile.template_version }}'
+            }
+            artifactStore: {
+              id: acrArtifactStore.id
+            }
+          }
+          deployParametersMappingRuleProfile: {
+            templateMappingRuleProfile: {
+              templateParameters: string(loadJsonContent('{{ configuration.name }}-{{template_parameters_file}}'))
+            }
+            applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
+          }
+        }
+      {%- endfor %}
+      {%- for configuration in nexus_image_nf_applications %}
+        {
+          artifactType: 'ImageFile'
+          name: '{{ configuration.name }}'
+          dependsOnProfile: null
+          artifactProfile: {
+            imageArtifactProfile: {
+              imageName: '{{ configuration.artifact_profile.image_artifact_profile.image_name }}'
+              imageVersion: '{{ configuration.artifact_profile.image_artifact_profile.image_version }}'
+            }
+            artifactStore: {
+              id: acrArtifactStore.id
+            }
+          }
+          deployParametersMappingRuleProfile: {
+            imageMappingRuleProfile: {
+              userConfiguration: string(loadJsonContent('{{ configuration.name }}-{{image_parameters_file}}'))
+            }
+            applicationEnablement: '{{ configuration.deploy_parameters_mapping_rule_profile.application_enablement.value }}'
+          }
+        }
+      {%- endfor %}
+      ]
+    }
+  }
+}
