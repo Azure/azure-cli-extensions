@@ -1299,7 +1299,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 if self.get_argument_enable_java_metrics() is not None:
                     runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics()
                 else:
-                    runtime_java_def["enableMetrics"] = safe_get(self.containerapp_def, "properties", "configuration", "runtime", "java", "enableMetrics", default=True)
+                    try:
+                        runtime_java_def["enableMetrics"] = self.containerapp_def["properties"]["configuration"]["runtime"]["java"]["enableMetrics"]
+                    except TypeError:
+                        runtime_java_def["enableMetrics"] = True
 
                 if self.get_argument_enable_java_agent() is not None:
                     safe_set(runtime_java_def, "javaAgent", "enabled", value=self.get_argument_enable_java_agent())
