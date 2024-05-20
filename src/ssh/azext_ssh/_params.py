@@ -20,6 +20,7 @@ def load_arguments(self, _):
         c.argument('cert_file', options_list=['--certificate-file', '-c'],
                    help='Path to a certificate file used for authentication when using local user credentials.')
         c.argument('port', options_list=['--port'], help='SSH port')
+        c.argument('resource_tag', options_list=['--resource-tag'], help='Use port value from specified resource tag.')
         c.argument('resource_type', options_list=['--resource-type'],
                    help=('Resource type should be either Microsoft.Compute/virtualMachines, '
                          'Microsoft.HybridCompute/machines, '
@@ -57,6 +58,7 @@ def load_arguments(self, _):
         c.argument('credentials_folder', options_list=['--keys-destination-folder', '--keys-dest-folder'],
                    help='Folder where new generated keys will be stored.')
         c.argument('port', options_list=['--port'], help='SSH Port')
+        c.argument('resource_tag', options_list=['--resource-tag'], help='Use port value from specified resource tag.')
         c.argument('resource_type', options_list=['--resource-type'],
                    help=('Resource type should be either Microsoft.Compute/virtualMachines, '
                          'Microsoft.HybridCompute/machines, '
@@ -85,12 +87,13 @@ def load_arguments(self, _):
 
     with self.argument_context('ssh arc') as c:
         c.argument('vm_name', options_list=['--vm-name', '--name', '-n'], help='The name of the Arc Server')
-        c.argument('public_key_file', options_list=['--public-key-file', '-p'], help='The RSA public key file path')
-        c.argument('private_key_file', options_list=['--private-key-file', '-i'], help='The RSA private key file path')
+        c.argument('public_key_file', options_list=['--public-key-file', '-p'], help='The RSA public key file path.')
+        c.argument('private_key_file', options_list=['--private-key-file', '-i'], help='The RSA private key file path.')
         c.argument('local_user', options_list=['--local-user'],
                    help='The username for a local user')
         c.argument('cert_file', options_list=['--certificate-file', '-c'], help='Path to certificate file')
         c.argument('port', options_list=['--port'], help='Port to connect to on the remote host.')
+        c.argument('resource_tag', options_list=['--resource-tag'], help='Use port value from specified resource tag.')
         c.argument('resource_type', options_list=['--resource-type'],
                    help=('Resource type should be either Microsoft.HybridCompute/machines '
                          'or Microsoft.ConnectedVMwareSphere/virtualMachines.'),
