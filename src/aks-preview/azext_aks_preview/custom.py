@@ -647,6 +647,8 @@ def aks_create(
     cluster_service_load_balancer_health_probe_mode=None,
     # Static Egress Gateway
     enable_static_egress_gateway=False,
+    # virtualmachines
+    vm_sizes=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1012,7 +1014,13 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
                 raise CLIError(
                     "Cannot scale cluster autoscaler enabled node pool.")
 
-            agent_profile.count = int(node_count)
+            if agent_profile.type == CONST_VIRTUAL_MACHINES:
+                if len(agent_profile.virtual_machines_profile.scale.manual) == 1:
+                    agent_profile.virtual_machines_profile.scale.manual[0].count = int(node_count)
+                else:
+                    raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
+            else:
+                agent_profile.count = int(node_count)
             # null out the SP profile because otherwise validation complains
             instance.service_principal_profile = None
             return sdk_no_wait(
@@ -1297,6 +1305,8 @@ def aks_agentpool_add(
     enable_vtpm=False,
     # static egress gateway - gateway-mode pool
     gateway_prefix_size=None,
+    # virtualmachines
+    vm_sizes=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1397,7 +1407,13 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
     if new_node_count == instance.count:
         raise CLIError(
             "The new node count is the same as the current node count.")
-    instance.count = new_node_count  # pylint: disable=no-member
+    if instance.type_properties_type == CONST_VIRTUAL_MACHINES:
+        if len(instance.virtual_machines_profile.scale.manual) == 1:
+            instance.virtual_machines_profile.scale.manual[0].count = new_node_count
+        else:
+            raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
+    else:
+        instance.count = new_node_count  # pylint: disable=no-member
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -1712,6 +1728,105 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
         cluster_name,
         nodepool_name,
         machines,
+    )
+
+
+def aks_agentpool_manual_scale_add(cmd,
+                                   client,
+                                   resource_group_name,
+                                   cluster_name,
+                                   nodepool_name,
+                                   vm_sizes,
+                                   node_count,
+                                   no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot add manual to a non-virtualmachines node pool.")
+    ManualScaleProfile = cmd.get_models(
+        "ManualScaleProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+    new_manual_scale_profile = ManualScaleProfile(sizes=vm_sizes.split(","), count=int(node_count))
+    instance.virtual_machines_profile.scale.manual.append(new_manual_scale_profile)
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
+                                      client,
+                                      resource_group_name,
+                                      cluster_name,
+                                      nodepool_name,
+                                      current_vm_sizes,
+                                      vm_sizes=None,
+                                      node_count=None,
+                                      no_wait=False):
+    if vm_sizes is None and node_count is None:
+        raise RequiredArgumentMissingError("specify --vm-sizes or --node-count or both.")
+
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot update manual in a non-virtualmachines node pool.")
+    manual_exists = False
+    for m in instance.virtual_machines_profile.scale.manual:
+        if m.sizes == current_vm_sizes.split(","):
+            manual_exists = True
+            if vm_sizes:
+                m.sizes = vm_sizes.split(",")
+            if node_count:
+                m.count = int(node_count)
+            break
+    if not manual_exists:
+        raise InvalidArgumentValueError(
+            f"Manual with sizes {','.join(current_vm_sizes)} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
+                                      client,
+                                      resource_group_name,
+                                      cluster_name,
+                                      nodepool_name,
+                                      current_vm_sizes,
+                                      no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise CLIError("Cannot delete manual in a non-virtualmachines node pool.")
+    manual_exists = False
+    for m in instance.virtual_machines_profile.scale.manual:
+        if m.sizes == current_vm_sizes.split(","):
+            manual_exists = True
+            instance.virtual_machines_profile.scale.manual.remove(m)
+            break
+    if not manual_exists:
+        raise InvalidArgumentValueError(
+            f"Manual with sizes {','.join(current_vm_sizes)} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
     )
 
 
