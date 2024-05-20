@@ -11,14 +11,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -s --api-id --version-id --definition-id --title
+      - -g -s --api-id --version-id --definition-id --title --description
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/versions/definitions","properties":{"title":"OpenAPI"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005","name":"clitest000005","systemData":{"createdAt":"2024-05-07T12:36:23.4679946Z","lastModifiedAt":"2024-05-07T12:36:23.4679933Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/versions/definitions","properties":{"title":"OpenAPI"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005","name":"clitest000005","systemData":{"createdAt":"2024-05-16T08:37:19.5368981Z","lastModifiedAt":"2024-05-16T08:37:19.5368975Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -29,9 +29,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 May 2024 12:36:26 GMT
+      - Thu, 16 May 2024 08:37:21 GMT
       etag:
-      - 2f04d9ec-0000-0100-0000-663a20470000
+      - 42001a69-0000-0100-0000-6645c5bf0000
       expires:
       - '-1'
       pragma:
@@ -45,14 +45,14 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: BD7CC0F983624D0CB8F5C5788CE94C54 Ref B: MAA201060515009 Ref C: 2024-05-07T12:36:24Z'
+      - 'Ref A: 7BE7780F150A4B8CB0DAD5ED283FD8E7 Ref B: MAA201060516011 Ref C: 2024-05-16T08:37:21Z'
       x-powered-by:
       - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"title": "Swagger"}}'
+    body: '{"properties": {"description": "test description 2", "title": "Swagger"}}'
     headers:
       Accept:
       - application/json
@@ -63,31 +63,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '36'
+      - '73'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -s --api-id --version-id --definition-id --title
+      - -g -s --api-id --version-id --definition-id --title --description
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/versions/definitions","properties":{"title":"Swagger"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005","name":"clitest000005","systemData":{"lastModifiedAt":"2024-05-07T12:36:28.0864953Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/versions/definitions","properties":{"title":"Swagger","description":"test
+        description 2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005","name":"clitest000005","systemData":{"lastModifiedAt":"2024-05-16T08:37:24.0171687Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '421'
+      - '456'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 May 2024 12:36:28 GMT
+      - Thu, 16 May 2024 08:37:23 GMT
       etag:
-      - 2f04f5ed-0000-0100-0000-663a204c0000
+      - 42004769-0000-0100-0000-6645c5c40000
       expires:
       - '-1'
       pragma:
@@ -101,9 +102,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-msedge-ref:
-      - 'Ref A: F125D8FEE6524EBAA96609B4E4AB6039 Ref B: MAA201060515009 Ref C: 2024-05-07T12:36:26Z'
+      - 'Ref A: B5C29BCEA7EB4C11A3FB298C39156AE6 Ref B: MAA201060516011 Ref C: 2024-05-16T08:37:22Z'
       x-powered-by:
       - ASP.NET
     status:

@@ -49,6 +49,19 @@ class MetadataCommandsTests(ScenarioTest):
            self.check('@[0].name', metadata_name1),
            self.check('@[1].name', metadata_name2)
         ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicMetadataPreparer(parameter_name='metadata_name1')
+    @ApicMetadataPreparer(parameter_name='metadata_name2')
+    def test_metadata_list_with_all_optional_params(self, metadata_name1):
+       self.kwargs.update({
+         'metadata_name': metadata_name1
+       })
+       self.cmd('az apic metadata list -g {rg} -s {s} --filter "name eq \'{metadata_name}\'"', checks=[
+           self.check('length(@)', 1),
+           self.check('@[0].name', metadata_name1),
+        ])
        
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
@@ -67,6 +80,7 @@ class MetadataCommandsTests(ScenarioTest):
     @ApicMetadataPreparer()
     def test_metadata_delete(self):
        self.cmd('az apic metadata delete -g {rg} -s {s} --name {m} --yes')
+       self.cmd('az apic metadata show -g {rg} -s {s} --name {m}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()

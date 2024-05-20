@@ -27,7 +27,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Tue, 07 May 2024 11:18:21 GMT
+      - Fri, 17 May 2024 03:18:32 GMT
       expires:
       - '-1'
       pragma:
@@ -41,10 +41,60 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-msedge-ref:
-      - 'Ref A: 7E01BC5AD4D44DE2AFB97D0DFCDFFFBE Ref B: MAA201060515021 Ref C: 2024-05-07T11:18:20Z'
+      - 'Ref A: 82423FE39C6A4EB9AAC95C7FBBA31DFB Ref B: MAA201060515009 Ref C: 2024-05-17T03:18:31Z'
       x-powered-by:
       - ASP.NET
     status:
       code: 204
       message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic environment show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --environment-id
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003?api-version=2024-03-01
+  response:
+    body:
+      string: '{"code":"404","message":"Subscription not found","target":"1756abc0-3554-4341-8d6a-46674962ea19"}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '97'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 17 May 2024 03:18:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 0AB9961F9FCE43288FCCB8DC4D065468 Ref B: MAA201060516021 Ref C: 2024-05-17T03:18:33Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 404
+      message: Not Found
 version: 1

@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
-from .utils import ApicServicePreparer, ApicApiPreparer
+from .utils import ApicServicePreparer, ApicApiPreparer, ApicMetadataPreparer
 
 class ApiCommandsTests(ScenarioTest):
 
@@ -21,6 +21,29 @@ class ApiCommandsTests(ScenarioTest):
             self.check('customProperties', {}),
             self.check('contacts', []),
             self.check('externalDocumentation', [])
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicMetadataPreparer()
+    def test_api_create_with_all_optional_params(self, metadata_name):
+        self.kwargs.update({
+            'name': self.create_random_name(prefix='cli', length=24),
+            'contacts': '[{email:contact@example.com,name:test,url:example.com}]',
+            'customProperties': '{{"{}":true}}'.format(metadata_name),
+            'externalDocumentation': '[{title:\'onboarding docs\',url:example.com}]',
+            'license': '{url:example.com}',
+        })
+        self.cmd('az apic api create -g {rg} -s {s} --api-id {name} --title "test api" --type rest --contacts "{contacts}" --custom-properties \'{customProperties}\' --description "API description" --external-documentation "{externalDocumentation}" --license "{license}" --summary "summary"', checks=[
+            self.check('name', '{name}'),
+            self.check('kind', 'rest'),
+            self.check('title', 'test api'),
+            self.check('contacts', [{"email":"contact@example.com","name":"test","url":"example.com"}]),
+            self.check('customProperties.{}'.format(metadata_name), True),
+            self.check('description', 'API description'),
+            self.check('externalDocumentation', [{"title":"onboarding docs","url":"example.com"}]),
+            self.check('license', {"url":"example.com"}),
+            self.check('summary', 'summary')
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
@@ -49,6 +72,19 @@ class ApiCommandsTests(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
+    @ApicApiPreparer(parameter_name='api_id1')
+    @ApicApiPreparer(parameter_name='api_id2')
+    def test_api_list_with_all_optional_params(self, api_id1):
+        self.kwargs.update({
+          'api_id': api_id1
+        })
+        self.cmd('az apic api list -g {rg} -s {s} --filter "name eq \'{api_id}\'"', checks=[
+            self.check('length(@)', 1),
+            self.check('@[0].name', api_id1),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
     @ApicApiPreparer()
     def test_api_update(self):
         self.cmd('az apic api update -g {rg} -s {s} --api-id {api} --title "Echo API 2"', checks=[
@@ -58,5 +94,28 @@ class ApiCommandsTests(ScenarioTest):
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
+    @ApicMetadataPreparer()
+    def test_api_update_with_all_optional_params(self, metadata_name):
+        self.kwargs.update({
+            'contacts': '[{email:contact@example.com,name:test,url:example.com}]',
+            'customProperties': '{{"{}":true}}'.format(metadata_name),
+            'externalDocumentation': '[{title:\'onboarding docs\',url:example.com}]',
+            'license': '{url:example.com}',
+        })
+        self.cmd('az apic api update -g {rg} -s {s} --api-id {api} --title "test api 2" --type rest --contacts "{contacts}" --custom-properties \'{customProperties}\' --description "API description" --external-documentation "{externalDocumentation}" --license "{license}" --summary "summary"', checks=[
+            self.check('kind', 'rest'),
+            self.check('title', 'test api 2'),
+            self.check('contacts', [{"email":"contact@example.com","name":"test","url":"example.com"}]),
+            self.check('customProperties.{}'.format(metadata_name), True),
+            self.check('description', 'API description'),
+            self.check('externalDocumentation', [{"title":"onboarding docs","url":"example.com"}]),
+            self.check('license', {"url":"example.com"}),
+            self.check('summary', 'summary')
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
     def test_api_delete(self):
         self.cmd('az apic api delete -g {rg} -s {s} --api-id {api} --yes')
+        self.cmd('az apic api show -g {rg} -s {s} --api-id {api}', expect_failure=True)

@@ -47,10 +47,25 @@ class VersionCommandsTests(ScenarioTest):
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
+    @ApicVersionPreparer(parameter_name='version_id1')
+    @ApicVersionPreparer(parameter_name='version_id2')
+    def test_version_list_with_all_optional_params(self, version_id1):
+        self.kwargs.update({
+          'version_id': version_id1
+        })
+        self.cmd('az apic api version list -g {rg} -s {s} --api-id {api} --filter "name eq \'{version_id}\'"', checks=[
+            self.check('length(@)', 1),
+            self.check('@[0].name', version_id1)
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
     @ApicVersionPreparer()
     def test_version_update(self):
-        self.cmd('az apic api version update -g {rg} -s {s} --api-id {api} --version-id {v} --title "v1.0.1"', checks=[
+        self.cmd('az apic api version update -g {rg} -s {s} --api-id {api} --version-id {v} --title "v1.0.1" --lifecycle-stage development', checks=[
             self.check('title', 'v1.0.1'),
+            self.check('lifecycleStage', 'development'),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
@@ -59,3 +74,4 @@ class VersionCommandsTests(ScenarioTest):
     @ApicVersionPreparer()
     def test_version_delete(self):
         self.cmd('az apic api version delete -g {rg} -s {s} --api-id {api} --version-id {v} --yes')
+        self.cmd('az apic api version show -g {rg} -s {s} --api-id {api} --version-id {v}', expect_failure=True)

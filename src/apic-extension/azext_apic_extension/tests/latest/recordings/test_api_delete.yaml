@@ -27,7 +27,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Tue, 07 May 2024 11:32:34 GMT
+      - Fri, 17 May 2024 03:17:25 GMT
       expires:
       - '-1'
       pragma:
@@ -41,10 +41,60 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-msedge-ref:
-      - 'Ref A: DB255A79DE584A6E96C87DCCEE911204 Ref B: MAA201060515039 Ref C: 2024-05-07T11:32:33Z'
+      - 'Ref A: E19B9F85D64543C8A6D0A898B3BF8D2B Ref B: MAA201060513021 Ref C: 2024-05-17T03:17:24Z'
       x-powered-by:
       - ASP.NET
     status:
       code: 204
       message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-id
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003?api-version=2024-03-01
+  response:
+    body:
+      string: '{"code":"404"}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '14'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 17 May 2024 03:17:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: AF791DC5CCB94CA4BF9BA275AD679992 Ref B: MAA201060515017 Ref C: 2024-05-17T03:17:26Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 404
+      message: Not Found
 version: 1
