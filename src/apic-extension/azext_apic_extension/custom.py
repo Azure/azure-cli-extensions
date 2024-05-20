@@ -20,58 +20,15 @@ import chardet
 from azure.cli.core.aaz._arg import AAZStrArg
 from .command_patches import ImportAPIDefinitionExtension
 from .command_patches import ExportAPIDefinitionExtension
-from .command_patches import CreateMetadataExtension
 from .command_patches import ExportMetadataExtension
-from .aaz.latest.apic.metadata import Update as UpdateMetadataSchema
 
 logger = get_logger(__name__)
 
 
 class ImportSpecificationExtension(ImportAPIDefinitionExtension):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.source_profile = AAZStrArg(
-            options=["--file-name"],
-            help='Name of the file from where to import the spec from.',
-            required=False,
-            registered=True
-        )
-        return args_schema
-
     def pre_operations(self):
         super().pre_operations()
         args = self.ctx.args
-        data = None
-        value = None
-
-        # Load the JSON file
-        if args.source_profile:
-            with open(str(args.source_profile), 'rb') as f:
-                data = f.read()
-                result = chardet.detect(data)
-                encoding = result['encoding']
-
-            if str(args.source_profile).endswith('.yaml') or str(args.source_profile).endswith('.yml'):
-                with open(str(args.source_profile), 'r', encoding=encoding) as f:
-                    content = f.read()
-                    data = yaml.safe_load(content)
-                    if data:
-                        value = content
-
-            if (str(args.source_profile).endswith('.json')):
-                with open(str(args.source_profile), 'r', encoding=encoding) as f:
-                    content = f.read()
-                    data = json.loads(content)
-                    if data:
-                        value = content
-
-        # If any of the fields are None, get them from self.args
-        if value is None:
-            value = args.value
-
-        # Reassign the values to self.args
-        args.value = value
 
         # Check the size of 'value' if format is inline and raise error if value is greater than 3 mb
         if args.format == 'inline':
@@ -132,88 +89,6 @@ class ExportSpecificationExtension(ExportAPIDefinitionExtension):
                     json.dump(results, f, indent=4, separators=(',', ':'))
                 else:
                     f.write(results)
-
-
-class CreateMetadataSchemaExtension(CreateMetadataExtension):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.source_profile = AAZStrArg(
-            options=["--file-name"],
-            help='Name of the file from that contains the metadata schema.',
-            required=False,
-            registered=True
-        )
-        return args_schema
-
-    def pre_operations(self):
-        args = self.ctx.args
-        data = None
-        value = args.schema
-
-        # Load the JSON file
-        if args.source_profile:
-            with open(str(args.source_profile), 'rb') as f:
-                data = f.read()
-                result = chardet.detect(data)
-                encoding = result['encoding']
-
-            if os.stat(str(args.source_profile)).st_size == 0:
-                raise ValueError('Metadtata schema file is empty. Please provide a valid metadata schema file.')
-
-            with open(str(args.source_profile), 'r', encoding=encoding) as f:
-                data = json.load(f)
-                if data:
-                    value = json.dumps(data)
-
-        # If any of the fields are None, get them from self.args
-        if value is None:
-            logger.error('Please provide the schema to create the metadata schema'
-                         'through --schema option or through --file-name option via a file.')
-
-        # Reassign the values to self.args
-        self.ctx.args.schema = value
-
-
-class UpdateMetadataSchemaExtension(UpdateMetadataSchema):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.source_profile = AAZStrArg(
-            options=["--file-name"],
-            help='Name of the file from that contains the metadata schema.',
-            required=False,
-            registered=True
-        )
-        return args_schema
-
-    def pre_operations(self):
-        args = self.ctx.args
-        data = None
-        value = args.schema
-
-        # Load the JSON file
-        if args.source_profile:
-            with open(str(args.source_profile), 'rb') as f:
-                rawdata = f.read()
-                result = chardet.detect(rawdata)
-                encoding = result['encoding']
-
-            if os.stat(str(args.source_profile)).st_size == 0:
-                raise ValueError('Metadtata schema file is empty. Please provide a valid metadata schema file.')
-
-            with open(str(args.source_profile), 'r', encoding=encoding) as f:
-                data = json.load(f)
-                if data:
-                    value = json.dumps(data)
-
-        # If any of the fields are None, get them from self.args
-        if value is None:
-            logger.error('Please provide the schema to update the metadata schema '
-                         'through --schema option or through --file-name option via a file.')
-
-        # Reassign the values to self.args
-        self.ctx.args.schema = value
 
 
 class ExportMetadataSchemaExtension(ExportMetadataExtension):
@@ -435,7 +310,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'definition_id': extracted_definition_name,
                 'format': 'inline',
                 'specification': specification_details,  # TODO write the correct spec object
-                'source_profile': api_location
+                'value': value
             }
 
             importAPISpecificationResults = ImportSpecificationExtension(cli_ctx=cmd.cli_ctx)(command_args=api_specification_args)
