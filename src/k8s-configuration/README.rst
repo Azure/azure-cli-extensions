@@ -61,22 +61,6 @@ az k8s-configuration flux list \
 Source Control Configuration (Flux v1) Configuration: [more info](https://docs.microsoft.com/en-us/azure/kubernetessconfiguration/)\
 *Examples:*
 
-##### Create a Source Control Configuration (Flux v1)
-```
-az k8s-configuration create \
-    --resource-group groupName \
-    --cluster-name clusterName \
-    --cluster-type clusterType \
-    --name configurationName \
-    --operator-instance-name operatorInstanceName \
-    --operator-namespace operatorNamespace \
-    --repository-url githubRepoUrl \
-    --operator-params operatorParameters \
-    --enable-helm-operator \
-    --helm-operator-version chartVersion \
-    --helm-operator-params chartParameters
-```
-
 ##### Get a Source Control Configuration (Flux v1)
 ```
 az k8s-configuration show \
@@ -93,20 +77,6 @@ az k8s-configuration delete \
     --cluster-name clusterName \
     --cluster-type clusterType \
     --name configurationName
-```
-
-##### Update a Source Control Configuration (Flux v1)
-```
-az k8s-configuration create \
-    --resource-group groupName \
-    --cluster-name clusterName \
-    --cluster-type clusterType \
-    --name configurationName \
-    --repository-url githubRepoUrl \
-    --operator-params operatorParameters \
-    --enable-helm-operator \
-    --helm-operator-version chartVersion \
-    --helm-operator-params chartParameters
 ```
 
 ##### List all Source Control Configuration (Flux v1) on a cluster
