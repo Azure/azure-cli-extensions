@@ -263,7 +263,6 @@ def load_arguments(self, _):
                    options_list=['--resource-modifier-reference', '--resource-modifier'],
                    help='Key value mapping for resource modifier reference')
 
-
     with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
         c.argument('backup_instance_id', type=str, help="specify the backup instance ID.")
