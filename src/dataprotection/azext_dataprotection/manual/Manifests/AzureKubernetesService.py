@@ -160,7 +160,7 @@ manifest = '''
           "isDefault": false,
           "name": "Daily",
           "objectType": "AzureRetentionRule"
-        },
+        }
       ],
       "name": "AKSPolicy1",
       "datasourceTypes": [
