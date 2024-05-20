@@ -601,7 +601,8 @@ ManagedServiceIdentity = {
 
 JavaComponent = {
     "properties": {
-        "componentType": None
+        "componentType": None,
+        "serviceBinds": None
     }
 }
 
