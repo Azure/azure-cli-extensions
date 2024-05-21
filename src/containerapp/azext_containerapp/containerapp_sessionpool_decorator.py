@@ -422,12 +422,22 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
         if secrets_def is None:
             secrets_def = []
         if self.get_argument_registry_pass() is not None:
+            original_secrets = self.existing_pool_def["properties"]["secrets"]
+            original_secrets_names = []
+            for secret in original_secrets:
+                original_secrets_names.append(secret["name"])
+            logger.warning(original_secrets)
             safe_set(customer_container_template, "registryCredentials", "passwordSecretRef",
                      value=store_as_secret_and_return_secret_ref(secrets_def,
-                                                                 self.get_argument_registry_user(),
-                                                                 self.get_argument_registry_server(),
+                                                                 customer_container_template["registryCredentials"]["username"],
+                                                                 customer_container_template["registryCredentials"]["server"],
                                                                  self.get_argument_registry_pass()))
-
+            new_secret_names = []
+            for secret in secrets_def:
+                new_secret_names.append(secret["name"])
+            deleted_secrets = set(original_secrets_names).difference(new_secret_names)
+            logger.warning("the following secrets are going to be deleted: " + str(deleted_secrets) + "If this is not the intended behavior, please add the missing secrets into the --secrets flag.")
+    
     def set_up_ingress(self, customer_container_template):
         if self.get_argument_target_port() is not None:
             safe_set(customer_container_template, "ingress", "targetPort", value=self.get_argument_target_port())
