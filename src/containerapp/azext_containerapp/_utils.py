@@ -15,6 +15,7 @@ import re
 import requests
 import packaging.version as SemVer
 
+from enum import Enum
 from urllib.request import urlopen
 
 from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_location_allowed, \
@@ -38,7 +39,7 @@ from ._models import OryxRunImageTagProperty
 from ._constants import (CONTAINER_APP_EXTENSION_TYPE,
                          CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, DEV_SERVICE_LIST,
                          MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APPS_RP, CONNECTED_CLUSTER_TYPE,
-                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE, JAVA_COMPONENT_RESOURCE_TYPE)
+                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE)
 
 logger = get_logger(__name__)
 
@@ -114,11 +115,6 @@ def validate_binding_name(binding_name):
     return bool(re.match(pattern, binding_name))
 
 
-def is_valid_java_component_resource_id(resource_id):
-    java_component_dict = parse_resource_id(resource_id)
-    return java_component_dict.get("type") == MANAGED_ENVIRONMENT_RESOURCE_TYPE and java_component_dict.get("resource_type") == JAVA_COMPONENT_RESOURCE_TYPE
-
-
 def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list, resource_group_name, name):
     linker_client = get_linker_client(cmd)
     containerapp_def = None
@@ -167,7 +163,6 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
     managed_env_name = parsed_managed_env['name']
     managed_env_rg = parsed_managed_env['resource_group']
     java_component_list = JavaComponentPreviewClient.list(cmd, managed_env_rg, managed_env_name)
-    java_component_name_set = {java_component["name"] for java_component in java_component_list}
 
     for service_binding_str in service_bindings_list:
         parts = service_binding_str.split(",")
@@ -189,11 +184,6 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
             binding_name = service_name
         else:
             binding_name = service_binding[1]
-
-        # If resource is Java component, will automatically change the '-' in binding name to '_'
-        if service_name in java_component_name_set and '-' in binding_name:
-            logger.info("automatically change the '-' in binding name of Java component to '_'.")
-            binding_name = binding_name.replace('-', '_')
 
         if not validate_binding_name(binding_name):
             raise InvalidArgumentValueError("The Binding Name can only contain letters, numbers (0-9), periods ('.'), "
@@ -737,3 +727,16 @@ def parse_build_env_vars(env_list):
         })
 
     return env_var_def
+
+
+def is_cloud_supported_by_connected_env(cli_ctx):
+    if cli_ctx.cloud.name == 'AzureCloud':
+        return True
+    return False
+
+
+class AppType(Enum):
+    ContainerApp = 1
+    ContainerAppJob = 2
+    SessionPool = 3
+

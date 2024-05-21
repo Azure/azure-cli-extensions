@@ -2,6 +2,26 @@
 
 Release History
 ===============
+2.0.2
+++++++
+* Fix no attribute error
+
+2.0.1
+++++++
+* Fix old api-version issue
+
+2.0.0
+++++++
+* Update to be compatible with Azure CLI 2.60.0
+
+1.0.3
+++++++
+* Fix no attribute error
+
+1.0.2
+++++++
+* Bypass error of `az postgres flexible-server db show`
+
 1.0.1
 ++++++
 * Make some improvements to fix non-json output issue

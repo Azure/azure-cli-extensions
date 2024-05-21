@@ -25,6 +25,14 @@ helps['dataprotection backup-instance initialize'] = """
         text: az dataprotection backup-instance initialize --datasource-type AzureDisk -l southeastasia --policy-id {disk_policy_id} --datasource-id {disk_id}
 """
 
+helps['dataprotection backup-instance update'] = """
+    type: command
+    short-summary: Update properties associated with a backup instance.
+    examples:
+      - name: Update backed up containers for a vaulted blob backup instance
+        text: az dataprotection backup-instance update --backup-instance-name MyDisk1 --vaulted-blob-container-list {backup_configuration} -g MyResourceGroup --vault-name MyVault
+"""
+
 helps['dataprotection backup-instance update-policy'] = """
     type: command
     short-summary: Update backup policy associated with backup instance.
@@ -184,10 +192,12 @@ helps['dataprotection resource-guard list-protected-operations'] = """
 
 helps['dataprotection backup-instance initialize-backupconfig'] = """
     type: command
-    short-summary: Initialize JSON request body for initializing and configuring backup of an AzureKubernetesService resource.
+    short-summary: Initialize JSON request body for initializing and configuring backup for AzureKubernetesService or AzureBlobs (for vaulted backups) resources.
     examples:
-      - name: Initialize backup configuration
+      - name: Initialize backup configuration for AzureKubernetesService
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService --label-selectors key=val foo=bar --excluded-namespaces excludeNS1 excludeNS2
+      - name: Initialize backup configuration for AzureBlob
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type "AzureBlob" --include-all-containers --storage-account-rg "sampleRG" --storage-account-name "samplestorage"
 """
 
 helps['dataprotection backup-instance initialize-restoreconfig'] = """
@@ -204,4 +214,56 @@ helps['dataprotection backup-instance validate-for-backup'] = """
     examples:
       - name: Validate for backup
         text: az dataprotection backup-instance validate-for-backup -g sarath-rg --vault-name sarath-vault --backup-instance backup_instance.json
+"""
+
+helps['dataprotection backup-instance restore trigger'] = """
+    type: command
+    short-summary: Triggers restore for a BackupInstance.
+    examples:
+      - name: Trigger a restore operation
+        text: az dataprotection backup-instance restore trigger -g sample_rg --vault-name sample_backupvault --backup-instance-name sample_biname-fd53a211-3f3e-4c7e-ba45-81050e27c0be  --restore-request-object restorerequestobject.json
+      - name: Trigger a cross-region-restore operation
+        text: az dataprotection backup-instance restore trigger -g sample_rg --vault-name sample_backupvault --backup-instance-name sample_biname-fd53a211-3f3e-4c7e-ba45-81050e27c0be  --restore-request-object restorerequestobject.json --use-secondary-region
+"""
+
+helps['dataprotection backup-instance validate-for-restore'] = """
+    type: command
+    short-summary: Validates if Restore can be triggered for a DataSource.
+    examples:
+      - name: Validate for restore
+        text: az dataprotection backup-instance validate-for-restore -g sample_rg --vault-name sample_backupvault --backup-instance-name sample_biname-fd53a211-3f3e-4c7e-ba45-81050e27c0be --restore-request-object restorerequestobject.json
+      - name: Validate for cross-region-restore
+        text: az dataprotection backup-instance validate-for-restore -g sample_rg --vault-name sample_backupvault --backup-instance-name sample_biname-fd53a211-3f3e-4c7e-ba45-81050e27c0be --restore-request-object restorerequestobject.json --use-secondary-region
+"""
+
+helps['dataprotection backup-vault list-from-resourcegraph'] = """
+    type: command
+    short-summary: List backup vaults across subscriptions, resource groups and vaults.
+    examples:
+      - name: Fetch a specific backup vault
+        text: az dataprotection backup-vault list-from-resourcegraph --subscriptions 00000000-0000-0000-0000-000000000000 --resource-groups sample_rg --vaults sample_vault
+"""
+
+helps['dataprotection job show'] = """
+    type: command
+    short-summary: Get a job with id in a backup vault.
+    examples:
+      - name: Get Job
+        text: az dataprotection job show --job-id "00000000-0000-0000-0000-000000000000" --resource-group "BugBash1" --vault-name "BugBashVaultForCCYv11"
+"""
+
+helps['dataprotection job list'] = """
+    type: command
+    short-summary: Returns list of jobs belonging to a backup vault.
+    examples:
+      - name: Get Jobs
+        text: az dataprotection job list --resource-group "BugBash1" --vault-name "BugBashVaultForCCYv11"
+"""
+
+helps['dataprotection recovery-point list'] = """
+    type: command
+    short-summary: Returns a list of Recovery Points for a DataSource in a vault.
+    examples:
+      - name: List of Recovery Points in a Vault
+        text: az dataprotection recovery-point list --backup-instance-name "sample_biname-00000000-0000-0000-0000-000000000000" --resource-group "sample_rg" --vault-name "sample_vault"
 """

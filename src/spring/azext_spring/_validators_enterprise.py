@@ -15,8 +15,8 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2024_01_01_preview.models import (ApmReference, CertificateReference)
-from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2024_05_01_preview.models import (ApmReference, CertificateReference)
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
 
 from ._gateway_constant import (GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE,
                                 GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE, GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
@@ -327,6 +327,18 @@ def _validate_patterns(patterns):
     if len(invalid_list) > 0:
         logger.warning("Patterns '%s' are invalid.", ','.join(invalid_list))
         raise InvalidArgumentValueError("Patterns should be the collection of patterns separated by comma, each pattern in the format of 'application' or 'application/profile'")
+
+
+def validate_pattern_for_show_acs_configs(namespace):
+    if namespace.config_file_pattern:
+        if not _is_valid_pattern(namespace.config_file_pattern):
+            raise InvalidArgumentValueError("Pattern should be in the format of 'application' or 'application/profile'")
+        if _is_valid_app_and_profile_name(namespace.config_file_pattern):
+            parts = namespace.config_file_pattern.split('/')
+            if parts[1] == '*':
+                namespace.config_file_pattern = f"{parts[0]}/default"
+        elif _is_valid_app_name(namespace.config_file_pattern):
+            namespace.config_file_pattern = f"{namespace.config_file_pattern}/default"
 
 
 def _is_valid_pattern(pattern):
@@ -702,3 +714,33 @@ def _get_eactly_one_application_configuration_service_resource_id(cmd, resource_
     if len(acs_resources) > 1:
         raise ClientRequestError('App cannot bind to multiple application configuration services.')
     return acs_resources[0].id
+
+
+def validate_custom_actuator_port(cmd, namespace):
+    if namespace.custom_actuator_port:
+        only_support_enterprise(cmd, namespace)
+        if namespace.custom_actuator_port <= 0:
+            raise ArgumentUsageError("--custom-actuator-port must be greater than 0")
+
+
+def validate_custom_actuator_path(cmd, namespace):
+    if namespace.custom_actuator_path:
+        only_support_enterprise(cmd, namespace)
+
+
+def validate_create_app_binding_default_config_server(cmd, namespace):
+    if namespace.bind_config_server:
+        namespace.bind_config_server \
+            = _get_exactly_one_config_server_resource_id(cmd,
+                                                         namespace.resource_group,
+                                                         namespace.service)
+
+
+def _get_exactly_one_config_server_resource_id(cmd, resource_group, service):
+    client = get_client(cmd)
+    config_server_resources = list(client.config_servers.list(resource_group, service))
+    if len(config_server_resources) == 0:
+        raise ClientRequestError('App cannot bind to config server because it is not configured.')
+    if len(config_server_resources) > 1:
+        raise ClientRequestError('App cannot bind to multiple config servers.')
+    return config_server_resources[0].id

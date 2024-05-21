@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.2.0'
+VERSION = '1.0.0'
 try:
     from azext_cloudservice.manual.version import VERSION
 except ImportError:
@@ -31,7 +31,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'azure-mgmt-compute~=20.0.0'
+    'azure-mgmt-compute~=30.4.0'
 ]
 
 try:
@@ -45,7 +45,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='cloud_service',
+    name='cloud-service',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools ComputeManagementClient Extension',
     author='Microsoft Corporation',

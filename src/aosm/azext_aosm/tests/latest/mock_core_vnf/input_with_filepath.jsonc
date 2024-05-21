@@ -1,0 +1,56 @@
+{
+    // Azure location to use when creating resources.
+    "location": "eastus",
+    // Name of the Publisher resource you want your definition published to.
+    // Will be created if it does not exist.
+    "publisher_name": "jamie-mobile-publisher",
+    // Optional. Resource group for the Publisher resource.
+    // Will be created if it does not exist (with a default name if none is supplied).
+    "publisher_resource_group_name": "Jamie-publisher",
+    // Optional. Name of the ACR Artifact Store resource.
+    // Will be created if it does not exist (with a default name if none is supplied).
+    "acr_artifact_store_name": "ubuntu-acr",
+    // Name of NF definition.
+    "nf_name": "ubuntu-vm",
+    // Version of the NF definition in A.B.C format.
+    "version": "1.0.0",
+    // Optional. Name of the storage account Artifact Store resource. 
+    // Will be created if it does not exist (with a default name if none is supplied).
+    "blob_artifact_store_name": "ubuntu-blob-store",
+    // The parameter name in the VM ARM template which specifies the name of the image to use for the VM.
+    "image_name_parameter": "imageName",
+    // ARM template configuration.
+    "arm_templates": [
+        {
+            // Name of the artifact.
+            "artifact_name": "test-art",
+            // Version of the artifact in A.B.C format.
+            "version": "1.0.0",
+            // File path of the artifact you wish to upload from your local disk.
+            // Relative paths are relative to the configuration file. On Windows escape any backslash with another backslash.
+            "file_path": "ubuntu-template.json"
+        }
+    ],
+    // VHD image configuration.
+    "vhd": {
+        // Optional. Name of the artifact.
+        "artifact_name": "",
+        // Version of the artifact in A-B-C format.
+        "version": "1-0-0",
+        // Optional. File path of the artifact you wish to upload from your local disk. Delete if not required.
+        // Relative paths are relative to the configuration file. On Windows escape any backslash with another backslash.
+        "file_path": "livecd.ubuntu-cpc.azure.vhd",
+        // Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store.
+        // Delete if not required. On Windows escape any backslash with another backslash.
+        "blob_sas_url": "",
+        // Optional. Specifies the size of empty data disks in gigabytes.
+        // This value cannot be larger than 1023 GB. Delete if not required.
+        "image_disk_size_GB": "",
+        // Optional. Specifies the HyperVGenerationType of the VirtualMachine created from the image.
+        // Valid values are V1 and V2. V1 is the default if not specified. Delete if not required.
+        "image_hyper_v_generation": "",
+        // Optional. The ARM API version used to create the Microsoft.Compute/images resource.
+        // Delete if not required.
+        "image_api_version": ""
+    }
+}

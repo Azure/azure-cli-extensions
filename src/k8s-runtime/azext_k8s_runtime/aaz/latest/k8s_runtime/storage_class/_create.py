@@ -26,9 +26,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/storageclasses/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/storageclasses/{}", "2024-03-01"],
         ]
     }
 
@@ -146,6 +146,10 @@ class Create(AAZCommand):
         type_properties.nfs = AAZObjectArg(
             options=["nfs"],
             help="Properties of a NFS storage class",
+        )
+        type_properties.native = AAZObjectArg(
+            options=["native"],
+            blank={},
         )
         type_properties.rwx = AAZObjectArg(
             options=["rwx"],
@@ -308,7 +312,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }
@@ -365,10 +369,12 @@ class Create(AAZCommand):
             if type_properties is not None:
                 type_properties.set_const("type", "Blob", AAZStrType, ".blob", typ_kwargs={"flags": {"required": True}})
                 type_properties.set_const("type", "NFS", AAZStrType, ".nfs", typ_kwargs={"flags": {"required": True}})
+                type_properties.set_const("type", "Native", AAZStrType, ".native", typ_kwargs={"flags": {"required": True}})
                 type_properties.set_const("type", "RWX", AAZStrType, ".rwx", typ_kwargs={"flags": {"required": True}})
                 type_properties.set_const("type", "SMB", AAZStrType, ".smb", typ_kwargs={"flags": {"required": True}})
                 type_properties.discriminate_by("type", "Blob")
                 type_properties.discriminate_by("type", "NFS")
+                type_properties.discriminate_by("type", "Native")
                 type_properties.discriminate_by("type", "RWX")
                 type_properties.discriminate_by("type", "SMB")
 

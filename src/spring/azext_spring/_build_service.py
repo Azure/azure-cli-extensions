@@ -7,7 +7,7 @@
 
 import json
 from azure.cli.core.util import sdk_no_wait
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._buildservices_factory import BuildService
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id

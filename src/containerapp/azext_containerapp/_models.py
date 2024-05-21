@@ -21,7 +21,8 @@ ManagedEnvironment = {
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
         "workloadProfiles": None,
-        "InfrastructureResourceGroup": None
+        "infrastructureResourceGroup": None,
+        "openTelemetryConfiguration": None
     }
 }
 
@@ -291,6 +292,30 @@ ContainerAppsJob = {
     "tags": None
 }
 
+SessionPool = {
+    "location": None,
+    "properties": {
+        "environmentId": None,
+        "poolManagementType": None,
+        "containerType": None,
+        "customContainerTemplate": None,
+        "secrets": None,
+        "dynamicPoolConfiguration": None,
+        "scaleConfiguration": None,
+        "sessionNetworkConfiguration": None
+    }
+}
+
+SessionCodeInterpreterPythonExecution = {
+    "properties": {
+        "identifier": None,
+        "codeInputType": None,
+        "executionType": None,
+        "code": None,
+        "timeoutInSeconds": None
+    }
+}
+
 DaprComponentResiliency = {
     "properties": {
         "inboundPolicy": {
@@ -382,7 +407,8 @@ ContainerAppCertificateEnvelope = {
     "location": None,
     "properties": {
         "password": None,
-        "value": None
+        "value": None,
+        "certificateKeyVaultProperties": None
     }
 }
 
@@ -536,6 +562,38 @@ ExtendedLocation = {
     "type": None
 }
 
+AppInsightsConfiguration = {
+    "connectionString": None
+}
+
+OpenTelemetryConfiguration = {
+    "destinationsConfiguration": None,
+    "tracesConfiguration": None,
+    "logsConfiguration": None,
+    "metricsConfiguration": None
+}
+
+DestinationsConfiguration = {
+    "dataDogConfiguration": None
+}
+
+DataDogConfiguration = {
+    "site": None,
+    "key": None
+}
+
+TracesConfiguration = {
+    "destinations": []
+}
+
+LogsConfiguration = {
+    "destinations": []
+}
+
+MetricsConfiguration = {
+    "destinations": []
+}
+
 ManagedServiceIdentity = {
     "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
     "userAssignedIdentities": None  # {string: UserAssignedIdentity}
@@ -543,6 +601,33 @@ ManagedServiceIdentity = {
 
 JavaComponent = {
     "properties": {
-        "componentType": None
+        "componentType": None,
+        "serviceBinds": None
     }
+}
+
+CustomDomainConfiguration = {
+    "dnsSuffix": None,
+    "certificateValue": None,
+    "certificatePassword": None,
+    "certificateKeyVaultProperties": None
+}
+
+RuntimeJava = {
+    "enableMetrics": True,
+    "javaAgent": {
+        "enabled": False,
+        "logging": {}
+    }
+}
+
+DotNetComponent = {
+    "properties": {
+        "componentType": "AspireDashboard"
+    }
+}
+
+JavaLoggerSetting = {
+    "logger": None,
+    "level": None
 }

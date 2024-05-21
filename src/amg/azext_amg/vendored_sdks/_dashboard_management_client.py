@@ -16,8 +16,8 @@ from . import models as _models
 from ._configuration import DashboardManagementClientConfiguration
 from ._serialization import Deserializer, Serializer
 from .operations import (
-    EnterpriseDetailsOperations,
     GrafanaOperations,
+    ManagedPrivateEndpointsOperations,
     Operations,
     PrivateEndpointConnectionsOperations,
     PrivateLinkResourcesOperations,
@@ -40,16 +40,17 @@ class DashboardManagementClient:  # pylint: disable=client-accepts-api-version-k
      azure.mgmt.dashboard.operations.PrivateEndpointConnectionsOperations
     :ivar private_link_resources: PrivateLinkResourcesOperations operations
     :vartype private_link_resources: azure.mgmt.dashboard.operations.PrivateLinkResourcesOperations
-    :ivar enterprise_details: EnterpriseDetailsOperations operations
-    :vartype enterprise_details: azure.mgmt.dashboard.operations.EnterpriseDetailsOperations
+    :ivar managed_private_endpoints: ManagedPrivateEndpointsOperations operations
+    :vartype managed_private_endpoints:
+     azure.mgmt.dashboard.operations.ManagedPrivateEndpointsOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription. Required.
     :type subscription_id: str
     :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2022-10-01-preview". Note that overriding
-     this default value may result in unsupported behavior.
+    :keyword api_version: Api Version. Default value is "2023-09-01". Note that overriding this
+     default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
      Retry-After header is present.
@@ -65,7 +66,7 @@ class DashboardManagementClient:  # pylint: disable=client-accepts-api-version-k
         self._config = DashboardManagementClientConfiguration(
             credential=credential, subscription_id=subscription_id, **kwargs
         )
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client: ARMPipelineClient = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -79,7 +80,7 @@ class DashboardManagementClient:  # pylint: disable=client-accepts-api-version-k
         self.private_link_resources = PrivateLinkResourcesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.enterprise_details = EnterpriseDetailsOperations(
+        self.managed_private_endpoints = ManagedPrivateEndpointsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
 
@@ -112,5 +113,5 @@ class DashboardManagementClient:  # pylint: disable=client-accepts-api-version-k
         self._client.__enter__()
         return self
 
-    def __exit__(self, *exc_details) -> None:
+    def __exit__(self, *exc_details: Any) -> None:
         self._client.__exit__(*exc_details)

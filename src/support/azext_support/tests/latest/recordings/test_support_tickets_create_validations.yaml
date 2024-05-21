@@ -7,7 +7,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - support tickets create
+      - support in-subscription tickets create
       Connection:
       - keep-alive
       Content-Length:
@@ -15,19 +15,19 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --debug --description --severity --ticket-name --severity --title --contact-country
-        --contact-email --contact-first-name --contact-language --contact-last-name
-        --contact-method --contact-timezone --problem-classification
+      - --debug --description --severity --ticket-name --title --contact-country --contact-email
+        --contact-first-name --contact-language --contact-last-name --contact-method
+        --contact-timezone --advanced-diagnostic-consent --problem-classification
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-support/6.0.0 Python/3.8.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2020-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
   response:
     body:
       string: '{"message":"Name 12345 is invalid. The name cannot include: ''<'',
         ''>'', ''%'', ''&'', '':'', '''', ''?'', ''/'' or any control characters.
         It cannot be all digits and cannot start with ''tmp-''. The max length is
-        260 characters.","nameAvailable":false,"reason":"Invalid"}'
+        255 characters.","nameAvailable":false,"reason":"Invalid"}'
     headers:
       cache-control:
       - no-cache
@@ -36,23 +36,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 20 Oct 2021 18:53:55 GMT
+      - Fri, 10 May 2024 19:01:56 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 5BAC50F75EA04384B88D6EBF6AADCE81 Ref B: CO6AA3150218019 Ref C: 2024-05-10T19:01:56Z'
     status:
       code: 200
       message: OK

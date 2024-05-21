@@ -73,6 +73,7 @@ from azext_aks_preview._consts import (
     CONST_NODE_OS_CHANNEL_UNMANAGED,
     CONST_NODEPOOL_MODE_SYSTEM,
     CONST_NODEPOOL_MODE_USER,
+    CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NONE_UPGRADE_CHANNEL,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
@@ -84,6 +85,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWSANNUAL,
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_RAPID_UPGRADE_CHANNEL,
     CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
@@ -111,8 +113,15 @@ from azext_aks_preview._consts import (
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
+    CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
+    CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
+    CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_ARTIFACT_SOURCE_CACHE,
+    CONST_OUTBOUND_TYPE_NONE,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -135,7 +144,6 @@ from azext_aks_preview._validators import (
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
-    validate_egress_gtw_nodeselector,
     validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
@@ -176,8 +184,12 @@ from azext_aks_preview._validators import (
     validate_force_upgrade_disable_and_enable_parameters,
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
+    validate_custom_endpoints,
+    validate_bootstrap_container_registry_resource_id,
+    validate_gateway_prefix_size,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
+    CONST_ACSTOR_ALL,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
@@ -201,7 +213,7 @@ node_eviction_policies = [
     CONST_SPOT_EVICTION_POLICY_DEALLOCATE,
 ]
 node_os_disk_types = [CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]
-node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
+node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER, CONST_NODEPOOL_MODE_GATEWAY]
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_UBUNTU,
@@ -211,6 +223,7 @@ node_os_skus_create = [
 node_os_skus = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWSANNUAL,
 ]
 node_os_skus_update = [CONST_OS_SKU_AZURELINUX, CONST_OS_SKU_UBUNTU]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
@@ -234,6 +247,10 @@ pod_ip_allocation_modes = [
 
 # consts for ManagedCluster
 load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
+sku_names = [
+    CONST_MANAGED_CLUSTER_SKU_NAME_BASE,
+    CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
+]
 sku_tiers = [
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
@@ -252,6 +269,7 @@ outbound_types = [
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_NONE,
 ]
 auto_upgrade_channels = [
     CONST_RAPID_UPGRADE_CHANNEL,
@@ -316,6 +334,13 @@ storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
 ]
 
+disable_storage_pool_types = [
+    CONST_STORAGE_POOL_TYPE_AZURE_DISK,
+    CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+    CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+    CONST_ACSTOR_ALL,
+]
+
 storage_pool_skus = [
     CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
     CONST_STORAGE_POOL_SKU_STANDARD_LRS,
@@ -331,6 +356,13 @@ storage_pool_options = [
     CONST_STORAGE_POOL_OPTION_SSD,
 ]
 
+disable_storage_pool_options = [
+    CONST_STORAGE_POOL_OPTION_NVME,
+    CONST_STORAGE_POOL_OPTION_SSD,
+    CONST_ACSTOR_ALL,
+]
+
+# consts for guardrails level
 node_provisioning_modes = [
     CONST_NODE_PROVISIONING_MODE_MANUAL,
     CONST_NODE_PROVISIONING_MODE_AUTO,
@@ -339,6 +371,16 @@ node_provisioning_modes = [
 ssh_accesses = [
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+]
+
+health_probe_modes = [
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
+    CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
+]
+
+bootstrap_artifact_source_types = [
+    CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_ARTIFACT_SOURCE_CACHE,
 ]
 
 
@@ -484,6 +526,9 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
+            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+        )
+        c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
         )
         c.argument("fqdn_subdomain")
@@ -546,6 +591,17 @@ def load_arguments(self, _):
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
         )
         c.argument("http_proxy_config")
+        c.argument(
+            "bootstrap_artifact_source",
+            arg_type=get_enum_type(bootstrap_artifact_source_types),
+            default=CONST_ARTIFACT_SOURCE_DIRECT,
+            is_preview=True,
+        )
+        c.argument(
+            "bootstrap_container_registry_resource_id",
+            validator=validate_bootstrap_container_registry_resource_id,
+            is_preview=True,
+        )
         # addons
         c.argument(
             "enable_addons",
@@ -616,6 +672,16 @@ def load_arguments(self, _):
             ),
         )
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
+        c.argument(
+            "nodepool_initialization_taints",
+            options_list=["--nodepool-initialization-taints", "--node-init-taints"],
+            is_preview=True,
+            validator=validate_nodepool_taints,
+            help=(
+                "Comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
+                "Pass \"\" to clear existing taints."
+            ),
+        )
         c.argument("node_osdisk_type", arg_type=get_enum_type(node_os_disk_types))
         c.argument("node_osdisk_size", type=int)
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -733,6 +799,12 @@ def load_arguments(self, _):
             help="enable network observability for cluster",
         )
         c.argument(
+            "enable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="enable advanced network observability functionalities for cluster",
+        )
+        c.argument(
             "custom_ca_trust_certificates",
             options_list=["--custom-ca-trust-certificates", "--ca-certs"],
             is_preview=True,
@@ -798,6 +870,7 @@ def load_arguments(self, _):
         c.argument("ksm_metric_annotations_allow_list")
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
+        c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
@@ -840,6 +913,26 @@ def load_arguments(self, _):
             default=CONST_SSH_ACCESS_LOCALUSER,
             is_preview=True,
         )
+        # trusted launch
+        c.argument(
+            "enable_secure_boot",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "enable_vtpm",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument("enable_static_egress_gateway", is_preview=True, action="store_true")
+
+        c.argument(
+            "cluster_service_load_balancer_health_probe_mode",
+            is_preview=True,
+            arg_type=get_enum_type(health_probe_modes),
+        )
+        # virtual machines
+        c.argument("vm_sizes", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -927,6 +1020,9 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
+            "sku", is_preview=True, arg_type=get_enum_type(sku_names)
+        )
+        c.argument(
             "tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier
         )
         c.argument("api_server_authorized_ip_ranges", validator=validate_ip_ranges)
@@ -982,6 +1078,16 @@ def load_arguments(self, _):
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
         )
         c.argument("http_proxy_config")
+        c.argument(
+            "bootstrap_artifact_source",
+            arg_type=get_enum_type(bootstrap_artifact_source_types),
+            is_preview=True,
+        )
+        c.argument(
+            "bootstrap_container_registry_resource_id",
+            validator=validate_bootstrap_container_registry_resource_id,
+            is_preview=True,
+        )
         # addons
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("disable_secret_rotation", action="store_true")
@@ -1014,6 +1120,16 @@ def load_arguments(self, _):
             )
         )
         c.argument("nodepool_taints", validator=validate_nodepool_taints)
+        c.argument(
+            "nodepool_initialization_taints",
+            options_list=["--nodepool-initialization-taints", "--node-init-taints"],
+            is_preview=True,
+            validator=validate_nodepool_taints,
+            help=(
+                "Comma-separated taints: <key1>=<value1>:<effect1>,<key2>=<value2>:<effect2>. "
+                "Pass \"\" to clear existing taints."
+            ),
+        )
         # misc
         c.argument(
             "yes",
@@ -1116,6 +1232,8 @@ def load_arguments(self, _):
             ),
         )
         c.argument("disable_azure_monitor_metrics", action="store_true")
+        c.argument("enable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
+        c.argument("disable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
         c.argument(
             "enable_vpa",
             action="store_true",
@@ -1171,6 +1289,18 @@ def load_arguments(self, _):
             is_preview=True,
             help="disable network observability for cluster",
         )
+        c.argument(
+            "enable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="enable advanced network observability functionalities for cluster",
+        )
+        c.argument(
+            "disable_advanced_network_observability",
+            action="store_true",
+            is_preview=True,
+            help="disable advanced network observability functionalities for cluster",
+        )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
@@ -1183,8 +1313,8 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_azure_container_storage",
-            action="store_true",
-            help="Flag to disable azure container storage",
+            arg_type=get_enum_type(disable_storage_pool_types),
+            help="disable azure container storage or any one of the storagepool types",
         )
         c.argument(
             "storage_pool_name",
@@ -1201,7 +1331,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "storage_pool_option",
-            arg_type=get_enum_type(storage_pool_options),
+            arg_type=get_enum_type(disable_storage_pool_options),
             help="set ephemeral disk storage pool option for azure container storage",
         )
         c.argument(
@@ -1219,6 +1349,14 @@ def load_arguments(self, _):
         )
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
+        c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')
+        c.argument('disable_static_egress_gateway', is_preview=True, action='store_true')
+
+        c.argument(
+            "cluster_service_load_balancer_health_probe_mode",
+            is_preview=True,
+            arg_type=get_enum_type(health_probe_modes),
+        )
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1233,6 +1371,12 @@ def load_arguments(self, _):
             help="Do not prompt for confirmation.",
             action="store_true",
         )
+        c.argument('enable_force_upgrade', action='store_true')
+        c.argument(
+            'disable_force_upgrade', action='store_true',
+            validator=validate_force_upgrade_disable_and_enable_parameters
+        )
+        c.argument('upgrade_override_until')
 
     with self.argument_context("aks scale") as c:
         c.argument(
@@ -1381,6 +1525,25 @@ def load_arguments(self, _):
             default=CONST_SSH_ACCESS_LOCALUSER,
             is_preview=True,
         )
+        # trusted launch
+        c.argument(
+            "enable_secure_boot",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "enable_vtpm",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "gateway_prefix_size",
+            type=int,
+            validator=validate_gateway_prefix_size,
+            is_preview=True,
+        )
+        # virtual machines
+        c.argument("vm_sizes", is_preview=True)
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1439,6 +1602,27 @@ def load_arguments(self, _):
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        # trusted launch
+        c.argument(
+            "enable_secure_boot",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "disable_secure_boot",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "enable_vtpm",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "disable_vtpm",
+            is_preview=True,
+            action="store_true"
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)
@@ -1470,6 +1654,16 @@ def load_arguments(self, _):
             help="Space-separated machine names to delete.",
         )
 
+    with self.argument_context("aks nodepool manual-scale add") as c:
+        c.argument("vm_sizes", is_preview=True)
+
+    with self.argument_context("aks nodepool manual-scale update") as c:
+        c.argument("current_vm_sizes", is_preview=True)
+        c.argument("vm_sizes", is_preview=True)
+
+    with self.argument_context("aks nodepool manual-scale delete") as c:
+        c.argument("current_vm_sizes", is_preview=True)
+
     with self.argument_context("aks machine") as c:
         c.argument("cluster_name", help="The cluster name.")
         c.argument(
@@ -1481,6 +1675,14 @@ def load_arguments(self, _):
     with self.argument_context("aks machine show") as c:
         c.argument(
             "machine_name", help="to display specific information for all machines."
+        )
+
+    with self.argument_context("aks operation") as c:
+        c.argument(
+            "nodepool_name",
+            required=False,
+            validator=validate_nodepool_name,
+            default="",
         )
 
     with self.argument_context("aks maintenanceconfiguration") as c:
@@ -1987,16 +2189,6 @@ def load_arguments(self, _):
             "ingress_gateway_type", arg_type=get_enum_type(ingress_gateway_types)
         )
 
-    with self.argument_context("aks mesh enable-egress-gateway") as c:
-        c.argument(
-            "egx_gtw_nodeselector",
-            nargs="*",
-            validator=validate_egress_gtw_nodeselector,
-            required=False,
-            default=None,
-            options_list=["--egress-gateway-nodeselector", "--egx-gtw-ns"],
-        )
-
     with self.argument_context("aks mesh enable") as c:
         c.argument("revision", validator=validate_azure_service_mesh_revision)
         c.argument("key_vault_id")
@@ -2017,6 +2209,22 @@ def load_arguments(self, _):
             "revision", validator=validate_azure_service_mesh_revision, required=True
         )
 
+    with self.argument_context("aks mesh upgrade rollback") as c:
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true"
+        )
+
+    with self.argument_context("aks mesh upgrade complete") as c:
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true"
+        )
+
     with self.argument_context("aks approuting enable") as c:
         c.argument("enable_kv", action="store_true")
         c.argument("keyvault_id", options_list=["--attach-kv"])
@@ -2035,6 +2243,15 @@ def load_arguments(self, _):
     with self.argument_context("aks approuting zone update") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
         c.argument("attach_zones")
+
+    with self.argument_context('aks check-network outbound') as c:
+        c.argument('cluster_name', options_list=['--name', '-n'],
+                   required=True, help='Name of the managed cluster.')
+        c.argument('node_name', help='Name of the node to perform the connectivity check.')
+        c.argument('custom_endpoints',
+                   nargs="+",
+                   help='Space-separated additional endpoint(s) to perform the connectivity check.',
+                   validator=validate_custom_endpoints)
 
 
 def _get_default_install_location(exe_name):

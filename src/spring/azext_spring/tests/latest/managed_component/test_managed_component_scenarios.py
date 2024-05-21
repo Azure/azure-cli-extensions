@@ -2,14 +2,14 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import unittest
+import json
 
-from azure.cli.testsdk import (ScenarioTest, record_only, live_only)
+from azext_spring._utils import BearerAuth
+from azext_spring.managed_components.managed_component import get_component
+from azext_spring.vendored_sdks.appplatform.v2024_05_01_preview import models
+from azure.cli.testsdk import (ScenarioTest)
 from azure.cli.testsdk.base import ExecutionResult
 from requests import Response
-from ....managed_components.managed_component import get_component
-from ...._utils import BearerAuth
-
 
 try:
     import unittest.mock as mock
@@ -152,12 +152,38 @@ class ManagedComponentTest(ScenarioTest):
             instance: str = e["name"]
             self.assertTrue(instance.startswith("scg-operator"))
 
+    @mock.patch('azext_spring.commands.cf_spring', autospec=True)
+    @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
+    def test_oss_config_server_component_instance_list(self, is_enterprise_tier_mock, client_factory_mock):
+        self.kwargs.update({
+            'serviceName': 'asae-name',
+            'rg': 'resource-group',
+            'component': 'config-server'
+        })
+
+        is_enterprise_tier_mock.return_value = True
+
+        client = mock.MagicMock()
+        client.config_servers.get.return_value = self._get_mocked_oss_config_server()
+        client_factory_mock.return_value = client
+
+        # scg operator is a subcomponent of Spring Cloud Gateway, need to enable it first.
+        result: ExecutionResult = self.cmd('spring component instance list -s {serviceName} -g {rg} -c {component}')
+        output = result.get_output_in_json()
+        self.assertTrue(type(output), list)
+        self.assertEqual(2, len(output))
+        for e in output:
+            self.assertTrue(isinstance(e, dict))
+            self.assertTrue("name" in e)
+            instance: str = e["name"]
+            self.assertTrue(instance.startswith("config-server-default"))
+
     @mock.patch('azext_spring.log_stream.log_stream_operations.iter_lines', autospec=True)
     @mock.patch('azext_spring.log_stream.log_stream_operations.requests', autospec=True)
     @mock.patch('azext_spring.commands.cf_spring', autospec=True)
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_hostname', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_bearer_auth', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_hostname', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_bearer_auth', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_default_writer', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_prefix_writer', autospec=True)
     def test_acs_log_stream(self, _get_prefix_writer_mock, _get_default_writer_mock, _get_bearer_auth_mock,
@@ -201,8 +227,8 @@ class ManagedComponentTest(ScenarioTest):
     @mock.patch('azext_spring.log_stream.log_stream_operations.requests', autospec=True)
     @mock.patch('azext_spring.commands.cf_spring', autospec=True)
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_hostname', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_bearer_auth', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_hostname', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_bearer_auth', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_default_writer', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_prefix_writer', autospec=True)
     def test_flux_log_stream(self, _get_prefix_writer_mock, _get_default_writer_mock, _get_bearer_auth_mock,
@@ -246,8 +272,8 @@ class ManagedComponentTest(ScenarioTest):
     @mock.patch('azext_spring.log_stream.log_stream_operations.requests', autospec=True)
     @mock.patch('azext_spring.commands.cf_spring', autospec=True)
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_hostname', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_bearer_auth', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_hostname', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_bearer_auth', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_default_writer', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_prefix_writer', autospec=True)
     def test_scg_log_stream(self, _get_prefix_writer_mock, _get_default_writer_mock, _get_bearer_auth_mock,
@@ -291,8 +317,8 @@ class ManagedComponentTest(ScenarioTest):
     @mock.patch('azext_spring.log_stream.log_stream_operations.requests', autospec=True)
     @mock.patch('azext_spring.commands.cf_spring', autospec=True)
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_hostname', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_bearer_auth', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_hostname', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_bearer_auth', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_default_writer', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_prefix_writer', autospec=True)
     def test_scg_operator_log_stream(self, _get_prefix_writer_mock, _get_default_writer_mock, _get_bearer_auth_mock,
@@ -336,8 +362,53 @@ class ManagedComponentTest(ScenarioTest):
     @mock.patch('azext_spring.log_stream.log_stream_operations.requests', autospec=True)
     @mock.patch('azext_spring.commands.cf_spring', autospec=True)
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_hostname', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_bearer_auth', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_hostname', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_bearer_auth', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations._get_default_writer', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations._get_prefix_writer', autospec=True)
+    def test_oss_config_server_log_stream(self, _get_prefix_writer_mock, _get_default_writer_mock, _get_bearer_auth_mock,
+                                     _get_hostname_mock, is_enterprise_tier_mock, client_factory_mock, requests_mock,
+                                     iter_lines_mock):
+        command_std_out = []
+        _get_default_writer_mock.return_value = TestingWriter(command_std_out)
+        _get_prefix_writer_mock.return_value = TestingWriter(command_std_out)
+
+        _get_bearer_auth_mock.return_value = BearerAuth("fake-bearer-token")
+        asae_name = "asae-name"
+        _get_hostname_mock.return_value = "{}.asc-test.net".format(asae_name)
+
+        is_enterprise_tier_mock.return_value = True
+
+        client = mock.MagicMock()
+        client.config_servers.get.return_value = self._get_mocked_oss_config_server()
+        client_factory_mock.return_value = client
+
+        response = Response()
+        response.status_code = 200
+        requests_mock.get.return_value = response
+
+        lines = []
+        for i in range(50):
+            line = "Log line No.{}\n".format(i)
+            line = line.encode('utf-8')
+            lines.append(line)
+        iter_lines_mock.return_value = lines
+
+        self.kwargs.update({
+            'serviceName': asae_name,
+            'rg': 'resource-group',
+            'component': 'config-server'
+        })
+
+        self.cmd('spring component logs -s {serviceName} -g {rg} -n {component} --all-instances --lines 50')
+        self.assertEqual(len(command_std_out), 100)
+
+    @mock.patch('azext_spring.log_stream.log_stream_operations.iter_lines', autospec=True)
+    @mock.patch('azext_spring.log_stream.log_stream_operations.requests', autospec=True)
+    @mock.patch('azext_spring.commands.cf_spring', autospec=True)
+    @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_hostname', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_bearer_auth', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_default_writer', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_prefix_writer', autospec=True)
     def test_log_stream_without_instance_info_1(self, _get_prefix_writer_mock, _get_default_writer_mock,
@@ -381,8 +452,8 @@ class ManagedComponentTest(ScenarioTest):
     @mock.patch('azext_spring.log_stream.log_stream_operations.requests', autospec=True)
     @mock.patch('azext_spring.commands.cf_spring', autospec=True)
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_hostname', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_bearer_auth', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_hostname', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_bearer_auth', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_default_writer', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_prefix_writer', autospec=True)
     def test_log_stream_without_instance_info_1(self, _get_prefix_writer_mock, _get_default_writer_mock,
@@ -426,8 +497,8 @@ class ManagedComponentTest(ScenarioTest):
     @mock.patch('azext_spring.log_stream.log_stream_operations.iter_lines', autospec=True)
     @mock.patch('azext_spring.log_stream.log_stream_operations.requests', autospec=True)
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_hostname', autospec=True)
-    @mock.patch('azext_spring.managed_components.managed_component_operations._get_bearer_auth', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_hostname', autospec=True)
+    @mock.patch('azext_spring.managed_components.managed_component_operations.get_bearer_auth', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_default_writer', autospec=True)
     @mock.patch('azext_spring.managed_components.managed_component_operations._get_prefix_writer', autospec=True)
     def test_log_stream_only_by_instance_name(self, _get_prefix_writer_mock, _get_default_writer_mock,
@@ -515,3 +586,32 @@ class ManagedComponentTest(ScenarioTest):
         resource.properties.operator_properties.instances = [operator_1]
         operator_1.name = "scg-operator-74947fdcb-8hj85"
         return resource
+
+    def _get_mocked_oss_config_server(self) -> models.ConfigServerResource:
+        raw_response = r'''
+        {
+            "id": "/subscriptions/subName/resourceGroups/groupName/providers/Microsoft.AppPlatform/Spring/serviceName/configServers/default",
+            "name": "default",
+            "type": "Microsoft.AppPlatform/Spring/configServers",
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceRequests": {
+                    "cpu": "500m",
+                    "memory": "1Gi",
+                    "instanceCount": 2
+                },
+                "instances": [
+                    {
+                        "name": "config-server-default-6b76cfc9fd-j5jqt",
+                        "status": "Running"
+                    },
+                    {
+                        "name": "config-server-default-6b76cfc9fd-nlbmh",
+                        "status": "Running"
+                    }
+                ],
+                "configServer": {}
+            }
+        }
+        '''
+        return models.ConfigServerResource.deserialize(json.loads(raw_response))

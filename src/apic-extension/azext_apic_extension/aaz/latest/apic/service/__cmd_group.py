@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic service",
 )
 class __CMDGroup(AAZCommandGroup):
-    """API Center
+    """Manage an Azure API Center service instance.
     """
     pass
 

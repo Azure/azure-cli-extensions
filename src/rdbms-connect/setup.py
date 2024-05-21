@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '1.0.4'
+VERSION = '1.0.6'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -29,14 +29,17 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     'License :: OSI Approved :: MIT License',
 ]
 
 DEPENDENCIES = [
-    'setproctitle~=1.2.2',
-    'psycopg2==2.9.3',
-    'mycli==1.26.1',
-    'pgcli==3.4.1'
+    'setproctitle~=1.3.3',
+    'psycopg2~=2.9.3',
+    'mycli~=1.27.0',
+    'pgcli==4.0.1'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:

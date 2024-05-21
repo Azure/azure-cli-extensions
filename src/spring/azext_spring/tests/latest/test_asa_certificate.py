@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 import os
-from ...vendored_sdks.appplatform.v2024_01_01_preview import models
+from .common.test_utils import get_test_cmd
+from ...vendored_sdks.appplatform.v2024_05_01_preview import models
 from ..._utils import _get_sku_name
 from ...custom import (certificate_add, certificate_update)
 try:
@@ -20,16 +21,6 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
 
 
 class BasicTest(unittest.TestCase):
@@ -48,7 +39,7 @@ class CertificateTests(BasicTest):
 
     def test_create_certificate(self):
         client = self._get_basic_mock_client()
-        certificate_add(_get_test_cmd(), client, 'rg', 'asc', 'my-cert',
+        certificate_add(get_test_cmd(), client, 'rg', 'asc', 'my-cert',
                         False, "vault-uri", "kv-cert-name")
         args = client.certificates.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))
@@ -68,7 +59,7 @@ class CertificateTests(BasicTest):
                 exclude_private_key=False,
                 auto_sync="Disabled")
         )
-        certificate_update(_get_test_cmd(), client, 'rg', 'asc', 'my-cert', True)
+        certificate_update(get_test_cmd(), client, 'rg', 'asc', 'my-cert', True)
         args = client.certificates.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))
         self.assertEqual(4, len(args[0][0]))

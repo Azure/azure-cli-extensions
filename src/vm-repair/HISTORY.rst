@@ -1,6 +1,27 @@
 
 Release History
 ===============
+1.0.5
+++++++
+Bug fix ASG is not added properly when reset the nic
+Add ASG if exist when nic is reset 
+
+1.0.4
+++++++
+Logging improvements and script fixing
+
+1.0.3
+++++++
+Bug fix the win-nest specific SKU issue
+
+1.0.2
+++++++
+Bug fix for repo null string check so its set to main correctly
+Add more logging to capture issues
+
+1.0.1
+++++++
+Fix bug in win-run-driver.ps1 for 1.0.0b1.
 
 1.0.0b1
 ++++++

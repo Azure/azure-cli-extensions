@@ -17,16 +17,18 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List requests to list all resources in a subscription.
 
-    :example: Get all resources from a subscription/resource group
+    :example: Get all resources from a subscription
         az communication email list --subscription SubscriptionId
+
+    :example: Get all resources from a resource group
         az communication email list -g ResourceGroup
     """
 
     _aaz_info = {
-        "version": "2023-04-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.communication/emailservices", "2023-04-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices", "2023-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.communication/emailservices", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.communication/emailservices", "2023-04-01"],
         ]
     }
 
@@ -117,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -255,7 +257,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

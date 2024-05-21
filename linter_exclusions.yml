@@ -124,6 +124,12 @@ aks create:
     enable_network_observability:
       rule_exclusions:
       - option_length_too_long
+    enable_advanced_network_observability:
+      rule_exclusions:
+      - option_length_too_long
+    cluster_service_load_balancer_health_probe_mode:
+      rule_exclusions:
+      - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:
@@ -202,6 +208,15 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     disable_network_observability:
+      rule_exclusions:
+      - option_length_too_long
+    enable_advanced_network_observability:
+      rule_exclusions:
+      - option_length_too_long
+    disable_advanced_network_observability:
+      rule_exclusions:
+      - option_length_too_long
+    cluster_service_load_balancer_health_probe_mode:
       rule_exclusions:
       - option_length_too_long
 arcdata dc create:
@@ -319,16 +334,6 @@ batch pool create:
     target_low_priority_nodes:
       rule_exclusions:
       - option_length_too_long
-blockchain member create:
-  parameters:
-    consortium_management_account_password:
-      rule_exclusions:
-      - option_length_too_long
-blockchain member update:
-  parameters:
-    consortium_management_account_password:
-      rule_exclusions:
-      - option_length_too_long
 blueprint assignment create:
   parameters:
     user_assigned_identity:
@@ -370,6 +375,14 @@ containerapp env create:
       rule_exclusions:
       - option_length_too_long
     platform_reserved_dns_ip:
+      rule_exclusions:
+      - option_length_too_long
+    p2p_encryption_enabled:
+      rule_exclusions:
+      - option_length_too_long
+containerapp env update:
+  parameters:
+    p2p_encryption_enabled:
       rule_exclusions:
       - option_length_too_long
 containerapp github-action add:
@@ -538,6 +551,11 @@ datafactory pipeline create-run:
 dataprotection backup-instance restore initialize-for-data-recovery-as-files:
   parameters:
     target_blob_container_url:
+      rule_exclusions:
+      - option_length_too_long
+dataprotection backup-instance update-msi-permissions:
+  parameters:
+    target_storage_account_id:
       rule_exclusions:
       - option_length_too_long
 dataprotection backup-vault create:
@@ -2941,13 +2959,16 @@ support services problem-classifications show:
     problem_classification_name:
       rule_exclusions:
       - option_length_too_long
-support tickets communications create:
+support in-subscription communication create:
   parameters:
     communication_subject:
       rule_exclusions:
       - option_length_too_long
-support tickets create:
+support in-subscription tickets create:
   parameters:
+    advanced_diagnostic_consent:
+      rule_exclusions:
+      - option_length_too_long
     contact_additional_emails:
       rule_exclusions:
       - option_length_too_long
@@ -2957,8 +2978,38 @@ support tickets create:
     require_24_by_7_response:
       rule_exclusions:
       - option_length_too_long
-support tickets update:
+support in-subscription tickets update:
   parameters:
+    advanced_diagnostic_consent:
+      rule_exclusions:
+      - option_length_too_long
+    contact_additional_emails:
+      rule_exclusions:
+      - option_length_too_long
+support no-subscription communication create:
+  parameters:
+    communication_subject:
+      rule_exclusions:
+      - option_length_too_long
+support no-subscription tickets create:
+  parameters:
+    advanced_diagnostic_consent:
+      rule_exclusions:
+      - option_length_too_long
+    contact_additional_emails:
+      rule_exclusions:
+      - option_length_too_long
+    problem_classification:
+      rule_exclusions:
+      - option_length_too_long
+    require_24_by_7_response:
+      rule_exclusions:
+      - option_length_too_long
+support no-subscription tickets update:
+  parameters:
+    advanced_diagnostic_consent:
+      rule_exclusions:
+      - option_length_too_long
     contact_additional_emails:
       rule_exclusions:
       - option_length_too_long

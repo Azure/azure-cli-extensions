@@ -11,7 +11,7 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._gateway_constant import (GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE,
                                 GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE, GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
 from ._utils import get_spring_sku
