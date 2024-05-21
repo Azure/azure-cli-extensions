@@ -1122,8 +1122,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.set_up_runtime()
 
         if self.get_argument_scale_rule_name() and self.get_argument_scale_rule_identity():
-            customScaleRule = safe_get(self.new_containerapp, "properties", "template", "scale", "rules", default=[])
-            if customScaleRule and customScaleRule[0] and customScaleRule[0]["custom"]:
+           custom_scale_rule = safe_get(self.new_containerapp, "properties", "template", "scale", "rules", default=[])
+            if custom_scale_rule and len(custom_scale_rule) > 0 and custom_scale_rule[0]["custom"]:
                 identity = self.get_argument_scale_rule_identity().lower()
                 if identity != "system":
                     subscription_id = get_subscription_id(self.cmd.cli_ctx)
