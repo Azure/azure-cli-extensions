@@ -193,7 +193,7 @@ class ContainerappIdentityTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].azureQueue.identity", user_identity_id, case_sensitive=False),
         ])
 
-        self.cmd(f'containerapp update -g {resource_group} -n {ca_name} --scale-rule-name azure-blob --scale-rule-type azure-blob --scale-rule-metadata "accountName=account2" "blobContainerName=blob2" "blobCount=2" --scale-rule-identity {user_identity_name1}')
+        self.cmd(f'containerapp update -g {resource_group} -n {ca_name} --scale-rule-name azure-blob --scale-rule-type azure-blob --scale-rule-metadata "accountName=account2" "blobContainerName=blob2" "blobCount=2" --scale-rule-identity {user_identity_id}')
         self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
             JMESPathCheck("properties.template.scale.rules[0].name", "azure-blob"),
             JMESPathCheck("properties.template.scale.rules[0].custom.metadata.accountName", "account2"),
