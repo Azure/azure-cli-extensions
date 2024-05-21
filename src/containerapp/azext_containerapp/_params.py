@@ -26,11 +26,6 @@ def load_arguments(self, _):
 
     name_type = CLIArgumentType(options_list=['--name', '-n'])
 
-    # Scale
-    with self.argument_context('containerapp', arg_group='Scale') as c:
-        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'], 
-                   help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
-
     with self.argument_context('containerapp create') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://aka.ms/SourceToCloudSupportedVersions.", is_preview=True)
         c.argument('artifact', help="Local path to the application artifact for building the container image. See the supported artifacts here: https://aka.ms/SourceToCloudSupportedArtifacts.", is_preview=True)
@@ -305,13 +300,16 @@ def load_arguments(self, _):
         c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval.")
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.")
         c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule.")
-        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'], 
-                   help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
-
+        
     # params for preview
     with self.argument_context('containerapp') as c:
         c.argument('managed_env', validator=validate_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('environment_type', arg_type=get_enum_type(["managed", "connected"]), help="Type of environment.", is_preview=True)
+
+    # scale
+    with self.argument_context('containerapp', arg_group='Scale') as c:
+        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'], 
+                   help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
 
     with self.argument_context('containerapp connected-env') as c:
         c.argument('name', name_type, help='Name of the Container Apps connected environment.')

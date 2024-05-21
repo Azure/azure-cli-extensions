@@ -22,14 +22,6 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
     def construct_payload(self):
         super().construct_payload()
         self.set_up_extended_location()
-        if self.get_argument_scale_rule_identity():
-            scaleRules = safe_get(self.containerappjob_def, "properties", "configuration", "eventTriggerConfig", "scale", "rules", default=[])
-            if scaleRules and scaleRules[0]:
-                identity = self.get_argument_scale_rule_identity().lower()
-                if identity != "system":
-                    subscription_id = get_subscription_id(self.cmd.cli_ctx)
-                    identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
-                self.containerappjob_def["properties"]["configuration"]["eventTriggerConfig"]["scale"]["rules"][0]["identity"] = identity
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -80,9 +72,6 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
     def get_argument_environment_type(self):
         return self.get_param("environment_type")
     
-    def get_argument_scale_rule_identity(self):
-        return self.get_param("scale_rule_identity")
-
     def set_argument_managed_env(self, managed_env):
         self.set_param("managed_env", managed_env)
 
