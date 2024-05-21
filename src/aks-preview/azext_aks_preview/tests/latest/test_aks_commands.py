@@ -4378,6 +4378,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        kwargs.update(
+            {
+                "if_match": "",
+            }
+        )
+
         # nodepool delete
         self.cmd(
             "aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait --if-match={if_match}",
