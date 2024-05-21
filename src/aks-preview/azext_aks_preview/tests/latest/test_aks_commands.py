@@ -4302,7 +4302,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # upgrade cluster control plane only
         self.cmd(
-            "aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version} --yes --if-match={if_match}",",
+            "aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version} --yes --if-match={if_match}",
             checks=[self.check("provisioningState", "Succeeded")],
         )
 
