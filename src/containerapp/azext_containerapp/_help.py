@@ -890,7 +890,7 @@ helps['containerapp create'] = """
               --scale-rule-type azure-queue \\
               --scale-rule-metadata "accountName=mystorageaccountname" \\
                                     "cloud=AzurePublicCloud" \\
-                                    "queueLength": "5" "queueName": "foo" \\
+                                    "queueLength=5" "queueName=foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name"
     - name: Create a container app with a custom scale rule using identity to authenticate
       text: |
@@ -901,9 +901,8 @@ helps['containerapp create'] = """
               --scale-rule-type azure-queue \\
               --scale-rule-metadata "accountName=mystorageaccountname" \\
                                     "cloud=AzurePublicCloud" \\
-                                    "queueLength": "5" "queueName": "foo" \\
+                                    "queueLength=5" "queueName=foo" \\
               --scale-rule-identity myUserIdentityResourceId
-    
     - name: Create a container app with secrets and mounts them in a volume.
       text: |
           az containerapp create -n my-containerapp -g MyResourceGroup \\
