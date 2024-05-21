@@ -300,7 +300,7 @@ def load_arguments(self, _):
         c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval.")
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.")
         c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule.")
-        
+
     # params for preview
     with self.argument_context('containerapp') as c:
         c.argument('managed_env', validator=validate_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")

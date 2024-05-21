@@ -6,6 +6,7 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError)
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobCreateDecorator
 from azure.cli.command_modules.containerapp._utils import safe_get
+
 from knack.log import get_logger
 
 from msrestazure.tools import parse_resource_id
