@@ -380,7 +380,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp sessionpool', arg_group='Container') as c:
         c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('container_name', help="Name of the container.")
+        c.argument('container_name', help="Name of the container. On create if no container name is provided the container name will default to the name of the session pool coverted to lower case.")
         c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores from 0.25 - 2.0, e.g. 0.5")
         c.argument('memory', validator=validate_memory, help="Required memory from 0.5 - 4.0 ending with \"Gi\", e.g. 1.0Gi")
         c.argument('env_vars', nargs='*', help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
