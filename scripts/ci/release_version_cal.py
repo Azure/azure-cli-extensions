@@ -60,11 +60,11 @@ def extract_module_version_update_info(mod_update_info, mod):
     """
     mod_update_info["setup_updated"] = False
     module_setup_update_pattern = re.compile(r"\+\+\+.*?src/%s/setup.py" % mod)
-    module_version_update_pattern = re.compile(r"\+.*?VERSION.*?\=.*?[\'\"]([0-9\.b]+)[\'\"]")
+    module_version_update_pattern = re.compile(r"\+\s?VERSION\s?\=\s?[\'\"]([0-9\.b]+)[\'\"]")
     with open(diff_code_file, "r") as f:
         for line in f:
             if mod_update_info["setup_updated"]:
-                if line.find("---") != -1 or mod_update_info.get("version_diff", None):
+                if line.find("---") == 0 or mod_update_info.get("version_diff", None):
                     break
                 mod_version_update_match = re.findall(module_version_update_pattern, line)
                 if mod_version_update_match and len(mod_version_update_match) == 1:
@@ -93,7 +93,7 @@ def extract_module_metadata_update_info(mod_update_info, mod):
     with open(diff_code_file, "r") as f:
         for line in f:
             if mod_update_info["meta_updated"]:
-                if line.find("---") != -1:
+                if line.find("---") == 0:
                     break
                 ispreview_add_match = re.findall(module_ispreview_add_pattern, line)
                 if ispreview_add_match and len(ispreview_add_match):
@@ -226,7 +226,7 @@ def gen_preview_comment_message(mod, mod_update_info, mod_message):
     if mod_update_info.get("preview_tag", "-") == mod_update_info.get("preview_tag_diff", "-"):
         return
     preview_comment_message = " - "
-    if mod_update_info["setup_updated"]:
+    if mod_update_info["setup_updated"] and mod_update_info.get("version_diff", None):
         block_pr = 1
         preview_comment_message += ":warning: "
     if mod_update_info.get("preview_tag", None) and mod_update_info.get("preview_tag_diff", None):
