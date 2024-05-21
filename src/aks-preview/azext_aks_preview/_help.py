@@ -630,7 +630,7 @@ helps['aks create'] = f"""
           short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
         - name: --if-match
           type: string
-          short-summary: The ETag of the managed cluster. Omit this value to create a managed cluster.
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster. 
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
@@ -776,6 +776,12 @@ helps['aks upgrade'] = """
           type: string
           short-summary: Until when the cluster upgradeSettings overrides are effective.
           long-summary: It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster. 
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
     examples:
       - name: Upgrade a existing managed cluster to a managed cluster snapshot.
         text: az aks upgrade -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
@@ -898,7 +904,7 @@ helps['aks update'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --if-match
           type: string
-          short-summary: The ETag of the managed cluster. Omit this value to create a managed cluster.
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster. 
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
@@ -1845,7 +1851,7 @@ helps['aks nodepool add'] = """
           short-summary: Enable vTPM on agent node pool. Must use VMSS agent pool type.
         - name: --if-match
           type: string
-          short-summary: The ETag of the agentpool. Omit this value to create an agentpool.
+          short-summary: The value provided will be compared to the ETag of the agentpool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. 
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new agentpool to be created, but to prevent updating an existing agentpool. Other values will be ignored.
@@ -1913,6 +1919,12 @@ helps['aks nodepool upgrade'] = """
         - name: --snapshot-id
           type: string
           short-summary: The source snapshot id used to upgrade this nodepool. Must use VMSS agent pool type.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. 
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
 """
 
 helps['aks nodepool update'] = """
@@ -1994,7 +2006,7 @@ helps['aks nodepool update'] = """
           short-summary: Disable vTPM on an existing Trusted Launch enabled agent node pool.
         - name: --if-match
           type: string
-          short-summary: The ETag of the node pool. Omit this value to always update the node pool.
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. 
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
@@ -2053,7 +2065,8 @@ helps['aks nodepool delete'] = """
           short-summary: (PREVIEW) ignore-pod-disruption-budget deletes an existing nodepool without considering Pod Disruption Budget.
         - name: --if-match
           type: string
-          short-summary: The ETag of the node pool. Omit this value to always delete the node pool.
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. 
+
     examples:
         - name: Delete an agent pool with ignore-pod-disruption-budget
           text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget=true
