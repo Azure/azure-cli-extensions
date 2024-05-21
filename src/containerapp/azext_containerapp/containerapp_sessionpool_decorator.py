@@ -426,7 +426,6 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
             original_secrets_names = []
             for secret in original_secrets:
                 original_secrets_names.append(secret["name"])
-            logger.warning(original_secrets)
             safe_set(customer_container_template, "registryCredentials", "passwordSecretRef",
                      value=store_as_secret_and_return_secret_ref(secrets_def,
                                                                  customer_container_template["registryCredentials"]["username"],
