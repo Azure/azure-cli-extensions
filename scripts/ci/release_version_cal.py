@@ -317,11 +317,13 @@ def main():
     if len(changed_module_list) == 0:
         comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
         save_comment_message(output_file, comment_message)
+        save_gh_output()
         return
     fill_module_update_info(modules_update_info)
     if len(modules_update_info) == 0:
         comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
         save_comment_message(output_file, comment_message)
+        save_gh_output()
         return
     for mod, update_info in modules_update_info.items():
         gen_comment_message(mod, update_info, comment_message)
