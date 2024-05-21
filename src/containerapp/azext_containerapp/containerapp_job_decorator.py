@@ -5,8 +5,7 @@
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError)
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobCreateDecorator
-from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_identity_resource_id
-from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.command_modules.containerapp._utils import safe_get
 from knack.log import get_logger
 
 from msrestazure.tools import parse_resource_id
@@ -71,7 +70,7 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
 
     def get_argument_environment_type(self):
         return self.get_param("environment_type")
-    
+
     def set_argument_managed_env(self, managed_env):
         self.set_param("managed_env", managed_env)
 
