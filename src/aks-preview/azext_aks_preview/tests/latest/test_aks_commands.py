@@ -4378,7 +4378,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-        kwargs.update(
+        self.kwargs.update(
             {
                 "if_match": "",
             }
