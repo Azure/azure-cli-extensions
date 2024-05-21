@@ -131,13 +131,6 @@ class Update(AAZCommand):
             help="Server",
             nullable=True,
         )
-        _args_schema.state = AAZStrArg(
-            options=["--state"],
-            arg_group="Properties",
-            help="State of API deployment.",
-            nullable=True,
-            enum={"active": "active", "inactive": "inactive"},
-        )
         _args_schema.title = AAZStrArg(
             options=["--title"],
             arg_group="Properties",
@@ -417,7 +410,6 @@ class Update(AAZCommand):
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("environmentId", AAZStrType, ".environment_id")
                 properties.set_prop("server", AAZObjectType, ".server")
-                properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("title", AAZStrType, ".title")
 
             custom_properties = _builder.get(".properties.customProperties")

@@ -41,7 +41,7 @@ class DeploymentCommandsTests(ScenarioTest):
           'server': '{"runtimeUri":["https://example.com"]}',
           'customProperties': '{{"{}":true}}'.format(metadata_name),
         })
-        self.cmd('az apic api deployment create -g {rg} -s {s} --api-id {api} --definition-id /workspaces/default/apis/{api}/versions/{v}/definitions/{d} --environment-id /workspaces/default/environments/{e} --deployment-id {name} --title "test deployment" --server \'{server}\' --description "deployment description" --state active --custom-properties \'{customProperties}\'', checks=[
+        self.cmd('az apic api deployment create -g {rg} -s {s} --api-id {api} --definition-id /workspaces/default/apis/{api}/versions/{v}/definitions/{d} --environment-id /workspaces/default/environments/{e} --deployment-id {name} --title "test deployment" --server \'{server}\' --description "deployment description" --custom-properties \'{customProperties}\'', checks=[
             self.check('name', '{name}'),
             self.check('title', 'test deployment'),
             self.check('server.runtimeUri[0]', 'https://example.com'),
@@ -49,8 +49,6 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('definitionId', '/workspaces/default/apis/{api}/versions/{v}/definitions/{d}'),
             self.check('environmentId', '/workspaces/default/environments/{e}'),
             self.check('description', 'deployment description'),
-            # TODO: Uncomment this line after Control Plane API fixed related bug
-            # self.check('state', 'active'),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
@@ -127,15 +125,13 @@ class DeploymentCommandsTests(ScenarioTest):
           'server': '{"runtimeUri":["https://example2.com"]}',
           'customProperties': '{{"{}":true}}'.format(metadata_name),
         })
-        self.cmd('az apic api deployment update -g {rg} -s {s} --api-id {api} --definition-id /workspaces/default/apis/{api}/versions/{v}/definitions/{d} --environment-id /workspaces/default/environments/{e} --deployment-id {dep} --title "updated deployment" --server \'{server}\' --description "deployment description" --state active --custom-properties \'{customProperties}\'', checks=[
+        self.cmd('az apic api deployment update -g {rg} -s {s} --api-id {api} --definition-id /workspaces/default/apis/{api}/versions/{v}/definitions/{d} --environment-id /workspaces/default/environments/{e} --deployment-id {dep} --title "updated deployment" --server \'{server}\' --description "deployment description" --custom-properties \'{customProperties}\'', checks=[
             self.check('title', 'updated deployment'),
             self.check('server.runtimeUri[0]', 'https://example2.com'),
             self.check('customProperties.{}'.format(metadata_name), True),
             self.check('definitionId', '/workspaces/default/apis/{api}/versions/{v}/definitions/{d}'),
             self.check('environmentId', '/workspaces/default/environments/{e}'),
             self.check('description', 'deployment description'),
-            # TODO: Uncomment this line after Control Plane API fixed related bug
-            # self.check('state', 'active'),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
