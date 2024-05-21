@@ -16,6 +16,7 @@ import json
 import yaml
 import requests
 from knack.log import get_logger
+from knack.util import CLIError
 import chardet
 from azure.cli.core.aaz._arg import AAZStrArg
 from .command_patches import ImportAPIDefinitionExtension
@@ -32,11 +33,13 @@ class ImportSpecificationExtension(ImportAPIDefinitionExtension):
 
         # Check the size of 'value' if format is inline and raise error if value is greater than 3 mb
         if args.format == 'inline':
-            value_size_bytes = sys.getsizeof(args.value)
+            value_size_bytes = sys.getsizeof(str(args.value))
             value_size_mb = value_size_bytes / (1024 * 1024)  # Convert bytes to megabytes
             if value_size_mb > 3:
-                logger.error('The size of "value" is greater than 3 MB. '
-                             'Please use --format "url" to import the specification from a URL for size greater than 3 mb.')
+                raise CLIError(
+                    'The size of "value" is greater than 3 MB. '
+                    'Please use --format "link" to import the specification from a URL for size greater than 3 mb.'
+                )
 
 
 class ExportSpecificationExtension(ExportAPIDefinitionExtension):
