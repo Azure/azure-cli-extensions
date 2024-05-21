@@ -647,6 +647,10 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind is single.")
         validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
+        if self.get_argument_scale_rule_type() and self.get_argument_scale_rule_identity():
+            scale_rule_type = self.get_argument_scale_rule_type().lower()
+            if scale_rule_type == "http" or scale_rule_type == "tcp":
+                raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -1103,6 +1107,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             raise InvalidArgumentValueError(
                 "--bind have multiple values, but --customized-keys only can be set when --bind is single.")
         validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
+        if self.get_argument_scale_rule_type() and self.get_argument_scale_rule_identity():
+            scale_rule_type = self.get_argument_scale_rule_type().lower()
+            if scale_rule_type == "http" or scale_rule_type == "tcp":
+                raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
 
     def construct_payload(self):
         super().construct_payload()
