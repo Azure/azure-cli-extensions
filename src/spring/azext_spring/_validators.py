@@ -355,7 +355,9 @@ def _validate_subnet(namespace, subnet):
         return
     if subnet.get("ipConfigurations", None):
         raise InvalidArgumentValueError('--{} should not have connected device.'.format(name))
-    address = ip_network(subnet["addressPrefix"], strict=False)
+
+    addressPrefix = subnet.get("addressPrefix") or subnet["addressPrefixes"][0]
+    address = ip_network(addressPrefix, strict=False)
     if address.prefixlen > limit:
         raise InvalidArgumentValueError('--{0} should contain at least /{1} address, got /{2}'.format(name, limit, address.prefixlen))
 
