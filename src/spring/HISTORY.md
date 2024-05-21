@@ -1,5 +1,9 @@
 Release History
 ===============
+1.24.3
+---
+* Fix subnet address prefix validation issue.
+
 1.24.2
 ---
 * Fix commands `az spring config-server enable` and `az spring config-server disable`.
