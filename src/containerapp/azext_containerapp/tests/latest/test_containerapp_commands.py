@@ -185,14 +185,24 @@ class ContainerappIdentityTests(ScenarioTest):
         user_identity_id = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name1)).get_output_in_json()["id"]
 
         self.cmd(f'containerapp create -g {resource_group} -n {ca_name} --environment {env} --system-assigned --user-assigned {user_identity_name1} --scale-rule-name azure-queue --scale-rule-type azure-queue --scale-rule-metadata "accountName=account1" "queueName=queue1" "queueLength=1" --scale-rule-identity {user_identity_name1}')
-
         self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
             JMESPathCheck("properties.template.scale.rules[0].name", "azure-queue"),
             JMESPathCheck("properties.template.scale.rules[0].azureQueue.accountName", "account1"),
             JMESPathCheck("properties.template.scale.rules[0].azureQueue.queueName", "queue1"),
             JMESPathCheck("properties.template.scale.rules[0].azureQueue.queueLength", "1"),
-            JMESPathCheck("properties.template.scale.rules[0].azureQueue.identity", user_identity_id),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.identity", user_identity_id, case_sensitive=False),
         ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {ca_name} --scale-rule-name azure-blob --scale-rule-type azure-blob --scale-rule-metadata "accountName=account2" "blobContainerName=blob2" "blobCount=2" --scale-rule-identity {user_identity_name1}')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "azure-blob"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.accountName", "account2"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.blobContainerName", "blob2"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.blobCount", "2"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.identity", user_identity_id, case_sensitive=False),
+            JMESPathCheck("properties.template.scale.rules[0].custom.type", "azure-blob"),
+        ])
+
 
 class ContainerappIngressTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
