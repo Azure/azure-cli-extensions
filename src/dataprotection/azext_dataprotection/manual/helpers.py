@@ -36,13 +36,15 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
                           "disableSoftDelete": "/backupconfig/write",
                           "RecoveryServicesDisableImmutability": "/write#reduceImmutabilityState",
                           "RecoveryServicesStopProtection": "/backupFabrics/protectionContainers/protectedItems/write#stopProtectionWithRetainData",
+                          "RecoveryServicesModifyEncryptionSettings": "/write#modifyEncryptionSettings",
                           "DisableMUA": "/backupResourceGuardProxies/delete",
                           "DeleteBackupInstance": "/backupInstances/delete",
                           "DataProtectionDisableImmutability": "/write#reduceImmutabilityState",
                           "DataProtectionSoftDelete": "/write#reduceSoftDeleteSecurity",
                           "DataProtectionStopProtection": "/backupInstances/stopProtection/action",
                           "DataProtectionSuspendBackup": "/backupInstances/suspendBackups/action",
-                          "DataProtectionRestore": "/backupInstances/restore/action"}
+                          "DataProtectionRestore": "/backupInstances/restore/action",
+                          "DataProtectionModifyEncryptionSettings": "/write#modifyEncryptionSettings"}
 
 
 datasource_map = {
@@ -1025,6 +1027,7 @@ def transform_resource_guard_operation_request(cmd, _, operation):
 
         formatted_operation = None
         for operation_detail in resource_guard_mapping['properties']['resourceGuardOperationDetails']:
+            print(operation_detail)
             if operation_detail['vaultCriticalOperation'] == 'Microsoft.DataProtection/backupVaults' + critical_operation_map[str(operation)]:
                 formatted_operation = operation_detail['defaultResourceRequest']
                 break
