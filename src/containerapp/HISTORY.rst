@@ -7,6 +7,7 @@ upcoming
 * 'az containerapp create/update': Update default value of enableMetrics to True for java runtime setting
 * 'az containerapp sessionpool create': Fix default container name to be lower case letters
 * 'az containerapp create/update': Support --scale-rule-identity for scale rule to authenticate to azure resource scaler
+* 'az containerapp sessionpool create/update': Fix sessionpool registry server fieldname and appending of registry secrets.
 
 0.3.51
 ++++++
