@@ -57,7 +57,7 @@ Release History
 ++++++
 * Revert to vendored SDK to fix an issue caused by Homebrew dependencies for Mac users
 
-1.4.0
+1.3.3
 ++++++
 * `az grafana dashboard sync`: support library panel sync
 * `az grafana dashboard create`: use unique id instead of generic id for folder creation
