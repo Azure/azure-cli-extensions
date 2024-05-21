@@ -436,8 +436,13 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
             for secret in secrets_def:
                 new_secret_names.append(secret["name"])
             deleted_secrets = set(original_secrets_names).difference(new_secret_names)
-            logger.warning("the following secrets are going to be deleted: " + str(deleted_secrets) + "If this is not the intended behavior, please add the missing secrets into the --secrets flag.")
-    
+            if len(deleted_secrets) > 0:
+                logger.warning("the following secrets are going to be deleted: " + str(deleted_secrets) + " If this is not the intended behavior, please add the missing secrets into the --secrets flag.")
+
+            # Update the secrets to the patch payload.
+            if len(secrets_def) > 0:
+                safe_set(self.session_pool_def, "properties", "secrets", value=secrets_def)
+
     def set_up_ingress(self, customer_container_template):
         if self.get_argument_target_port() is not None:
             safe_set(customer_container_template, "ingress", "targetPort", value=self.get_argument_target_port())
