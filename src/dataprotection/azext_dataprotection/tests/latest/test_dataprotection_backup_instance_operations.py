@@ -9,6 +9,7 @@
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+
 def reset_softdelete_base_state(test):
     # Ensure backup instance is deleted from the secondary vault. If instance is already deleted, it will return instantly. As soft delete is disabled
     # on this vault, it should not show up in the soft-deleted items there
@@ -18,10 +19,12 @@ def reset_softdelete_base_state(test):
     ])
 
     # Ensure that backup instance is protected in the primary soft delete vault
+    test.cmd('az dataprotection backup-instance deleted-backup-instance undelete -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"')
     test.cmd('az dataprotection backup-instance resume-protection -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"')
     test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"', checks=[
         test.check('properties.protectionStatus.status', "ProtectionConfigured")
     ])
+
 
 # Uses a persistent vault and persistent DSes
 class BackupInstanceOperationsScenarioTest(ScenarioTest):
@@ -47,19 +50,18 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
 
         test.cmd('az dataprotection backup-instance stop-protection -n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"')
         test.cmd('az dataprotection backup-instance show -n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
-            test.check('properties.currentProtectionState','ProtectionStopped')
+            test.check('properties.currentProtectionState', 'ProtectionStopped')
         ])
 
         test.cmd('az dataprotection backup-instance resume-protection -n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"')
         test.cmd('az dataprotection backup-instance show -n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
-            test.check('properties.currentProtectionState','ProtectionConfigured')
+            test.check('properties.currentProtectionState', 'ProtectionConfigured')
         ])
 
         test.cmd('az dataprotection backup-instance suspend-backup -n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"')
         test.cmd('az dataprotection backup-instance show -n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
-            test.check('properties.currentProtectionState','BackupsSuspended')
+            test.check('properties.currentProtectionState', 'BackupsSuspended')
         ])
-
 
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_update_policy(test):
@@ -79,12 +81,11 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 300 '
                  '--custom "properties.currentProtectionState==\'ProtectionConfigured\'"')
 
-        test.cmd('az dataprotection backup-instance update-policy -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --policy-id "{policyId}"',  checks=[
+        test.cmd('az dataprotection backup-instance update-policy -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --policy-id "{policyId}"', checks=[
             test.check("contains(properties.policyInfo.policyId, '/{policyName}')", True)
         ])
         test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 300 '
                  '--custom "properties.currentProtectionState==\'ProtectionConfigured\'"')
-
 
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_list_from_resource_graph(test):
@@ -98,6 +99,16 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
             test.exists("[?name == '{backupInstanceName}']")
         ])
 
+    @AllowLargeResponse()
+    def test_dataprotection_backup_vault_list_from_resource_graph(test):
+        test.kwargs.update({
+            'vaultId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete',
+            'vaultName': 'clitest-bkp-vault-persistent-bi-donotdelete'
+        })
+        test.cmd('az dataprotection backup-vault list-from-resourcegraph --vault-id "{vaultId}"', checks=[
+            test.greater_than('length([])', 0),
+            test.exists("[?name == '{vaultName}']")
+        ])
 
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_softdelete(test):
@@ -120,9 +131,9 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
             "backupInstance2": backup_instance_json,
         })
 
-        # Validations
-            # BI is not listed in vault 2
-            # BI is listed in vault 1, with protection enabled
+        # Validations:
+        # BI is not listed in vault 2
+        # BI is listed in vault 1, with protection enabled
         reset_softdelete_base_state(test)
 
         # Checks

@@ -18,6 +18,7 @@ from azure.cli.core.util import should_disable_connection_verify
 from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
 
 from ._client_factory import cf_amg
+from .utils import get_yes_or_no_option, MGMT_SERVICE_CLIENT_API_VERSION
 
 logger = get_logger(__name__)
 
@@ -114,7 +115,7 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
     import time
     from azure.core.exceptions import ResourceExistsError
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version="2022-04-01").role_assignments
+                                                 api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
     RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
                                              operation_group='role_assignments')
@@ -146,9 +147,9 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
 
 def _delete_role_assignment(cli_ctx, principal_id):
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version="2020-04-01-preview").role_assignments
+                                                 api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
     f = f"principalId eq '{principal_id}'"
-    assignments = list(assignments_client.list(filter=f))
+    assignments = list(assignments_client.list_for_subscription(filter=f))
     for a in assignments or []:
         assignments_client.delete_by_id(a.id)
 
@@ -163,13 +164,11 @@ def list_grafana(cmd, resource_group_name=None):
 def update_grafana(cmd, grafana_name, api_key_and_service_account=None, deterministic_outbound_ip=None,
                    public_network_access=None, smtp=None, host=None, user=None, password=None,
                    start_tls_policy=None, skip_verify=None, from_address=None, from_name=None,
-                   resource_group_name=None, tags=None):
+                   major_version=None, resource_group_name=None, tags=None):
 
-    # pylint: disable=too-many-boolean-expressions, too-many-boolean-expressions
-
-    if (not api_key_and_service_account and not deterministic_outbound_ip and not public_network_access and not tags
-            and not smtp and not host and not user and not password and not start_tls_policy and not from_address
-            and not from_name and skip_verify is None):
+    if all(param is None for param in (api_key_and_service_account, deterministic_outbound_ip, public_network_access,
+                                       smtp, host, user, password, start_tls_policy, skip_verify, from_address,
+                                       from_name, major_version, tags)):
         raise ArgumentUsageError("Please supply at least one parameter value to update the Grafana workspace")
 
     client = cf_amg(cmd.cli_ctx, subscription=None)
@@ -187,12 +186,23 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
     if public_network_access:
         resourceProperties["publicNetworkAccess"] = public_network_access
 
+    if major_version:
+        if major_version == "10":
+            # prompt for confirmation, cancel operation if not confirmed
+            if (not get_yes_or_no_option("You are trying to upgrade this workspace to Grafana version 10. By "
+                                         "proceeding, you acknowledge that upgrading to Grafana version 10 is a "
+                                         "permanent and irreversible operation and Grafana legacy alerting has been "
+                                         "deprecated and any migrated legacy alert may require manual adjustments "
+                                         "to function properly under the new alerting system. Do you wish to proceed? "
+                                         "(Y/N): ")):
+                return None
+        resourceProperties["grafanaMajorVersion"] = major_version
+
     if tags:
         resource["tags"] = tags
 
-    if (smtp or host or user or password or start_tls_policy
-            or from_address or from_name or skip_verify is not None):
-
+    if not all(param is None for param in (smtp, host, user, password, start_tls_policy, from_address, from_name,
+                                           skip_verify)):
         from azext_amg.vendored_sdks.models import GrafanaConfigurations, Smtp
         resourceProperties["grafanaConfigurations"] = GrafanaConfigurations()
 
@@ -202,7 +212,7 @@ def update_grafana(cmd, grafana_name, api_key_and_service_account=None, determin
             resourceProperties["grafanaConfigurations"] = instance.properties.grafana_configurations
 
         if smtp:
-            resourceProperties["grafanaConfigurations"].smtp.enabled = (smtp == "Enabled")
+            resourceProperties["grafanaConfigurations"].smtp.enabled = smtp == "Enabled"
         if host:
             resourceProperties["grafanaConfigurations"].smtp.host = host
         if user:
@@ -239,7 +249,7 @@ def delete_grafana(cmd, grafana_name, resource_group_name=None):
     LongRunningOperation(cmd.cli_ctx)(poller)
 
     # delete role assignment
-    logger.warning("Grafana instance of '%s' was delete. Now removing role assignments for associated with its "
+    logger.warning("Grafana instance of '%s' was deleted. Now removing role assignments for associated with its "
                    "managed identity", grafana_name)
     _delete_role_assignment(cmd.cli_ctx, grafana.identity.principal_id)
 
@@ -476,7 +486,6 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
         payload['folderId'] = folder['id']
 
     payload['overwrite'] = overwrite or False
-
     payload['inputs'] = []
 
     # provide parameter values for datasource
@@ -519,12 +528,11 @@ def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, defin
         pass
 
     if re.match(r"^[a-z]+://", definition.lower()):
-        response = requests.get(definition, verify=(not should_disable_connection_verify()))
+        response = requests.get(definition, verify=not should_disable_connection_verify())
         if response.status_code == 200:
             definition = json.loads(response.content.decode())
         else:
             raise ArgumentUsageError(f"Failed to dashboard definition from '{definition}'. Error: '{response}'.")
-
     else:
         definition = json.loads(_try_load_file_content(definition))
 
@@ -671,7 +679,6 @@ def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_toke
                 raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
                                           f"unique identifiers"))
             return result[0]
-
     return json.loads(response.content)
 
 
@@ -760,8 +767,7 @@ def update_service_account(cmd, grafana_name, service_account, new_name=None,
 
 
 def list_service_accounts(cmd, grafana_name, resource_group_name=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get",
-                             "/api/serviceaccounts/search")
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/serviceaccounts/search")
     return json.loads(response.content)['serviceAccounts']
 
 
@@ -854,8 +860,7 @@ def list_users(cmd, grafana_name, resource_group_name=None, api_key_or_token=Non
 
 
 def show_user(cmd, grafana_name, user, resource_group_name=None, api_key_or_token=None):
-    users = list_users(cmd, grafana_name, resource_group_name=resource_group_name,
-                       api_key_or_token=api_key_or_token)
+    users = list_users(cmd, grafana_name, resource_group_name=resource_group_name, api_key_or_token=api_key_or_token)
     match = next((u for u in users if u['name'].lower() == user.lower()), None)
 
     if match:
@@ -984,12 +989,8 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
     }
 
     # TODO: handle re-try on 429
-    response = requests.request(http_method,
-                                url=endpoint + path,
-                                headers=headers,
-                                json=body,
-                                timeout=60,
-                                verify=(not should_disable_connection_verify()))
+    response = requests.request(http_method, url=endpoint + path, headers=headers, json=body, timeout=60,
+                                verify=not should_disable_connection_verify())
     if response.status_code >= 400:
         if raise_for_error_status:
             logger.warning(str(response.content))

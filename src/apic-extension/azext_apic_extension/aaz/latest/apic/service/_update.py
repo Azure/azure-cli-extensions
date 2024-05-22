@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "apic service update",
 )
 class Update(AAZCommand):
-    """Update service
+    """Update an instance of an Azure API Center service.
 
     :example: Update service details
-        az apic update -g contoso-resources -s contoso
+        az apic service update -g contoso-resources -s contoso
     """
 
     _aaz_info = {
@@ -27,8 +27,6 @@ class Update(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.apicenter/services/{}", "2024-03-01"],
         ]
     }
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -51,41 +49,34 @@ class Update(AAZCommand):
         )
         _args_schema.service_name = AAZStrArg(
             options=["-s", "--name", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
         )
-
-        # define Arg Group "Payload"
-
-        _args_schema = cls._args_schema
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
-            arg_group="Payload",
-            help="Managed service identity (system assigned and/or user assigned identities)",
-            nullable=True,
+            help="The managed service identities assigned to this resource.",
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Payload",
             help="Resource tags.",
-            nullable=True,
         )
 
         identity = cls._args_schema.identity
         identity.type = AAZStrArg(
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
-            nullable=True,
         )
 
         user_assigned_identities = cls._args_schema.identity.user_assigned_identities
@@ -95,19 +86,12 @@ class Update(AAZCommand):
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ServicesGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        self.ServicesCreateOrUpdate(ctx=self.ctx)()
+        self.ServicesUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -118,19 +102,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ServicesGet(AAZHttpOperation):
+    class ServicesUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -150,90 +126,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "serviceName", self.ctx.args.service_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-03-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_service_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class ServicesCreateOrUpdate(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ApiCenter/services/{serviceName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -283,41 +176,8 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_service_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -335,132 +195,117 @@ class Update(AAZCommand):
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.data_api_hostname = AAZStrType(
+                serialized_name="dataApiHostname",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_service_read = None
-
-    @classmethod
-    def _build_schema_service_read(cls, _schema):
-        if cls._schema_service_read is not None:
-            _schema.id = cls._schema_service_read.id
-            _schema.identity = cls._schema_service_read.identity
-            _schema.location = cls._schema_service_read.location
-            _schema.name = cls._schema_service_read.name
-            _schema.properties = cls._schema_service_read.properties
-            _schema.system_data = cls._schema_service_read.system_data
-            _schema.tags = cls._schema_service_read.tags
-            _schema.type = cls._schema_service_read.type
-            return
-
-        cls._schema_service_read = _schema_service_read = AAZObjectType()
-
-        service_read = _schema_service_read
-        service_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        service_read.identity = AAZObjectType()
-        service_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        service_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        service_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        service_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        service_read.tags = AAZDictType()
-        service_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        identity = _schema_service_read.identity
-        identity.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-        identity.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"read_only": True},
-        )
-        identity.type = AAZStrType(
-            flags={"required": True},
-        )
-        identity.user_assigned_identities = AAZDictType(
-            serialized_name="userAssignedIdentities",
-        )
-
-        user_assigned_identities = _schema_service_read.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectType(
-            nullable=True,
-        )
-
-        _element = _schema_service_read.identity.user_assigned_identities.Element
-        _element.client_id = AAZStrType(
-            serialized_name="clientId",
-            flags={"read_only": True},
-        )
-        _element.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-
-        properties = _schema_service_read.properties
-        properties.data_api_hostname = AAZStrType(
-            serialized_name="dataApiHostname",
-            flags={"read_only": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-
-        system_data = _schema_service_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_service_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_service_read.id
-        _schema.identity = cls._schema_service_read.identity
-        _schema.location = cls._schema_service_read.location
-        _schema.name = cls._schema_service_read.name
-        _schema.properties = cls._schema_service_read.properties
-        _schema.system_data = cls._schema_service_read.system_data
-        _schema.tags = cls._schema_service_read.tags
-        _schema.type = cls._schema_service_read.type
 
 
 __all__ = ["Update"]

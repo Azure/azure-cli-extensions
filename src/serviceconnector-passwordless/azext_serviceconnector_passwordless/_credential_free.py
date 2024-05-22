@@ -252,6 +252,7 @@ class MysqlFlexibleHandler(TargetHandler):
         target_segments = parse_resource_id(target_id)
         self.server = target_segments.get('name')
         self.dbname = target_segments.get('child_name_1')
+        self.admin_username = self.login_username
 
     def check_db_existence(self):
         try:
@@ -638,9 +639,22 @@ class PostgresFlexHandler(TargetHandler):
         self.host = self.db_server + self.endpoint
         self.dbname = target_segments.get('child_name_1')
         self.ip = ""
+        self.admin_username = self.login_username
 
     def check_db_existence(self):
         try:
+            # `az postgres flexible-server db show -d postgres` will throw exception
+            if self.dbname == "postgres":
+                server_info = run_cli_cmd(
+                    'az postgres flexible-server show -n {} -g {} --subscription {}'.format(
+                        self.db_server, self.resource_group, self.subscription))
+                if server_info is None:
+                    e = ResourceNotFoundError(
+                        "No server found for '{}'".format(self.db_server))
+                    telemetry.set_exception(e, "No-Server")
+                    raise e
+                else:
+                    return
             db_info = run_cli_cmd(
                 'az postgres flexible-server db show --server-name {} --database-name {} -g {} --subscription {}'.format(
                     self.db_server, self.dbname, self.resource_group, self.subscription))

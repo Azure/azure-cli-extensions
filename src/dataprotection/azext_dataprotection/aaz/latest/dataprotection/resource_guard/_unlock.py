@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection resource-guard unlock",
-    is_experimental=True,
 )
 class Unlock(AAZCommand):
     """Unlocks the critical operation which is protected by the resource guard
@@ -23,9 +22,9 @@ class Unlock(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupresourceguardproxies/{}/unlockdelete", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupresourceguardproxies/{}/unlockdelete", "2024-04-01"],
         ]
     }
 
@@ -153,7 +152,7 @@ class Unlock(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }

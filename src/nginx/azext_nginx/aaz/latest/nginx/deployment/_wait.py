@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -45,6 +45,9 @@ class Wait(AAZWaitCommand):
             help="The name of targeted Nginx deployment",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -52,7 +55,17 @@ class Wait(AAZWaitCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.DeploymentsGet(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
@@ -82,18 +95,8 @@ class Wait(AAZWaitCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
-            
         @property
         def url_parameters(self):
             parameters = {
@@ -107,6 +110,16 @@ class Wait(AAZWaitCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -186,6 +199,9 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.auto_upgrade_profile = AAZObjectType(
+                serialized_name="autoUpgradeProfile",
+            )
             properties.enable_diagnostics_support = AAZBoolType(
                 serialized_name="enableDiagnosticsSupport",
             )
@@ -206,6 +222,19 @@ class Wait(AAZWaitCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.scaling_properties = AAZObjectType(
+                serialized_name="scalingProperties",
+            )
+            properties.user_profile = AAZObjectType(
+                serialized_name="userProfile",
+            )
+
+            auto_upgrade_profile = cls._schema_on_200.properties.auto_upgrade_profile
+            auto_upgrade_profile.upgrade_channel = AAZStrType(
+                serialized_name="upgradeChannel",
+                flags={"required": True},
             )
 
             logging = cls._schema_on_200.properties.logging
@@ -262,6 +291,42 @@ class Wait(AAZWaitCommand):
                 serialized_name="subnetId",
             )
 
+            scaling_properties = cls._schema_on_200.properties.scaling_properties
+            scaling_properties.auto_scale_settings = AAZObjectType(
+                serialized_name="autoScaleSettings",
+                flags={"client_flatten": True},
+            )
+            scaling_properties.capacity = AAZIntType()
+
+            auto_scale_settings = cls._schema_on_200.properties.scaling_properties.auto_scale_settings
+            auto_scale_settings.profiles = AAZListType(
+                flags={"required": True},
+            )
+
+            profiles = cls._schema_on_200.properties.scaling_properties.auto_scale_settings.profiles
+            profiles.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.scaling_properties.auto_scale_settings.profiles.Element
+            _element.capacity = AAZObjectType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            capacity = cls._schema_on_200.properties.scaling_properties.auto_scale_settings.profiles.Element.capacity
+            capacity.max = AAZIntType(
+                flags={"required": True},
+            )
+            capacity.min = AAZIntType(
+                flags={"required": True},
+            )
+
+            user_profile = cls._schema_on_200.properties.user_profile
+            user_profile.preferred_email = AAZStrType(
+                serialized_name="preferredEmail",
+            )
+
             sku = cls._schema_on_200.sku
             sku.name = AAZStrType(
                 flags={"required": True},
@@ -270,33 +335,31 @@ class Wait(AAZWaitCommand):
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
 __all__ = ["Wait"]

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2023-11-01-preview"],
         ]
     }
 
@@ -116,7 +116,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-11-01-preview",
                     required=True,
                 ),
             }
@@ -257,10 +257,22 @@ class Wait(AAZWaitCommand):
             )
 
             network_profile = cls._schema_on_200.properties.network_profile
+            network_profile.api_server_authorized_ip_ranges = AAZListType(
+                serialized_name="apiServerAuthorizedIpRanges",
+            )
+            network_profile.enable_private_api_server = AAZBoolType(
+                serialized_name="enablePrivateApiServer",
+            )
+            network_profile.outbound_type = AAZStrType(
+                serialized_name="outboundType",
+            )
             network_profile.subnet_id = AAZStrType(
                 serialized_name="subnetId",
                 flags={"required": True},
             )
+
+            api_server_authorized_ip_ranges = cls._schema_on_200.properties.network_profile.api_server_authorized_ip_ranges
+            api_server_authorized_ip_ranges.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

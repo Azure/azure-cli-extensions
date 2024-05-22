@@ -12,9 +12,10 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
 
+
 class Cosmosdb_previewDtsScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_dts_cassandra', location='eastus') 
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_dts_cassandra', location='eastus')
     @AllowLargeResponse(size_kb=9999)
     def test_cosmosdb_dts(self, resource_group):
 
@@ -32,11 +33,11 @@ class Cosmosdb_previewDtsScenarioTest(ScenarioTest):
         })
 
         self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc} --capabilities EnableCassandra')
-        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
 
         # Create job
         self.cmd('az cosmosdb dts copy -g {rg} --job-name {job_name} --account-name {acc} --source-cassandra-table keyspace={keyspace_name} table={table_name} --dest-cassandra-table keyspace={keyspace_name} table={table_name_copied}')
-        
+
         # Show job
         job = self.cmd('az cosmosdb dts show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
@@ -68,7 +69,3 @@ class Cosmosdb_previewDtsScenarioTest(ScenarioTest):
         job = self.cmd('az cosmosdb dts show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['status'] == "Cancelled"
-
-        
-
-

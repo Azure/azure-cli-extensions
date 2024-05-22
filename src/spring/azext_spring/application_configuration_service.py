@@ -5,20 +5,28 @@
 
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 import json
+import os
+import requests
 
 from azure.cli.core.azclierror import ClientRequestError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
+from knack.util import CLIError
 from msrestazure.tools import resource_id
-from .vendored_sdks.appplatform.v2024_01_01_preview.models._app_platform_management_client_enums import (GitImplementation, ConfigurationServiceGeneration)
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import (GitImplementation, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
+from ._utils import (get_hostname, get_bearer_auth)
 
 APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
 RESOURCE_ID = "resourceId"
 
 RESOURCE_TYPE = "configurationServices"
 DEFAULT_NAME = "default"
+
+CONFIGURATION_FILES = "configurationFiles"
+METADATA = "metadata"
+GIT_REVISIONS = "gitRevisions"
 
 logger = get_logger(__name__)
 
@@ -144,6 +152,25 @@ def application_configuration_service_unbind(cmd, client, service, resource_grou
     return _acs_bind_or_unbind_app(cmd, client, service, resource_group, app, False)
 
 
+def application_configuration_service_config_show(cmd, client, service, resource_group, config_file_pattern,
+                                                  export_path=None):
+    url = _get_show_configs_urls(cmd, client, service, resource_group, config_file_pattern)
+    auth = get_bearer_auth(cmd.cli_ctx)
+    connect_timeout_in_seconds = 30
+    read_timeout_in_seconds = 60
+    timeout = (connect_timeout_in_seconds, read_timeout_in_seconds)
+    with requests.get(url, stream=False, auth=auth, timeout=timeout) as response:
+        if response.status_code != 200:
+            _handle_and_raise_get_acs_config_error(url, response)
+        response_json = response.json()
+        if export_path is not None:
+            _export_configs_to_files(response_json, export_path)
+            # Return None after export to the files
+            return None
+        else:
+            return _split_config_lines(response_json)
+
+
 def _acs_bind_or_unbind_app(cmd, client, service, resource_group, app_name, enabled):
     app = client.apps.get(resource_group, service, app_name)
     app.properties.addon_configs = _get_app_addon_configs_with_acs(app.properties.addon_configs)
@@ -267,3 +294,120 @@ def _validate_acs_settings(client, resource_group, service, acs_settings):
             validation_result = git_result.git_repos_validation_result
             filter_result = [{'name': x.name, 'messages': x.messages} for x in validation_result if len(x.messages) > 0]
             raise ClientRequestError("Application Configuration Service settings contain errors.\n{}".format(json.dumps(filter_result, indent=2)))
+
+
+def _get_show_configs_urls(cmd, client, service, resource_group, config_file_pattern):
+    hostname = get_hostname(cmd.cli_ctx, client, resource_group, service)
+    appName, profileName = _get_app_and_profile(config_file_pattern)
+    url_template = "https://{}/api/applicationConfigurationService/configs/applications/{}/profiles/{}"
+    url = url_template.format(hostname, appName, profileName)
+    return url
+
+
+def _get_app_and_profile(config_file_pattern):
+    # The config file pattern should already be standardized with non-empty app name and profile name
+    parts = config_file_pattern.split('/')
+    return parts[0], parts[1]
+
+
+def _handle_and_raise_get_acs_config_error(url, response):
+    failure_reason = response.reason
+    if response.content:
+        if isinstance(response.content, bytes):
+            failure_reason = f"{failure_reason}:{response.content.decode('utf-8')}"
+        else:
+            failure_reason = f"{failure_reason}:{response.content}"
+    msg = f"Failed to access the url '{url}' with status code '{response.status_code}' and reason '{failure_reason}'"
+    raise CLIError(msg)
+
+
+def _split_config_lines(response_json):
+    """
+    The configs is subject to the implementation of Application Configuration Service (ACS).
+    Currently, it only uses "application.properties" file. An exmaple of raw_configs is:
+    {
+      "configurationFiles": {
+        "application.properties": "auth: ssh\nrepo: ado\nspring.cloud.config.enabled: false"
+      }
+    }
+    The expected format is as follows:
+    {
+      "configurationFiles": {
+        "application.properties": [
+          "auth: ssh",
+          "repo: ado",
+          "spring.cloud.config.enabled: false"
+        ]
+      }
+    }
+    Note we don't continue parse each line, since there can be corner case like:
+    {
+        "application.properties": "p1: v1-\n-8976\np2: v2-\\n-5674"
+    }
+    It will be converted to below content in ACS:
+    {
+      "application": [
+        "p1: v1-",
+        "-8976",
+        "p2: v2-\n-5674"
+      ]
+    }
+    """
+    configuration_files = response_json.get(CONFIGURATION_FILES, None)
+
+    if configuration_files is None:
+        raise CLIError("Failed to parse configuration files response {}".format(response_json))
+
+    filename_to_multi_line_configs_dict = {}
+
+    for key in configuration_files.keys():
+        value = configuration_files[key]
+        if key.endswith(".properties") and isinstance(value, str):
+            filename_to_multi_line_configs_dict[key] = value.splitlines()
+        else:
+            filename_to_multi_line_configs_dict[key] = value
+
+    if len(filename_to_multi_line_configs_dict) == 0:
+        raise CLIError("No configuration files found.")
+
+    configuration_files_result = {
+        CONFIGURATION_FILES: filename_to_multi_line_configs_dict
+    }
+
+    _safe_append_git_revisions(configuration_files_result, response_json)
+
+    return configuration_files_result
+
+
+def _safe_append_git_revisions(configuration_files_result, response_json):
+    try:
+        metadata = response_json.get(METADATA, None)
+        if (metadata is None) or (not isinstance(metadata, dict)):
+            return
+        git_revisions = metadata.get(GIT_REVISIONS, None)
+        if git_revisions:
+            configuration_files_result[METADATA] = {
+                GIT_REVISIONS: git_revisions
+            }
+    except Exception as e:
+        logger.debug("Failed to append Git revisions.", e)
+        pass
+
+
+def _export_configs_to_files(response_json, folder_path):
+    absolute_folder_path = os.path.abspath(folder_path)
+
+    if not os.path.exists(absolute_folder_path):
+        logger.warning(f"Directory '{absolute_folder_path}' does not exist, creating it.")
+        os.makedirs(absolute_folder_path)
+
+    if not os.path.isdir(absolute_folder_path):
+        raise CLIError(f"Path '{absolute_folder_path}' is not a directory.")
+
+    for filename in response_json[CONFIGURATION_FILES].keys():
+        absolute_file_path = os.path.join(absolute_folder_path, filename)
+        if os.path.exists(absolute_file_path):
+            logger.warning(f"File already exists: '{absolute_file_path}', overriding it.")
+        with open(absolute_file_path, 'w', encoding="utf-8") as file:
+            file.write(response_json[CONFIGURATION_FILES][filename])
+        logger.warning(f"Exported configurations to file '{absolute_file_path}'.")

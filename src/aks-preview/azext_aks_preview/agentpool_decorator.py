@@ -33,6 +33,9 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
+    CONST_DEFAULT_NODE_VM_SIZE,
+    CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE,
+    CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
 )
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
 
@@ -53,6 +56,7 @@ class AKSPreviewAgentPoolModels(AKSAgentPoolModels):
     """
 
 
+# pylint: disable=too-many-public-methods
 class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
     def __init__(
         self,
@@ -102,6 +106,56 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             )
         # this parameter does not need validation
         return vm_set_type
+
+    def get_node_vm_size(self) -> str:
+        """Obtain the value of node_vm_size.
+
+        :return: string
+        """
+        return self._get_node_vm_size(read_only=False)
+
+    def _get_node_vm_size(self, read_only: bool = False) -> str:
+        """Internal function to dynamically obtain the value of node_vm_size according to the context.
+
+        If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
+        from the Snapshot. When determining the value of the parameter, obtaining from `agentpool` takes precedence over
+        user's explicit input over snapshot over default vaule.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("node_vm_size")
+        # try to read the property value corresponding to the parameter from the `agentpool` object
+        value_obtained_from_agentpool = None
+        if self.agentpool:
+            value_obtained_from_agentpool = self.agentpool.vm_size
+        # try to retrieve the value from snapshot
+        value_obtained_from_snapshot = None
+        # skip dynamic completion if read_only is specified
+        if not read_only:
+            snapshot = self.get_snapshot()
+            if snapshot:
+                value_obtained_from_snapshot = snapshot.vm_size
+
+        # set default value
+        if value_obtained_from_agentpool is not None:
+            node_vm_size = value_obtained_from_agentpool
+        elif raw_value is not None:
+            node_vm_size = raw_value
+        elif not read_only and value_obtained_from_snapshot is not None:
+            node_vm_size = value_obtained_from_snapshot
+        else:
+            if self.get_os_type().lower() == "windows":
+                node_vm_size = CONST_DEFAULT_WINDOWS_NODE_VM_SIZE
+            else:
+                node_vm_size = CONST_DEFAULT_NODE_VM_SIZE
+                sku = self.raw_param.get("sku")
+                # if --node-vm-size is not specified, but --sku automatic is explicitly specified
+                if sku is not None and sku == "automatic":
+                    node_vm_size = CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE
+
+        # this parameter does not need validation
+        return node_vm_size
 
     def get_crg_id(self) -> Union[str, None]:
         """Obtain the value of crg_id.
@@ -233,10 +287,11 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
                 self.agentpool and
+                hasattr(self.agentpool, "windows_profile") and
                 self.agentpool.windows_profile and
-                self.agentpool.windows_profile.disable_windows_outbound_nat is not None
+                self.agentpool.windows_profile.disable_outbound_nat is not None
             ):
-                disable_windows_outbound_nat = self.agentpool.windows_profile.disable_windows_outbound_nat
+                disable_windows_outbound_nat = self.agentpool.windows_profile.disable_outbound_nat
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -328,6 +383,28 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return node_taints
 
+    def get_node_initialization_taints(self) -> Union[List[str], None]:
+        """Obtain the value of node_initialization_taints.
+
+        :return: empty list, list of strings or None
+        """
+        # read the original value passed by the command
+        node_init_taints = self.raw_param.get("nodepool_initialization_taints")
+        # normalize, default is an empty list
+        if node_init_taints is not None:
+            node_init_taints = [x.strip() for x in (node_init_taints.split(",") if node_init_taints else [""])]
+        # keep None as None for update mode
+        if node_init_taints is None and self.decorator_mode == DecoratorMode.CREATE:
+            node_init_taints = []
+
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.agentpool and self.agentpool.node_initialization_taints is not None:
+                node_init_taints = self.agentpool.node_initialization_taints
+
+        # this parameter does not need validation
+        return node_init_taints
+
     def get_drain_timeout(self):
         """Obtain the value of drain_timeout.
 
@@ -384,6 +461,25 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             ):
                 enable_artifact_streaming = self.agentpool.artifact_streaming_profile.enabled
         return enable_artifact_streaming
+
+    def get_pod_ip_allocation_mode(self: bool = False) -> Union[str, None]:
+        """Get the value of pod_ip_allocation_mode.
+        :return: str or None
+        """
+
+        # Get the value of pod_ip_allocation_mode from the raw parameters provided by the user
+        pod_ip_allocation_mode = self.raw_param.get("pod_ip_allocation_mode")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        # if it exists and user has not provided any value in raw parameters
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                pod_ip_allocation_mode and
+                self.agentpool and
+                self.agentpool.pod_ip_allocation_mode is not None
+            ):
+                pod_ip_allocation_mode = self.agentpool.pod_ip_allocation_mode
+
+        return pod_ip_allocation_mode
 
     def get_ssh_access(self) -> Union[str, None]:
         """Obtain the value of ssh_access.
@@ -455,6 +551,66 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 skip_gpu_driver_install = not self.agentpool.gpu_profile.install_gpu_driver
 
         return skip_gpu_driver_install
+
+    def get_enable_secure_boot(self) -> bool:
+        """Obtain the value of enable_secure_boot.
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_secure_boot = self.raw_param.get("enable_secure_boot")
+
+        # In create mode, try and read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.security_profile is not None and
+                self.agentpool.security_profile.enable_secure_boot is not None
+            ):
+                enable_secure_boot = self.agentpool.security_profile.enable_secure_boot
+
+        if enable_secure_boot and self.get_disable_secure_boot():
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--enable-secure-boot" and "--disable-secure-boot" at the same time'
+            )
+
+        return enable_secure_boot
+
+    def get_disable_secure_boot(self) -> bool:
+        """Obtain the value of disable_secure_boot.
+        :return: bool
+        """
+
+        return self.raw_param.get("disable_secure_boot")
+
+    def get_enable_vtpm(self) -> bool:
+        """Obtain the value of enable_vtpm.
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_vtpm = self.raw_param.get("enable_vtpm")
+
+        # In create mode, try and read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.security_profile is not None and
+                self.agentpool.security_profile.enable_vtpm is not None
+            ):
+                enable_vtpm = self.agentpool.security_profile.enable_vtpm
+
+        if enable_vtpm and self.get_disable_vtpm():
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--enable-vtpm" and "--disable-vtpm" at the same time'
+            )
+
+        return enable_vtpm
+
+    def get_disable_vtpm(self) -> bool:
+        """Obtain the value of disable_vtpm.
+        :return: bool
+        """
+
+        return self.raw_param.get("disable_vtpm")
 
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
@@ -574,6 +730,15 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.node_taints = self.context.get_node_taints()
         return agentpool
 
+    def set_up_init_taints(self, agentpool: AgentPool) -> AgentPool:
+        """Set up label, tag, taint for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+        agentpool.node_initialization_taints = self.context.get_node_initialization_taints()
+        return agentpool
+
     def set_up_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
         """Set up artifact streaming property for the AgentPool object."""
         self._ensure_agentpool(agentpool)
@@ -606,6 +771,41 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.gpu_profile.install_gpu_driver = False
         return agentpool
 
+    def set_up_pod_ip_allocation_mode(self, agentpool: AgentPool) -> AgentPool:
+        """Set up pod ip allocation mode for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        pod_ip_allocation_mode = self.context.get_pod_ip_allocation_mode()
+        if pod_ip_allocation_mode is not None:
+            agentpool.pod_ip_allocation_mode = pod_ip_allocation_mode
+        return agentpool
+
+    def set_up_secure_boot(self, agentpool: AgentPool) -> AgentPool:
+        """Set up secure boot property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_secure_boot():
+            if agentpool.security_profile is None:
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+
+            agentpool.security_profile.enable_secure_boot = True
+
+        # Default is disabled so no need to worry about that here
+        return agentpool
+
+    def set_up_vtpm(self, agentpool: AgentPool) -> AgentPool:
+        """Set up vtpm property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_vtpm():
+            if agentpool.security_profile is None:
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+
+            agentpool.security_profile.enable_vtpm = True
+
+        # Default is disabled so no need to worry about that here
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -629,12 +829,20 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_agentpool_network_profile(agentpool)
         # set up taints
         agentpool = self.set_up_taints(agentpool)
+        # set up initialization taints
+        agentpool = self.set_up_init_taints(agentpool)
         # set up artifact streaming
         agentpool = self.set_up_artifact_streaming(agentpool)
         # set up skip_gpu_driver_install
         agentpool = self.set_up_skip_gpu_driver_install(agentpool)
         # set up agentpool ssh access
         agentpool = self.set_up_ssh_access(agentpool)
+        # set up agentpool pod ip allocation mode
+        agentpool = self.set_up_pod_ip_allocation_mode(agentpool)
+        # set up secure boot
+        agentpool = self.set_up_secure_boot(agentpool)
+        # set up vtpm
+        agentpool = self.set_up_vtpm(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
@@ -764,6 +972,42 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.security_profile.ssh_access = ssh_access
         return agentpool
 
+    def update_secure_boot(self, agentpool: AgentPool) -> AgentPool:
+        """Update secure boot property for the AgentPool object.
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_secure_boot():
+            if agentpool.security_profile is None:
+                agentpool.secure_boot = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+            agentpool.security_profile.enable_secure_boot = True
+
+        if self.context.get_disable_secure_boot():
+            if agentpool.security_profile is None:
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+            agentpool.security_profile.enable_secure_boot = False
+
+        return agentpool
+
+    def update_vtpm(self, agentpool: AgentPool) -> AgentPool:
+        """Update vtpm property for the AgentPool object.
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_vtpm():
+            if agentpool.security_profile is None:
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+            agentpool.security_profile.enable_vtpm = True
+
+        if self.context.get_disable_vtpm():
+            if agentpool.security_profile is None:
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+            agentpool.security_profile.enable_vtpm = False
+
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -783,6 +1027,12 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update artifact streaming
         agentpool = self.update_artifact_streaming(agentpool)
+
+        # update secure boot
+        agentpool = self.update_secure_boot(agentpool)
+
+        # update vtpm
+        agentpool = self.update_vtpm(agentpool)
 
         # update os sku
         agentpool = self.update_os_sku(agentpool)

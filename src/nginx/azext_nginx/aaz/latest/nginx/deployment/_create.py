@@ -18,17 +18,20 @@ class Create(AAZCommand):
     """Create an NGINX for Azure resource
 
     :example: Deployment Create with PublicIP
-        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly" --network-profile front-end-ip-configuration="{public-ip-addresses:[{id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
+        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly_gmz7xq9ge3py" --network-profile front-end-ip-configuration="{public-ip-addresses:[{id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
 
     :example: Deployment Create with PrivateIP
-        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly" --network-profile front-end-ip-configuration="{private-ip-addresses:[{private-ip-allocation-method:Static,subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet,private-ip-address:10.0.0.2}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
-        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly" --network-profile front-end-ip-configuration="{private-ip-addresses:[{private-ip-allocation-method:Dynamic,subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet,private-ip-address:10.0.0.2}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
+        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly_gmz7xq9ge3py" --network-profile front-end-ip-configuration="{private-ip-addresses:[{private-ip-allocation-method:Static,subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet,private-ip-address:10.0.0.2}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
+        az nginx deployment create --name myDeployment --resource-group myResourceGroup --location eastus2 --sku name="standard_Monthly_gmz7xq9ge3py" --network-profile front-end-ip-configuration="{private-ip-addresses:[{private-ip-allocation-method:Dynamic,subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet,private-ip-address:10.0.0.2}]}" network-interface-configuration="{subnet-id:/subscriptions/mySubscription/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVNet/subnets/mySubnet}"
+
+    :example: Deployment with managed identity, storage account and scaling
+        az anginx deployment  create --deployment-name myDeployment --myResourceGroup azclitest-geo --location eastus --sku name=standard_Monthly_gmz7xq9ge3py --network-profile network-interface-configuration='{subnet-id:/subscriptions/subscriptionId/resourcegroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/vnet-azclitest/subnets/mySubnet}' front-end-ip-configuration='{public-ip-addresses:[{id:/subscriptions/subscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/publicIPAddresses/myPublicIP}]}' --identity '{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/subscriptionId/resourcegroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity":{}}}' --logging storage-account='{"account-name":"myStorageAccount","container-name":"myContainer"}' --scaling-properties capacity=10
     """
 
     _aaz_info = {
-        "version": "2022-08-01",
+        "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -51,9 +54,11 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.deployment_name = AAZStrArg(
             options=["-n", "--name", "--deployment-name"],
-            help="The name of targeted Nginx deployment",
+            help={"short-summary": "The name of the targeted NGINX deployment", "long-summary": "It should contain only alphanumeric characters, up to 30 characters long; and cannot begin or end with a hyphen."},
             required=True,
-            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -65,6 +70,7 @@ class Create(AAZCommand):
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
             arg_group="Body",
+            help={"short-summary": "Managed identity to perform operations on Azure key vault or storage account", "long-summary": "The managed identity should have necessary access roles on the Azure resources. For certificate access, the managed identity should have cert read access on Azure key vault. For storage account logging, it should have blob contributor role.\nUsage: --identity '{\"type\":\"UserAssigned\",\"userAssignedIdentities\":{\"/subscriptions/subscriptionId/resourcegroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUserAssigneMI\":{}}}'\nType is an enum that accepts values UserAssigned or SystemAssigned"},
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
@@ -75,15 +81,18 @@ class Create(AAZCommand):
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
             arg_group="Body",
+            help={"short-summary": "The billing information for the resource", "long-summary": "More information on https://docs.nginx.com/nginx-for-azure/billing/overview/\nUsage: --sku name=XXX"},
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
+            help={"short-summary": "Tags for deployment.", "long-summary": "Usage: --tags tag1=\"value1\" tag2=\"value2\""},
         )
 
         identity = cls._args_schema.identity
         identity.type = AAZStrArg(
             options=["type"],
+            help="Type of managed identity to use",
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
         )
         identity.user_assigned_identities = AAZDictArg(
@@ -108,29 +117,42 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.auto_upgrade_profile = AAZObjectArg(
+            options=["--auto-upgrade-profile"],
+            arg_group="Properties",
+            help="Autoupgrade settings of a deployment. can be stable or preview",
+        )
         _args_schema.enable_diagnostics = AAZBoolArg(
             options=["--enable-diagnostics"],
-            help="Boolean to enable or disable diagnostics on your deployment",
             arg_group="Properties",
+            help="Boolean to enable/disable diagnostics support",
         )
         _args_schema.logging = AAZObjectArg(
             options=["--logging"],
             arg_group="Properties",
-        )
-        _args_schema.managed_resource_group = AAZStrArg(
-            options=["--managed-resource-group"],
-            arg_group="Properties",
-            help="The managed resource group to deploy VNet injection related network resources.",
+            help={"short-summary": "To have logs sent to your storage account. Must specify managed identity with blob contributor role on Azure storage account", "long-summary": "Usage: --logging storage-account='{\"account-name\":\"<storageaccount>\", \"container-name\":<containername>}'"},
         )
         _args_schema.network_profile = AAZObjectArg(
             options=["--network-profile"],
             arg_group="Properties",
+            help={"short-summary": "IP address and VNet + subnet information", "long-summary": "Usage: --network-profile front-end-ip-configuration=\"<private or public IP address information>\" network-interface-configuration=\"<subnet information>\"\nfront-end-ip-configuration: IP information, public or private IP addresses.\nnetwork-interface-configuration: A subnet within your virtual network. This subnet should be delegated to NGINX.NGINXPLUS/nginxDeployments"},
         )
-        _args_schema.provisioning_state = AAZStrArg(
-            options=["--provisioning-state"],
-            help="State of the deployment",
+        _args_schema.scaling_properties = AAZObjectArg(
+            options=["--scaling-properties"],
             arg_group="Properties",
-            enum={"Accepted": "Accepted", "Canceled": "Canceled", "Creating": "Creating", "Deleted": "Deleted", "Deleting": "Deleting", "Failed": "Failed", "NotSpecified": "NotSpecified", "Succeeded": "Succeeded", "Updating": "Updating"},
+            help={"short-summary": "Scaling for NGINX capacity units (NCUs)", "long-summary": "For more information- https://docs.nginx.com/nginxaas/azure/billing/overview/\nUsage: --scaling-properties capacity=<NCU value>"},
+        )
+        _args_schema.user_profile = AAZObjectArg(
+            options=["--user-profile"],
+            arg_group="Properties",
+            help={"short-summary": "Optional: Preferred communication email", "long-summary": "Usage --user-profile preferred-email=xyz@abc.com"},
+        )
+
+        auto_upgrade_profile = cls._args_schema.auto_upgrade_profile
+        auto_upgrade_profile.upgrade_channel = AAZStrArg(
+            options=["upgrade-channel"],
+            help="Channel used for autoupgrade.",
+            required=True,
         )
 
         logging = cls._args_schema.logging
@@ -189,16 +211,75 @@ class Create(AAZCommand):
         network_interface_configuration.subnet_id = AAZStrArg(
             options=["subnet-id"],
         )
+
+        scaling_properties = cls._args_schema.scaling_properties
+        scaling_properties.profiles = AAZListArg(
+            options=["profiles"],
+        )
+        scaling_properties.capacity = AAZIntArg(
+            options=["capacity"],
+        )
+
+        profiles = cls._args_schema.scaling_properties.profiles
+        profiles.Element = AAZObjectArg()
+
+        _element = cls._args_schema.scaling_properties.profiles.Element
+        _element.capacity = AAZObjectArg(
+            options=["capacity"],
+            help="The capacity parameters of the profile.",
+            required=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            required=True,
+        )
+
+        capacity = cls._args_schema.scaling_properties.profiles.Element.capacity
+        capacity.max = AAZIntArg(
+            options=["max"],
+            help="The maximum number of NCUs the deployment can be autoscaled to.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+        capacity.min = AAZIntArg(
+            options=["min"],
+            help="The minimum number of NCUs the deployment can be autoscaled to.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+
+        user_profile = cls._args_schema.user_profile
+        user_profile.preferred_email = AAZStrArg(
+            options=["preferred-email"],
+            help="The preferred support contact email address of the user used for sending alerts and notification. Can be an empty string or a valid email address.",
+            fmt=AAZStrArgFormat(
+                pattern="^$|^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
-        yield self.DeploymentsCreate(ctx=self.ctx)()
+        self.pre_operations()
+        yield self.DeploymentsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class DeploymentsCreate(AAZHttpOperation):
+    class DeploymentsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -238,18 +319,8 @@ class Create(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
-        
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
-            
+            return "MgmtErrorFormat"
+
         @property
         def url_parameters(self):
             parameters = {
@@ -263,6 +334,16 @@ class Create(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -304,11 +385,16 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("autoUpgradeProfile", AAZObjectType, ".auto_upgrade_profile")
                 properties.set_prop("enableDiagnosticsSupport", AAZBoolType, ".enable_diagnostics")
                 properties.set_prop("logging", AAZObjectType, ".logging")
-                properties.set_prop("managedResourceGroup", AAZStrType, ".managed_resource_group")
                 properties.set_prop("networkProfile", AAZObjectType, ".network_profile")
-                properties.set_prop("provisioningState", AAZStrType, ".provisioning_state")
+                properties.set_prop("scalingProperties", AAZObjectType, ".scaling_properties")
+                properties.set_prop("userProfile", AAZObjectType, ".user_profile")
+
+            auto_upgrade_profile = _builder.get(".properties.autoUpgradeProfile")
+            if auto_upgrade_profile is not None:
+                auto_upgrade_profile.set_prop("upgradeChannel", AAZStrType, ".upgrade_channel", typ_kwargs={"flags": {"required": True}})
 
             logging = _builder.get(".properties.logging")
             if logging is not None:
@@ -350,6 +436,33 @@ class Create(AAZCommand):
             network_interface_configuration = _builder.get(".properties.networkProfile.networkInterfaceConfiguration")
             if network_interface_configuration is not None:
                 network_interface_configuration.set_prop("subnetId", AAZStrType, ".subnet_id")
+
+            scaling_properties = _builder.get(".properties.scalingProperties")
+            if scaling_properties is not None:
+                scaling_properties.set_prop("autoScaleSettings", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+                scaling_properties.set_prop("capacity", AAZIntType, ".capacity")
+
+            auto_scale_settings = _builder.get(".properties.scalingProperties.autoScaleSettings")
+            if auto_scale_settings is not None:
+                auto_scale_settings.set_prop("profiles", AAZListType, ".profiles", typ_kwargs={"flags": {"required": True}})
+
+            profiles = _builder.get(".properties.scalingProperties.autoScaleSettings.profiles")
+            if profiles is not None:
+                profiles.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.scalingProperties.autoScaleSettings.profiles[]")
+            if _elements is not None:
+                _elements.set_prop("capacity", AAZObjectType, ".capacity", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+
+            capacity = _builder.get(".properties.scalingProperties.autoScaleSettings.profiles[].capacity")
+            if capacity is not None:
+                capacity.set_prop("max", AAZIntType, ".max", typ_kwargs={"flags": {"required": True}})
+                capacity.set_prop("min", AAZIntType, ".min", typ_kwargs={"flags": {"required": True}})
+
+            user_profile = _builder.get(".properties.userProfile")
+            if user_profile is not None:
+                user_profile.set_prop("preferredEmail", AAZStrType, ".preferred_email")
 
             sku = _builder.get(".sku")
             if sku is not None:
@@ -426,6 +539,9 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.auto_upgrade_profile = AAZObjectType(
+                serialized_name="autoUpgradeProfile",
+            )
             properties.enable_diagnostics_support = AAZBoolType(
                 serialized_name="enableDiagnosticsSupport",
             )
@@ -446,6 +562,19 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.scaling_properties = AAZObjectType(
+                serialized_name="scalingProperties",
+            )
+            properties.user_profile = AAZObjectType(
+                serialized_name="userProfile",
+            )
+
+            auto_upgrade_profile = cls._schema_on_200_201.properties.auto_upgrade_profile
+            auto_upgrade_profile.upgrade_channel = AAZStrType(
+                serialized_name="upgradeChannel",
+                flags={"required": True},
             )
 
             logging = cls._schema_on_200_201.properties.logging
@@ -502,6 +631,42 @@ class Create(AAZCommand):
                 serialized_name="subnetId",
             )
 
+            scaling_properties = cls._schema_on_200_201.properties.scaling_properties
+            scaling_properties.auto_scale_settings = AAZObjectType(
+                serialized_name="autoScaleSettings",
+                flags={"client_flatten": True},
+            )
+            scaling_properties.capacity = AAZIntType()
+
+            auto_scale_settings = cls._schema_on_200_201.properties.scaling_properties.auto_scale_settings
+            auto_scale_settings.profiles = AAZListType(
+                flags={"required": True},
+            )
+
+            profiles = cls._schema_on_200_201.properties.scaling_properties.auto_scale_settings.profiles
+            profiles.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.scaling_properties.auto_scale_settings.profiles.Element
+            _element.capacity = AAZObjectType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            capacity = cls._schema_on_200_201.properties.scaling_properties.auto_scale_settings.profiles.Element.capacity
+            capacity.max = AAZIntType(
+                flags={"required": True},
+            )
+            capacity.min = AAZIntType(
+                flags={"required": True},
+            )
+
+            user_profile = cls._schema_on_200_201.properties.user_profile
+            user_profile.preferred_email = AAZStrType(
+                serialized_name="preferredEmail",
+            )
+
             sku = cls._schema_on_200_201.sku
             sku.name = AAZStrType(
                 flags={"required": True},
@@ -510,33 +675,31 @@ class Create(AAZCommand):
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             tags = cls._schema_on_200_201.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

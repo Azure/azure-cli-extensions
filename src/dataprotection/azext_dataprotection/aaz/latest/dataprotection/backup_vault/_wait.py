@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2024-04-01"],
         ]
     }
 
@@ -116,7 +116,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -202,6 +202,10 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.bcdr_security_level = AAZStrType(
+                serialized_name="bcdrSecurityLevel",
+                flags={"read_only": True},
+            )
             properties.feature_settings = AAZObjectType(
                 serialized_name="featureSettings",
             )
@@ -215,6 +219,12 @@ class Wait(AAZWaitCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.replicated_regions = AAZListType(
+                serialized_name="replicatedRegions",
+            )
+            properties.resource_guard_operation_requests = AAZListType(
+                serialized_name="resourceGuardOperationRequests",
             )
             properties.resource_move_details = AAZObjectType(
                 serialized_name="resourceMoveDetails",
@@ -259,6 +269,12 @@ class Wait(AAZWaitCommand):
                 serialized_name="alertsForAllJobFailures",
             )
 
+            replicated_regions = cls._schema_on_200.properties.replicated_regions
+            replicated_regions.Element = AAZStrType()
+
+            resource_guard_operation_requests = cls._schema_on_200.properties.resource_guard_operation_requests
+            resource_guard_operation_requests.Element = AAZStrType()
+
             resource_move_details = cls._schema_on_200.properties.resource_move_details
             resource_move_details.completion_time_utc = AAZStrType(
                 serialized_name="completionTimeUtc",
@@ -277,11 +293,39 @@ class Wait(AAZWaitCommand):
             )
 
             security_settings = cls._schema_on_200.properties.security_settings
+            security_settings.encryption_settings = AAZObjectType(
+                serialized_name="encryptionSettings",
+            )
             security_settings.immutability_settings = AAZObjectType(
                 serialized_name="immutabilitySettings",
             )
             security_settings.soft_delete_settings = AAZObjectType(
                 serialized_name="softDeleteSettings",
+            )
+
+            encryption_settings = cls._schema_on_200.properties.security_settings.encryption_settings
+            encryption_settings.infrastructure_encryption = AAZStrType(
+                serialized_name="infrastructureEncryption",
+            )
+            encryption_settings.kek_identity = AAZObjectType(
+                serialized_name="kekIdentity",
+            )
+            encryption_settings.key_vault_properties = AAZObjectType(
+                serialized_name="keyVaultProperties",
+            )
+            encryption_settings.state = AAZStrType()
+
+            kek_identity = cls._schema_on_200.properties.security_settings.encryption_settings.kek_identity
+            kek_identity.identity_id = AAZStrType(
+                serialized_name="identityId",
+            )
+            kek_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+
+            key_vault_properties = cls._schema_on_200.properties.security_settings.encryption_settings.key_vault_properties
+            key_vault_properties.key_uri = AAZStrType(
+                serialized_name="keyUri",
             )
 
             immutability_settings = cls._schema_on_200.properties.security_settings.immutability_settings

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection resource-guard create",
-    is_experimental=True,
 )
 class Create(AAZCommand):
     """Creates or updates a ResourceGuard resource belonging to a resource group.
@@ -23,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/resourceguards/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/resourceguards/{}", "2024-04-01"],
         ]
     }
 
@@ -144,7 +143,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }

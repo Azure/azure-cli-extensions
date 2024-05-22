@@ -7,15 +7,27 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core.aaz import (
-    AAZFreeFormDictArg, AAZStrArg, AAZResourceGroupNameArg,
+    AAZFreeFormDictArg, AAZStrArg, AAZResourceGroupNameArg, AAZResourceLocationArg,
+    AAZResourceLocationArgFormat, AAZUndefined, has_value
 )
+from azure.cli.core.aaz.utils import assign_aaz_list_arg
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance import (
     Create as _Create,
     ValidateForBackup as _ValidateForBackup,
     ValidateForRestore as _ValidateForRestore,
+    StopProtection as _StopProtection,
+    SuspendBackup as _SuspendBackup,
 )
+from azext_dataprotection.aaz.latest.dataprotection.cross_region_restore import (
+    Validate as _ValidateForCRR,
+    Trigger as _TriggerCRR
+)
+
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance.restore import Trigger as _RestoreTrigger
-from ..helpers import convert_dict_keys_snake_to_camel
+from ..helpers import (
+    convert_dict_keys_snake_to_camel, critical_operation_map,
+    transform_resource_guard_operation_request
+)
 
 
 class ValidateAndCreate(_Create):
@@ -134,11 +146,209 @@ class RestoreTrigger(_RestoreTrigger):
             help="Gets or sets the restore request object. Expected value: json-string/@json-file.",
             required=True,
         )
+        args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            help="Tenant ID for cross-tenant calls"
+        )
 
         return args_schema
+
+    def pre_operations(self):
+        # Allow users to enter predefined shorthand instead of the full path, if necessary
+        if has_value(self.ctx.args.resource_guard_operation_requests):
+            self.ctx.args.resource_guard_operation_requests = assign_aaz_list_arg(
+                self.ctx.args.resource_guard_operation_requests,
+                self.ctx.args.resource_guard_operation_requests,
+                element_transformer=lambda _, operation:
+                    transform_resource_guard_operation_request(self, _, operation)
+            )
+        if has_value(self.ctx.args.tenant_id):
+            # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
+            self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))
 
     class BackupInstancesTriggerRestore(_RestoreTrigger.BackupInstancesTriggerRestore):
 
         @property
         def content(self):
-            return convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data())
+            request_body = self.ctx.args.restore_request_object.to_serialized_data()
+            resource_guard_operation_requests_deserialized = self.ctx.args.resource_guard_operation_requests.to_serialized_data()
+            if resource_guard_operation_requests_deserialized != AAZUndefined:
+                request_body['resourceGuardOperationRequests'] = resource_guard_operation_requests_deserialized
+            request_body = convert_dict_keys_snake_to_camel(request_body)
+            return request_body
+
+
+class ValidateForCRR(_ValidateForCRR):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        cls._args_schema = super(_ValidateForCRR, cls)._build_arguments_schema(cls, *args, **kwargs)     # pylint: disable=bad-super-call
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            required=True,
+            id_part="name",
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+
+        # define Arg Group "CrossRegionRestoreDetails"
+
+        _args_schema = cls._args_schema
+        _args_schema.source_backup_instance_id = AAZStrArg(
+            options=["--source-backup-instance-id"],
+            arg_group="CrossRegionRestoreDetails",
+            help="The full ARM ID of the source backup instance",
+            required=True,
+        )
+        _args_schema.source_region = AAZStrArg(
+            options=["--source-region"],
+            arg_group="CrossRegionRestoreDetails",
+            help="The region that the source backup instance is present in",
+            required=True,
+        )
+
+        _args_schema.restore_request_object = AAZFreeFormDictArg(
+            options=["--restore-request-object"],
+            help="Gets or sets the restore request object. Expected value: json-string/@json-file.",
+            required=True,
+        )
+
+        return cls._args_schema
+
+    class BackupInstancesValidateCrossRegionRestore(_ValidateForCRR.BackupInstancesValidateCrossRegionRestore):
+
+        @property
+        def content(self):
+            crr_details = {}
+            crr_details["sourceBackupInstanceId"] = self.ctx.args.source_backup_instance_id.to_serialized_data()
+            crr_details["sourceRegion"] = self.ctx.args.source_region.to_serialized_data()
+            return self.serialize_content({
+                'objectType': 'ValidateRestoreRequestObject',
+                'restoreRequestObject': convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data()),
+                'crossRegionRestoreDetails': crr_details
+            })
+
+
+class TriggerCRR(_TriggerCRR):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        cls._args_schema = super(_TriggerCRR, cls)._build_arguments_schema(cls, *args, **kwargs)     # pylint: disable=bad-super-call
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            required=True,
+            id_part="name",
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+
+        # define Arg Group "CrossRegionRestoreDetails"
+
+        _args_schema = cls._args_schema
+        _args_schema.source_backup_instance_id = AAZStrArg(
+            options=["--source-backup-instance-id"],
+            arg_group="CrossRegionRestoreDetails",
+            help="The full ARM ID of the source backup instance",
+            required=True,
+        )
+        _args_schema.source_region = AAZStrArg(
+            options=["--source-region"],
+            arg_group="CrossRegionRestoreDetails",
+            help="The region that the source backup instance is present in",
+            required=True,
+        )
+
+        _args_schema.restore_request_object = AAZFreeFormDictArg(
+            options=["--restore-request-object"],
+            help="Gets or sets the restore request object. Expected value: json-string/@json-file.",
+            required=True,
+        )
+
+        return cls._args_schema
+
+    class BackupInstancesTriggerCrossRegionRestore(_TriggerCRR.BackupInstancesTriggerCrossRegionRestore):
+
+        @property
+        def content(self):
+            crr_details = {}
+            restore_request_object = convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data())
+            crr_details["sourceBackupInstanceId"] = self.ctx.args.source_backup_instance_id.to_serialized_data()
+            crr_details["sourceRegion"] = self.ctx.args.source_region.to_serialized_data()
+
+            return self.serialize_content({
+                'objectType': restore_request_object["objectType"],
+                'restoreRequestObject': restore_request_object,
+                'crossRegionRestoreDetails': crr_details
+            })
+
+
+class SuspendBackup(_SuspendBackup):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        _args_schema = cls._args_schema
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            help="Tenant ID for cross-tenant calls"
+        )
+        return cls._args_schema
+
+    def pre_operations(self):
+        # Allow users to enter predefined shorthand instead of the full path, if necessary
+        if has_value(self.ctx.args.resource_guard_operation_requests):
+            self.ctx.args.resource_guard_operation_requests = assign_aaz_list_arg(
+                self.ctx.args.resource_guard_operation_requests,
+                self.ctx.args.resource_guard_operation_requests,
+                element_transformer=lambda _, operation:
+                    transform_resource_guard_operation_request(self, _, operation)
+            )
+        if has_value(self.ctx.args.tenant_id):
+            # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
+            self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))
+
+
+class StopProtection(_StopProtection):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        _args_schema = cls._args_schema
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            help="Tenant ID for cross-tenant calls"
+        )
+        return cls._args_schema
+
+    def pre_operations(self):
+        # Allow users to enter predefined shorthand instead of the full path, if necessary
+        if has_value(self.ctx.args.resource_guard_operation_requests):
+            self.ctx.args.resource_guard_operation_requests = assign_aaz_list_arg(
+                self.ctx.args.resource_guard_operation_requests,
+                self.ctx.args.resource_guard_operation_requests,
+                element_transformer=lambda _, operation:
+                    transform_resource_guard_operation_request(self, _, operation)
+            )
+        if has_value(self.ctx.args.tenant_id):
+            # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
+            self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))

@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-08-01",
+        "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/certificates/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}/certificates/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -49,13 +49,14 @@ class Create(AAZCommand):
             options=["-n", "--name", "--certificate-name"],
             help="The name of certificate",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.deployment_name = AAZStrArg(
             options=["--deployment-name"],
             help="The name of targeted Nginx deployment",
             required=True,
-            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-z0-9A-Z][a-z0-9A-Z-]{0,28}[a-z0-9A-Z]|[a-z0-9A-Z])$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -70,48 +71,45 @@ class Create(AAZCommand):
                 resource_group_arg="resource_group",
             ),
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.certificate_path = AAZStrArg(
             options=["--certificate-path"],
-            help="This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment",
             arg_group="Properties",
+            help={"short-summary": "Certificate path in Nginx configuration structure", "long-summary": "This path must match one or more ssl_certificate directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"},
         )
         _args_schema.key_vault_secret_id = AAZStrArg(
             options=["--key-vault-secret-id"],
-            help="The secret id to the certificate in KeyVault",
             arg_group="Properties",
+            help="The secret ID for your certificate from Azure Key Vault",
         )
         _args_schema.key_path = AAZStrArg(
             options=["--key-path"],
-            help="This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment",
             arg_group="Properties",
-        )
-        _args_schema.provisioning_state = AAZStrArg(
-            options=["--provisioning-state"],
-            arg_group="Properties",
-            help="State of the certificate deployment",
-            enum={"Accepted": "Accepted", "Canceled": "Canceled", "Creating": "Creating", "Deleted": "Deleted", "Deleting": "Deleting", "Failed": "Failed", "NotSpecified": "NotSpecified", "Succeeded": "Succeeded", "Updating": "Updating"},
+            help={"short-summary": "Key path in Nginx configuration structure", "long-summary": "This path must match one or more ssl_certificate_key directive file argument in your Nginx configuration. This path must be unique between certificates within the same deployment"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
-        yield self.CertificatesCreate(ctx=self.ctx)()
+        self.pre_operations()
+        yield self.CertificatesCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CertificatesCreate(AAZHttpOperation):
+    class CertificatesCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -151,17 +149,7 @@ class Create(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-01",
-                    required=True,
-                ),
-            }
-            return parameters
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -180,6 +168,16 @@ class Create(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -206,18 +204,12 @@ class Create(AAZCommand):
             )
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType)
-            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("certificateVirtualPath", AAZStrType, ".certificate_path")
                 properties.set_prop("keyVaultSecretId", AAZStrType, ".key_vault_secret_id")
                 properties.set_prop("keyVirtualPath", AAZStrType, ".key_path")
-                properties.set_prop("provisioningState", AAZStrType, ".provisioning_state")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -251,55 +243,69 @@ class Create(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.certificate_error = AAZObjectType(
+                serialized_name="certificateError",
+            )
             properties.certificate_virtual_path = AAZStrType(
                 serialized_name="certificateVirtualPath",
             )
+            properties.key_vault_secret_created = AAZStrType(
+                serialized_name="keyVaultSecretCreated",
+                flags={"read_only": True},
+            )
             properties.key_vault_secret_id = AAZStrType(
                 serialized_name="keyVaultSecretId",
+            )
+            properties.key_vault_secret_version = AAZStrType(
+                serialized_name="keyVaultSecretVersion",
+                flags={"read_only": True},
             )
             properties.key_virtual_path = AAZStrType(
                 serialized_name="keyVirtualPath",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
+            properties.sha1_thumbprint = AAZStrType(
+                serialized_name="sha1Thumbprint",
+                flags={"read_only": True},
+            )
+
+            certificate_error = cls._schema_on_200_201.properties.certificate_error
+            certificate_error.code = AAZStrType()
+            certificate_error.message = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

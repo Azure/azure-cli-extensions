@@ -428,7 +428,8 @@ class SerialConsole:
 
     def connect(self):
         def on_open(_):
-            pass
+            if self.new_auth_flow == "1":
+                GV.websocket_instance.send(self.access_token)
 
         def on_message(_, message):
             if GV.first_message:

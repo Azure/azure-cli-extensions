@@ -4,10 +4,44 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp up/create/update': Wait longer time for logstream of Cloud Build to make sure the container start
+* 'az containerapp env java-component config-server-for-spring': Support create/update/show/delete Spring Cloud Config; deprecation of 'az containerapp env java-component spring-cloud-config'
+* 'az containerapp env java-component eureka-server-for-spring': Support create/update/show/delete Spring Cloud Eureka; deprecation of 'az containerapp env java-component spring-cloud-eureka'
+* 'az containerapp up': Fix InvalidResourceType error when cloud is not AzureCloud
+
+0.3.50
+++++++
+* 'az containerapp env telemetry data-dog show': Support show environment data dog configuration
+* 'az containerapp env telemetry app-insights show': Support show environment app insights configuration
+* 'az containerapp env telemetry otlp add': Support add environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry otlp update': Support update environment otlp configuration with --otlp-name, --endpoint, --insecure, --headers, --enable-open-telemetry-traces, --enable-open-telemetry-logs and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry otlp remove': Support remove environment otlp configuration with --otlp-name
+* 'az containerapp env telemetry otlp show': Support show environment otlp configuration with --otlp-name
+* 'az containerapp env telemetry otlp list': Support show environment otlp configurations
+
+0.3.49
+++++++
+* 'az containerapp env telemetry data-dog set': Support update environment data dog configuration with --site, --key, --enable-open-telemetry-traces and --enable-open-telemetry-metrics
+* 'az containerapp env telemetry data-dog delete': Support delete environment data dog configuration
+* 'az containerapp env telemetry app-insights set': Support update environment app insights configuration with --connection-string, --enable-open-telemetry-traces and --enable-open-telemetry-logs
+* 'az containerapp env telemetry app-insights delete': Support delete environment app insights configuration
+* 'az containerapp update/up': Explicitly set container name to container app name for source to cloud builds.
+* 'az containerapp env create/update': Add support for environment custom domain from azure key vault using managed identity
+* 'az containerapp env certificate upload': Add support for environment certificate from azure key vault using managed identity
+
+0.3.48
+++++++
 * 'az containerapp service': Remove deprecated command group altogether, only keep 'az containerapp add-on' for add-ons
 * 'az containerapp env dapr-component resiliency': Add support for Dapr Component Resiliency Circuit Breakers
 * 'az containerapp create/update/up': Don't compress jar/war/zip file before upload source code
 * 'az containerapp create/update/up': Update source to cloud builder to 20240124.1
+* 'az containerapp up': Fix registry not found error in subscription when registry server parameters are provided for ACR from another subscription
+* 'az containerapp env java-component': Support list Java components
+* 'az containerapp env java-component spring-cloud-config': Support create/update/show/delete Spring Cloud Config
+* 'az containerapp env java-component spring-cloud-eureka': Support create/update/show/delete Spring Cloud Eureka
+* 'az containerapp create/update': Support bind Java component with --bind
+* 'az containerapp create/update/up': Fix issue with logs when the Cloud Build project to use generates UTF-8 logs.
+* 'az containerapp update/up': Fix bug for multiple containers provisioned for source to cloud build
 
 0.3.47
 ++++++
