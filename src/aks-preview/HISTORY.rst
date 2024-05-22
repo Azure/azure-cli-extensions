@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+4.0.0b5
+++++++++
+* Add warnings to `az aks mesh` commands for out of support asm revision in use.
+
 4.0.0b4
 ++++++++
 * Add `--vm-sizes` to `az aks create` and `az aks nodepool add`.
