@@ -22,7 +22,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.resourcegraph import ResourceGraphClient
 from azure.mgmt.resourcegraph.models import QueryRequest
 
-from .common import KUBERNETES_RUNTIME_FPA_APP_ID, KUBERNETES_RUNTIME_RP, ConnectedClusterResourceId, query_rp_oid
+from .common import KUBERNETES_RUNTIME_FPA_APP_ID, check_rp_registration, ConnectedClusterResourceId, query_rp_oid
 
 
 logger = get_logger(__name__)
@@ -45,12 +45,8 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
 
     resource_id = ConnectedClusterResourceId.parse(resource_uri)
 
-    print(f"Register Kubernetes Runtime RP in subscription {resource_id.subscription_id}...")
-    resource_management_client: ResourceManagementClient = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient, subscription_id=resource_id.subscription_id)
-
-    resource_management_client.providers.register(
-        resource_provider_namespace=KUBERNETES_RUNTIME_RP
-    )
+    check_rp_registration(cmd, resource_id)
+    logger.info("Kubernetes Runtime RP registered in subscription %s", resource_id.subscription_id)
 
     print(f"Installing Storage class Arc Extension in cluster {resource_id.cluster_name}...")
 
