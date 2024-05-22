@@ -86,43 +86,70 @@ class ServiceCommandsTests(ScenarioTest):
     @unittest.skip('The Control Plane API has bug')
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer(enable_system_assigned_identity=True)
-    def test_import_from_apim(self, identity_id):
+    def test_import_from_apim(self):
         self.kwargs.update({
-          'apim_name': self.create_random_name(prefix='cli', length=24),
-          'identity_id': identity_id
+          'apim_name': self.create_random_name(prefix='cli', length=24)
         })
-        apim_service = self.cmd('az apim create -g {rg} --name {apim_name} --publisher-name test --publisher-email test@example.com --sku-name Consumption').get_output_in_json()
-        self.cmd('az apim api create -g {rg} --service-name {apim_name} --api-id echo --display-name "Echo API" --path "/echo"')
-        self.cmd('az apim api operation create -g {rg} --service-name {apim_name} --api-id echo --url-template "/echo" --method "GET" --display-name "GetOperation"')
-        apim_id = apim_service['id']
-        self.kwargs.update({
-            'apim_id': apim_id
-        })
-        self.cmd('az role assignment create --role "API Management Service Reader Role" --assignee-object-id {identity_id} --assignee-principal-type ServicePrincipal --scope {apim_id}')
-        self.cmd('az apic service import-from-apim -g {rg} --service-name {s} --source-resource-ids {apim_id}/apis/*')
+        self._prepare_apim()
+        # Import from APIM
+        self.cmd('az apic service import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis *')
 
         # TODO: check result
+
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer(enable_system_assigned_identity=True)
+    def test_import_from_apim_for_one_api(self):
+        self.kwargs.update({
+          'apim_name': self.create_random_name(prefix='cli', length=24)
+        })
+        self._prepare_apim()
+        # Import from APIM
+        self.cmd('az apic service import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis echo')
+
+        # Check result
+        self.cmd('az apic api list -g {rg} -s {s}', checks=[
+            self.check('length(@)', 1),
+            self.check('@[0].title', 'Echo API')
+        ])
 
     @unittest.skip('The Control Plane API has bug')
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer(enable_system_assigned_identity=True)
-    def test_import_from_apim_for_one_api(self, identity_id):
+    def test_import_from_apim_for_multiple_apis(self):
         self.kwargs.update({
-          'apim_name': self.create_random_name(prefix='cli', length=24),
-          'identity_id': identity_id
+          'apim_name': self.create_random_name(prefix='cli', length=24)
         })
-        apim_service = self.cmd('az apim create -g {rg} --name {apim_name} --publisher-name test --publisher-email test@example.com --sku-name Consumption').get_output_in_json()
-        # Add echo api
-        self.cmd('az apim api create -g {rg} --service-name {apim_name} --api-id echo --display-name "Echo API" --path "/echo"')
-        self.cmd('az apim api operation create -g {rg} --service-name {apim_name} --api-id echo --url-template "/echo" --method "GET" --display-name "GetOperation"')
-        # Add foo api
-        self.cmd('az apim api create -g {rg} --service-name {apim_name} --api-id foo --display-name "Foo API" --path "/foo"')
-        self.cmd('az apim api operation create -g {rg} --service-name {apim_name} --api-id foo --url-template "/foo" --method "GET" --display-name "GetOperation"')
-        apim_id = apim_service['id']
-        self.kwargs.update({
-            'apim_id': apim_id
-        })
-        self.cmd('az role assignment create --role "API Management Service Reader Role" --assignee-object-id {identity_id} --assignee-principal-type ServicePrincipal --scope {apim_id}')
-        self.cmd('az apic service import-from-apim -g {rg} --service-name {s} --source-resource-ids {apim_id}/apis/echo')
+        self._prepare_apim()
+        # Import from APIM
+        self.cmd('az apic service import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis [echo,foo]')
 
-        # TODO: check result
+        # Check result
+        self.cmd('az apic api list -g {rg} -s {s}', checks=[
+            self.check('length(@)', 2),
+            self.check('any(@[*].title == `Echo API`)', True),
+            self.check('any(@[*].title == `Foo API`)', True)
+        ])
+
+    def _prepare_apim(self):
+        if self.is_live:
+            # Only setup APIM in live mode
+            # Get system assigned identity id for API Center
+            apic_service = self.cmd('az apic service show -g {rg} -s {s}').get_output_in_json()
+            self.kwargs.update({
+                'identity_id': apic_service['identity']['principalId']
+            })
+            # Create APIM service
+            apim_service = self.cmd('az apim create -g {rg} --name {apim_name} --publisher-name test --publisher-email test@example.com --sku-name Consumption').get_output_in_json()
+            # Add echo api
+            self.cmd('az apim api create -g {rg} --service-name {apim_name} --api-id echo --display-name "Echo API" --path "/echo"')
+            self.cmd('az apim api operation create -g {rg} --service-name {apim_name} --api-id echo --url-template "/echo" --method "GET" --display-name "GetOperation"')
+            # Add foo api
+            self.cmd('az apim api create -g {rg} --service-name {apim_name} --api-id foo --display-name "Foo API" --path "/foo"')
+            self.cmd('az apim api operation create -g {rg} --service-name {apim_name} --api-id foo --url-template "/foo" --method "GET" --display-name "GetOperation"')
+            apim_id = apim_service['id']
+            self.kwargs.update({
+                'apim_id': apim_id
+            })
+            # Grant system assigned identity of API Center access to APIM
+            self.cmd('az role assignment create --role "API Management Service Reader Role" --assignee-object-id {identity_id} --assignee-principal-type ServicePrincipal --scope {apim_id}')

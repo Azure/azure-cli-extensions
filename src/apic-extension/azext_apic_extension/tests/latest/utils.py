@@ -8,13 +8,12 @@ from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer, SingleValueR
 class ApicServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def __init__(self, name_prefix='clitest', length=24,
                  parameter_name='service_name', resource_group_parameter_name='resource_group', key='s',
-                 enable_system_assigned_identity=False, identity_id_parameter_name='identity_id'):
+                 enable_system_assigned_identity=False):
         super(ApicServicePreparer, self).__init__(name_prefix, length)
         self.cli_ctx = get_dummy_cli()
         self.resource_group_parameter_name = resource_group_parameter_name
         self.parameter_name = parameter_name
         self.enable_system_assigned_identity = enable_system_assigned_identity
-        self.identity_id_parameter_name = identity_id_parameter_name
         self.key = key
 
     def create_resource(self, name, **kwargs):
@@ -27,14 +26,11 @@ class ApicServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
         cmd=template.format(name, group)
         print(cmd)
-        resource = self.live_only_execute(self.cli_ctx, cmd)
+        self.live_only_execute(self.cli_ctx, cmd)
 
         self.test_class_instance.kwargs[self.key] = name
-        identity_id = None
-        if self.enable_system_assigned_identity:
-            identity_id = resource.get_output_in_json()['identity']['principalId']
             
-        return {self.parameter_name: name, self.identity_id_parameter_name: identity_id}
+        return {self.parameter_name: name}
 
     def remove_resource(self, name, **kwargs):
         # ResourceGroupPreparer will delete everything

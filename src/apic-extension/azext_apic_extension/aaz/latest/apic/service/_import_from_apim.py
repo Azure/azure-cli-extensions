@@ -17,8 +17,14 @@ from azure.cli.core.aaz import *
 class ImportFromApim(AAZCommand):
     """Imports APIs from an Azure API Management service instance.
 
-    :example: Import From APIM
-        az apic service import-from-apim -g api-center-test --service-name contosoeuap --source-resource-ids '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/servicegroup/providers/Microsoft.ApiManagement/service/contoso/apis/contosoapi'
+    :example: Import all APIs from APIM in same resource group
+        az apic service import-from-apim -g api-center-test --service-name contoso-apic --apim-name contoso-apim --apim-apis *
+
+    :example: Import selected APIs from APIM in same resource group
+        az apic service import-from-apim -g api-center-test --service-name contoso-apic --apim-name contoso-apim --apim-apis [echo,foo]
+
+    :example: Import all APIs from APIM in another subscription and resource group
+        az apic service import-from-apim -g api-center-test --service-name contoso-apic --apim-subscription 00000000-0000-0000-0000-000000000000 --apim-resource-group apim-rg --apim-name contoso-apim --apim-apis *
     """
 
     _aaz_info = {

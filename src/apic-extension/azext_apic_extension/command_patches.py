@@ -48,6 +48,8 @@ from .aaz.latest.apic.metadata import (
 )
 from .aaz.latest.apic.service import ImportFromApim
 
+from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg
+
 
 class DefaultWorkspaceParameter:
     # pylint: disable=too-few-public-methods
@@ -205,5 +207,58 @@ class ImportFromApimExtension(ImportFromApim):
     def _build_arguments_schema(cls, *args, **kwargs):
         # pylint: disable=protected-access
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.source_resource_ids._required = True
+        args_schema.source_resource_ids._required = False
+        args_schema.source_resource_ids._registered = False
+
+        args_schema.apim_subscription_id = AAZStrArg(
+            options=["--apim-subscription"],
+            help="The subscription id of the source APIM instance.",
+            required=False
+        )
+
+        args_schema.apim_resource_group = AAZStrArg(
+            options=["--apim-resource-group"],
+            help="The resource group of the source APIM instance.",
+            required=False
+        )
+
+        args_schema.apim_name = AAZStrArg(
+            options=["--apim-name"],
+            help="The name of the source APIM instance.",
+            required=True
+        )
+
+        args_schema.apim_apis = AAZListArg(
+            options=["--apim-apis"],
+            help="The APIs to be imported.",
+            required=True
+        )
+        args_schema.apim_apis.Element = AAZStrArg()
+
         return args_schema
+
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+
+        # compose sourceResourceIds property in the request body
+        # Use same subscription id and resource group as API Center by default
+        resource_group = args.resource_group
+        subscription_id = self.ctx.subscription_id
+
+        # Use user provided subscription id
+        if args.apim_subscription_id:
+            subscription_id = args.apim_subscription_id
+
+        # Use user provided resource group
+        if args.apim_resource_group:
+            resource_group = args.apim_resource_group
+
+        source_resource_ids = []
+        for item in args.apim_apis:
+            source_resource_ids.append(
+                f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/"
+                f"Microsoft.ApiManagement/service/{args.apim_name}/apis/{item}"
+            )
+
+        args.source_resource_ids = source_resource_ids
