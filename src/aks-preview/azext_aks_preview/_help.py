@@ -778,7 +778,7 @@ helps['aks upgrade'] = """
           long-summary: It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
         - name: --if-match
           type: string
-          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster. 
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
@@ -904,7 +904,7 @@ helps['aks update'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --if-match
           type: string
-          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster. 
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
@@ -1851,7 +1851,7 @@ helps['aks nodepool add'] = """
           short-summary: Enable vTPM on agent node pool. Must use VMSS agent pool type.
         - name: --if-match
           type: string
-          short-summary: The value provided will be compared to the ETag of the agentpool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. 
+          short-summary: The value provided will be compared to the ETag of the agentpool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool.
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new agentpool to be created, but to prevent updating an existing agentpool. Other values will be ignored.
@@ -1921,7 +1921,7 @@ helps['aks nodepool upgrade'] = """
           short-summary: The source snapshot id used to upgrade this nodepool. Must use VMSS agent pool type.
         - name: --if-match
           type: string
-          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. For upgrade node image version requests this will be ignored. 
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. For upgrade node image version requests this will be ignored.
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
@@ -2006,7 +2006,7 @@ helps['aks nodepool update'] = """
           short-summary: Disable vTPM on an existing Trusted Launch enabled agent node pool.
         - name: --if-match
           type: string
-          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. 
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool.
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
@@ -2065,7 +2065,7 @@ helps['aks nodepool delete'] = """
           short-summary: (PREVIEW) ignore-pod-disruption-budget deletes an existing nodepool without considering Pod Disruption Budget.
         - name: --if-match
           type: string
-          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. 
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool.
 
     examples:
         - name: Delete an agent pool with ignore-pod-disruption-budget
