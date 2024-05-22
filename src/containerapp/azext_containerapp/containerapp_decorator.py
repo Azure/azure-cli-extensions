@@ -29,7 +29,8 @@ from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_r
                                                            ensure_workload_profile_supported, _generate_secret_volume_name,
                                                            get_linker_client,
                                                            safe_get, _update_revision_env_secretrefs, _add_or_update_tags, _populate_secret_values,
-                                                           clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred)
+                                                           clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred, _ensure_identity_resource_id)
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 from knack.log import get_logger
 from knack.util import CLIError
@@ -646,6 +647,10 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind is single.")
         validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
+        if self.get_argument_scale_rule_type() and self.get_argument_scale_rule_identity():
+            scale_rule_type = self.get_argument_scale_rule_type().lower()
+            if scale_rule_type == "http" or scale_rule_type == "tcp":
+                raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -975,6 +980,17 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                         "java": runtime_java_def
                     }
             safe_set(self.containerapp_def, "properties", "configuration", "runtime", value=runtime_def)
+    
+    # pylint: disable=unsupported-assignment-operation
+    def set_up_scale_rule(self):
+        scale_def = super().set_up_scale_rule()
+        if scale_def and scale_def["rules"] and scale_def["rules"][0] and scale_def["rules"][0]["custom"] and self.get_argument_scale_rule_identity():
+            identity = self.get_argument_scale_rule_identity().lower()
+            if identity != "system":
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
+                identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
+            scale_def["rules"][0]["custom"]["identity"] = identity
+        return scale_def
 
     def should_set_up_runtime(self):
         if self.get_argument_runtime() is not None:
@@ -1035,6 +1051,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def get_argument_enable_java_agent(self):
         return self.get_param("enable_java_agent")
+    
+    def get_argument_scale_rule_identity(self):
+        return self.get_param("scale_rule_identity")
 
 
 # decorator for preview update
@@ -1078,6 +1097,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is
     def get_argument_force_single_container_updates(self):
         return self.get_param("force_single_container_updates")
+    
+    def get_argument_scale_rule_identity(self):
+        return self.get_param("scale_rule_identity")
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -1085,6 +1107,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             raise InvalidArgumentValueError(
                 "--bind have multiple values, but --customized-keys only can be set when --bind is single.")
         validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
+        if self.get_argument_scale_rule_type() and self.get_argument_scale_rule_identity():
+            scale_rule_type = self.get_argument_scale_rule_type().lower()
+            if scale_rule_type == "http" or scale_rule_type == "tcp":
+                raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
 
     def construct_payload(self):
         super().construct_payload()
@@ -1094,6 +1120,15 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.new_containerapp, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
         self.set_up_runtime()
+
+        if self.get_argument_scale_rule_name() and self.get_argument_scale_rule_identity():
+            custom_scale_rule = safe_get(self.new_containerapp, "properties", "template", "scale", "rules", default=[])
+            if custom_scale_rule and len(custom_scale_rule) > 0 and custom_scale_rule[0]["custom"]:
+                identity = self.get_argument_scale_rule_identity().lower()
+                if identity != "system":
+                    subscription_id = get_subscription_id(self.cmd.cli_ctx)
+                    identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
+                self.new_containerapp["properties"]["template"]["scale"]["rules"][0]["custom"]["identity"] = identity
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)

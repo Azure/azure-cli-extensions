@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.7.3
+++++++
+* Skip helm archive download if helm is already installed.
+
 1.7.2
 ++++++
 * Fixed Broken Import for Service Principal
