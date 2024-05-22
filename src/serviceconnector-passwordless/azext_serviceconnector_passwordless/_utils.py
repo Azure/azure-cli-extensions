@@ -22,7 +22,8 @@ logger = get_logger(__name__)
 IP_ADDRESS_CHECKER = 'https://api.ipify.org'
 OPEN_ALL_IP_MESSAGE = 'Do you want to enable access for all IPs to allow local environment connecting to database?'
 SET_ADMIN_MESSAGE = 'Do you want to set current user as Entra admin?'
-ENABLE_ENTRA_AUTH_MESSAGE = 'Do you want to enable Microsoft Entra Authentication for the database server? It may cause the server restart.'
+ENABLE_ENTRA_AUTH_MESSAGE = 'Do you want to enable Microsoft Entra Authentication for the database server?\
+ It may cause the server restart.'
 
 
 def should_load_source(source):
