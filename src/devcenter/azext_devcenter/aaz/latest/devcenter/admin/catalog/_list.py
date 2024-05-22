@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs", "2024-05-01-preview"],
         ]
     }
 
@@ -102,7 +102,7 @@ class List(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -223,6 +223,7 @@ class List(AAZCommand):
             properties.sync_type = AAZStrType(
                 serialized_name="syncType",
             )
+            properties.tags = AAZDictType()
 
             last_sync_stats = cls._schema_on_200.value.Element.properties.last_sync_stats
             last_sync_stats.added = AAZIntType(
@@ -230,6 +231,9 @@ class List(AAZCommand):
             )
             last_sync_stats.removed = AAZIntType(
                 flags={"read_only": True},
+            )
+            last_sync_stats.synced_catalog_item_types = AAZListType(
+                serialized_name="syncedCatalogItemTypes",
             )
             last_sync_stats.synchronization_errors = AAZIntType(
                 serialized_name="synchronizationErrors",
@@ -245,6 +249,12 @@ class List(AAZCommand):
                 serialized_name="validationErrors",
                 flags={"read_only": True},
             )
+
+            synced_catalog_item_types = cls._schema_on_200.value.Element.properties.last_sync_stats.synced_catalog_item_types
+            synced_catalog_item_types.Element = AAZStrType()
+
+            tags = cls._schema_on_200.value.Element.properties.tags
+            tags.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

@@ -15,6 +15,7 @@ import re
 import requests
 import packaging.version as SemVer
 
+from enum import Enum
 from urllib.request import urlopen
 
 from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_location_allowed, \
@@ -729,8 +730,13 @@ def parse_build_env_vars(env_list):
 
 
 def is_cloud_supported_by_connected_env(cli_ctx):
-    from azure.cli.core.cloud import CloudNameEnum
-    if cli_ctx.cloud.name == CloudNameEnum.AzureCloud:
+    if cli_ctx.cloud.name == 'AzureCloud':
         return True
-
     return False
+
+
+class AppType(Enum):
+    ContainerApp = 1
+    ContainerAppJob = 2
+    SessionPool = 3
+

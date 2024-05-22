@@ -439,6 +439,8 @@ class SerialConsole:
                 PC.clear_screen()
             else:
                 PC.print(message)
+            else:
+                PC.print(message)
 
         def on_error(*_):
             pass

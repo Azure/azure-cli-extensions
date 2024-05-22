@@ -47,9 +47,10 @@ interactions:
     body: '{"backupInstance": {"dataSourceInfo": {"datasourceType": "Microsoft.DBforMySQL/flexibleServers",
       "objectType": "Datasource", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforMySQL/flexibleServers/clitest-mysql-server",
       "resourceLocation": "eastus2euap", "resourceName": "clitest-mysql-server", "resourceType":
-      "Microsoft.DBforMySQL/flexibleServers", "resourceUri": ""}, "dataSourceSetInfo":
-      null, "datasourceAuthCredentials": null, "friendlyName": "clitest-mysql-server",
-      "objectType": "BackupInstance", "policyInfo": {"policyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupPolicies/mysqlpolicy",
+      "Microsoft.DBforMySQL/flexibleServers", "resourceUri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforMySQL/flexibleServers/clitest-mysql-server"},
+      "dataSourceSetInfo": null, "datasourceAuthCredentials": null, "friendlyName":
+      "clitest-mysql-server", "objectType": "BackupInstance", "policyInfo": {"policyId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupPolicies/mysqlpolicy",
       "policyParameters": null}}}'
     headers:
       Accept:
@@ -61,7 +62,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '833'
+      - '986'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -744,12 +745,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupInstances?api-version=2024-04-01
   response:
     body:
-      string: '{"value":[{"properties":{"friendlyName":"clitest-mysql-server","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforMySQL/flexibleServers/clitest-mysql-server","resourceUri":"","datasourceType":"Microsoft.DBforMySQL/flexibleServers","resourceName":"clitest-mysql-server","resourceType":"Microsoft.DBforMySQL/flexibleServers","resourceLocation":"eastus2euap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupPolicies/mysqlpolicy"},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupInstances/clitest-mysql-server-faec6818-0720-11ec-bd1b-c8f750f92764","name":"clitest-mysql-server-faec6818-0720-11ec-bd1b-c8f750f92764","type":"Microsoft.DataProtection/backupVaults/backupInstances"}]}'
+      string: '{"value":[{"properties":{"friendlyName":"clitest-mysql-server","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforMySQL/flexibleServers/clitest-mysql-server","resourceUri":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforMySQL/flexibleServers/clitest-mysql-server","datasourceType":"Microsoft.DBforMySQL/flexibleServers","resourceName":"clitest-mysql-server","resourceType":"Microsoft.DBforMySQL/flexibleServers","resourceLocation":"eastus2euap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupPolicies/mysqlpolicy"},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupInstances/clitest-mysql-server-faec6818-0720-11ec-bd1b-c8f750f92764","name":"clitest-mysql-server-faec6818-0720-11ec-bd1b-c8f750f92764","type":"Microsoft.DataProtection/backupVaults/backupInstances"},{"properties":{"friendlyName":"clitest-pgflex-server","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforPostgreSQL/flexibleServers/clitest-pgflex-server","resourceUri":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforPostgreSQL/flexibleServers/clitest-pgflex-server","datasourceType":"Microsoft.DBforPostgreSQL/flexibleServers","resourceName":"clitest-pgflex-server","resourceType":"Microsoft.DBforPostgreSQL/flexibleServers","resourceLocation":"eastus2euap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupPolicies/pgflexpolicy"},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupInstances/clitest-pgflex-server-faec6818-0720-11ec-bd1b-c8f750f92764","name":"clitest-pgflex-server-faec6818-0720-11ec-bd1b-c8f750f92764","type":"Microsoft.DataProtection/backupVaults/backupInstances"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1245'
+      - '2812'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -790,12 +791,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupInstances/clitest-mysql-server-faec6818-0720-11ec-bd1b-c8f750f92764?api-version=2024-04-01
   response:
     body:
-      string: '{"properties":{"friendlyName":"clitest-mysql-server","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforMySQL/flexibleServers/clitest-mysql-server","resourceUri":"","datasourceType":"Microsoft.DBforMySQL/flexibleServers","resourceName":"clitest-mysql-server","resourceType":"Microsoft.DBforMySQL/flexibleServers","resourceLocation":"eastus2euap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupPolicies/mysqlpolicy"},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupInstances/clitest-mysql-server-faec6818-0720-11ec-bd1b-c8f750f92764","name":"clitest-mysql-server-faec6818-0720-11ec-bd1b-c8f750f92764","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
+      string: '{"properties":{"friendlyName":"clitest-mysql-server","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforMySQL/flexibleServers/clitest-mysql-server","resourceUri":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DBforMySQL/flexibleServers/clitest-mysql-server","datasourceType":"Microsoft.DBforMySQL/flexibleServers","resourceName":"clitest-mysql-server","resourceType":"Microsoft.DBforMySQL/flexibleServers","resourceLocation":"eastus2euap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupPolicies/mysqlpolicy"},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-ecy-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-ecy-donotdelete/backupInstances/clitest-mysql-server-faec6818-0720-11ec-bd1b-c8f750f92764","name":"clitest-mysql-server-faec6818-0720-11ec-bd1b-c8f750f92764","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1233'
+      - '1386'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1699,6 +1700,8 @@ interactions:
     headers:
       cache-control:
       - no-cache
+      connection:
+      - close
       content-length:
       - '501'
       content-type:
