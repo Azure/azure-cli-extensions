@@ -3,7 +3,7 @@ Release History
 
 0.1.8
 ++++++
-* Changed first message flow, fixed typo
+* Changed first message flow, fixed ty
 
 0.1.7
 ++++++
