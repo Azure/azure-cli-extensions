@@ -1,6 +1,10 @@
 Release History
 ===============
 
+0.1.9
+++++++
+* Migrated to a new authentication flow
+
 0.1.8
 ++++++
 * Changed first message flow, fixed typo
