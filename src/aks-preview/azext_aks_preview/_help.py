@@ -630,7 +630,7 @@ helps['aks create'] = f"""
           short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
         - name: --if-match
           type: string
-          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster. 
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.

@@ -1158,7 +1158,15 @@ def aks_upgrade(cmd,
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers, if_match=if_match, if_none_match=if_none_match)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        name,
+        instance,
+        headers=headers,
+        if_match=if_match,
+        if_none_match=if_none_match)
 
 
 def _update_upgrade_settings(cmd, instance,
