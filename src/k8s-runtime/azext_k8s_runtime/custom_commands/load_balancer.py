@@ -13,11 +13,10 @@ from knack.log import get_logger
 
 from azure.cli.core.commands import AzCliCommand
 from azure.mgmt.kubernetesconfiguration import SourceControlConfigurationClient
-from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.kubernetesconfiguration.models import Extension, Identity
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
-from .common import KUBERNETES_RUNTIME_RP, ConnectedClusterResourceId, check_rp_registration, query_rp_oid
+from .common import ConnectedClusterResourceId, check_rp_registration, query_rp_oid
 
 
 logger = get_logger(__name__)

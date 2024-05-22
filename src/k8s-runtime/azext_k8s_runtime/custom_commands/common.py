@@ -43,10 +43,11 @@ def query_rp_oid(cmd: AzCliCommand):
 
     return resp[0]["id"]
 
+
 def check_rp_registration(cmd: AzCliCommand, resource_id: str):
     """
-    Check if RP is registered. 
-    1. If RP registered, then return. 
+    Check if RP is registered.
+    1. If RP registered, then return.
     2. If RP is not registered, check permissions. If user has owner/contributor role definition, then register RP. Otherwise, return error message saying you need to ask for help to register RP.
 
 
@@ -56,7 +57,7 @@ def check_rp_registration(cmd: AzCliCommand, resource_id: str):
     if resource_provider.registration_state == "Registered":
         print(f"Kubernetes Runtime RP has been registered in subscription {resource_id.subscription_id}...")
         return
-    
+
     print(f"Registering Kubernetes Runtime RP in subscription {resource_id.subscription_id}...")
     profile = Profile(cli_ctx=cmd.cli_ctx)
     cred, _, tenant_id = profile.get_login_credentials(resource=cmd.cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
