@@ -32,7 +32,7 @@ class RegisterCommandTests(ScenarioTest):
             self.check('license.name', 'MIT'),
             self.check('lifecycleStage', 'design'), # default value assigned by APIC
             self.check('name', 'swaggerpetstore'),
-            self.check('title', 'swagger-petstore')
+            self.check('title', 'Swagger Petstore')
         ])
 
         self.cmd('az apic api version show -g {rg} -s {s} --api-id swaggerpetstore --version-id 1-0-0', checks=[
@@ -82,7 +82,7 @@ class RegisterCommandTests(ScenarioTest):
             self.check('lifecycleStage', 'design'),
             self.check('name', 'swaggerpetstore-openapi30'),
             self.check('summary', 'This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we\'ve'),
-            self.check('title', 'swagger-petstore---openapi-3.0'),
+            self.check('title', 'Swagger Petstore - OpenAPI 3.0'),
         ])
 
         self.cmd('az apic api version show -g {rg} -s {s} --api-id swaggerpetstore-openapi30 --version-id 1-0-19', checks=[
