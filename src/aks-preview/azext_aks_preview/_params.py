@@ -737,7 +737,6 @@ def load_arguments(self, _):
             "enable_azure_service_mesh",
             options_list=["--enable-azure-service-mesh", "--enable-asm"],
             action="store_true",
-            is_preview=True,
         )
         c.argument("revision", validator=validate_azure_service_mesh_revision)
         c.argument("image_cleaner_interval_hours", type=int)
