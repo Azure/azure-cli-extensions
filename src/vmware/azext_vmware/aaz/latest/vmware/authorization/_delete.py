@@ -20,9 +20,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/authorizations/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/authorizations/{}", "2023-09-01"],
         ]
     }
 
@@ -54,7 +54,7 @@ class Delete(AAZCommand):
         )
         _args_schema.private_cloud = AAZStrArg(
             options=["-c", "--private-cloud"],
-            help="The name of the private cloud.",
+            help="Name of the private cloud",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -156,7 +156,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }

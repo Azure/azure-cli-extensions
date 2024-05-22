@@ -63,6 +63,12 @@ class VmwareScenarioTest(ScenarioTest):
         # update private cloud to enable internet
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --internet Enabled')
 
+        # list authorization
+        self.cmd('vmware authorization list -g {rg} -c {privatecloud}')
+
+        # show authorization
+        self.cmd('vmware authorization show -g {rg} -c {privatecloud} -n myauthname')
+
         # create authorization
         self.cmd('vmware authorization create -g {rg} -c {privatecloud} -n myauthname --express-route-id id')
 
