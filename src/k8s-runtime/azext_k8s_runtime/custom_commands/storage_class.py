@@ -16,7 +16,6 @@ from azure.cli.core.commands import AzCliCommand
 from azure.mgmt.authorization import AuthorizationManagementClient
 from azure.mgmt.authorization.models import RoleAssignmentCreateParameters, PrincipalType
 from azure.mgmt.kubernetesconfiguration import SourceControlConfigurationClient
-from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.kubernetesconfiguration.models import Extension, Identity
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.resourcegraph import ResourceGraphClient
