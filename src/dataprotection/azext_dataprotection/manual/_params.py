@@ -255,6 +255,13 @@ def load_arguments(self, _):
                    type=namespaced_name_resource_type,
                    options_list=['--restore-hook-references', '--restore-hook-refs'],
                    help='Property sets the hook reference to be executed during restore.')
+        c.argument('staging_resource_group_id', type=str, options_list=['--staging-resource-group-id', '--staging-rg-id'],
+                   help='Resource group of the staging storage account for AKS vaulted backups')
+        c.argument('staging_storage_account_id', type=str, options_list=['--staging-storage-account-id', '--staging-storage-id'],
+                   help='Storage Account ID for AKS vaulted backups')
+        c.argument('resource_modifier_reference', type=validate_file_or_dict,
+                   options_list=['--resource-modifier-reference', '--resource-modifier'],
+                   help='Key value mapping for resource modifier reference')
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")

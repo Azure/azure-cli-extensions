@@ -2,6 +2,13 @@
 
 Release History
 ===============
+1.5.0
++++++
+* Support for vaulted backup for AKS
+* `az dataprotection backup-policy get-default-policy-template`: For AzureKubernetesService, default policy now adds vaulted backup rules.
+* `az dataprotection backup-vault initialize-restoreconfig:` Three new parameters - `--staging-resource-group-id`, `--staging-storage-account-id`, `--resource-modifier-reference`.
+
+
 1.4.0
 +++++
 * Added support for cmk encryption on backup vault
