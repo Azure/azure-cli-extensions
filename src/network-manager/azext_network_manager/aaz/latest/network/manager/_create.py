@@ -61,7 +61,7 @@ class Create(AAZCommand):
             arg_group="Parameters",
             help="Resource ID.",
             fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/  /{}",
+                template="/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/networkManagers/{}",
             ),
         )
         _args_schema.location = AAZResourceLocationArg(
