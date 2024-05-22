@@ -95,6 +95,8 @@ class ConnectedClusterResourceId:
 
     @staticmethod
     def parse(resource_uri: str) -> "ConnectedClusterResourceId":
+        if not resource_uri.startswith("/"):
+            resource_uri = "/" + resource_uri
         parts = resource_uri.split("/")
 
         if len(parts) != 9:
