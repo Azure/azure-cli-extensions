@@ -438,7 +438,7 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
         elif yaml_containerappsjob.get('type').lower() != "microsoft.app/jobs":
             raise ValidationError('Containerapp type must be \"Microsoft.App/ContainerApps\"')
 
-        existed_environment_id = self.new_containerappjob['properties']['environmentId']
+        existed_environment_id = self.containerappjob_def['properties']['environmentId']
         self.new_containerappjob = None
 
         # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
@@ -484,7 +484,7 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
     def update(self):
         try:
             r = self.client.update(
-                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), container_app_envelope=self.new_containerappjob,
+                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), containerapp_job_envelope=self.new_containerappjob,
                 no_wait=self.get_argument_no_wait())
             if not self.get_argument_no_wait() and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
                 logger.warning('Containerapps job update in progress. Please monitor the update using `az containerapp job show -n {} -g {}`'.format(self.get_argument_name(), self.get_argument_resource_group_name()))

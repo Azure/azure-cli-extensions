@@ -247,12 +247,12 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
         ])
 
-        self.cmd(f'containerapp job secret show -g {resource_group} -n {app} --secret-name secret1', checks=[
+        self.cmd(f'containerapp job secret show -g {resource_group} -n {job} --secret-name secret1', checks=[
             JMESPathCheck("name", 'secret1'),
             JMESPathCheck("value", '1'),
         ])
 
-        self.cmd(f'containerapp job secret show -g {resource_group} -n {app} --secret-name secret2', checks=[
+        self.cmd(f'containerapp job secret show -g {resource_group} -n {job} --secret-name secret2', checks=[
             JMESPathCheck("name", 'secret2'),
             JMESPathCheck("value", '123'),
         ])
