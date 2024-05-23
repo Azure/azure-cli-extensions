@@ -84,3 +84,10 @@ def remove_invalid_characters_foldername(folder_name):
         if c not in const.WINDOWS_INVALID_FOLDERNAME_CHARS:
             new_foldername += c
     return new_foldername
+
+
+def move_file(sourece, destination):
+    try:
+        os.rename(source, destination)
+    except Exception as e:
+        raise azclierror.FileOperationError(f"Failed to move file {source} to {destination}. Error: " + str(e)) from e

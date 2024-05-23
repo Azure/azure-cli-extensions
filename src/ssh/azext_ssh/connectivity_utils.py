@@ -9,6 +9,8 @@ import os
 import urllib.request
 import json
 import base64
+import oras.client
+import tarfile
 from glob import glob
 
 import colorama
@@ -188,20 +190,18 @@ def _list_credentials(cmd, resource_uri, certificate_validity_in_seconds):
 # Downloads client side proxy to connect to Arc Connectivity Platform
 def get_client_side_proxy(arc_proxy_folder):
 
-    request_uri, install_location, older_version_location = _get_proxy_filename_and_url(arc_proxy_folder)
+    client_operating_system = _get_client_operating_system()
+    client_architecture = _get_client_architeture()
+    install_location = _get_proxy_install_location(arc_proxy_folder, operating_system, architecture)
     install_dir = os.path.dirname(install_location)
 
     # Only download new proxy if it doesn't exist already
     if not os.path.isfile(install_location):
         t0 = time.time()
-        # download the executable
-        try:
-            with urllib.request.urlopen(request_uri) as response:
-                response_content = response.read()
-                response.close()
-        except Exception as e:
-            raise azclierror.ClientRequestError(f"Failed to download client proxy executable from {request_uri}. "
-                                                "Error: " + str(e)) from e
+        # download the proxy
+        proxy_package_dir = _download_proxy_from_MAR_to_temp_folder()
+        # todo: have a finally block to delete from temp folder if this fails
+
         time_elapsed = time.time() - t0
 
         proxy_data = {
@@ -215,23 +215,73 @@ def get_client_side_proxy(arc_proxy_folder):
             file_utils.create_directory(install_dir, f"Failed to create client proxy directory '{install_dir}'. ")
         # if directory exists, delete any older versions of the proxy
         else:
+            older_version_location = _get_older_version_proxy_path(install_dir)
             older_version_files = glob(older_version_location)
             for f in older_version_files:
                 file_utils.delete_file(f, f"failed to delete older version file {f}", warning=True)
 
-        # write executable in the install location
-        file_utils.write_to_file(install_location, 'wb', response_content, "Failed to create client proxy file. ")
-        os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
-        print_styled_text((Style.SUCCESS, f"SSH Client Proxy saved to {install_location}"))
-
-        _download_proxy_license(arc_proxy_folder)
+        # move proxy package to install location
+        _move_proxy_package_to_install_dir(proxy_package_dir, install_dir)
 
     return install_location
 
 
-def _get_proxy_filename_and_url(arc_proxy_folder):
+def _move_proxy_package_to_install_dir(proxy_package_dir, install_dir, operating_system, architecture):
+    # move sshproxy to install directory
+    proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}_{consts.CLIENT_PROXY_VERSION.replace('.', '_')}" 
+    source = os.path.join(proxy_package_dir, "sshproxy")
+    destination = os.path.join(install_dir, proxy_name)
+    if operating_system.lower() == 'Windows'
+        source = source + ".exe"
+        destination = destination + ".exe"
+    file_utils.move_file(source, destination)
+
+    # move License to install directory
+    source = os.path.join(proxy_package_dir, "LICENSE")
+    destination = os.path.join(install_dir, "LICENSE")
+    file_utils.move_file(source, destination)
+
+    #delete temp folder? or let the finally block do it?
+    source = os.path.join(proxy_package_dir, "ThirdPartyNotice")
+    destination = os.path.join(install_dir, "ThirdPartyNotice")
+    file_utils.move_file(source, destination)
+
+
+def _download_proxy_from_MAR_to_temp_folder(operating_system, architecture):
+    mar_target = f"{consts.CLIENT_PROXY_MAR_TARGET}/{operating_system.lower()}/{architecture}/ssh-proxy"
+    temp_dir = tempfile.mkdtemp(prefix="azsshproxy")
+    
+    client = oras.client.OrasClient()
+    response = client.pull(target=f"{mar_target}:{consts.CLIENT_PROXY_VERSION}", outdir=temp_dir)
+    
+    proxy_package_dir = response[0]
+    # TO DO: check that response is valid
+
+    with tarfile.open(proxy_package_dir, 'r:gz') as tar:
+        tar.extractall(path=proxy_package_dir)
+
+    logger.debug(f"Downloaded proxy to {proxy_package_dir}")
+
+
+def _get_older_version_proxy_path(install_dir):
+    proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}_*"
+    return os.path.join(install_dir, proxy_name)
+
+
+def _get_proxy_install_location(arc_proxy_folder, operating_system, architecture):
+    proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}"
+    install_location = proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_')
+
+    if not arc_proxy_folder:
+        install_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", install_location)))
+    else:
+        install_location = os.path.join(arc_proxy_folder, install_location)
+
+    return install_location
+
+
+def _get_client_architeture():
     import platform
-    operating_system = platform.system()
     machine = platform.machine()
 
     logger.debug("Platform OS: %s", operating_system)
@@ -247,68 +297,17 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
         raise azclierror.BadRequestError("Couldn't identify the platform architecture.")
     else:
         raise azclierror.BadRequestError(f"Unsuported architecture: {machine} is not currently supported")
+    
+    return architeture
 
-    # define the request url and install location based on the os and architecture.
-    proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}"
-    request_uri = (f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}"
-                   f"/{proxy_name}_{consts.CLIENT_PROXY_VERSION}")
-    install_location = proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_')
-    older_location = proxy_name + "*"
 
-    if operating_system == 'Windows':
-        request_uri = request_uri + ".exe"
-        install_location = install_location + ".exe"
-        older_location = older_location + ".exe"
-    elif operating_system not in ('Linux', 'Darwin'):
+def _get_client_operating_system():
+    import platform
+    operating_system = platform.system()
+
+    if operating_system.lower() not in ('linux', 'darwin', 'windows'):
         raise azclierror.BadRequestError(f"Unsuported OS: {operating_system} platform is not currently supported")
-
-    if not arc_proxy_folder:
-        install_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", install_location)))
-        older_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", older_location)))
-    else:
-        install_location = os.path.join(arc_proxy_folder, install_location)
-        older_location = os.path.join(arc_proxy_folder, older_location)
-
-    return request_uri, install_location, older_location
-
-
-def _download_proxy_license(proxy_dir):
-    if not proxy_dir:
-        proxy_dir = os.path.join('~', ".clientsshproxy")
-    license_uri = f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}/LICENSE.txt"
-    license_install_location = os.path.expanduser(os.path.join(proxy_dir, "LICENSE.txt"))
-
-    notice_uri = f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}/ThirdPartyNotice.txt"
-    notice_install_location = os.path.expanduser(os.path.join(proxy_dir, "ThirdPartyNotice.txt"))
-
-    _get_and_write_proxy_license_files(license_uri, license_install_location, "License")
-    _get_and_write_proxy_license_files(notice_uri, notice_install_location, "Third Party Notice")
-
-
-def _get_and_write_proxy_license_files(uri, install_location, target_name):
-    try:
-        license_content = _download_from_uri(uri)
-        file_utils.write_to_file(file_path=install_location,
-                                 mode='wb',
-                                 content=license_content,
-                                 error_message=f"Failed to create {target_name} file at {install_location}.")
-    # pylint: disable=broad-except
-    except Exception:
-        logger.warning("Failed to download Connection Proxy %s file from %s.", target_name, uri)
-
-    print_styled_text((Style.SUCCESS, f"SSH Connection Proxy {target_name} saved to {install_location}."))
-
-
-def _download_from_uri(request_uri):
-    response_content = None
-    with urllib.request.urlopen(request_uri) as response:
-        response_content = response.read()
-        response.close()
-
-    if response_content is None:
-        raise azclierror.ClientRequestError(f"Failed to download file from {request_uri}")
-
-    return response_content
+    return operating_system
 
 
 def format_relay_info_string(relay_info):
@@ -342,3 +341,12 @@ def _handle_relay_connection_delay(cmd, message):
     progress_bar.add(message=f"{message}: complete",
                      value=1.0, total_val=1.0)
     progress_bar.end()
+
+'''
+def download_proxy_from_MAR():
+    client = oras.client.OrasClient()
+    res = client.pull(target="mcr.microsoft.com/azureconnectivity/proxy/darwin/amd64/ssh-proxy:1.3.026973", outdir=".")
+    with tarfile.open(res[0], 'r:gz') as tar:
+        print(tar.getnames())
+        tar.extractall(path='.')
+'''

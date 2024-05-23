@@ -22,7 +22,8 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'oschmod==0.3.12'
+    'oschmod==0.3.12',
+    'oras==0.1.30'
 ]
 
 setup(
