@@ -46,6 +46,10 @@ def load_command_table(self, _):
         from .operations.datastore import DatastoreDiskPoolVolumeCreate
         self.command_table['vmware datastore disk-pool-volume create'] = DatastoreDiskPoolVolumeCreate(loader=self)
 
+    with self.command_group('vmware datastore elastic-san-volume'):
+        from .operations.datastore import DatastoreElasticVsanVolumeCreate
+        self.command_table['vmware datastore elastic-san-volume create'] = DatastoreElasticVsanVolumeCreate(loader=self)
+
     with self.command_group('vmware addon vr'):
         from .operations.addon import AddonVrCreate, AddonVrUpdate, AddonVrShow, AddonVrDelete
         self.command_table['vmware addon vr create'] = AddonVrCreate(loader=self)
