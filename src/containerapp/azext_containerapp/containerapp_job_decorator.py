@@ -12,7 +12,7 @@ from azure.cli.command_modules.containerapp.containerapp_job_decorator import Co
 from azure.cli.command_modules.containerapp._utils import safe_get, _convert_object_from_snake_to_camel_case, \
     _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes, clean_null_values, \
     _populate_secret_values, _add_or_update_tags, ensure_workload_profile_supported, _add_or_update_env_vars, \
-    parse_env_var_flags, _remove_env_vars, _get_existing_secrets, _get_acr_cred, store_as_secret_and_return_secret_ref, \
+    parse_env_var_flags, _remove_env_vars, _get_acr_cred, store_as_secret_and_return_secret_ref, \
     parse_metadata_flags, parse_auth_flags, safe_set
 from azure.cli.core.commands import AzCliCommand
 from azure.core.exceptions import DeserializationError, ResourceNotFoundError
@@ -23,7 +23,7 @@ from msrestazure.tools import parse_resource_id
 
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._constants import CONNECTED_ENVIRONMENT_RESOURCE_TYPE, \
-    MANAGED_ENVIRONMENT_TYPE, CONNECTED_ENVIRONMENT_TYPE, HELLO_WORLD_IMAGE, ACR_IMAGE_SUFFIX
+    MANAGED_ENVIRONMENT_TYPE, CONNECTED_ENVIRONMENT_TYPE, ACR_IMAGE_SUFFIX
 from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
@@ -45,6 +45,9 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
         self.containerappjob_def = {}
         self.new_containerappjob = {}
 
+    def set_argument_container_name(self, container_name):
+        self.set_param("container_name", container_name)
+
     def get_argument_set_env_vars(self):
         return self.get_param("set_env_vars")
 
@@ -56,7 +59,6 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
 
     def get_argument_remove_all_env_vars(self):
         return self.get_param("remove_all_env_vars")
-    # move list_secrets to BaseContainerAppDecorator when move ContainerAppUpdateDecorator to Core CLI
 
     def list_secrets(self, show_values=False):
         containerappjob_def = None
@@ -78,7 +80,8 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
 
     def set_up_get_existing_secrets(self):
         if "secrets" not in self.containerappjob_def["properties"]["configuration"]:
-            self.containerappjob_def["properties"]["configuration"]["secrets"] = []
+            safe_set(self.containerappjob_def, "properties", "configuration", "secrets", value=[])
+            safe_set(self.new_containerappjob, "properties", "configuration", "secrets", value=[])
         else:
             secrets = None
             try:
@@ -87,6 +90,7 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
                 handle_raw_exception(e)
 
             safe_set(self.containerappjob_def, "properties", "configuration", "secrets", value=secrets["value"])
+            safe_set(self.new_containerappjob, "properties", "configuration", "secrets", value=secrets["value"])
 
     def validate_arguments(self):
         # Check if containerapp job exists
@@ -102,7 +106,8 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
     def construct_payload(self):
         if self.get_argument_yaml():
             return self.set_up_update_containerapp_job_yaml(name=self.get_argument_name(), file_name=self.get_argument_yaml())
-        self.new_containerappjob["properties"] = {}
+
+        safe_set(self.new_containerappjob, "properties", "configuration", value={})
 
         # Doing this while API has bug. If env var is an empty string, API doesn't return "value" even though the "value" should be an empty string
         for container in safe_get(self.containerappjob_def, "properties", "template", "containers", default=[]):
@@ -110,14 +115,6 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
                 for e in container["env"]:
                     if "value" not in e:
                         e["value"] = ""
-
-        update_map = {}
-        update_map['replicaConfigurations'] = self.get_argument_replica_timeout() or self.get_argument_replica_retry_limit()
-        update_map[
-            'triggerConfigurations'] = self.get_argument_replica_completion_count() or self.get_argument_parallelism() or self.get_argument_cron_expression() or self.get_argument_scale_rule_name() or self.get_argument_scale_rule_type() or self.get_argument_scale_rule_auth() or self.get_argument_polling_interval() or self.get_argument_min_executions() or self.get_argument_max_executions()
-        update_map[
-            'container'] = self.get_argument_image() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None
-        update_map['registry'] = self.get_argument_registry_server() or self.get_argument_registry_user() or self.get_argument_registry_pass()
 
         if self.get_argument_tags():
             _add_or_update_tags(self.new_containerappjob, self.get_argument_tags())
@@ -144,90 +141,37 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
                                               managed_env_info)
 
         # replicaConfiguration
-        if update_map["replicaConfigurations"]:
-            self.new_containerappjob["properties"]["configuration"] = {} if "configuration" not in self.new_containerappjob[
-                "properties"] else self.new_containerappjob["properties"]["configuration"]
-            if self.get_argument_replica_timeout() is not None or self.get_argument_replica_retry_limit() is not None:
-                if self.get_argument_replica_timeout():
-                    self.new_containerappjob["properties"]["configuration"]["replicaTimeout"] = self.get_argument_replica_timeout()
-                if self.get_argument_replica_retry_limit():
-                    self.new_containerappjob["properties"]["configuration"]["replicaRetryLimit"] = self.get_argument_replica_retry_limit()
+        self.set_up_replica_configurations()
 
         # triggerConfiguration
-        if update_map["triggerConfigurations"]:
-            self.new_containerappjob["properties"]["configuration"] = {} if "configuration" not in self.new_containerappjob[
-                "properties"] else self.new_containerappjob["properties"]["configuration"]
-            if self.containerappjob_def["properties"]["configuration"]["triggerType"] == "Manual":
-                manualTriggerConfig_def = None
-                manualTriggerConfig_def = self.containerappjob_def["properties"]["configuration"]["manualTriggerConfig"]
-                if self.get_argument_replica_completion_count() is not None or self.get_argument_parallelism() is not None:
-                    if self.get_argument_replica_completion_count():
-                        manualTriggerConfig_def["replicaCompletionCount"] = self.get_argument_replica_completion_count()
-                    if self.get_argument_parallelism():
-                        manualTriggerConfig_def["parallelism"] = self.get_argument_parallelism()
-                self.new_containerappjob["properties"]["configuration"]["manualTriggerConfig"] = manualTriggerConfig_def
-            if self.containerappjob_def["properties"]["configuration"]["triggerType"] == "Schedule":
-                scheduleTriggerConfig_def = None
-                scheduleTriggerConfig_def = self.containerappjob_def["properties"]["configuration"]["scheduleTriggerConfig"]
-                if self.get_argument_replica_completion_count() is not None or self.get_argument_parallelism() is not None or self.get_argument_cron_expression() is not None:
-                    if self.get_argument_replica_completion_count():
-                        scheduleTriggerConfig_def["replicaCompletionCount"] = self.get_argument_replica_completion_count()
-                    if self.get_argument_parallelism():
-                        scheduleTriggerConfig_def["parallelism"] = self.get_argument_parallelism()
-                    if self.get_argument_cron_expression():
-                        scheduleTriggerConfig_def["cronExpression"] = self.get_argument_cron_expression()
-                self.new_containerappjob["properties"]["configuration"]["scheduleTriggerConfig"] = scheduleTriggerConfig_def
-            if self.containerappjob_def["properties"]["configuration"]["triggerType"] == "Event":
-                eventTriggerConfig_def = None
-                eventTriggerConfig_def = self.containerappjob_def["properties"]["configuration"]["eventTriggerConfig"]
-                if self.get_argument_replica_completion_count() is not None or self.get_argument_parallelism() is not None or self.get_argument_min_executions() is not None or self.get_argument_max_executions() is not None or self.get_argument_polling_interval() is not None or self.get_argument_scale_rule_name() is not None:
-                    if self.get_argument_replica_completion_count():
-                        eventTriggerConfig_def["replicaCompletionCount"] = self.get_argument_replica_completion_count()
-                    if self.get_argument_parallelism():
-                        eventTriggerConfig_def["parallelism"] = self.get_argument_parallelism()
-                    # Scale
-                    if "scale" in eventTriggerConfig_def["scale"]:
-                        eventTriggerConfig_def["scale"] = {}
-                    if self.get_argument_min_executions() is not None:
-                        eventTriggerConfig_def["scale"]["minExecutions"] = self.get_argument_min_executions()
-                    if self.get_argument_max_executions() is not None:
-                        eventTriggerConfig_def["scale"]["maxExecutions"] = self.get_argument_max_executions()
-                    if self.get_argument_polling_interval() is not None:
-                        eventTriggerConfig_def["scale"]["pollingInterval"] = self.get_argument_polling_interval()
-                    # ScaleRule
-                    if self.get_argument_scale_rule_name():
-                        scale_rule_type = self.get_argument_scale_rule_type().lower()
-                        scale_rule_def = ScaleRuleModel
-                        curr_metadata = {}
-                        metadata_def = parse_metadata_flags(self.get_argument_scale_rule_metadata(), curr_metadata)
-                        auth_def = parse_auth_flags(self.get_argument_scale_rule_auth())
-                        scale_rule_def["name"] = self.get_argument_scale_rule_name()
-                        scale_rule_def["type"] = scale_rule_type
-                        scale_rule_def["metadata"] = metadata_def
-                        scale_rule_def["auth"] = auth_def
-                        if safe_get(eventTriggerConfig_def, "scale", "rules") is None:
-                            eventTriggerConfig_def["scale"]["rules"] = []
-                        existing_rules = eventTriggerConfig_def["scale"]["rules"]
-                        updated_rule = False
-                        for rule in existing_rules:
-                            if rule["name"] == self.get_argument_scale_rule_name():
-                                rule.update(scale_rule_def)
-                                updated_rule = True
-                                break
-                        if not updated_rule:
-                            existing_rules.append(scale_rule_def)
-
-                self.new_containerappjob["properties"]["configuration"]["eventTriggerConfig"] = eventTriggerConfig_def
+        self.set_up_trigger_configurations()
 
         # Containers
-        if update_map["container"]:
-            self.new_containerappjob["properties"]["template"] = {} if "template" not in self.new_containerappjob[
-                "properties"] else self.new_containerappjob["properties"]["template"]
-            self.new_containerappjob["properties"]["template"]["containers"] = \
-            self.containerappjob_def["properties"]["template"]["containers"]
+        self.set_up_container()
+
+        # Registry
+        self.set_up_registry()
+
+    def should_update_container(self):
+        return self.get_argument_image() \
+            or self.get_argument_container_name() \
+            or self.get_argument_set_env_vars() is not None \
+            or self.get_argument_remove_env_vars() is not None \
+            or self.get_argument_replace_env_vars() is not None \
+            or self.get_argument_remove_all_env_vars() \
+            or self.get_argument_cpu() \
+            or self.get_argument_memory() \
+            or self.get_argument_startup_command() is not None \
+            or self.get_argument_args() is not None
+
+    def set_up_container(self):
+        if self.should_update_container():
+            safe_set(self.new_containerappjob, "properties", "template", "containers", value=self.containerappjob_def["properties"]["template"]["containers"])
+
             if not self.get_argument_container_name():
                 if len(self.new_containerappjob["properties"]["template"]["containers"]) == 1:
                     container_name = self.new_containerappjob["properties"]["template"]["containers"][0]["name"]
+                    self.set_argument_container_name(container_name)
                 else:
                     raise ValidationError(
                         "Usage error: --container-name is required when adding or updating a container")
@@ -329,29 +273,105 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
 
                 self.new_containerappjob["properties"]["template"]["containers"].append(container_def)
 
-            self.new_containerappjob["properties"]["configuration"] = {} if "configuration" not in self.new_containerappjob[
-                "properties"] else self.new_containerappjob["properties"]["configuration"]
+    def should_update_replica_configurations(self):
+        return self.get_argument_replica_timeout() or self.get_argument_replica_retry_limit()
 
-        # Registry
-        if update_map["registry"]:
-            self.new_containerappjob["properties"]["configuration"] = {} if "configuration" not in self.new_containerappjob[
-                "properties"] else self.new_containerappjob["properties"]["configuration"]
-            if "registries" in self.containerappjob_def["properties"]["configuration"]:
-                self.new_containerappjob["properties"]["configuration"]["registries"] = \
-                self.containerappjob_def["properties"]["configuration"]["registries"]
-            if "registries" not in self.containerappjob_def["properties"]["configuration"] or \
-                    self.containerappjob_def["properties"]["configuration"]["registries"] is None:
-                self.new_containerappjob["properties"]["configuration"]["registries"] = []
+    def set_up_replica_configurations(self):
+        if self.should_update_replica_configurations():
+            if self.get_argument_replica_timeout() is not None or self.get_argument_replica_retry_limit() is not None:
+                if self.get_argument_replica_timeout():
+                    safe_set(self.new_containerappjob, "properties", "configuration", "replicaTimeout", value=self.get_argument_replica_timeout())
+                if self.get_argument_replica_retry_limit():
+                    safe_set(self.new_containerappjob, "properties", "configuration", "replicaRetryLimit", value=self.get_argument_replica_retry_limit())
 
-            registries_def = self.new_containerappjob["properties"]["configuration"]["registries"]
+    def should_update_trigger_configurations(self):
+        return self.get_argument_replica_completion_count() \
+            or self.get_argument_parallelism() \
+            or self.get_argument_cron_expression() \
+            or self.get_argument_scale_rule_name() \
+            or self.get_argument_scale_rule_type() \
+            or self.get_argument_scale_rule_auth() \
+            or self.get_argument_polling_interval() \
+            or self.get_argument_min_executions() \
+            or self.get_argument_max_executions()
+
+    def set_up_trigger_configurations(self):
+        if self.should_update_trigger_configurations():
+            trigger_type = safe_get(self.containerappjob_def, "properties", "configuration", "triggerType")
+            if trigger_type == "Manual":
+                manual_trigger_config_def = safe_get(self.containerappjob_def, "properties", "configuration", "manualTriggerConfig")
+                if self.get_argument_replica_completion_count() is not None or self.get_argument_parallelism() is not None:
+                    if self.get_argument_replica_completion_count():
+                        manual_trigger_config_def["replicaCompletionCount"] = self.get_argument_replica_completion_count()
+                    if self.get_argument_parallelism():
+                        manual_trigger_config_def["parallelism"] = self.get_argument_parallelism()
+                safe_set(self.new_containerappjob, "properties", "configuration", "manualTriggerConfig", value=manual_trigger_config_def)
+
+            if trigger_type == "Schedule":
+                schedule_trigger_config_def = safe_get(self.containerappjob_def, "properties", "configuration", "scheduleTriggerConfig")
+                if self.get_argument_replica_completion_count() is not None or self.get_argument_parallelism() is not None or self.get_argument_cron_expression() is not None:
+                    if self.get_argument_replica_completion_count():
+                        schedule_trigger_config_def["replicaCompletionCount"] = self.get_argument_replica_completion_count()
+                    if self.get_argument_parallelism():
+                        schedule_trigger_config_def["parallelism"] = self.get_argument_parallelism()
+                    if self.get_argument_cron_expression():
+                        schedule_trigger_config_def["cronExpression"] = self.get_argument_cron_expression()
+                safe_set(self.new_containerappjob, "properties", "configuration", "scheduleTriggerConfig", value=schedule_trigger_config_def)
+
+            if trigger_type == "Event":
+                event_trigger_config_def = safe_get(self.containerappjob_def, "properties", "configuration", "eventTriggerConfig")
+                if self.get_argument_replica_completion_count() is not None or self.get_argument_parallelism() is not None or self.get_argument_min_executions() is not None or self.get_argument_max_executions() is not None or self.get_argument_polling_interval() is not None or self.get_argument_scale_rule_name() is not None:
+                    if self.get_argument_replica_completion_count():
+                        event_trigger_config_def["replicaCompletionCount"] = self.get_argument_replica_completion_count()
+                    if self.get_argument_parallelism():
+                        event_trigger_config_def["parallelism"] = self.get_argument_parallelism()
+                    # Scale
+                    if "scale" in event_trigger_config_def["scale"]:
+                        event_trigger_config_def["scale"] = {}
+                    if self.get_argument_min_executions() is not None:
+                        event_trigger_config_def["scale"]["minExecutions"] = self.get_argument_min_executions()
+                    if self.get_argument_max_executions() is not None:
+                        event_trigger_config_def["scale"]["maxExecutions"] = self.get_argument_max_executions()
+                    if self.get_argument_polling_interval() is not None:
+                        event_trigger_config_def["scale"]["pollingInterval"] = self.get_argument_polling_interval()
+                    # ScaleRule
+                    if self.get_argument_scale_rule_name():
+                        scale_rule_type = self.get_argument_scale_rule_type().lower()
+                        scale_rule_def = ScaleRuleModel
+                        curr_metadata = {}
+                        metadata_def = parse_metadata_flags(self.get_argument_scale_rule_metadata(), curr_metadata)
+                        auth_def = parse_auth_flags(self.get_argument_scale_rule_auth())
+                        scale_rule_def["name"] = self.get_argument_scale_rule_name()
+                        scale_rule_def["type"] = scale_rule_type
+                        scale_rule_def["metadata"] = metadata_def
+                        scale_rule_def["auth"] = auth_def
+                        if safe_get(event_trigger_config_def, "scale", "rules") is None:
+                            event_trigger_config_def["scale"]["rules"] = []
+                        existing_rules = event_trigger_config_def["scale"]["rules"]
+                        updated_rule = False
+                        for rule in existing_rules:
+                            if rule["name"] == self.get_argument_scale_rule_name():
+                                rule.update(scale_rule_def)
+                                updated_rule = True
+                                break
+                        if not updated_rule:
+                            existing_rules.append(scale_rule_def)
+
+                safe_set(self.new_containerappjob, "properties", "configuration", "eventTriggerConfig", value=event_trigger_config_def)
+
+    def should_update_registry(self):
+        return self.get_argument_registry_server() \
+            or self.get_argument_registry_user() \
+            or self.get_argument_registry_pass()
+
+    def set_up_registry(self):
+        if self.should_update_registry():
+            ori_registries = safe_get(self.containerappjob_def, "properties", "configuration", "registries", default=[])
+            safe_set(self.new_containerappjob, "properties", "configuration", "registries", value=ori_registries)
+
+            registries_def = ori_registries
 
             self.set_up_get_existing_secrets()
-
-            if "secrets" in self.containerappjob_def["properties"]["configuration"] and \
-                    self.containerappjob_def["properties"]["configuration"]["secrets"]:
-                self.new_containerappjob["properties"]["configuration"]["secrets"] = self.containerappjob_def["properties"]["configuration"]["secrets"]
-            else:
-                self.new_containerappjob["properties"]["configuration"]["secrets"] = []
 
             if self.get_argument_registry_server():
                 if not self.get_argument_registry_pass or not self.get_argument_registry_user():
