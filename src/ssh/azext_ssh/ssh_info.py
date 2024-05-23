@@ -21,7 +21,7 @@ class SSHSession():
     def __init__(self, resource_group_name, vm_name, ssh_ip, public_key_file,
                  private_key_file, use_private_ip, local_user, cert_file, port,
                  ssh_client_folder, ssh_args, delete_credentials, resource_type,
-                 ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt, resource_tag=None):
+                 ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt, resource_tag):
         self.resource_group_name = resource_group_name
         self.vm_name = vm_name
         self.ip = ssh_ip
@@ -37,7 +37,7 @@ class SSHSession():
         self.new_service_config = False
         self.yes_without_prompt = yes_without_prompt
         self.resource_tag = resource_tag
-
+        self.azure_resource_tags = None
         self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None
         self.private_key_file = os.path.abspath(private_key_file) if private_key_file else None
         self.cert_file = os.path.abspath(cert_file) if cert_file else None
@@ -81,7 +81,48 @@ class SSHSession():
             if self.port:
                 port_arg = ["-p", self.port]
         return proxy_command + private_key + certificate + port_arg
+    
+    # Passing in the resource Tags to the SSHSession object
+    def set_azure_resource_tags(self, tags):
+        self.azure_resource_tags = tags
+        return
 
+    # Configuring the port from the resource tag and validating the port number
+    def configure_port_from_resource_tag(self):
+        logger = log.get_logger(__name__)
+
+        if self.port and self.resource_tag:
+            logger.warning("Warning: Both --port and --resource-tag arguments were specified."
+                            "The --port option will take precedence and the --resource-tag will be ignored."
+                            "To use the port number from the --resource-tag, please omit the --port argument.")
+            return
+        if self.port:
+            return
+        
+        # Validating the port number and setting the port to the port value from the resource tag
+        def validate_and_set_port(tag_name="SSHPort"):
+            port_num = self.azure_resource_tags.get(tag_name)
+            if port_num and port_num.isdigit() and int(port_num) < 65535:
+                self.port = port_num
+
+            else:
+                raise azclierror.InvalidArgumentValueError(
+                    f"Port '{port_num}' from resource tag '{tag_name}' is not supported by this command."
+                    "Port numbers must not be empty, must not contain letters or special characters, and cannot exceed 65535 port value."
+                    "Please contact your administrator to correct the resource tag value or use the --port parameter. ")
+            
+
+        if self.resource_tag:
+            if self.resource_tag in self.azure_resource_tags:
+                validate_and_set_port(self.resource_tag)
+            else:
+                raise azclierror.InvalidArgumentValueError(
+                f"Resource tag name '{self.resource_tag}' cannot be found. Contact your administrator to ensure the tag is valid."
+            )
+
+        elif "SSHPort" in self.azure_resource_tags:
+            validate_and_set_port()
+        return
 
 class ConfigSession():
     # pylint: disable=too-many-instance-attributes
@@ -103,6 +144,7 @@ class ConfigSession():
         self.relay_info_path = None
         self.yes_without_prompt = yes_without_prompt
         self.resource_tag = resource_tag    
+        self.azure_resource_tags = None
         self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None
         self.private_key_file = os.path.abspath(private_key_file) if private_key_file else None
         self.cert_file = os.path.abspath(cert_file) if cert_file else None
@@ -207,3 +249,45 @@ class ConfigSession():
             logger.warning("Couldn't determine relay information expiration. Error: %s", str(e))
 
         return relay_info_path
+    
+     # Passing in the resource Tags to the SSHSession object
+    def set_azure_resource_tags(self, tags):
+        self.azure_resource_tags = tags
+        return
+
+    # Configuring the port from the resource tag and validating the port number
+    def configure_port_from_resource_tag(self):
+        logger = log.get_logger(__name__)
+
+        if self.port and self.resource_tag:
+            logger.warning("Warning: Both --port and --resource-tag arguments were specified."
+                            "The --port option will take precedence and the --resource-tag will be ignored."
+                            "To use the port number from the --resource-tag, please omit the --port argument.")
+            return
+        if self.port:
+            return
+        
+        # Validating the port number and setting the port to the port value from the resource tag
+        def validate_and_set_port(tag_name="SSHPort"):
+            port_num = self.azure_resource_tags.get(tag_name)
+            if port_num and port_num.isdigit() and int(port_num) < 65535:
+                self.port = port_num
+
+            else:
+                raise azclierror.InvalidArgumentValueError(
+                    f"Port '{port_num}' from resource tag '{tag_name}' is not supported by this command."
+                    "Port numbers must not be empty, must not contain letters or special characters, and cannot exceed 65535 port value."
+                    "Please contact your administrator to correct the resource tag value or use the --port parameter. ")
+            
+
+        if self.resource_tag:
+            if self.resource_tag in self.azure_resource_tags:
+                validate_and_set_port(self.resource_tag)
+            else:
+                raise azclierror.InvalidArgumentValueError(
+                f"Resource tag name '{self.resource_tag}' cannot be found. Contact your administrator to ensure the tag is valid."
+            )
+
+        elif "SSHPort" in self.azure_resource_tags:
+            validate_and_set_port()
+        return

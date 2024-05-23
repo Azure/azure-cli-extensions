@@ -25,8 +25,7 @@ from . import ssh_info
 from . import file_utils
 from . import constants as const
 from . import resource_type_utils
-from . import target_os_utils
-from . import resource_tag_utils
+from . import target_properties_utils
 logger = log.get_logger(__name__)
 
 
@@ -59,7 +58,7 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
                                       ssh_client_folder, ssh_args, delete_credentials, resource_type,
                                       ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt, resource_tag)
     ssh_session.resource_type = resource_type_utils.decide_resource_type(cmd, ssh_session)
-    target_os_utils.handle_target_os_type(cmd, ssh_session)
+    target_properties_utils.handle_target_machine_properties(cmd, ssh_session)
 
     _do_ssh_op(cmd, ssh_session, op_call)
 
@@ -82,7 +81,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
     op_call = ssh_utils.write_ssh_config
 
     config_session.resource_type = resource_type_utils.decide_resource_type(cmd, config_session)
-    target_os_utils.handle_target_os_type(cmd, config_session)
+    target_properties_utils.handle_target_machine_properties(cmd, config_session)
 
     # if the folder doesn't exist, this extension won't create a new one.
     config_folder = os.path.dirname(config_session.config_path)
@@ -199,7 +198,7 @@ def _do_ssh_op(cmd, op_info, op_call):
             ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.delete_credentials, op_info.cert_file,
                                  op_info.private_key_file, op_info.public_key_file)
         raise e
-    resource_tag_utils._handle_os_type_for_tag(cmd, op_info)
+    op_info.configure_port_from_resource_tag()
     op_call(op_info, delete_keys, delete_cert)
 
 
