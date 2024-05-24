@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp job update': Support command in extension
 
 0.3.52
 ++++++
