@@ -31,7 +31,7 @@ from azure.cli.command_modules.serviceconnector._validators import (
     get_source_resource_name,
     get_target_resource_name,
 )
-from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_admin_set
+from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_admin_set, confirm_enable_entra_auth
 logger = get_logger(__name__)
 
 AUTHTYPES = {
@@ -400,11 +400,10 @@ class MysqlFlexibleHandler(TargetHandler):
             for q in query_list:
                 if q:
                     try:
-                        logger.debug(q)
+                        logger.warning("Running query: %s", q)
                         cursor.execute(q)
                     except Exception as e:  # pylint: disable=broad-except
-                        logger.warning(
-                            "Query %s, error: %s", q, str(e))
+                        logger.warning("Query execution failed: %s", str(e))
         except pymysql.Error as e:
             raise AzureConnectionError(
                 "Fail to connect mysql. " + str(e)) from e
@@ -595,10 +594,10 @@ class SqlHandler(TargetHandler):
                         "Adding new Microsoft Entra user %s to database...", self.aad_username)
                     for execution_query in query_list:
                         try:
-                            logger.debug(execution_query)
+                            logger.warning("Running query: %s", execution_query)
                             cursor.execute(execution_query)
                         except pyodbc.ProgrammingError as e:
-                            logger.warning(e)
+                            logger.warning("Query execution failed: %s", str(e))
                         conn.commit()
         except pyodbc.Error as e:
             search_ip = re.search(
@@ -678,6 +677,8 @@ class PostgresFlexHandler(TargetHandler):
                 self.resource_group, self.db_server, self.subscription))
         if target.get('authConfig').get('activeDirectoryAuth') == "Enabled":
             return
+        if not self.skip_prompt:
+            confirm_enable_entra_auth()
         run_cli_cmd('az postgres flexible-server update --ids {} --active-directory-auth Enabled'.format(
             self.target_id))
 
@@ -805,10 +806,10 @@ class PostgresFlexHandler(TargetHandler):
         for execution_query in query_list:
             if execution_query:
                 try:
-                    logger.debug(execution_query)
+                    logger.warning("Running query: %s", execution_query)
                     cursor.execute(execution_query)
                 except psycopg2.Error as e:  # role "aad_user" already exists
-                    logger.warning(e)
+                    logger.warning("Query execution failed: %s", str(e))
 
         # Clean up
         conn.commit()

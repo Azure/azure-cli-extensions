@@ -22,6 +22,8 @@ logger = get_logger(__name__)
 IP_ADDRESS_CHECKER = 'https://api.ipify.org'
 OPEN_ALL_IP_MESSAGE = 'Do you want to enable access for all IPs to allow local environment connecting to database?'
 SET_ADMIN_MESSAGE = 'Do you want to set current user as Entra admin?'
+ENABLE_ENTRA_AUTH_MESSAGE = 'Do you want to enable Microsoft Entra Authentication for the database server?\
+ It may cause the server restart.'
 
 
 def should_load_source(source):
@@ -78,6 +80,19 @@ def confirm_all_ip_allow():
             ex = AzureConnectionError(
                 "Please confirm local environment can connect to database and try again.")
             telemetry.set_exception(ex, "Connect-Db-Fail")
+            raise ex
+    except NoTTYException as e:
+        telemetry.set_exception(e, "No-TTY")
+        raise CLIInternalError(
+            'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+
+
+def confirm_enable_entra_auth():
+    try:
+        if not prompt_y_n(ENABLE_ENTRA_AUTH_MESSAGE):
+            ex = AzureConnectionError(
+                "Please enable Microsoft Entra authentication manually and try again.")
+            telemetry.set_exception(ex, "Refuse-Entra-Auth")
             raise ex
     except NoTTYException as e:
         telemetry.set_exception(e, "No-TTY")
