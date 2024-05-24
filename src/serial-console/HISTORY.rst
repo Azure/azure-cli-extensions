@@ -3,7 +3,7 @@ Release History
 
 1.0.0b1
 ++++++
-* Migrated to a new authentication flow
+* Migrated to a new authentication flow to enhance overall security
 
 0.1.8
 ++++++
