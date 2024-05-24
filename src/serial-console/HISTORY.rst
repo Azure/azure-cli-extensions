@@ -1,7 +1,7 @@
 Release History
 ===============
 
-0.1.9
+1.0.0b1
 ++++++
 * Migrated to a new authentication flow
 
