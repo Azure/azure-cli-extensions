@@ -29,7 +29,8 @@ ManagedEnvironment = {
 CustomDomainConfiguration = {
     "dnsSuffix": None,
     "certificateValue": None,
-    "certificatePassword": None
+    "certificatePassword": None,
+    "certificateKeyVaultProperties": None
 }
 
 AppLogsConfiguration = {
@@ -594,26 +595,15 @@ MetricsConfiguration = {
     "destinations": []
 }
 
-ManagedServiceIdentity = {
-    "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
-    "userAssignedIdentities": None  # {string: UserAssignedIdentity}
-}
-
 JavaComponent = {
     "properties": {
-        "componentType": None
+        "componentType": None,
+        "serviceBinds": None
     }
 }
 
-CustomDomainConfiguration = {
-    "dnsSuffix": None,
-    "certificateValue": None,
-    "certificatePassword": None,
-    "certificateKeyVaultProperties": None
-}
-
 RuntimeJava = {
-    "enableMetrics": False,
+    "enableMetrics": True,
     "javaAgent": {
         "enabled": False,
         "logging": {}

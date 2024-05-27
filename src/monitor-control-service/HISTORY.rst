@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.2
+++++++
+* `az monitor data-collection rule/endpoint`: Removed the enum limitation for the `--kind` parameter.
+
 1.0.1
 ++++++
 * Normalization module name in setup

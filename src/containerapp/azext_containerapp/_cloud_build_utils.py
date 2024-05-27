@@ -17,12 +17,13 @@ from azure.cli.core.azclierror import (
 
 from ._archive_utils import archive_source_code
 
-from ._clients import BuilderClient, BuildClient
+from ._clients import BuilderClient, BuildClient, ContainerAppPreviewClient
 
 from ._utils import (
     log_in_file,
     remove_ansi_characters,
-    parse_build_env_vars
+    parse_build_env_vars,
+    safe_get,
 )
 
 
@@ -30,7 +31,7 @@ class CloudBuildError(Exception):
     pass
 
 
-def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, environment_name, run_full_id, logs_file, logs_file_path):
+def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, environment_name, container_app_name, run_full_id, logs_file, logs_file_path):
     generated_build_name = f"build{run_full_id}"[:12]
     log_in_file(f"Starting the Cloud Build for build of id '{generated_build_name}'\n", logs_file, no_print=True)
 
@@ -78,7 +79,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
             thread.start()
             return thread
 
-        log_in_file(f"\n  {font_bold}Preparing the Container Apps Cloud Build environment{font_default}\n", logs_file)
+        log_in_file(f"\n  {font_bold}Preparing the Azure Container Apps Cloud Build environment{font_default}\n", logs_file)
 
         # List the builders in the resource group
         thread = display_spinner("Listing the builders available in the Container Apps environment")
@@ -106,25 +107,19 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
             thread.join()
             log_in_file(f"{substatus_indentation}Builder created: {builder_name}", logs_file)
 
-        log_in_file(f"\n  {font_bold}Building the application{font_default}\n", logs_file)
-
-        # Build creation
+        # Getting the Container App
         done_spinner = False
-        thread = display_spinner("Starting the Container Apps Cloud Build agent")
-        build_env_vars = parse_build_env_vars(build_env_vars)
-        build_create_json_content = BuildClient.create(cmd, builder_name, generated_build_name, resource_group_name, location, build_env_vars, True)
-        build_name = build_create_json_content["name"]
-        upload_endpoint = build_create_json_content["properties"]["uploadEndpoint"]
-        log_streaming_endpoint = build_create_json_content["properties"]["logStreamEndpoint"]
+        thread = display_spinner("Getting the Container App")
+        container_app_result = ContainerAppPreviewClient.show(cmd, resource_group_name, container_app_name)
         done_spinner = True
         thread.join()
-        log_in_file(f"{substatus_indentation}Cloud Build agent started: {build_name}", logs_file)
+        log_in_file(f"\n {font_bold}Building the application{font_default}\n", logs_file)
 
         # Token retrieval
         done_spinner = False
         thread = display_spinner("Retrieving the authentication token")
-        token_retrieval_json_content = BuildClient.list_auth_token(cmd, builder_name, build_name, resource_group_name, location)
-        token = token_retrieval_json_content["token"]
+        token_retrieval_json_content = ContainerAppPreviewClient.get_auth_token(cmd, resource_group_name, container_app_name)
+        token = safe_get(token_retrieval_json_content, "properties", "token")
         done_spinner = True
         thread.join()
 
@@ -134,7 +129,7 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         if source_is_folder:
             done_spinner = False
             thread = display_spinner(f"Compressing data: {font_bold}{source}{font_default}")
-            data_file_path = os.path.join(tempfile.gettempdir(), f"{build_name}.tar.gz")
+            data_file_path = os.path.join(tempfile.gettempdir(), f"{generated_build_name}.tar.gz")
             archive_source_code(data_file_path, source)
             done_spinner = True
             thread.join()
@@ -142,7 +137,18 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
         # File upload
         done_spinner = False
         thread = display_spinner("Uploading data")
+        base_proxy_endpoint_not_stripped = safe_get(container_app_result, "properties", "eventStreamEndpoint")
+        str_list = base_proxy_endpoint_not_stripped.split("/eventstream")
+        base_proxy_endpoint = "".join(str_list)
+        upload_endpoint = f"{base_proxy_endpoint}/upload?token={token}"
         headers = {'Authorization': 'Bearer ' + token}
+        if build_env_vars:
+            import json
+            # Parse the env vars into a json raw string in the format [{"name": "key1", "value": "value1"}, {"name": "key2", "value": "value2"}]
+            parsed_build_env_vars = parse_build_env_vars(build_env_vars)
+            json_build_env_vars = json.dumps(parsed_build_env_vars)
+            headers["BuildtimeEnvVars"] = json_build_env_vars
+
         try:
             data_file = open(data_file_path, "rb")
             file_name = os.path.basename(data_file_path)
@@ -159,6 +165,9 @@ def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, 
                 os.unlink(data_file_path)
         if not response_file_upload.ok:
             raise ValidationError(f"Error when uploading the file, request exited with {response_file_upload.status_code}")
+        file_upload_json = response_file_upload.json()
+        build_name = file_upload_json["name"]
+        log_streaming_endpoint = f"{base_proxy_endpoint}/builds/{build_name}/logstream"
         done_spinner = True
         thread.join()
 

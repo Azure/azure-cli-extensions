@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.3
+++++++
+* Prompt confirmation when update PostgreSQL server
+
 2.0.2
 ++++++
 * Fix no attribute error

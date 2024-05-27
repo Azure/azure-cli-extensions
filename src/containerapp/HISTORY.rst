@@ -4,6 +4,21 @@ Release History
 ===============
 upcoming
 ++++++
+
+0.3.52
+++++++
+* 'az containerapp env java-component admin-for-spring': Support create/update/show/delete Admin for spring
+* 'az containerapp env java-component nacos': Support create/update/show/delete Nacos
+* 'az containerapp env java-component': Support --bind, --unbind to bind or unbind with other Java Components
+* 'az containerapp create/update': Update default value of enableMetrics to True for java runtime setting
+* 'az containerapp sessionpool create': Fix default container name to be lower case letters
+* 'az containerapp create/update': Support --scale-rule-identity for scale rule to authenticate to azure resource scaler
+* 'az containerapp sessionpool create/update': Fix sessionpool registry server fieldname and appending of registry secrets.
+
+0.3.51
+++++++
+* Upgrade api-version to 2024-02-02-preview
+* 'az containerapp up/create/update': Update Cloud Build code to use the simplified ARM calling pattern
 * 'az containerapp up/create/update': Wait longer time for logstream of Cloud Build to make sure the container start
 * 'az containerapp env java-component config-server-for-spring': Support create/update/show/delete Spring Cloud Config; deprecation of 'az containerapp env java-component spring-cloud-config'
 * 'az containerapp env java-component eureka-server-for-spring': Support create/update/show/delete Spring Cloud Eureka; deprecation of 'az containerapp env java-component spring-cloud-eureka'
