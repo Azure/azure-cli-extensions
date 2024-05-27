@@ -21,8 +21,7 @@ def load_command_table(self, _):
         g.custom_command('delete-cmk-encryption', 'privatecloud_deletecmkenryption', deprecate_info=g.deprecate(redirect='az vmware private-cloud disable-cmk-encryption', hide=True))
         g.custom_command('enable-cmk-encryption', 'privatecloud_addcmkencryption')
         g.custom_command('disable-cmk-encryption', 'privatecloud_deletecmkenryption')
-        g.custom_command('rotate-nsxt-password', 'privatecloud_rotate_nsxt_password')
-
+        
     with self.command_group('vmware private-cloud identity') as g:
         g.custom_command('assign', 'privatecloud_identity_assign')
         g.custom_command('remove', 'privatecloud_identity_remove')

@@ -156,13 +156,6 @@ def privatecloud_identity_get(cmd, resource_group_name, private_cloud):
     }).get("identity")
 
 
-def privatecloud_rotate_nsxt_password():
-    from knack.prompting import prompt
-    msg = ROTATE_NSXT_PASSWORD_TERMS
-    prompt(msg)
-    # return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
 def datastore_create():
     print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
 
