@@ -63,8 +63,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
     MongoCluster,
     MongoClusterProperties,
-    MongoClusterUpdate,
-    MongoClusterUpdateProperties,
     FirewallRule,
     FirewallRuleProperties,
     NodeGroupSpec,
@@ -270,20 +268,20 @@ def cli_cosmosdb_mongocluster_update(client,
 
     node_group_specs = [node_group_spec]
 
-    mongo_cluster_properties = MongoClusterUpdateProperties(
+    mongo_cluster_properties = MongoClusterProperties(
         administrator_login=administrator_login,
         administrator_login_password=administrator_login_password,
         server_version=server_version,
         node_group_specs=node_group_specs
     )
 
-    mongodb_cluster = MongoClusterUpdate(
+    mongo_cluster = MongoCluster(
         location=location,
         tags=tags,
         properties=mongo_cluster_properties
     )
 
-    return client.begin_update(resource_group_name, cluster_name, mongodb_cluster)
+    return client.begin_create_or_update(resource_group_name, cluster_name, mongo_cluster)
 
 
 def cli_cosmosdb_mongocluster_list(client,
