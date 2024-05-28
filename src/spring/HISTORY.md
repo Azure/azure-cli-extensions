@@ -1,5 +1,18 @@
 Release History
 ===============
+1.24.3
+---
+* Fix subnet address prefix validation issue.
+
+1.24.2
+---
+* Fix commands `az spring config-server enable` and `az spring config-server disable`.
+
+1.24.1
+---
+* Add command group `az spring private-dns-zone` to configure constumer private DNS zone with Azure Spring Apps.
+* Add new command `az spring private-dns-zone add`,  `az spring private-dns-zone update` and `az spring private-dns-zone clean`
+
 1.24.0
 ---
 * Add Job support

@@ -29,7 +29,8 @@ ManagedEnvironment = {
 CustomDomainConfiguration = {
     "dnsSuffix": None,
     "certificateValue": None,
-    "certificatePassword": None
+    "certificatePassword": None,
+    "certificateKeyVaultProperties": None
 }
 
 AppLogsConfiguration = {
@@ -303,6 +304,16 @@ SessionPool = {
         "dynamicPoolConfiguration": None,
         "scaleConfiguration": None,
         "sessionNetworkConfiguration": None
+    }
+}
+
+SessionCodeInterpreterPythonExecution = {
+    "properties": {
+        "identifier": None,
+        "codeInputType": None,
+        "executionType": None,
+        "code": None,
+        "timeoutInSeconds": None
     }
 }
 
@@ -584,30 +595,28 @@ MetricsConfiguration = {
     "destinations": []
 }
 
-ManagedServiceIdentity = {
-    "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
-    "userAssignedIdentities": None  # {string: UserAssignedIdentity}
-}
-
 JavaComponent = {
     "properties": {
-        "componentType": None
+        "componentType": None,
+        "serviceBinds": None
     }
 }
 
-CustomDomainConfiguration = {
-    "dnsSuffix": None,
-    "certificateValue": None,
-    "certificatePassword": None,
-    "certificateKeyVaultProperties": None
-}
-
 RuntimeJava = {
-    "enableMetrics": False
+    "enableMetrics": True,
+    "javaAgent": {
+        "enabled": False,
+        "logging": {}
+    }
 }
 
 DotNetComponent = {
     "properties": {
         "componentType": "AspireDashboard"
     }
+}
+
+JavaLoggerSetting = {
+    "logger": None,
+    "level": None
 }

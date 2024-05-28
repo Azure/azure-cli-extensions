@@ -11,11 +11,28 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
+
+4.0.0b5
+++++++++
+* Add warnings to `az aks mesh` commands for out of support asm revision in use.
+
+4.0.0b4
+++++++++
+* Add `--vm-sizes` to `az aks create` and `az aks nodepool add`.
+* Add `az aks nodepool manual-scale add/update/delete` commands.
+
+4.0.0b3
++++++++
+* Leave only one role assignment for automatic sku clusters.
+    * "Azure Kubernetes Service RBAC Cluster Admin"
 
 4.0.0b2
 +++++++
 * Improve Windows OutboundNat test case by removing Windows OSSKU limitation
 * `az aks create/update`: add support for new outbound type none
+* Add `az operation show` command to show the details of a specific operation.
+* Add `az operation show-latest` command to show the details of the latest operation.
 
 4.0.0b1
 +++++++

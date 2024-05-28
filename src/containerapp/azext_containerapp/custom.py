@@ -29,7 +29,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
 from azure.cli.command_modules.containerapp.containerapp_decorator import BaseContainerAppDecorator
-from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvUpdateDecorator, ContainerAppEnvDecorator
+from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvDecorator
 from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
 from azure.cli.command_modules.containerapp._github_oauth import get_github_access_token
 from azure.cli.command_modules.containerapp._utils import (_validate_subscription_registered,
@@ -56,6 +56,7 @@ from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertif
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
+from .containerapp_java_decorator import ContainerappJavaLoggerDecorator, ContainerappJavaLoggerSetDecorator, ContainerappJavaLoggerDeleteDecorator
 from .containerapp_resiliency_decorator import (
     ContainerAppResiliencyPreviewCreateDecorator,
     ContainerAppResiliencyPreviewShowDecorator,
@@ -81,6 +82,7 @@ from .containerapp_decorator import ContainerAppPreviewCreateDecorator, Containe
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from .java_component_decorator import JavaComponentDecorator
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
+from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -99,6 +101,7 @@ from ._clients import (
     ConnectedEnvCertificateClient,
     JavaComponentPreviewClient,
     SessionPoolPreviewClient,
+    SessionCodeInterpreterPreviewClient,
     DotNetComponentPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
@@ -120,7 +123,7 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE,
-                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA)
+                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS)
 
 
 logger = get_logger(__name__)
@@ -429,6 +432,7 @@ def create_containerapp(cmd,
                         scale_rule_http_concurrency=None,
                         scale_rule_metadata=None,
                         scale_rule_auth=None,
+                        scale_rule_identity=None,
                         target_port=None,
                         exposed_port=None,
                         transport="auto",
@@ -478,7 +482,8 @@ def create_containerapp(cmd,
                         service_principal_tenant_id=None,
                         max_inactive_revisions=None,
                         runtime=None,
-                        enable_java_metrics=None):
+                        enable_java_metrics=None,
+                        enable_java_agent=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -510,6 +515,7 @@ def update_containerapp_logic(cmd,
                               scale_rule_http_concurrency=None,
                               scale_rule_metadata=None,
                               scale_rule_auth=None,
+                              scale_rule_identity=None,
                               service_bindings=None,
                               customized_keys=None,
                               unbind_service_bindings=None,
@@ -539,7 +545,8 @@ def update_containerapp_logic(cmd,
                               max_inactive_revisions=None,
                               force_single_container_updates=False,
                               runtime=None,
-                              enable_java_metrics=None):
+                              enable_java_metrics=None,
+                              enable_java_agent=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -570,6 +577,7 @@ def update_containerapp(cmd,
                         scale_rule_http_concurrency=None,
                         scale_rule_metadata=None,
                         scale_rule_auth=None,
+                        scale_rule_identity=None,
                         unbind_service_bindings=None,
                         service_bindings=None,
                         customized_keys=None,
@@ -592,7 +600,8 @@ def update_containerapp(cmd,
                         build_env_vars=None,
                         max_inactive_revisions=None,
                         runtime=None,
-                        enable_java_metrics=None):
+                        enable_java_metrics=None,
+                        enable_java_agent=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -608,6 +617,7 @@ def update_containerapp(cmd,
                                      scale_rule_http_concurrency=scale_rule_http_concurrency,
                                      scale_rule_metadata=scale_rule_metadata,
                                      scale_rule_auth=scale_rule_auth,
+                                     scale_rule_identity=scale_rule_identity,
                                      service_bindings=service_bindings,
                                      customized_keys=customized_keys,
                                      unbind_service_bindings=unbind_service_bindings,
@@ -630,7 +640,8 @@ def update_containerapp(cmd,
                                      build_env_vars=build_env_vars,
                                      max_inactive_revisions=max_inactive_revisions,
                                      runtime=runtime,
-                                     enable_java_metrics=enable_java_metrics)
+                                     enable_java_metrics=enable_java_metrics,
+                                     enable_java_agent=enable_java_agent)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -2289,7 +2300,7 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.delete()
 
 
-def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait):
+def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, no_wait):
     raw_parameters = locals()
     java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
@@ -2301,7 +2312,7 @@ def create_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.create()
 
 
-def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait):
+def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, no_wait):
     raw_parameters = locals()
     java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
@@ -2313,12 +2324,12 @@ def update_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.update()
 
 
-def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
+def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, no_wait)
 
 
-def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
+def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, no_wait)
 
 
 def show_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2329,12 +2340,12 @@ def delete_config_server_for_spring(cmd, java_component_name, environment_name, 
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
 
 
-def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
+def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, no_wait)
 
 
-def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
+def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, no_wait)
 
 
 def show_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2344,6 +2355,37 @@ def show_eureka_server_for_spring(cmd, java_component_name, environment_name, re
 def delete_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)
 
+
+def create_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, no_wait)
+
+
+def update_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, no_wait)
+
+
+def show_nacos(cmd, java_component_name, environment_name, resource_group_name):
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS)
+
+
+def delete_nacos(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, no_wait)
+
+
+def create_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, no_wait)
+
+
+def update_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, no_wait)
+
+
+def show_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name):
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN)
+
+
+def delete_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, no_wait)
 
 def set_environment_telemetry_data_dog(cmd,
                                        name,
@@ -2714,6 +2756,45 @@ def stream_job_logs(cmd, resource_group_name, name, container, execution=None, r
             # for some reason the API returns garbled unicode special characters (may need to add more in the future)
             print(line.decode("utf-8").replace("\\u0022", "\u0022").replace("\\u001B", "\u001B").replace("\\u002B", "\u002B").replace("\\u0027", "\u0027"))
 
+
+def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    containerapp_java_logger_set_decorator = ContainerappJavaLoggerSetDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_set_decorator.validate_arguments()
+    containerapp_java_logger_set_decorator.construct_payload()
+    return containerapp_java_logger_set_decorator.create_or_update()
+
+
+def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
+    raw_parameters = locals()
+    containerapp_java_logger_decorator = ContainerappJavaLoggerDeleteDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_decorator.validate_arguments()
+    containerapp_java_logger_decorator.construct_payload()
+    return containerapp_java_logger_decorator.delete()
+
+
+def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None):
+    raw_parameters = locals()
+    containerapp_java_logger_decorator = ContainerappJavaLoggerDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_decorator.validate_arguments()
+    return containerapp_java_logger_decorator.show()
+
+
 def create_session_pool(cmd,
                         name,
                         resource_group_name,
@@ -2830,6 +2911,123 @@ def delete_session_pool(cmd,
 
     return r
 
+# session code interpreter commands
+def execute_session_code_interpreter(cmd,
+                                     name,
+                                     resource_group_name,
+                                     identifier,
+                                     code,
+                                     session_pool_location=None,
+                                     timeout_in_seconds=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.validate_arguments()
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    session_code_interpreter_decorator.construct_payload()
+    r = session_code_interpreter_decorator.execute()
+
+    return r
+
+def upload_session_code_interpreter(cmd,
+                                    name,
+                                    resource_group_name,
+                                    identifier,
+                                    filepath,
+                                    session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.upload()
+
+    return r
+
+def show_file_content_session_code_interpreter(cmd,
+                                               name,
+                                               resource_group_name,
+                                               identifier,
+                                               filename,
+                                               session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.show_file_content()
+
+    return r
+
+def show_file_metadata_session_code_interpreter(cmd,
+                                                name,
+                                                resource_group_name,
+                                                identifier,
+                                                filename,
+                                                session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.show_file_metadata()
+
+    return r
+
+def list_files_session_code_interpreter(cmd,
+                                        name,
+                                        resource_group_name,
+                                        identifier,
+                                        path=None,
+                                        session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.list_files()
+
+    return r
+
+def delete_file_session_code_interpreter(cmd,
+                                         name,
+                                         resource_group_name,
+                                         identifier,
+                                         filename,
+                                         session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.delete_file()
+
+    return r
 
 def list_dotnet_components(cmd, environment_name, resource_group_name):
     raw_parameters = locals()

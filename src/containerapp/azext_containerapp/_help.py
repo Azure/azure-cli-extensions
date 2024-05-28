@@ -890,8 +890,19 @@ helps['containerapp create'] = """
               --scale-rule-type azure-queue \\
               --scale-rule-metadata "accountName=mystorageaccountname" \\
                                     "cloud=AzurePublicCloud" \\
-                                    "queueLength": "5" "queueName": "foo" \\
+                                    "queueLength=5" "queueName=foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name"
+    - name: Create a container app with a custom scale rule using identity to authenticate
+      text: |
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
+              --image my-queue-processor --environment MyContainerappEnv \\
+              --user-assigned myUserIdentityResourceId --min-replicas 4 --max-replicas 8 \\
+              --scale-rule-name queue-based-autoscaling \\
+              --scale-rule-type azure-queue \\
+              --scale-rule-metadata "accountName=mystorageaccountname" \\
+                                    "cloud=AzurePublicCloud" \\
+                                    "queueLength=5" "queueName=foo" \\
+              --scale-rule-identity myUserIdentityResourceId
     - name: Create a container app with secrets and mounts them in a volume.
       text: |
           az containerapp create -n my-containerapp -g MyResourceGroup \\
@@ -920,6 +931,11 @@ helps['containerapp create'] = """
           az containerapp create -n my-containerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --enable-java-metrics
+    - name: Create a container app with java agent enabled
+      text: |
+          az containerapp create -n my-containerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --enable-java-agent
 """
 
 # containerapp update for preview
@@ -955,7 +971,11 @@ helps['containerapp update'] = """
       text: |
           az containerapp update -n my-containerapp -g MyResourceGroup \\
               --enable-java-metrics
-    - name: Update a container app without java metrics enabled
+    - name: Update a container app with java agent enabled
+      text: |
+          az containerapp update -n my-containerapp -g MyResourceGroup \\
+              --enable-java-agent
+    - name: Update a container app to erase java enhancement capabilities, like java metrics, java agent, etc.
       text: |
           az containerapp update -n my-containerapp -g MyResourceGroup \\
               --runtime generic
@@ -1419,12 +1439,12 @@ helps['containerapp env java-component eureka-server-for-spring create'] = """
     type: command
     short-summary: Command to create the Eureka Server for Spring.
     examples:
-    - name: Create a Eureka Server for Spring with default configuration.
+    - name: Create an Eureka Server for Spring with default configuration.
       text: |
           az containerapp env java-component eureka-server-for-spring create -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment
-    - name: Create a Eureka Server for Spring with custom configurations.
+    - name: Create an Eureka Server for Spring with custom configurations.
       text: |
           az containerapp env java-component eureka-server-for-spring create -g MyResourceGroup \\
               -n MyJavaComponentName \\
@@ -1436,7 +1456,7 @@ helps['containerapp env java-component eureka-server-for-spring delete'] = """
     type: command
     short-summary: Command to delete the Eureka Server for Spring.
     examples:
-    - name: Delete a Eureka Server for Spring.
+    - name: Delete an Eureka Server for Spring.
       text: |
           az containerapp env java-component eureka-server-for-spring delete -g MyResourceGroup \\
               -n MyJavaComponentName \\
@@ -1447,7 +1467,7 @@ helps['containerapp env java-component eureka-server-for-spring show'] = """
     type: command
     short-summary: Command to show the Eureka Server for Spring.
     examples:
-    - name: Show a Eureka Server for Spring.
+    - name: Show an Eureka Server for Spring.
       text: |
           az containerapp env java-component eureka-server-for-spring show -g MyResourceGroup \\
               -n MyJavaComponentName \\
@@ -1464,9 +1484,133 @@ helps['containerapp env java-component eureka-server-for-spring update'] = """
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration
-    - name: Update a Eureka Server for Spring with custom configurations.
+    - name: Update an Eureka Server for Spring with custom configurations.
       text: |
           az containerapp env java-component eureka-server-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component admin-for-spring'] = """
+    type: group
+    short-summary: Commands to manage the Admin for Spring for the Container Apps environment.
+"""
+
+helps['containerapp env java-component admin-for-spring create'] = """
+    type: command
+    short-summary: Command to create the Admin for Spring.
+    examples:
+    - name: Create an Admin for Spring with default configuration.
+      text: |
+          az containerapp env java-component admin-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+    - name: Create an Admin for Spring with custom configurations.
+      text: |
+          az containerapp env java-component admin-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component admin-for-spring delete'] = """
+    type: command
+    short-summary: Command to delete the Admin for Spring.
+    examples:
+    - name: Delete an Admin for Spring.
+      text: |
+          az containerapp env java-component admin-for-spring delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component admin-for-spring show'] = """
+    type: command
+    short-summary: Command to show the Admin for Spring.
+    examples:
+    - name: Show an Admin for Spring.
+      text: |
+          az containerapp env java-component admin-for-spring show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component admin-for-spring update'] = """
+    type: command
+    short-summary: Command to update the Admin for Spring.
+    examples:
+    - name: Delete all configurations of the Admin for Spring.
+      text: |
+          az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update an Admin for Spring with custom configurations.
+      text: |
+          az containerapp env java-component admin-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component nacos'] = """
+    type: group
+    short-summary: Commands to manage the Nacos for the Container Apps environment.
+"""
+
+helps['containerapp env java-component nacos create'] = """
+    type: command
+    short-summary: Command to create the Nacos.
+    examples:
+    - name: Create a Nacos with default configuration.
+      text: |
+          az containerapp env java-component nacos create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+    - name: Create a Nacos with custom configurations.
+      text: |
+          az containerapp env java-component nacos create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
+helps['containerapp env java-component nacos delete'] = """
+    type: command
+    short-summary: Command to delete the Nacos.
+    examples:
+    - name: Delete a Nacos.
+      text: |
+          az containerapp env java-component nacos delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component nacos show'] = """
+    type: command
+    short-summary: Command to show the Nacos.
+    examples:
+    - name: Show an Nacos.
+      text: |
+          az containerapp env java-component nacos show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component nacos update'] = """
+    type: command
+    short-summary: Command to update the Nacos.
+    examples:
+    - name: Delete all configurations of the Nacos.
+      text: |
+          az containerapp env java-component nacos update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update an Nacos with custom configurations.
+      text: |
+          az containerapp env java-component nacos update -g MyResourceGroup \\
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
@@ -1716,6 +1860,121 @@ helps['containerapp sessionpool list'] = """
     - name: List Session Pools by resource group.
       text: |
           az containerapp sessionpool list -g MyResourceGroup
+"""
+
+# code interpreter commands
+helps['containerapp session'] = """
+    type: group
+    short-summary: Commands to manage sessions.To learn more about individual commands under each subgroup run containerapp session [subgroup name] --help.
+"""
+
+helps['containerapp session code-interpreter'] = """
+    type: group
+    short-summary: Commands to interact with and manage code interpreter sessions.
+"""
+
+helps['containerapp session code-interpreter execute'] = """
+    type: command
+    short-summary: Execute code in a code interpreter session. 
+    examples:
+    - name: Execute a simple hello world.
+      text: |
+          az containerapp session code-interpreter execute -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --code 'print("'"Hello world"'")' --timeout-in-seconds 30 --session-pool-location eastasia
+"""
+
+helps['containerapp session code-interpreter upload-file'] = """
+    type: command
+    short-summary: Upload a file to a code interpreter session .
+    examples:
+    - name: Upload a file to a session.
+      text: |
+          az containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filepath example.txt  
+"""
+
+helps['containerapp session code-interpreter show-file-content'] = """
+    type: command
+    short-summary: Show the content a file uploaded to a code interpreter session.
+    examples:
+    - name: Show content of file.
+      text: az containerapp session code-interpreter show-file-content -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filename example.txt
+"""
+
+helps['containerapp session code-interpreter show-file-metadata'] = """
+    type: command
+    short-summary: Shows the meta-data content a file uploaded to a code interpreter session.
+    examples:
+    - name: Show the meta-data details of a file uploaded to a session.
+      text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filename example.txt
+"""
+
+helps['containerapp session code-interpreter delete-file'] = """
+    type: command
+    short-summary: Delete a file uploaded to a code interpreter session.
+    examples:
+    - name: Delete a file .
+      text: az containerapp session code-interpreter delete-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
+              --filename example.txt
+"""
+
+helps['containerapp session code-interpreter list-files'] = """
+    type: command
+    short-summary: List files uploaded to a code interpreter session
+    examples:
+    - name: List files uploaded in a code-interpreter session.
+      text: |
+          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession
+"""
+
+helps['containerapp java'] = """
+    type: group
+    short-summary: Commands to manage Java workloads.
+"""
+
+# Java Logging logger Commands
+helps['containerapp java logger'] = """
+    type: group
+    short-summary: Dynamically change log level for Java workloads.
+"""
+
+# Java Logging logger Commands
+helps['containerapp java logger set'] = """
+    type: command
+    short-summary: Create or update logger for Java workloads.
+    examples:
+    - name: Create root logger with debug level.
+      text: |
+          az containerapp java logger set --logger-name root --logger-level debug -n my-containerapp -g MyResourceGroup
+    - name: Update root logger with debug level.
+      text: |
+          az containerapp java logger set --logger-name root --logger-level info -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp java logger show'] = """
+    type: command
+    short-summary: Display logger setting for Java workloads.
+    examples:
+    - name: Display all logger settings for Java workloads.
+      text: |
+          az containerapp java logger show --all -n my-containerapp -g MyResourceGroup
+    - name: Display specific logger with name for Java workloads.
+      text: |
+          az containerapp java logger show --logger-name root -n my-containerapp -g MyResourceGroup
+"""
+
+helps['containerapp java logger delete'] = """
+    type: command
+    short-summary: Delete logger for Java workloads.
+    examples:
+    - name: Delete all logger settings for Java workloads.
+      text: |
+          az containerapp java logger delete --all -n my-containerapp -g MyResourceGroup
+    - name: Delete specific logger with name for Java workloads.
+      text: |
+          az containerapp java logger delete --logger-name root -n my-containerapp -g MyResourceGroup
 """
 
 # DotNet Components Commands

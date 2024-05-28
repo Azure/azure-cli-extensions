@@ -3747,6 +3747,54 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_4.get_force_upgrade(), True)
 
+    def test_get_if_match(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_0.get_if_match(), None)
+
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"if_match": "abc"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_if_match(), "abc")
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"if_match": ""}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_2.get_if_match(), "")
+
+    def test_get_if_none_match(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_0.get_if_none_match(), None)
+
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"if_none_match": "abc"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_if_none_match(), "abc")
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"if_none_match": ""}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_2.get_if_none_match(), "")
+
     def test_get_upgrade_override_until(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -7756,6 +7804,38 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_11.context.attach_mc(mc_11)
         with self.assertRaises(ArgumentUsageError):
             dec_11.update_azure_service_mesh_profile(mc_11)
+
+        # az aks mesh disable-ingress-gateway - when azure service mesh was never enabled
+        dec_12 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_ingress_gateway": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_12 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_12.context.attach_mc(mc_12)
+        with self.assertRaises(ArgumentUsageError):
+            dec_12.update_azure_service_mesh_profile(mc_12)
+
+        # az aks mesh disable-egress-gateway - when azure service mesh was never enabled
+        dec_13 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_egress_gateway": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_13 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_13.context.attach_mc(mc_13)
+        with self.assertRaises(ArgumentUsageError):
+            dec_13.update_azure_service_mesh_profile(mc_13)
 
     def test_update_upgrade_settings(self):
         # Should not update mc if unset

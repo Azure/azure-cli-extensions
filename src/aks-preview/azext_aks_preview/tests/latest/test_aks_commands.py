@@ -2403,6 +2403,58 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_operations_cmds(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --enable-managed-identity "
+            "--ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.openServiceMesh", None),
+            ],
+        )
+
+        show_latest_cmd = (
+            "aks operation show-latest "
+            "--resource-group={resource_group} --name={name} "
+            "-o json"
+        )
+        operation_show_latest = self.cmd(show_latest_cmd).get_output_in_json()
+        assert operation_show_latest["status"] == "Succeeded"
+        assert operation_show_latest["error"] is None
+        operation_id = operation_show_latest["name"]
+        self.kwargs.update(
+            {
+                "operation_id": operation_id,
+            }
+        )
+
+        show_cmd = (
+            "aks operation show "
+            "--resource-group={resource_group} --name={name} "
+            "--operation-id={operation_id} -o json"
+        )
+        operation_show = self.cmd(show_cmd).get_output_in_json()
+        assert operation_show["id"] == operation_show_latest["id"]
+        assert operation_show["status"] == "Succeeded"
+        assert operation_show["error"] is None
+        assert operation_show["name"] == operation_id
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westcentralus"
     )
     def test_aks_create_with_safeguards(self, resource_group, resource_group_location):
@@ -4219,6 +4271,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "k8s_version": create_version,
                 "upgrade_k8s_version": upgrade_version,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "if_match": "*",
+                "if_none_match": "*",
             }
         )
 
@@ -4228,7 +4282,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--dns-name-prefix={dns_name_prefix} --node-count=1 "
             "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
             "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
-            "--kubernetes-version={k8s_version} --ssh-key-value={ssh_key_value}"
+            "--kubernetes-version={k8s_version} --ssh-key-value={ssh_key_value} --if-none-match={if_none_match}"
         )
         self.cmd(
             create_cmd,
@@ -4242,13 +4296,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # add Windows nodepool
         self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --os-type Windows --node-count=1",
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --os-type Windows --node-count=1 --if-none-match={if_none_match}",
             checks=[self.check("provisioningState", "Succeeded")],
         )
 
         # upgrade cluster control plane only
         self.cmd(
-            "aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version} --yes",
+            "aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version} --yes --if-match={if_match}",
             checks=[self.check("provisioningState", "Succeeded")],
         )
 
@@ -4256,7 +4310,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks nodepool upgrade --resource-group={resource_group} --cluster-name={name} "
             "--name={nodepool2_name} --kubernetes-version={upgrade_k8s_version} "
-            "--aks-custom-headers WindowsContainerRuntime=containerd --yes",
+            "--aks-custom-headers WindowsContainerRuntime=containerd --yes --if-match={if_match}",
             checks=[self.check("provisioningState", "Succeeded")],
         )
 
@@ -4286,6 +4340,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "windows_admin_password": "replace-Password1234$",
                 "nodepool2_name": "npwin",
                 "ssh_key_value": self.generate_ssh_keys(),
+                "if_match": "*",
+                "if_none_match": "*",
             }
         )
 
@@ -4295,7 +4351,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--dns-name-prefix={dns_name_prefix} --node-count=1 "
             "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
             "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
-            "--ssh-key-value={ssh_key_value}"
+            "--ssh-key-value={ssh_key_value} --if-none-match={if_none_match}"
         )
         self.cmd(
             create_cmd,
@@ -4315,22 +4371,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update Windows license type
         self.cmd(
-            "aks update --resource-group={resource_group} --name={name} --enable-ahub",
+            "aks update --resource-group={resource_group} --name={name} --enable-ahub --if-match={if_match}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("windowsProfile.licenseType", "Windows_Server"),
             ],
         )
 
+        self.kwargs.update(
+            {
+                "if_match": "",
+            }
+        )
+
         # nodepool delete
         self.cmd(
-            "aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait",
+            "aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait --if-match={if_match}",
             checks=[self.is_empty()],
         )
 
         # delete
         self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            "aks delete -g {resource_group} -n {name} --yes --no-wait --if-match={if_match}",
             checks=[self.is_empty()],
         )
 
@@ -11716,10 +11778,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_vms_agentpool_type(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("n", 6)
-        nodepool_name_1 = self.create_random_name("n", 6)
-        # At 2024.01.18, the two return values are 1.27.x and 1.28.x
-        # setting vm type to VirtualMachines requires 1.28.x or higher
-        _, k8s_version = self._get_versions(resource_group_location)
 
         self.kwargs.update(
             {
@@ -11728,8 +11786,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "node_pool_name": nodepool_name,
-                "node_vm_size": "standard_d2a_v4",
-                "k8s_version": k8s_version,
             }
         )
 
@@ -11739,22 +11795,30 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--name={name} "
             "--location={location} "
             "--ssh-key-value={ssh_key_value} "
-            "--nodepool-name={node_pool_name} "
-            "--node-count=1 "
-            "--node-vm-size={node_vm_size} "
-            '--vm-set-type="VirtualMachines" '
-            "-k {k8s_version} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            "--vm-set-type=VirtualMachines "
+            "--vm-sizes=Standard_D4s_v3,Standard_D8s_v3 "
+            "--node-count=2 "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("agentPoolProfiles[0].type", "VirtualMachines"),
+                self.check("agentPoolProfiles[0].vmSize", ""),
+                self.check("agentPoolProfiles[0].count", None),
+                self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].sizes[0]", "Standard_D4s_v3"),
+                self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].sizes[1]", "Standard_D8s_v3"),
+                self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "2"),
             ],
         )
 
-        self.kwargs.update(
-            {
-                "node_pool_name": nodepool_name_1,
-            }
+        self.cmd(
+            "aks scale "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--node-count 3",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "3"),
+            ],
         )
 
         self.cmd(
@@ -11762,21 +11826,82 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--resource-group={resource_group} "
             "--cluster-name={name} "
             "--name={node_pool_name} "
-            "--node-vm-size={node_vm_size} "
             "--vm-set-type=VirtualMachines "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            "--vm-sizes=Standard_D4s_v3,Standard_D8s_v3 "
+            "--node-count=2 "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("typePropertiesType", "VirtualMachines"),
+                self.check("vmSize", ""),
+                self.check("count", None),
+                self.check("virtualMachinesProfile.scale.manual[0].sizes[0]", "Standard_D4s_v3"),
+                self.check("virtualMachinesProfile.scale.manual[0].sizes[1]", "Standard_D8s_v3"),
+                self.check("virtualMachinesProfile.scale.manual[0].count", "2"),
             ],
         )
 
-        # delete
-        cmd = (
-            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
-        )
         self.cmd(
-            cmd,
+            "aks nodepool scale "
+            "--resource-group {resource_group} "
+            "--cluster-name {name} "
+            "--name {node_pool_name} "
+            "--node-count 3",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("virtualMachinesProfile.scale.manual[0].count", "3"),
+            ],
+        )
+
+        self.cmd(
+            "aks nodepool manual-scale add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name {node_pool_name} "
+            "--vm-sizes=Standard_D2s_v3,Standard_DS2_v2 "
+            "--node-count=2",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("typePropertiesType", "VirtualMachines"),
+                self.check("vmSize", ""),
+                self.check("count", None),
+                self.check("virtualMachinesProfile.scale.manual[1].sizes[0]", "Standard_D2s_v3"),
+                self.check("virtualMachinesProfile.scale.manual[1].sizes[1]", "Standard_DS2_v2"),
+                self.check("virtualMachinesProfile.scale.manual[1].count", "2"),
+            ],
+        )
+
+        self.cmd(
+            "aks nodepool manual-scale update "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name} "
+            "--current-vm-sizes=Standard_D2s_v3,Standard_DS2_v2 "
+            "--vm-sizes=Standard_D2s_v3,Standard_DS2_v2,Standard_DC2s_v3 "
+            "--node-count=5",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("typePropertiesType", "VirtualMachines"),
+                self.check("vmSize", ""),
+                self.check("count", None),
+                self.check("virtualMachinesProfile.scale.manual[1].sizes[0]", "Standard_D2s_v3"),
+                self.check("virtualMachinesProfile.scale.manual[1].sizes[1]", "Standard_DS2_v2"),
+                self.check("virtualMachinesProfile.scale.manual[1].sizes[2]", "Standard_DC2s_v3"),
+                self.check("virtualMachinesProfile.scale.manual[1].count", "5"),
+            ],
+        )
+
+        np = self.cmd(
+            "aks nodepool manual-scale delete "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name} "
+            "--current-vm-sizes=Standard_D2s_v3,Standard_DS2_v2,Standard_DC2s_v3",
+        ).get_output_in_json()
+        assert len(np["virtualMachinesProfile"]["scale"]["manual"]) == 1
+
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
             checks=[
                 self.is_empty(),
             ],

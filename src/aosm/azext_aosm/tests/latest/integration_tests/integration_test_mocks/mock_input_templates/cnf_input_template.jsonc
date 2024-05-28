@@ -1,0 +1,29 @@
+{
+  // Azure location to use when creating resources.
+  "location": "uksouth",
+  // Name of the Publisher resource you want your definition published to.
+  // Will be created if it does not exist.
+  "publisher_name": "automated-cli-test-nginx-publisher",
+  // Optional. Resource group for the Publisher resource.
+  // Will be created if it does not exist (with a default name if none is supplied).
+  "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+  // Optional. Name of the ACR Artifact Store resource.
+  // Will be created if it does not exist (with a default name if none is supplied).
+  "acr_artifact_store_name": "nginx-acr",
+  // Name of NF definition.
+  "nf_name": "nginx",
+  // Version of the NF definition in A.B.C format.
+  "version": "1.0.0",
+  // List of registries from which to pull the image(s).
+  // For example [sourceacr.azurecr.io/test, myacr2.azurecr.io].
+  "image_sources": ["docker.io"],
+
+  // List of Helm packages to be included in the CNF.
+  "helm_packages": [
+    {
+      "name": "nginxdemo",
+      "path_to_chart": "{{path_to_chart}}",
+      "default_values": ""
+    }
+  ]
+}
