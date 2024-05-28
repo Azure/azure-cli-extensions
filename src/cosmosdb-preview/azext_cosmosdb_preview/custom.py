@@ -60,6 +60,18 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     CosmosMongoDataTransferDataSourceSink
 )
 
+from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
+    MongoCluster,
+    MongoClusterProperties,
+    MongoClusterUpdate,
+    MongoClusterUpdateProperties,
+    FirewallRule,
+    FirewallRuleProperties,
+    NodeGroupSpec,
+    NodeKind,
+    CreateMode as MongoClusterCreateMode
+)
+
 from azext_cosmosdb_preview._client_factory import (
     cf_restorable_gremlin_resources,
     cf_restorable_table_resources,
@@ -109,9 +121,13 @@ def cli_cosmosdb_mongocluster_firewall_rule_create(client,
 
     '''Creates an Azure Cosmos DB Mongo Cluster Firewall rule'''
 
-    firewall_rule = None
+    firewall_rule_properties = FirewallRuleProperties(
+        start_ip_address=start_ip_address,
+        end_ip_address=end_ip_address)
 
-    return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, rule_name, firewall_rule)
+    firewall_rule = FirewallRule(properties=firewall_rule_properties)
+
+    return client.begin_create_or_update(resource_group_name, cluster_name, rule_name, firewall_rule)
 
 
 def cli_cosmosdb_mongocluster_firewall_rule_update(client,
@@ -123,38 +139,42 @@ def cli_cosmosdb_mongocluster_firewall_rule_update(client,
 
     '''Creates an Azure Cosmos DB Mongo Cluster Firewall rule'''
 
-    mongo_cluster_firewallRule = client.get_firewall_rule(resource_group_name, cluster_name, rule_name)
+    mongo_cluster_firewallRule = client.get(resource_group_name, cluster_name, rule_name)
 
     if start_ip_address is None:
-        start_ip_address = mongo_cluster_firewallRule.startIpAddress
+        start_ip_address = mongo_cluster_firewallRule.properties.startIpAddress
 
     if end_ip_address is None:
-        end_ip_address = mongo_cluster_firewallRule.endIpAddress
+        end_ip_address = mongo_cluster_firewallRule.properties.endIpAddress
 
-    firewall_rule = None
+    firewall_rule_properties = FirewallRuleProperties(
+        start_ip_address=start_ip_address,
+        end_ip_address=end_ip_address)
 
-    return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, rule_name, firewall_rule)
+    firewall_rule = FirewallRule(properties=firewall_rule_properties)
+
+    return client.begin_create_or_update(resource_group_name, cluster_name, rule_name, firewall_rule)
 
 
 def cli_cosmosdb_mongocluster_firewall_rule_list(client, resource_group_name, cluster_name):
 
     """List Azure CosmosDB Mongo Cluster Firewall Rule."""
 
-    return client.list_firewall_rules(resource_group_name, cluster_name)
+    return client.list_by_mongo_cluster(resource_group_name, cluster_name)
 
 
 def cli_cosmosdb_mongocluster_firewall_rule_get(client, resource_group_name, cluster_name, rule_name):
 
     """Gets Azure CosmosDB Mongo Cluster Firewall rule"""
 
-    return client.get_firewall_rule(resource_group_name, cluster_name, rule_name)
+    return client.get(resource_group_name, cluster_name, rule_name)
 
 
 def cli_cosmosdb_mongocluster_firewall_rule_delete(client, resource_group_name, cluster_name, rule_name):
 
     """Delete Azure CosmosDB Mongo Cluster Firewall Rule"""
 
-    return client.begin_delete_firewall_rule(resource_group_name, cluster_name, rule_name)
+    return client.begin_delete(resource_group_name, cluster_name, rule_name)
 
 
 def cli_cosmosdb_mongocluster_create(client,
@@ -175,12 +195,31 @@ def cli_cosmosdb_mongocluster_create(client,
     if ((administrator_login is None and administrator_login_password is not None) or (administrator_login is not None and administrator_login_password is None)):
         raise InvalidArgumentValueError('Both(administrator_login and administrator_login_password) Mongo Cluster admin user parameters must be provided together')
 
-    node_group_spec = None
+    node_group_spec = NodeGroupSpec(
+        kind=NodeKind.SHARD.value,
+        sku=shard_node_tier,
+        disk_size_gb=shard_node_disk_size_gb,
+        node_count=shard_node_count,
+        enable_ha=shard_node_ha
+    )
 
     node_group_specs = [node_group_spec]
-    mongodb_cluster = None
 
-    return client.begin_create_or_update(resource_group_name, cluster_name, mongodb_cluster)
+    mongo_cluster_properties = MongoClusterProperties(
+        create_mode=MongoClusterCreateMode.DEFAULT.value,
+        administrator_login=administrator_login,
+        administrator_login_password=administrator_login_password,
+        server_version=server_version,
+        node_group_specs=node_group_specs
+    )
+
+    mongo_cluster = MongoCluster(
+        location=location,
+        tags=tags,
+        properties=mongo_cluster_properties
+    )
+
+    return client.begin_create_or_update(resource_group_name, cluster_name, mongo_cluster)
 
 
 def cli_cosmosdb_mongocluster_update(client,
@@ -203,31 +242,48 @@ def cli_cosmosdb_mongocluster_update(client,
     if ((administrator_login is None and administrator_login_password is not None) or (administrator_login is not None and administrator_login_password is None)):
         raise InvalidArgumentValueError('Both(administrator_login and administrator_login_password) Mongo Cluster admin user parameters must be provided together')
 
-    if administrator_login_password is None:
-        administrator_login_password = mongo_cluster_resource.administrator_login_password
-
     # Resource location is immutable
     location = mongo_cluster_resource.location
 
     if server_version is None:
-        server_version = mongo_cluster_resource.server_version
+        server_version = mongo_cluster_resource.properties.server_version
     if tags is None:
         tags = mongo_cluster_resource.tags
 
     # Shard info update.
     if shard_node_tier is None:
-        shard_node_tier = mongo_cluster_resource.node_group_specs[0].sku
+        shard_node_tier = mongo_cluster_resource.properties.node_group_specs[0].sku
     if shard_node_disk_size_gb is None:
-        shard_node_disk_size_gb = mongo_cluster_resource.node_group_specs[0].disk_size_gb
+        shard_node_disk_size_gb = mongo_cluster_resource.properties.node_group_specs[0].disk_size_gb
     if shard_node_ha is None:
-        shard_node_ha = mongo_cluster_resource.node_group_specs[0].enable_ha
+        shard_node_ha = mongo_cluster_resource.properties.node_group_specs[0].enable_ha
 
-    node_group_spec = None
+    shard_node_count = mongo_cluster_resource.properties.node_group_specs[0].node_count
+
+    node_group_spec = NodeGroupSpec(
+        kind=NodeKind.SHARD.value,
+        sku=shard_node_tier,
+        disk_size_gb=shard_node_disk_size_gb,
+        node_count=shard_node_count,
+        enable_ha=shard_node_ha
+    )
 
     node_group_specs = [node_group_spec]
-    mongodb_cluster = None
 
-    return client.begin_create_or_update(resource_group_name, cluster_name, mongodb_cluster)
+    mongo_cluster_properties = MongoClusterUpdateProperties(
+        administrator_login=administrator_login,
+        administrator_login_password=administrator_login_password,
+        server_version=server_version,
+        node_group_specs=node_group_specs
+    )
+
+    mongodb_cluster = MongoClusterUpdate(
+        location=location,
+        tags=tags,
+        properties=mongo_cluster_properties
+    )
+
+    return client.begin_update(resource_group_name, cluster_name, mongodb_cluster)
 
 
 def cli_cosmosdb_mongocluster_list(client,
