@@ -13,6 +13,10 @@ Pending
 +++++++
 * Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
 
+4.0.0b5
+++++++++
+* Add warnings to `az aks mesh` commands for out of support asm revision in use.
+
 4.0.0b4
 ++++++++
 * Add `--vm-sizes` to `az aks create` and `az aks nodepool add`.
