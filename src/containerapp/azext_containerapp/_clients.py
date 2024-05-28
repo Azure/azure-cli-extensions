@@ -46,7 +46,7 @@ class ContainerAppPreviewClient(ContainerAppClient):
 
 
 class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
-    api_version = PREVIEW_API_VERSION
+    api_version = "2023-11-02-preview"
 
     @classmethod
     def get_replicas(cls, cmd, resource_group_name, name, execution_name):
