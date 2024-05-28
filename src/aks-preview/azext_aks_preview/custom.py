@@ -3333,7 +3333,7 @@ def _aks_mesh_update(
                 msg = (
                     f"Istio mesh revision {revision} currently in use in your cluster is no longer supported.\n"
                     "Please upgrade for continued support. Use `az aks mesh get-upgrades` to check for available "
-                    "upgrades.\n More information about mesh upgrades and version support can be found here:"
+                    "upgrades.\nMore information about mesh upgrades and version support can be found here:"
                     " https://aka.ms/asm-aks-upgrade-docs"
                 )
                 logger.warning(msg)
