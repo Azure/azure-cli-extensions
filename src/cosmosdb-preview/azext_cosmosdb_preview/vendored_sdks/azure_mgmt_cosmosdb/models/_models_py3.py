@@ -24,6 +24,126 @@ if TYPE_CHECKING:
 JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
 
 
+class AccessRule(_serialization.Model):
+    """Access rule in a network security perimeter configuration profile.
+
+    :ivar name: Name of the access rule.
+    :vartype name: str
+    :ivar properties: Properties of Access Rule.
+    :vartype properties: ~azure.mgmt.cosmosdb.models.AccessRuleProperties
+    """
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "properties": {"key": "properties", "type": "AccessRuleProperties"},
+    }
+
+    def __init__(
+        self, *, name: Optional[str] = None, properties: Optional["_models.AccessRuleProperties"] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword name: Name of the access rule.
+        :paramtype name: str
+        :keyword properties: Properties of Access Rule.
+        :paramtype properties: ~azure.mgmt.cosmosdb.models.AccessRuleProperties
+        """
+        super().__init__(**kwargs)
+        self.name = name
+        self.properties = properties
+
+
+class AccessRuleProperties(_serialization.Model):
+    """Properties of Access Rule.
+
+    :ivar direction: Direction of Access Rule. Known values are: "Inbound" and "Outbound".
+    :vartype direction: str or ~azure.mgmt.cosmosdb.models.AccessRuleDirection
+    :ivar address_prefixes: Address prefixes in the CIDR format for inbound rules.
+    :vartype address_prefixes: list[str]
+    :ivar subscriptions: Subscriptions for inbound rules.
+    :vartype subscriptions: list[~azure.mgmt.cosmosdb.models.AccessRulePropertiesSubscriptionsItem]
+    :ivar network_security_perimeters: Network security perimeters for inbound rules.
+    :vartype network_security_perimeters:
+     list[~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeter]
+    :ivar fully_qualified_domain_names: Fully qualified domain names (FQDN) for outbound rules.
+    :vartype fully_qualified_domain_names: list[str]
+    :ivar email_addresses: Email addresses for outbound rules.
+    :vartype email_addresses: list[str]
+    :ivar phone_numbers: Phone numbers for outbound rules.
+    :vartype phone_numbers: list[str]
+    """
+
+    _attribute_map = {
+        "direction": {"key": "direction", "type": "str"},
+        "address_prefixes": {"key": "addressPrefixes", "type": "[str]"},
+        "subscriptions": {"key": "subscriptions", "type": "[AccessRulePropertiesSubscriptionsItem]"},
+        "network_security_perimeters": {"key": "networkSecurityPerimeters", "type": "[NetworkSecurityPerimeter]"},
+        "fully_qualified_domain_names": {"key": "fullyQualifiedDomainNames", "type": "[str]"},
+        "email_addresses": {"key": "emailAddresses", "type": "[str]"},
+        "phone_numbers": {"key": "phoneNumbers", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        direction: Optional[Union[str, "_models.AccessRuleDirection"]] = None,
+        address_prefixes: Optional[List[str]] = None,
+        subscriptions: Optional[List["_models.AccessRulePropertiesSubscriptionsItem"]] = None,
+        network_security_perimeters: Optional[List["_models.NetworkSecurityPerimeter"]] = None,
+        fully_qualified_domain_names: Optional[List[str]] = None,
+        email_addresses: Optional[List[str]] = None,
+        phone_numbers: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword direction: Direction of Access Rule. Known values are: "Inbound" and "Outbound".
+        :paramtype direction: str or ~azure.mgmt.cosmosdb.models.AccessRuleDirection
+        :keyword address_prefixes: Address prefixes in the CIDR format for inbound rules.
+        :paramtype address_prefixes: list[str]
+        :keyword subscriptions: Subscriptions for inbound rules.
+        :paramtype subscriptions:
+         list[~azure.mgmt.cosmosdb.models.AccessRulePropertiesSubscriptionsItem]
+        :keyword network_security_perimeters: Network security perimeters for inbound rules.
+        :paramtype network_security_perimeters:
+         list[~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeter]
+        :keyword fully_qualified_domain_names: Fully qualified domain names (FQDN) for outbound rules.
+        :paramtype fully_qualified_domain_names: list[str]
+        :keyword email_addresses: Email addresses for outbound rules.
+        :paramtype email_addresses: list[str]
+        :keyword phone_numbers: Phone numbers for outbound rules.
+        :paramtype phone_numbers: list[str]
+        """
+        super().__init__(**kwargs)
+        self.direction = direction
+        self.address_prefixes = address_prefixes
+        self.subscriptions = subscriptions
+        self.network_security_perimeters = network_security_perimeters
+        self.fully_qualified_domain_names = fully_qualified_domain_names
+        self.email_addresses = email_addresses
+        self.phone_numbers = phone_numbers
+
+
+class AccessRulePropertiesSubscriptionsItem(_serialization.Model):
+    """Subscription identifiers.
+
+    :ivar id: The fully qualified Azure resource ID of the subscription e.g.
+     ('/subscriptions/00000000-0000-0000-0000-000000000000').
+    :vartype id: str
+    """
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+    }
+
+    def __init__(self, *, id: Optional[str] = None, **kwargs: Any) -> None:  # pylint: disable=redefined-builtin
+        """
+        :keyword id: The fully qualified Azure resource ID of the subscription e.g.
+         ('/subscriptions/00000000-0000-0000-0000-000000000000').
+        :paramtype id: str
+        """
+        super().__init__(**kwargs)
+        self.id = id
+
+
 class AccountKeyMetadata(_serialization.Model):
     """The metadata related to an access key for a given database account.
 
@@ -9583,22 +9703,15 @@ class MongoUserDefinitionListResult(_serialization.Model):
 
 
 class NetworkSecurityPerimeter(_serialization.Model):
-    """Information about Network Security Perimeter.
+    """Information about a network security perimeter (NSP).
 
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+    :ivar id: Fully qualified Azure resource ID of the NSP resource.
     :vartype id: str
-    :ivar perimeter_guid: Guid of the Network Security Perimeter.
+    :ivar perimeter_guid: Universal unique ID (UUID) of the network security perimeter.
     :vartype perimeter_guid: str
-    :ivar location: Location of the Network Security Perimeter.
+    :ivar location: Location of the network security perimeter.
     :vartype location: str
     """
-
-    _validation = {
-        "id": {"readonly": True},
-    }
 
     _attribute_map = {
         "id": {"key": "id", "type": "str"},
@@ -9606,15 +9719,24 @@ class NetworkSecurityPerimeter(_serialization.Model):
         "location": {"key": "location", "type": "str"},
     }
 
-    def __init__(self, *, perimeter_guid: Optional[str] = None, location: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        perimeter_guid: Optional[str] = None,
+        location: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
-        :keyword perimeter_guid: Guid of the Network Security Perimeter.
+        :keyword id: Fully qualified Azure resource ID of the NSP resource.
+        :paramtype id: str
+        :keyword perimeter_guid: Universal unique ID (UUID) of the network security perimeter.
         :paramtype perimeter_guid: str
-        :keyword location: Location of the Network Security Perimeter.
+        :keyword location: Location of the network security perimeter.
         :paramtype location: str
         """
         super().__init__(**kwargs)
-        self.id = None
+        self.id = id
         self.perimeter_guid = perimeter_guid
         self.location = location
 
@@ -9624,8 +9746,8 @@ class Resource(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.  # pylint: disable=line-too-long
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -9666,8 +9788,8 @@ class ProxyResource(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.  # pylint: disable=line-too-long
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -9681,12 +9803,12 @@ class ProxyResource(Resource):
 
 
 class NetworkSecurityPerimeterConfiguration(ProxyResource):
-    """The Network Security Perimeter configuration resource.
+    """Network security perimeter (NSP) configuration resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.  # pylint: disable=line-too-long
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -9696,21 +9818,9 @@ class NetworkSecurityPerimeterConfiguration(ProxyResource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar provisioning_state: Provisioning state of Network Security Perimeter configuration
-     propagation. Known values are: "Creating", "Accepted", "Succeeded", "Failed", "Deleting", and
-     "Canceled".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeterConfigurationProvisioningState
-    :ivar provisioning_issues: List of Provisioning Issues if any.
-    :vartype provisioning_issues: list[~azure.mgmt.cosmosdb.models.ProvisioningIssue]
-    :ivar network_security_perimeter: Information about Network Security Perimeter.
-    :vartype network_security_perimeter: ~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeter
-    :ivar resource_association: Information about resource association.
-    :vartype resource_association:
-     ~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeterConfigurationPropertiesResourceAssociation
-    :ivar profile: Network Security Perimeter profile.
-    :vartype profile:
-     ~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeterConfigurationPropertiesProfile
+    :ivar properties: Network security configuration properties.
+    :vartype properties:
+     ~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeterConfigurationProperties
     """
 
     _validation = {
@@ -9718,11 +9828,6 @@ class NetworkSecurityPerimeterConfiguration(ProxyResource):
         "name": {"readonly": True},
         "type": {"readonly": True},
         "system_data": {"readonly": True},
-        "provisioning_state": {"readonly": True},
-        "provisioning_issues": {"readonly": True},
-        "network_security_perimeter": {"readonly": True},
-        "resource_association": {"readonly": True},
-        "profile": {"readonly": True},
     }
 
     _attribute_map = {
@@ -9730,76 +9835,129 @@ class NetworkSecurityPerimeterConfiguration(ProxyResource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
-        "provisioning_issues": {"key": "properties.provisioningIssues", "type": "[ProvisioningIssue]"},
-        "network_security_perimeter": {
-            "key": "properties.networkSecurityPerimeter",
-            "type": "NetworkSecurityPerimeter",
-        },
-        "resource_association": {
-            "key": "properties.resourceAssociation",
-            "type": "NetworkSecurityPerimeterConfigurationPropertiesResourceAssociation",
-        },
-        "profile": {"key": "properties.profile", "type": "NetworkSecurityPerimeterConfigurationPropertiesProfile"},
+        "properties": {"key": "properties", "type": "NetworkSecurityPerimeterConfigurationProperties"},
     }
 
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
+    def __init__(
+        self, *, properties: Optional["_models.NetworkSecurityPerimeterConfigurationProperties"] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword properties: Network security configuration properties.
+        :paramtype properties:
+         ~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeterConfigurationProperties
+        """
         super().__init__(**kwargs)
-        self.provisioning_state = None
-        self.provisioning_issues = None
-        self.network_security_perimeter = None
-        self.resource_association = None
-        self.profile = None
+        self.properties = properties
 
 
-class NetworkSecurityPerimeterConfigurationList(_serialization.Model):  # pylint: disable=name-too-long
-    """Result of the List Network Security Perimeter configuration operation.
+class NetworkSecurityPerimeterConfigurationListResult(_serialization.Model):  # pylint: disable=name-too-long
+    """Result of a list NSP (network security perimeter) configurations request.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar value: A collection of Network Security Perimeter configurations.
+    :ivar value: Array of network security perimeter results.
     :vartype value: list[~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeterConfiguration]
     :ivar next_link: The link used to get the next page of results.
     :vartype next_link: str
     """
-
-    _validation = {
-        "value": {"readonly": True},
-        "next_link": {"readonly": True},
-    }
 
     _attribute_map = {
         "value": {"key": "value", "type": "[NetworkSecurityPerimeterConfiguration]"},
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
+    def __init__(
+        self,
+        *,
+        value: Optional[List["_models.NetworkSecurityPerimeterConfiguration"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: Array of network security perimeter results.
+        :paramtype value: list[~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeterConfiguration]
+        :keyword next_link: The link used to get the next page of results.
+        :paramtype next_link: str
+        """
         super().__init__(**kwargs)
-        self.value = None
-        self.next_link = None
+        self.value = value
+        self.next_link = next_link
 
 
-class NetworkSecurityPerimeterConfigurationPropertiesProfile(_serialization.Model):  # pylint: disable=name-too-long
-    """Network Security Perimeter profile.
+class NetworkSecurityPerimeterConfigurationProperties(_serialization.Model):  # pylint: disable=name-too-long
+    """Network security configuration properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioning_state: Provisioning state of a network security perimeter configuration that
+     is being created or updated. Known values are: "Succeeded", "Creating", "Updating", "Deleting",
+     "Accepted", "Failed", and "Canceled".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeterConfigurationProvisioningState
+    :ivar provisioning_issues: List of provisioning issues, if any.
+    :vartype provisioning_issues: list[~azure.mgmt.cosmosdb.models.ProvisioningIssue]
+    :ivar network_security_perimeter: Information about a network security perimeter (NSP).
+    :vartype network_security_perimeter: ~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeter
+    :ivar resource_association: Information about resource association.
+    :vartype resource_association: ~azure.mgmt.cosmosdb.models.ResourceAssociation
+    :ivar profile: Network security perimeter configuration profile.
+    :vartype profile: ~azure.mgmt.cosmosdb.models.NetworkSecurityProfile
+    """
+
+    _validation = {
+        "provisioning_state": {"readonly": True},
+        "provisioning_issues": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "provisioning_issues": {"key": "provisioningIssues", "type": "[ProvisioningIssue]"},
+        "network_security_perimeter": {"key": "networkSecurityPerimeter", "type": "NetworkSecurityPerimeter"},
+        "resource_association": {"key": "resourceAssociation", "type": "ResourceAssociation"},
+        "profile": {"key": "profile", "type": "NetworkSecurityProfile"},
+    }
+
+    def __init__(
+        self,
+        *,
+        network_security_perimeter: Optional["_models.NetworkSecurityPerimeter"] = None,
+        resource_association: Optional["_models.ResourceAssociation"] = None,
+        profile: Optional["_models.NetworkSecurityProfile"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword network_security_perimeter: Information about a network security perimeter (NSP).
+        :paramtype network_security_perimeter: ~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeter
+        :keyword resource_association: Information about resource association.
+        :paramtype resource_association: ~azure.mgmt.cosmosdb.models.ResourceAssociation
+        :keyword profile: Network security perimeter configuration profile.
+        :paramtype profile: ~azure.mgmt.cosmosdb.models.NetworkSecurityProfile
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state = None
+        self.provisioning_issues = None
+        self.network_security_perimeter = network_security_perimeter
+        self.resource_association = resource_association
+        self.profile = profile
+
+
+class NetworkSecurityProfile(_serialization.Model):
+    """Network security perimeter configuration profile.
 
     :ivar name: Name of the profile.
     :vartype name: str
     :ivar access_rules_version: Current access rules version.
     :vartype access_rules_version: int
     :ivar access_rules: List of Access Rules.
-    :vartype access_rules: list[~azure.mgmt.cosmosdb.models.NspAccessRule]
-    :ivar diagnostic_settings_version: Diagnostic settings version.
+    :vartype access_rules: list[~azure.mgmt.cosmosdb.models.AccessRule]
+    :ivar diagnostic_settings_version: Current diagnostic settings version.
     :vartype diagnostic_settings_version: int
-    :ivar enabled_log_categories: Enabled logging categories.
+    :ivar enabled_log_categories: List of log categories that are enabled.
     :vartype enabled_log_categories: list[str]
     """
 
     _attribute_map = {
         "name": {"key": "name", "type": "str"},
         "access_rules_version": {"key": "accessRulesVersion", "type": "int"},
-        "access_rules": {"key": "accessRules", "type": "[NspAccessRule]"},
+        "access_rules": {"key": "accessRules", "type": "[AccessRule]"},
         "diagnostic_settings_version": {"key": "diagnosticSettingsVersion", "type": "int"},
         "enabled_log_categories": {"key": "enabledLogCategories", "type": "[str]"},
     }
@@ -9809,7 +9967,7 @@ class NetworkSecurityPerimeterConfigurationPropertiesProfile(_serialization.Mode
         *,
         name: Optional[str] = None,
         access_rules_version: Optional[int] = None,
-        access_rules: Optional[List["_models.NspAccessRule"]] = None,
+        access_rules: Optional[List["_models.AccessRule"]] = None,
         diagnostic_settings_version: Optional[int] = None,
         enabled_log_categories: Optional[List[str]] = None,
         **kwargs: Any
@@ -9820,10 +9978,10 @@ class NetworkSecurityPerimeterConfigurationPropertiesProfile(_serialization.Mode
         :keyword access_rules_version: Current access rules version.
         :paramtype access_rules_version: int
         :keyword access_rules: List of Access Rules.
-        :paramtype access_rules: list[~azure.mgmt.cosmosdb.models.NspAccessRule]
-        :keyword diagnostic_settings_version: Diagnostic settings version.
+        :paramtype access_rules: list[~azure.mgmt.cosmosdb.models.AccessRule]
+        :keyword diagnostic_settings_version: Current diagnostic settings version.
         :paramtype diagnostic_settings_version: int
-        :keyword enabled_log_categories: Enabled logging categories.
+        :keyword enabled_log_categories: List of log categories that are enabled.
         :paramtype enabled_log_categories: list[str]
         """
         super().__init__(**kwargs)
@@ -9832,42 +9990,6 @@ class NetworkSecurityPerimeterConfigurationPropertiesProfile(_serialization.Mode
         self.access_rules = access_rules
         self.diagnostic_settings_version = diagnostic_settings_version
         self.enabled_log_categories = enabled_log_categories
-
-
-class NetworkSecurityPerimeterConfigurationPropertiesResourceAssociation(
-    _serialization.Model
-):  # pylint: disable=name-too-long
-    """Information about resource association.
-
-    :ivar name: Name of the resource association.
-    :vartype name: str
-    :ivar access_mode: Access Mode of the resource association. Known values are: "Enforced",
-     "Learning", and "Audit".
-    :vartype access_mode: str or ~azure.mgmt.cosmosdb.models.ResourceAssociationAccessMode
-    """
-
-    _attribute_map = {
-        "name": {"key": "name", "type": "str"},
-        "access_mode": {"key": "accessMode", "type": "str"},
-    }
-
-    def __init__(
-        self,
-        *,
-        name: Optional[str] = None,
-        access_mode: Optional[Union[str, "_models.ResourceAssociationAccessMode"]] = None,
-        **kwargs: Any
-    ) -> None:
-        """
-        :keyword name: Name of the resource association.
-        :paramtype name: str
-        :keyword access_mode: Access Mode of the resource association. Known values are: "Enforced",
-         "Learning", and "Audit".
-        :paramtype access_mode: str or ~azure.mgmt.cosmosdb.models.ResourceAssociationAccessMode
-        """
-        super().__init__(**kwargs)
-        self.name = name
-        self.access_mode = access_mode
 
 
 class NotebookWorkspace(ARMProxyResource):
@@ -9972,113 +10094,6 @@ class NotebookWorkspaceListResult(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.value = value
-
-
-class NspAccessRule(_serialization.Model):
-    """Information of Access Rule in Network Security Perimeter profile.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar name: Name of the resource.
-    :vartype name: str
-    :ivar properties: Properties of Access Rule.
-    :vartype properties: ~azure.mgmt.cosmosdb.models.NspAccessRuleProperties
-    """
-
-    _validation = {
-        "properties": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "name": {"key": "name", "type": "str"},
-        "properties": {"key": "properties", "type": "NspAccessRuleProperties"},
-    }
-
-    def __init__(self, *, name: Optional[str] = None, **kwargs: Any) -> None:
-        """
-        :keyword name: Name of the resource.
-        :paramtype name: str
-        """
-        super().__init__(**kwargs)
-        self.name = name
-        self.properties = None
-
-
-class NspAccessRuleProperties(_serialization.Model):
-    """Properties of Access Rule.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar direction: Direction of Access Rule. Known values are: "Inbound" and "Outbound".
-    :vartype direction: str or ~azure.mgmt.cosmosdb.models.NspAccessRuleDirection
-    :ivar address_prefixes: Address prefixes in the CIDR format for inbound rules.
-    :vartype address_prefixes: list[str]
-    :ivar subscriptions: Subscriptions for inbound rules.
-    :vartype subscriptions:
-     list[~azure.mgmt.cosmosdb.models.NspAccessRulePropertiesSubscriptionsItem]
-    :ivar network_security_perimeters: NetworkSecurityPerimeters for inbound rules.
-    :vartype network_security_perimeters:
-     list[~azure.mgmt.cosmosdb.models.NetworkSecurityPerimeter]
-    :ivar fully_qualified_domain_names: FQDN for outbound rules.
-    :vartype fully_qualified_domain_names: list[str]
-    """
-
-    _validation = {
-        "network_security_perimeters": {"readonly": True},
-        "fully_qualified_domain_names": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "direction": {"key": "direction", "type": "str"},
-        "address_prefixes": {"key": "addressPrefixes", "type": "[str]"},
-        "subscriptions": {"key": "subscriptions", "type": "[NspAccessRulePropertiesSubscriptionsItem]"},
-        "network_security_perimeters": {"key": "networkSecurityPerimeters", "type": "[NetworkSecurityPerimeter]"},
-        "fully_qualified_domain_names": {"key": "fullyQualifiedDomainNames", "type": "[str]"},
-    }
-
-    def __init__(
-        self,
-        *,
-        direction: Optional[Union[str, "_models.NspAccessRuleDirection"]] = None,
-        address_prefixes: Optional[List[str]] = None,
-        subscriptions: Optional[List["_models.NspAccessRulePropertiesSubscriptionsItem"]] = None,
-        **kwargs: Any
-    ) -> None:
-        """
-        :keyword direction: Direction of Access Rule. Known values are: "Inbound" and "Outbound".
-        :paramtype direction: str or ~azure.mgmt.cosmosdb.models.NspAccessRuleDirection
-        :keyword address_prefixes: Address prefixes in the CIDR format for inbound rules.
-        :paramtype address_prefixes: list[str]
-        :keyword subscriptions: Subscriptions for inbound rules.
-        :paramtype subscriptions:
-         list[~azure.mgmt.cosmosdb.models.NspAccessRulePropertiesSubscriptionsItem]
-        """
-        super().__init__(**kwargs)
-        self.direction = direction
-        self.address_prefixes = address_prefixes
-        self.subscriptions = subscriptions
-        self.network_security_perimeters = None
-        self.fully_qualified_domain_names = None
-
-
-class NspAccessRulePropertiesSubscriptionsItem(_serialization.Model):
-    """Subscription for inbound rule.
-
-    :ivar id: The ARM identifier of subscription.
-    :vartype id: str
-    """
-
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-    }
-
-    def __init__(self, *, id: Optional[str] = None, **kwargs: Any) -> None:  # pylint: disable=redefined-builtin
-        """
-        :keyword id: The ARM identifier of subscription.
-        :paramtype id: str
-        """
-        super().__init__(**kwargs)
-        self.id = id
 
 
 class Operation(_serialization.Model):
@@ -10880,68 +10895,7 @@ class PhysicalPartitionThroughputInfoResultPropertiesResource(
     """
 
 
-class ResourceAutoGenerated(_serialization.Model):
-    """Common fields that are returned in the response for all Azure Resource Manager resources.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    """
-
-    _validation = {
-        "id": {"readonly": True},
-        "name": {"readonly": True},
-        "type": {"readonly": True},
-        "system_data": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-        "system_data": {"key": "systemData", "type": "SystemData"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-        self.system_data = None
-
-
-class ProxyResourceAutoGenerated(ResourceAutoGenerated):
-    """The resource model definition for a Azure Resource Manager proxy resource. It will not have
-    tags and a location.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    """
-
-
-class PrivateEndpointConnection(ProxyResourceAutoGenerated):
+class PrivateEndpointConnection(ProxyResource):
     """A private endpoint connection.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -11219,17 +11173,21 @@ class PrivilegeResource(_serialization.Model):
 
 
 class ProvisioningIssue(_serialization.Model):
-    """Describes provisioning issue for given NetworkSecurityPerimeterConfiguration.
+    """Describes a provisioning issue for a network security perimeter configuration.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar name: Name of the issue.
     :vartype name: str
-    :ivar properties: Properties of provisioning issue.
+    :ivar properties: Details of a provisioning issue for a network security perimeter (NSP)
+     configuration. Resource providers should generate separate provisioning issue elements for each
+     separate issue detected, and include a meaningful and distinctive description, as well as any
+     appropriate suggestedResourceIds and suggestedAccessRules.
     :vartype properties: ~azure.mgmt.cosmosdb.models.ProvisioningIssueProperties
     """
 
     _validation = {
+        "name": {"readonly": True},
         "properties": {"readonly": True},
     }
 
@@ -11238,55 +11196,61 @@ class ProvisioningIssue(_serialization.Model):
         "properties": {"key": "properties", "type": "ProvisioningIssueProperties"},
     }
 
-    def __init__(self, *, name: Optional[str] = None, **kwargs: Any) -> None:
-        """
-        :keyword name: Name of the issue.
-        :paramtype name: str
-        """
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
         super().__init__(**kwargs)
-        self.name = name
+        self.name = None
         self.properties = None
 
 
 class ProvisioningIssueProperties(_serialization.Model):
-    """Properties of provisioning issue.
+    """Details of a provisioning issue for a network security perimeter (NSP) configuration. Resource
+    providers should generate separate provisioning issue elements for each separate issue
+    detected, and include a meaningful and distinctive description, as well as any appropriate
+    suggestedResourceIds and suggestedAccessRules.
 
-    :ivar issue_type: Type of issue. Known values are: "Unknown" and
-     "ConfigurationPropagationFailure".
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar issue_type: Type of issue. Known values are: "Unknown",
+     "ConfigurationPropagationFailure", "MissingPerimeterConfiguration", and
+     "MissingIdentityConfiguration".
     :vartype issue_type: str or ~azure.mgmt.cosmosdb.models.IssueType
     :ivar severity: Severity of the issue. Known values are: "Warning" and "Error".
     :vartype severity: str or ~azure.mgmt.cosmosdb.models.Severity
     :ivar description: Description of the issue.
     :vartype description: str
+    :ivar suggested_resource_ids: Fully qualified resource IDs of suggested resources that can be
+     associated to the network security perimeter (NSP) to remediate the issue.
+    :vartype suggested_resource_ids: list[str]
+    :ivar suggested_access_rules: Access rules that can be added to the network security profile
+     (NSP) to remediate the issue.
+    :vartype suggested_access_rules: list[~azure.mgmt.cosmosdb.models.AccessRule]
     """
+
+    _validation = {
+        "issue_type": {"readonly": True},
+        "severity": {"readonly": True},
+        "description": {"readonly": True},
+        "suggested_resource_ids": {"readonly": True},
+        "suggested_access_rules": {"readonly": True},
+    }
 
     _attribute_map = {
         "issue_type": {"key": "issueType", "type": "str"},
         "severity": {"key": "severity", "type": "str"},
         "description": {"key": "description", "type": "str"},
+        "suggested_resource_ids": {"key": "suggestedResourceIds", "type": "[str]"},
+        "suggested_access_rules": {"key": "suggestedAccessRules", "type": "[AccessRule]"},
     }
 
-    def __init__(
-        self,
-        *,
-        issue_type: Optional[Union[str, "_models.IssueType"]] = None,
-        severity: Optional[Union[str, "_models.Severity"]] = None,
-        description: Optional[str] = None,
-        **kwargs: Any
-    ) -> None:
-        """
-        :keyword issue_type: Type of issue. Known values are: "Unknown" and
-         "ConfigurationPropagationFailure".
-        :paramtype issue_type: str or ~azure.mgmt.cosmosdb.models.IssueType
-        :keyword severity: Severity of the issue. Known values are: "Warning" and "Error".
-        :paramtype severity: str or ~azure.mgmt.cosmosdb.models.Severity
-        :keyword description: Description of the issue.
-        :paramtype description: str
-        """
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
         super().__init__(**kwargs)
-        self.issue_type = issue_type
-        self.severity = severity
-        self.description = description
+        self.issue_type = None
+        self.severity = None
+        self.description = None
+        self.suggested_resource_ids = None
+        self.suggested_access_rules = None
 
 
 class RedistributeThroughputParameters(ARMResourceProperties):
@@ -11450,6 +11414,40 @@ class RegionForOnlineOffline(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.region = region
+
+
+class ResourceAssociation(_serialization.Model):
+    """Information about resource association.
+
+    :ivar name: Name of the resource association.
+    :vartype name: str
+    :ivar access_mode: Access mode of the resource association. Known values are: "Enforced",
+     "Learning", and "Audit".
+    :vartype access_mode: str or ~azure.mgmt.cosmosdb.models.ResourceAssociationAccessMode
+    """
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "access_mode": {"key": "accessMode", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        access_mode: Optional[Union[str, "_models.ResourceAssociationAccessMode"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword name: Name of the resource association.
+        :paramtype name: str
+        :keyword access_mode: Access mode of the resource association. Known values are: "Enforced",
+         "Learning", and "Audit".
+        :paramtype access_mode: str or ~azure.mgmt.cosmosdb.models.ResourceAssociationAccessMode
+        """
+        super().__init__(**kwargs)
+        self.name = name
+        self.access_mode = access_mode
 
 
 class RestoreParametersBase(_serialization.Model):
@@ -15962,7 +15960,7 @@ class ThroughputPoolAccountCreateParameters(_serialization.Model):
         self.account_location = account_location
 
 
-class ThroughputPoolAccountResource(ProxyResourceAutoGenerated):
+class ThroughputPoolAccountResource(ProxyResource):
     """An Azure Cosmos DB Throughputpool Account.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -16064,7 +16062,7 @@ class ThroughputPoolAccountsListResult(_serialization.Model):
         self.next_link = None
 
 
-class TrackedResource(ResourceAutoGenerated):
+class TrackedResource(Resource):
     """The resource model definition for an Azure Resource Manager tracked top level resource which
     has 'tags' and a 'location'.
 

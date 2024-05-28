@@ -10,6 +10,15 @@ from enum import Enum
 from azure.core import CaseInsensitiveEnumMeta
 
 
+class AccessRuleDirection(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Direction of Access Rule."""
+
+    INBOUND = "Inbound"
+    """Applies to inbound network traffic to the secured resources."""
+    OUTBOUND = "Outbound"
+    """Applies to outbound network traffic from the secured resources"""
+
+
 class AnalyticalStorageSchemaType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Describes the types of schema for analytical storage."""
 
@@ -264,7 +273,16 @@ class IssueType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Type of issue."""
 
     UNKNOWN = "Unknown"
+    """Unknown issue type"""
     CONFIGURATION_PROPAGATION_FAILURE = "ConfigurationPropagationFailure"
+    """An error occurred while applying the network security perimeter (NSP) configuration."""
+    MISSING_PERIMETER_CONFIGURATION = "MissingPerimeterConfiguration"
+    """A network connectivity issue is happening on the resource which could be addressed either by
+    adding new resources to the network security perimeter (NSP) or by modifying access rules."""
+    MISSING_IDENTITY_CONFIGURATION = "MissingIdentityConfiguration"
+    """An managed identity hasn't been associated with the resource. The resource will still be able
+    to validate inbound traffic from the network security perimeter (NSP) or matching inbound
+    access rules, but it won't be able to perform outbound access as a member of the NSP."""
 
 
 class KeyKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -328,13 +346,16 @@ class NetworkAclBypass(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class NetworkSecurityPerimeterConfigurationProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Provisioning state of Network Security Perimeter configuration propagation."""
+    """Provisioning state of a network security perimeter configuration that is being created or
+    updated.
+    """
 
-    CREATING = "Creating"
-    ACCEPTED = "Accepted"
     SUCCEEDED = "Succeeded"
-    FAILED = "Failed"
+    CREATING = "Creating"
+    UPDATING = "Updating"
     DELETING = "Deleting"
+    ACCEPTED = "Accepted"
+    FAILED = "Failed"
     CANCELED = "Canceled"
 
 
@@ -359,13 +380,6 @@ class NotebookWorkspaceName(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """NotebookWorkspaceName."""
 
     DEFAULT = "default"
-
-
-class NspAccessRuleDirection(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Direction of Access Rule."""
-
-    INBOUND = "Inbound"
-    OUTBOUND = "Outbound"
 
 
 class OperationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -408,11 +422,14 @@ class PublicNetworkAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class ResourceAssociationAccessMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Access Mode of the resource association."""
+    """Access mode of the resource association."""
 
     ENFORCED = "Enforced"
+    """Enforced access mode - traffic to the resource that failed access checks is blocked"""
     LEARNING = "Learning"
+    """Learning access mode - traffic to the resource is enabled for analysis but not blocked"""
     AUDIT = "Audit"
+    """Audit access mode - traffic to the resource that fails access checks is logged but not blocked"""
 
 
 class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):

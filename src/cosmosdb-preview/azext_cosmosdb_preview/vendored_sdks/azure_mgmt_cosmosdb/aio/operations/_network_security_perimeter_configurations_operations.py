@@ -68,7 +68,7 @@ class NetworkSecurityPerimeterConfigurationsOperations:  # pylint: disable=name-
     def list(
         self, resource_group_name: str, account_name: str, **kwargs: Any
     ) -> AsyncIterable["_models.NetworkSecurityPerimeterConfiguration"]:
-        """Gets list of effective NetworkSecurityPerimeterConfiguration for cosmos db account.
+        """Gets list of effective Network Security Perimeter Configuration for cosmos db account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -85,7 +85,7 @@ class NetworkSecurityPerimeterConfigurationsOperations:  # pylint: disable=name-
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.NetworkSecurityPerimeterConfigurationList] = kwargs.pop("cls", None)
+        cls: ClsType[_models.NetworkSecurityPerimeterConfigurationListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
@@ -128,7 +128,7 @@ class NetworkSecurityPerimeterConfigurationsOperations:  # pylint: disable=name-
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("NetworkSecurityPerimeterConfigurationList", pipeline_response)
+            deserialized = self._deserialize("NetworkSecurityPerimeterConfigurationListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -160,7 +160,7 @@ class NetworkSecurityPerimeterConfigurationsOperations:  # pylint: disable=name-
         network_security_perimeter_configuration_name: str,
         **kwargs: Any
     ) -> _models.NetworkSecurityPerimeterConfiguration:
-        """Gets effective NetworkSecurityPerimeterConfiguration for association.
+        """Gets effective Network Security Perimeter Configuration for association.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
