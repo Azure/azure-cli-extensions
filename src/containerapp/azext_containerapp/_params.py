@@ -295,6 +295,11 @@ def load_arguments(self, _):
         c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger", default=100)
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds.", default=30)
 
+    # scale
+    with self.argument_context('containerapp', arg_group='Scale') as c:
+        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'], 
+                   help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
+
     with self.argument_context('containerapp job', arg_group='Scale') as c:
         c.argument('min_executions', type=int, help="Minimum number of job executions to run per polling interval.")
         c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval.")
@@ -350,7 +355,9 @@ def load_arguments(self, _):
         c.argument('java_component_name', options_list=['--name', '-n'], help="The Java component name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
+        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services, bindings or other Java components to be connected to this Java Component. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services, bindings or Java components to be removed from this Java Component. e.g. BIND_NAME1...")
+        c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value>\" \"<propertyName>=<value>\"...")
 
     with self.argument_context('containerapp env dotnet-component') as c:
         c.argument('dotnet_component_name', options_list=['--name', '-n'], help="The DotNet component name.")
@@ -378,7 +385,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp sessionpool', arg_group='Container') as c:
         c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('container_name', help="Name of the container.")
+        c.argument('container_name', help="Name of the container. On create if no container name is provided the container name will default to the name of the session pool coverted to lower case.")
         c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores from 0.25 - 2.0, e.g. 0.5")
         c.argument('memory', validator=validate_memory, help="Required memory from 0.5 - 4.0 ending with \"Gi\", e.g. 1.0Gi")
         c.argument('env_vars', nargs='*', help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
