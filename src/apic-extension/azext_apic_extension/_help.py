@@ -12,7 +12,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['apic api register'] = """
     type: command
-    short-summary: Registers a new API with version, definition, and associated deployments using the specification file as the source of truth.
+    short-summary: Registers a new API with version, definition, and associated deployments using the specification file as the source of truth. For now we only support OpenAPI JSON/YAML format.
     parameters:
       - name: --api-location -l
         type: string

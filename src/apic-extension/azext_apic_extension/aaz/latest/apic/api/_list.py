@@ -19,6 +19,9 @@ class List(AAZCommand):
 
     :example: List APIs
         az apic api list -g contoso-resources -s contoso
+
+    :example: List APIs with filter
+        az apic api list -g contoso-resources -s contoso --filter "kind eq 'rest'"
     """
 
     _aaz_info = {
