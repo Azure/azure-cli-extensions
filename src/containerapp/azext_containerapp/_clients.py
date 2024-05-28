@@ -46,7 +46,8 @@ class ContainerAppPreviewClient(ContainerAppClient):
 
 
 class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
-    api_version = "2023-11-02-preview"
+    api_version = PREVIEW_API_VERSION
+    LOG_STREAM_API_VERSION = "2023-11-02-preview"
 
     @classmethod
     def get_replicas(cls, cmd, resource_group_name, name, execution_name):
@@ -59,7 +60,7 @@ class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
             resource_group_name,
             name,
             execution_name,
-            cls.api_version)
+            cls.LOG_STREAM_API_VERSION)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -74,7 +75,7 @@ class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
             sub_id,
             resource_group_name,
             name,
-            cls.api_version)
+            cls.LOG_STREAM_API_VERSION)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
