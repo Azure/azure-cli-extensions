@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_script000001/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_script000001/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages?api-version=2023-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.Management@3.0.48","name":"Microsoft.AVS.Management@3.0.48","type":"Microsoft.AVS/privateClouds/scriptPackages","properties":{"description":"Various
@@ -28,7 +28,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 27 May 2024 19:29:06 GMT
+      - Tue, 28 May 2024 14:28:25 GMT
       server:
       - Rocket
     status:
@@ -50,7 +50,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_script000001/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.Management%403.0.48?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_script000001/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.Management%403.0.48?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.Management@3.0.48","name":"Microsoft.AVS.Management@3.0.48","type":"Microsoft.AVS/privateClouds/scriptPackages","properties":{"description":"Various
@@ -61,7 +61,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 27 May 2024 19:29:09 GMT
+      - Tue, 28 May 2024 14:28:27 GMT
       server:
       - Rocket
     status:
@@ -100,7 +100,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 27 May 2024 19:29:11 GMT
+      - Tue, 28 May 2024 14:28:30 GMT
       server:
       - Rocket
     status:
@@ -136,7 +136,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 27 May 2024 19:29:13 GMT
+      - Tue, 28 May 2024 14:28:33 GMT
       server:
       - Rocket
     status:
@@ -181,7 +181,127 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 27 May 2024 19:29:15 GMT
+      - Tue, 28 May 2024 14:28:35 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"scriptCmdletId": "/subscriptions/subscription-id/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.VMFS/scriptCmdlets/New-VmfsDatastore",
+      "timeout": "P0Y0M0DT0H60M60S"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware script-execution create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '232'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --private-cloud --name --script-cmdlet-id --timeout --yes
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptExecutions/newVmfsDatastore0?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptExecutions/addSsoServer","name":"addSsoServer","type":"Microsoft.AVS/privateClouds/scriptExecutions","properties":{"scriptCmdletId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/AVS.PowerCommands@1.0.0/scriptCmdlets/New-SsoExternalIdentitySource","parameters":[{"type":"Value","name":"DomainName","value":"placeholderDomain.local"},{"type":"Value","name":"BaseUserDN","value":"DC=placeholder,
+        DC=placeholder"}],"failureReason":"vCenter failed to connect to the external
+        server","timeout":"P0Y0M0DT0H60M60S","retention":"P0Y0M60DT0H60M60S","submittedAt":null,"startedAt":null,"finishedAt":null,"provisioningState":"Succeeded","output":["IdentitySource:
+        placeholder.dc","BaseDN=''dc=placeholder, dc=local"]}}'
+    headers:
+      content-length:
+      - '926'
+      content-type:
+      - application/json
+      date:
+      - Tue, 28 May 2024 14:28:38 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"scriptCmdletId": "/subscriptions/subscription-id/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.NFS/scriptCmdlets/New-VmfsDatastore",
+      "timeout": "P0Y0M0DT0H60M60S"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware script-execution create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '231'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --private-cloud --name --script-cmdlet-id --timeout --yes
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptExecutions/newVmfsDatastore0?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptExecutions/addSsoServer","name":"addSsoServer","type":"Microsoft.AVS/privateClouds/scriptExecutions","properties":{"scriptCmdletId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/AVS.PowerCommands@1.0.0/scriptCmdlets/New-SsoExternalIdentitySource","parameters":[{"type":"Value","name":"DomainName","value":"placeholderDomain.local"},{"type":"Value","name":"BaseUserDN","value":"DC=placeholder,
+        DC=placeholder"}],"failureReason":"vCenter failed to connect to the external
+        server","timeout":"P0Y0M0DT0H60M60S","retention":"P0Y0M60DT0H60M60S","submittedAt":null,"startedAt":null,"finishedAt":null,"provisioningState":"Succeeded","output":["IdentitySource:
+        placeholder.dc","BaseDN=''dc=placeholder, dc=local"]}}'
+    headers:
+      content-length:
+      - '926'
+      content-type:
+      - application/json
+      date:
+      - Tue, 28 May 2024 14:28:41 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"scriptCmdletId": "/subscriptions/subscription-id/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/Microsoft.AVS.VVOLS/scriptCmdlets/New-VmfsDatastore",
+      "timeout": "P0Y0M0DT0H60M60S"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware script-execution create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '233'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --private-cloud --name --script-cmdlet-id --timeout --yes
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptExecutions/newVmfsDatastore0?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptExecutions/addSsoServer","name":"addSsoServer","type":"Microsoft.AVS/privateClouds/scriptExecutions","properties":{"scriptCmdletId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/AVS.PowerCommands@1.0.0/scriptCmdlets/New-SsoExternalIdentitySource","parameters":[{"type":"Value","name":"DomainName","value":"placeholderDomain.local"},{"type":"Value","name":"BaseUserDN","value":"DC=placeholder,
+        DC=placeholder"}],"failureReason":"vCenter failed to connect to the external
+        server","timeout":"P0Y0M0DT0H60M60S","retention":"P0Y0M60DT0H60M60S","submittedAt":null,"startedAt":null,"finishedAt":null,"provisioningState":"Succeeded","output":["IdentitySource:
+        placeholder.dc","BaseDN=''dc=placeholder, dc=local"]}}'
+    headers:
+      content-length:
+      - '926'
+      content-type:
+      - application/json
+      date:
+      - Tue, 28 May 2024 14:28:43 GMT
       server:
       - Rocket
     status:
@@ -215,7 +335,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 27 May 2024 19:29:18 GMT
+      - Tue, 28 May 2024 14:28:46 GMT
       server:
       - Rocket
     status:
@@ -249,7 +369,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 27 May 2024 19:29:20 GMT
+      - Tue, 28 May 2024 14:28:48 GMT
       server:
       - Rocket
     status:
@@ -281,7 +401,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 27 May 2024 19:29:23 GMT
+      - Tue, 28 May 2024 14:28:50 GMT
       server:
       - Rocket
     status:
