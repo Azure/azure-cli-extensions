@@ -66,7 +66,8 @@ class ElasticSanScenario(ScenarioTest):
         self.kwargs.update({"subnet_id": subnet_id})
         self.cmd('az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} '
                  '--encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi '
-                 '--network-acls {{virtual-network-rules:[{{id:{subnet_id},action:Allow}}]}}')
+                 '--network-acls {{virtual-network-rules:[{{id:{subnet_id},action:Allow}}]}} '
+                 '--enforce-data-integrity-check-for-iscsi true')
         self.cmd('az elastic-san volume-group show -g {rg} -e {san_name} -n {vg_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('vg_name', '')),
                          JMESPathCheck('encryption', "EncryptionAtRestWithPlatformKey"),
@@ -74,7 +75,8 @@ class ElasticSanScenario(ScenarioTest):
                          JMESPathCheck('networkAcls', {"virtualNetworkRules": [{
                              "action": "Allow",
                              "id": subnet_id,
-                             "resourceGroup": self.kwargs.get('rg', '')}]})])
+                             "resourceGroup": self.kwargs.get('rg', '')}]}),
+                         JMESPathCheck('enforceDataIntegrityCheckForIscsi', True)])
         self.cmd('az elastic-san volume-group list -g {rg} -e {san_name}', checks=[JMESPathCheck('length(@)', 1)])
 
         subnet_id_2 = self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name {subnet_name_2} '
@@ -83,9 +85,11 @@ class ElasticSanScenario(ScenarioTest):
         self.kwargs.update({"subnet_id_2": subnet_id_2})
         self.cmd('az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} '
                  '--protocol-type None '
-                 '--network-acls {{virtual-network-rules:[{{id:{subnet_id_2},action:Allow}}]}}',
+                 '--network-acls {{virtual-network-rules:[{{id:{subnet_id_2},action:Allow}}]}} '
+                 '--enforce-data-integrity-check-for-iscsi false',
                  checks=[JMESPathCheck('protocolType', "None"),
-                         JMESPathCheck('networkAcls.virtualNetworkRules[0].id', subnet_id_2)])
+                         JMESPathCheck('networkAcls.virtualNetworkRules[0].id', subnet_id_2),
+                         JMESPathCheck('enforceDataIntegrityCheckForIscsi', False)])
 
         self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2')
         self.cmd('az elastic-san volume show -g {rg} -e {san_name} -v {vg_name} -n {volume_name}',
