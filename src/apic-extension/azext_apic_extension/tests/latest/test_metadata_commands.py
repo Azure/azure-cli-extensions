@@ -8,6 +8,9 @@ import os
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import ApicServicePreparer, ApicMetadataPreparer
 
+current_dir = os.path.dirname(os.path.realpath(__file__))
+test_assets_dir = os.path.join(current_dir, 'test_assets')
+
 class MetadataCommandsTests(ScenarioTest):
 
 
@@ -25,6 +28,29 @@ class MetadataCommandsTests(ScenarioTest):
             self.check('assignedTo[0].required', True),
             self.check('assignedTo[0].deprecated', False),
             self.check('schema', '{schema}')
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    def test_metadata_create_with_file(self):
+        schema_file = os.path.join(test_assets_dir, 'metadata_schema.json')
+        with open(schema_file, 'r') as f:
+          expected_result = f.read()
+
+        self.kwargs.update({
+          'name': self.create_random_name(prefix='cli', length=24),
+          'assignments': '[{entity:api,required:true,deprecated:false}]',
+          'schema_file': schema_file,
+          'expected_result': expected_result
+        })
+
+
+        self.cmd('az apic metadata create -g {rg} -s {s} --name {name} --schema "@{schema_file}" --assignments \'{assignments}\'', checks=[
+            self.check('name', '{name}'),
+            self.check('assignedTo[0].entity', 'api'),
+            self.check('assignedTo[0].required', True),
+            self.check('assignedTo[0].deprecated', False),
+            self.check('schema', '{expected_result}')
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
