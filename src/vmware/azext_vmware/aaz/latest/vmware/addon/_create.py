@@ -51,6 +51,9 @@ class Create(AAZCommand):
             options=["-c", "--private-cloud"],
             help="Name of the private cloud",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
