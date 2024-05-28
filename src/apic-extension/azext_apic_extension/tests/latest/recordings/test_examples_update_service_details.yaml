@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic service update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","identity":{"type":"None"},"sku":{"name":"Free"},"properties":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002","name":"clitest000002","tags":{},"systemData":{"createdAt":"2024-05-24T05:46:41.6556889Z","lastModifiedAt":"2024-05-24T05:46:48.2131767Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '402'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 May 2024 05:46:47 GMT
+      etag:
+      - 5a007c73-0000-0100-0000-665029c80000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: EDB98A8EDBCF4ABF91C41DC3B8079C9D Ref B: MAA201060513027 Ref C: 2024-05-24T05:46:46Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

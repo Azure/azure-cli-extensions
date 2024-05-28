@@ -114,3 +114,49 @@ class EnvironmentCommandsTests(ScenarioTest):
     def test_environment_delete(self):
         self.cmd('az apic environment delete -g {rg} -s {s} --environment-id {e} --yes')
         self.cmd('az apic environment show -g {rg} -s {s} --environment-id {e}', expect_failure=True)
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    def test_examples_create_environment(self):
+        self.kwargs.update({
+          'name': self.create_random_name(prefix='cli', length=24)
+        })
+        self.cmd('az apic environment create -g {rg} -s {s} --environment-id {name} --title "Public cloud" --type "development"', checks=[
+            self.check('name', '{name}'),
+            self.check('title', 'Public cloud'),
+            self.check('kind', 'development')
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicEnvironmentPreparer()
+    def test_examples_delete_environment(self):
+        self.cmd('az apic environment delete -g {rg} -s {s} --environment-id {e} --yes')
+        self.cmd('az apic environment show -g {rg} -s {s} --environment-id {e}', expect_failure=True)
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicEnvironmentPreparer(parameter_name='environment_name1')
+    @ApicEnvironmentPreparer(parameter_name='environment_name2')
+    def test_examples_list_environments(self, environment_name1, environment_name2):
+        self.cmd('az apic environment list -g {rg} -s {s}', checks=[
+            self.check('length(@)', 2),
+            self.check('@[0].name', environment_name1),
+            self.check('@[1].name', environment_name2)
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicEnvironmentPreparer()
+    def test_examples_show_environment_details(self):
+        self.cmd('az apic environment show -g {rg} -s {s} --environment-id {e}', checks=[
+            self.check('name', '{e}')
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicEnvironmentPreparer()
+    def test_examples_update_environment(self):
+        self.cmd('az apic environment update -g {rg} -s {s} --environment-id {e} --title "Public cloud"', checks=[
+            self.check('title', 'Public cloud')
+        ])

@@ -1,0 +1,385 @@
+interactions:
+- request:
+    body: '{"properties": {"description": "API Description", "kind": "rest", "license":
+      {"name": "MIT"}, "summary": "API Description", "title": "Swagger Petstore"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api register
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '153'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --api-location --environment-name
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis","properties":{"title":"Swagger
+        Petstore","summary":"API Description","description":"API Description","kind":"rest","license":{"name":"MIT"},"externalDocumentation":[],"contacts":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore","name":"swaggerpetstore","systemData":{"createdAt":"2024-05-27T03:12:35.3918391Z","lastModifiedAt":"2024-05-27T03:12:35.3918381Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '569'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 May 2024 03:12:34 GMT
+      etag:
+      - 760038ba-0000-0100-0000-6653fa230000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 13CE1D42B3B14A7B800776917E4599B7 Ref B: MAA201060514017 Ref C: 2024-05-27T03:12:34Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"lifecycleStage": "design", "title": "1-0-0"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api register
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '62'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --api-location --environment-name
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore/versions/1-0-0?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/versions","properties":{"title":"1-0-0","lifecycleStage":"design"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore/versions/1-0-0","name":"1-0-0","systemData":{"createdAt":"2024-05-27T03:12:37.9827022Z","lastModifiedAt":"2024-05-27T03:12:37.9827016Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '436'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 May 2024 03:12:37 GMT
+      etag:
+      - 9b0135fa-0000-0100-0000-6653fa250000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 20A9A3003363411D92220CD1301F7BD4 Ref B: MAA201060516023 Ref C: 2024-05-27T03:12:36Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "API Description", "title": "openapi"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api register
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '70'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --api-location --environment-name
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore/versions/1-0-0/definitions/openapi?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/versions/definitions","properties":{"title":"openapi","description":"API
+        Description"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore/versions/1-0-0/definitions/openapi","name":"openapi","systemData":{"createdAt":"2024-05-27T03:12:40.7802176Z","lastModifiedAt":"2024-05-27T03:12:40.7802156Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '478'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 May 2024 03:12:40 GMT
+      etag:
+      - 520007d7-0000-0100-0000-6653fa280000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 7CB199826255424A91223D927614582B Ref B: MAA201060513023 Ref C: 2024-05-27T03:12:39Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"format": "inline", "specification": {"name": "openapi", "version": "3-0-0"},
+      "value": "openapi: \"3.0.0\"\ninfo:\n  version: 1.0.0\n  title: Swagger Petstore\n  license:\n    name:
+      MIT\nservers:\n  - url: http://petstore.swagger.io/v1\npaths:\n  /pets:\n    get:\n      summary:
+      List all pets\n      operationId: listPets\n      tags:\n        - pets\n      parameters:\n        -
+      name: limit\n          in: query\n          description: How many items to return
+      at one time (max 100)\n          required: false\n          schema:\n            type:
+      integer\n            maximum: 100\n            format: int32\n      responses:\n        ''200'':\n          description:
+      A paged array of pets\n          headers:\n            x-next:\n              description:
+      A link to the next page of responses\n              schema:\n                type:
+      string\n          content:\n            application/json:    \n              schema:\n                $ref:
+      \"#/components/schemas/Pets\"\n        default:\n          description: unexpected
+      error\n          content:\n            application/json:\n              schema:\n                $ref:
+      \"#/components/schemas/Error\"\n    post:\n      summary: Create a pet\n      operationId:
+      createPets\n      tags:\n        - pets\n      requestBody:\n        content:\n          application/json:\n            schema:\n              $ref:
+      ''#/components/schemas/Pet''\n        required: true\n      responses:\n        ''201'':\n          description:
+      Null response\n        default:\n          description: unexpected error\n          content:\n            application/json:\n              schema:\n                $ref:
+      \"#/components/schemas/Error\"\n  /pets/{petId}:\n    get:\n      summary: Info
+      for a specific pet\n      operationId: showPetById\n      tags:\n        - pets\n      parameters:\n        -
+      name: petId\n          in: path\n          required: true\n          description:
+      The id of the pet to retrieve\n          schema:\n            type: string\n      responses:\n        ''200'':\n          description:
+      Expected response to a valid request\n          content:\n            application/json:\n              schema:\n                $ref:
+      \"#/components/schemas/Pet\"\n        default:\n          description: unexpected
+      error\n          content:\n            application/json:\n              schema:\n                $ref:
+      \"#/components/schemas/Error\"\ncomponents:\n  schemas:\n    Pet:\n      type:
+      object\n      required:\n        - id\n        - name\n      properties:\n        id:\n          type:
+      integer\n          format: int64\n        name:\n          type: string\n        tag:\n          type:
+      string\n    Pets:\n      type: array\n      maxItems: 100\n      items:\n        $ref:
+      \"#/components/schemas/Pet\"\n    Error:\n      type: object\n      required:\n        -
+      code\n        - message\n      properties:\n        code:\n          type: integer\n          format:
+      int32\n        message:\n          type: string\n"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api register
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2996'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --api-location --environment-name
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore/versions/1-0-0/definitions/openapi/importSpecification?api-version=2024-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 27 May 2024 03:12:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 1605FCCDC3394421AA2A3E48A0FDA236 Ref B: MAA201060513051 Ref C: 2024-05-27T03:12:42Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api register
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --api-location --environment-name
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/environments","properties":{"title":"test
+        environment","kind":"testing","customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-05-27T03:12:32.7905852Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '410'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 May 2024 03:12:45 GMT
+      etag:
+      - 71005781-0000-0100-0000-6653fa200000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: F62AF13F56994DF0B142B8FA810CBD7B Ref B: MAA201060513037 Ref C: 2024-05-27T03:12:44Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"definitionId": "/workspaces/default/apis/swaggerpetstore/versions/1-0-0/definitions/openapi",
+      "description": "swaggerpetstoredeployment", "environmentId": "/workspaces/default/environments/clitest000003",
+      "server": {"runtimeUri": ["http://petstore.swagger.io/v1"]}, "title": "swaggerpetstoredeployment"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api register
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '321'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s --api-location --environment-name
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore/deployments/mock-deployment?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/deployments","properties":{"title":"swaggerpetstoredeployment","description":"swaggerpetstoredeployment","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/swaggerpetstore/versions/1-0-0/definitions/openapi","server":{"runtimeUri":["http://petstore.swagger.io/v1"]},"customProperties":{},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/swaggerpetstore/deployments/swaggerpetstoredeployment","name":"swaggerpetstoredeployment","systemData":{"createdAt":"2024-05-27T03:12:48.4053202Z","lastModifiedAt":"2024-05-27T03:12:48.4053195Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '776'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 27 May 2024 03:12:47 GMT
+      etag:
+      - 3b0122bb-0000-0100-0000-6653fa300000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: A3E7895126534DA68DFE59A1F400DF2A Ref B: MAA201060516047 Ref C: 2024-05-27T03:12:47Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -6,7 +6,7 @@
 import os
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
-from .utils import ApicServicePreparer
+from .utils import ApicServicePreparer, ApicEnvironmentPreparer
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 test_assets_dir = os.path.join(current_dir, 'test_assets')
@@ -126,3 +126,21 @@ class RegisterCommandTests(ScenarioTest):
         self.cmd('az apic api show -g {rg} -s {s} --api-id swaggerpetstore-openapi30', checks=[
             self.check('description', 'This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we\'ve switched to the design first approach!\nYou can now help us improve the API whether it\'s by making changes to the definition itself or to the code.\nThat way, with time, we can improve the API in general, and expose some of the new features in OAS3.\n\nSome useful links:\n- [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)\n- [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we\'ve switched to the design first approach!\nYou can now help us improve the API whether it\'s by making changes to the')
         ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicEnvironmentPreparer()
+    def test_examples_register_with_json_spec(self):
+        self.kwargs.update({
+          'spec_file': os.path.join(test_assets_dir, 'petstore.json')
+        })
+        self.cmd('az apic api register -g {rg} -s {s} --api-location "{spec_file}" --environment-name {e}')
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicEnvironmentPreparer()
+    def test_examples_register_with_yml_spec(self):
+        self.kwargs.update({
+          'spec_file': os.path.join(test_assets_dir, 'petstore.yml')
+        })
+        self.cmd('az apic api register -g {rg} -s {s} --api-location "{spec_file}" --environment-name {e}')

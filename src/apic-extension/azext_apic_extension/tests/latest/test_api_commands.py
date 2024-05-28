@@ -119,3 +119,78 @@ class ApiCommandsTests(ScenarioTest):
     def test_api_delete(self):
         self.cmd('az apic api delete -g {rg} -s {s} --api-id {api} --yes')
         self.cmd('az apic api show -g {rg} -s {s} --api-id {api}', expect_failure=True)
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    def test_examples_create_api(self):
+        self.kwargs.update({
+            'name': self.create_random_name(prefix='cli', length=24)
+        })
+        self.cmd('az apic api create -g {rg} -s {s} --api-id {name} --title "Echo API" --type REST', checks=[
+            self.check('name', '{name}'),
+            self.check('kind', 'rest'),
+            self.check('title', 'Echo API'),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicMetadataPreparer()
+    def test_examples_create_api_with_custom_properties(self, metadata_name):
+        self.kwargs.update({
+            'name': self.create_random_name(prefix='cli', length=24),
+            'customProperties': '{{"{}":true}}'.format(metadata_name),
+        })
+        self.cmd('az apic api create -g {rg} -s {s} --api-id {name} --title "Echo API" --type rest --custom-properties \'{customProperties}\'', checks=[
+            self.check('name', '{name}'),
+            self.check('kind', 'rest'),
+            self.check('title', 'Echo API'),
+            self.check('customProperties.{}'.format(metadata_name), True),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    def test_examples_delete_api(self):
+        self.cmd('az apic api delete -g {rg} -s {s} --api-id {api} --yes')
+        self.cmd('az apic api show -g {rg} -s {s} --api-id {api}', expect_failure=True)
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer(parameter_name='api_id1')
+    @ApicApiPreparer(parameter_name='api_id2')
+    def test_examples_list_apis(self, api_id1, api_id2):
+        self.cmd('az apic api list -g {rg} -s {s}', checks=[
+            self.check('length(@)', 2),
+            self.check('@[0].name', api_id1),
+            self.check('@[1].name', api_id2)
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    def test_examples_show_api_details(self):
+        self.cmd('az apic api show -g {rg} -s {s} --api-id {api}', checks=[
+            self.check('name', '{api}'),
+            self.check('kind', 'rest'),
+            self.check('title', 'Echo API'),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    def test_examples_update_api(self):
+        self.cmd('az apic api update -g {rg} -s {s} --api-id {api} --summary "Basic REST API service"', checks=[
+            self.check('summary', 'Basic REST API service'),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicMetadataPreparer()
+    def test_examples_update_custom_properties(self, metadata_name):
+        self.kwargs.update({
+            'customProperties': '{{"{}":true}}'.format(metadata_name),
+        })
+        self.cmd('az apic api update -g {rg} -s {s} --api-id {api} --custom-properties \'{customProperties}\'', checks=[
+            self.check('customProperties.{}'.format(metadata_name), True),
+        ])

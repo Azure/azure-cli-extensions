@@ -14,7 +14,7 @@ from .utils import ApicServicePreparer, ApicApiPreparer, ApicVersionPreparer, Ap
 current_dir = os.path.dirname(os.path.realpath(__file__))
 test_assets_dir = os.path.join(current_dir, 'test_assets')
 
-class VersionCommandsTests(ScenarioTest):
+class DefinitionCommandsTests(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
@@ -207,3 +207,106 @@ class VersionCommandsTests(ScenarioTest):
                 self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --specification \'{specification}\' --value "@{file_name}"')
         finally:
             os.remove(self.kwargs['file_name'])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicVersionPreparer()
+    def test_examples_create_api_definition(self):
+        self.kwargs.update({
+          'name': self.create_random_name(prefix='cli', length=24)
+        })
+        self.cmd('az apic api definition create -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {name} --title "OpenAPI"', checks=[
+            self.check('name', '{name}'),
+            self.check('title', 'OpenAPI'),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicVersionPreparer()
+    @ApicDefinitionPreparer()
+    def test_examples_delete_api_definition(self):
+        self.cmd('az apic api definition delete -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --yes')
+        self.cmd('az apic api definition show -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d}', expect_failure=True)
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicVersionPreparer()
+    @ApicDefinitionPreparer(parameter_name="definition_id1")
+    @ApicDefinitionPreparer(parameter_name="definition_id2")
+    def test_examples_list_api_definitions(self, definition_id1, definition_id2):
+        self.cmd('az apic api definition list -g {rg} -s {s} --api-id {api} --version-id {v}', checks=[
+            self.check('length(@)', 2),
+            self.check('[0].name', definition_id1),
+            self.check('[1].name', definition_id2),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicVersionPreparer()
+    @ApicDefinitionPreparer()
+    def test_examples_show_api_definition_details(self):
+        self.cmd('az apic api definition show -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d}', checks=[
+            self.check('name', '{d}'),
+            self.check('title', 'OpenAPI'),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicVersionPreparer()
+    @ApicDefinitionPreparer()
+    def test_examples_update_api_definition(self):
+        self.cmd('az apic api definition update -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --title "OpenAPI"', checks=[
+            self.check('name', '{d}'),
+            self.check('title', 'OpenAPI'),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicVersionPreparer()
+    @ApicDefinitionPreparer()
+    def test_examples_import_specification_example_1(self):
+        self.kwargs.update({
+          'value': '{"openapi":"3.0.1","info":{"title":"httpbin.org","description":"API Management facade for a very handy and free online HTTP tool.","version":"1.0"}}',
+          'specification': '{"name":"openapi","version":"3.0.0"}'
+        })
+        self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --value \'{value}\' --specification \'{specification}\'')
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicVersionPreparer()
+    @ApicDefinitionPreparer()
+    def test_examples_import_specification_example_2(self):
+        self.kwargs.update({
+          'value': 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json',
+          'specification': '{"name":"openapi","version":"3.0.0"}'
+        })
+        self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "link" --value \'{value}\' --specification \'{specification}\'')
+
+    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicVersionPreparer()
+    @ApicDefinitionPreparer()
+    def test_examples_export_specification(self):
+        self.kwargs.update({
+          'value': 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json',
+          'specification': '{"name":"openapi","version":"3.0.0"}',
+          'filename': "test_examples_export_specification.json"
+        })
+        # Import a specification first
+        self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "link" --value \'{value}\' --specification \'{specification}\'')
+
+        self.cmd('az apic api definition export-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --file-name {filename}')
+
+        try:
+            # Check the exported file exists
+            assert os.path.exists(self.kwargs['filename'])
+        finally:
+            os.remove(self.kwargs['filename'])

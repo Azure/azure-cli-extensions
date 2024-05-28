@@ -1,0 +1,63 @@
+interactions:
+- request:
+    body: '{"properties": {"assignedTo": [{"deprecated": false, "entity": "api", "required":
+      true}], "schema": "{\"type\":\"string\", \"title\":\"First name\", \"pattern\":
+      \"^[a-zA-Z0-9]+$\"}"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic metadata create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '184'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --service-name --name --schema --assignments
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/cli000003?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false}],"schema":"{\"type\":\"string\",
+        \"title\":\"First name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/cli000003","name":"cli000003","systemData":{"createdAt":"2024-05-24T07:00:27.1869547Z","lastModifiedAt":"2024-05-24T07:00:27.186954Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '518'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 May 2024 07:00:27 GMT
+      etag:
+      - 21004873-0000-0100-0000-66503b0b0000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 771DFC4A273E43AF80D2B3F74D4D357D Ref B: MAA201060516053 Ref C: 2024-05-24T07:00:25Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
