@@ -23,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/portmirroringprofiles/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/workloadnetworks/default/portmirroringprofiles/{}", "2023-09-01"],
         ]
     }
 
@@ -51,6 +51,9 @@ class Delete(AAZCommand):
             help="NSX Port Mirroring identifier. Generally the same as the Port Mirroring display name",
             required=True,
             id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
         _args_schema.private_cloud = AAZStrArg(
             options=["-c", "--private-cloud"],
@@ -156,7 +159,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }

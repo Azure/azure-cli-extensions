@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a DNS service by id in a private cloud workload network.
 
-    :example: Delete a DNS service by id in a private cloud workload network.
+    :example: Delete a DNS service by ID in a workload network.
         az vmware workload-network dns-service delete --resource-group group1 --private-cloud cloud1 --dns-service dnsService1
     """
 
