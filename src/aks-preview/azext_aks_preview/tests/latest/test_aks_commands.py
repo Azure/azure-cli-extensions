@@ -4271,6 +4271,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "k8s_version": create_version,
                 "upgrade_k8s_version": upgrade_version,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "if_match": "*",
+                "if_none_match": "*",
             }
         )
 
@@ -4280,7 +4282,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--dns-name-prefix={dns_name_prefix} --node-count=1 "
             "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
             "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
-            "--kubernetes-version={k8s_version} --ssh-key-value={ssh_key_value}"
+            "--kubernetes-version={k8s_version} --ssh-key-value={ssh_key_value} --if-none-match={if_none_match}"
         )
         self.cmd(
             create_cmd,
@@ -4294,13 +4296,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # add Windows nodepool
         self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --os-type Windows --node-count=1",
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --os-type Windows --node-count=1 --if-none-match={if_none_match}",
             checks=[self.check("provisioningState", "Succeeded")],
         )
 
         # upgrade cluster control plane only
         self.cmd(
-            "aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version} --yes",
+            "aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version} --yes --if-match={if_match}",
             checks=[self.check("provisioningState", "Succeeded")],
         )
 
@@ -4308,7 +4310,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks nodepool upgrade --resource-group={resource_group} --cluster-name={name} "
             "--name={nodepool2_name} --kubernetes-version={upgrade_k8s_version} "
-            "--aks-custom-headers WindowsContainerRuntime=containerd --yes",
+            "--aks-custom-headers WindowsContainerRuntime=containerd --yes --if-match={if_match}",
             checks=[self.check("provisioningState", "Succeeded")],
         )
 
@@ -4338,6 +4340,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "windows_admin_password": "replace-Password1234$",
                 "nodepool2_name": "npwin",
                 "ssh_key_value": self.generate_ssh_keys(),
+                "if_match": "*",
+                "if_none_match": "*",
             }
         )
 
@@ -4347,7 +4351,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--dns-name-prefix={dns_name_prefix} --node-count=1 "
             "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
             "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
-            "--ssh-key-value={ssh_key_value}"
+            "--ssh-key-value={ssh_key_value} --if-none-match={if_none_match}"
         )
         self.cmd(
             create_cmd,
@@ -4367,22 +4371,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update Windows license type
         self.cmd(
-            "aks update --resource-group={resource_group} --name={name} --enable-ahub",
+            "aks update --resource-group={resource_group} --name={name} --enable-ahub --if-match={if_match}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("windowsProfile.licenseType", "Windows_Server"),
             ],
         )
 
+        self.kwargs.update(
+            {
+                "if_match": "",
+            }
+        )
+
         # nodepool delete
         self.cmd(
-            "aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait",
+            "aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait --if-match={if_match}",
             checks=[self.is_empty()],
         )
 
         # delete
         self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            "aks delete -g {resource_group} -n {name} --yes --no-wait --if-match={if_match}",
             checks=[self.is_empty()],
         )
 

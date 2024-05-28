@@ -645,6 +645,8 @@ def aks_create(
     enable_secure_boot=False,
     enable_vtpm=False,
     cluster_service_load_balancer_health_probe_mode=None,
+    if_match=None,
+    if_none_match=None,
     # Static Egress Gateway
     enable_static_egress_gateway=False,
     # virtualmachines
@@ -849,6 +851,8 @@ def aks_update(
     node_provisioning_mode=None,
     ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
+    if_match=None,
+    if_none_match=None,
     # Static Egress Gateway
     enable_static_egress_gateway=False,
     disable_static_egress_gateway=False,
@@ -1048,7 +1052,9 @@ def aks_upgrade(cmd,
                 enable_force_upgrade=False,
                 disable_force_upgrade=False,
                 upgrade_override_until=None,
-                yes=False):
+                yes=False,
+                if_match=None,
+                if_none_match=None):
     msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
@@ -1152,7 +1158,15 @@ def aks_upgrade(cmd,
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        name,
+        instance,
+        headers=headers,
+        if_match=if_match,
+        if_none_match=if_none_match)
 
 
 def _update_upgrade_settings(cmd, instance,
@@ -1303,6 +1317,8 @@ def aks_agentpool_add(
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    if_match=None,
+    if_none_match=None,
     # static egress gateway - gateway-mode pool
     gateway_prefix_size=None,
     # virtualmachines
@@ -1367,6 +1383,8 @@ def aks_agentpool_update(
     disable_secure_boot=False,
     enable_vtpm=False,
     disable_vtpm=False,
+    if_match=None,
+    if_none_match=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1438,7 +1456,9 @@ def aks_agentpool_upgrade(cmd,
                           snapshot_id=None,
                           no_wait=False,
                           aks_custom_headers=None,
-                          yes=False):
+                          yes=False,
+                          if_match=None,
+                          if_none_match=None):
     AgentPoolUpgradeSettings = cmd.get_models(
         "AgentPoolUpgradeSettings",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -1533,6 +1553,8 @@ def aks_agentpool_upgrade(cmd,
         nodepool_name,
         instance,
         headers=aks_custom_headers,
+        if_match=if_match,
+        if_none_match=if_none_match,
     )
 
 
@@ -1628,7 +1650,8 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
                          cluster_name,
                          nodepool_name,
                          ignore_pod_disruption_budget=None,
-                         no_wait=False):
+                         no_wait=False,
+                         if_match=None):
     agentpool_exists = False
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -1648,6 +1671,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
         resource_group_name,
         cluster_name,
         nodepool_name,
+        if_match=if_match,
         ignore_pod_disruption_budget=ignore_pod_disruption_budget,
     )
 
