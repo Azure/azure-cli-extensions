@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
 
 4.0.0b4
 ++++++++
