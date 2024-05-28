@@ -38,7 +38,7 @@ from azure.cli.core.commands.parameters import (
     tags_type, get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
 
 from azure.mgmt.cosmosdb.models import (
-    DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, NetworkAclBypass, BackupPolicyType, AnalyticalStorageSchemaType, BackupStorageRedundancy)
+    DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, NetworkAclBypass, BackupPolicyType, AnalyticalStorageSchemaType, BackupStorageRedundancy, CapacityMode, CapacityModeTransitionStatus)
 
 from azure.cli.command_modules.cosmosdb.actions import (
     CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
@@ -343,6 +343,7 @@ def load_arguments(self, _):
             c.argument('default_priority_level', arg_type=get_enum_type(DefaultPriorityLevel), help="Default Priority Level of Request if not specified.", is_preview=True)
             c.argument('enable_prpp_autoscale', arg_type=get_three_state_flag(), help="Enable or disable PerRegionPerPartitionAutoscale.", is_preview=True)
             c.argument('enable_partition_merge', arg_type=get_three_state_flag(), help="Flag to enable partition merge on the account.")
+            c.argument('capacity_mode', options_list=['--capacity-mode'], arg_type=get_enum_type(CapacityMode), help="CapacityMode of the account.", is_preview=True)
 
     with self.argument_context('cosmosdb update') as c:
         c.argument('key_uri', help="The URI of the key vault", is_preview=True)
