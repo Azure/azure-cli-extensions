@@ -579,10 +579,14 @@ def cli_cosmosdb_service_create(client,
                                 service_kind,
                                 service_name,
                                 instance_count=1,
-                                instance_size="Cosmos.D4s"):
+                                instance_size="Cosmos.D4s",
+                                dedicated_gateway_type="IntegratedCache"):
     params = ServiceResourceCreateUpdateParameters(service_type=service_kind,
                                                    instance_count=instance_count,
                                                    instance_size=instance_size)
+    
+    if (service_kind == "SqlDedicatedGateway"):
+        params.properties.dedicated_gateway_type = dedicated_gateway_type
 
     return client.begin_create(resource_group_name, account_name, service_name, create_update_parameters=params)
 
