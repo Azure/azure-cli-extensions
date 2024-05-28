@@ -3,6 +3,15 @@
 Release History
 ===============
 
+1.0.0
+++++++
+* Update: Redesigned `az apic service import-from-apim` command to provide easier way to specify APIM instance
+* Fix: API title created by register command is not same with provided spec
+* Fix: Error not thrown when import spec with >3MB file
+* Fix: Error when register API with long description in spec
+* Remove: `--state`` parameter for `az apic api deployment` commands.
+* Remove: `--file-name`` parameter for `az apic api definition import-specification`, `az apic metadata create` and `az apic metadata update` command. Use the `@filename` syntax provided by Azure CLI to read parameter value from a file directly.
+
 1.0.0b5
 +++++
 * Add: Support yaml file for `az apic api register` command.
