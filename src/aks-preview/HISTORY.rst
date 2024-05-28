@@ -11,10 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
 
 4.0.0b4
 ++++++++
-* Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
 * Add `--vm-sizes` to `az aks create` and `az aks nodepool add`.
 * Add `az aks nodepool manual-scale add/update/delete` commands.
 
