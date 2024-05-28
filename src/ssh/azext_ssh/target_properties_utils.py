@@ -24,10 +24,10 @@ def handle_target_machine_properties(cmd, op_info):
     else:
         os_type, agent_version, tags = None, None, None
 
-    check_valid_os_type(os_type, agent_version, op_info)
+    check_valid_os_type(os_type, op_info)
+    check_valid_agent_version(agent_version, op_info)
 
-    op_info.set_azure_resource_tags(tags)
-    op_info.configure_port_from_resource_tag()
+    handle_resource_tags_utils(tags, op_info)
 
 def get_properties(cmd, resource_type, resource_group_name, vm_name):
     if resource_type == "microsoft.compute/virtualmachines":
@@ -119,7 +119,7 @@ def parse_tags(properties, resource_type):
         
 
 # This function is used to check if the OS type is valid and if the authentication options are valid for that OS
-def check_valid_os_type(os_type, agent_version, op_info):
+def check_valid_os_type(os_type, op_info):
     if os_type:
         logger.debug("Target OS Type: %s", os_type)
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetOSType': os_type})
@@ -129,7 +129,9 @@ def check_valid_os_type(os_type, agent_version, op_info):
         error_message = "SSH Login using AAD credentials is not currently supported for Windows."
         recommendation = colorama.Fore.YELLOW + "Please provide --local-user." + colorama.Style.RESET_ALL
         raise azclierror.RequiredArgumentMissingError(error_message, recommendation)
+    return 
 
+def check_valid_agent_version(agent_version, op_info):
     if op_info.is_arc() and agent_version:
         try:
             major, minor, _, _ = agent_version.split('.', 4)
@@ -140,3 +142,52 @@ def check_valid_os_type(os_type, agent_version, op_info):
         except Exception:
             return
     return
+
+    # This function is used to set the resource tags and configure the port number from the resource tag
+def handle_resource_tags_utils(tags, op_info):
+    set_azure_resource_tags(tags, op_info)
+    configure_port_from_resource_tag(op_info)
+
+
+def set_azure_resource_tags(tags, op_info):
+    if tags:
+        op_info.azure_resource_tags = tags
+    else:
+        op_info.azure_resource_tags = {}
+    return
+
+def configure_port_from_resource_tag(op_info):
+        logger = log.get_logger(__name__)
+
+        if op_info.port and op_info.resource_tag:
+            logger.warning("Warning: Both --port and --resource-tag arguments were specified."
+                            "The --port option will take precedence and the --resource-tag will be ignored."
+                            "To use the port number from the --resource-tag, please omit the --port argument.")
+            return
+        if op_info.port:
+            return
+        
+        # Validating the port number and setting the port to the port value from the resource tag
+        def validate_and_set_port(tag_name="SSHPort"):
+            port_num = op_info.azure_resource_tags.get(tag_name)
+            if port_num and port_num.isdigit() and int(port_num) < 65535:
+                op_info.port = port_num
+
+            else:
+                raise azclierror.InvalidArgumentValueError(
+                    f"Port '{port_num}' from resource tag '{tag_name}' is not supported by this command."
+                    "Port numbers must not be empty, must not contain letters or special characters, and cannot exceed 65535 port value."
+                    "Please contact your administrator to correct the resource tag value or use the --port parameter. ")
+            
+
+        if op_info.resource_tag:
+            if op_info.resource_tag in op_info.azure_resource_tags:
+                validate_and_set_port(op_info.resource_tag)
+            else:
+                raise azclierror.InvalidArgumentValueError(
+                f"Resource tag name '{op_info.resource_tag}' cannot be found. Contact your administrator to ensure the tag is valid."
+            )
+
+        elif "SSHPort" in op_info.azure_resource_tags:
+            validate_and_set_port()
+        return
