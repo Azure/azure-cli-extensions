@@ -148,6 +148,24 @@ class Update(AAZCommand):
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
+        _args_schema.nsxt_password = AAZPasswordArg(
+            options=["--nsxt-password"],
+            arg_group="Properties",
+            help="Optionally, set the NSX-T Manager password when the private cloud is created",
+            nullable=True,
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
+        )
+        _args_schema.vcenter_password = AAZPasswordArg(
+            options=["--vcenter-password"],
+            arg_group="Properties",
+            help="Optionally, set the vCenter admin password when the private cloud is created",
+            nullable=True,
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
+        )
 
         encryption = cls._args_schema.encryption
         encryption.key_vault_properties = AAZObjectArg(
@@ -495,6 +513,8 @@ class Update(AAZCommand):
                 properties.set_prop("identitySources", AAZListType, ".identity_sources")
                 properties.set_prop("internet", AAZStrType, ".internet")
                 properties.set_prop("managementCluster", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("nsxtPassword", AAZStrType, ".nsxt_password", typ_kwargs={"flags": {"secret": True}})
+                properties.set_prop("vcenterPassword", AAZStrType, ".vcenter_password", typ_kwargs={"flags": {"secret": True}})
 
             encryption = _builder.get(".properties.encryption")
             if encryption is not None:
