@@ -353,7 +353,7 @@ helps['aks create'] = f"""
           short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
         - name: --enable-managed-identity
           type: bool
-          short-summary: Using managed identity to manage cluster resource group. Default value is true, you can explicitly specify "--client-id" and "--secret" to disable managed identity.
+          short-summary: Using managed identity to manage cluster resource group. You can explicitly specify "--service-principal" and "--client-secret" to disable managed identity, otherwise it will be enabled.
         - name: --assign-identity
           type: string
           short-summary: Specify an existing user assigned identity to manage cluster resource group.
