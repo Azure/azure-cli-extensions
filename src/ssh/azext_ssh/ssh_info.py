@@ -31,6 +31,7 @@ class SSHSession():
         self.ssh_args = ssh_args
         self.delete_credentials = delete_credentials
         self.resource_type = resource_type
+        self.bastion = None
         self.winrdp = winrdp
         self.proxy_path = None
         self.relay_info = None
@@ -96,6 +97,7 @@ class ConfigSession():
         self.local_user = local_user
         self.port = port
         self.resource_type = resource_type
+        self.bastion = None
         self.proxy_path = None
         self.relay_info = None
         self.relay_info_path = None
