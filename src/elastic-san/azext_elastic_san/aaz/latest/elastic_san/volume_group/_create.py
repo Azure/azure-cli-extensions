@@ -113,7 +113,7 @@ class Create(AAZCommand):
             help="Encryption Properties describing Key Vault and Identity information",
         )
         _args_schema.enforce_data_integrity_check_for_iscsi = AAZBoolArg(
-            options=["--enable-data-integrity-check", "--enforce-data-integrity-check-for-iscsi"],
+            options=["--data-integrity-check", "--enforce-data-integrity-check-for-iscsi"],
             arg_group="Properties",
             help="A boolean indicating whether or not Data Integrity Check is enabled",
         )

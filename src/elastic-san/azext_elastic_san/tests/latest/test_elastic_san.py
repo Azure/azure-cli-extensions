@@ -153,14 +153,13 @@ class ElasticSanScenario(ScenarioTest):
         self.kwargs.update({"snapshot_id": snapshot_id})
         self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name_2} --size-gib 2 '
                  '--creation-data {{source-id:{snapshot_id},create-source:VolumeSnapshot}}')
-        time.sleep(60)
         self.cmd('az elastic-san volume snapshot list -g {rg} -e {san_name} -v {vg_name}',
                  checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name_2} -y ')
         self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name} -y '
                  '--x-ms-delete-snapshots true --x-ms-force-delete true')
         self.cmd('az elastic-san volume snapshot list -g {rg} -e {san_name} -v {vg_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
-        self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name_2} -y ')
         self.cmd('az elastic-san volume-group delete -g {rg} -e {san_name} -n {vg_name} -y')
         time.sleep(20)
         self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')

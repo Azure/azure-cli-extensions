@@ -130,7 +130,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.enforce_data_integrity_check_for_iscsi = AAZBoolArg(
-            options=["--enable-data-integrity-check", "--enforce-data-integrity-check-for-iscsi"],
+            options=["--data-integrity-check", "--enforce-data-integrity-check-for-iscsi"],
             arg_group="Properties",
             help="A boolean indicating whether or not Data Integrity Check is enabled",
             nullable=True,
