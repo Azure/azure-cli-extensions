@@ -140,7 +140,7 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
 
 def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, private_key_file=None,
             local_user=None, cert_file=None, port=None, resource_type=None, ssh_client_folder=None,
-            delete_credentials=False, ssh_proxy_folder=None, winrdp=False, yes_without_prompt=False, 
+            delete_credentials=False, ssh_proxy_folder=None, winrdp=False, yes_without_prompt=False,
             ssh_args=None, resource_tag=None):
     if not resource_type:
         resource_type = const.ARC_RESOURCE_TYPE_PLACEHOLDER

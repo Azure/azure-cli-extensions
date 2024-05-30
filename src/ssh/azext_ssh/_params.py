@@ -20,7 +20,8 @@ def load_arguments(self, _):
         c.argument('cert_file', options_list=['--certificate-file', '-c'],
                    help='Path to a certificate file used for authentication when using local user credentials.')
         c.argument('port', options_list=['--port'], help='SSH port')
-        c.argument('resource_tag', options_list=['--resource-tag'], help='"Use to specify a resource tag for the SSH connection port value."')
+        c.argument('resource_tag', options_list=['--resource-tag'],
+                   help='"Use to specify a resource tag for the SSH connection port value."')
         c.argument('resource_type', options_list=['--resource-type'],
                    help=('Resource type should be either Microsoft.Compute/virtualMachines, '
                          'Microsoft.HybridCompute/machines, '

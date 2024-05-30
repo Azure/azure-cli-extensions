@@ -82,6 +82,7 @@ class SSHSession():
                 port_arg = ["-p", self.port]
         return proxy_command + private_key + certificate + port_arg
 
+
 class ConfigSession():
     # pylint: disable=too-many-instance-attributes
     def __init__(self, config_path, resource_group_name, vm_name, ssh_ip,
@@ -101,7 +102,7 @@ class ConfigSession():
         self.relay_info = None
         self.relay_info_path = None
         self.yes_without_prompt = yes_without_prompt
-        self.resource_tag = resource_tag    
+        self.resource_tag = resource_tag
         self.azure_resource_tags = None
         self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None
         self.private_key_file = os.path.abspath(private_key_file) if private_key_file else None

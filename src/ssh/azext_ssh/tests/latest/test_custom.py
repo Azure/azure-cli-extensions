@@ -405,7 +405,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_op = mock.Mock()
         mock_ip.return_value = None
 
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, None, None, "Microsoft.Compute/virtualMachines", None, None, False, False)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, None, None, "Microsoft.Compute/virtualMachines", None, None, False, False, None)
 
         self.assertRaises(
             azclierror.ResourceNotFoundError, custom._do_ssh_op, cmd, op_info, mock_op)
@@ -424,7 +424,7 @@ class SshCustomCommandTest(unittest.TestCase):
         cmd = mock.Mock()
         mock_op = mock.Mock()
 
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False, False)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False, False, None)
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"
         op_info.ssh_client_folder = "client"
@@ -469,7 +469,7 @@ class SshCustomCommandTest(unittest.TestCase):
 
         mock_op = mock.Mock()
 
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False, False)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False, False, None)
         op_info.public_key_file = "publicfile"
         op_info.private_key_file = "privatefile"
         op_info.ssh_client_folder = "client"
