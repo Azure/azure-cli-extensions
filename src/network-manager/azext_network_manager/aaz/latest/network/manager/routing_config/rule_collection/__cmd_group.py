@@ -8,3 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "network manager routing-config rule-collection",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage network-manager routing-config rule-collection.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

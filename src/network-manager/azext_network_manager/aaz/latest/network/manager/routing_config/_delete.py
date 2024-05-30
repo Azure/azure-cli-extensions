@@ -12,20 +12,21 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network manager delete",
+    "network manager routing-config delete",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a network manager.
+    """Delete a network manager routing configuration.
 
-    :example: Delete Azure Virtual Network Manager
-        az network manager delete --name "testNetworkManager" --resource-group "rg1"
+    :example: Delete a network manager routing configuration.
+        az network manager routing-config delete --name TestNetworkManagerConfig --manager-name TestNetworkManager --resource-group "rg1" -y
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2023-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}", "2023-03-01-preview"],
         ]
     }
 
@@ -46,24 +47,32 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+        _args_schema.config_name = AAZStrArg(
+            options=["-n", "--name", "--config-name"],
+            help="The name of the network manager Routing Configuration.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
+        )
+        _args_schema.manager_name = AAZStrArg(
+            options=["--manager-name"],
             help="The name of the network manager.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
-        )
-        _args_schema.force = AAZBoolArg(
-            options=["--force"],
-            help="Deletes the resource even if it is part of a deployed configuration. If the configuration has been deployed, the service will do a cleanup deployment in the background, prior to the delete.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkManagersDelete(ctx=self.ctx)()
+        yield self.RoutingConfigurationsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,7 +83,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class NetworkManagersDelete(AAZHttpOperation):
+    class RoutingConfigurationsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -84,16 +93,7 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -107,13 +107,22 @@ class Delete(AAZCommand):
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/routingConfigurations/{configurationName}",
                 **self.url_parameters
             )
 
@@ -129,7 +138,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkManagerName", self.ctx.args.network_manager_name,
+                    "configurationName", self.ctx.args.config_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "networkManagerName", self.ctx.args.manager_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -147,19 +160,16 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "force", self.ctx.args.force,
-                ),
-                **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2023-03-01-preview",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_200(self, session):
+        def on_204(self, session):
             pass
 
-        def on_204(self, session):
+        def on_200_201(self, session):
             pass
 
 
