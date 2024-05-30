@@ -4,7 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
-* 'az containerapp env update': Fix logAnalyticsConfiguration when --destination is none
+* 'az containerapp env update': Fix logs configuration about removing destination with `--logs-destination none`
 
 0.3.52
 ++++++
