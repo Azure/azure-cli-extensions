@@ -236,6 +236,9 @@ helps['aks create'] = f"""
         - name: --enable-network-observability
           type: bool
           short-summary: Enable network observability on a cluster.
+        - name: --enable-advanced-network-observability
+          type: bool
+          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -1221,7 +1224,7 @@ helps['aks update'] = """
           short-summary: Disable network observability on a cluster
         - name: --enable-advanced-network-observability
           type: bool
-          short-summary: Enable advanced network observability functionalities on a cluster.
+          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --disable-advanced-network-observability
           type: bool
           short-summary: Disable advanced network observability functionalities on a cluster
