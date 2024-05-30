@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env update': Fix logAnalyticsConfiguration when --destination is none
 
 0.3.52
 ++++++
