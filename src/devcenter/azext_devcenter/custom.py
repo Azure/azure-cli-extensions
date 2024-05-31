@@ -1380,15 +1380,14 @@ def devcenter_environment_operation_show_logs_by_operation(
         user_id=user_id,
         environment_name=environment_name,
     )
-    logs_array = []
+
     for log in logs:
         if log:
             try:
                 logs_string = json.loads(log)
-                logs_array.append(logs_string)
+                print(json.dumps(logs_string, indent=2))
             except json.JSONDecodeError:
-                logs_array.append(log)
-    return logs_array
+                print(log)
 
 
 def devcenter_environment_operation_show_action(
