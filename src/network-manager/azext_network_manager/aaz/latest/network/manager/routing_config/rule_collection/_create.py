@@ -86,8 +86,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="A description of the routing rule collection.",
         )
-        _args_schema.disable_bgp_route_propagation = AAZStrArg(
-            options=["--disable-bgp-route-propagation"],
+        _args_schema.disable_bgp_route = AAZStrArg(
+            options=["--disable-bgp-route"],
             arg_group="Properties",
             help="Determines whether BGP route propagation is enabled. Defaults to true.",
             default="true",
@@ -214,7 +214,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("appliesTo", AAZListType, ".applies_to", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("disableBgpRoutePropagation", AAZStrType, ".disable_bgp_route_propagation")
+                properties.set_prop("disableBgpRoutePropagation", AAZStrType, ".disable_bgp_route")
                 properties.set_prop("localRouteSetting", AAZStrType, ".local_route_setting", typ_kwargs={"flags": {"required": True}})
 
             applies_to = _builder.get(".properties.appliesTo")

@@ -72,7 +72,7 @@ helps['network manager connect-config create'] = """
       - name: Create/Update Azure Virtual Network Manager Connectivity Configuration
         text: |-
                az network manager connect-config create --configuration-name "myTestConnectivityConfig" --description \
-"Sample Configuration" --applies-to-groups group-connectivity="None" is-global=false \
+"Sample Configuration" --applies-to-group group-connectivity="None" is-global=false \
 network-group-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManager\
 s/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" \
 --delete-existing-peering true --hub resource-id="subscriptions/subscriptionA/resource\
