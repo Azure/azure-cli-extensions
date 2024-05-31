@@ -163,23 +163,25 @@ def diff_code(start, end):
                    f'diff_ref: {diff_ref}.')
     return diff_ref
 
+
 def run_az_cmd(cmd, message=False, raise_error=True):
     """
     :param cmd: The entire command line to run.
     :param message: A custom message to print, or True (bool) to use a default.
     :param raise_error: Whether to raise an exception if the command fails.
     """
-     # use default message if custom not provided
+    # use default message if custom not provided
     if message is True:
         print(f'Running: {cmd}')
-    
+
     if message:
         print(f'{message}')
-        
+
     try:
         result = subprocess.run(cmd, capture_output=True, check=True)
         return result
     except subprocess.CalledProcessError as ex:
+        print(result)
         if raise_error:
             raise Exception(f"Failed to run command: {cmd}") from ex
         return result
