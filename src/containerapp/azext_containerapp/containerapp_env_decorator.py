@@ -208,8 +208,11 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         logs_destination = self.get_argument_logs_destination()
 
         if logs_destination:
-            logs_destination = None if logs_destination == "none" else logs_destination
-            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
+            if logs_destination == "none":
+                safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "destination", value=None)
+                safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
+            else:
+                safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
 
         if logs_destination == "azure-monitor":
             safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
