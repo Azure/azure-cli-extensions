@@ -12,20 +12,21 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine private-endpoint-connection delete",
+    "connectedmachine license delete",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a private endpoint connection with a given name.
+    """Delete operation to delete a license.
 
-    :example: Sample command for private-endpoint-connection delete
-        az connectedmachine private-endpoint-connection delete --name private-endpoint-connection-name --resource-group myResourceGroup --scope-name myPrivateLinkScope
+    :example: Sample command for license delete
+        az connectedmachine license delete --subscription 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae' --resource-group 'dakirbytest' --name 'testLicense'
     """
 
     _aaz_info = {
         "version": "2024-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections/{}", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2024-03-31-preview"],
         ]
     }
 
@@ -46,29 +47,23 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.private_endpoint_connection_name = AAZStrArg(
-            options=["-n", "--name", "--private-endpoint-connection-name"],
-            help="The name of the private endpoint connection.",
-            required=True,
-            id_part="child_name_1",
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
-        _args_schema.scope_name = AAZStrArg(
-            options=["--scope-name"],
-            help="The name of the Azure Arc PrivateLinkScope resource.",
+        _args_schema.license_name = AAZStrArg(
+            options=["-n", "--name", "--license-name"],
+            help="The name of the license.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="[a-zA-Z0-9-_\.]+",
             ),
         )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.PrivateEndpointConnectionsDelete(ctx=self.ctx)()
+        yield self.LicensesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,7 +74,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class PrivateEndpointConnectionsDelete(AAZHttpOperation):
+    class LicensesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -118,7 +113,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/privateLinkScopes/{scopeName}/privateEndpointConnections/{privateEndpointConnectionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/licenses/{licenseName}",
                 **self.url_parameters
             )
 
@@ -134,15 +129,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "privateEndpointConnectionName", self.ctx.args.private_endpoint_connection_name,
+                    "licenseName", self.ctx.args.license_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "scopeName", self.ctx.args.scope_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

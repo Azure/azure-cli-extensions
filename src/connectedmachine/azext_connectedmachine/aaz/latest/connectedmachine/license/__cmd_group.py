@@ -12,10 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "connectedmachine private-link-scope",
+    "connectedmachine license",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """private link scope
+    """The operations on ESU license
     """
     pass
 
