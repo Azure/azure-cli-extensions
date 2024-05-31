@@ -58,8 +58,7 @@ class Create(AAZCommand):
         )
         _args_schema.kind = AAZStrArg(
             options=["--kind"],
-            help="The kind of the resource.",
-            enum={"Linux": "Linux", "Windows": "Windows"},
+            help="The kind of the resource. Such as `Linux`, `Windows`.",
         )
         _args_schema.location = AAZResourceLocationArg(
             help="The geo-location where the resource lives.",

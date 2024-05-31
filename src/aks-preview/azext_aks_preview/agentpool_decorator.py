@@ -9,7 +9,6 @@ from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorMode, DecoratorEarlyExitException
-
 from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolAddDecorator,
     AKSAgentPoolContext,
@@ -23,7 +22,10 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.util import read_file_content
+from azure.cli.core.util import (
+    read_file_content,
+    sdk_no_wait,
+)
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
@@ -612,6 +614,37 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return self.raw_param.get("disable_vtpm")
 
+    def get_if_match(self) -> str:
+        """Obtain the value of if_match.
+
+        :return: string
+        """
+        return self.raw_param.get("if_match")
+
+    def get_if_none_match(self) -> str:
+        """Obtain the value of if_none_match.
+
+        :return: string
+        """
+        return self.raw_param.get("if_none_match")
+
+    def get_gateway_prefix_size(self) -> Union[int, None]:
+        """Obtain the value of gateway_prefix_size.
+        :return: int or None
+        """
+        return self.raw_param.get('gateway_prefix_size')
+
+    def get_vm_sizes(self) -> List[str]:
+        """Obtain the value of vm_sizes.
+        :return: list of strings
+        """
+        raw_value = self.raw_param.get("vm_sizes")
+        if raw_value is not None:
+            vm_sizes = raw_value.split(",")
+        else:
+            vm_sizes = [self.get_node_vm_size()]
+        return vm_sizes
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -806,6 +839,43 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         # Default is disabled so no need to worry about that here
         return agentpool
 
+    def set_up_agentpool_gateway_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Set up agentpool gateway profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        gateway_prefix_size = self.context.get_gateway_prefix_size()
+        if gateway_prefix_size is not None:
+            if agentpool.gateway_profile is None:
+                agentpool.gateway_profile = self.models.AgentPoolGatewayProfile()  # pylint: disable=no-member
+
+            agentpool.gateway_profile.public_ip_prefix_size = gateway_prefix_size
+
+        return agentpool
+
+    def set_up_virtual_machines_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Set up virtual machines profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_vm_set_type() != CONST_VIRTUAL_MACHINES:
+            return agentpool
+
+        sizes = self.context.get_vm_sizes()
+        count, _, _, _ = self.context.get_node_count_and_enable_cluster_autoscaler_min_max_count()
+        agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
+            scale=self.models.ScaleProfile(
+                manual=[
+                    self.models.ManualScaleProfile(
+                        sizes=sizes,
+                        count=count,
+                    )
+                ]
+            )
+        )
+        agentpool.vm_size = None
+        agentpool.count = None
+
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -843,6 +913,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_secure_boot(agentpool)
         # set up vtpm
         agentpool = self.set_up_vtpm(agentpool)
+        # set up agentpool gateway profile
+        agentpool = self.set_up_agentpool_gateway_profile(agentpool)
+        # set up virtual machines profile
+        agentpool = self.set_up_virtual_machines_profile(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
@@ -1070,3 +1144,49 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.upgrade_settings = upgrade_settings
 
         return agentpool
+
+    def update_agentpool(self, agentpool: AgentPool) -> AgentPool:
+        """Send request to add a new agentpool.
+
+        The function "sdk_no_wait" will be called to use the Agentpool operations of ContainerServiceClient to send a
+        reqeust to update an existing agent pool of the cluster.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        return sdk_no_wait(
+            self.context.get_no_wait(),
+            self.client.begin_create_or_update,
+            self.context.get_resource_group_name(),
+            self.context.get_cluster_name(),
+            self.context.get_nodepool_name(),
+            agentpool,
+            if_match=self.context.get_if_match(),
+            if_none_match=self.context.get_if_none_match(),
+            headers=self.context.get_aks_custom_headers(),
+        )
+
+    # pylint: disable=protected-access
+    def add_agentpool(self, agentpool: AgentPool) -> AgentPool:
+        """Send request to add a new agentpool.
+
+        The function "sdk_no_wait" will be called to use the Agentpool operations of ContainerServiceClient to send a
+        reqeust to add a new agent pool to the cluster.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        return sdk_no_wait(
+            self.context.get_no_wait(),
+            self.client.begin_create_or_update,
+            self.context.get_resource_group_name(),
+            self.context.get_cluster_name(),
+            # validated in "init_agentpool", skip to avoid duplicate api calls
+            self.context._get_nodepool_name(enable_validation=False),
+            agentpool,
+            if_match=self.context.get_if_match(),
+            if_none_match=self.context.get_if_none_match(),
+            headers=self.context.get_aks_custom_headers(),
+        )

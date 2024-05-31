@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_SSH_ACCESS_LOCALUSER
+from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_SSH_ACCESS_LOCALUSER, CONST_VIRTUAL_MACHINES
 from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolContext,
@@ -25,6 +25,8 @@ from azure.cli.command_modules.acs._consts import (
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     AgentPoolDecoratorMode,
     DecoratorMode,
+    CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_DEFAULT_NODE_VM_SIZE,
 )
 from azext_aks_preview._consts import (
     CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE,
@@ -674,6 +676,76 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_5.get_node_vm_size(), CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE)
 
+    def common_get_gateway_prefix_size(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gateway_prefix_size": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_gateway_prefix_size(), None)
+
+        # custom value
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gateway_prefix_size": 30}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_gateway_prefix_size(), 30)
+
+    def common_get_vm_sizes(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"vm_sizes": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            AgentPoolDecoratorMode.STANDALONE, # windows node pool can't be system node pool
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance(os_type="windows")
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_vm_sizes(), [CONST_DEFAULT_WINDOWS_NODE_VM_SIZE])
+
+        # default
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"vm_sizes": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(os_type="linux")
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_vm_sizes(), [CONST_DEFAULT_NODE_VM_SIZE])
+
+        # custom
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"vm_sizes": "Standard_D4s_v3,Standard_D8s_v3"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(os_type="linux")
+        ctx_3.attach_agentpool(agentpool_3)
+        self.assertEqual(ctx_3.get_vm_sizes(), ["Standard_D4s_v3", "Standard_D8s_v3"])
+
+        # custom
+        ctx_4 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"vm_sizes": None, "node_vm_size": "Standard_D4s_v3"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_4 = self.create_initialized_agentpool_instance(os_type="linux")
+        ctx_4.attach_agentpool(agentpool_4)
+        self.assertEqual(ctx_4.get_vm_sizes(), ["Standard_D4s_v3"])
+
 
 class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     AKSPreviewAgentPoolContextCommonTestCase
@@ -737,6 +809,12 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_agentpool_windows_profile(self):
         self.common_get_agentpool_windows_profile()
 
+    def test_get_gateway_prefix_size(self):
+        self.common_get_gateway_prefix_size()
+
+    def test_get_vm_sizes(self):
+        self.common_get_vm_sizes()
+
 
 class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
     AKSPreviewAgentPoolContextCommonTestCase
@@ -796,6 +874,13 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_agentpool_windows_profile(self):
         self.common_get_agentpool_windows_profile()
+
+    def test_get_gateway_prefix_size(self):
+        self.common_get_gateway_prefix_size()
+
+    def test_get_vm_sizes(self):
+        self.common_get_vm_sizes()
+
 
 class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
     def _remove_defaults_in_agentpool(self, agentpool):
@@ -1041,6 +1126,60 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
+    def common_set_up_agentpool_gateway_profile(self):
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"gateway_prefix_size": 30},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_agentpool_gateway_profile(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_agentpool_gateway_profile(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            gateway_profile=self.models.AgentPoolGatewayProfile(
+                public_ip_prefix_size=30
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+    def common_set_up_virtual_machines_profile(self):
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"vm_sizes": "Standard_D4s_v3,Standard_D8s_v3", "node-count": 5},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_virtual_machines_profile(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_virtual_machines_profile(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            type=CONST_VIRTUAL_MACHINES,
+            count=None,
+            sizes=None,
+            virtual_machines_profile=self.models.VirtualMachinesProfile(
+                scale=self.models.ScaleProfile(
+                    manual=[
+                        self.models.ManualScaleProfile(
+                            sizes=["Standard_D4s_v3", "Standard_D8s_v3"],
+                            count=5,
+                        )
+                    ]
+                )
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
 
 class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     AKSPreviewAgentPoolAddDecoratorCommonTestCase
@@ -1083,6 +1222,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
 
     def test_set_up_agentpool_windows_profile(self):
         self.common_set_up_agentpool_windows_profile()
+
+    def test_set_up_agentpool_gateway_profile(self):
+        self.common_set_up_agentpool_gateway_profile()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect
@@ -1200,6 +1342,9 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
 
     def test_set_up_agentpool_windows_profile(self):
         self.common_set_up_agentpool_windows_profile()
+
+    def test_set_up_agentpool_gateway_profile(self):
+        self.common_set_up_agentpool_gateway_profile()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect

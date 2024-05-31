@@ -49,6 +49,7 @@ from azext_aks_preview._consts import (
     CONST_SPOT_EVICTION_POLICY_DELETE,
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
+    CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
@@ -491,7 +492,7 @@ def aks_create(
     disable_public_fqdn=False,
     service_principal=None,
     client_secret=None,
-    enable_managed_identity=True,
+    enable_managed_identity=False,
     assign_identity=None,
     assign_kubelet_identity=None,
     enable_aad=False,
@@ -603,6 +604,7 @@ def aks_create(
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
     enable_network_observability=None,
+    enable_advanced_network_observability=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -644,6 +646,12 @@ def aks_create(
     enable_secure_boot=False,
     enable_vtpm=False,
     cluster_service_load_balancer_health_probe_mode=None,
+    if_match=None,
+    if_none_match=None,
+    # Static Egress Gateway
+    enable_static_egress_gateway=False,
+    # virtualmachines
+    vm_sizes=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -825,6 +833,8 @@ def aks_update(
     safeguards_excluded_ns=None,
     enable_network_observability=None,
     disable_network_observability=None,
+    enable_advanced_network_observability=None,
+    disable_advanced_network_observability=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
@@ -842,6 +852,11 @@ def aks_update(
     node_provisioning_mode=None,
     ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
+    if_match=None,
+    if_none_match=None,
+    # Static Egress Gateway
+    enable_static_egress_gateway=False,
+    disable_static_egress_gateway=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1004,7 +1019,13 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
                 raise CLIError(
                     "Cannot scale cluster autoscaler enabled node pool.")
 
-            agent_profile.count = int(node_count)
+            if agent_profile.type == CONST_VIRTUAL_MACHINES:
+                if len(agent_profile.virtual_machines_profile.scale.manual) == 1:
+                    agent_profile.virtual_machines_profile.scale.manual[0].count = int(node_count)
+                else:
+                    raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
+            else:
+                agent_profile.count = int(node_count)
             # null out the SP profile because otherwise validation complains
             instance.service_principal_profile = None
             return sdk_no_wait(
@@ -1032,7 +1053,9 @@ def aks_upgrade(cmd,
                 enable_force_upgrade=False,
                 disable_force_upgrade=False,
                 upgrade_override_until=None,
-                yes=False):
+                yes=False,
+                if_match=None,
+                if_none_match=None):
     msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
@@ -1136,7 +1159,15 @@ def aks_upgrade(cmd,
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        name,
+        instance,
+        headers=headers,
+        if_match=if_match,
+        if_none_match=if_none_match)
 
 
 def _update_upgrade_settings(cmd, instance,
@@ -1287,6 +1318,12 @@ def aks_agentpool_add(
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,
+    if_match=None,
+    if_none_match=None,
+    # static egress gateway - gateway-mode pool
+    gateway_prefix_size=None,
+    # virtualmachines
+    vm_sizes=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1347,6 +1384,8 @@ def aks_agentpool_update(
     disable_secure_boot=False,
     enable_vtpm=False,
     disable_vtpm=False,
+    if_match=None,
+    if_none_match=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1387,7 +1426,13 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
     if new_node_count == instance.count:
         raise CLIError(
             "The new node count is the same as the current node count.")
-    instance.count = new_node_count  # pylint: disable=no-member
+    if instance.type_properties_type == CONST_VIRTUAL_MACHINES:
+        if len(instance.virtual_machines_profile.scale.manual) == 1:
+            instance.virtual_machines_profile.scale.manual[0].count = new_node_count
+        else:
+            raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
+    else:
+        instance.count = new_node_count  # pylint: disable=no-member
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -1412,7 +1457,9 @@ def aks_agentpool_upgrade(cmd,
                           snapshot_id=None,
                           no_wait=False,
                           aks_custom_headers=None,
-                          yes=False):
+                          yes=False,
+                          if_match=None,
+                          if_none_match=None):
     AgentPoolUpgradeSettings = cmd.get_models(
         "AgentPoolUpgradeSettings",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -1507,6 +1554,8 @@ def aks_agentpool_upgrade(cmd,
         nodepool_name,
         instance,
         headers=aks_custom_headers,
+        if_match=if_match,
+        if_none_match=if_none_match,
     )
 
 
@@ -1602,7 +1651,8 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
                          cluster_name,
                          nodepool_name,
                          ignore_pod_disruption_budget=None,
-                         no_wait=False):
+                         no_wait=False,
+                         if_match=None):
     agentpool_exists = False
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -1622,6 +1672,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
         resource_group_name,
         cluster_name,
         nodepool_name,
+        if_match=if_match,
         ignore_pod_disruption_budget=ignore_pod_disruption_budget,
     )
 
@@ -1703,6 +1754,126 @@ def aks_agentpool_delete_machines(cmd,   # pylint: disable=unused-argument
         nodepool_name,
         machines,
     )
+
+
+def aks_agentpool_manual_scale_add(cmd,
+                                   client,
+                                   resource_group_name,
+                                   cluster_name,
+                                   nodepool_name,
+                                   vm_sizes,
+                                   node_count,
+                                   no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot add manual to a non-virtualmachines node pool.")
+    ManualScaleProfile = cmd.get_models(
+        "ManualScaleProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+    new_manual_scale_profile = ManualScaleProfile(sizes=vm_sizes.split(","), count=int(node_count))
+    instance.virtual_machines_profile.scale.manual.append(new_manual_scale_profile)
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
+                                      client,
+                                      resource_group_name,
+                                      cluster_name,
+                                      nodepool_name,
+                                      current_vm_sizes,
+                                      vm_sizes=None,
+                                      node_count=None,
+                                      no_wait=False):
+    if vm_sizes is None and node_count is None:
+        raise RequiredArgumentMissingError("specify --vm-sizes or --node-count or both.")
+
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot update manual in a non-virtualmachines node pool.")
+    manual_exists = False
+    for m in instance.virtual_machines_profile.scale.manual:
+        if m.sizes == current_vm_sizes.split(","):
+            manual_exists = True
+            if vm_sizes:
+                m.sizes = vm_sizes.split(",")
+            if node_count:
+                m.count = int(node_count)
+            break
+    if not manual_exists:
+        raise InvalidArgumentValueError(
+            f"Manual with sizes {','.join(current_vm_sizes)} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
+                                      client,
+                                      resource_group_name,
+                                      cluster_name,
+                                      nodepool_name,
+                                      current_vm_sizes,
+                                      no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise CLIError("Cannot delete manual in a non-virtualmachines node pool.")
+    manual_exists = False
+    for m in instance.virtual_machines_profile.scale.manual:
+        if m.sizes == current_vm_sizes.split(","):
+            manual_exists = True
+            instance.virtual_machines_profile.scale.manual.remove(m)
+            break
+    if not manual_exists:
+        raise InvalidArgumentValueError(
+            f"Manual with sizes {','.join(current_vm_sizes)} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_operation_show(cmd,
+                       client,
+                       resource_group_name,
+                       name,
+                       nodepool_name,
+                       operation_id,):
+    if nodepool_name:
+        return client.get_by_agent_pool(resource_group_name, name, nodepool_name, operation_id)
+    return client.get(resource_group_name, name, operation_id)
+
+
+def aks_operation_show_latest(cmd,
+                              client,
+                              resource_group_name,
+                              name,
+                              nodepool_name,):
+    if nodepool_name:
+        return client.get_by_agent_pool(resource_group_name, name, nodepool_name, "latest")
+    return client.get(resource_group_name, name, "latest")
 
 
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument
@@ -3123,6 +3294,16 @@ def aks_mesh_upgrade_rollback(
         mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK)
 
 
+def _aks_mesh_get_supported_revisions(
+        cmd,
+        client,
+        location):
+
+    revisions = aks_mesh_get_revisions(cmd, client, location)
+    supported_revisions = [r.revision for r in revisions.mesh_revisions]
+    return supported_revisions
+
+
 # pylint: disable=unused-argument
 def _aks_mesh_update(
         cmd,
@@ -3159,6 +3340,28 @@ def _aks_mesh_update(
     try:
         mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_azure_service_mesh_profile(mc)
+
+        # check for unsupported asm revision once the smp in mc object has been updated
+        # skip the warning incase upgrade is in progress
+        service_mesh_profile = mc.service_mesh_profile
+        if (
+            service_mesh_profile
+            and service_mesh_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+            and service_mesh_profile.istio
+            and service_mesh_profile.istio.revisions
+            and len(service_mesh_profile.istio.revisions) == 1
+        ):
+            revision = service_mesh_profile.istio.revisions[0]
+            supported_revisions = _aks_mesh_get_supported_revisions(cmd, client, mc.location)
+            if revision not in supported_revisions:
+                msg = (
+                    f"Istio mesh revision {revision} currently in use in your cluster is no longer supported.\n"
+                    "Please upgrade for continued support. Use `az aks mesh get-upgrades` to check for available "
+                    "upgrades.\nMore information about mesh upgrades and version support can be found here:"
+                    " https://aka.ms/asm-aks-upgrade-docs"
+                )
+                logger.warning(msg)
+
     except DecoratorEarlyExitException:
         return None
 
