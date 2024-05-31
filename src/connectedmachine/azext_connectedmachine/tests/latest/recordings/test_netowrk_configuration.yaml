@@ -1,0 +1,92 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-scope network-security-perimeter-configuration
+        list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --scope-name --subscription
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations?api-version=2024-03-31-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations/fd1289de-e8d3-4f76-8008-de297232dbf6.adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94","type":"Microsoft.HybridCompute/privateLinkScopes/networkSecurityPerimeterConfigurations","name":"fd1289de-e8d3-4f76-8008-de297232dbf6.adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94","properties":{"provisioningState":"Succeeded","provisioningIssues":[],"networkSecurityPerimeter":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.Network/networkSecurityPerimeters/adrielNsp","perimeterGuid":"fd1289de-e8d3-4f76-8008-de297232dbf6","location":"centraluseuap"},"resourceAssociation":{"name":"adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94","accessMode":"Learning"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.Network/networkSecurityPerimeters/adrielNsp/profiles/defaultProfile","name":"defaultProfile","accessRulesVersion":0,"accessRules":[],"diagnosticSettingsVersion":0,"enabledLogCategories":["NspPublicInboundPerimeterRulesAllowed","NspPublicInboundPerimeterRulesDenied","NspPublicOutboundPerimeterRulesAllowed","NspPublicOutboundPerimeterRulesDenied","NspIntraPerimeterOutboundAllowed","NspPublicInboundResourceRulesAllowed","NspPublicInboundResourceRulesDenied","NspPublicOutboundResourceRulesAllowed","NspPublicOutboundResourceRulesDenied","NspPrivateInboundAllowed","NspIntraPerimeterInboundAllowed","NspOutboundAttempt","NspCrossPerimeterInboundAllowed","NspCrossPerimeterOutboundAllowed"]}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1721'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 May 2024 20:50:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1E8F3125D26E407BAE5F0071401C27A3 Ref B: BL2AA2010201051 Ref C: 2024-05-31T20:50:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-scope network-security-perimeter-configuration
+        show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --scope-name --subscription --perimeter-name
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations/fd1289de-e8d3-4f76-8008-de297232dbf6.adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94?api-version=2024-03-31-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations/fd1289de-e8d3-4f76-8008-de297232dbf6.adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94","type":"Microsoft.HybridCompute/privateLinkScopes/networkSecurityPerimeterConfigurations","name":"fd1289de-e8d3-4f76-8008-de297232dbf6.adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94","properties":{"provisioningState":"Succeeded","provisioningIssues":[],"networkSecurityPerimeter":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.Network/networkSecurityPerimeters/adrielNsp","perimeterGuid":"fd1289de-e8d3-4f76-8008-de297232dbf6","location":"centraluseuap"},"resourceAssociation":{"name":"adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94","accessMode":"Learning"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.Network/networkSecurityPerimeters/adrielNsp/profiles/defaultProfile","name":"defaultProfile","accessRulesVersion":0,"accessRules":[],"diagnosticSettingsVersion":0,"enabledLogCategories":["NspPublicInboundPerimeterRulesAllowed","NspPublicInboundPerimeterRulesDenied","NspPublicOutboundPerimeterRulesAllowed","NspPublicOutboundPerimeterRulesDenied","NspIntraPerimeterOutboundAllowed","NspPublicInboundResourceRulesAllowed","NspPublicInboundResourceRulesDenied","NspPublicOutboundResourceRulesAllowed","NspPublicOutboundResourceRulesDenied","NspPrivateInboundAllowed","NspIntraPerimeterInboundAllowed","NspOutboundAttempt","NspCrossPerimeterInboundAllowed","NspCrossPerimeterOutboundAllowed"]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1709'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 May 2024 20:50:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 74AD6E05D0434ECCB9A540BE1662163D Ref B: BL2AA2010203053 Ref C: 2024-05-31T20:50:03Z'
+    status:
+      code: 200
+      message: OK
+version: 1
