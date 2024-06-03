@@ -13,11 +13,10 @@ from knack.log import get_logger
 
 from azure.cli.core.commands import AzCliCommand
 from azure.mgmt.kubernetesconfiguration import SourceControlConfigurationClient
-from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.kubernetesconfiguration.models import Extension, Identity
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
-from .common import KUBERNETES_RUNTIME_RP, ConnectedClusterResourceId, query_rp_oid
+from .common import ConnectedClusterResourceId, check_rp_registration, query_rp_oid
 
 
 logger = get_logger(__name__)
@@ -38,12 +37,8 @@ def enable_load_balancer(cmd: AzCliCommand, resource_uri: str):
 
     resource_id = ConnectedClusterResourceId.parse(resource_uri)
 
-    print(f"Register Kubernetes Runtime RP in subscription {resource_id.subscription_id}...")
-    resource_management_client: ResourceManagementClient = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient, subscription_id=resource_id.subscription_id)
-
-    resource_management_client.providers.register(
-        resource_provider_namespace=KUBERNETES_RUNTIME_RP
-    )
+    check_rp_registration(cmd, resource_id)
+    logger.info("Kubernetes Runtime RP registered in subscription %s", resource_id.subscription_id)
 
     print(f"Installing Arc Networking Extension in cluster {resource_id.cluster_name}...")
 
@@ -63,7 +58,6 @@ def enable_load_balancer(cmd: AzCliCommand, resource_uri: str):
                 type="SystemAssigned"
             ),
             extension_type=LOAD_BALANCER_EXTENSION_TYPE,
-            release_train="preview",
             configuration_settings={
                 "k8sRuntimeFpaObjectId": object_id,
             },
