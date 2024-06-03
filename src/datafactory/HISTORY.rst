@@ -2,8 +2,10 @@
 
 Release History
 ===============
-1.0.1
+1.1.0
++++++
 * Fix broken dataflow update command
+* Support new features in ADF
 
 1.0.0
 +++++
