@@ -37,7 +37,7 @@ class ESULicenseScenarioTest(ScenarioTest):
             'rg': 'ytongtest',
             'location': 'centraluseuap',
             'customScriptName': 'custom-test',
-            'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'licenseName': 'myESULicense',
         })
 

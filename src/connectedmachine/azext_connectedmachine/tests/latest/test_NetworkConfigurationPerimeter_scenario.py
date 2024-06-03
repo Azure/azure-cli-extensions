@@ -38,7 +38,7 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
             'rg': 'adrielk_test',
             'scope': 'adrielScope',
             'location': 'centraluseuap',
-            'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'perimeterName': 'fd1289de-e8d3-4f76-8008-de297232dbf6.adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94',
         })
 
