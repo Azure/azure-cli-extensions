@@ -233,9 +233,6 @@ helps['aks create'] = f"""
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
-        - name: --enable-network-observability
-          type: bool
-          short-summary: Enable network observability on a cluster.
         - name: --enable-advanced-network-observability
           type: bool
           short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
@@ -1216,12 +1213,6 @@ helps['aks update'] = """
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
-        - name: --enable-network-observability
-          type: bool
-          short-summary: Enable network observability on a cluster.
-        - name: --disable-network-observability
-          type: bool
-          short-summary: Disable network observability on a cluster
         - name: --enable-advanced-network-observability
           type: bool
           short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
