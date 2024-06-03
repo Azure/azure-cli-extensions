@@ -21,7 +21,7 @@ def generate_nexus_identity_keys() -> None:
     import subprocess
     import asyncio
 
-    from azure.identity import InteractiveBrowserCredential
+    from azure.identity import AzureCliCredential
     from msgraph import GraphServiceClient
     from msgraph.generated.models.open_type_extension import OpenTypeExtension
     from msgraph.generated.models.extension import Extension
@@ -59,7 +59,7 @@ def generate_nexus_identity_keys() -> None:
         raise CLIError(f"Unexpected error reading public key: {e}")
 
     try:
-        credential = InteractiveBrowserCredential().get_token(
+        credential = AzureCliCredential().get_token(
             'https://graph.microsoft.com//.default')
         scopes = ['https://graph.microsoft.com//.default']
         graph_client = GraphServiceClient(
