@@ -56,7 +56,7 @@ class ESULicenseScenarioTest(ScenarioTest):
         ])
 
         self.cmd('az connectedmachine license list --resource-group {rg}', checks=[
-            self.check('length(@)', 1)
+            self.check('length(@)', 2)
         ])
 
         self.cmd('az connectedmachine license show --resource-group {rg} --name {licenseName}', checks=[
