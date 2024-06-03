@@ -9,7 +9,6 @@ from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorMode, DecoratorEarlyExitException
-
 from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolAddDecorator,
     AKSAgentPoolContext,
@@ -23,7 +22,10 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.util import read_file_content
+from azure.cli.core.util import (
+    read_file_content,
+    sdk_no_wait,
+)
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
@@ -612,6 +614,20 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return self.raw_param.get("disable_vtpm")
 
+    def get_if_match(self) -> str:
+        """Obtain the value of if_match.
+
+        :return: string
+        """
+        return self.raw_param.get("if_match")
+
+    def get_if_none_match(self) -> str:
+        """Obtain the value of if_none_match.
+
+        :return: string
+        """
+        return self.raw_param.get("if_none_match")
+
     def get_gateway_prefix_size(self) -> Union[int, None]:
         """Obtain the value of gateway_prefix_size.
         :return: int or None
@@ -1128,3 +1144,49 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.upgrade_settings = upgrade_settings
 
         return agentpool
+
+    def update_agentpool(self, agentpool: AgentPool) -> AgentPool:
+        """Send request to add a new agentpool.
+
+        The function "sdk_no_wait" will be called to use the Agentpool operations of ContainerServiceClient to send a
+        reqeust to update an existing agent pool of the cluster.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        return sdk_no_wait(
+            self.context.get_no_wait(),
+            self.client.begin_create_or_update,
+            self.context.get_resource_group_name(),
+            self.context.get_cluster_name(),
+            self.context.get_nodepool_name(),
+            agentpool,
+            if_match=self.context.get_if_match(),
+            if_none_match=self.context.get_if_none_match(),
+            headers=self.context.get_aks_custom_headers(),
+        )
+
+    # pylint: disable=protected-access
+    def add_agentpool(self, agentpool: AgentPool) -> AgentPool:
+        """Send request to add a new agentpool.
+
+        The function "sdk_no_wait" will be called to use the Agentpool operations of ContainerServiceClient to send a
+        reqeust to add a new agent pool to the cluster.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        return sdk_no_wait(
+            self.context.get_no_wait(),
+            self.client.begin_create_or_update,
+            self.context.get_resource_group_name(),
+            self.context.get_cluster_name(),
+            # validated in "init_agentpool", skip to avoid duplicate api calls
+            self.context._get_nodepool_name(enable_validation=False),
+            agentpool,
+            if_match=self.context.get_if_match(),
+            if_none_match=self.context.get_if_none_match(),
+            headers=self.context.get_aks_custom_headers(),
+        )

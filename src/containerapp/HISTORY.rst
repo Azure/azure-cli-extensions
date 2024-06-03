@@ -5,6 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp job update': Support command in extension
+* 'az containerapp env update': Fix logs configuration about removing destination with `--logs-destination none`
 
 0.3.52
 ++++++
