@@ -9,7 +9,6 @@ from threading import Thread
 
 import requests
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.core.exceptions import ResourceNotFoundError
 from azext_spring._clierror import (PermissionDenyError, JobExecutionInstanceNotFoundError)
 from azext_spring._utils import (get_hostname, get_bearer_auth, wait_till_end, parallel_start_threads,
                                  sequential_start_threads, string_equals_ignore_case, get_service_instance_resource_id)
@@ -572,4 +571,4 @@ def _handle_log_stream_pod_not_found(cmd, resource_group, service, job, executio
     resource_id = get_service_instance_resource_id(sub_id=sub_id, group=resource_group, service=service)
     execution_resource_id = f"{resource_id}/jobs/{job}/executions/{execution}"
     msg = f"No instance found for job execution '{execution_resource_id}' ."
-    raise ResourceNotFoundError(msg)
+    raise JobExecutionInstanceNotFoundError(msg)
