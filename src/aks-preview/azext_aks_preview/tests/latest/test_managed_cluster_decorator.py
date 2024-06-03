@@ -1103,6 +1103,37 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             self.assertEqual(ctx_2.get_enable_managed_identity(), False)
 
+        # custom value
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_managed_identity": None,
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_enable_managed_identity(), True)
+
+        # custom value
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_managed_identity": False,
+                }
+            ),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_4.get_enable_managed_identity(), False)
+        mc_4 = self.models.ManagedCluster(location="test_location", identity=self.models.ManagedClusterIdentity(
+            type="SystemAssigned"
+        ))
+        ctx_4.attach_mc(mc_4)
+        self.assertEqual(ctx_4.get_enable_managed_identity(), False)
+
     def test_get_enable_pod_identity(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
