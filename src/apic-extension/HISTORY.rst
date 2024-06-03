@@ -6,6 +6,11 @@ Release History
 1.0.0
 ++++++++++++++++++
 * Update: Redesigned `az apic service import-from-apim` command to provide easier way to specify APIM instance
+* Update: Renamed `az apic service *` commands to `az apic *` commands
+* Update: Renamed `--name/--service/--service-name/-s` parameters in `az apic *` commands to `--name/-n`
+* Update: Renamed `--service/--service-name/-s` parameters in each sub commands to `--service-name/-n`
+* Update: Renamed `--metadata-schema/--metadata-schema-name/--name` parameters in `az apic metadata *` commands to `--metadata-name`
+* Update: Renamed `--environment-name` parameter in `az apic api register` command to `--environment-id`
 * Fix: API title created by register command is not same with provided spec
 * Fix: Error not thrown when import spec with >3MB file
 * Fix: Error when register API with long description in spec

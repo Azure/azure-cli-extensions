@@ -22,7 +22,7 @@ class MetadataCommandsTests(ScenarioTest):
           'schema': '{"type":"boolean", "title":"Public Facing"}',
           'assignments': '[{entity:api,required:true,deprecated:false}]'
         })
-        self.cmd('az apic metadata create -g {rg} -s {s} --name {name} --schema \'{schema}\' --assignments \'{assignments}\'', checks=[
+        self.cmd('az apic metadata create -g {rg} -n {s} --metadata-name {name} --schema \'{schema}\' --assignments \'{assignments}\'', checks=[
             self.check('name', '{name}'),
             self.check('assignedTo[0].entity', 'api'),
             self.check('assignedTo[0].required', True),
@@ -45,7 +45,7 @@ class MetadataCommandsTests(ScenarioTest):
         })
 
 
-        self.cmd('az apic metadata create -g {rg} -s {s} --name {name} --schema "@{schema_file}" --assignments \'{assignments}\'', checks=[
+        self.cmd('az apic metadata create -g {rg} -n {s} --metadata-name {name} --schema "@{schema_file}" --assignments \'{assignments}\'', checks=[
             self.check('name', '{name}'),
             self.check('assignedTo[0].entity', 'api'),
             self.check('assignedTo[0].required', True),
@@ -57,7 +57,7 @@ class MetadataCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_metadata_show(self):
-       self.cmd('az apic metadata show -g {rg} -s {s} --name {m}', checks=[
+       self.cmd('az apic metadata show -g {rg} -n {s} --metadata-name {m}', checks=[
             self.check('name', '{m}'),
             self.check('assignedTo[0].entity', 'api'),
             self.check('assignedTo[0].required', True),
@@ -70,7 +70,7 @@ class MetadataCommandsTests(ScenarioTest):
     @ApicMetadataPreparer(parameter_name='metadata_name1')
     @ApicMetadataPreparer(parameter_name='metadata_name2')
     def test_metadata_list(self, metadata_name1, metadata_name2):
-       self.cmd('az apic metadata list -g {rg} -s {s}', checks=[
+       self.cmd('az apic metadata list -g {rg} -n {s}', checks=[
            self.check('length(@)', 2),
            self.check('@[0].name', metadata_name1),
            self.check('@[1].name', metadata_name2)
@@ -84,7 +84,7 @@ class MetadataCommandsTests(ScenarioTest):
        self.kwargs.update({
          'metadata_name': metadata_name1
        })
-       self.cmd('az apic metadata list -g {rg} -s {s} --filter "name eq \'{metadata_name}\'"', checks=[
+       self.cmd('az apic metadata list -g {rg} -n {s} --filter "name eq \'{metadata_name}\'"', checks=[
            self.check('length(@)', 1),
            self.check('@[0].name', metadata_name1),
         ])
@@ -96,7 +96,7 @@ class MetadataCommandsTests(ScenarioTest):
        self.kwargs.update({
           'schema': '{"type":"boolean", "title":"Updated Title"}',
         })
-       self.cmd('az apic metadata update -g {rg} -s {s} --name {m} --schema \'{schema}\'', checks=[
+       self.cmd('az apic metadata update -g {rg} -n {s} --metadata-name {m} --schema \'{schema}\'', checks=[
             self.check('name', '{m}'),
             self.check('schema', '{schema}')
         ])
@@ -105,8 +105,8 @@ class MetadataCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_metadata_delete(self):
-       self.cmd('az apic metadata delete -g {rg} -s {s} --name {m} --yes')
-       self.cmd('az apic metadata show -g {rg} -s {s} --name {m}', expect_failure=True)
+       self.cmd('az apic metadata delete -g {rg} -n {s} --metadata-name {m} --yes')
+       self.cmd('az apic metadata show -g {rg} -n {s} --metadata-name {m}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
@@ -115,7 +115,7 @@ class MetadataCommandsTests(ScenarioTest):
         self.kwargs.update({
           'filename': 'metadata_export.json'
         })
-        self.cmd('az apic metadata export -g {rg} -s {s} --assignments api --file-name {filename}')
+        self.cmd('az apic metadata export -g {rg} -n {s} --assignments api --file-name {filename}')
         
         try:
           with open(self.kwargs['filename'], 'r') as f:
@@ -136,7 +136,7 @@ class MetadataCommandsTests(ScenarioTest):
             'schema': '{"type":"string", "title":"First name", "pattern": "^[a-zA-Z0-9]+$"}',
             'assignments': '[{entity:api,required:true,deprecated:false}]'
         })
-        self.cmd('az apic metadata create --resource-group {rg} --service-name {s} --name {name} --schema \'{schema}\' --assignments \'{assignments}\'', checks=[
+        self.cmd('az apic metadata create --resource-group {rg} --service-name {s} --metadata-name {name} --schema \'{schema}\' --assignments \'{assignments}\'', checks=[
             self.check('name', '{name}'),
             self.check('schema', '{schema}')
         ])
@@ -149,7 +149,7 @@ class MetadataCommandsTests(ScenarioTest):
             'schema': '{"type":"string","title":"testregion","oneOf":[{"const":"Region1","description":""},{"const":"Region2","description":""},{"const":"Region3","description":""}]}',
             'assignments': '[{entity:api,required:true,deprecated:false},{entity:environment,required:true,deprecated:false}]'
         })
-        self.cmd('az apic metadata create --resource-group {rg} --service-name {s} --name {name} --schema \'{schema}\' --assignments \'{assignments}\'', checks=[
+        self.cmd('az apic metadata create --resource-group {rg} --service-name {s} --metadata-name {name} --schema \'{schema}\' --assignments \'{assignments}\'', checks=[
             self.check('name', '{name}'),
             self.check('schema', '{schema}')
         ])
@@ -158,15 +158,15 @@ class MetadataCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_delete_metadata_1(self):
-        self.cmd('az apic metadata delete --resource-group {rg} --service-name {s} --name {m} --yes')
-        self.cmd('az apic metadata show --resource-group {rg} --service-name {s} --name {m}', expect_failure=True)
+        self.cmd('az apic metadata delete --resource-group {rg} --service-name {s} --metadata-name {m} --yes')
+        self.cmd('az apic metadata show --resource-group {rg} --service-name {s} --metadata-name {m}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_delete_metadata_2(self):
-        self.cmd('az apic metadata delete -g {rg} -s {s} --name {m} --yes')
-        self.cmd('az apic metadata show -g {rg} -s {s} --name {m}', expect_failure=True)
+        self.cmd('az apic metadata delete -g {rg} -n {s} --metadata-name {m} --yes')
+        self.cmd('az apic metadata show -g {rg} -n {s} --metadata-name {m}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
@@ -175,7 +175,7 @@ class MetadataCommandsTests(ScenarioTest):
         self.kwargs.update({
             'filename': 'test_examples_export_metadata_assigned_to_api.json'
         })
-        self.cmd('az apic metadata export -g {rg} -s {s} --assignments api --file-name {filename}')
+        self.cmd('az apic metadata export -g {rg} -n {s} --assignments api --file-name {filename}')
 
         os.remove(self.kwargs['filename'])
 
@@ -186,7 +186,7 @@ class MetadataCommandsTests(ScenarioTest):
         self.kwargs.update({
             'filename': 'test_examples_export_metadata_assigned_to_deployment.json'
         })
-        self.cmd('az apic metadata export -g {rg} -s {s} --assignments deployment --file-name {filename}')
+        self.cmd('az apic metadata export -g {rg} -n {s} --assignments deployment --file-name {filename}')
 
         os.remove(self.kwargs['filename'])
 
@@ -197,7 +197,7 @@ class MetadataCommandsTests(ScenarioTest):
         self.kwargs.update({
             'filename': 'test_examples_export_metadata_assigned_to_environment.json'
         })
-        self.cmd('az apic metadata export -g {rg} -s {s} --assignments environment --file-name {filename}')
+        self.cmd('az apic metadata export -g {rg} -n {s} --assignments environment --file-name {filename}')
 
         os.remove(self.kwargs['filename'])
 
@@ -206,7 +206,7 @@ class MetadataCommandsTests(ScenarioTest):
     @ApicMetadataPreparer(parameter_name='metadata_name1')
     @ApicMetadataPreparer(parameter_name='metadata_name2')
     def test_examples_list_metadata(self, metadata_name1, metadata_name2):
-        self.cmd('az apic metadata list -g {rg} -s {s}', checks=[
+        self.cmd('az apic metadata list -g {rg} -n {s}', checks=[
             self.check('length(@)', 2),
             self.check('@[0].name', metadata_name1),
             self.check('@[1].name', metadata_name2)
@@ -216,7 +216,7 @@ class MetadataCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_show_metadata_1(self):
-        self.cmd('az apic metadata show -g {rg} -s {s} --name {m}', checks=[
+        self.cmd('az apic metadata show -g {rg} -n {s} --metadata-name {m}', checks=[
             self.check('name', '{m}')
         ])
 
@@ -224,7 +224,7 @@ class MetadataCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_show_metadata_2(self):
-        self.cmd('az apic metadata show --resource-group {rg} --service-name {s} --name {m}', checks=[
+        self.cmd('az apic metadata show --resource-group {rg} --service-name {s} --metadata-name {m}', checks=[
             self.check('name', '{m}')
         ])
 
@@ -235,7 +235,7 @@ class MetadataCommandsTests(ScenarioTest):
         self.kwargs.update({
             'schema': '{"type": "string", "title":"Last name", "pattern": "^[a-zA-Z0-9]+$"}'
         })
-        self.cmd('az apic metadata update --resource-group {rg} --service-name {s} --name {m} --schema \'{schema}\'', checks=[
+        self.cmd('az apic metadata update --resource-group {rg} --service-name {s} --metadata-name {m} --schema \'{schema}\'', checks=[
             self.check('name', '{m}'),
             self.check('schema', '{schema}')
         ])

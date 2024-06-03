@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update existing API deployment.
 
     :example: Update API deployment
-        az apic api deployment update -g api-center-test -s contoso --deployment-id production --title "Production deployment" --api-id echo-api
+        az apic api deployment update -g api-center-test -n contoso --deployment-id production --title "Production deployment" --api-id echo-api
     """
 
     _aaz_info = {
@@ -72,8 +72,8 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic service list",
+    "apic list",
 )
 class List(AAZCommand):
     """Lists Azure API Center services within an Azure subscription.
 
     :example: List services in resource group
-        az apic service list -g contoso-resources
+        az apic list -g contoso-resources
     """
 
     _aaz_info = {

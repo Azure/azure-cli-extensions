@@ -24,7 +24,7 @@ class DefinitionCommandsTests(ScenarioTest):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24)
         })
-        self.cmd('az apic api definition create -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {name} --title "OpenAPI"', checks=[
+        self.cmd('az apic api definition create -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {name} --title "OpenAPI"', checks=[
             self.check('name', '{name}'),
             self.check('title', 'OpenAPI'),
         ])
@@ -37,7 +37,7 @@ class DefinitionCommandsTests(ScenarioTest):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24)
         })
-        self.cmd('az apic api definition create -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {name} --title "OpenAPI" --description "test description"', checks=[
+        self.cmd('az apic api definition create -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {name} --title "OpenAPI" --description "test description"', checks=[
             self.check('name', '{name}'),
             self.check('title', 'OpenAPI'),
             self.check('description', 'test description'),
@@ -49,7 +49,7 @@ class DefinitionCommandsTests(ScenarioTest):
     @ApicVersionPreparer()
     @ApicDefinitionPreparer()
     def test_definition_show(self):
-        self.cmd('az apic api definition show -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d}', checks=[
+        self.cmd('az apic api definition show -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d}', checks=[
             self.check('name', '{d}'),
             self.check('title', 'OpenAPI'),
         ])
@@ -61,7 +61,7 @@ class DefinitionCommandsTests(ScenarioTest):
     @ApicDefinitionPreparer(parameter_name="definition_id1")
     @ApicDefinitionPreparer(parameter_name="definition_id2")
     def test_definition_list(self, definition_id1, definition_id2):
-        self.cmd('az apic api definition list -g {rg} -s {s} --api-id {api} --version-id {v}', checks=[
+        self.cmd('az apic api definition list -g {rg} -n {s} --api-id {api} --version-id {v}', checks=[
             self.check('length(@)', 2),
             self.check('[0].name', definition_id1),
             self.check('[1].name', definition_id2),
@@ -77,7 +77,7 @@ class DefinitionCommandsTests(ScenarioTest):
         self.kwargs.update({
           'definition_id': definition_id1
         })
-        self.cmd('az apic api definition list -g {rg} -s {s} --api-id {api} --version-id {v} --filter "name eq \'{definition_id}\'"', checks=[
+        self.cmd('az apic api definition list -g {rg} -n {s} --api-id {api} --version-id {v} --filter "name eq \'{definition_id}\'"', checks=[
             self.check('length(@)', 1),
             self.check('[0].name', definition_id1)
         ])
@@ -88,7 +88,7 @@ class DefinitionCommandsTests(ScenarioTest):
     @ApicVersionPreparer()
     @ApicDefinitionPreparer()
     def test_definition_update(self):
-        self.cmd('az apic api definition update -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --title "Swagger" --description "test description 2"', checks=[
+        self.cmd('az apic api definition update -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --title "Swagger" --description "test description 2"', checks=[
             self.check('name', '{d}'),
             self.check('title', 'Swagger'),
             self.check('description', 'test description 2'),
@@ -100,8 +100,8 @@ class DefinitionCommandsTests(ScenarioTest):
     @ApicVersionPreparer()
     @ApicDefinitionPreparer()
     def test_definition_delete(self):
-        self.cmd('az apic api definition delete -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --yes')
-        self.cmd('az apic api definition show -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d}', expect_failure=True)
+        self.cmd('az apic api definition delete -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --yes')
+        self.cmd('az apic api definition show -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
@@ -115,9 +115,9 @@ class DefinitionCommandsTests(ScenarioTest):
           'specification': '{"name":"openapi","version":"3.0.2"}'
         })
 
-        self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "link" --specification \'{specification}\' --value "{spec_url}"')
+        self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "link" --specification \'{specification}\' --value "{spec_url}"')
 
-        self.cmd('az apic api definition export-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --file-name {filename}')
+        self.cmd('az apic api definition export-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --file-name {filename}')
 
         try:
             exported_file_path = self.kwargs['filename']
@@ -145,9 +145,9 @@ class DefinitionCommandsTests(ScenarioTest):
         'value': '{"openapi":"3.0.1","info":{"title":"httpbin.org","description":"API Management facade for a very handy and free online HTTP tool.","version":"1.0"}}'
         })
 
-        self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --specification \'{specification}\' --value \'{value}\'')
+        self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --specification \'{specification}\' --value \'{value}\'')
 
-        self.cmd('az apic api definition export-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --file-name {filename}')
+        self.cmd('az apic api definition export-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --file-name {filename}')
 
         try:
             exported_file_path = self.kwargs['filename']
@@ -172,9 +172,9 @@ class DefinitionCommandsTests(ScenarioTest):
         'specification': '{"name":"openapi","version":"3.0.0"}'
         })
 
-        self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --specification \'{specification}\' --value "@{import_filename}"')
+        self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --specification \'{specification}\' --value "@{import_filename}"')
 
-        self.cmd('az apic api definition export-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --file-name {export_filename}')
+        self.cmd('az apic api definition export-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --file-name {export_filename}')
 
         try:
             exported_file_path = self.kwargs['export_filename']
@@ -204,7 +204,7 @@ class DefinitionCommandsTests(ScenarioTest):
                 file.write('a' * 4 * 1024 * 1024) # generate a 4MB file
 
             with self.assertRaisesRegexp(CLIError, 'The size of "value" is greater than 3 MB. Please use --format "link" to import the specification from a URL for size greater than 3 mb.') as cm:
-                self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --specification \'{specification}\' --value "@{file_name}"')
+                self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --specification \'{specification}\' --value "@{file_name}"')
         finally:
             os.remove(self.kwargs['file_name'])
 
@@ -216,7 +216,7 @@ class DefinitionCommandsTests(ScenarioTest):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24)
         })
-        self.cmd('az apic api definition create -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {name} --title "OpenAPI"', checks=[
+        self.cmd('az apic api definition create -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {name} --title "OpenAPI"', checks=[
             self.check('name', '{name}'),
             self.check('title', 'OpenAPI'),
         ])
@@ -227,8 +227,8 @@ class DefinitionCommandsTests(ScenarioTest):
     @ApicVersionPreparer()
     @ApicDefinitionPreparer()
     def test_examples_delete_api_definition(self):
-        self.cmd('az apic api definition delete -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --yes')
-        self.cmd('az apic api definition show -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d}', expect_failure=True)
+        self.cmd('az apic api definition delete -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --yes')
+        self.cmd('az apic api definition show -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
@@ -237,7 +237,7 @@ class DefinitionCommandsTests(ScenarioTest):
     @ApicDefinitionPreparer(parameter_name="definition_id1")
     @ApicDefinitionPreparer(parameter_name="definition_id2")
     def test_examples_list_api_definitions(self, definition_id1, definition_id2):
-        self.cmd('az apic api definition list -g {rg} -s {s} --api-id {api} --version-id {v}', checks=[
+        self.cmd('az apic api definition list -g {rg} -n {s} --api-id {api} --version-id {v}', checks=[
             self.check('length(@)', 2),
             self.check('[0].name', definition_id1),
             self.check('[1].name', definition_id2),
@@ -249,7 +249,7 @@ class DefinitionCommandsTests(ScenarioTest):
     @ApicVersionPreparer()
     @ApicDefinitionPreparer()
     def test_examples_show_api_definition_details(self):
-        self.cmd('az apic api definition show -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d}', checks=[
+        self.cmd('az apic api definition show -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d}', checks=[
             self.check('name', '{d}'),
             self.check('title', 'OpenAPI'),
         ])
@@ -260,7 +260,7 @@ class DefinitionCommandsTests(ScenarioTest):
     @ApicVersionPreparer()
     @ApicDefinitionPreparer()
     def test_examples_update_api_definition(self):
-        self.cmd('az apic api definition update -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --title "OpenAPI"', checks=[
+        self.cmd('az apic api definition update -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --title "OpenAPI"', checks=[
             self.check('name', '{d}'),
             self.check('title', 'OpenAPI'),
         ])
@@ -275,7 +275,7 @@ class DefinitionCommandsTests(ScenarioTest):
           'value': '{"openapi":"3.0.1","info":{"title":"httpbin.org","description":"API Management facade for a very handy and free online HTTP tool.","version":"1.0"}}',
           'specification': '{"name":"openapi","version":"3.0.0"}'
         })
-        self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --value \'{value}\' --specification \'{specification}\'')
+        self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --value \'{value}\' --specification \'{specification}\'')
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
@@ -287,7 +287,7 @@ class DefinitionCommandsTests(ScenarioTest):
           'value': 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json',
           'specification': '{"name":"openapi","version":"3.0.0"}'
         })
-        self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "link" --value \'{value}\' --specification \'{specification}\'')
+        self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "link" --value \'{value}\' --specification \'{specification}\'')
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
@@ -301,9 +301,9 @@ class DefinitionCommandsTests(ScenarioTest):
           'filename': "test_examples_export_specification.json"
         })
         # Import a specification first
-        self.cmd('az apic api definition import-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --format "link" --value \'{value}\' --specification \'{specification}\'')
+        self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "link" --value \'{value}\' --specification \'{specification}\'')
 
-        self.cmd('az apic api definition export-specification -g {rg} -s {s} --api-id {api} --version-id {v} --definition-id {d} --file-name {filename}')
+        self.cmd('az apic api definition export-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --file-name {filename}')
 
         try:
             # Check the exported file exists

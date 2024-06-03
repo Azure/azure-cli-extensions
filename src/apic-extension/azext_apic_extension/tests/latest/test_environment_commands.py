@@ -14,7 +14,7 @@ class EnvironmentCommandsTests(ScenarioTest):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24)
         })
-        self.cmd('az apic environment create -g {rg} -s {s} --environment-id {name} --title "test environment" --type testing', checks=[
+        self.cmd('az apic environment create -g {rg} -n {s} --environment-id {name} --title "test environment" --type testing', checks=[
             self.check('name', '{name}'),
             self.check('kind', 'testing'),
             self.check('title', 'test environment'),
@@ -31,7 +31,7 @@ class EnvironmentCommandsTests(ScenarioTest):
           'onboarding': "{developerPortalUri:['https://developer.contoso.com'],instructions:'instructions markdown'}",
           'server': "{type:'Azure API Management',managementPortalUri:['example.com']}"
         })
-        self.cmd('az apic environment create -g {rg} -s {s} --environment-id {name} --title "test environment" --type testing --custom-properties \'{custom_properties}\' --description "environment description" --onboarding "{onboarding}" --server "{server}"', checks=[
+        self.cmd('az apic environment create -g {rg} -n {s} --environment-id {name} --title "test environment" --type testing --custom-properties \'{custom_properties}\' --description "environment description" --onboarding "{onboarding}" --server "{server}"', checks=[
             self.check('customProperties.{}'.format(metadata_name), True),
             self.check('description', 'environment description'),
             self.check('kind', 'testing'),
@@ -48,7 +48,7 @@ class EnvironmentCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_environment_show(self):
-        self.cmd('az apic environment show -g {rg} -s {s} --environment-id {e}', checks=[
+        self.cmd('az apic environment show -g {rg} -n {s} --environment-id {e}', checks=[
             self.check('name', '{e}'),
             self.check('kind', 'testing'),
             self.check('title', 'test environment'),
@@ -60,7 +60,7 @@ class EnvironmentCommandsTests(ScenarioTest):
     @ApicEnvironmentPreparer(parameter_name='environment_name1')
     @ApicEnvironmentPreparer(parameter_name='environment_name2')
     def test_environment_list(self, environment_name1, environment_name2):
-        self.cmd('az apic environment list -g {rg} -s {s}', checks=[
+        self.cmd('az apic environment list -g {rg} -n {s}', checks=[
             self.check('length(@)', 2),
             self.check('@[0].name', environment_name1),
             self.check('@[1].name', environment_name2)
@@ -74,7 +74,7 @@ class EnvironmentCommandsTests(ScenarioTest):
         self.kwargs.update({
          'environment_name': environment_name1
        })
-        self.cmd('az apic environment list -g {rg} -s {s} --filter "name eq \'{environment_name}\'"', checks=[
+        self.cmd('az apic environment list -g {rg} -n {s} --filter "name eq \'{environment_name}\'"', checks=[
             self.check('length(@)', 1),
             self.check('@[0].name', environment_name1)
         ])
@@ -83,7 +83,7 @@ class EnvironmentCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_environment_update(self):
-        self.cmd('az apic environment update -g {rg} -s {s} --environment-id {e} --title "test environment 2"', checks=[
+        self.cmd('az apic environment update -g {rg} -n {s} --environment-id {e} --title "test environment 2"', checks=[
             self.check('title', 'test environment 2')
         ])
 
@@ -97,7 +97,7 @@ class EnvironmentCommandsTests(ScenarioTest):
           'onboarding': "{developerPortalUri:['https://developer.contoso.com'],instructions:'instructions markdown'}",
           'server': "{type:'Azure API Management',managementPortalUri:['example.com']}"
         })
-        self.cmd('az apic environment update -g {rg} -s {s} --environment-id {e} --title "test environment 2" --type testing --custom-properties \'{custom_properties}\' --description "environment description" --onboarding "{onboarding}" --server "{server}"', checks=[
+        self.cmd('az apic environment update -g {rg} -n {s} --environment-id {e} --title "test environment 2" --type testing --custom-properties \'{custom_properties}\' --description "environment description" --onboarding "{onboarding}" --server "{server}"', checks=[
             self.check('customProperties.{}'.format(metadata_name), True),
             self.check('description', 'environment description'),
             self.check('kind', 'testing'),
@@ -112,8 +112,8 @@ class EnvironmentCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_environment_delete(self):
-        self.cmd('az apic environment delete -g {rg} -s {s} --environment-id {e} --yes')
-        self.cmd('az apic environment show -g {rg} -s {s} --environment-id {e}', expect_failure=True)
+        self.cmd('az apic environment delete -g {rg} -n {s} --environment-id {e} --yes')
+        self.cmd('az apic environment show -g {rg} -n {s} --environment-id {e}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
@@ -121,7 +121,7 @@ class EnvironmentCommandsTests(ScenarioTest):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24)
         })
-        self.cmd('az apic environment create -g {rg} -s {s} --environment-id {name} --title "Public cloud" --type "development"', checks=[
+        self.cmd('az apic environment create -g {rg} -n {s} --environment-id {name} --title "Public cloud" --type "development"', checks=[
             self.check('name', '{name}'),
             self.check('title', 'Public cloud'),
             self.check('kind', 'development')
@@ -131,15 +131,15 @@ class EnvironmentCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_examples_delete_environment(self):
-        self.cmd('az apic environment delete -g {rg} -s {s} --environment-id {e} --yes')
-        self.cmd('az apic environment show -g {rg} -s {s} --environment-id {e}', expect_failure=True)
+        self.cmd('az apic environment delete -g {rg} -n {s} --environment-id {e} --yes')
+        self.cmd('az apic environment show -g {rg} -n {s} --environment-id {e}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer(parameter_name='environment_name1')
     @ApicEnvironmentPreparer(parameter_name='environment_name2')
     def test_examples_list_environments(self, environment_name1, environment_name2):
-        self.cmd('az apic environment list -g {rg} -s {s}', checks=[
+        self.cmd('az apic environment list -g {rg} -n {s}', checks=[
             self.check('length(@)', 2),
             self.check('@[0].name', environment_name1),
             self.check('@[1].name', environment_name2)
@@ -149,7 +149,7 @@ class EnvironmentCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_examples_show_environment_details(self):
-        self.cmd('az apic environment show -g {rg} -s {s} --environment-id {e}', checks=[
+        self.cmd('az apic environment show -g {rg} -n {s} --environment-id {e}', checks=[
             self.check('name', '{e}')
         ])
 
@@ -157,6 +157,6 @@ class EnvironmentCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_examples_update_environment(self):
-        self.cmd('az apic environment update -g {rg} -s {s} --environment-id {e} --title "Public cloud"', checks=[
+        self.cmd('az apic environment update -g {rg} -n {s} --environment-id {e} --title "Public cloud"', checks=[
             self.check('title', 'Public cloud')
         ])

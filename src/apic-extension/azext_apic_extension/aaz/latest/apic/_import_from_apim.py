@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic service import-from-apim",
+    "apic import-from-apim",
 )
 class ImportFromApim(AAZCommand):
     """Imports APIs from an Azure API Management service instance.
 
     :example: Import all APIs from APIM in same resource group
-        az apic service import-from-apim -g api-center-test --service-name contoso-apic --apim-name contoso-apim --apim-apis *
+        az apic import-from-apim -g api-center-test --service-name contoso-apic --apim-name contoso-apim --apim-apis *
 
     :example: Import selected APIs from APIM in same resource group
-        az apic service import-from-apim -g api-center-test --service-name contoso-apic --apim-name contoso-apim --apim-apis [echo,foo]
+        az apic import-from-apim -g api-center-test --service-name contoso-apic --apim-name contoso-apim --apim-apis [echo,foo]
 
     :example: Import all APIs from APIM in another subscription and resource group
-        az apic service import-from-apim -g api-center-test --service-name contoso-apic --apim-subscription 00000000-0000-0000-0000-000000000000 --apim-resource-group apim-rg --apim-name contoso-apim --apim-apis *
+        az apic import-from-apim -g api-center-test --service-name contoso-apic --apim-subscription 00000000-0000-0000-0000-000000000000 --apim-resource-group apim-rg --apim-name contoso-apim --apim-apis *
     """
 
     _aaz_info = {
@@ -55,7 +55,7 @@ class ImportFromApim(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
+            options=["-n", "--service-name"],
             help="The name of Azure API Center service.",
             required=True,
             id_part="name",

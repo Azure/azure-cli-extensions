@@ -19,7 +19,7 @@ class ApicServicePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def create_resource(self, name, **kwargs):
         group = self._get_resource_group(**kwargs)
 
-        template = 'az apic service create --name {} -g {}'
+        template = 'az apic create --name {} -g {}'
 
         if self.enable_system_assigned_identity:
             template += ' --identity \'{{type:SystemAssigned}}\''
@@ -64,7 +64,7 @@ class ApicMetadataPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         group = self._get_resource_group(**kwargs)
         service = self._get_apic_service(**kwargs)
 
-        template = 'az apic metadata create -g {} -s {} --name {} --schema \'{}\' --assignments \'{}\''
+        template = 'az apic metadata create -g {} -n {} --metadata-name {} --schema \'{}\' --assignments \'{}\''
         cmd = template.format(group, service, name, self.schema, self.assignments)
         print(cmd)
         self.live_only_execute(self.cli_ctx, cmd)
@@ -107,7 +107,7 @@ class ApicEnvironmentPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         group = self._get_resource_group(**kwargs)
         service = self._get_apic_service(**kwargs)
 
-        template = 'az apic environment create -g {} -s {} --environment-id {} --title "test environment" --type testing'
+        template = 'az apic environment create -g {} -n {} --environment-id {} --title "test environment" --type testing'
         cmd = template.format(group, service, name)
         print(cmd)
         self.live_only_execute(self.cli_ctx, cmd)
@@ -150,7 +150,7 @@ class ApicApiPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         group = self._get_resource_group(**kwargs)
         service = self._get_apic_service(**kwargs)
 
-        template = 'az apic api create -g {} -s {} --api-id {} --title "Echo API" --type rest'
+        template = 'az apic api create -g {} -n {} --api-id {} --title "Echo API" --type rest'
         cmd = template.format(group, service, name)
         print(cmd)
         self.live_only_execute(self.cli_ctx, cmd)
@@ -196,7 +196,7 @@ class ApicVersionPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         service = self._get_apic_service(**kwargs)
         api = self._get_apic_api(**kwargs)
 
-        template = 'az apic api version create -g {} -s {} --api-id {} --version-id {} --lifecycle-stage production --title "v1.0.0"'
+        template = 'az apic api version create -g {} -n {} --api-id {} --version-id {} --lifecycle-stage production --title "v1.0.0"'
         cmd = template.format(group, service, api, name)
         print(cmd)
         self.live_only_execute(self.cli_ctx, cmd)
@@ -252,7 +252,7 @@ class ApicDefinitionPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         api = self._get_apic_api(**kwargs)
         version = self._get_apic_version(**kwargs)
 
-        template = 'az apic api definition create -g {} -s {} --api-id {} --version-id {} --definition-id {} --title "OpenAPI"'
+        template = 'az apic api definition create -g {} -n {} --api-id {} --version-id {} --definition-id {} --title "OpenAPI"'
         cmd = template.format(group, service, api, version, name)
         print(cmd)
         self.live_only_execute(self.cli_ctx, cmd)
@@ -321,7 +321,7 @@ class ApicDeploymentPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         definition = self._get_apic_definition(**kwargs)
         environment = self._get_apic_environment(**kwargs)
 
-        template = 'az apic api deployment create -g {} -s {} --api-id {} --definition-id /workspaces/default/apis/{}/versions/{}/definitions/{} --environment-id /workspaces/default/environments/{} --deployment-id {} --title "test deployment" --server \'{{"runtimeUri":["https://example.com"]}}\''
+        template = 'az apic api deployment create -g {} -n {} --api-id {} --definition-id /workspaces/default/apis/{}/versions/{}/definitions/{} --environment-id /workspaces/default/environments/{} --deployment-id {} --title "test deployment" --server \'{{"runtimeUri":["https://example.com"]}}\''
         cmd = template.format(group, service, api, api, version, definition, environment, name)
         print(cmd)
         self.live_only_execute(self.cli_ctx, cmd)

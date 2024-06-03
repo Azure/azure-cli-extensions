@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic service delete",
+    "apic delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Deletes an instance of an Azure API Center service.
 
     :example: Delete service
-        az apic service delete -s contoso -g contoso-resources
+        az apic delete -n contoso -g contoso-resources
     """
 
     _aaz_info = {
@@ -48,8 +48,8 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.service_name = AAZStrArg(
-            options=["-s", "--name", "--service", "--service-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the API Center service.",
             required=True,
             id_part="name",
@@ -110,7 +110,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "serviceName", self.ctx.args.service_name,
+                    "serviceName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

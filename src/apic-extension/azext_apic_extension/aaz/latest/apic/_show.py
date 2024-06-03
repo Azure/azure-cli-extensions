@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic service show",
+    "apic show",
 )
 class Show(AAZCommand):
     """Show details of an Azure API Center service instance.
 
     :example: Show service details
-        az apic service show -g contoso-resources -s contoso
+        az apic show -g contoso-resources -n contoso
     """
 
     _aaz_info = {
@@ -47,8 +47,8 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.service_name = AAZStrArg(
-            options=["-s", "--name", "--service", "--service-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the API Center service.",
             required=True,
             id_part="name",
@@ -111,7 +111,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "serviceName", self.ctx.args.service_name,
+                    "serviceName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

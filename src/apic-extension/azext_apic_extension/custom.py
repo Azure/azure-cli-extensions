@@ -146,7 +146,7 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
 
 
 # Quick Import
-def register_apic(cmd, api_location, resource_group, service_name, environment_name=None):
+def register_apic(cmd, api_location, resource_group, service_name, environment_id=None):
 
     # Load the JSON file
     if api_location:
@@ -325,13 +325,13 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             from .aaz.latest.apic.environment import Show as GetEnvironment
 
             environment_id = None
-            if environment_name:
+            if environment_id:
                 # GET Environment ID
                 environment_args = {
                     'resource_group': resource_group,
                     'service_name': service_name,
                     'workspace_name': 'default',
-                    'environment_id': environment_name
+                    'environment_id': environment_id
                 }
 
                 getEnvironmentResults = GetEnvironment(cli_ctx=cmd.cli_ctx)(command_args=environment_args)
@@ -346,7 +346,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                     extracted_deployment_title = server.get('title', default_deployment_title).replace(" ", "-")
                     extracted_deployment_description = server.get('description', default_deployment_title)
                     extracted_definition_id = '/workspaces/default/apis/' + extracted_api_name + '/versions/' + extracted_api_version + '/definitions/' + extracted_definition_name
-                    extracted_environment_id = '/workspaces/default/environments/' + environment_name
+                    extracted_environment_id = '/workspaces/default/environments/' + environment_id
                     extracted_state = server.get('state', 'active')
 
                     extracted_server_urls = []

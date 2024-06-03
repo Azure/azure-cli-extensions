@@ -12,16 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "apic service create",
+    "apic update",
 )
-class Create(AAZCommand):
-    """Creates an instance or update an existing instance of an Azure API Center service.
+class Update(AAZCommand):
+    """Update an instance of an Azure API Center service.
 
-    :example: Create service Example 1
-        az apic service create -g contoso-resources -s contoso -l eastus
-
-    :example: Create Service Example 2
-        az apic service create --resource-group contoso-resources --name contoso --location eastus
+    :example: Update service details
+        az apic update -g contoso-resources -n contoso
     """
 
     _aaz_info = {
@@ -50,10 +47,11 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.service_name = AAZStrArg(
-            options=["-s", "--name", "--service", "--service-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the API Center service.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
@@ -63,13 +61,6 @@ class Create(AAZCommand):
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
             help="The managed service identities assigned to this resource.",
-        )
-        _args_schema.location = AAZResourceLocationArg(
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -100,7 +91,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ServicesCreateOrUpdate(ctx=self.ctx)()
+        self.ServicesUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -115,14 +106,14 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ServicesCreateOrUpdate(AAZHttpOperation):
+    class ServicesUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
@@ -135,7 +126,7 @@ class Create(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -149,7 +140,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "serviceName", self.ctx.args.service_name,
+                    "serviceName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -189,7 +180,6 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
-            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
@@ -207,47 +197,47 @@ class Create(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
-            _schema_on_200_201.location = AAZStrType(
+            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200_201.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200_201.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200_201.identity
+            identity = cls._schema_on_200.identity
             identity.principal_id = AAZStrType(
                 serialized_name="principalId",
                 flags={"read_only": True},
@@ -263,12 +253,12 @@ class Create(AAZCommand):
                 serialized_name="userAssignedIdentities",
             )
 
-            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
             user_assigned_identities.Element = AAZObjectType(
                 nullable=True,
             )
 
-            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
                 serialized_name="clientId",
                 flags={"read_only": True},
@@ -278,7 +268,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200_201.properties
+            properties = cls._schema_on_200.properties
             properties.data_api_hostname = AAZStrType(
                 serialized_name="dataApiHostname",
                 flags={"read_only": True},
@@ -288,7 +278,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200_201.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -308,14 +298,14 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200_201.tags
+            tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _UpdateHelper:
+    """Helper class for Update"""
 
 
-__all__ = ["Create"]
+__all__ = ["Update"]

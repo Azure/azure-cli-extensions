@@ -46,7 +46,7 @@ from .aaz.latest.apic.metadata import (
     Create as CreateMetadata,
     Export as ExportMetadata
 )
-from .aaz.latest.apic.service import ImportFromApim
+from .aaz.latest.apic import ImportFromApim
 
 from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg
 
