@@ -26,7 +26,7 @@ def load_arguments(self, _):
                          'or Microsoft.ConnectedVMwareSphere/virtualMachines.'),
                    completer=['Microsoft.Compute/virtualMachines', 'Microsoft.HybridCompute/machines',
                               'Microsoft.ConnectedVMwareSphere/virtualMachines'])
-        c.argument('bastion', options_list=['--bastion'], help='Flag argument to use bastion host for connection')
+        c.argument('bastion', options_list=['--bastion'], help='Set Bastion flag to establish connection without a public IP')
         c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
                    help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
                    'Default to ssh pre-installed if not provided.')
