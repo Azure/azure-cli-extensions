@@ -101,7 +101,15 @@ class ExportAPIDefinitionExtension(DefaultWorkspaceParameter, ExportAPIDefinitio
 
 
 class ImportAPIDefinitionExtension(DefaultWorkspaceParameter, ImportAPIDefinition):
-    pass
+    # pylint: disable=too-few-public-methods
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.format._required = True
+        args_schema.specification._required = True
+        args_schema.value._required = True
+        return args_schema
 
 
 class ListAPIDefinitionExtension(DefaultWorkspaceParameter, ListAPIDefinition):
@@ -139,7 +147,16 @@ class UpdateAPIVersionExtension(DefaultWorkspaceParameter, UpdateAPIVersion):
 
 # `az apic api deployment` commands
 class CreateAPIDeploymentExtension(DefaultWorkspaceParameter, CreateAPIDeployment):
-    pass
+    # pylint: disable=too-few-public-methods
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.definition_id._required = True
+        args_schema.environment_id._required = True
+        args_schema.server._required = True
+        args_schema.title._required = True
+        return args_schema
 
 
 class DeleteAPIDeploymentExtension(DefaultWorkspaceParameter, DeleteAPIDeployment):
