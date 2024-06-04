@@ -208,7 +208,7 @@ def load_command_table(self, args):
     with self.command_group('containerapp job logs') as g:
         g.custom_show_command('show', 'stream_job_logs')
 
-    with self.command_group('containerapp job replica') as g:
+    with self.command_group('containerapp job replica', is_preview=True) as g:
         g.custom_show_command('list', 'list_replica_containerappsjob')
     
     with self.command_group('containerapp env java-component nacos') as g:
