@@ -8,6 +8,7 @@ import sys
 import time
 from urllib.parse import urlparse
 import json
+import requests
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from ._constants import DOTNET_COMPONENT_RESOURCE_TYPE
@@ -2734,6 +2735,73 @@ def list_environment_telemetry_otlp(cmd,
     return containerapp_env_def
 
 
+def list_replica_containerappsjob(cmd, resource_group_name, name, execution=None):
+    if execution is None:
+        executions = ContainerAppsJobPreviewClient.get_executions(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        execution = executions['value'][0]['name']
+        logger.warning('No execution specified. Using the latest execution: %s', execution)
+    try:
+        replicas = ContainerAppsJobPreviewClient.get_replicas(cmd, resource_group_name, name, execution)
+        return replicas['value']
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def stream_job_logs(cmd, resource_group_name, name, container, execution=None, replica=None, follow=False, tail=None, output_format=None):
+    if tail:
+        if tail < 0 or tail > 300:
+            raise ValidationError("--tail must be between 0 and 300.")
+
+    sub = get_subscription_id(cmd.cli_ctx)
+    token_response = ContainerAppsJobPreviewClient.get_auth_token(cmd, resource_group_name, name)
+    token = token_response["properties"]["token"]
+
+    job = ContainerAppsJobPreviewClient.show(cmd, resource_group_name, name)
+    base_url = job["properties"]["eventStreamEndpoint"]
+    base_url = base_url[:base_url.index("/subscriptions/")]
+
+    if execution is None and replica is not None:
+        raise ValidationError("Cannot specify a replica without an execution")
+
+    if execution is None:
+        executions = ContainerAppsJobPreviewClient.get_executions(cmd, resource_group_name, name)['value']
+        if not executions:
+            raise ValidationError("No executions found for this job")
+        execution = executions[0]["name"]
+        logger.warning("No execution provided, defaulting to latest execution: %s", execution)
+
+    if replica is None:
+        replicas = ContainerAppsJobPreviewClient.get_replicas(cmd, resource_group_name, name, execution)['value']
+        if not replicas:
+            raise ValidationError("No replicas found for execution")
+        replica = replicas[0]["name"]
+        logger.warning("No replica provided, defaulting to latest replica: %s", replica)
+
+    url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/jobs/{name}"
+           f"/executions/{execution}/replicas/{replica}/containers/{container}/logstream")
+
+    logger.info("connecting to : %s", url)
+    request_params = {"follow": str(follow).lower(),
+                      "output": output_format,
+                      "tailLines": tail}
+    headers = {"Authorization": f"Bearer {token}"}
+    resp = requests.get(url,
+                        timeout=None,
+                        stream=True,
+                        params=request_params,
+                        headers=headers)
+
+    if not resp.ok:
+        raise ValidationError(f"Got bad status from the logstream API: {resp.status_code}. Error: {str(resp.content)}")
+
+    for line in resp.iter_lines():
+        if line:
+            logger.info("received raw log line: %s", line)
+            # these .replaces are needed to display color/quotations properly
+            # for some reason the API returns garbled unicode special characters (may need to add more in the future)
+            print(line.decode("utf-8").replace("\\u0022", "\u0022").replace("\\u001B", "\u001B").replace("\\u002B", "\u002B").replace("\\u0027", "\u0027"))
+
+
 def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_group_name, no_wait=False):
     raw_parameters = locals()
     containerapp_java_logger_set_decorator = ContainerappJavaLoggerSetDecorator(
@@ -3066,5 +3134,4 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
         aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
         logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
-
     return

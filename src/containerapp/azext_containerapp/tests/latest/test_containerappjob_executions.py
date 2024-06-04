@@ -171,3 +171,48 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             JMESPathCheck('properties.template.initContainers[0].resources.memory', '0.5Gi')
         ])
         clean_up_test_file(containerappjob_file_name)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northcentralus")
+    def test_containerappjob_logstream(self, resource_group):
+        job = self.create_random_name(prefix='job1', length=24)
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+
+        # create a container app environment for a Container App Job resource
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, env_rg), checks=[
+            JMESPathCheck('name', env_name)
+        ])
+
+        # create a Container App Job resource
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 1 --trigger-type manual --replica-completion-count 1 --parallelism 1 --container-name quickstart --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env_id))
+
+        # wait for 60s for the job to be provisioned
+        jobProvisioning = True
+        timeout = time.time() + 60*1   # 1 minutes from now
+        while(jobProvisioning):
+            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
+            if(time.time() > timeout):
+                break
+
+        # start the job execution
+        execution = self.cmd("az containerapp job start --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
+        if "id" in execution:
+            # check if the job execution id is in the response
+            self.assertEqual(job in execution['id'], True)
+        if "name" in execution:
+            # check if the job execution name is in the response
+            self.assertEqual(job in execution['name'], True)
+
+        # get list of all executions for the job
+        executionList = self.cmd("az containerapp job execution list --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
+        self.assertTrue(len(executionList) == 1)
+    
+        replicas = self.cmd("az containerapp job replica list -g {} -n {} --execution {}".format(resource_group, job, execution['name'])).get_output_in_json()
+        print(replicas)
+
+        # receive logs
+        # az containerapp job logs show -n my-containerappjob -g MyResourceGroup --container MyContainer
+        logs = self.cmd("az containerapp job logs show -n {} -g {} --container {}".format(job, resource_group, "quickstart"))
