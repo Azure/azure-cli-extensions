@@ -1,5 +1,9 @@
 Release History
 ===============
+1.24.4
+---
+* Refine the error message when user failed to get job log streaming in command `az spring job logs`.
+
 1.24.3
 ---
 * Fix subnet address prefix validation issue.
