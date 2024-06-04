@@ -10,19 +10,26 @@ import unittest
 
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
-from azure.cli.testsdk .scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+
 from .test_definitions import (test_data_source, test_notification_channel, test_dashboard)
+from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class AmgScenarioTest(ScenarioTest):
 
+    def __init__(self, method_name):
+        super().__init__(method_name, recording_processors=[
+            ApiKeyServiceAccountTokenReplacer()
+        ])
+
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_crud(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestamg2',
+            'name': self.create_random_name(prefix='clitestamg', length=23),
             'location': 'westcentralus'
         })
 
@@ -66,7 +73,7 @@ class AmgScenarioTest(ScenarioTest):
     def test_api_key_e2e(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestamgapikey',
+            'name': self.create_random_name(prefix='clitestamgapikey', length=23),
             'location': 'westcentralus',
             "key": "apikey1",
             "key2": "apikey2"
@@ -97,7 +104,7 @@ class AmgScenarioTest(ScenarioTest):
     def test_service_account_e2e(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestserviceaccount',
+            'name': self.create_random_name(prefix='clitestamgsvcacct', length=23),
             'location': 'westcentralus',
             "account": "myServiceAccount",
             "token": "myToken"
@@ -141,7 +148,7 @@ class AmgScenarioTest(ScenarioTest):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestamge2e',
+            'name': self.create_random_name(prefix='clitestamge2e', length=23),
             'location': 'westeurope'
         })
 
@@ -295,9 +302,9 @@ class AmgScenarioTest(ScenarioTest):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestbackup',
+            'name': self.create_random_name(prefix='clitestamgbackup', length=23),
             'location': 'westcentralus',
-            'name2': 'clitestbackup2'
+            'name2': self.create_random_name(prefix='clitestamgbackup', length=23)
         })
 
         owner = self._get_signed_in_user()

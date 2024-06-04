@@ -328,7 +328,7 @@ helps['grafana dashboard delete'] = """
 
 helps['grafana dashboard sync'] = """
     type: command
-    short-summary: Sync Azure Managed Grafana dashboards from one instance to another instance. Note, dashboards with "provisioned" state will be skipped due to being read-only
+    short-summary: Sync Azure Managed Grafana dashboards from one instance to another instance. Library panels within the dashboards will be automatically included in the sync. Note, dashboards with "Provisioned" state will be skipped due to being read-only
     examples:
         - name: Sync only dashboards under a few folders
           text: |

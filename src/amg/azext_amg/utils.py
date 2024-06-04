@@ -45,7 +45,7 @@ def remap_datasource_uids(dashboard, uid_mapping, data_source_missed):
                     if value["uid"] in uid_mapping:
                         value["uid"] = uid_mapping[value["uid"]]
                     elif value["uid"] not in ["-- Grafana --", "grafana"]:
-                        data_source_missed.add(value["uid"])
+                        data_source_missed.add(value["type"])
                 else:
                     remap_datasource_uids(value, uid_mapping, data_source_missed)
             elif isinstance(value, (list, tuple)):
