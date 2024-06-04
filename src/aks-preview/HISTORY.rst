@@ -13,7 +13,10 @@ Pending
 +++++++
 * Update --enable-advanced-network-observability description to note additional costs and add missing flag to create command.
 * Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
-* Remove --enable-network-observability and --disable-network-observability from aks create and update commands.
+
+5.0.0b1
+++++++++
+* [BREAKING CHANGE]: Remove --enable-network-observability and --disable-network-observability from aks create and update commands.
 
 4.0.0b5
 ++++++++
