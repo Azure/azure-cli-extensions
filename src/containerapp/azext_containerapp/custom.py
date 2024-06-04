@@ -19,12 +19,12 @@ from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
-    ResourceNotFoundError,
     ValidationError,
     CLIError,
     CLIInternalError,
     InvalidArgumentValueError,
-    ResourceNotFoundError)
+    ResourceNotFoundError,
+    ArgumentUsageError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
@@ -1401,7 +1401,12 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
 
     containerapp_auth_decorator.construct_payload()
     if containerapp_auth_decorator.get_argument_token_store() and containerapp_auth_decorator.get_argument_sas_url_secret() is not None:
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=True, disable_max_length=True)
+        if not containerapp_auth_decorator.get_argument_yes():
+            msg = 'Configuring --sas-url-secret will add a secret to the containerapp. Are you sure you want to continue?'
+            if not prompt_y_n(msg, default="n"):
+                raise ArgumentUsageError(
+                    'Usage Error: --sas-url-secret cannot be used without agreeing to add secret to the containerapp.')
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=False, disable_max_length=True)
     return containerapp_auth_decorator.create_or_update()
 
 

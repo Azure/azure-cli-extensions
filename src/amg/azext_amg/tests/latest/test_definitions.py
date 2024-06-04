@@ -24,5 +24,6 @@ test_notification_channel = {
 test_dashboard = {
     "dashboard": {
         "title": "Test Dashboard",
+        "panels": [],
     }
 }
