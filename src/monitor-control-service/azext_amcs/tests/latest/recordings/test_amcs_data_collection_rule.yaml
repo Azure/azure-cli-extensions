@@ -4,7 +4,15 @@ interactions:
       "streams": ["Microsoft-InsightsMetrics"]}], "dataSources": {"performanceCounters":
       [{"counterSpecifiers": ["\\Processor Information(_Total)\\% Processor Time"],
       "name": "perfCounter01", "samplingFrequencyInSeconds": 60, "streams": ["Microsoft-InsightsMetrics"]}]},
-      "destinations": {"azureMonitorMetrics": {"name": "azureMonitorMetrics-default"}}}}'
+      "destinations": {"azureMonitorMetrics": {"name": "azureMonitorMetrics-default"}},
+      "streamDeclarations": {"Custom-stream-1": {"columns": [{"name": "TimeGenerated",
+      "type": "datetime"}, {"name": "coord", "type": "dynamic"}, {"name": "weather",
+      "type": "dynamic"}, {"name": "base", "type": "string"}, {"name": "main", "type":
+      "dynamic"}, {"name": "visibility", "type": "int"}, {"name": "wind", "type":
+      "dynamic"}, {"name": "clouds", "type": "dynamic"}, {"name": "dt", "type": "int"},
+      {"name": "sys", "type": "dynamic"}, {"name": "timezone", "type": "int"}, {"name":
+      "id", "type": "int"}, {"name": "name", "type": "string"}, {"name": "cod", "type":
+      "int"}]}}}}'
     headers:
       Accept:
       - application/json
@@ -15,19 +23,19 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '450'
+      - '1024'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --location --name --rule-file
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2023-03-11
   response:
     body:
-      string: '{"properties":{"immutableId":"dcr-36ddfb1d4ef043af8589bd963707ace1","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["\\Processor
-        Information(_Total)\\% Processor Time"],"name":"perfCounter01"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"720274d0-0000-0800-0000-664afea80000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-05-20T07:41:27.4758204Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-20T07:41:27.4758204Z"}}'
+      string: '{"properties":{"immutableId":"dcr-31853eb96d414470aec510ddefaafbea","streamDeclarations":{"Custom-stream-1":{"columns":[{"name":"TimeGenerated","type":"datetime"},{"name":"coord","type":"dynamic"},{"name":"weather","type":"dynamic"},{"name":"base","type":"string"},{"name":"main","type":"dynamic"},{"name":"visibility","type":"int"},{"name":"wind","type":"dynamic"},{"name":"clouds","type":"dynamic"},{"name":"dt","type":"int"},{"name":"sys","type":"dynamic"},{"name":"timezone","type":"int"},{"name":"id","type":"int"},{"name":"name","type":"string"},{"name":"cod","type":"int"}]}},"dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["\\Processor
+        Information(_Total)\\% Processor Time"],"name":"perfCounter01"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"46009bcc-0000-0800-0000-665ed17d0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-06-04T08:34:04.9919769Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T08:34:04.9919769Z"}}'
     headers:
       api-supported-versions:
       - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
@@ -35,11 +43,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1020'
+      - '1535'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 May 2024 07:41:28 GMT
+      - Tue, 04 Jun 2024 08:34:05 GMT
       expires:
       - '-1'
       pragma:
@@ -57,7 +65,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '149'
       x-msedge-ref:
-      - 'Ref A: 173628500C9F4B8F9B84C45C6CD3968C Ref B: MAA201060514031 Ref C: 2024-05-20T07:41:25Z'
+      - 'Ref A: C85164802E9C4F3287C0EA0F6ED01767 Ref B: MAA201060513049 Ref C: 2024-06-04T08:34:02Z'
     status:
       code: 200
       message: OK
@@ -75,13 +83,13 @@ interactions:
       ParameterSetName:
       - --resource-group --name --performance-counters
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2023-03-11
   response:
     body:
-      string: '{"properties":{"immutableId":"dcr-36ddfb1d4ef043af8589bd963707ace1","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["\\Processor
-        Information(_Total)\\% Processor Time"],"name":"perfCounter01"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"720274d0-0000-0800-0000-664afea80000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-05-20T07:41:27.4758204Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-20T07:41:27.4758204Z"}}'
+      string: '{"properties":{"immutableId":"dcr-31853eb96d414470aec510ddefaafbea","streamDeclarations":{"Custom-stream-1":{"columns":[{"name":"TimeGenerated","type":"datetime"},{"name":"coord","type":"dynamic"},{"name":"weather","type":"dynamic"},{"name":"base","type":"string"},{"name":"main","type":"dynamic"},{"name":"visibility","type":"int"},{"name":"wind","type":"dynamic"},{"name":"clouds","type":"dynamic"},{"name":"dt","type":"int"},{"name":"sys","type":"dynamic"},{"name":"timezone","type":"int"},{"name":"id","type":"int"},{"name":"name","type":"string"},{"name":"cod","type":"int"}]}},"dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["\\Processor
+        Information(_Total)\\% Processor Time"],"name":"perfCounter01"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"46009bcc-0000-0800-0000-665ed17d0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-06-04T08:34:04.9919769Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T08:34:04.9919769Z"}}'
     headers:
       api-supported-versions:
       - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
@@ -89,11 +97,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1020'
+      - '1535'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 May 2024 07:41:28 GMT
+      - Tue, 04 Jun 2024 08:34:08 GMT
       expires:
       - '-1'
       pragma:
@@ -109,7 +117,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 1FBD56AAB35D4154976544C17B5C20D1 Ref B: MAA201060516031 Ref C: 2024-05-20T07:41:29Z'
+      - 'Ref A: D46D0A0B7B6543418EDD4BB177A1F143 Ref B: MAA201060516029 Ref C: 2024-06-04T08:34:07Z'
     status:
       code: 200
       message: OK
@@ -118,7 +126,15 @@ interactions:
       "streams": ["Microsoft-InsightsMetrics"]}], "dataSources": {"performanceCounters":
       [{"counterSpecifiers": ["[\\Processor Information(_Total)\\% Processor Time]"],
       "name": "perfCounter02", "samplingFrequencyInSeconds": 60, "streams": ["Microsoft-InsightsMetrics"]}]},
-      "destinations": {"azureMonitorMetrics": {"name": "azureMonitorMetrics-default"}}}}'
+      "destinations": {"azureMonitorMetrics": {"name": "azureMonitorMetrics-default"}},
+      "streamDeclarations": {"Custom-stream-1": {"columns": [{"name": "TimeGenerated",
+      "type": "datetime"}, {"name": "coord", "type": "dynamic"}, {"name": "weather",
+      "type": "dynamic"}, {"name": "base", "type": "string"}, {"name": "main", "type":
+      "dynamic"}, {"name": "visibility", "type": "int"}, {"name": "wind", "type":
+      "dynamic"}, {"name": "clouds", "type": "dynamic"}, {"name": "dt", "type": "int"},
+      {"name": "sys", "type": "dynamic"}, {"name": "timezone", "type": "int"}, {"name":
+      "id", "type": "int"}, {"name": "name", "type": "string"}, {"name": "cod", "type":
+      "int"}]}}}}'
     headers:
       Accept:
       - application/json
@@ -129,19 +145,19 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '452'
+      - '1026'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --name --performance-counters
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2023-03-11
   response:
     body:
-      string: '{"properties":{"immutableId":"dcr-36ddfb1d4ef043af8589bd963707ace1","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
-        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"72023cd3-0000-0800-0000-664afeac0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-05-20T07:41:27.4758204Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-20T07:41:31.7444769Z"}}'
+      string: '{"properties":{"immutableId":"dcr-31853eb96d414470aec510ddefaafbea","streamDeclarations":{"Custom-stream-1":{"columns":[{"name":"TimeGenerated","type":"datetime"},{"name":"coord","type":"dynamic"},{"name":"weather","type":"dynamic"},{"name":"base","type":"string"},{"name":"main","type":"dynamic"},{"name":"visibility","type":"int"},{"name":"wind","type":"dynamic"},{"name":"clouds","type":"dynamic"},{"name":"dt","type":"int"},{"name":"sys","type":"dynamic"},{"name":"timezone","type":"int"},{"name":"id","type":"int"},{"name":"name","type":"string"},{"name":"cod","type":"int"}]}},"dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
+        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"4600b4cc-0000-0800-0000-665ed1810000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-06-04T08:34:04.9919769Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T08:34:08.7442498Z"}}'
     headers:
       api-supported-versions:
       - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
@@ -149,11 +165,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1022'
+      - '1537'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 May 2024 07:41:32 GMT
+      - Tue, 04 Jun 2024 08:34:10 GMT
       expires:
       - '-1'
       pragma:
@@ -171,7 +187,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '149'
       x-msedge-ref:
-      - 'Ref A: AB9B9924E0E04843B3868C8FC5DE6702 Ref B: MAA201060516031 Ref C: 2024-05-20T07:41:30Z'
+      - 'Ref A: 4D18B9F00C9E4D428E2CBE25FD23F1CB Ref B: MAA201060516029 Ref C: 2024-06-04T08:34:08Z'
     status:
       code: 200
       message: OK
@@ -189,13 +205,13 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2023-03-11
   response:
     body:
-      string: '{"properties":{"immutableId":"dcr-36ddfb1d4ef043af8589bd963707ace1","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
-        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"72023cd3-0000-0800-0000-664afeac0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-05-20T07:41:27.4758204Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-20T07:41:31.7444769Z"}}'
+      string: '{"properties":{"immutableId":"dcr-31853eb96d414470aec510ddefaafbea","streamDeclarations":{"Custom-stream-1":{"columns":[{"name":"TimeGenerated","type":"datetime"},{"name":"coord","type":"dynamic"},{"name":"weather","type":"dynamic"},{"name":"base","type":"string"},{"name":"main","type":"dynamic"},{"name":"visibility","type":"int"},{"name":"wind","type":"dynamic"},{"name":"clouds","type":"dynamic"},{"name":"dt","type":"int"},{"name":"sys","type":"dynamic"},{"name":"timezone","type":"int"},{"name":"id","type":"int"},{"name":"name","type":"string"},{"name":"cod","type":"int"}]}},"dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
+        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"4600b4cc-0000-0800-0000-665ed1810000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-06-04T08:34:04.9919769Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T08:34:08.7442498Z"}}'
     headers:
       api-supported-versions:
       - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
@@ -203,11 +219,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1022'
+      - '1537'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 May 2024 07:41:34 GMT
+      - Tue, 04 Jun 2024 08:34:11 GMT
       expires:
       - '-1'
       pragma:
@@ -223,7 +239,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 7712C55B2E6343679E5A990A48D4897A Ref B: MAA201060514031 Ref C: 2024-05-20T07:41:33Z'
+      - 'Ref A: 312A16EF14DB4B229A29553394258955 Ref B: MAA201060513045 Ref C: 2024-06-04T08:34:11Z'
     status:
       code: 200
       message: OK
@@ -241,13 +257,13 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules?api-version=2023-03-11
   response:
     body:
-      string: '{"value":[{"properties":{"immutableId":"dcr-36ddfb1d4ef043af8589bd963707ace1","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
-        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"72023cd3-0000-0800-0000-664afeac0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-05-20T07:41:27.4758204Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-20T07:41:31.7444769Z"}}],"nextLink":null}'
+      string: '{"value":[{"properties":{"immutableId":"dcr-31853eb96d414470aec510ddefaafbea","streamDeclarations":{"Custom-stream-1":{"columns":[{"name":"TimeGenerated","type":"datetime"},{"name":"coord","type":"dynamic"},{"name":"weather","type":"dynamic"},{"name":"base","type":"string"},{"name":"main","type":"dynamic"},{"name":"visibility","type":"int"},{"name":"wind","type":"dynamic"},{"name":"clouds","type":"dynamic"},{"name":"dt","type":"int"},{"name":"sys","type":"dynamic"},{"name":"timezone","type":"int"},{"name":"id","type":"int"},{"name":"name","type":"string"},{"name":"cod","type":"int"}]}},"dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
+        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"4600b4cc-0000-0800-0000-665ed1810000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-06-04T08:34:04.9919769Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T08:34:08.7442498Z"}}],"nextLink":null}'
     headers:
       api-supported-versions:
       - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
@@ -255,11 +271,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1050'
+      - '1565'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 May 2024 07:41:35 GMT
+      - Tue, 04 Jun 2024 08:34:13 GMT
       expires:
       - '-1'
       pragma:
@@ -275,7 +291,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: B9787DABDB8F4B2DB3E3588C3EBF7B45 Ref B: MAA201060513019 Ref C: 2024-05-20T07:41:35Z'
+      - 'Ref A: 66851F67720249F99498612B1547F3B7 Ref B: MAA201060513009 Ref C: 2024-06-04T08:34:12Z'
     status:
       code: 200
       message: OK
@@ -295,7 +311,7 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?deleteAssociations=false&api-version=2023-03-11
   response:
@@ -310,7 +326,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 20 May 2024 07:41:40 GMT
+      - Tue, 04 Jun 2024 08:34:17 GMT
       expires:
       - '-1'
       pragma:
@@ -326,7 +342,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-msedge-ref:
-      - 'Ref A: 11B82C2B423F48C28F03D55816E6423D Ref B: MAA201060515033 Ref C: 2024-05-20T07:41:36Z'
+      - 'Ref A: 5DFA41B3CA9842C78BA6C7D7CEBDBC54 Ref B: MAA201060513053 Ref C: 2024-06-04T08:34:14Z'
     status:
       code: 200
       message: OK
@@ -344,7 +360,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.60.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules?api-version=2023-03-11
   response:
@@ -358,7 +374,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 20 May 2024 07:41:40 GMT
+      - Tue, 04 Jun 2024 08:34:18 GMT
       expires:
       - '-1'
       pragma:
@@ -370,7 +386,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 7403C835D1B041B6AB2CF42540782B1B Ref B: MAA201060513025 Ref C: 2024-05-20T07:41:40Z'
+      - 'Ref A: A83AFD380E734ED28356395E3D2B2120 Ref B: MAA201060513029 Ref C: 2024-06-04T08:34:19Z'
     status:
       code: 200
       message: OK
