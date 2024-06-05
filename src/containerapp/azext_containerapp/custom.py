@@ -54,7 +54,7 @@ from msrest.exceptions import DeserializationError
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
     ContainerappEnvCertificatePreviweUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
-from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
+from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator, ContainerAppJobPreviewUpdateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
 from .containerapp_java_decorator import ContainerappJavaLoggerDecorator, ContainerappJavaLoggerSetDecorator, ContainerappJavaLoggerDeleteDecorator
 from .containerapp_resiliency_decorator import (
@@ -946,6 +946,51 @@ def create_containerappsjob(cmd,
     containerapp_job_create_decorator.construct_for_post_process(r)
     r = containerapp_job_create_decorator.post_process(r)
 
+    return r
+
+
+def update_containerappsjob(cmd,
+                            name,
+                            resource_group_name,
+                            yaml=None,
+                            image=None,
+                            container_name=None,
+                            replica_timeout=None,
+                            replica_retry_limit=None,
+                            replica_completion_count=None,
+                            parallelism=None,
+                            cron_expression=None,
+                            set_env_vars=None,
+                            remove_env_vars=None,
+                            replace_env_vars=None,
+                            remove_all_env_vars=False,
+                            cpu=None,
+                            memory=None,
+                            startup_command=None,
+                            args=None,
+                            scale_rule_metadata=None,
+                            scale_rule_name=None,
+                            scale_rule_type=None,
+                            scale_rule_auth=None,
+                            polling_interval=None,
+                            min_executions=None,
+                            max_executions=None,
+                            tags=None,
+                            workload_profile_name=None,
+                            no_wait=False):
+    raw_parameters = locals()
+
+    containerapp_job_update_decorator = ContainerAppJobPreviewUpdateDecorator(
+        cmd=cmd,
+        client=ContainerAppsJobPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_job_update_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_job_update_decorator.validate_arguments()
+
+    containerapp_job_update_decorator.construct_payload()
+    r = containerapp_job_update_decorator.update()
     return r
 
 
