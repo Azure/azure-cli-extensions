@@ -49,7 +49,6 @@ class AcrCsscCommandsTests(unittest.TestCase):
 
         mock_cf_acr_tasks.return_value = cf_acr_tasks_mock
         cf_acr_tasks_mock.get.return_value = {"name": "my_task"}
-        # use the client factory to use ACR's client to query for this task
         exists = check_continuoustask_exists(cmd, registry)
         self.assertTrue(exists)
 

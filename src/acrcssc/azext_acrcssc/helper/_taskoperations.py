@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import base64
 import os
-
+import re
 from knack.log import get_logger
 from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands import LongRunningOperation
@@ -45,34 +45,17 @@ from ._constants import (
 
 logger = get_logger(__name__)
 
-def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun):
-    # identify the type of task (continuous scanning only for now) **
-    # validate
-        # check if the registry exists **
-        # check if the configuration file is valid
-        # validate the schedule, convert from timespan to cron
-        # validate the OCI artifact (check if it exists, check agains if it's a create or update operation)
-    # get the auth token from the CLI context **
-    # get the registry object **
-        # get the location and other details from the registry resource
-    # get the OCI artifact object
-    # create/update OCI artifact via ORAS **
-        # artifact name? cssc/continuous-scanning?
-    # execute the deployment (bicep or ARM template, bicep might not be supported via python) **
-    # report status from the deployment
-    # monitor the task?
-        # check how CLI task creation handles monitoring
-
-    logger.debug("Entering continuousPatchV1_creation %s %s", cssc_config_file, dryrun)
+def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run):
+    logger.debug("Entering continuousPatchV1_creation %s %s %s", cssc_config_file, dryrun, defer_immediate_run)
 
     if check_continuoustask_exists(cmd, registry):
-        raise AzCLIError("ContinuousPatch Task already exists")
+        raise AzCLIError("ContinuousPatchV1 workflow already exists")
 
     task_schedule = validate_and_convert_timespan_to_cron(cadence)
     logger.debug("task_schedule %s", task_schedule)
     validate_continuouspatch_config_v1(cssc_config_file)
     create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
-    logger.debug(f'Uploading of %s completed successfully.', cssc_config_file)
+    logger.debug("Uploading of %s completed successfully.", cssc_config_file)
 
     logger.debug("Creating a new ContinuousPatchV1 task")
     resource_group = parse_resource_id(registry.id)["resource_group"]
@@ -101,13 +84,12 @@ def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun)
     logger.debug('Deployment of continuous scanning and patching tasks completed successfully.')
 
     # force run the task after it is created
-    if not dryrun:
+    if not dryrun and not defer_immediate_run:
         logger.debug('Triggering the continuous scanning task to run immediately')
-        _trigger_task_run(cmd, registry, resource_group, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+        _trigger_task_run(cmd, registry, resource_group, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, defer_immediate_run)
 
-def _trigger_task_run(cmd, registry, resource_group, task_name):
+def _trigger_task_run(cmd, registry, resource_group, task_name, defer_immediate_run):
     acr_task_registries_client = cf_acr_registries_tasks(cmd.cli_ctx)
-
     # check on the task.py file on acr's az cli on how to handle the model for other requests
     request = acr_task_registries_client.models.TaskRunRequest(
         task_id=f"{registry.id}/tasks/{task_name}"
@@ -135,7 +117,7 @@ def _create_encoded_task(task_file):
         # Convert bytes to string
         return base64_content.decode('utf-8')
 
-def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, dryrun):
+def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run):
     #should it get the current file and merge both jsons?
         # if this is the case, how do we remove the old config?
     #should it just overwrite the file?
@@ -168,6 +150,9 @@ def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, 
     )
 
     acr_task_client.begin_update(resource_group_name, registry.name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, taskUpdateParameters)
+    if not dryrun and not defer_immediate_run:
+        logger.debug('Triggering the continuous scanning task to run immediately')
+        _trigger_task_run(cmd, registry, resource_group_name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, defer_immediate_run)
    
 def delete_continuous_patch_v1(cmd, registry, dryrun):
     logger.debug("Entering continuousPatchV1_delete")
@@ -229,18 +214,14 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
                     role_assignment_name=role.name
                 )
 
-def list_continuous_patch_v1(cmd, registry, resource_group_name):
+def list_continuous_patch_v1(cmd, registry):
     logger.debug("Entering list_continuous_patch_v1")
 
     if not check_continuoustask_exists(cmd, registry):
         logger.warning("continuous patch OCI config does not exist")
 
-    # list all the tasks
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
-    #resource_group = parse_resource_id(registry.id)["resource_group"]
-    # tasks = LongRunningOperation(cmd.cli_ctx)(
-    #     acrtask_client.list(resource_group, registry.name))
-    #      "timerTriggers": next((t.schedule for t in x.trigger.timer_triggers if hasattr(t, 'schedule')), None)
+    resource_group_name = parse_resource_id(registry.id)["resource_group"]
     tasks_list = acr_task_client.list(resource_group_name, registry.name)
     filtered_cssc_tasks = _transform_task_list(tasks_list)
     return filtered_cssc_tasks
@@ -261,18 +242,30 @@ def _transform_task_list(tasks):
         # Extract cadence from trigger.timerTriggers if available
         trigger = obj.trigger
         if trigger and trigger.timer_triggers:
-            transformed_obj["cadence"] = trigger.timer_triggers[0].schedule
+            transformed_obj["cadence"] = _transform_cron_to_cadence(trigger.timer_triggers[0].schedule)
 
         transformed.append(transformed_obj)
 
     return transformed
 
+def _transform_cron_to_cadence(cron_expression):
+    parts = cron_expression.split()
+    # The third part of the cron expression
+    third_part = parts[2]
+    
+    match = re.search(r'\*/(\d+)', third_part)
+    
+    if match:
+        return match.group(1) + 'd'
+    else:
+        return None
+
 def acr_cssc_dry_run(cmd, registry, config_file_path):
     logger.debug("Entering acr_cssc_dry_run")
     resource_group_name = parse_resource_id(registry.id)["resource_group"]
     acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
-    acr_run_client = cf_acr_runs(cmd.cli_ctx)
-    acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
+    #acr_run_client = cf_acr_runs(cmd.cli_ctx)
+    #acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
     source_location = prepare_source_location(
          cmd, config_file_path, acr_registries_task_client, registry.name, resource_group_name)
     #acr_run(cmd, acr_run_client, registry.name, config_file_path)

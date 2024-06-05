@@ -8,43 +8,43 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['acr supply-chain'] = """
     type: group
-    short-summary: Commands to manage acr supply chain workflow.
+    short-summary: Commands to manage acr supply chain resources.
 """
 
-helps['acr supply-chain task'] = """
-    type: group
-    short-summary: Commands to manage acr supply chain workflow tasks.
+helps['acr supply-chain workflow'] = """
+    type: sub-group
+    short-summary: Commands to manage acr supply chain workflows.
 """
 
-helps['acr supply-chain task create'] = """
+helps['acr supply-chain workflow create'] = """
     type: command
-    short-summary: Create acr supply chain tasks.
+    short-summary: Create acr supply chain workflow.
     examples:
-        - name: Create acr supply chain task
-          text: az acr supply-chain task create -r $MyRegistry -g $MyResourceGroup \
-                --task-type ContinuousPatchV1 --cadence 1d --config path-to-config-file --dry-run false
+        - name: Create acr supply chain workflow
+          text: az acr supply-chain workflow create -r $MyRegistry -g $MyResourceGroup \
+                --type ContinuousPatchV1 --cadence 1d --config path-to-config-file --dry-run false
 """
-helps['acr supply-chain task update'] = """
+helps['acr supply-chain workflow update'] = """
     type: command
-    short-summary: Update acr supply chain task properties.
+    short-summary: Update acr supply chain workflow properties.
     examples:
-        - name: Updates acr supply chain task
-          text: az acr supply-chain task update -r $MyRegistry -g $MyResourceGroup --task-type \
+        - name: Updates acr supply chain workflow
+          text: az acr supply-chain workflow update -r $MyRegistry -g $MyResourceGroup --task-type \
                 ContinuousPatchV1 --cadence 1d --config path-to-config-file --dry-run false
 """
 
-helps['acr supply-chain task show'] = """
+helps['acr supply-chain workflow show'] = """
      type: command
-     short-summary: Show acr supply chain tasks.
+     short-summary: Show acr supply chain workflow tasks.
      examples:
-        - name: Show all acr supply chain tasks
-          text: az acr supply-chain task show -r $MyRegistry -g $MyResourceGroup --task-type ContinuousPatchV1
+        - name: Show all acr supply chain workflow
+          text: az acr supply-chain workflow show -r $MyRegistry -g $MyResourceGroup --type ContinuousPatchV1
 """
 
-helps['acr supply-chain task delete'] = """
+helps['acr supply-chain workflow delete'] = """
     type: command
-    short-summary: Delete acr supply chain tasks.
+    short-summary: Delete acr supply chain workflow.
     examples:
-        - name: Delete acr supply chain tasks and associated configuration files
-          text: az acr supply-chain task delete -r $MyRegistry -g $MyResourceGroup --task-type ContinuousPatchV1
+        - name: Delete acr supply chain workflow and associated configuration files
+          text: az acr supply-chain workflow delete -r $MyRegistry -g $MyResourceGroup --type ContinuousPatchV1
 """

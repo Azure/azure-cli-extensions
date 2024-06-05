@@ -20,7 +20,7 @@ from azure.cli.command_modules.acr._validators import validate_registry_name
 
 def load_arguments(self: AzCommandsLoader, _):
     from .helper._constants import CSSCTaskTypes
-    with self.argument_context("acr supply-chain task") as c:
+    with self.argument_context("acr supply-chain workflow") as c:
         c.argument(
             'resource_group',
             options_list=['--resource-group', '-g'],
@@ -39,9 +39,9 @@ def load_arguments(self: AzCommandsLoader, _):
             configured_default='acr',
             validator=validate_registry_name)
         c.argument(
-            "task_type",
+            "type",
             arg_type=get_enum_type(CSSCTaskTypes),
-            options_list=['--task-type', '-t'],
+            options_list=['--type', '-t'],
             help='Allowed values: ContinuousPatchV1'
         )
         # Overwrite default shorthand of cmd to make availability for acr usage
@@ -50,7 +50,7 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=['--__cmd__'],
             required=False
         )
-    with self.argument_context("acr supply-chain task create") as c:
+    with self.argument_context("acr supply-chain workflow create") as c:
         c.argument(
             "config",
             options_list=["--config"],
@@ -69,13 +69,20 @@ def load_arguments(self: AzCommandsLoader, _):
             required=True
         )
         c.argument(
-            "dryrun",
-            options_list=["--dry-run"],
-            help="Use this flag to see the qualifying repositories and tags that would be affected by the task.",
+            "defer_immediate_run",
+            options_list=["--defer-immediate-run"],
+            help="Use this flag to defer immediately running of selected workflow task.",
             arg_type=get_three_state_flag(),
             required=False
         )
-    with self.argument_context("acr supply-chain task update") as c:
+        c.argument(
+            "dryrun",
+            options_list=["--dry-run"],
+            help="Use this flag to see the qualifying repositories and tags that would be affected by the workflow.",
+            arg_type=get_three_state_flag(),
+            required=False
+        )
+    with self.argument_context("acr supply-chain workflow update") as c:
         c.argument(
             "config",
             options_list=["--config"],
@@ -92,25 +99,32 @@ def load_arguments(self: AzCommandsLoader, _):
             required=True
         )
         c.argument(
-            "dryrun",
-            options_list=["--dry-run"],
-            help="Use this flag to see the qualifying repositories \
-                and tags that would be affected by the task.",
+            "defer_immediate_run",
+            options_list=["--defer-immediate-run"],
+            help="Use this flag to defer immediately running of selected workflow task.",
             arg_type=get_three_state_flag(),
             required=False
         )
-    with self.argument_context("acr supply-chain task delete") as c:
+        c.argument(
+            "dryrun",
+            options_list=["--dry-run"],
+            help="Use this flag to see the qualifying repositories \
+                and tags that would be affected by the workflow.",
+            arg_type=get_three_state_flag(),
+            required=False
+        )
+    with self.argument_context("acr supply-chain workflow delete") as c:
          c.argument(
-            "task_type",
+            "type",
             arg_type=get_enum_type(CSSCTaskTypes),
-            options_list=["--task-type", "-t"],
-            help="Type of task to be created. E.g. ContinuousPatch",
+            options_list=["--type", "-t"],
+            help="Type of workflow to be created. E.g. ContinuousPatch",
          )
-    with self.argument_context("acr supply-chain task show") as c:
+    with self.argument_context("acr supply-chain workflow show") as c:
          c.argument(
-            "task_type",
+            "type",
             arg_type=get_enum_type(CSSCTaskTypes),
-            options_list=["--task-type", "-t"],
-            help="Type of task to be created. E.g. ContinuousPatch",
+            options_list=["--type", "-t"],
+            help="Type of workflow to be created. E.g. ContinuousPatch",
          )
          

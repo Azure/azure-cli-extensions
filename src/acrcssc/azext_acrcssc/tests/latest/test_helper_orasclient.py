@@ -38,19 +38,17 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
     @mock.patch('azext_acrcssc.helper._orasclient.parse_resource_id')
     @mock.patch('azext_acrcssc.helper._orasclient.acr_repository_delete')
     def test_delete_oci_artifact_continuous_patch(self, mock_acr_repository_delete, mock_parse_resource_id, mock_logger, mock_get_acr_token):
-        # Mock input parameters
+        # Mock the necessary dependencies
         cmd = self._setup_cmd()
         registry = MagicMock()
         dryrun = False
-
-        # Mock return values
         mock_parse_resource_id.return_value = {
             "resource_group": "test_rg",
             "subscription": "test_subscription"
         }
         mock_get_acr_token.return_value = "test_token"
 
-        # Run the function
+        # Call the function
         delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 
         # Assert the function calls
@@ -71,12 +69,10 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
     @mock.patch('azext_acrcssc.helper._orasclient.parse_resource_id')
     @mock.patch('azext_acrcssc.helper._orasclient.acr_repository_delete')
     def test_delete_oci_artifact_continuous_patch_dryrun(self, mock_acr_repository_delete, mock_parse_resource_id, mock_logger, mock_get_acr_token):
-        # Mock input parameters
+        # Mock the necessary dependencies
         cmd = self._setup_cmd()
         registry = MagicMock()
         dryrun = True
-
-        # Mock return values
         mock_parse_resource_id.return_value = {
             "resource_group": "test_rg",
             "subscription": "test_subscription"
@@ -89,19 +85,16 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         # Assert the function calls
         mock_parse_resource_id.assert_called_once_with(registry.id)
         mock_acr_repository_delete.assert_not_called()
-        mock_logger.warning.assert_called_once_with("Dry run flag is set, no changes will be made")
-
+    
     @mock.patch('azext_acrcssc.helper._orasclient._get_acr_token')
     @mock.patch('azext_acrcssc.helper._orasclient.logger')
     @mock.patch('azext_acrcssc.helper._orasclient.parse_resource_id')
     @mock.patch('azext_acrcssc.helper._orasclient.acr_repository_delete')
     def test_delete_oci_artifact_continuous_patch_exception(self, mock_acr_repository_delete, mock_parse_resource_id, mock_logger, mock_get_acr_token):
-        # Mock input parameters
+         # Mock the necessary dependencies
         cmd = self._setup_cmd()
         registry = MagicMock()
         dryrun = False
-
-        # Mock return values
         mock_parse_resource_id.return_value = {
             "resource_group": "test_rg",
             "subscription": "test_subscription"

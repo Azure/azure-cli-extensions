@@ -80,7 +80,7 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
         result = acr_repository_delete(
             cmd=cmd,
             registry_name=registry.name,
-            image=f"{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}",
+            image=f"{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}",
             username=BEARER_TOKEN_USERNAME,
             password=token,
             yes=not dryrun)

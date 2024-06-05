@@ -22,6 +22,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         cmd = self._setup_cmd()
         registry = mock.MagicMock()
         registry.id = "/subscriptions/11111111-0000-0000-0000-0000000000006/resourceGroups/test-rg/providers/Microsoft.ContainerRegistry/registries/testregistry"
+
         # Call the function
         create_continuous_patch_v1(cmd, registry, temp_file_path, "1d", False)
         
@@ -39,10 +40,10 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_acr_tasks')
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_authorization')
     def test_delete_continuous_patch_v1(self, mock_delete_oci_artifact, mock_cf_authorization, mock_cf_acr_tasks, mock_check_continuoustask_exists, mock_parse_resource_id):
-        # Arrange
+        # Mock the necessary dependencies
         cmd = self._setup_cmd()
-        mock_registry = mock.MagicMock()  # Replace with the appropriate registry object
-        mock_dryrun = False  # Replace with the desired value
+        mock_registry = mock.MagicMock()
+        mock_dryrun = False
         mock_check_continuoustask_exists.return_value = True
         mock_registry.id = 'registry_id'
         mock_resource_group = mock.MagicMock()
@@ -50,16 +51,14 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_registry.name = 'registry_name'
         mock_acr_tasks_client = mock.MagicMock()
         mock_cf_acr_tasks.return_value = mock_acr_tasks_client
-
         mock_role_client = mock.MagicMock()
         mock_cf_authorization.return_value = mock_role_client
-
         mock_task = mock.MagicMock()
         mock_task.identity = mock.MagicMock()(principal_id='principal_id')
         mock_acr_tasks_client.get.return_value = mock_task
         
         delete_continuous_patch_v1(cmd, mock_registry, mock_dryrun)
-        ## Assert
+        ## Assert here
         
     
     def _setup_cmd(self):

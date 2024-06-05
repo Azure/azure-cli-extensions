@@ -54,7 +54,6 @@ def check_continuoustask_exists(cmd, registry):
     return exists
 
 def _check_task_exists(cmd, registry, task_name = ""):
-    # use the client factory to use ACR's client to query for this task
     acrtask_client = cf_acr_tasks(cmd.cli_ctx)
     resourceid = parse_resource_id(registry.id)
     resource_group = resourceid["resource_group"]
