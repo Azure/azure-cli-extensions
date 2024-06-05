@@ -4,7 +4,11 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp job update': Support command in extension
+* 'az containerapp job logs show': Support log streaming for job execution
+* 'az containerapp job replica list': Support list replicas of a job execution
 * 'az containerapp env update': Fix logs configuration about removing destination with `--logs-destination none`
+* 'az containerapp auth update': Fix AuthConfigSecretRefNotFound when setting secret
 
 0.3.52
 ++++++

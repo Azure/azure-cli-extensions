@@ -8,6 +8,7 @@ import sys
 import time
 from urllib.parse import urlparse
 import json
+import requests
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from ._constants import DOTNET_COMPONENT_RESOURCE_TYPE
@@ -18,12 +19,12 @@ from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
-    ResourceNotFoundError,
     ValidationError,
     CLIError,
     CLIInternalError,
     InvalidArgumentValueError,
-    ResourceNotFoundError)
+    ResourceNotFoundError,
+    ArgumentUsageError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
@@ -53,7 +54,7 @@ from msrest.exceptions import DeserializationError
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
     ContainerappEnvCertificatePreviweUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
-from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
+from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator, ContainerAppJobPreviewUpdateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
 from .containerapp_java_decorator import ContainerappJavaLoggerDecorator, ContainerappJavaLoggerSetDecorator, ContainerappJavaLoggerDeleteDecorator
 from .containerapp_resiliency_decorator import (
@@ -947,6 +948,51 @@ def create_containerappsjob(cmd,
     return r
 
 
+def update_containerappsjob(cmd,
+                            name,
+                            resource_group_name,
+                            yaml=None,
+                            image=None,
+                            container_name=None,
+                            replica_timeout=None,
+                            replica_retry_limit=None,
+                            replica_completion_count=None,
+                            parallelism=None,
+                            cron_expression=None,
+                            set_env_vars=None,
+                            remove_env_vars=None,
+                            replace_env_vars=None,
+                            remove_all_env_vars=False,
+                            cpu=None,
+                            memory=None,
+                            startup_command=None,
+                            args=None,
+                            scale_rule_metadata=None,
+                            scale_rule_name=None,
+                            scale_rule_type=None,
+                            scale_rule_auth=None,
+                            polling_interval=None,
+                            min_executions=None,
+                            max_executions=None,
+                            tags=None,
+                            workload_profile_name=None,
+                            no_wait=False):
+    raw_parameters = locals()
+
+    containerapp_job_update_decorator = ContainerAppJobPreviewUpdateDecorator(
+        cmd=cmd,
+        client=ContainerAppsJobPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_job_update_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_job_update_decorator.validate_arguments()
+
+    containerapp_job_update_decorator.construct_payload()
+    r = containerapp_job_update_decorator.update()
+    return r
+
+
 def show_containerappsjob(cmd, name, resource_group_name):
     raw_parameters = locals()
     containerapp_job_decorator = ContainerAppJobDecorator(
@@ -1355,7 +1401,12 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
 
     containerapp_auth_decorator.construct_payload()
     if containerapp_auth_decorator.get_argument_token_store() and containerapp_auth_decorator.get_argument_sas_url_secret() is not None:
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=True, disable_max_length=True)
+        if not containerapp_auth_decorator.get_argument_yes():
+            msg = 'Configuring --sas-url-secret will add a secret to the containerapp. Are you sure you want to continue?'
+            if not prompt_y_n(msg, default="n"):
+                raise ArgumentUsageError(
+                    'Usage Error: --sas-url-secret cannot be used without agreeing to add secret to the containerapp.')
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=False, disable_max_length=True)
     return containerapp_auth_decorator.create_or_update()
 
 
@@ -2689,6 +2740,73 @@ def list_environment_telemetry_otlp(cmd,
     return containerapp_env_def
 
 
+def list_replica_containerappsjob(cmd, resource_group_name, name, execution=None):
+    if execution is None:
+        executions = ContainerAppsJobPreviewClient.get_executions(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        execution = executions['value'][0]['name']
+        logger.warning('No execution specified. Using the latest execution: %s', execution)
+    try:
+        replicas = ContainerAppsJobPreviewClient.get_replicas(cmd, resource_group_name, name, execution)
+        return replicas['value']
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def stream_job_logs(cmd, resource_group_name, name, container, execution=None, replica=None, follow=False, tail=None, output_format=None):
+    if tail:
+        if tail < 0 or tail > 300:
+            raise ValidationError("--tail must be between 0 and 300.")
+
+    sub = get_subscription_id(cmd.cli_ctx)
+    token_response = ContainerAppsJobPreviewClient.get_auth_token(cmd, resource_group_name, name)
+    token = token_response["properties"]["token"]
+
+    job = ContainerAppsJobPreviewClient.show(cmd, resource_group_name, name)
+    base_url = job["properties"]["eventStreamEndpoint"]
+    base_url = base_url[:base_url.index("/subscriptions/")]
+
+    if execution is None and replica is not None:
+        raise ValidationError("Cannot specify a replica without an execution")
+
+    if execution is None:
+        executions = ContainerAppsJobPreviewClient.get_executions(cmd, resource_group_name, name)['value']
+        if not executions:
+            raise ValidationError("No executions found for this job")
+        execution = executions[0]["name"]
+        logger.warning("No execution provided, defaulting to latest execution: %s", execution)
+
+    if replica is None:
+        replicas = ContainerAppsJobPreviewClient.get_replicas(cmd, resource_group_name, name, execution)['value']
+        if not replicas:
+            raise ValidationError("No replicas found for execution")
+        replica = replicas[0]["name"]
+        logger.warning("No replica provided, defaulting to latest replica: %s", replica)
+
+    url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/jobs/{name}"
+           f"/executions/{execution}/replicas/{replica}/containers/{container}/logstream")
+
+    logger.info("connecting to : %s", url)
+    request_params = {"follow": str(follow).lower(),
+                      "output": output_format,
+                      "tailLines": tail}
+    headers = {"Authorization": f"Bearer {token}"}
+    resp = requests.get(url,
+                        timeout=None,
+                        stream=True,
+                        params=request_params,
+                        headers=headers)
+
+    if not resp.ok:
+        raise ValidationError(f"Got bad status from the logstream API: {resp.status_code}. Error: {str(resp.content)}")
+
+    for line in resp.iter_lines():
+        if line:
+            logger.info("received raw log line: %s", line)
+            # these .replaces are needed to display color/quotations properly
+            # for some reason the API returns garbled unicode special characters (may need to add more in the future)
+            print(line.decode("utf-8").replace("\\u0022", "\u0022").replace("\\u001B", "\u001B").replace("\\u002B", "\u002B").replace("\\u0027", "\u0027"))
+
+
 def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_group_name, no_wait=False):
     raw_parameters = locals()
     containerapp_java_logger_set_decorator = ContainerappJavaLoggerSetDecorator(
@@ -3021,5 +3139,4 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
         aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
         logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
-
     return
