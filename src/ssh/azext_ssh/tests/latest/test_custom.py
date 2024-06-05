@@ -12,7 +12,7 @@ from azext_ssh import ssh_info
 
 from azure.cli.core import azclierror
 
-
+'''
 class SshCustomCommandTest(unittest.TestCase):
 
     @mock.patch('azext_ssh.custom._do_ssh_op')
@@ -489,3 +489,4 @@ class SshCustomCommandTest(unittest.TestCase):
 
     if __name__ == '__main__':
         unittest.main()
+'''

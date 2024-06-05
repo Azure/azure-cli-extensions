@@ -221,7 +221,7 @@ def _handle_relay_connection_delay(cmd, message):
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
-def get_client_side_proxy(arc_proxy_folder):
+def install_client_side_proxy(arc_proxy_folder):
 
     client_operating_system = _get_client_operating_system()
     client_architecture = _get_client_architeture()
@@ -241,6 +241,7 @@ def get_client_side_proxy(arc_proxy_folder):
                 file_utils.delete_file(f, f"failed to delete older version file {f}", warning=True)
 
         _download_proxy_from_MCR(install_dir, proxy_name, client_operating_system, client_architecture)
+        _check_proxy_installation(install_dir, proxy_name)
 
     return install_location
 
@@ -267,7 +268,6 @@ def _download_proxy_from_MCR(dest_dir, proxy_name, operating_system, architectur
     telemetry.add_extension_event('ssh', proxy_data)
 
     proxy_package_path = _get_proxy_package_path_from_oras_response(response)
-
     _extract_proxy_tar_files(proxy_package_path, dest_dir, proxy_name)
     file_utils.delete_file(proxy_package_path, f"Failed to delete {proxy_package_path}. Please delete manually.", True)
 
@@ -286,29 +286,52 @@ def _get_proxy_package_path_from_oras_response(pull_response):
     if not os.path.isfile(proxy_package_path):
         raise azclierror.CLIInternalError("Unable to download Arc Connectivity Proxy. Please try again.")
     
+    logger.debug(f"Proxy package downloaded to {proxy_package_path}")
+    
     return proxy_package_path
 
 
 def _extract_proxy_tar_files(proxy_package_path, install_dir, proxy_name):
     with tarfile.open(proxy_package_path, 'r:gz') as tar:
+        members = []
         for member in tar.getmembers():
             if member.isfile():
                 filenames = member.name.split('/')
                 
                 if len(filenames) != 2:
+                    tar.close()
                     file_utils.delete_file(proxy_package_path, f"Failed to delete {proxy_package_path}. Please delete it manually.", True)
                     raise azclierror.CLIInternalError("Attempt to download Arc Connectivity Proxy returned unnexpected result. Please try again.")
                 
                 member.name = filenames[1]
 
-                if member.name.lower() not in ['sshproxy.exe', 'license.txt', 'thirdpartynotice.txt']:
-                    file_utils.delete_file(proxy_package_path, f"Failed to delete {proxy_package_path}. Please delete it manually.", True)
-                    raise azclierror.CLIInternalError("Attempt to download Arc Connectivity Proxy returned unnexpected result. Please try again.")
-
                 if member.name.startswith('sshproxy'):
                     member.name = proxy_name
-                tar.extract(member, path=install_dir)
+                elif member.name.lower() not in ['license.txt', 'thirdpartynotice.txt']:
+                    tar.close()
+                    file_utils.delete_file(proxy_package_path, f"Failed to delete {proxy_package_path}. Please delete it manually.", True)
+                    raise azclierror.CLIInternalError("Attempt to download Arc Connectivity Proxy returned unnexpected result. Please try again.")              
 
+                members.append(member)
+        
+        tar.extractall(members=members, path=install_dir)
+
+
+def _check_proxy_installation(install_dir, proxy_name):
+    proxy_filepath = os.path.join(install_dir, proxy_name)
+    if os.path.isfile(proxy_filepath):
+        print_styled_text((Style.SUCCESS, f"Successfuly installed SSH Connectivity Proxy file {proxy_filepath}"))
+    else:
+        raise azclierror.CLIInternalError(f"Failed to install required SSH Arc Connectivity Proxy. Couldn't find expected file {proxy_filepath}. Please try again.")
+    
+    license_files = ["License.txt", "ThirdPartyNotice.txt"]
+    for file in license_files:
+        file_location = os.path.join(install_dir, file)
+        if os.path.isfile(file_location):
+            print_styled_text((Style.SUCCESS, f"Successfuly installed SSH Connectivity Proxy License file {file_location}"))
+        else:
+            logger.warning(f"Failed to download Arc Connectivity Proxy license file {file}. Clouldn't find expected file {file_location}. This won't affect your connection.")
+        
 
 def _get_proxy_filename(operating_system, architecture):
     proxy_filename = f"sshProxy_{operating_system.lower()}_{architecture}_{consts.CLIENT_PROXY_VERSION.replace('.', '_')}"

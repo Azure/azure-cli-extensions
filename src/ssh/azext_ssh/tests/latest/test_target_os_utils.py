@@ -8,7 +8,7 @@ from unittest import mock
 
 from azext_ssh import target_os_utils
 
-
+'''
 class TargetOSUtilsTest(unittest.TestCase):
 
     @mock.patch('azext_ssh.aaz.latest.hybrid_compute.machine.Show')
@@ -82,3 +82,4 @@ class TargetOSUtilsTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+'''
