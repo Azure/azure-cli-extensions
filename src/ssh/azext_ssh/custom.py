@@ -61,7 +61,7 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
                                       ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt)
     ssh_session.resource_type = resource_type_utils.decide_resource_type(cmd, ssh_session)
     target_os_utils.handle_target_os_type(cmd, ssh_session)
-
+            
     _do_ssh_op(cmd, ssh_session, op_call)
 
 
