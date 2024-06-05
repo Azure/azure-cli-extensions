@@ -147,9 +147,12 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
             panel_folder_name = content["result"]["meta"]["folderName"]
 
             # user error case where library panel in dashboard is not in an excluded folder
-            included = folders_to_include
-            excluded = folders_to_exclude
-            if (included and panel_folder_name not in included) or (excluded and panel_folder_name in excluded):
+            if folders_to_include and panel_folder_name.lower() not in [f.lower() for f in folders_to_include]:
+                logger.warning("Skipping library panel from excluded folder: %s",
+                               panel_folder_name + "/" + panel_name)
+                library_panel_skipped = True
+                continue
+            if folders_to_exclude and panel_folder_name.lower() in [f.lower() for f in folders_to_exclude]:
                 logger.warning("Skipping library panel from excluded folder: %s",
                                panel_folder_name + "/" + panel_name)
                 library_panel_skipped = True
@@ -179,7 +182,7 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
 
         dashboard_path = folder_title + "/" + dashboard_title
         if library_panel_skipped:
-            logger.warning("Skipping dashboard due to missing library panel: %s", dashboard_path)
+            logger.warning("Skipping dashboard due to missing library panel(s): %s", dashboard_path)
             if folder_title not in dashboards_skipped_summary:
                 dashboards_skipped_summary[folder_title] = []
             dashboards_skipped_summary[folder_title].append(dashboard_title)
