@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, unused-variable, redefined-outer-name, reimported, unused-import, consider-using-generator, broad-exception-raised
 import platform
 import subprocess
 import stat
@@ -739,4 +739,3 @@ class AppType(Enum):
     ContainerApp = 1
     ContainerAppJob = 2
     SessionPool = 3
-

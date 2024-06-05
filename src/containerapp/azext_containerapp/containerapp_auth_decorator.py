@@ -2,13 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from typing import Any, Dict
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
 
 from azure.cli.command_modules.containerapp.containerapp_auth_decorator import ContainerAppAuthDecorator
 from azure.cli.command_modules.containerapp._utils import safe_set
 
 from ._constants import BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME
-from knack.prompting import prompt_y_n
 from azure.cli.core.azclierror import ArgumentUsageError
 
 

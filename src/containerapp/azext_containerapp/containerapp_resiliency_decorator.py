@@ -3,6 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
 
 from typing import Dict, Any
 
@@ -110,7 +111,7 @@ class ContainerAppResiliencyDecorator(BaseResource):
     def validate_max_ejection(self):
         max_ejection = self.get_argument_circuit_breaker_max_ejection()
         if max_ejection is not None and (max_ejection < 1 or max_ejection > 100):
-            raise ValidationError(f"--cb-max-ejection must be between 1 and 100")
+            raise ValidationError("--cb-max-ejection must be between 1 and 100")
 
     def validate_arguments(self):
         self.validate_positive_argument("circuit_breaker_consecutive_errors", "cb-sequential-errors")

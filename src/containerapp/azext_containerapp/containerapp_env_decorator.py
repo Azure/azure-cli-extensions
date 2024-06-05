@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
+
 from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set, _ensure_identity_resource_id, load_cert_file
 from knack.log import get_logger
 
@@ -21,7 +23,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         return self.get_param("infrastructure_resource_group")
 
     def construct_payload(self):
-        ### copy from the parent construct_payload
+        # copy from the parent construct_payload
         self.set_up_app_log_configuration()
 
         self.managed_env_def["location"] = self.get_argument_location()
@@ -37,9 +39,9 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         self.set_up_vnet_configuration()
 
         self.set_up_peer_to_peer_encryption()
-        ### copy end
+        # copy end
 
-        ### overwrite custom_domain_configuration
+        # overwrite custom_domain_configuration
         self.set_up_custom_domain_configuration()
 
         self.set_up_infrastructure_resource_group()
@@ -64,7 +66,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 raise ValidationError("Cannot use --certificate-file with --certificate-akv-url at the same time")
             if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
                 raise ValidationError("Either --certificate-file or --certificate-akv-url should be set when --dns-suffix is set")
-            
+
         # validate mtls and p2p traffic encryption
         if self.get_argument_p2p_encryption_enabled() is False and self.get_argument_mtls_enabled() is True:
             raise ValidationError("Cannot use '--enable-mtls' with '--enable-peer-to-peer-encryption False'")
@@ -194,7 +196,7 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         # validate custom domain configuration
         if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
             raise ValidationError("Cannot use certificate --certificate-file with --certificate-akv-url at the same time")
-        
+
         # validate mtls and p2p traffic encryption
         if self.get_argument_p2p_encryption_enabled() is False and self.get_argument_mtls_enabled() is True:
             raise ValidationError("Cannot use '--enable-mtls' with '--enable-peer-to-peer-encryption False'")

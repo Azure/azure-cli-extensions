@@ -128,6 +128,7 @@ from ._constants import (CONTAINER_APPS_RP,
 
 logger = get_logger(__name__)
 
+
 def list_all_services(cmd, environment_name, resource_group_name):
     services = list_containerapp(cmd, resource_group_name=resource_group_name, managed_env=environment_name)
     dev_service_list = []
@@ -731,7 +732,7 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
-                               certificate_identity = None,
+                               certificate_identity=None,
                                certificate_key_vault_url=None,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
@@ -768,7 +769,7 @@ def update_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
-                               certificate_identity = None,
+                               certificate_identity=None,
                                certificate_key_vault_url=None,
                                tags=None,
                                workload_profile_type=None,
@@ -1311,7 +1312,7 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
     return containerapp_env_certificate_list_decorator.list()
 
 
-def upload_certificate(cmd, name, resource_group_name, certificate_file=None, certificate_name=None, certificate_password=None, location=None, prompt=False, certificate_identity = None, certificate_key_vault_url=None):
+def upload_certificate(cmd, name, resource_group_name, certificate_file=None, certificate_name=None, certificate_password=None, location=None, prompt=False, certificate_identity=None, certificate_key_vault_url=None):
     raw_parameters = locals()
 
     containerapp_env_certificate_upload_decorator = ContainerappEnvCertificatePreviweUploadDecorator(
@@ -2392,6 +2393,7 @@ def show_admin_for_spring(cmd, java_component_name, environment_name, resource_g
 def delete_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, no_wait)
 
+
 def set_environment_telemetry_data_dog(cmd,
                                        name,
                                        resource_group_name,
@@ -2916,6 +2918,7 @@ def delete_session_pool(cmd,
 
     return r
 
+
 # session code interpreter commands
 def execute_session_code_interpreter(cmd,
                                      name,
@@ -2939,6 +2942,7 @@ def execute_session_code_interpreter(cmd,
 
     return r
 
+
 def upload_session_code_interpreter(cmd,
                                     name,
                                     resource_group_name,
@@ -2957,6 +2961,7 @@ def upload_session_code_interpreter(cmd,
     r = session_code_interpreter_decorator.upload()
 
     return r
+
 
 def show_file_content_session_code_interpreter(cmd,
                                                name,
@@ -2977,6 +2982,7 @@ def show_file_content_session_code_interpreter(cmd,
 
     return r
 
+
 def show_file_metadata_session_code_interpreter(cmd,
                                                 name,
                                                 resource_group_name,
@@ -2995,6 +3001,7 @@ def show_file_metadata_session_code_interpreter(cmd,
     r = session_code_interpreter_decorator.show_file_metadata()
 
     return r
+
 
 def list_files_session_code_interpreter(cmd,
                                         name,
@@ -3015,6 +3022,7 @@ def list_files_session_code_interpreter(cmd,
 
     return r
 
+
 def delete_file_session_code_interpreter(cmd,
                                          name,
                                          resource_group_name,
@@ -3033,6 +3041,7 @@ def delete_file_session_code_interpreter(cmd,
     r = session_code_interpreter_decorator.delete_file()
 
     return r
+
 
 def list_dotnet_components(cmd, environment_name, resource_group_name):
     raw_parameters = locals()

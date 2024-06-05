@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
 from typing import Dict, Any
 from urllib.parse import urlparse
 
@@ -980,7 +980,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                         "java": runtime_java_def
                     }
             safe_set(self.containerapp_def, "properties", "configuration", "runtime", value=runtime_def)
-    
+
     # pylint: disable=unsupported-assignment-operation
     def set_up_scale_rule(self):
         scale_def = super().set_up_scale_rule()
@@ -1051,7 +1051,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def get_argument_enable_java_agent(self):
         return self.get_param("enable_java_agent")
-    
+
     def get_argument_scale_rule_identity(self):
         return self.get_param("scale_rule_identity")
 
@@ -1097,7 +1097,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is
     def get_argument_force_single_container_updates(self):
         return self.get_param("force_single_container_updates")
-    
+
     def get_argument_scale_rule_identity(self):
         return self.get_param("scale_rule_identity")
 

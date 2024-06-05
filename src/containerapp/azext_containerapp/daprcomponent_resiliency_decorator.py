@@ -3,6 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
 
 from typing import Any, Dict
 
@@ -127,7 +128,6 @@ class DaprComponentResiliencyDecorator(BaseResource):
                 break
         if argument_group_in_use and first_validation_error is not None:
             raise first_validation_error
-
 
     def validate_arguments(self):
         self.validate_positive_argument("in_timeout_response_in_seconds", "in-timeout")

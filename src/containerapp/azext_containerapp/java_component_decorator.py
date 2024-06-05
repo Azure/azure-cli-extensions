@@ -3,6 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
 
 from typing import Any, Dict
 
@@ -32,25 +33,25 @@ class JavaComponentDecorator(BaseResource):
 
     def get_argument_environment_name(self):
         return self.get_param("environment_name")
-    
+
     def get_environment_id(self, cmd: AzCliCommand):
         return resource_id(
-                subscription=get_subscription_id(cmd.cli_ctx),
-                resource_group=self.get_argument_resource_group_name(),
-                namespace=CONTAINER_APPS_RP,
-                type=MANAGED_ENVIRONMENT_RESOURCE_TYPE,
-                name=self.get_argument_environment_name()
-            )
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=self.get_argument_resource_group_name(),
+            namespace=CONTAINER_APPS_RP,
+            type=MANAGED_ENVIRONMENT_RESOURCE_TYPE,
+            name=self.get_argument_environment_name()
+        )
 
     def get_argument_java_component_name(self):
         return self.get_param("java_component_name")
 
     def get_argument_target_java_component_type(self):
         return self.get_param("target_java_component_type")
-    
+
     def get_argument_service_bindings(self):
         return self.get_param("service_bindings")
-    
+
     def get_argument_unbind_service_bindings(self):
         return self.get_param("unbind_service_bindings")
 
