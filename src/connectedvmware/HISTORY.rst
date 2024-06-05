@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.0.2
+1.1.0
 ++++++
 * Prompt credentials if not provided for Guest Agent.
 
