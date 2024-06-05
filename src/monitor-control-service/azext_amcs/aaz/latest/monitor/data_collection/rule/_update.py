@@ -162,7 +162,7 @@ class Update(AAZCommand):
         _element = cls._args_schema.agent_settings.logs.Element
         _element.name = AAZStrArg(
             options=["name"],
-            help="The name of the setting.  Must be part of the list of supported settings",
+            help="The name of the setting. Must be part of the list of supported settings",
             nullable=True,
             enum={"MaxDiskQuotaInMB": "MaxDiskQuotaInMB", "UseTimeReceivedForForwardedEvents": "UseTimeReceivedForForwardedEvents"},
             enum_support_extension=True,
@@ -728,7 +728,7 @@ class Update(AAZCommand):
         )
         _element.name = AAZStrArg(
             options=["name"],
-            help="A friendly name for the destination.  This name should be unique across all destinations (regardless of type) within the data collection rule.",
+            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
             nullable=True,
         )
         _element.resource_id = AAZStrArg(
@@ -818,7 +818,7 @@ class Update(AAZCommand):
         )
         _element.name = AAZStrArg(
             options=["name"],
-            help="A friendly name for the destination.  This name should be unique across all destinations (regardless of type) within the data collection rule.",
+            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
             nullable=True,
         )
         _element.tenant_id = AAZStrArg(
