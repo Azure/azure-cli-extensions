@@ -210,7 +210,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager security-admin-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} '
-                 '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
+                 '--applies-to-groups network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 
         self.cmd('network manager security-admin-config rule-collection rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
                  '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"',
@@ -268,7 +268,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager security-admin-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} '
-                 '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
+                 '--applies-to-groups network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 
         self.cmd('network manager security-admin-config rule-collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
 
@@ -314,7 +314,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager security-user-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} '
-                 '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
+                 '--applies-to-groups network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 
         self.cmd('network manager security-user-config rule-collection rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
                  '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --direction "Inbound"')
@@ -357,7 +357,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager security-user-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} '
-                 '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
+                 '--applies-to-groups network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 
         self.cmd('network manager security-user-config rule-collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-user-config rule-collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
@@ -394,7 +394,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--applies-to-groups group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
+                 '--applies-to-group group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
                  'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
                  'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
                  'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
@@ -580,3 +580,62 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
+
+    @serial_test()
+    @ResourceGroupPreparer(name_prefix='test_network_manager_routing_config_crud', location='eastus2')
+    def test_network_manager_routing_config_crud(self, resource_group):
+        self.kwargs.update({
+            'manager_name': 'TestNetworkManager',
+            "group_name": 'TestNetworkManagerGroup',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            "routing_config": self.create_random_name("routing-config-", 20),
+            "rule_collection": self.create_random_name("rule-collection-", 20),
+            "rule_name": self.create_random_name("rule-", 10),
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
+                 '--scope-accesses "Routing" '
+                 '--network-manager-scopes '
+                 'subscriptions={sub} '
+                 '-l eastus2 '
+                 '--resource-group {rg}')
+
+        manager_group = self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()
+
+        self.kwargs.update({
+            'manager_id': manager_group['id'],
+        })
+
+        self.cmd('az network manager routing-config create --name {routing_config} --manager-name {manager_name} --resource-group {rg}',
+                 self.check('name', '{routing_config}'))
+        self.cmd('az network manager routing-config list --manager-name {manager_name} --resource-group {rg}',
+                 self.check('length(@)', 1))
+        self.cmd('az network manager routing-config show --name {routing_config} --manager-name {manager_name} --resource-group {rg}',
+                 self.check('name', '{routing_config}'))
+        self.cmd('az network manager routing-config update --name {routing_config} --manager-name {manager_name} --resource-group {rg} --description "test"',
+                 self.check('description', 'test'))
+
+        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --local-route-setting NotSpecified --applies-to [{{"network_group_id":{manager_id}}}] --disable-bgp-route true',
+                 self.check('name', '{rule_collection}'))
+        self.cmd('az network manager routing-config rule-collection list --config-name {routing_config} --manager-name {manager_name} --resource-group {rg}',
+                 self.check('length(@)', 1))
+        self.cmd('az network manager routing-config rule-collection show --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg}',
+                 self.check('name', '{rule_collection}'))
+        self.cmd('az network manager routing-config rule-collection update --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --description "test"',
+                 self.check('description', 'test'))
+
+        self.cmd('az network manager routing-config rule-collection rule create --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} --destination {{"destination_address":"10.0.0.0/16","type":"AddressPrefix"}} --next-hop {{"next_hop_type":"VirtualNetworkGateway"}}',
+                 self.check('name', '{rule_name}'))
+        self.cmd('az network manager routing-config rule-collection rule list --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --resource-group {rg}',
+                 self.check('length(@)', 1))
+        self.cmd('az network manager routing-config rule-collection rule show --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg}',
+                 self.check('name', '{rule_name}'))
+        self.cmd('az network manager routing-config rule-collection rule update --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} --description "test"',
+                 self.check('description', 'test'))
+
+        self.cmd('az network manager routing-config rule-collection rule delete --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} -y')
+        self.cmd('az network manager routing-config rule-collection delete --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} -y')
+        self.cmd('az network manager routing-config delete --name {routing_config} --manager-name {manager_name} --resource-group {rg} -y')
+
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
+

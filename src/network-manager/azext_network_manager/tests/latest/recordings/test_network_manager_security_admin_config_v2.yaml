@@ -19,40 +19,36 @@ interactions:
       ParameterSetName:
       - --name --description --scope-accesses --network-manager-scopes -l --resource-group
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2023-09-01
   response:
     body:
       string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"description":"My
-        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"d74d1a98-879b-41d5-a688-afdccf533481"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:19:31.0531394Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:19:31.0531394Z"}}'
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"a8083db7-34e3-45a6-94d3-973b92c4f901"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:02.2229158Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:02.2229158Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '888'
+      - '890'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:19:31 GMT
+      - Thu, 30 May 2024 10:40:04 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/96060c5c-3fba-407b-986c-a1a3a7ea6c52
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
+      x-msedge-ref:
+      - 'Ref A: 24B61618298C474F869C81298EF117A7 Ref B: TYO201151006011 Ref C: 2024-05-30T10:39:59Z'
     status:
       code: 200
       message: OK
@@ -75,38 +71,36 @@ interactions:
       ParameterSetName:
       - --configuration-name --network-manager-name -g --description --apply-on
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2022-05-01
   response:
     body:
       string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"","properties":{"description":"A
-        sample policy","provisioningState":"Succeeded","resourceGuid":"01a2ff11-81d3-4f1d-8273-35ddc2871546","applyOnNetworkIntentPolicyBasedServices":["None"]},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:19:34.7181563Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:19:34.7181563Z"}}'
+        sample policy","provisioningState":"Succeeded","resourceGuid":"b7dff4cc-d474-45d4-bd17-db48aaeaac82","applyOnNetworkIntentPolicyBasedServices":["None"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:06.2009217Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:06.2009217Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '774'
+      - '827'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:19:35 GMT
+      - Thu, 30 May 2024 10:40:06 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: 36899560387041E4808BB7ED7DDF1671 Ref B: TYO201100114045 Ref C: 2024-05-30T10:40:05Z'
     status:
       code: 200
       message: OK
@@ -124,36 +118,34 @@ interactions:
       ParameterSetName:
       - --configuration-name --network-manager-name -g --description --apply-on
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2022-05-01
   response:
     body:
-      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"71001199-0000-0200-0000-64ec2e660000\"","properties":{"description":"A
-        sample policy","provisioningState":"Succeeded","resourceGuid":"01a2ff11-81d3-4f1d-8273-35ddc2871546","applyOnNetworkIntentPolicyBasedServices":["None"]},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:19:34.7181563Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:19:34.7181563Z"}}'
+      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"22029d86-0000-0200-0000-665857890000\"","properties":{"description":"A
+        sample policy","provisioningState":"Succeeded","resourceGuid":"b7dff4cc-d474-45d4-bd17-db48aaeaac82","applyOnNetworkIntentPolicyBasedServices":["None"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:06.2009217Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:06.2009217Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '814'
+      - '867'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:19:36 GMT
+      - Thu, 30 May 2024 10:40:09 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 5F910FB6CE5742F887245CAED2952F89 Ref B: TYO201100114031 Ref C: 2024-05-30T10:40:08Z'
     status:
       code: 200
       message: OK
@@ -176,37 +168,35 @@ interactions:
       ParameterSetName:
       - --configuration-name --network-manager-name -g --description --apply-on
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2022-05-01
   response:
     body:
-      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"01a2ff11-81d3-4f1d-8273-35ddc2871546","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"]},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:19:34.7181563Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:19:37.1243776Z"}}'
+      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"b7dff4cc-d474-45d4-bd17-db48aaeaac82","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:06.2009217Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:10.7989568Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '785'
+      - '838'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:19:37 GMT
+      - Thu, 30 May 2024 10:40:11 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1196'
+      x-msedge-ref:
+      - 'Ref A: 0E62D08851D94BEF870BF2DD7DAF2773 Ref B: TYO201100114031 Ref C: 2024-05-30T10:40:10Z'
     status:
       code: 200
       message: OK
@@ -224,35 +214,33 @@ interactions:
       ParameterSetName:
       - --network-manager-name -g
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations?api-version=2022-05-01
   response:
     body:
-      string: '{"nextLink":"","value":[{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"71003f99-0000-0200-0000-64ec2e690000\"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"01a2ff11-81d3-4f1d-8273-35ddc2871546","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"]},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:19:34.7181563Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:19:37.1243776Z"}}]}'
+      string: '{"nextLink":"","value":[{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"2202a287-0000-0200-0000-6658578e0000\"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"b7dff4cc-d474-45d4-bd17-db48aaeaac82","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:06.2009217Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:10.7989568Z"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '851'
+      - '904'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:19:38 GMT
+      - Thu, 30 May 2024 10:40:14 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: CB6D9D98C03F4D2D8FE5474C17B00126 Ref B: TYO201100113031 Ref C: 2024-05-30T10:40:12Z'
     status:
       code: 200
       message: OK
@@ -270,35 +258,33 @@ interactions:
       ParameterSetName:
       - --configuration-name --network-manager-name -g
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2022-05-01
   response:
     body:
-      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"71003f99-0000-0200-0000-64ec2e690000\"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"01a2ff11-81d3-4f1d-8273-35ddc2871546","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"]},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:19:34.7181563Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:19:37.1243776Z"}}'
+      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"22026d88-0000-0200-0000-6658578f0000\"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"b7dff4cc-d474-45d4-bd17-db48aaeaac82","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:06.2009217Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:10.7989568Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '825'
+      - '878'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:19:39 GMT
+      - Thu, 30 May 2024 10:40:18 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3C783A9AC6954991B6B137DCC686D30D Ref B: TYO201100115023 Ref C: 2024-05-30T10:40:16Z'
     status:
       code: 200
       message: OK
@@ -318,7 +304,7 @@ interactions:
       ParameterSetName:
       - --configuration-name --network-manager-name -g --force --yes
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?force=true&api-version=2022-05-01
   response:
@@ -330,19 +316,21 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 28 Aug 2023 05:19:42 GMT
+      - Thu, 30 May 2024 10:40:19 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: F86B83F9DB0E46948B3FACA648514E72 Ref B: TYO201100116027 Ref C: 2024-05-30T10:40:19Z'
     status:
       code: 200
       message: OK
@@ -362,9 +350,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name --force --yes
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?force=true&api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?force=true&api-version=2023-09-01
   response:
     body:
       string: ''
@@ -374,19 +362,21 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 28 Aug 2023 05:19:45 GMT
+      - Thu, 30 May 2024 10:40:25 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
+      x-msedge-ref:
+      - 'Ref A: 1518516D8F274635B0D2E9E5C3D8FBBE Ref B: TYO201100113039 Ref C: 2024-05-30T10:40:21Z'
     status:
       code: 200
       message: OK

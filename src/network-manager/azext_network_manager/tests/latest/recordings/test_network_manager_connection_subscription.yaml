@@ -19,40 +19,36 @@ interactions:
       ParameterSetName:
       - --name --description --scope-accesses --network-manager-scopes -l --resource-group
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2023-09-01
   response:
     body:
       string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"description":"My
-        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"994898c5-29b3-4925-af99-4861a7179ea2"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:17:56.1535677Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:17:56.1535677Z"}}'
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"48973167-aa9a-4963-bd2c-d2d360ec4cbb"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T09:54:49.0590957Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T09:54:49.0590957Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '887'
+      - '889'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:17:57 GMT
+      - Thu, 30 May 2024 09:54:50 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/179189ee-c654-49c6-8d7f-42c6d25e3c52
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: A3CD5077950B4223BB1230F024D61830 Ref B: TYO201100115017 Ref C: 2024-05-30T09:54:46Z'
     status:
       code: 200
       message: OK
@@ -75,38 +71,36 @@ interactions:
       ParameterSetName:
       - --connection-name --description --network-manager-id
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Pending","description":"My
-        Test Network Manager Connection"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:17:59.5404340Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:17:59.5404340Z"}}'
+        Test Network Manager Connection"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T09:54:53.1729489Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T09:54:53.1729489Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '774'
+      - '776'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:18:00 GMT
+      - Thu, 30 May 2024 09:54:56 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 40DCFC409475411E9203829F263BC4DA Ref B: TYO201151004052 Ref C: 2024-05-30T09:54:52Z'
     status:
       code: 200
       message: OK
@@ -124,36 +118,34 @@ interactions:
       ParameterSetName:
       - --connection-name
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Connected","description":"My
-        Test Network Manager Connection"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:17:59.5404340Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:17:59.5404340Z"}}'
+        Test Network Manager Connection"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T09:54:53.1729489Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T09:54:53.1729489Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '776'
+      - '778'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:18:03 GMT
+      - Thu, 30 May 2024 09:54:59 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2A18B339C5814427984CB88EB36E2036 Ref B: TYO201151006060 Ref C: 2024-05-30T09:54:58Z'
     status:
       code: 200
       message: OK
@@ -171,36 +163,34 @@ interactions:
       ParameterSetName:
       - --connection-name --description
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Connected","description":"My
-        Test Network Manager Connection"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:17:59.5404340Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:17:59.5404340Z"}}'
+        Test Network Manager Connection"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T09:54:53.1729489Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T09:54:53.1729489Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '776'
+      - '778'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:18:06 GMT
+      - Thu, 30 May 2024 09:55:01 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7E89C48EF5794F06B6D7A835574BCC7C Ref B: TYO201151001031 Ref C: 2024-05-30T09:55:00Z'
     status:
       code: 200
       message: OK
@@ -223,38 +213,36 @@ interactions:
       ParameterSetName:
       - --connection-name --description
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Connected","description":"My
-        Test Network Manager Connection Updated Description"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:17:59.5404340Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:18:07.0197494Z"}}'
+        Test Network Manager Connection Updated Description"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T09:54:53.1729489Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T09:55:02.9580870Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '796'
+      - '798'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:18:07 GMT
+      - Thu, 30 May 2024 09:55:04 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: EBD2B0D8E34C4DA0A5471DD7E9B4F559 Ref B: TYO201151001031 Ref C: 2024-05-30T09:55:02Z'
     status:
       code: 200
       message: OK
@@ -270,36 +258,34 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections?api-version=2022-01-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection","name":"myTestNetworkManagerConnection","type":"Microsoft.Network/networkManagerConnections","properties":{"networkManagerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","connectionState":"Connected","description":"My
-        Test Network Manager Connection Updated Description"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-28T05:17:59.5404340Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-28T05:18:07.0197494Z"}}],"nextLink":""}'
+        Test Network Manager Connection Updated Description"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T09:54:53.1729489Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T09:55:02.9580870Z"}}],"nextLink":""}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '822'
+      - '824'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Aug 2023 05:18:09 GMT
+      - Thu, 30 May 2024 09:55:07 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: CE5E33739CF74FC39959438E1C63FB2B Ref B: TYO201100114017 Ref C: 2024-05-30T09:55:06Z'
     status:
       code: 200
       message: OK
@@ -319,7 +305,7 @@ interactions:
       ParameterSetName:
       - --connection-name --yes
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/networkManagerConnections/myTestNetworkManagerConnection?api-version=2022-01-01
   response:
@@ -331,19 +317,21 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 28 Aug 2023 05:18:13 GMT
+      - Thu, 30 May 2024 09:55:12 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
+      x-msedge-ref:
+      - 'Ref A: 7B0F21AB1EF3449286F7C7E7C65EF1AC Ref B: TYO201151001040 Ref C: 2024-05-30T09:55:09Z'
     status:
       code: 200
       message: OK
@@ -363,9 +351,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name --force --yes
       User-Agent:
-      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?force=true&api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_connection_subscription000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?force=true&api-version=2023-09-01
   response:
     body:
       string: ''
@@ -375,19 +363,21 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 28 Aug 2023 05:18:16 GMT
+      - Thu, 30 May 2024 09:55:19 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
+      x-msedge-ref:
+      - 'Ref A: 5713008DAF044891AABA817194599154 Ref B: TYO201151003029 Ref C: 2024-05-30T09:55:14Z'
     status:
       code: 200
       message: OK

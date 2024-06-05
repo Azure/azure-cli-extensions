@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.2.0
++++++
+* Add new cmd `az network manager routing-config`
+* Add new cmd `az network manager routing-config rule-collection`
+* Add new cmd `az network manager routing-config rule-collection rule`
+
 1.0.1
 +++++
 * `az network manager connect-config`: Fix cross-tenant resource id for `--hubs`
