@@ -13,6 +13,7 @@ Pending
 +++++++
 * Update --enable-advanced-network-observability description to note additional costs and add missing flag to create command.
 * Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
+* Change default value of `--vm-set-type`` to VirtualMachines when `--vm-sizes` is set
 
 4.0.0b5
 ++++++++
