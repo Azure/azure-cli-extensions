@@ -35,7 +35,7 @@ Release History
 ++++++
 * `az grafana backup`: backup a Grafana workspace
 * `az grafana restore`: restore a Grafana workspace
-* `az grafana dashboard sync`: sync dashboard between 2 grafana workspaces
+* `az grafana dashboard sync`: sync dashboard between 2 Grafana workspaces
 
 1.2.8
 ++++++
