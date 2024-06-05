@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update operation to update a license.
 
     :example: Sample command for license update
-        az connectedmachine license update --name 'myESULicense' --resource-group 'ytongtest'  --license-type 'ESU' --state 'Deactivated' --target 'Windows Server 2012' --edition 'Datacenter' --type 'pCore' --processors 16 --subscription 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae'
+        az connectedmachine license update --name 'myESULicense' --resource-group 'ytongtest' --license-type 'ESU' --state 'Deactivated' --target 'Windows Server 2012' --edition 'Datacenter' --type 'pCore' --processors 16 --subscription 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae'
     """
 
     _aaz_info = {
