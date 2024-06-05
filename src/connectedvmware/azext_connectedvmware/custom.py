@@ -18,6 +18,7 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from knack.prompting import prompt, prompt_y_n
 
 from .pwinput import pwinput
 from .vmware_utils import get_logger, get_resource_id
@@ -2106,8 +2107,7 @@ def enable_guest_agent(
             "password": password,
         }
         while not creds["username"]:
-            print("Please provide VM username: ", end="")
-            creds["username"] = input()
+            creds["username"] = prompt("Please provide VM username: ")
             if not creds["username"]:
                 print("Parameter is required, please try again")
         while not creds["password"]:
@@ -2119,16 +2119,12 @@ def enable_guest_agent(
             if creds["password"] != passwdConfim:
                 print("Passwords do not match, please try again")
                 creds["password"] = None
-        print("Confirm VM credentials? [Y/n]: ", end="")
-        res = input().lower()
-        if res in ["y", ""]:
+        if prompt_y_n("Confirm VM credentials?", default="y"):
             username, password = (
                 creds["username"],
                 creds["password"],
             )
             creds_ok = True
-        elif res != "n":
-            print("Please type y/n or leave empty.")
 
     machine_client = cf_machine(cmd.cli_ctx)
     machine = machine_client.get(resource_group_name, vm_name)
