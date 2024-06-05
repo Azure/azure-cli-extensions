@@ -9,7 +9,7 @@ Release History
 
 0.1.1
 ++++++
-* update 'az grafana delete' to automatically remove the default role assignment created for the managed identity
+* `az grafana delete`: now automatically removes the default role assignment created for the managed identity
 
 0.1.2
 ++++++
@@ -61,3 +61,7 @@ Release History
 ++++++
 * `az grafana dashboard sync`: support library panel sync
 * `az grafana dashboard create`: use unique id instead of generic id for folder creation
+
+1.3.4
+++++++
+* `az grafana dashboard sync`: use case-insensitive comparison for library panel folders
