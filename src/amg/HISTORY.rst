@@ -9,7 +9,7 @@ Release History
 
 0.1.1
 ++++++
-* `az grafana delete`: now automatically removes the default role assignment created for the managed identity
+* `az grafana delete`: automatically remove the default role assignment created for the managed identity
 
 0.1.2
 ++++++
@@ -29,12 +29,12 @@ Release History
 
 1.1
 ++++++
-* `az grafana update`: support email through new SMTP configuration arguments
+* `az grafana update`: support email contact point through new SMTP configuration arguments
 
 1.2
 ++++++
-* `az grafana backup`: backup a grafana workspace
-* `az grafana restore`: restore a grafana workspace
+* `az grafana backup`: backup a Grafana workspace
+* `az grafana restore`: restore a Grafana workspace
 * `az grafana dashboard sync`: sync dashboard between 2 grafana workspaces
 
 1.2.8
