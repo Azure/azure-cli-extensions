@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List the network security perimeter configurations for a private link scope.
 
     :example: network-security-perimeter-configuration list
-        az connectedmachine private-link-scope network-security-perimeter-configuration list --resource-group "az-sdk-test" --scope-name "scope-test" --subscription "e6fe6705-4c9c-4b54-81d2-e455780e20b8"
+        az connectedmachine private-link-scope network-security-perimeter-configuration list --resource-group "az-sdk-test" --scope-name "scope-test" --subscription subscriptionId
     """
 
     _aaz_info = {
@@ -247,7 +247,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"client_flatten": True, "read_only": True},
             )
 
             properties = cls._schema_on_200.value.Element.properties.provisioning_issues.Element.properties
@@ -256,8 +256,11 @@ class List(AAZCommand):
             )
             properties.issue_type = AAZStrType(
                 serialized_name="issueType",
+                flags={"read_only": True},
             )
-            properties.severity = AAZStrType()
+            properties.severity = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.suggested_access_rules = AAZListType(
                 serialized_name="suggestedAccessRules",
                 flags={"read_only": True},
@@ -277,6 +280,7 @@ class List(AAZCommand):
             resource_association = cls._schema_on_200.value.Element.properties.resource_association
             resource_association.access_mode = AAZStrType(
                 serialized_name="accessMode",
+                flags={"read_only": True},
             )
             resource_association.name = AAZStrType(
                 flags={"read_only": True},
@@ -304,7 +308,7 @@ class _ListHelper:
             flags={"read_only": True},
         )
         access_rule_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+            flags={"client_flatten": True, "read_only": True},
         )
 
         properties = _schema_access_rule_read.properties
@@ -312,7 +316,9 @@ class _ListHelper:
             serialized_name="addressPrefixes",
             flags={"read_only": True},
         )
-        properties.direction = AAZStrType()
+        properties.direction = AAZStrType(
+            flags={"read_only": True},
+        )
 
         address_prefixes = _schema_access_rule_read.properties.address_prefixes
         address_prefixes.Element = AAZStrType()
