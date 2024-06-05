@@ -12,19 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network manager show",
+    "network manager routing-config rule-collection wait",
 )
-class Show(AAZCommand):
-    """Get the specified Network Manager.
-
-    :example: Get Azure Virtual Network Manager
-        az network manager show --name "testNetworkManager" --resource-group "rg1"
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}/rulecollections/{}", "2023-03-01-preview"],
         ]
     }
 
@@ -44,20 +40,41 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+        _args_schema.config_name = AAZStrArg(
+            options=["--config-name"],
+            help="The name of the network manager Routing Configuration.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
+        )
+        _args_schema.manager_name = AAZStrArg(
+            options=["--manager-name"],
             help="The name of the network manager.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.collection_name = AAZStrArg(
+            options=["-n", "--name", "--collection-name"],
+            help="The name of the network manager routing Configuration rule collection.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NetworkManagersGet(ctx=self.ctx)()
+        self.RoutingRuleCollectionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,10 +86,10 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class NetworkManagersGet(AAZHttpOperation):
+    class RoutingRuleCollectionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +103,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/routingConfigurations/{configurationName}/ruleCollections/{ruleCollectionName}",
                 **self.url_parameters
             )
 
@@ -102,11 +119,19 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkManagerName", self.ctx.args.network_manager_name,
+                    "configurationName", self.ctx.args.config_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "networkManagerName", self.ctx.args.manager_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "ruleCollectionName", self.ctx.args.collection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -120,7 +145,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2023-03-01-preview",
                     required=True,
                 ),
             }
@@ -156,8 +181,9 @@ class Show(AAZCommand):
             _schema_on_200.etag = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.id = AAZStrType()
-            _schema_on_200.location = AAZStrType()
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -168,19 +194,21 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.description = AAZStrType()
-            properties.network_manager_scope_accesses = AAZListType(
-                serialized_name="networkManagerScopeAccesses",
+            properties.applies_to = AAZListType(
+                serialized_name="appliesTo",
                 flags={"required": True},
             )
-            properties.network_manager_scopes = AAZObjectType(
-                serialized_name="networkManagerScopes",
+            properties.description = AAZStrType()
+            properties.disable_bgp_route_propagation = AAZStrType(
+                serialized_name="disableBgpRoutePropagation",
+            )
+            properties.local_route_setting = AAZStrType(
+                serialized_name="localRouteSetting",
                 flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
@@ -192,46 +220,14 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            network_manager_scope_accesses = cls._schema_on_200.properties.network_manager_scope_accesses
-            network_manager_scope_accesses.Element = AAZStrType()
+            applies_to = cls._schema_on_200.properties.applies_to
+            applies_to.Element = AAZObjectType()
 
-            network_manager_scopes = cls._schema_on_200.properties.network_manager_scopes
-            network_manager_scopes.cross_tenant_scopes = AAZListType(
-                serialized_name="crossTenantScopes",
-                flags={"read_only": True},
+            _element = cls._schema_on_200.properties.applies_to.Element
+            _element.network_group_id = AAZStrType(
+                serialized_name="networkGroupId",
+                flags={"required": True},
             )
-            network_manager_scopes.management_groups = AAZListType(
-                serialized_name="managementGroups",
-            )
-            network_manager_scopes.subscriptions = AAZListType()
-
-            cross_tenant_scopes = cls._schema_on_200.properties.network_manager_scopes.cross_tenant_scopes
-            cross_tenant_scopes.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.network_manager_scopes.cross_tenant_scopes.Element
-            _element.management_groups = AAZListType(
-                serialized_name="managementGroups",
-                flags={"read_only": True},
-            )
-            _element.subscriptions = AAZListType(
-                flags={"read_only": True},
-            )
-            _element.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-
-            management_groups = cls._schema_on_200.properties.network_manager_scopes.cross_tenant_scopes.Element.management_groups
-            management_groups.Element = AAZStrType()
-
-            subscriptions = cls._schema_on_200.properties.network_manager_scopes.cross_tenant_scopes.Element.subscriptions
-            subscriptions.Element = AAZStrType()
-
-            management_groups = cls._schema_on_200.properties.network_manager_scopes.management_groups
-            management_groups.Element = AAZStrType()
-
-            subscriptions = cls._schema_on_200.properties.network_manager_scopes.subscriptions
-            subscriptions.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -253,14 +249,11 @@ class Show(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Show"]
+__all__ = ["Wait"]

@@ -12,19 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network manager connect-config create",
+    "network manager routing-config rule-collection create",
+    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a new network manager connectivity configuration
+    """Create a routing rule collection.
 
-    :example: Create/Update Azure Virtual Network Manager Connectivity Configuration
-        az network manager connect-config create --configuration-name "myTestConnectivityConfig" --description "Sample Configuration" --applies-to-group group-connectivity="None" is-global=false network-group-id="/subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManagers/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub resource-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Micr osoft.Network/virtualNetworks/myTestConnectivityConfig" resource- type="Microsoft.Network/virtualNetworks" --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
+    :example: Create a routing rule collection.
+        az network manager routing-config rule-collection create --config-name TestNetworkManagerConfig --manager-name TestNetworkManager --name TestNetworkManagerCollection --resource-group "rg1" --local-route-setting NotSpecified --applies-to [{"network_group_id":{manager_id}}] --disable-bgp-route-propagation true
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2023-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}/rulecollections/{}", "2023-03-01-preview"],
         ]
     }
 
@@ -44,102 +45,74 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
-            help="The name of the network manager connectivity configuration.",
+        _args_schema.config_name = AAZStrArg(
+            options=["--config-name"],
+            help="The name of the network manager Routing Configuration.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
         )
-        _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+        _args_schema.manager_name = AAZStrArg(
+            options=["--manager-name"],
             help="The name of the network manager.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.collection_name = AAZStrArg(
+            options=["-n", "--name", "--collection-name"],
+            help="The name of the network manager routing Configuration rule collection.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.applies_to_groups = AAZListArg(
-            options=["--applies-to-groups"],
-            singular_options=["--applies-to-group"],
+        _args_schema.applies_to = AAZListArg(
+            options=["--applies-to"],
             arg_group="Properties",
             help="Groups for configuration",
-        )
-        _args_schema.connectivity_topology = AAZStrArg(
-            options=["--connectivity-topology"],
-            arg_group="Properties",
-            help="Connectivity topology type.",
-            enum={"HubAndSpoke": "HubAndSpoke", "Mesh": "Mesh"},
-        )
-        _args_schema.delete_existing_peering = AAZStrArg(
-            options=["--delete-existing-peering"],
-            arg_group="Properties",
-            help="Flag if need to remove current existing peerings.",
-            enum={"False": "False", "True": "True"},
         )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="A description of the connectivity configuration.",
+            help="A description of the routing rule collection.",
         )
-        _args_schema.hubs = AAZListArg(
-            options=["--hubs"],
-            singular_options=["--hub"],
+        _args_schema.disable_bgp_route = AAZStrArg(
+            options=["--disable-bgp-route"],
             arg_group="Properties",
-            help="List of hubItems",
+            help="Determines whether BGP route propagation is enabled. Defaults to true.",
+            default="true",
         )
-        _args_schema.is_global = AAZStrArg(
-            options=["--is-global"],
+        _args_schema.local_route_setting = AAZStrArg(
+            options=["--local-route-setting"],
             arg_group="Properties",
-            help="Flag if global mesh is supported.",
-            enum={"False": "False", "True": "True"},
+            help="Indicates local route setting for this particular rule collection.",
+            enum={"DirectRoutingWithinSubnet": "DirectRoutingWithinSubnet", "DirectRoutingWithinVNet": "DirectRoutingWithinVNet", "NotSpecified": "NotSpecified"},
         )
 
-        applies_to_groups = cls._args_schema.applies_to_groups
-        applies_to_groups.Element = AAZObjectArg()
+        applies_to = cls._args_schema.applies_to
+        applies_to.Element = AAZObjectArg()
 
-        _element = cls._args_schema.applies_to_groups.Element
-        _element.group_connectivity = AAZStrArg(
-            options=["group-connectivity"],
-            help="Group connectivity type. Only required if topology is Hub and Spoke.",
-            required=True,
-            enum={"DirectlyConnected": "DirectlyConnected", "None": "None"},
-        )
-        _element.is_global = AAZStrArg(
-            options=["is-global"],
-            help="Flag if global is supported. Only required if topology is Hub and Spoke.",
-            enum={"False": "False", "True": "True"},
-        )
+        _element = cls._args_schema.applies_to.Element
         _element.network_group_id = AAZStrArg(
             options=["network-group-id"],
-            help="Network group Id.",
+            help="Network manager group Id.",
             required=True,
-        )
-        _element.use_hub_gateway = AAZStrArg(
-            options=["use-hub-gateway"],
-            help="Flag if need to use hub gateway. Only required if topology is Hub and Spoke.",
-            enum={"False": "False", "True": "True"},
-        )
-
-        hubs = cls._args_schema.hubs
-        hubs.Element = AAZObjectArg()
-
-        _element = cls._args_schema.hubs.Element
-        _element.resource_id = AAZStrArg(
-            options=["resource-id"],
-            help="Resource Id.",
-        )
-        _element.resource_type = AAZStrArg(
-            options=["resource-type"],
-            help="Resource Type, suggested value(s): 'Microsoft.Network/virtualNetworks'",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ConnectivityConfigurationsCreateOrUpdate(ctx=self.ctx)()
+        self.RoutingRuleCollectionsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -154,7 +127,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ConnectivityConfigurationsCreateOrUpdate(AAZHttpOperation):
+    class RoutingRuleCollectionsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -168,7 +141,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/connectivityConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/routingConfigurations/{configurationName}/ruleCollections/{ruleCollectionName}",
                 **self.url_parameters
             )
 
@@ -184,15 +157,19 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
+                    "configurationName", self.ctx.args.config_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkManagerName", self.ctx.args.network_manager_name,
+                    "networkManagerName", self.ctx.args.manager_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "ruleCollectionName", self.ctx.args.collection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -206,7 +183,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2023-03-01-preview",
                     required=True,
                 ),
             }
@@ -235,32 +212,18 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("appliesToGroups", AAZListType, ".applies_to_groups", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("connectivityTopology", AAZStrType, ".connectivity_topology", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("deleteExistingPeering", AAZStrType, ".delete_existing_peering")
+                properties.set_prop("appliesTo", AAZListType, ".applies_to", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("hubs", AAZListType, ".hubs")
-                properties.set_prop("isGlobal", AAZStrType, ".is_global")
+                properties.set_prop("disableBgpRoutePropagation", AAZStrType, ".disable_bgp_route")
+                properties.set_prop("localRouteSetting", AAZStrType, ".local_route_setting", typ_kwargs={"flags": {"required": True}})
 
-            applies_to_groups = _builder.get(".properties.appliesToGroups")
-            if applies_to_groups is not None:
-                applies_to_groups.set_elements(AAZObjectType, ".")
+            applies_to = _builder.get(".properties.appliesTo")
+            if applies_to is not None:
+                applies_to.set_elements(AAZObjectType, ".")
 
-            _elements = _builder.get(".properties.appliesToGroups[]")
+            _elements = _builder.get(".properties.appliesTo[]")
             if _elements is not None:
-                _elements.set_prop("groupConnectivity", AAZStrType, ".group_connectivity", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("isGlobal", AAZStrType, ".is_global")
                 _elements.set_prop("networkGroupId", AAZStrType, ".network_group_id", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("useHubGateway", AAZStrType, ".use_hub_gateway")
-
-            hubs = _builder.get(".properties.hubs")
-            if hubs is not None:
-                hubs.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.hubs[]")
-            if _elements is not None:
-                _elements.set_prop("resourceId", AAZStrType, ".resource_id")
-                _elements.set_prop("resourceType", AAZStrType, ".resource_type")
 
             return self.serialize_content(_content_value)
 
@@ -303,55 +266,34 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.applies_to_groups = AAZListType(
-                serialized_name="appliesToGroups",
+            properties.applies_to = AAZListType(
+                serialized_name="appliesTo",
                 flags={"required": True},
-            )
-            properties.connectivity_topology = AAZStrType(
-                serialized_name="connectivityTopology",
-                flags={"required": True},
-            )
-            properties.delete_existing_peering = AAZStrType(
-                serialized_name="deleteExistingPeering",
             )
             properties.description = AAZStrType()
-            properties.hubs = AAZListType()
-            properties.is_global = AAZStrType(
-                serialized_name="isGlobal",
+            properties.disable_bgp_route_propagation = AAZStrType(
+                serialized_name="disableBgpRoutePropagation",
+            )
+            properties.local_route_setting = AAZStrType(
+                serialized_name="localRouteSetting",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            applies_to_groups = cls._schema_on_200_201.properties.applies_to_groups
-            applies_to_groups.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.applies_to_groups.Element
-            _element.group_connectivity = AAZStrType(
-                serialized_name="groupConnectivity",
-                flags={"required": True},
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
+                flags={"read_only": True},
             )
-            _element.is_global = AAZStrType(
-                serialized_name="isGlobal",
-            )
+
+            applies_to = cls._schema_on_200_201.properties.applies_to
+            applies_to.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.applies_to.Element
             _element.network_group_id = AAZStrType(
                 serialized_name="networkGroupId",
                 flags={"required": True},
-            )
-            _element.use_hub_gateway = AAZStrType(
-                serialized_name="useHubGateway",
-            )
-
-            hubs = cls._schema_on_200_201.properties.hubs
-            hubs.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.hubs.Element
-            _element.resource_id = AAZStrType(
-                serialized_name="resourceId",
-            )
-            _element.resource_type = AAZStrType(
-                serialized_name="resourceType",
             )
 
             system_data = cls._schema_on_200_201.system_data
