@@ -1,0 +1,33 @@
+﻿version: v1.1.0
+alias:
+  values:
+    patchimagetask: CSSC-PatchImage
+steps:
+  - id: print-inputs
+    cmd: |
+        bash -c 'echo "Scanning image for vulnerability and patch {{.Run.Repository}}:{{.Run.GitTag}}"'
+  - id: setup-data-dir
+    cmd: bash mkdir ./data
+
+  - id: generate-trivy-report
+    cmd: |
+      ghcr.io/aquasecurity/trivy image \
+      {{.Run.Registry}}/{{.Run.Repository}}:{{.Run.GitTag}} \
+      --vuln-type os \
+      --ignore-unfixed \
+      --format json \
+      --output /workspace/data/vulnerability-report_trivy_{{now | date "2023-01-02"}}.json
+  - cmd: mcr.microsoft.com/azure-cli bash -c 'jq "[.Results[].Vulnerabilities | length] | add" /workspace/data/vulnerability-report_trivy_{{now | date "2023-01-02"}}.json > /workspace/data/vulCount.txt'
+  - cmd: bash echo "$(cat /workspace/data/vulCount.txt)"
+  - id: list-output-file
+    cmd: bash ls -l /workspace/data
+  - cmd: az cloud register -n dogfood --endpoint-active-directory https://login.windows-ppe.net --endpoint-active-directory-graph-resource-id https://graph.ppe.windows.net/ --endpoint-active-directory-resource-id https://management.core.windows.net/ --endpoint-gallery https://current.gallery.azure-test.net/ --endpoint-management https://management.core.windows.net/ --endpoint-resource-manager https://api-dogfood.resources.windows-int.net/ --suffix-storage-endpoint core.test-cint.azure-test.net --suffix-keyvault-dns .vault-int.azure-int.net --suffix-acr-login-server-endpoint .azurecr-test.io --endpoint-sql-management "https://management.core.windows.net:8443/"
+  - cmd: az cloud set -n dogfood
+  - cmd: az login --identity
+  - cmd: az acr repository show-tags -n $RegistryName --repository {{.Run.Repository}}
+  - id: eval-execute-patch
+    cmd: |
+      mcr.microsoft.com/azure-cli bash -c 'vulCount=$(cat /workspace/data/vulCount.txt) && \
+      [ $vulCount -gt 0 ] && \
+      az acr task run --name $patchimagetask --registry $RegistryName --set SOURCE_REPOSITORY={{.Run.Repository}} --set SOURCE_IMAGE_TAG={{.Run.GitTag}} --no-wait \
+      || echo "No vulnerability in the image {{.Run.Repository}}:{{.Run.GitTag}}"'

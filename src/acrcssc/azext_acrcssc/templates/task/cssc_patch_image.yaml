@@ -1,0 +1,40 @@
+version: v1.1.0
+steps:
+  # Step #1: Perform the vulnerability scan
+  - id: print-inputs
+    cmd: |
+        bash -c 'echo "Scan and Schedule Patch {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
+
+  # Step 3: Patch the image with Copacetic
+  - id: setup-data-dir
+    cmd: bash mkdir ./data
+
+  - id: generate-trivy-report
+    cmd: |
+      ghcr.io/aquasecurity/trivy image \
+      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
+      --vuln-type os \
+      --ignore-unfixed \
+      --format json \
+      --output /workspace/data/vulnerability-report_trivy_{{now | date "2023-01-02"}}.json
+  
+  - id: buildkitd
+    cmd: moby/buildkit --addr tcp://0.0.0.0:8888
+    entrypoint: buildkitd
+    detach: true
+    privileged: true
+    ports: ["127.0.0.1:8888:8888/tcp"]
+  
+  - id: list-output-file
+    cmd: bash ls -l /workspace/data
+  
+  - id: patch-with_copa
+    cmd: | 
+      ghcr.io/toddysm/cssc-framework/copacetic:1.0 \
+      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
+      vulnerability-report_trivy_{{now | date "2023-01-02"}}.json \
+      {{.Values.SOURCE_IMAGE_TAG}}-patched
+    network: host
+
+  - id: push-image
+    cmd: docker push {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-patched

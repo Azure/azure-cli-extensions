@@ -1,0 +1,16 @@
+version: v1.1.0
+alias:
+  values:
+    ScanRepoAndSchedulePatchTask: cssc-scan-repository-schedule-patch
+steps:
+  - cmd: bash -c 'echo "Scaning Repo {{.Values.SOURCE_REPOSITORY}}"'
+  - cmd: az cloud register -n dogfood --endpoint-active-directory https://login.windows-ppe.net --endpoint-active-directory-graph-resource-id https://graph.ppe.windows.net/ --endpoint-active-directory-resource-id https://management.core.windows.net/ --endpoint-gallery https://current.gallery.azure-test.net/ --endpoint-management https://management.core.windows.net/ --endpoint-resource-manager https://api-dogfood.resources.windows-int.net/ --suffix-storage-endpoint core.test-cint.azure-test.net --suffix-keyvault-dns .vault-int.azure-int.net --suffix-acr-login-server-endpoint .azurecr-test.io --endpoint-sql-management "https://management.core.windows.net:8443/"
+  - cmd: az cloud set -n dogfood
+  - cmd: az login --identity
+  - cmd: mcr.microsoft.com/azure-cli az acr repository list -n $RegistryName --debug > repos.json
+  - cmd: mcr.microsoft.com/azure-cli jq -r .[] repos.json > repos.txt
+  - cmd: |
+        mcr.microsoft.com/azure-cli bash -c 'while read line;do \
+        echo "Processing repo $line"; \
+        az acr task run --name $ScanRepoAndSchedulePatchTask --debug --registry $RegistryName --set SOURCE_REPOSITORY=$line --no-wait; \
+        done < repos.txt;'

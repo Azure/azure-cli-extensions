@@ -1,0 +1,7 @@
+version: v1.1.0
+steps:
+  - id: acr-cli-filter
+    cmd: |
+        csscbuilddemoregistry.azurecr.io/acr:v2 cssc patch --dry-run --filter-file-path artifact.json
+
+ 

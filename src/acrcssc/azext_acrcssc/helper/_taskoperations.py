@@ -1,0 +1,377 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+import base64
+import os
+
+from knack.log import get_logger
+from azure.cli.core.azclierror import AzCLIError
+from azure.cli.core.commands import LongRunningOperation
+from azure.cli.command_modules.acr._stream_utils import stream_logs
+from azure.cli.command_modules.acr._run_polling import get_run_with_polling
+from azure.cli.command_modules.acr.run import acr_run
+from azure.mgmt.core.tools import parse_resource_id
+from azext_acrcssc._client_factory import (
+    cf_acr_tasks,
+    cf_authorization,
+    cf_acr_registries_tasks,
+    cf_acr_runs
+)
+from azext_acrcssc.helper._deployment import validate_and_deploy_template
+from azext_acrcssc.helper._orasclient import (
+    create_oci_artifact_continuous_patch,
+    delete_oci_artifact_continuous_patch
+)
+from azext_acrcssc._validators import (
+    validate_continuouspatch_config_v1,
+    check_continuoustask_exists,
+    validate_and_convert_timespan_to_cron
+)
+
+from  azure.cli.command_modules.acr._utils import (
+    get_custom_registry_credentials,
+    prepare_source_location,
+    get_validate_platform
+)
+
+from ._constants import (
+    CONTINUOSPATCH_DEPLOYMENT_NAME,
+    CONTINUOSPATCH_DEPLOYMENT_TEMPLATE,
+    CONTINUOSPATCH_ALL_TASK_NAMES,
+    CONTINUOSPATCH_TASK_DEFINITION,
+    CONTINUOSPATCH_TASK_SCANREGISTRY_NAME
+)
+
+logger = get_logger(__name__)
+
+def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun):
+    # identify the type of task (continuous scanning only for now) **
+    # validate
+        # check if the registry exists **
+        # check if the configuration file is valid
+        # validate the schedule, convert from timespan to cron
+        # validate the OCI artifact (check if it exists, check agains if it's a create or update operation)
+    # get the auth token from the CLI context **
+    # get the registry object **
+        # get the location and other details from the registry resource
+    # get the OCI artifact object
+    # create/update OCI artifact via ORAS **
+        # artifact name? cssc/continuous-scanning?
+    # execute the deployment (bicep or ARM template, bicep might not be supported via python) **
+    # report status from the deployment
+    # monitor the task?
+        # check how CLI task creation handles monitoring
+
+    logger.debug("Entering continuousPatchV1_creation %s %s", cssc_config_file, dryrun)
+
+    if check_continuoustask_exists(cmd, registry):
+        raise AzCLIError("ContinuousPatch Task already exists")
+
+    task_schedule = validate_and_convert_timespan_to_cron(cadence)
+    logger.debug("task_schedule %s", task_schedule)
+    validate_continuouspatch_config_v1(cssc_config_file)
+    create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
+    logger.debug(f'Uploading of %s completed successfully.', cssc_config_file)
+
+    logger.debug("Creating a new ContinuousPatchV1 task")
+    resource_group = parse_resource_id(registry.id)["resource_group"]
+    parameters = {
+        "AcrName": {"value": registry.name},
+        "AcrLocation": {"value": registry.location},
+        "taskSchedule": {"value": task_schedule}
+    }
+
+    for task in CONTINUOSPATCH_TASK_DEFINITION.keys():
+        encoded_task = { "value": _create_encoded_task(CONTINUOSPATCH_TASK_DEFINITION[task]["template_file"]) }
+        param_name = CONTINUOSPATCH_TASK_DEFINITION[task]["parameter_name"]
+        parameters[param_name] = encoded_task
+ 
+    print('Deployment of continuous scanning and patching tasks started...')
+    validate_and_deploy_template(
+        cmd.cli_ctx,
+        registry,
+        resource_group,
+        CONTINUOSPATCH_DEPLOYMENT_NAME,
+        CONTINUOSPATCH_DEPLOYMENT_TEMPLATE,
+        parameters,
+        dryrun
+    )
+
+    logger.debug('Deployment of continuous scanning and patching tasks completed successfully.')
+
+    # force run the task after it is created
+    if not dryrun:
+        logger.debug('Triggering the continuous scanning task to run immediately')
+        _trigger_task_run(cmd, registry, resource_group, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+
+def _trigger_task_run(cmd, registry, resource_group, task_name):
+    acr_task_registries_client = cf_acr_registries_tasks(cmd.cli_ctx)
+
+    # check on the task.py file on acr's az cli on how to handle the model for other requests
+    request = acr_task_registries_client.models.TaskRunRequest(
+        task_id=f"{registry.id}/tasks/{task_name}"
+        )
+    queued_run = LongRunningOperation(cmd.cli_ctx)(
+        acr_task_registries_client.begin_schedule_run(
+            resource_group,
+            registry.name,
+            request))
+    run_id = queued_run.run_id
+    logger.warning("Queued a run with ID: %s", run_id)
+
+def _create_encoded_task(task_file):
+    # this is a bit of a hack, but we need to fix the path to the task's yaml,
+    #relative paths don't work because we don't control where the az cli is running from
+    templates_path = os.path.dirname(
+        os.path.join(
+            os.path.dirname(
+                os.path.abspath(__file__)),
+                "../templates/"))
+
+    with open(os.path.join(templates_path, task_file), "rb") as f:
+        # Encode the content to base64
+        base64_content = base64.b64encode(f.read())
+        # Convert bytes to string
+        return base64_content.decode('utf-8')
+
+def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, dryrun):
+    #should it get the current file and merge both jsons?
+        # if this is the case, how do we remove the old config?
+    #should it just overwrite the file?
+        # if this is the case, how can they append to the configuration
+        # this is winning because it is simpler to explain and implement, but it is not as flexible as the other option
+        # add an append flag to the command later?
+    logger.debug("Entering continuousPatchV1_update %s %s",cssc_config_file, dryrun)
+
+    if not check_continuoustask_exists(cmd, registry):
+        raise AzCLIError("ContinuousPatch Task does not exist")
+
+    validate_continuouspatch_config_v1(cssc_config_file)
+
+    ## create the OCI artifact
+    create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
+    ## update the task schedule
+    task_schedule = validate_and_convert_timespan_to_cron(cadence)
+    logger.debug(f"task_schedule {task_schedule}")
+    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
+    resource_group_name = parse_resource_id(registry.id)["resource_group"]
+    taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
+        trigger=acr_task_client.models.TriggerUpdateParameters(
+            timer_triggers=[
+                acr_task_client.models.TimerTriggerUpdateParameters(
+                    name='azcli_defined_schedule',
+                    schedule=task_schedule
+                )
+            ]
+        )
+    )
+
+    acr_task_client.begin_update(resource_group_name, registry.name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, taskUpdateParameters)
+   
+def delete_continuous_patch_v1(cmd, registry, dryrun):
+    logger.debug("Entering continuousPatchV1_delete")
+
+    if not dryrun and not check_continuoustask_exists(cmd, registry):
+        logger.warning("ContinuousPatch OCI config does not exist")
+
+    delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
+    for taskname in CONTINUOSPATCH_ALL_TASK_NAMES:
+        # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
+        _delete_task(cmd, registry, taskname, dryrun)
+
+    logger.debug("ContinuousPatchV1 task deleted successfully")
+
+def _delete_task(cmd, registry, task_name, dryrun):
+    logger.debug("Entering delete_task")
+    resource_group = parse_resource_id(registry.id)["resource_group"]
+
+    try:
+        acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
+        _delete_task_role_assignment(cmd.cli_ctx, acr_tasks_client, registry, resource_group, task_name, dryrun)
+        if dryrun:
+            logger.debug("Dry run, skipping deletion of the task: %s ", task_name)
+            return None
+        else:
+            logger.debug(f"Deleting task {task_name}")
+            LongRunningOperation(cmd.cli_ctx)(
+                acr_tasks_client.begin_delete(
+                    resource_group,
+                    registry.name,
+                    task_name))
+
+    except Exception as exception:
+        raise AzCLIError("Failed to delete task %s from registry %s : %s", task_name, registry.name, exception)
+
+    logger.debug("Task %s deleted successfully", task_name)
+
+def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_group, task_name, dryrun):
+    role_client = cf_authorization(cli_ctx)
+    acrtask_client = cf_acr_tasks(cli_ctx)
+
+    task = acrtask_client.get(resource_group, registry.name, task_name)
+    identity = task.identity
+
+    if identity:
+        assigned_roles = role_client.role_assignments.list_for_scope(
+            registry.id,
+            filter=f"principalId eq '{identity.principal_id}'"
+        )
+
+        for role in assigned_roles:
+            if dryrun:
+                logger.debug("Dry run, skipping deletion of role assignments, task: %s, role name: %s", task_name, role.name)
+                return None
+            else:
+                logger.debug("Deleting role assignments of task %s from the registry", task_name)
+                role_client.role_assignments.delete(
+                    scope=registry.id,
+                    role_assignment_name=role.name
+                )
+
+def list_continuous_patch_v1(cmd, registry, resource_group_name):
+    logger.debug("Entering list_continuous_patch_v1")
+
+    if not check_continuoustask_exists(cmd, registry):
+        logger.warning("continuous patch OCI config does not exist")
+
+    # list all the tasks
+    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
+    #resource_group = parse_resource_id(registry.id)["resource_group"]
+    # tasks = LongRunningOperation(cmd.cli_ctx)(
+    #     acrtask_client.list(resource_group, registry.name))
+    #      "timerTriggers": next((t.schedule for t in x.trigger.timer_triggers if hasattr(t, 'schedule')), None)
+    tasks_list = acr_task_client.list(resource_group_name, registry.name)
+    filtered_cssc_tasks = _transform_task_list(tasks_list)
+    return filtered_cssc_tasks
+
+def _transform_task_list(tasks):
+    transformed = []
+    for obj in tasks:
+        logger.debug(f"task: {dir(obj)}")
+        transformed_obj = {
+            "creationDate": obj.creation_date,
+            "location": obj.location,
+            "name": obj.name,
+            "provisioningState": obj.provisioning_state,
+            "systemData": obj.system_data,
+            "cadence": None
+        }
+        logger.debug(f"transformed: {dir(transformed_obj)}")
+        # Extract cadence from trigger.timerTriggers if available
+        trigger = obj.trigger
+        if trigger and trigger.timer_triggers:
+            transformed_obj["cadence"] = trigger.timer_triggers[0].schedule
+
+        transformed.append(transformed_obj)
+
+    return transformed
+
+def acr_cssc_dry_run(cmd, registry, config_file_path):
+    logger.debug("Entering acr_cssc_dry_run")
+    resource_group_name = parse_resource_id(registry.id)["resource_group"]
+    acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
+    acr_run_client = cf_acr_runs(cmd.cli_ctx)
+    acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
+    source_location = prepare_source_location(
+         cmd, config_file_path, acr_registries_task_client, registry.name, resource_group_name)
+    #acr_run(cmd, acr_run_client, registry.name, config_file_path)
+    #platform_os, platform_arch, platform_variant = get_validate_platform(cmd, None)
+    platform_os, platform_arch, platform_variant = "linux", None, None
+    request = acr_registries_task_client.models.FileTaskRunRequest(
+        task_file_path="acrcli.yaml",
+        values_file_path=None,
+        values=None,
+        source_location=source_location,
+        timeout=None,
+        platform=acr_registries_task_client.models.PlatformProperties(
+                os= platform_os,
+                architecture=platform_arch,
+                variant= platform_variant
+        ),
+        credentials=_get_custom_registry_credentials(cmd, auth_mode=None),
+        agent_pool_name=None,
+        log_template=None
+    )
+    
+    queued = LongRunningOperation(cmd.cli_ctx)(acr_registries_task_client.begin_schedule_run(
+        resource_group_name=resource_group_name,
+        registry_name=registry.name,
+        run_request=request))
+    run_id = queued.run_id
+    logger.warning("Queued a run with ID: %s", run_id)
+    return queued
+    # #return get_run_with_polling(cmd, acr_run_client, run_id, registry.name, resource_group_name)
+    # return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name, raise_error_on_failure= True)
+
+def _get_custom_registry_credentials(cmd,
+                                    auth_mode=None,
+                                    login_server=None,
+                                    username=None,
+                                    password=None,
+                                    identity=None,
+                                    is_remove=False):
+    """Get the credential object from the input
+    :param str auth_mode: The login mode for the source registry
+    :param str login_server: The login server of custom registry
+    :param str username: The username for custom registry (plain text or a key vault secret URI)
+    :param str password: The password for custom registry (plain text or a key vault secret URI)
+    :param str identity: The task managed identity used for the credential
+    """
+    acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
+    # Credentials, CustomRegistryCredentials, SourceRegistryCredentials, SecretObject, \
+    #     SecretObjectType = cf_acr_tasks.models.(
+    #         'Credentials', 'CustomRegistryCredentials', 'SourceRegistryCredentials', 'SecretObject',
+    #         'SecretObjectType',
+    #         operation_group='tasks')
+
+    source_registry_credentials = None
+    if auth_mode:
+        source_registry_credentials = acr_tasks_client.models.SourceRegistryCredentials(
+            login_mode=auth_mode)
+        
+    custom_registries = None
+    if login_server:
+        # if null username and password (or identity), then remove the credential
+        custom_reg_credential = None
+
+        is_identity_credential = False
+        if not username and not password:
+            is_identity_credential = identity is not None
+
+        if not is_remove:
+            if is_identity_credential:
+                custom_reg_credential = acr_tasks_client.models.CustomRegistryCredentials(
+                    identity=identity
+                )
+            else:
+                custom_reg_credential = acr_tasks_client.models.CustomRegistryCredentials(
+                    user_name=acr_tasks_client.models.SecretObject(
+                        type=acr_tasks_client.models.SecretObjectType.vaultsecret if _is_vault_secret(
+                            cmd, username)else acr_tasks_client.models.SecretObjectType.opaque,
+                        value=username
+                    ),
+                    password=acr_tasks_client.models.SecretObject(
+                        type=acr_tasks_client.models.SecretObjectType.vaultsecret if _is_vault_secret(
+                            cmd, password) else acr_tasks_client.models.SecretObjectType.opaque,
+                        value=password
+                    ),
+                    identity=identity
+                )
+
+        custom_registries = {login_server: custom_reg_credential}
+
+    return acr_tasks_client.models.Credentials(
+        source_registry=source_registry_credentials,
+        custom_registries=custom_registries
+    )
+
+def _is_vault_secret(cmd, credential):
+    keyvault_dns = None
+    try:
+        keyvault_dns = cmd.cli_ctx.cloud.suffixes.keyvault_dns
+    except Exception as e:
+        return False
+    if credential is not None:
+        return keyvault_dns.upper() in credential.upper()
+    return False
