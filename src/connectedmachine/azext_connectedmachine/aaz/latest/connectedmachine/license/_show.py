@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get information about the view of a license.
 
     :example: Sample command for license show
-        az connectedmachine license show --subscription 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae' --resource-group 'dakirbytest' --name 'testLicense'
+        az connectedmachine license show --subscription subscriptionId --resource-group 'dakirbytest' --name 'testLicense'
     """
 
     _aaz_info = {

@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List operation to get all licenses of a non-Azure machine
 
     :example: Sample command for license list
-        az connectedmachine license list --subscription 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae'
+        az connectedmachine license list --subscription subscriptionId
     """
 
     _aaz_info = {

@@ -20,7 +20,7 @@ class Delete(AAZCommand):
     """Delete operation to delete a license.
 
     :example: Sample command for license delete
-        az connectedmachine license delete --subscription 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae' --resource-group 'dakirbytest' --name 'testLicense'
+        az connectedmachine license delete --subscription subscriptionId --resource-group 'dakirbytest' --name 'testLicense'
     """
 
     _aaz_info = {
