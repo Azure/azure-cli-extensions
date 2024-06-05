@@ -4,21 +4,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
-
+from knack.log import get_logger
+from knack.util import CLIError
 from typing import Any, Dict
 
 from azure.cli.command_modules.containerapp._utils import safe_get, safe_set
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import ValidationError, ResourceNotFoundError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
-from knack.log import get_logger
-
 from azure.cli.command_modules.containerapp._utils import _get_existing_secrets
-from knack.util import CLIError
-
-from ._models import JavaLoggerSetting
 
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
+from ._models import JavaLoggerSetting
 
 logger = get_logger(__name__)
 
@@ -59,7 +56,7 @@ class ContainerappJavaLoggerDecorator(BaseResource):
     def show(self):
         loggers = safe_get(self.containerapp_def['properties'], 'configuration', 'runtime', 'java', 'javaAgent',
                            'logging', 'loggerSettings', default=[])
-        if self.get_argument_all() is None:
+        if self.get_argument_all() is None:  # pylint: disable=no-else-raise
             for java_logger in loggers:
                 if java_logger["logger"] == self.get_argument_logger_name():
                     return java_logger
@@ -79,6 +76,7 @@ class ContainerappJavaLoggerDecorator(BaseResource):
 
 
 class ContainerappJavaLoggerSetDecorator(ContainerappJavaLoggerDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -108,6 +106,7 @@ class ContainerappJavaLoggerSetDecorator(ContainerappJavaLoggerDecorator):
 
 
 class ContainerappJavaLoggerDeleteDecorator(ContainerappJavaLoggerDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 

@@ -166,7 +166,7 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
             or self.get_argument_args() is not None
 
     def set_up_container(self):
-        if self.should_update_container():
+        if self.should_update_container():  # pylint: disable=too-many-nested-blocks
             safe_set(self.new_containerappjob, "properties", "template", "containers", value=self.containerappjob_def["properties"]["template"]["containers"])
 
             if not self.get_argument_container_name():
@@ -297,7 +297,7 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
             or self.get_argument_max_executions()
 
     def set_up_trigger_configurations(self):
-        if self.should_update_trigger_configurations():
+        if self.should_update_trigger_configurations():  # pylint: disable=too-many-nested-blocks
             trigger_type = safe_get(self.containerappjob_def, "properties", "configuration", "triggerType")
             if trigger_type == "Manual":
                 manual_trigger_config_def = safe_get(self.containerappjob_def, "properties", "configuration", "manualTriggerConfig")
@@ -384,6 +384,9 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
                     parsed = urlparse(self.get_argument_registry_server())
                     registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
                     registry_user, registry_pass, _ = _get_acr_cred(self.cmd.cli_ctx, registry_name)
+                    self.set_argument_registry_user(registry_user)
+                    self.set_argument_registry_pass(registry_pass)
+
                 # Check if updating existing registry
                 updating_existing_registry = False
                 for r in registries_def:
@@ -422,7 +425,7 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
             logger.warning(
                 'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         yaml_containerappsjob = process_loaded_yaml(load_yaml_file(file_name))
-        if type(yaml_containerappsjob) != dict:  # pylint: disable=unidiomatic-typecheck
+        if not isinstance(yaml_containerappsjob, dict):  # pylint: disable=unidiomatic-typecheck
             raise ValidationError(
                 'Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
@@ -556,5 +559,6 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
 
 
 class ContainerAppJobPreviewUpdateDecorator(ContainerAppJobUpdateDecorator):
+    # pylint: disable=useless-super-delegation
     def construct_payload(self):
         super().construct_payload()

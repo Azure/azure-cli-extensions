@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, arguments-differ, abstract-method, logging-format-interpolation, broad-except
+# pylint: disable=line-too-long, unused-argument, too-many-instance-attributes, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, arguments-differ, abstract-method, logging-format-interpolation, broad-except
 from random import randint
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
@@ -55,7 +55,6 @@ from ._clients import ContainerAppPreviewClient, GitHubActionClient, ContainerAp
     ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
 
 from ._utils import (
-    get_pack_exec_path,
     is_docker_running,
     get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
     create_extension, create_custom_location, get_cluster_extension, validate_environment_location,
@@ -345,8 +344,8 @@ class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attribute
         self.registry_user = registry_user
         self.registry_pass = registry_pass
         self.env_vars = env_vars
-        self.trigger_type = trigger_type,
-        self.replica_timeout = replica_timeout,
+        self.trigger_type = trigger_type
+        self.replica_timeout = replica_timeout
         self.replica_retry_limit = replica_retry_limit
         self.replica_completion_count = replica_completion_count
         self.parallelism = parallelism
@@ -1443,7 +1442,7 @@ def _infer_existing_connected_env(
             env.set_name(env_list[0]["id"])
             env.custom_location_id = env_list[0]["extendedLocation"]["name"]
         if len(env_list) > 1:
-            if env.name:
+            if env.name:  # pylint: disable=no-else-raise
                 raise ValidationError(
                     f"There are multiple Connected Environments with name {env.name} on the subscription. "
                     "Please specify which resource group your Connected environment is in."

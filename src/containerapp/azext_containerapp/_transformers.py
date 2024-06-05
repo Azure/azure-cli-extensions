@@ -3,10 +3,14 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
-from .containerapp_env_telemetry_decorator import DATA_DOG_DEST, APP_INSIGHTS_DEST
+# pylint: disable=bare-except, line-too-long
+
 from knack.log import get_logger
+
+from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 from azure.cli.core.azclierror import ResourceNotFoundError
+
+from .containerapp_env_telemetry_decorator import DATA_DOG_DEST, APP_INSIGHTS_DEST
 
 logger = get_logger(__name__)
 
@@ -100,6 +104,7 @@ def transform_telemetry_app_insights_values(response_json):
     return r
 
 
+# pylint: disable=too-many-nested-blocks
 def transform_telemetry_otlp_values(response_json):
     containerapp_env_def = response_json
 
@@ -111,9 +116,9 @@ def transform_telemetry_otlp_values(response_json):
     if existing_otlps is not None:
         for otlp in existing_otlps:
             if "headers" in otlp:
-                dict = otlp["headers"]
-                if dict:
-                    for header in dict:
+                headers_dict = otlp["headers"]
+                if headers_dict:
+                    for header in headers_dict:
                         if "value" in header:
                             header["value"] = None
                             enable_open_telemetry_traces = False

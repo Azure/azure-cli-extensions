@@ -5,22 +5,17 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
 
-from typing import Dict, Any
-
-from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
-from azure.cli.core.commands import AzCliCommand
-from msrest.exceptions import DeserializationError
-
-from ._decorator_utils import load_yaml_file, create_deserializer, process_containerapp_resiliency_yaml
-from ._models import (
-    ContainerAppsResiliency as ContainerAppsResiliencyModel)
-
 from knack.log import get_logger
+from typing import Dict, Any
+from msrest.exceptions import DeserializationError
 
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._utils import (
     clean_null_values, safe_get, _convert_object_from_snake_to_camel_case,
     _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes)
+from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
+from azure.cli.core.commands import AzCliCommand
+
 from ._clients import ContainerAppsResiliencyPreviewClient
 from ._client_factory import handle_raw_exception
 
@@ -28,18 +23,21 @@ from ._constants import (DEFAULT_INTERVAL, DEFAULT_MAX_EJECTION, DEFAULT_HTTP2_M
                          DEFAULT_CONNECTION_TIMEOUT, DEFAULT_HTTP_RETRY_MAX,
                          DEFAULT_HTTP1_MAX_PENDING_REQ, DEFAULT_CONSECUTIVE_ERRORS, DEFAULT_HTTP_RETRY_DELAY_IN_MILLISECONDS,
                          DEFAULT_HTTP_RETRY_INTERVAL_IN_MILLISECONDS, DEFAULT_HTTP_RETRY_ERRORS)
+from ._decorator_utils import load_yaml_file, create_deserializer, process_containerapp_resiliency_yaml
 
 from ._models import (HttpRetryPolicy as HttpRetryPolicyModel,
                       TimeoutPolicy as TimeoutPolicyModel,
                       TcpRetryPolicy as TcpRetryPolicyModel,
                       CircuitBreakerPolicy as CircuitBreakerPolicyModel,
                       TcpConnectionPool as TcpConnectionPoolModel,
-                      HttpConnectionPool as HttpConnectionPoolModel)
+                      HttpConnectionPool as HttpConnectionPoolModel,
+                      ContainerAppsResiliency as ContainerAppsResiliencyModel)
 
 logger = get_logger(__name__)
 
 
 class ContainerAppResiliencyDecorator(BaseResource):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -142,7 +140,7 @@ class ContainerAppResiliencyDecorator(BaseResource):
                 'defined in the yaml will be used instead')
 
         yaml_containerapps_resiliency = load_yaml_file(file_name)
-        if type(yaml_containerapps_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
+        if not isinstance(yaml_containerapps_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
             raise ValidationError('Invalid YAML provided. Please supply a valid YAML spec.')
 
         if yaml_containerapps_resiliency.get('type') and yaml_containerapps_resiliency.get('type').lower() != "microsoft.app/containerapps/resiliencypolicies":
@@ -345,6 +343,7 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
 
 
 class ContainerAppResiliencyPreviewShowDecorator(ContainerAppResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -359,6 +358,7 @@ class ContainerAppResiliencyPreviewShowDecorator(ContainerAppResiliencyDecorator
 
 
 class ContainerAppResiliencyPreviewListDecorator(ContainerAppResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -373,6 +373,7 @@ class ContainerAppResiliencyPreviewListDecorator(ContainerAppResiliencyDecorator
 
 
 class ContainerAppResiliencyPreviewDeleteDecorator(ContainerAppResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 

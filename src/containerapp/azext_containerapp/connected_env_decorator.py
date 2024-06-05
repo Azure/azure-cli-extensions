@@ -17,6 +17,7 @@ from ._utils import validate_custom_location, validate_environment_location
 
 
 class ConnectedEnvironmentDecorator(BaseResource):
+    # pylint: disable=useless-super-delegation
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):

@@ -4,20 +4,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
-
+from copy import deepcopy
 from typing import Any, Dict
+from knack.log import get_logger
 
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import CLIInternalError, ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
-from knack.log import get_logger
 from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
-from copy import deepcopy
-
-from ._models import DotNetComponent as DotNetComponentModel
 
 from ._client_factory import handle_raw_exception
 from ._clients import ManagedEnvironmentPreviewClient
+from ._models import DotNetComponent as DotNetComponentModel
 
 logger = get_logger(__name__)
 

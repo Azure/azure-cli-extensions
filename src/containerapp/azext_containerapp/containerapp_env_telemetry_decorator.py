@@ -4,13 +4,15 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
 
-from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 from knack.log import get_logger
-from ._client_factory import handle_raw_exception
+
 from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
+from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 from azure.cli.core.commands import AzCliCommand
 from typing import Any, Dict
+
+from ._client_factory import handle_raw_exception
 
 DATA_DOG_DEST = 'dataDog'
 APP_INSIGHTS_DEST = 'appInsights'

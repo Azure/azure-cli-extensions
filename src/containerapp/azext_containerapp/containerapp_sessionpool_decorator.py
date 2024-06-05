@@ -128,6 +128,7 @@ class SessionPoolPreviewDecorator(BaseResource):
     def get_argument_registry_user(self):
         return self.get_param("registry_user")
 
+    # pylint: disable=no-self-use
     def get_environment_client(self):
         return ManagedEnvironmentClient
 
@@ -436,7 +437,7 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 new_secret_names.append(secret["name"])
             deleted_secrets = set(original_secrets_names).difference(new_secret_names)
             if len(deleted_secrets) > 0:
-                logger.warning("the following secrets are going to be deleted: " + str(deleted_secrets) + " If this is not the intended behavior, please add the missing secrets into the --secrets flag.")
+                logger.warning("the following secrets are going to be deleted: " + str(deleted_secrets) + " If this is not the intended behavior, please add the missing secrets into the --secrets flag.")  # pylint: disable=logging-not-lazy
 
             # Update the secrets to the patch payload.
             if len(secrets_def) > 0:

@@ -5,19 +5,18 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
 
+from knack.log import get_logger
+from msrestazure.tools import resource_id
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
-from msrestazure.tools import resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
+
 from ._constants import CONTAINER_APPS_RP, MANAGED_ENVIRONMENT_RESOURCE_TYPE
 from ._utils import parse_service_bindings
-from knack.log import get_logger
-
 from ._models import JavaComponent as JavaComponentModel
-
 from ._client_factory import handle_raw_exception
 
 logger = get_logger(__name__)

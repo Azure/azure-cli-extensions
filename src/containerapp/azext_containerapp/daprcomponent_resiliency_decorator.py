@@ -5,17 +5,16 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
 
+from copy import copy as shallowcopy
+from knack.log import get_logger
+from msrest.exceptions import DeserializationError
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
-from msrest.exceptions import DeserializationError
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._utils import (clean_null_values, _convert_object_from_snake_to_camel_case, safe_get, safe_set,
                                                            _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes)
-from knack.log import get_logger
-
-from copy import copy as shallowcopy
 
 from ._decorator_utils import load_yaml_file, create_deserializer, process_dapr_component_resiliency_yaml
 from ._models import (
@@ -31,6 +30,7 @@ logger = get_logger(__name__)
 
 
 class DaprComponentResiliencyDecorator(BaseResource):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -169,7 +169,7 @@ class DaprComponentResiliencyDecorator(BaseResource):
 
         yaml_component_resiliency = load_yaml_file(file_name)
 
-        if type(yaml_component_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
+        if not isinstance(yaml_component_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
             raise ValidationError('Invalid YAML provided. Please supply a valid YAML spec.')
 
         if yaml_component_resiliency.get('type') and yaml_component_resiliency.get('type').lower() != "microsoft.app/managedenvironments/daprcomponents/resiliencypolicies":
@@ -228,6 +228,7 @@ class DaprComponentResiliencyDecorator(BaseResource):
 
 
 class DaprComponentResiliencyPreviewCreateDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
         self.component_resiliency_def = DaprComponentResiliencyModel
@@ -455,6 +456,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
 
 
 class DaprComponentResiliencyPreviewShowDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -470,6 +472,7 @@ class DaprComponentResiliencyPreviewShowDecorator(DaprComponentResiliencyDecorat
 
 
 class DaprComponentResiliencyPreviewListDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 
@@ -484,6 +487,7 @@ class DaprComponentResiliencyPreviewListDecorator(DaprComponentResiliencyDecorat
 
 
 class DaprComponentResiliencyPreviewDeleteDecorator(DaprComponentResiliencyDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
 

@@ -68,7 +68,6 @@ class ContainerappEnvStorageDecorator(BaseResource):
             self.managed_environment_storage_def["properties"]["nfsAzureFile"] = storage_def
 
     def validate_arguments(self):
-        import json
         if not self.storage_type or self.storage_type.lower() == AZURE_FILE_STORAGE_TYPE:
             if len(self.azure_file_share_name) == 0 or len(self.azure_file_account_name) == 0 or len(
                     self.azure_file_account_key) == 0 or len(self.access_mode) == 0:
