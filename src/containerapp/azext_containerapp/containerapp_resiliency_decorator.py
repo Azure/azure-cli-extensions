@@ -3,7 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-public-methods, too-many-boolean-expressions
 
 from knack.log import get_logger
 from typing import Dict, Any
@@ -125,6 +125,7 @@ class ContainerAppResiliencyDecorator(BaseResource):
         self.validate_positive_argument("http_retry_delay_in_milliseconds", "http-delay")
         self.validate_positive_argument("http_retry_interval_in_milliseconds", "http-interval")
 
+    # pylint: disable=expression-not-assigned
     def set_up_containerapp_resiliency_yaml(self, file_name):
         containerapp_def = ContainerAppsResiliencyModel
         if self.get_argument_tcp_retry_max_connect_attempts() or self.get_argument_circuit_breaker_consecutive_errors()\
@@ -307,6 +308,7 @@ class ContainerAppResiliencyPreviewCreateDecorator(ContainerAppResiliencyDecorat
         if self.containerapp_resiliency_def is None or self.containerapp_resiliency_def == {}:
             self.containerapp_resiliency_def["properties"] = {}
 
+    # pylint: disable=expression-not-assigned
     def set_up_default_containerapp_resiliency(self):
         if self.get_argument_tcp_retry_max_connect_attempts() or self.get_argument_circuit_breaker_consecutive_errors()\
                 or self.get_argument_circuit_breaker_interval() or self.get_argument_circuit_breaker_max_ejection() or \
@@ -401,7 +403,7 @@ class ContainerAppResiliencyPreviewUpdateDecorator(ContainerAppResiliencyDecorat
         try:
             containerapps_resiliency_def = ContainerAppsResiliencyPreviewClient.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                                                                      name=self.get_argument_name(), container_app_name=self.get_argument_container_app_name())
-        except:
+        except:  # pylint: disable=bare-except
             pass
 
         if not containerapps_resiliency_def:

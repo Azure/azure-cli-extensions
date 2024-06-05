@@ -3,7 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, too-many-public-methods, logging-format-interpolation, too-many-boolean-expressions, too-many-branches, useless-parent-delegation
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-public-methods, too-many-boolean-expressions, logging-fstring-interpolation
 
 from copy import copy as shallowcopy
 from knack.log import get_logger
@@ -153,6 +153,7 @@ class DaprComponentResiliencyDecorator(BaseResource):
                                               optional_argument_names=["out_circuit_breaker_interval"],
                                               condition_message="when providing an outbound dapr component circuit breaker policy.")
 
+    # pylint: disable=expression-not-assigned
     def set_up_component_resiliency_yaml(self, file_name):
         component_resiliency_def = DaprComponentResiliencyModel
         if (self.get_argument_in_http_retry_delay_in_milliseconds() or self.get_argument_in_http_retry_interval_in_milliseconds()
@@ -324,6 +325,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
         self.component_resiliency_update_def = DaprComponentResiliencyModel
         self.component_resiliency_patch_def = shallowcopy(self.component_resiliency_update_def)
 
+    # pylint: disable=too-many-branches
     def construct_payload(self):
         if self.get_argument_yaml():
             self.component_resiliency_update_def = self.set_up_component_resiliency_yaml(file_name=self.get_argument_yaml())
@@ -335,7 +337,7 @@ class DaprComponentResiliencyPreviewUpdateDecorator(DaprComponentResiliencyDecor
             component_resiliency_def = DaprComponentResiliencyPreviewClient.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                                                                  name=self.get_argument_name(), dapr_component_name=self.get_argument_dapr_component_name(),
                                                                                  environment_name=self.get_argument_environment())
-        except:
+        except:  # pylint: disable=bare-except
             pass
 
         if not component_resiliency_def:

@@ -304,7 +304,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
                     if error_code == "RoleAssignmentExists":
                         pass
                 else:
-                    raise Exception(e)
+                    raise Exception(e)  # pylint: disable=broad-exception-raised
             except:
                 logger.warning("Could not add user as session pool creator role to the session pool, please follow the docs https://learn.microsoft.com/en-us/azure/container-apps/sessions-code-interpreter?tabs=azure-cli#authentication to add the needed roll for authentication")
                 logger.warning(e)

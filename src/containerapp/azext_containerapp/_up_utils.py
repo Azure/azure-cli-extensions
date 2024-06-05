@@ -2,7 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, unused-argument, too-many-instance-attributes, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, arguments-differ, abstract-method, logging-format-interpolation, broad-except
+# pylint: disable=line-too-long, unused-argument, too-many-instance-attributes, consider-using-f-string, logging-fstring-interpolation, logging-format-interpolation, no-else-return, broad-except
+
 from random import randint
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
@@ -248,7 +249,7 @@ class ContainerAppEnvironment(Resource):
                 f"Using {type(self).__name__} '{self.name}' in resource group {self.resource_group.name}"
             )  # TODO use .info()
 
-    def create(self):
+    def create(self):  # pylint: disable=arguments-differ
         register_provider_if_needed(self.cmd, LOG_ANALYTICS_RP)
         # for creating connected environment, the location infer from custom location
         if self.is_connected_environment():
@@ -356,7 +357,7 @@ class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attribute
     def _get(self):
         return ContainerAppsJobClient.show(self.cmd, self.resource_group.name, self.name)
 
-    def create(self, no_registry=False):
+    def create(self, no_registry=False):  # pylint: disable=arguments-differ
         # no_registry: don't pass in a registry during create even if the app has one (used for GH actions)
         if get_containerapps_job_if_exists(self.cmd, self.resource_group.name, self.name):
             logger.warning(
@@ -386,7 +387,7 @@ class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attribute
         )
 
 
-class AzureContainerRegistry(Resource):
+class AzureContainerRegistry(Resource):  # pylint: disable=abstract-method
     def __init__(self, name: str, resource_group: "ResourceGroup"):  # pylint: disable=super-init-not-called
 
         self.name = name
@@ -430,7 +431,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
     def _get(self):
         return ContainerAppPreviewClient.show(self.cmd, self.resource_group.name, self.name)
 
-    def create(self, no_registry=False):
+    def create(self, no_registry=False):  # pylint: disable=arguments-differ
         # no_registry: don't pass in a registry during create even if the app has one (used for GH actions)
         if get_container_app_if_exists(self.cmd, self.resource_group.name, self.name):
             logger.warning(
@@ -856,7 +857,7 @@ class CustomLocation(Resource):
             if "resource_group" in custom_location_dict:
                 self.resource_group_name = custom_location_dict["resource_group"]
 
-    def create(self):
+    def create(self):  # pylint: disable=arguments-differ
         register_provider_if_needed(self.cmd, EXTENDED_LOCATION_RP)
         custom_location = create_custom_location(
             cmd=self.cmd,
@@ -1555,7 +1556,7 @@ def up_output(app: 'ContainerApp', no_dockerfile):
     if no_dockerfile and app.ingress:
         logger.warning(f"Your app is running image {app.image} and listening on port {app.target_port}")
 
-    url and logger.warning(f"Browse to your container app at: {url} \n")
+    url and logger.warning(f"Browse to your container app at: {url} \n")  # pylint: disable=expression-not-assigned
     logger.warning(
         f"Stream logs for your container with: az containerapp logs show -n {app.name} -g {app.resource_group.name} \n"
     )
