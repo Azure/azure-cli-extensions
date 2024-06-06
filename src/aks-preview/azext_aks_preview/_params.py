@@ -792,12 +792,6 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "enable_network_observability",
-            action="store_true",
-            is_preview=True,
-            help="enable network observability for cluster",
-        )
-        c.argument(
             "enable_advanced_network_observability",
             action="store_true",
             is_preview=True,
@@ -1279,18 +1273,6 @@ def load_arguments(self, _):
         )
         c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
         c.argument("safeguards_excluded_ns", is_preview=True)
-        c.argument(
-            "enable_network_observability",
-            action="store_true",
-            is_preview=True,
-            help="enable network observability for cluster",
-        )
-        c.argument(
-            "disable_network_observability",
-            action="store_true",
-            is_preview=True,
-            help="disable network observability for cluster",
-        )
         c.argument(
             "enable_advanced_network_observability",
             action="store_true",

@@ -603,7 +603,6 @@ def aks_create(
     enable_node_restriction=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
-    enable_network_observability=None,
     enable_advanced_network_observability=None,
     # nodepool
     crg_id=None,
@@ -831,8 +830,6 @@ def aks_update(
     safeguards_level=None,
     safeguards_version=None,
     safeguards_excluded_ns=None,
-    enable_network_observability=None,
-    disable_network_observability=None,
     enable_advanced_network_observability=None,
     disable_advanced_network_observability=None,
     # metrics profile

@@ -705,26 +705,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
 
-    def get_enable_network_observability(self) -> Optional[bool]:
-        """Get the value of enable_network_observability
-
-        :return: bool or None
-        """
-        enable_network_observability = self.raw_param.get("enable_network_observability")
-        disable_network_observability = self.raw_param.get("disable_network_observability")
-        if enable_network_observability and disable_network_observability:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-network-observability and "
-                "--disable-network-observability at the same time."
-            )
-        if enable_network_observability is False and disable_network_observability is False:
-            return None
-        if enable_network_observability is not None:
-            return enable_network_observability
-        if disable_network_observability is not None:
-            return not disable_network_observability
-        return None
-
     def get_enable_advanced_network_observability(self) -> Optional[bool]:
         """Get the value of enable_advanced_network_observability
 
@@ -3037,11 +3017,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
-        network_observability = self.context.get_enable_network_observability()
-        if network_observability is not None:
-            network_profile.monitoring = self.models.NetworkMonitoring(  # pylint: disable=no-member
-                enabled=network_observability
-            )
         advanced_network_observability = self.context.get_enable_advanced_network_observability()
         if advanced_network_observability is not None:
             network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
@@ -4042,20 +4017,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # --network-policy, it will be set to none by default and validation in aks rp will fail.
             mc.network_profile.network_policy = CONST_NETWORK_POLICY_CILIUM
 
-        return mc
-
-    def update_enable_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update enable network observability of network profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        network_observability = self.context.get_enable_network_observability()
-        if network_observability is not None:
-            mc.network_profile.monitoring = self.models.NetworkMonitoring(  # pylint: disable=no-member
-                enabled=network_observability
-            )
         return mc
 
     def update_enable_advanced_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -5288,8 +5249,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_taints_mc(mc)
         # update nodepool initialization taints
         mc = self.update_nodepool_initialization_taints_mc(mc)
-        # update network_observability in network_profile
-        mc = self.update_enable_network_observability_in_network_profile(mc)
         # update advanced_network_observability in network_profile
         mc = self.update_enable_advanced_network_observability_in_network_profile(mc)
         # update kubernetes support plan
