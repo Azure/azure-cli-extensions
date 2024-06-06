@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create operation to create or update a license.
+    """Create operation to create a license.
 
     :example: Sample command for license create
         az connectedmachine license create --name 'myESULicense' --resource-group 'ytongtest' --location 'eastus2euap' --license-type 'ESU' --state 'Activated' --target 'Windows Server 2012' --edition 'Datacenter' --type 'pCore' --processors 16 --subscription subscriptionId
