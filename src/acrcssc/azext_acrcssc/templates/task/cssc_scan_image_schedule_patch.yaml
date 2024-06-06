@@ -2,10 +2,11 @@ version: v1.1.0
 alias:
   values:
     patchimagetask: cssc-patch-image
+    DATE: $(date "+%Y-%m-%d")
 steps:
   - id: print-inputs
     cmd: |
-        bash -c 'echo "Scaning image for vulnerability and patch {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} for tag {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}"'
+        bash -c 'echo "Scanning image for vulnerability and patch {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} for tag {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}"'
   - id: setup-data-dir
     cmd: bash mkdir ./data
 
@@ -16,10 +17,11 @@ steps:
       --vuln-type os \
       --ignore-unfixed \
       --format json \
-      --output /workspace/data/vulnerability-report_trivy_{{now | date "2023-01-02"}}.json
-  - cmd: mcr.microsoft.com/azure-cli bash -c 'jq "[.Results[].Vulnerabilities | length] | add" /workspace/data/vulnerability-report_trivy_{{now | date "2023-01-02"}}.json > /workspace/data/vulCount.txt'
+      --output /workspace/data/vulnerability-report_trivy_$DATE.json
+  - cmd: mcr.microsoft.com/azure-cli bash -c 'jq "[.Results[].Vulnerabilities | length] | add" /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/vulCount.txt'
+  - cmd: bash echo "Generated vulnerability report at /workspace/data/vulnerability-report_trivy_$DATE.json" 
   - cmd: az login --identity
-  - cmd: bash echo "$(cat /workspace/data/vulCount.txt)"
+  - cmd: bash echo "Vulnerabilities found for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} -> $(cat /workspace/data/vulCount.txt)"
   - cmd: | 
       mcr.microsoft.com/azure-cli bash -c 'vulCount=$(cat /workspace/data/vulCount.txt) && \
       [ $vulCount -gt 0 ] && \

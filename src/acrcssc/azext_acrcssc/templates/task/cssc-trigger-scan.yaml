@@ -1,0 +1,24 @@
+version: v1.1.0
+alias:
+  values:
+    ScanImageAndSchedulePatchTask: cssc-scan-image-schedule-patch
+steps:
+  - cmd: bash -c 'echo "Inside CSSC-TriggerScan, getting images to be patched based on --filter-policy for Registry {{.Run.Registry}}."'
+  - cmd: mcr.microsoft.com/acr/acr-cli:0.10 cssc patch --filter-policy csscpolicies/patchpolicy:v1 --dry-run > filterRepos.txt
+  - cmd: bash -c 'sed -n "/^Listing/,/^Total/ {/^Listing/b;/^Total/b;p}" filterRepos.txt' > filterReposToDisplay.txt
+  - cmd: bash -c 'echo -e "Below images will be scanned and patched (if any os vulnerabilities found) based on --filter-policy.\n$(cat filterReposToDisplay.txt)"'
+  - cmd: mcr.microsoft.com/acr/acr-cli:0.10 cssc patch --filter-policy csscpolicies/patchpolicy:v1 --show-patch-tags --dry-run> filterReposWithPatchTags.txt
+  - cmd: bash -c 'sed -n "/^Listing/,/^Total/ {/^Listing/b;/^Total/b;p}" filterReposWithPatchTags.txt' > filteredReposAndTags.txt
+  - cmd: az login --identity 
+  - cmd: |
+        mcr.microsoft.com/azure-cli bash -c 'while read line;do \
+        IFS='/' read -r -a array1 <<< "$line"
+        IFS=':' read -r -a array2 <<< "${array1[1]}"
+        IFS=',' read -r -a array3 <<< "${array2[1]}"
+        RegistryName=${array1[0]};
+        RepoName=${array2[0]};
+        OriginalTag=${array3[0]};
+        TagName=${array3[1]};
+        echo "Scheduling $ScanImageAndSchedulePatchTask for $RegistryName/$RepoName, Tag:$TagName, OriginalTag:$OriginalTag";
+        az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryName --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --no-wait; \
+        done < filteredReposAndTags.txt;'

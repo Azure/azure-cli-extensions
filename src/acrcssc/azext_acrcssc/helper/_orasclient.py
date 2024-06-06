@@ -20,7 +20,8 @@ from ._constants import (
     BEARER_TOKEN_USERNAME,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
-    CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN
+    CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN,
+    CSSC_WORKFLOW_POLICY_REPOSITORY
 )
 
 # dont like to do this, but this is a dataplane operation, and the client is
@@ -51,9 +52,9 @@ def create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun
         temp_artifact.close() # we need to close the file to allow it to be opened by the oras_client
 
         if dryrun:
-            oci_target_name = f"{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN}"
+            oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN}"
         else:
-            oci_target_name = f"{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
+            oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
 
         oras_client.push(
             target = oci_target_name,
@@ -75,12 +76,12 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
         return
     try:
         token = _get_acr_token(registry.name, resource_group, subscription)
-        # here we might call the az cli directly to delete the image, instead of calling the function by itself
-        # sounds more convoluted, but I suspect it is the 'compliant' way to do it
+
         result = acr_repository_delete(
             cmd=cmd,
             registry_name=registry.name,
-            image=f"{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}",
+            repository=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}",
+            #image=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}",
             username=BEARER_TOKEN_USERNAME,
             password=token,
             yes=not dryrun)
@@ -99,30 +100,14 @@ def _oras_client(cmd, registry):
         client = OrasClient(hostname=str.lower(registry.login_server))
         client.login(BEARER_TOKEN_USERNAME, token)
     except Exception as exception:
-        raise AzCLIError("Failed to login to Artifact Store ACR %s: %s ",registry.name,exception)
+        raise AzCLIError("Failed to login to Artifact Store ACR %s: %s ", registry.name, exception)
 
     return client
 
 def get_continuouspatch_oci_config():
     raise AzCLIError('TODO: Implement `get_continuouspatch_oci_config`')
 
-# def _delete_acr_image(cmd, acr_client, registry_name, resource_group, subscription, dryrun):
-#     #in case we need a way to delete the image without importing the python module
-#     acr_delete_image_cmd = [ ##need to silence this output
-#         str(shutil.which("az")),
-#             "acr", "repository", "delete",
-#             "--name", registry_name,
-#             "--subscription", subscription,
-#             "--image", f"{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}",
-#             "--yes", not dryrun,
-#     ]
-#     try:
-#         result = subprocess.check_output(
-#             acr_delete_image_cmd, encoding="utf-8", text=True
-#         ).strip()
-#     except subprocess.CalledProcessError as error:
-#         raise AzCLIError("Failed to delete OCI artifact from ACR: %s ", error) from error 
-
+## Need to check on this method once, if there's alternative to this
 def _get_acr_token(registry_name, resource_group, subscription):
     logger.debug("Using CLI user credentials to log into %s", registry_name)
     acr_login_with_token_cmd = [ ##need to silence this output

@@ -18,9 +18,6 @@
     "imageScanningEncodedTask": {
       "type": "string"
     },
-    "repoScanningEncodedTask": {
-      "type": "string"
-    },
     "registryScanningEncodedTask": {
       "type": "string"
     }
@@ -97,49 +94,7 @@
     {
       "type": "Microsoft.ContainerRegistry/registries/tasks",
       "apiVersion": "2019-06-01-preview",
-      "name": "[format('{0}/{1}', parameters('AcrName'), 'cssc-scan-repository-schedule-patch')]",
-      "location": "[parameters('AcrLocation')]",
-      "identity": {
-        "type": "SystemAssigned"
-      },
-      "tags": {
-        "cssc": "true"
-      },
-      "properties": {
-        "platform": {
-          "os": "linux",
-          "architecture": "amd64"
-        },
-        "agentConfiguration": {
-          "cpu": 2
-        },
-        "timeout": 3600,
-        "step": {
-          "type": "EncodedTask",
-          "encodedTaskContent": "[parameters('repoScanningEncodedTask')]",
-          "values": []
-        },
-        "isSystemTask": false
-      }
-    },
-    {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('AcrName'))]",
-      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-scan-repository-schedule-patch'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c'))]",
-      "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "principalId": "[reference(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-scan-repository-schedule-patch'), '2019-06-01-preview', 'full').identity.principalId]",
-        "principalType": "ServicePrincipal"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-scan-repository-schedule-patch')]"
-      ]
-    },
-    {
-      "type": "Microsoft.ContainerRegistry/registries/tasks",
-      "apiVersion": "2019-06-01-preview",
-      "name": "[format('{0}/{1}', parameters('AcrName'), 'cssc-scan-registry-schedule-patch')]",
+      "name": "[format('{0}/{1}', parameters('AcrName'), 'cssc-trigger-scan')]",
       "location": "[parameters('AcrLocation')]",
       "identity": {
         "type": "SystemAssigned"
@@ -178,14 +133,14 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('AcrName'))]",
-      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-scan-registry-schedule-patch'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c'))]",
+      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-trigger-scan'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c'))]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "principalId": "[reference(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-scan-registry-schedule-patch'), '2019-06-01-preview', 'full').identity.principalId]",
+        "principalId": "[reference(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-trigger-scan'), '2019-06-01-preview', 'full').identity.principalId]",
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-scan-registry-schedule-patch')]"
+        "[resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('AcrName'), 'cssc-trigger-scan')]"
       ]
     }
   ]

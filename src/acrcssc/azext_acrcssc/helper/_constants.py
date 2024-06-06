@@ -21,8 +21,9 @@ BEARER_TOKEN_USERNAME = "00000000-0000-0000-0000-000000000000"
 
 ##Continuous Patch Constants
 CONTINUOSPATCH_OCI_ARTIFACT_TYPE = "oci-artifact"
-CONTINUOSPATCH_OCI_ARTIFACT_CONFIG = "continuouspatchpolicy"
-CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1 = "latest"
+CSSC_WORKFLOW_POLICY_REPOSITORY = "csscpolicies"
+CONTINUOSPATCH_OCI_ARTIFACT_CONFIG = "patchpolicy"
+CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1 = "v1"
 CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN = "dryrun"
 CONTINUOSPATCH_DEPLOYMENT_NAME = "continuouspatchingdeployment"
 #CONTINUOSPATCH_DEPLOYMENT_TEMPLATE = "CSSC-AutoImagePatching.json"
@@ -31,11 +32,10 @@ CONTINUOSPATCH_DEPLOYMENT_TEMPLATE = "CSSC-AutoImagePatching-encodedtasks.json"
 CONTINUOSPATCH_TASK_PATCHIMAGE_NAME = "cssc-patch-image"
 CONTINUOSPATCH_TASK_SCANIMAGE_NAME = "cssc-scan-image-schedule-patch"
 CONTINUOSPATCH_TASK_SCANREPO_NAME = "cssc-scan-repository-schedule-patch"
-CONTINUOSPATCH_TASK_SCANREGISTRY_NAME = "cssc-scan-registry-schedule-patch"
+CONTINUOSPATCH_TASK_SCANREGISTRY_NAME = "cssc-trigger-scan"
 CONTINUOSPATCH_ALL_TASK_NAMES = [
     CONTINUOSPATCH_TASK_PATCHIMAGE_NAME,
     CONTINUOSPATCH_TASK_SCANIMAGE_NAME,
-    CONTINUOSPATCH_TASK_SCANREPO_NAME,
     CONTINUOSPATCH_TASK_SCANREGISTRY_NAME
 ]
 
@@ -54,15 +54,10 @@ CONTINUOSPATCH_TASK_DEFINITION = {
             "parameter_name": "imageScanningEncodedTask",
             "template_file": "task/cssc_scan_image_schedule_patch.yaml"
         },
-    CONTINUOSPATCH_TASK_SCANREPO_NAME:
-        {
-            "parameter_name": "repoScanningEncodedTask",
-            "template_file": "task/cssc_scan_repository_schedule_patch.yaml",
-        },
     CONTINUOSPATCH_TASK_SCANREGISTRY_NAME:
         {
             "parameter_name": "registryScanningEncodedTask",
-            "template_file": "task/cssc_scan_registry_schedule_patch.yaml"
+            "template_file": "task/cssc-trigger-scan.yaml"
         },
 }
 CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT = 1024 * 1024 * 10 # 10MB, we don't want to allow huge files

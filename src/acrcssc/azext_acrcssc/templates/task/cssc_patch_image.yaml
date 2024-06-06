@@ -1,14 +1,14 @@
 version: v1.1.0
+alias:
+  values:
+    ScanReport : os-vulnerability-report_trivy_{{.Values.SOURCE_REPOSITORY}}_{{.Values.SOURCE_IMAGE_TAG}}_$(date "+%Y-%m-%d").json
 steps:
   # Step #1: Perform the vulnerability scan
   - id: print-inputs
     cmd: |
-        bash -c 'echo "Scan and Schedule Patch {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
-
-  # Step 3: Patch the image with Copacetic
+        bash -c 'echo "Scan, Upload scan report and Schedule Patch for {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
   - id: setup-data-dir
     cmd: bash mkdir ./data
-
   - id: generate-trivy-report
     cmd: |
       ghcr.io/aquasecurity/trivy image \
@@ -16,8 +16,18 @@ steps:
       --vuln-type os \
       --ignore-unfixed \
       --format json \
-      --output /workspace/data/vulnerability-report_trivy_{{now | date "2023-01-02"}}.json
-  
+      --output /workspace/data/$ScanReport
+
+  # Step 2: Attach the vulnerability scan report to the image
+  - id: upload-trivy-report
+    cmd: |
+      ghcr.io/oras-project/oras:v1.1.0 attach \
+      --artifact-type vulnerabilityScan/report \
+      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
+      ./data/$ScanReport
+
+  - cmd: bash echo "Uploaded vulnerability report $ScanReport to the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"
+
   - id: buildkitd
     cmd: moby/buildkit --addr tcp://0.0.0.0:8888
     entrypoint: buildkitd
@@ -28,13 +38,16 @@ steps:
   - id: list-output-file
     cmd: bash ls -l /workspace/data
   
+  # Step 3: Patch the image with Copacetic
   - id: patch-with_copa
-    cmd: | 
+    cmd: |
       ghcr.io/toddysm/cssc-framework/copacetic:1.0 \
       {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
-      vulnerability-report_trivy_{{now | date "2023-01-02"}}.json \
+      $ScanReport \
       {{.Values.SOURCE_IMAGE_TAG}}-patched
     network: host
 
   - id: push-image
     cmd: docker push {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-patched
+
+  - cmd: bash echo "Patched image pushed to {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}-patched"
