@@ -299,7 +299,11 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
     run_id = queued.run_id
     logger.warning("Queued a run with ID: %s", run_id)
     #return queued
-    return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
+    log_lines = stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name).splitlines()
+    last_four_lines = log_lines[-4:]
+
+    for line in last_four_lines:
+        print(line)
     # #return get_run_with_polling(cmd, acr_run_client, run_id, registry.name, resource_group_name)
     # return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name, raise_error_on_failure= True)
 
