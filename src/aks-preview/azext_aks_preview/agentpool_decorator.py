@@ -86,7 +86,17 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         :return: string
         """
         # read the original value passed by the command
-        vm_set_type = self.raw_param.get("vm_set_type", CONST_VIRTUAL_MACHINE_SCALE_SETS)
+        vm_set_type = self.raw_param.get("vm_set_type")
+        if vm_set_type is None:
+            if self.raw_param.get("vm_sizes") is None:
+                vm_set_type = CONST_VIRTUAL_MACHINE_SCALE_SETS
+            else:
+                vm_set_type = CONST_VIRTUAL_MACHINES
+        else:
+            if vm_set_type.lower() != CONST_VIRTUAL_MACHINES.lower() and self.raw_param.get("vm_sizes") is not None:
+                raise InvalidArgumentValueError(
+                    "--vm-sizes can only be used with --vm-set-type VirtualMachines(Preview)"
+                )
         # try to read the property value corresponding to the parameter from the `agentpool` object
         if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
             if self.agentpool and self.agentpool.type is not None:
@@ -640,7 +650,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         raw_value = self.raw_param.get("vm_sizes")
         if raw_value is not None:
-            vm_sizes = raw_value.split(",")
+            vm_sizes = [x.strip() for x in raw_value.split(",")]
         else:
             vm_sizes = [self.get_node_vm_size()]
         return vm_sizes
