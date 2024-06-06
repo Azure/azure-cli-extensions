@@ -37,11 +37,11 @@ print("get_ext_repo_paths: ", cli_ext_path)
 def extract_module_history_update_info(mod_update_info, mod):
     """
     re pattern:
-    --- a/src/monitor-control-service/HISTORY.rst
-    +++ b/src/monitor-control-service/HISTORY.rst
+    --- a/src/monitor-control-service/HISTORY.(rst|md)
+    +++ b/src/monitor-control-service/HISTORY.(rst|md)
     """
     mod_update_info["history_updated"] = False
-    module_history_update_pattern = re.compile(r"\+\+\+.*?src/%s/HISTORY.rst" % mod)
+    module_history_update_pattern = re.compile(r"\+\+\+.*?src/%s/HISTORY\.(rst|md)" % mod)
     with open(diff_code_file, "r") as f:
         for line in f:
             mod_history_update_match = re.findall(module_history_update_pattern, line)
@@ -60,11 +60,11 @@ def extract_module_version_update_info(mod_update_info, mod):
     """
     mod_update_info["setup_updated"] = False
     module_setup_update_pattern = re.compile(r"\+\+\+.*?src/%s/setup.py" % mod)
-    module_version_update_pattern = re.compile(r"\+.*?VERSION.*?\=.*?[\'\"]([0-9\.b]+)[\'\"]")
+    module_version_update_pattern = re.compile(r"\+\s?VERSION\s?\=\s?[\'\"]([0-9\.b]+)[\'\"]")
     with open(diff_code_file, "r") as f:
         for line in f:
             if mod_update_info["setup_updated"]:
-                if line.find("---") != -1:
+                if line.find("---") == 0 or mod_update_info.get("version_diff", None):
                     break
                 mod_version_update_match = re.findall(module_version_update_pattern, line)
                 if mod_version_update_match and len(mod_version_update_match) == 1:
@@ -86,14 +86,14 @@ def extract_module_metadata_update_info(mod_update_info, mod):
     """
     mod_update_info["meta_updated"] = False
     module_meta_update_pattern = re.compile(r"\+\+\+.*?src/%s/azext_.*?/azext_metadata.json" % mod)
-    module_ispreview_add_pattern = re.compile(r"\-.*?azext.isPreview.*?true")
+    module_ispreview_add_pattern = re.compile(r"\+.*?azext.isPreview.*?true")
     module_ispreview_remove_pattern = re.compile(r"\-.*?azext.isPreview.*?true")
     module_isexp_add_pattern = re.compile(r"\+.*?azext.isExperimental.*?true")
     module_isexp_remove_pattern = re.compile(r"\-.*?azext.isExperimental.*?true")
     with open(diff_code_file, "r") as f:
         for line in f:
             if mod_update_info["meta_updated"]:
-                if line.find("---") != -1:
+                if line.find("---") == 0:
                     break
                 ispreview_add_match = re.findall(module_ispreview_add_pattern, line)
                 if ispreview_add_match and len(ispreview_add_match):
@@ -226,7 +226,7 @@ def gen_preview_comment_message(mod, mod_update_info, mod_message):
     if mod_update_info.get("preview_tag", "-") == mod_update_info.get("preview_tag_diff", "-"):
         return
     preview_comment_message = " - "
-    if mod_update_info["setup_updated"]:
+    if mod_update_info["setup_updated"] and mod_update_info.get("version_diff", None):
         block_pr = 1
         preview_comment_message += ":warning: "
     if mod_update_info.get("preview_tag", None) and mod_update_info.get("preview_tag_diff", None):
@@ -317,11 +317,13 @@ def main():
     if len(changed_module_list) == 0:
         comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
         save_comment_message(output_file, comment_message)
+        save_gh_output()
         return
     fill_module_update_info(modules_update_info)
     if len(modules_update_info) == 0:
         comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
         save_comment_message(output_file, comment_message)
+        save_gh_output()
         return
     for mod, update_info in modules_update_info.items():
         gen_comment_message(mod, update_info, comment_message)

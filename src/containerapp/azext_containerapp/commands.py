@@ -45,6 +45,7 @@ def load_command_table(self, args):
         g.custom_show_command('show', 'show_containerappsjob')
         g.custom_command('list', 'list_containerappsjob')
         g.custom_command('create', 'create_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory(), transform=transform_sensitive_values)
+        g.custom_command('update', 'update_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory(), transform=transform_sensitive_values)
         g.custom_command('delete', 'delete_containerappsjob', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env certificate') as g:
@@ -180,14 +181,14 @@ def load_command_table(self, args):
         g.custom_command('list', 'list_java_components')
 
     with self.command_group('containerapp env java-component spring-cloud-config',
-                                deprecate_info=self.deprecate(redirect='containerapp env java-component config-server-for-spring', hide=True)) as g:
+                            deprecate_info=self.deprecate(redirect='containerapp env java-component config-server-for-spring', hide=True)) as g:
         g.custom_command('create', 'create_config_server_for_spring', supports_no_wait=True)
         g.custom_command('update', 'update_config_server_for_spring', supports_no_wait=True)
         g.custom_show_command('show', 'show_config_server_for_spring')
         g.custom_command('delete', 'delete_config_server_for_spring', confirmation=True, supports_no_wait=True)
 
     with self.command_group('containerapp env java-component spring-cloud-eureka',
-                                deprecate_info=self.deprecate(redirect='containerapp env java-component eureka-server-for-spring', hide=True)) as g:
+                            deprecate_info=self.deprecate(redirect='containerapp env java-component eureka-server-for-spring', hide=True)) as g:
         g.custom_command('create', 'create_eureka_server_for_spring', supports_no_wait=True)
         g.custom_command('update', 'update_eureka_server_for_spring', supports_no_wait=True)
         g.custom_show_command('show', 'show_eureka_server_for_spring')
@@ -204,3 +205,54 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_eureka_server_for_spring', supports_no_wait=True)
         g.custom_show_command('show', 'show_eureka_server_for_spring')
         g.custom_command('delete', 'delete_eureka_server_for_spring', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp job logs',  is_preview=True) as g:
+        g.custom_show_command('show', 'stream_job_logs')
+
+    with self.command_group('containerapp job replica', is_preview=True) as g:
+        g.custom_show_command('list', 'list_replica_containerappsjob')
+    
+    with self.command_group('containerapp env java-component nacos') as g:
+        g.custom_command('create', 'create_nacos', supports_no_wait=True)
+        g.custom_command('update', 'update_nacos', supports_no_wait=True)
+        g.custom_show_command('show', 'show_nacos')
+        g.custom_command('delete', 'delete_nacos', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp env java-component admin-for-spring') as g:
+        g.custom_command('create', 'create_admin_for_spring', supports_no_wait=True)
+        g.custom_command('update', 'update_admin_for_spring', supports_no_wait=True)
+        g.custom_show_command('show', 'show_admin_for_spring')
+        g.custom_command('delete', 'delete_admin_for_spring', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp env dotnet-component', is_preview=True) as g:
+        g.custom_command('list', 'list_dotnet_components')
+        g.custom_show_command('show', 'show_dotnet_component')
+        g.custom_command('create', 'create_dotnet_component', supports_no_wait=True)
+        g.custom_command('delete', 'delete_dotnet_component', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp env dotnet-component', is_preview=True) as g:
+        g.custom_command('list', 'list_dotnet_components')
+        g.custom_show_command('show', 'show_dotnet_component')
+        g.custom_command('create', 'create_dotnet_component', supports_no_wait=True)
+        g.custom_command('delete', 'delete_dotnet_component', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp sessionpool', is_preview=True) as g:
+        g.custom_show_command('show', 'show_session_pool')
+        g.custom_show_command('list', 'list_session_pool')
+        g.custom_command('create', 'create_session_pool', supports_no_wait=True)
+        g.custom_command('update', 'update_session_pool', supports_no_wait=True)
+        g.custom_command('delete', 'delete_session_pool', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp session code-interpreter', is_preview=True) as g:
+        g.custom_command('execute', 'execute_session_code_interpreter', supports_no_wait=True)
+        g.custom_command('upload-file', 'upload_session_code_interpreter', supports_no_wait=True)
+        g.custom_show_command('show-file-content', 'show_file_content_session_code_interpreter')
+        g.custom_show_command('show-file-metadata', 'show_file_metadata_session_code_interpreter')
+        g.custom_show_command('list-files', 'list_files_session_code_interpreter')
+        g.custom_command('delete-file', 'delete_file_session_code_interpreter', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp java logger', is_preview=True) as g:
+        g.custom_command('set', 'create_or_update_java_logger', supports_no_wait=True)
+        g.custom_command('delete', 'delete_java_logger', supports_no_wait=True)
+        g.custom_show_command('show', 'show_java_logger')
+

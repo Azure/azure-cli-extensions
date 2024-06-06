@@ -11,21 +11,18 @@ set -o xtrace
 [[ -z "${BUILD_REASON}" ]] && (echo "BUILD_REASON is empty")
 [[ -z "${SYSTEM_PULLREQUEST_TARGETBRANCH}" ]] && (echo "SYSTEM_PULLREQUEST_TARGETBRANCH is empty")
 
-# client id, secret and tenant id of sp 'azcli-aks-live-test' (from variable group "azcli-aks-tool")
-[[ -z "${AZCLI_ALT_CLIENT_ID}" ]] && (echo "AZCLI_ALT_CLIENT_ID is empty"; exit 1)
+# common configs from variable group "AZCLI AKS Live Test"
 [[ -z "${AZCLI_ALT_SUBSCRIPTION_ID}" ]] && (echo "AZCLI_ALT_SUBSCRIPTION_ID is empty"; exit 1)
+[[ -z "${IDENTITY_RESOURCE_ID}" ]] && (echo "IDENTITY_RESOURCE_ID is empty"; exit 1)
+[[ -z "${AZCLI_ALT_CLIENT_ID}" ]] && (echo "AZCLI_ALT_CLIENT_ID is empty")
 [[ -z "${TENANT_ID}" ]] && (echo "TENANT_ID is empty"; exit 1)
-
-# basic ubuntu image with python3 pre-installed, hosted on some container registry (from variable group "azcli-aks-tool")
 [[ -z "${IMAGE_PREFIX}" ]] && (echo "IMAGE_PREFIX is empty"; exit 1)
 [[ -z "${IMAGE_NAME}" ]] && (echo "IMAGE_NAME is empty"; exit 1)
 [[ -z "${IMAGE_TAG}" ]] && (echo "IMAGE_TAG is empty"; exit 1)
-
-# specify the version of python3
-[[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
-
-# tsg/wiki link
 [[ -z "${WIKI_LINK}" ]] && (echo "WIKI_LINK is empty"; exit 1)
+
+# [deprecated, would use the version provided by the image] specify the version of python3
+[[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty")
 
 # pytest options
 [[ -z "${PARALLELISM}" ]] && (echo "PARALLELISM is empty")
@@ -71,21 +68,17 @@ cat /dev/null > env.list
 echo "BUILD_REASON=${BUILD_REASON}" >> env.list
 echo "SYSTEM_PULLREQUEST_TARGETBRANCH=${SYSTEM_PULLREQUEST_TARGETBRANCH}" >> env.list
 
-# tenant, sub, client
-echo "TENANT_ID=${TENANT_ID}" >> env.list
+# common configs from variable group "AZCLI AKS Live Test"
 echo "AZCLI_ALT_SUBSCRIPTION_ID=${AZCLI_ALT_SUBSCRIPTION_ID}" >> env.list
-echo "AZCLI_ALT_CLIENT_ID=${AZCLI_ALT_CLIENT_ID}" >> env.list
-
-# image
+echo "IDENTITY_RESOURCE_ID=${IDENTITY_RESOURCE_ID}" >> env.list
+echo "TENANT_ID=${TENANT_ID}" >> env.list
 echo "IMAGE_PREFIX=${IMAGE_PREFIX}" >> env.list
 echo "IMAGE_NAME=${IMAGE_NAME}" >> env.list
 echo "IMAGE_TAG=${IMAGE_TAG}" >> env.list
-
-# python version
-echo "PYTHON_VERSION=${PYTHON_VERSION}" >> env.list
-
-# tsg/wiki link
 echo "WIKI_LINK=${WIKI_LINK}" >> env.list
+
+# [deprecated, would use the version provided by the image] specify the version of python3
+[[ -n "${PYTHON_VERSION}" ]] && echo "PYTHON_VERSION=${PYTHON_VERSION}" >> env.list
 
 # pytest options
 echo "PARALLELISM=${PARALLELISM}" >> env.list
@@ -97,7 +90,7 @@ echo "NO_EXIT_FIRST=${NO_EXIT_FIRST}" >> env.list
 echo "LAST_FAILED=${LAST_FAILED}" >> env.list
 
 # custom - azdev env
-echo "AZURE_CLI_TEST_DEV_SP_NAME=${AZCLI_ALT_CLIENT_ID}" >> env.list
+[[ -n "${AZCLI_ALT_CLIENT_ID}" ]] && echo "AZURE_CLI_TEST_DEV_SP_NAME=${AZCLI_ALT_CLIENT_ID}" >> env.list
 echo "AZURE_CLI_TEST_DEV_RESOURCE_GROUP_LOCATION=${TEST_LOCATION}" >> env.list
 
 # custom - az-aks-tool
