@@ -790,6 +790,19 @@ class TestAppCreate(BasicTest):
         self.assertEqual(default_config_server_id,
                     addon_configs['configServer']['resourceId'])
 
+    def test_app_with_enable_test_endpoint_auth(self):
+        self._execute('rg', 'asc', 'app', instance_count=1)
+        resource = self.put_app_resource
+        self.assertEqual(models.TestEndpointAuthState.ENABLED, resource.properties.test_endpoint_auth_state)
+
+        self._execute('rg', 'asc', 'app', instance_count=1, disable_test_endpoint_auth=False)
+        resource = self.put_app_resource
+        self.assertEqual(models.TestEndpointAuthState.ENABLED, resource.properties.test_endpoint_auth_state)
+
+        self._execute('rg', 'asc', 'app', instance_count=1, disable_test_endpoint_auth=True)
+        resource = self.put_app_resource
+        self.assertEqual(models.TestEndpointAuthState.DISABLED, resource.properties.test_endpoint_auth_state)
+
     def test_app_with_persistent_storage(self):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True)
         resource = self.put_app_resource

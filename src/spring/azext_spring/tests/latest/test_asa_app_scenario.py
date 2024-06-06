@@ -99,6 +99,7 @@ class AppCRUD(ScenarioTest):
 
         self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --cpu 2  --env "foo=bar"', checks=[
             self.check('name', '{app}'),
+            self.check('properties.testEndpointAuthState', "Enabled"),
             self.check('properties.activeDeployment.name', 'default'),
             self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
             self.check('properties.activeDeployment.sku.capacity', 1),
@@ -108,14 +109,17 @@ class AppCRUD(ScenarioTest):
         ])
 
         # ingress only set session affinity
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --session-affinity Cookie --session-max-age 1800', checks=[
-            self.check('name', '{app}'),
-            self.check('properties.ingressSettings.readTimeoutInSeconds', '300'),
-            self.check('properties.ingressSettings.sendTimeoutInSeconds', '60'),
-            self.check('properties.ingressSettings.backendProtocol', 'Default'),
-            self.check('properties.ingressSettings.sessionAffinity', 'Cookie'),
-            self.check('properties.ingressSettings.sessionCookieMaxAge', '1800'),
-        ])
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --session-affinity Cookie --session-max-age 1800 '
+                 '--disable-test-endpoint-auth',
+                 checks=[
+                     self.check('name', '{app}'),
+                     self.check('properties.testEndpointAuthState', "Disabled"),
+                     self.check('properties.ingressSettings.readTimeoutInSeconds', '300'),
+                     self.check('properties.ingressSettings.sendTimeoutInSeconds', '60'),
+                     self.check('properties.ingressSettings.backendProtocol', 'Default'),
+                     self.check('properties.ingressSettings.sessionAffinity', 'Cookie'),
+                     self.check('properties.ingressSettings.sessionCookieMaxAge', '1800'),
+                ])
 
         # green deployment copy settings from active, but still accept input as highest priority
         self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2', checks=[
@@ -174,7 +178,7 @@ class AppCRUD(ScenarioTest):
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'], location = 'eastasia')
     @SpringAppNamePreparer()
-    def test_app_actuator_configs(self, resource_group, spring, app):
+    def test_enterprise_app_crud(self, resource_group, spring, app):
         self.kwargs.update({
             'app': app,
             'serviceName': spring,
@@ -183,12 +187,16 @@ class AppCRUD(ScenarioTest):
 
         self.cmd('spring app create -n {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{app}'),
+            self.check('properties.testEndpointAuthState', "Enabled"),
         ])
 
         # add actuator configs
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8080 --custom-actuator-path actuator', checks=[
-            self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8080}}),
-        ])
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8080 --custom-actuator-path actuator '
+                 '--disable-test-endpoint-auth',
+                 checks=[
+                     self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8080}}),
+                     self.check('properties.testEndpointAuthState', "Disabled"),
+                 ])
 
 class BlueGreenTest(ScenarioTest):
 

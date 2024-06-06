@@ -1,5 +1,9 @@
 Release History
 ===============
+1.24.5
+---
+* Add arguments `--disable-test-endpoint-auth` in `spring app create` and `spring app update`.
+
 1.24.4
 ---
 * Refine the error message when user failed to get job log streaming in command `az spring job logs`.
