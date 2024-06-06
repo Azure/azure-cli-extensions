@@ -15,16 +15,17 @@ from azure.cli.core.aaz import *
     "large-instance update",
 )
 class Update(AAZCommand):
-    """Update the Tags field of an Azure Large Instance for the specified subscription, resource group, and instance name.
+    """Update the Tags field of an Azure Large Instance for the specified
+subscription, resource group, and instance name.
 
     :example: To add an Azure Large Instance tag
-        az large-instance update --subscription $SUBSCRIPTION_ID --instance-name=$INSTANCE_NAME --resource-group=$RESOURCE_GROUP --tags newKey=value
+        az large-instance update --subscription $SUBSCRIPTION_ID --instance-name=$INSTANCE_NAME --resource-group=$RESOURCE_GROUP --tags
     """
 
     _aaz_info = {
-        "version": "2023-07-20-preview",
+        "version": "2024-04-10",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}", "2024-04-10"],
         ]
     }
 
@@ -44,8 +45,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.instance_name = AAZStrArg(
-            options=["-n", "--name", "--instance-name"],
+        _args_schema.azure_large_instance_name = AAZStrArg(
+            options=["-n", "--name", "--azure-large-instance-name"],
             help="Name of the AzureLargeInstance.",
             required=True,
             id_part="name",
@@ -63,7 +64,7 @@ class Update(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="TagsParameter",
-            help="Tags field of the AzureLargeInstance instance.",
+            help="Resource tags.",
         )
 
         tags = cls._args_schema.tags
@@ -117,7 +118,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureLargeInstanceName", self.ctx.args.instance_name,
+                    "azureLargeInstanceName", self.ctx.args.azure_large_instance_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -135,7 +136,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-20-preview",
+                    "api-version", "2024-04-10",
                     required=True,
                 ),
             }
@@ -224,9 +225,6 @@ class Update(AAZCommand):
             )
             properties.os_profile = AAZObjectType(
                 serialized_name="osProfile",
-            )
-            properties.partner_node_id = AAZStrType(
-                serialized_name="partnerNodeId",
             )
             properties.power_state = AAZStrType(
                 serialized_name="powerState",
