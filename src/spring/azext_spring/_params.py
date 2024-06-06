@@ -535,6 +535,7 @@ def load_arguments(self, _):
                        help='The workload profile used in the managed environment. Default to "Consumption".')
             c.argument('disable_test_endpoint_auth',
                        arg_type=get_three_state_flag(),
+                       options_list=['--disable-test-endpoint-auth', '--disable-tea'],
                        help="If true, disable authentication of the app's test endpoint.")
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
