@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.8.0
+1.0.0b1
 +++++	
 * Add ESU license and Network Security Perimeter API's. 2024/03/31-preview is used for aaz generation. Migrated to aaz.
 
