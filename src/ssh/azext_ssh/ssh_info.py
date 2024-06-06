@@ -24,6 +24,7 @@ class SSHSession():
                  ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt):
         self.resource_group_name = resource_group_name
         self.vm_name = vm_name
+        self.resource_id = None
         self.ip = ssh_ip
         self.use_private_ip = use_private_ip
         self.local_user = local_user
@@ -49,6 +50,11 @@ class SSHSession():
                                   "Microsoft.ConnectedVMwarevSphere/virtualMachines",
                                   "Microsoft.ScVmm/virtualMachines",
                                   "Microsoft.AzureStackHCI/virtualMachines"]:
+            return True
+        return False
+    
+    def is_vm(self):
+        if self.resource_type in ["Microsoft.ScVmm/virtualMachines"]:
             return True
         return False
 
