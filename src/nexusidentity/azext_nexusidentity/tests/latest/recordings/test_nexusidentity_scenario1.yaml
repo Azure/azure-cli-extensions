@@ -1,0 +1,78 @@
+interactions:
+- request:
+    body: ''
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      host:
+      - graph.microsoft.com
+      user-agent:
+      - python-httpx/0.27.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/users/me-token-to-replace/extensions
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users(''40523ce8-82a4-4362-b93a-7dfd212edd4c'')/extensions","value":[{"@odata.type":"#microsoft.graph.openTypeExtension","extension_name":"com.nexusidentity.keys","publicKey":"sk-ssh-ed25519@openssh.com
+        AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIJet7nknqBQpavVf6gjjjlcHUfckuGI4eZDJxG4tlSSHAAAABHNzaDo=
+        fareast\\jtamma@DESKTOP-QDMRQ39\n","id":"com.nexusidentity.keys"}]}'
+    headers:
+      content-length:
+      - '431'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Mon, 03 Jun 2024 20:35:36 GMT
+      odata-version:
+      - '4.0'
+      request-id:
+      - 10fe3408-7303-4b72-baa2-428ee6dce930
+      strict-transport-security:
+      - max-age=31536000
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Central India","Slice":"E","Ring":"3","ScaleUnit":"001","RoleInstance":"PN3PEPF000002CB"}}'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"@odata.type": "microsoft.graph.openTypeExtension", "extension_name":
+      "com.nexusidentity.keys", "publicKey": "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIJet7nknqBQpavVf6gjjjlcHUfckuGI4eZDJxG4tlSSHAAAABHNzaDo=
+      fareast\\jtamma@DESKTOP-QDMRQ39\n"}'
+    headers:
+      accept:
+      - application/json
+      accept-encoding:
+      - gzip, deflate
+      connection:
+      - keep-alive
+      content-length:
+      - '274'
+      content-type:
+      - application/json
+      host:
+      - graph.microsoft.com
+      user-agent:
+      - python-httpx/0.27.0
+    method: PATCH
+    uri: https://graph.microsoft.com/v1.0/users/me-token-to-replace/extensions/com.nexusidentity.keys
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Mon, 03 Jun 2024 20:35:57 GMT
+      request-id:
+      - e5612a3d-5086-4e68-873d-7c8f4f5a573e
+      strict-transport-security:
+      - max-age=31536000
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Central India","Slice":"E","Ring":"3","ScaleUnit":"001","RoleInstance":"PN3PEPF000002BF"}}'
+    status:
+      code: 204
+      message: No Content
+version: 1
