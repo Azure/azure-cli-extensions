@@ -11,6 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+5.0.0b1
+++++++++
+* [BREAKING CHANGE]: Remove --enable-network-observability and --disable-network-observability from aks create and update commands.
 * Update --enable-advanced-network-observability description to note additional costs and add missing flag to create command.
 * Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
 * Change default value of `--vm-set-type` to VirtualMachines when `--vm-sizes` is set
