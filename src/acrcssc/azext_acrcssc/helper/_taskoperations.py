@@ -10,7 +10,12 @@ from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.command_modules.acr._stream_utils import stream_logs
 from azure.cli.command_modules.acr._run_polling import get_run_with_polling
+from azure.cli.command_modules.acr._stream_utils import _stream_logs, _stream_artifact_logs
+from azure.cli.command_modules.acr._constants import ACR_RUN_DEFAULT_TIMEOUT_IN_SEC
+from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.command_modules.acr.run import acr_run
+from msrestazure.azure_exceptions import CloudError
+from  azure.cli.command_modules.acr._azure_utils import get_blob_info
 from azure.mgmt.core.tools import parse_resource_id
 from azext_acrcssc._client_factory import (
     cf_acr_tasks,
@@ -44,7 +49,7 @@ from ._constants import (
 )
 
 logger = get_logger(__name__)
-
+DEFAULT_CHUNK_SIZE = 1024 * 4
 def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run):
     logger.debug("Entering continuousPatchV1_creation %s %s %s", cssc_config_file, dryrun, defer_immediate_run)
 
@@ -264,7 +269,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
     logger.debug("Entering acr_cssc_dry_run")
     resource_group_name = parse_resource_id(registry.id)["resource_group"]
     acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
-    #acr_run_client = cf_acr_runs(cmd.cli_ctx)
+    acr_run_client = cf_acr_runs(cmd.cli_ctx)
     #acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
     source_location = prepare_source_location(
          cmd, config_file_path, acr_registries_task_client, registry.name, resource_group_name)
@@ -293,7 +298,8 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
         run_request=request))
     run_id = queued.run_id
     logger.warning("Queued a run with ID: %s", run_id)
-    return queued
+    #return queued
+    return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
     # #return get_run_with_polling(cmd, acr_run_client, run_id, registry.name, resource_group_name)
     # return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name, raise_error_on_failure= True)
 
@@ -368,3 +374,51 @@ def _is_vault_secret(cmd, credential):
     if credential is not None:
         return keyvault_dns.upper() in credential.upper()
     return False
+
+def stream_logs(cmd, client,
+                run_id,
+                registry_name,
+                resource_group_name,
+                timeout=ACR_RUN_DEFAULT_TIMEOUT_IN_SEC,
+                no_format=False,
+                raise_error_on_failure=False):
+    log_file_sas = None
+    artifact = False
+    error_msg = "Could not get logs for ID: {}".format(run_id)
+    try:
+        response = client.get_log_sas_url(
+            resource_group_name=resource_group_name,
+            registry_name=registry_name,
+            run_id=run_id)
+        if not response.log_artifact_link:
+            log_file_sas = response.log_link
+        else:
+            log_file_sas = response.log_artifact_link
+            artifact = True
+    except (AttributeError, CloudError) as e:
+        logger.debug("%s Exception: %s", error_msg, e)
+        raise AzCLIError(error_msg)
+
+    if not log_file_sas:
+        logger.debug("%s Empty SAS URL.", error_msg)
+        raise AzCLIError(error_msg)
+
+    if not artifact:
+        account_name, endpoint_suffix, container_name, blob_name, sas_token = get_blob_info(
+            log_file_sas)
+        AppendBlobService = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE, 'blob#AppendBlobService')
+        if not timeout:
+            timeout = ACR_RUN_DEFAULT_TIMEOUT_IN_SEC
+        _stream_logs(no_format,
+                     DEFAULT_CHUNK_SIZE,
+                     timeout,
+                     AppendBlobService(
+                         account_name=account_name,
+                         sas_token=sas_token,
+                         endpoint_suffix=endpoint_suffix),
+                     container_name,
+                     blob_name,
+                     raise_error_on_failure)
+    else:
+        _stream_artifact_logs(log_file_sas,
+                              no_format)
