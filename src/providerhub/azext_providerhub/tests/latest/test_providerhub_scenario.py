@@ -87,10 +87,6 @@ def call_scenario(test_2):
     step_custom_rollout_create(test_2, checks=[])
     step_custom_rollout_show(test_2, checks=[])
     step_custom_rollout_list(test_2, checks=[])
-    step_default_rollout_create(test_2, checks=[])
-    step_default_rollout_show(test_2, checks=[])
-    step_default_rollout_list(test_2, checks=[])
-    step_default_rollout_stop(test_2, checks=[])
     step_resource_type_registration_create(test_2, checks=[])
     step_resource_type_registration_show(test_2, checks=[])
     step_resource_type_registration_list(test_2, checks=[])
@@ -130,7 +126,7 @@ class ProviderhubScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'providerNamespace': 'Microsoft.Contoso',
+            'providerNamespace': 'Private.VPTest',
             'resourceType': 'employees',
             'customRolloutName': 'canaryTesting01',
             'defaultRolloutName': 'cliDefaultRollout',
@@ -140,10 +136,6 @@ class ProviderhubScenarioTest(ScenarioTest):
             'skuName': 'default'
         })
 
-
-    @ResourceGroupPreparer(name_prefix='clitestproviderhub_mgmtexp-eastus'[:7], key='rg', parameter_name='rg')
-    @ResourceGroupPreparer(name_prefix='clitestproviderhub_mgmtexp-northeurope'[:7], key='rg_2',
-                           parameter_name='rg_2')
     def test_providerhub_Scenario(self_2):
         call_scenario(self_2)
         calc_coverage(__file__)

@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub sku list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace --resource-type
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://centraluseuap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/employees/skus?api-version=2020-11-20
+  response:
+    body:
+      string: '{"value":[{"properties":{"skuSettings":[{"name":"freeSku"}]},"type":"Microsoft.ProviderHub/providerRegistrations/skus","name":"default"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '138'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 05 Jun 2024 22:35:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/6bc11029-96a1-4831-8a4b-c259b6e8071b
+      x-msedge-ref:
+      - 'Ref A: EC30C4011C6D4C7C896AA07E0BE2517E Ref B: DM2AA1091213035 Ref C: 2024-06-05T22:35:38Z'
+    status:
+      code: 200
+      message: OK
+version: 1
