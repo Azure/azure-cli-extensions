@@ -20,13 +20,13 @@ class Create(AAZCommand):
 
     :example: Sample command for run-command create
         az connectedmachine run-command create --resource-group "myResourceGroup" --location "West US" --async false --parameters "[{"name":"param1","value":"value1"}]" --password "<runAsPassword>" --user "user1" --script "Write-Host Hello World!" --timeout 3600 --name "myRunCommand" --machine-name "myMachine" --subscription "mySubscription"
-        az connectedmachine run-command create --resource-group "myResourceGroup" --location "West US" --script "Write-Host Hello World!" --name "myRunCommand" --machine-name "myMachine" --output-uri "https://mystorageaccount.blob.core.windows.net/mycontainer/RuncommandOutput.txt?sp=racw&st=2022-10-17T19:02:15Z&se=2022-10-18T03:02:15Z&spr=https&sv=2021-06-08&sr=b&sig=3BxtEasfdasdfasdfdYki9yvYsqc60V0%3D" --subscription "mySubscription"
+        az connectedmachine run-command create --resource-group "myResourceGroup" --location "West US" --script "Write-Host Hello World!" --name "myRunCommand" --machine-name "myMachine" --output-uri "outputuri" --subscription "mySubscription"
     """
 
     _aaz_info = {
-        "version": "2023-10-03-preview",
+        "version": "2024-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2023-10-03-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2024-03-31-preview"],
         ]
     }
 
@@ -313,7 +313,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-03-preview",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }

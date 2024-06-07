@@ -19,13 +19,13 @@ class Delete(AAZCommand):
     """Delete an Azure Arc PrivateLinkScope.
 
     :example: Sample command for private-link-scope delete
-        az connectedmachine private-link-scope delete --resource-group my-resource-group --scope-name my-privatelinkscope
+        az connectedmachine private-link-scope delete --resource-group myResourceGroup --scope-name myPrivateLinkScope --subscription mySubcription
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2024-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2024-03-31-preview"],
         ]
     }
 
@@ -54,6 +54,9 @@ class Delete(AAZCommand):
             help="The name of the Azure Arc PrivateLinkScope resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="[a-zA-Z0-9-_\.]+",
+            ),
         )
         return cls._args_schema
 
@@ -143,7 +146,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }

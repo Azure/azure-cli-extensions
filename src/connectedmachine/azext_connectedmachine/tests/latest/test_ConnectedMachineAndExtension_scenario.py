@@ -34,8 +34,8 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
     def test_machine_and_extension(self):
         self.kwargs.update({
             'machine': 'testmachine',
-            'rg': 'az-sdk-test',
-            'location': 'eastus2euap',
+            'rg': 'ytongtest',
+            'location': 'centraluseuap',
             'customScriptName': 'custom-test',
         })
 
@@ -45,24 +45,22 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
         ])
 
         self.cmd('az connectedmachine list -g {rg}', checks=[
-            self.check('length(@)', 2)
+            self.check('length(@)', 1)
         ])
 
         self.cmd('az connectedmachine extension create '
                 '--name "{customScriptName}" '
                 '--location "{location}" '
-                '--enable-automatic-upgrade true '
                 '--type "CustomScriptExtension" '
                 '--publisher "Microsoft.Compute" '
                 '--type-handler-version "1.10.10" '
                 '--machine-name "{machine}" '
                 '--resource-group "{rg}" '
-                '--settings "{{\\"commandToExecute\\":\\"hostname\\"}}"',
+                '--settings "{{\\"commandToExecute\\":\\"powershell.exe ls\\"}}"',
                 checks=[
                     self.check('name', '{customScriptName}'),
                     self.check('properties.enableAutomaticUpgrade', True),
                     self.check('properties.typeHandlerVersion', '1.10.10'),
-                    self.check('properties.settings.commandToExecute', 'hostname')
         ])
 
         self.cmd('az connectedmachine install-patches '

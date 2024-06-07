@@ -22,11 +22,13 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2024-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections", "2024-03-31-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -50,6 +52,9 @@ class List(AAZCommand):
             options=["--scope-name"],
             help="The name of the Azure Arc PrivateLinkScope resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="[a-zA-Z0-9-_\.]+",
+            ),
         )
         return cls._args_schema
 
@@ -119,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }

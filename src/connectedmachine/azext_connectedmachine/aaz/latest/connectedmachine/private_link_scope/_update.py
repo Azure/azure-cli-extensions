@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-scope update",
 )
 class Update(AAZCommand):
-    """Update an Azure Arc PrivateLinkScope. Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
+    """Update an Azure Arc PrivateLinkScope. Note: You cannot                                          specify a different value for InstrumentationKey nor AppId in the Put operation.
 
     :example: Sample command for private-link-scope update
-        az connectedmachine private-link-scope update --location westus --tags Tag1=Value1 --resource-group my-resource-group --scope-name my-privatelinkscope
+        az connectedmachine private-link-scope update --location westus --tags Tag1=Value1 --resource-group my-resource-group --scope-name my-privatelinkscope --subscription mySubscription
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2024-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2024-03-31-preview"],
         ]
     }
 
@@ -54,6 +54,9 @@ class Update(AAZCommand):
             help="The name of the Azure Arc PrivateLinkScope resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="[a-zA-Z0-9-_\.]+",
+            ),
         )
 
         # define Arg Group "Parameters"
@@ -79,7 +82,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Indicates whether machines associated with the private link scope can also use public Azure Arc service endpoints.",
             nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+            enum={"Disabled": "Disabled", "Enabled": "Enabled", "SecuredByPerimeter": "SecuredByPerimeter"},
         )
         return cls._args_schema
 
@@ -161,7 +164,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }
@@ -244,7 +247,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }

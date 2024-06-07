@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-03-preview",
+        "version": "2024-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2023-10-03-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-03-31-preview"],
         ]
     }
 
@@ -258,7 +258,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-03-preview",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }

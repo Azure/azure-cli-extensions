@@ -8,16 +8,6 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "connectedmachine private-link-scope",
-)
-class __CMDGroup(AAZCommandGroup):
-    """private link scope
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._list import *
+from ._show import *

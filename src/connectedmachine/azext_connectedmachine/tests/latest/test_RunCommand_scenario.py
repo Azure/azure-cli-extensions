@@ -42,15 +42,9 @@ class RunCommandScenarioTest(ScenarioTest):
         rand_string = 'test'
         self.kwargs.update({
             'machine': 'testmachine',
-            'rg': 'az-sdk-test',
-            'scope': 'scope-' + rand_string,
-            'vnet': 'vnet-' + rand_string,
-            'subnet': 'subnet-' + rand_string,
-            'private_endpoint': 'pe-' + rand_string,
-            'private_endpoint_connection': 'pec-' + rand_string,
-            'location': 'eastus2euap',
-            'customScriptName': 'custom-' + rand_string,
-            'subscription': 'e6fe6705-4c9c-4b54-81d2-e455780e20b8',
+            'rg': 'ytongtest',
+            'location': 'centraluseuap',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'runcommand': 'myRunCommand',
         })
 

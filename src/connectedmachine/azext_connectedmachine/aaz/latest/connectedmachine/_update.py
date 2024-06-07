@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-03-preview",
+        "version": "2024-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2023-10-03-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2024-03-31-preview"],
         ]
     }
 
@@ -317,6 +317,29 @@ class Update(AAZCommand):
             nullable=True,
             enum={"pCore": "pCore", "vCore": "vCore"},
         )
+        license_details.volume_license_details = AAZListArg(
+            options=["volume-license-details"],
+            help="A list of volume license details.",
+            nullable=True,
+        )
+
+        volume_license_details = cls._args_schema.license_profile.esu_profile.assigned_license.license_details.volume_license_details
+        volume_license_details.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.license_profile.esu_profile.assigned_license.license_details.volume_license_details.Element
+        _element.invoice_id = AAZStrArg(
+            options=["invoice-id"],
+            help="The invoice id for the volume license.",
+            nullable=True,
+        )
+        _element.program_year = AAZStrArg(
+            options=["program-year"],
+            help="Describes the program year the volume license is for.",
+            nullable=True,
+            enum={"Year 1": "Year 1", "Year 2": "Year 2", "Year 3": "Year 3"},
+        )
 
         tags = cls._args_schema.license_profile.esu_profile.assigned_license.tags
         tags.Element = AAZStrArg(
@@ -528,7 +551,7 @@ class Update(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-10-03-preview",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }
@@ -614,7 +637,7 @@ class Update(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-10-03-preview",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }
@@ -747,6 +770,16 @@ class Update(AAZCommand):
                 license_details.set_prop("state", AAZStrType, ".state")
                 license_details.set_prop("target", AAZStrType, ".target")
                 license_details.set_prop("type", AAZStrType, ".type")
+                license_details.set_prop("volumeLicenseDetails", AAZListType, ".volume_license_details")
+
+            volume_license_details = _builder.get(".properties.licenseProfile.esuProfile.assignedLicense.properties.licenseDetails.volumeLicenseDetails")
+            if volume_license_details is not None:
+                volume_license_details.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.licenseProfile.esuProfile.assignedLicense.properties.licenseDetails.volumeLicenseDetails[]")
+            if _elements is not None:
+                _elements.set_prop("invoiceId", AAZStrType, ".invoice_id")
+                _elements.set_prop("programYear", AAZStrType, ".program_year")
 
             tags = _builder.get(".properties.licenseProfile.esuProfile.assignedLicense.tags")
             if tags is not None:
@@ -1273,6 +1306,20 @@ class _UpdateHelper:
         license_details.state = AAZStrType()
         license_details.target = AAZStrType()
         license_details.type = AAZStrType()
+        license_details.volume_license_details = AAZListType(
+            serialized_name="volumeLicenseDetails",
+        )
+
+        volume_license_details = _schema_machine_read.properties.license_profile.esu_profile.assigned_license.properties.license_details.volume_license_details
+        volume_license_details.Element = AAZObjectType()
+
+        _element = _schema_machine_read.properties.license_profile.esu_profile.assigned_license.properties.license_details.volume_license_details.Element
+        _element.invoice_id = AAZStrType(
+            serialized_name="invoiceId",
+        )
+        _element.program_year = AAZStrType(
+            serialized_name="programYear",
+        )
 
         tags = _schema_machine_read.properties.license_profile.esu_profile.assigned_license.tags
         tags.Element = AAZStrType()
@@ -1281,7 +1328,7 @@ class _UpdateHelper:
         esu_keys.Element = AAZObjectType()
 
         _element = _schema_machine_read.properties.license_profile.esu_profile.esu_keys.Element
-        _element.license_status = AAZStrType(
+        _element.license_status = AAZIntType(
             serialized_name="licenseStatus",
         )
         _element.sku = AAZStrType()

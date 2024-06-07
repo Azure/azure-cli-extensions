@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "connectedmachine private-link-scope",
+    "connectedmachine private-link-scope network-security-perimeter-configuration",
 )
 class __CMDGroup(AAZCommandGroup):
-    """private link scope
+    """network-security-perimeter-configuration
     """
     pass
 

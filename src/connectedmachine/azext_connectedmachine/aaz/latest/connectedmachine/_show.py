@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-03-preview",
+        "version": "2024-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2023-10-03-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2024-03-31-preview"],
         ]
     }
 
@@ -133,7 +133,7 @@ class Show(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-10-03-preview",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }
@@ -503,6 +503,20 @@ class Show(AAZCommand):
             license_details.state = AAZStrType()
             license_details.target = AAZStrType()
             license_details.type = AAZStrType()
+            license_details.volume_license_details = AAZListType(
+                serialized_name="volumeLicenseDetails",
+            )
+
+            volume_license_details = cls._schema_on_200.properties.license_profile.esu_profile.assigned_license.properties.license_details.volume_license_details
+            volume_license_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.license_profile.esu_profile.assigned_license.properties.license_details.volume_license_details.Element
+            _element.invoice_id = AAZStrType(
+                serialized_name="invoiceId",
+            )
+            _element.program_year = AAZStrType(
+                serialized_name="programYear",
+            )
 
             tags = cls._schema_on_200.properties.license_profile.esu_profile.assigned_license.tags
             tags.Element = AAZStrType()
@@ -511,7 +525,7 @@ class Show(AAZCommand):
             esu_keys.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.license_profile.esu_profile.esu_keys.Element
-            _element.license_status = AAZStrType(
+            _element.license_status = AAZIntType(
                 serialized_name="licenseStatus",
             )
             _element.sku = AAZStrType()
