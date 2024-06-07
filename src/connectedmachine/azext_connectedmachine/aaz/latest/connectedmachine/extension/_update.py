@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update operation to update the extension.
 
     :example: Sample command for extension update
-        az connectedmachine extension update --name CustomScriptExtension --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine-name myMachine --resource-group myResourceGroup
+        az connectedmachine extension update --name CustomScriptExtension --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine- name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2023-10-03-preview",
+        "version": "2024-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2023-10-03-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-03-31-preview"],
         ]
     }
 
@@ -274,7 +274,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-03-preview",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }
@@ -377,7 +377,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-03-preview",
+                    "api-version", "2024-03-31-preview",
                     required=True,
                 ),
             }
