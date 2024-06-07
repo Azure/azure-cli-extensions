@@ -26,6 +26,7 @@ from . import file_utils
 from . import constants as const
 from . import resource_type_utils
 from . import target_properties_utils
+from . import bastion_utils
 
 logger = log.get_logger(__name__)
 
@@ -61,7 +62,10 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
                                       ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt)
     ssh_session.resource_type = resource_type_utils.decide_resource_type(cmd, ssh_session)
     target_properties_utils.handle_target_machine_properties(cmd, ssh_session)
-            
+    
+    if ssh_session.bastion:
+        bastion_utils.ssh_bastion_host(cmd, ssh_session)
+
     _do_ssh_op(cmd, ssh_session, op_call)
 
 
@@ -103,6 +107,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
                                                               "Please provide --keys-destination-folder.")
         config_session.credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
 
+    
     _do_ssh_op(cmd, config_session, op_call)
 
 

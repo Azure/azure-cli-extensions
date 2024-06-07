@@ -21,13 +21,16 @@ def handle_target_machine_properties(cmd, op_info):
     if properties:
         os_type = parse_os_type(properties, op_info.resource_type.lower())
         agent_version = parse_agent_version(properties, op_info.resource_type.lower())
-        if op_info.is_vm():
-            op_info.resource_id = parse_resource_id(properties, op_info.resource_type.lower())
+        op_info.resource_id = parse_resource_id(properties, op_info.resource_type.lower())
+        location = parse_location(properties, op_info.resource_type.lower())
+        if location not in ["centralus", "eastus2", "westus", "northeurope", "northcentralus"]:
+            raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported in the region of the target VM.")
+
     else:
         os_type, agent_version = None, None
-    bastion_utils.show_bastion(cmd, op_info)
     check_valid_os_type(os_type, op_info)
     check_valid_agent_version(agent_version, op_info)
+    return
 
 
 
@@ -112,6 +115,10 @@ def parse_agent_version(properties, resource_type):
 
 def parse_resource_id(properties, resource_type):
         return properties.id
+
+def parse_location(properties, resource_type):
+    if resource_type == "microsoft.compute/virtualmachines":
+        return properties.location
 
 
 # This function is used to check if the OS type is valid and if the authentication options are valid for that OS
