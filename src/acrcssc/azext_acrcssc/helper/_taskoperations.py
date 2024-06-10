@@ -133,7 +133,7 @@ def acr_cssc_dry_run(cmd, registry, config_file):
     # TO DO: Need to find alternative to below
     platform_os, platform_arch, platform_variant = "linux", None, None
     value_pair=[{"name": "CONFIGPATH", "value": f"{file_name}"}]
-    logger.debug(value_pair)
+    #logger.debug(value_pair)
     #value_pair = "[{CONFIGPATHartifact.json}]"
     logger.warning(value_pair)
     request = acr_registries_task_client.models.FileTaskRunRequest(
