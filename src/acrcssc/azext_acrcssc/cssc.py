@@ -13,7 +13,7 @@ from .helper._taskoperations import (
     list_continuous_patch_v1,
     acr_cssc_dry_run
 )
-from ._validators import validate_inputs, validate_task_type
+from ._validators import validate_inputs, validate_task_type, validate_cssc_update_input
 from azext_acrcssc._client_factory import ( cf_acr_registries )
 
 logger = get_logger(__name__)
@@ -24,24 +24,24 @@ def create_acrcssc(cmd, resource_group_name, registry_name, type, config, cadenc
 
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
-    validate_inputs(type, cadence)
+    validate_inputs(cadence)
     if(dryrun is True):
-        acr_cssc_dry_run(cmd, registry=registry, config_file=config)
+        acr_cssc_dry_run(cmd, registry=registry, config_file_path=config)
     else:
         create_continuous_patch_v1(cmd, registry, config, cadence, dryrun, defer_immediate_run)
 
 def update_acrcssc(cmd, resource_group_name, registry_name, type, config, cadence, dryrun=False, defer_immediate_run=False):
     '''Update a continuous patch task in the registry.'''
     logger.debug('Entering update_acrcssc with parameters: %s %s %s %s', registry_name, type, config, dryrun)
-
+    validate_cssc_update_input(config, cadence)
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
-    validate_inputs(type, cadence, allow_null_cadence = (cadence == None))
+    validate_inputs(cadence, allow_null_cadence = (cadence == None))
     
     if config is None and cadence is None:
         raise ValueError("Please provide a configuration file path or cadence to update the workflow.")
     
-    if(dryrun is True):
+    if(dryrun is True and config is not None):
         current_file_path = os.path.abspath(config)
         directory_path = os.path.dirname(current_file_path)
         acr_cssc_dry_run(cmd, registry=registry, config_file_path=directory_path)
