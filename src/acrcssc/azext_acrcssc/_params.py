@@ -29,7 +29,8 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument("defer_immediate_run", options_list=["--defer-immediate-run"], help="Use this flag to defer immediately running of selected workflow task.", arg_type=get_three_state_flag(), required=False)
         c.argument("dryrun", options_list=["--dry-run"], help="Use this flag to see the qualifying repositories and tags that would be affected by the workflow.", arg_type=get_three_state_flag(), required=False)
     # with self.argument_context("acr supply-chain workflow delete") as c:
-    #     c.argument("type", arg_type=get_enum_type(CSSCTaskTypes), options_list=['--type', '-t'])
+    #     c.argument("type", arg_type=get_enum_type(CSSCTaskTypes), options_list=['--type', '-t'])   
     # with self.argument_context("acr supply-chain workflow show") as c:
     #     c.argument("type", arg_type=get_enum_type(CSSCTaskTypes), options_list=['--type', '-t'])
+    
          
