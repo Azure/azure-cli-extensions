@@ -59,7 +59,10 @@ def _check_task_exists(cmd, registry, task_name = ""):
         return True
     return False
 
-def _validate_cadence(cadence):
+def _validate_cadence(cadence, allow_null=False):
+    # during update, cadence can be null if we are only updating the config
+    if allow_null and cadence is None:
+        return
     # Extract the numeric value and unit from the timespan expression
     match = re.match(r'(\d+)([d])', cadence)
     if not match:
@@ -101,9 +104,9 @@ def _validate_cadence(cadence):
     
 #     return cron_expression
 
-def validate_inputs(task_type, cadence):
+def validate_inputs(task_type, cadence, allow_null_cadence=False):
     validate_task_type(task_type)
-    _validate_cadence(cadence)
+    _validate_cadence(cadence, allow_null_cadence)
 
 def validate_task_type(task_type):
     if task_type in CSSCTaskTypes._value2member_map_:

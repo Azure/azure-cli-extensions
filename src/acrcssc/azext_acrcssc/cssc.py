@@ -36,7 +36,10 @@ def update_acrcssc(cmd, resource_group_name, registry_name, type, config, cadenc
 
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
-    validate_inputs(type, cadence)
+    validate_inputs(type, cadence, allow_null_cadence = (cadence == None))
+    
+    if config is None and cadence is None:
+        raise ValueError("Please provide a configuration file path or cadence to update the workflow.")
     
     if(dryrun is True):
         current_file_path = os.path.abspath(config)
