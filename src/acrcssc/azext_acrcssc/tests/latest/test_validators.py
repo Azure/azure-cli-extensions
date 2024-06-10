@@ -7,39 +7,41 @@ import os
 import tempfile
 import unittest
 from unittest import mock
-from datetime import (
-        datetime,
-        timezone
-    )
+from datetime import ( datetime,timezone)
 from ..._validators import (
-    validate_and_convert_timespan_to_cron,
-    check_continuoustask_exists,
-    validate_continuouspatch_config_v1
+    _validate_cadence, check_continuous_task_exists, validate_continuouspatch_config_v1
 )
 
-from azure.cli.core.azclierror import AzCLIError
+from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
 from azure.cli.core.mock import DummyCli
 from unittest.mock import patch
 
 
 class AcrCsscCommandsTests(unittest.TestCase):
 
-    def test_validate_and_convert_timespan_to_cron(self):
-        test_cases = [
-            ('1d', '2 12 */1 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), False),
-            ('5d', '2 12 */5 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), False),
-            ('1d', '2 12 */1 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), False),
-            ('1d', '58 11 */1 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), True),
-            ('1d', '1 13 */1 * *', datetime(2022, 1, 1, 12, 59, 0, tzinfo=timezone.utc), False),
-            ('1d', '57 12 */1 * *', datetime(2022, 1, 1, 12, 59, 0, tzinfo=timezone.utc), True)
-        ]
+    def test_validate_cadence_valid(self):
+        # test_cases = [
+        #     ('1d', '2 12 */1 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), False),
+        #     ('5d', '2 12 */5 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), False),
+        #     ('1d', '2 12 */1 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), False),
+        #     ('1d', '58 11 */1 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), True),
+        #     ('1d', '1 13 */1 * *', datetime(2022, 1, 1, 12, 59, 0, tzinfo=timezone.utc), False),
+        #     ('1d', '57 12 */1 * *', datetime(2022, 1, 1, 12, 59, 0, tzinfo=timezone.utc), True)
+        # ]
 
-        for timespan, expected_cron, date_time, do_not_run_immediately in test_cases:
+        test_cases = [('1d'),('10d')]
+
+        for timespan in test_cases:
             with self.subTest(timespan=timespan):
-                if date_time:
-                    result = validate_and_convert_timespan_to_cron(timespan, date_time, do_not_run_immediately)
-                self.assertEqual(result, expected_cron)
+                _validate_cadence(timespan)
     
+    def test_validate_cadence_invalid(self):
+        test_cases = [('df'),('12'),('dd'),('41d')]
+
+        for timespan in test_cases:
+            self.assertRaises(InvalidArgumentValueError, _validate_cadence, timespan)
+
+
     @patch('azext_acrcssc._validators.cf_acr_tasks')
     def test_check_continuoustask_exists(self, mock_cf_acr_tasks):
         cmd = self._setup_cmd()
@@ -49,7 +51,7 @@ class AcrCsscCommandsTests(unittest.TestCase):
 
         mock_cf_acr_tasks.return_value = cf_acr_tasks_mock
         cf_acr_tasks_mock.get.return_value = {"name": "my_task"}
-        exists = check_continuoustask_exists(cmd, registry)
+        exists = check_continuous_task_exists(cmd, registry)
         self.assertTrue(exists)
 
     @patch('azext_acrcssc._validators.cf_acr_tasks')
@@ -62,7 +64,7 @@ class AcrCsscCommandsTests(unittest.TestCase):
         mock_cf_acr_tasks.return_value = cf_acr_tasks_mock
         cf_acr_tasks_mock.get.return_value = None
 
-        exists = check_continuoustask_exists(cmd, registry)
+        exists = check_continuous_task_exists(cmd, registry)
         self.assertFalse(exists)
     
     def test_validate_continuouspatch_file(self):

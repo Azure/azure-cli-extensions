@@ -2,14 +2,14 @@ import tempfile
 import unittest
 from unittest import mock
 from unittest.mock import MagicMock, patch
-from azext_acrcssc.helper._orasclient import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
+from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
 from azure.cli.core.mock import DummyCli
 from azure.cli.core.azclierror import AzCLIError
 
 class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
-    @patch('azext_acrcssc.helper._orasclient._oras_client')
-    @patch('azext_acrcssc.helper._orasclient.tempfile.NamedTemporaryFile')
-    @patch('azext_acrcssc.helper._orasclient.shutil.copyfileobj')
+    @patch('azext_acrcssc.helper._ociartifactoperations._oras_client')
+    @patch('azext_acrcssc.helper._ociartifactoperations.tempfile.NamedTemporaryFile')
+    @patch('azext_acrcssc.helper._ociartifactoperations.shutil.copyfileobj')
     def test_create_oci_artifact_continuous_patch(self, mock_copyfileobj, mock_NamedTemporaryFile, mock_oras_client):
         # Mock the necessary dependencies
         cmd = self._setup_cmd()
@@ -31,12 +31,12 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
 
         # Assert that the necessary functions were called with the correct arguments
         mock_oras_client.assert_called_once_with(cmd, registry)
-        oras_client.push.assert_called_once_with(target='continuouspatchpolicy:latest', files=[temp_artifact.name])
+        oras_client.push.assert_called_once_with(target='csscpolicies/patchpolicy:v1', files=[temp_artifact.name])
 
-    @mock.patch('azext_acrcssc.helper._orasclient._get_acr_token')
-    @mock.patch('azext_acrcssc.helper._orasclient.logger')
-    @mock.patch('azext_acrcssc.helper._orasclient.parse_resource_id')
-    @mock.patch('azext_acrcssc.helper._orasclient.acr_repository_delete')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.logger')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.parse_resource_id')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.acr_repository_delete')
     def test_delete_oci_artifact_continuous_patch(self, mock_acr_repository_delete, mock_parse_resource_id, mock_logger, mock_get_acr_token):
         # Mock the necessary dependencies
         cmd = self._setup_cmd()
@@ -57,17 +57,17 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         mock_acr_repository_delete.assert_called_once_with(
             cmd=cmd,
             registry_name=registry.name,
-            image="continuouspatchpolicy:latest",
+            repository="csscpolicies/patchpolicy",
             username="00000000-0000-0000-0000-000000000000",
             password="test_token",
             yes=True
         )
         mock_logger.warning.assert_not_called()
 
-    @mock.patch('azext_acrcssc.helper._orasclient._get_acr_token')
-    @mock.patch('azext_acrcssc.helper._orasclient.logger')
-    @mock.patch('azext_acrcssc.helper._orasclient.parse_resource_id')
-    @mock.patch('azext_acrcssc.helper._orasclient.acr_repository_delete')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.logger')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.parse_resource_id')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.acr_repository_delete')
     def test_delete_oci_artifact_continuous_patch_dryrun(self, mock_acr_repository_delete, mock_parse_resource_id, mock_logger, mock_get_acr_token):
         # Mock the necessary dependencies
         cmd = self._setup_cmd()
@@ -86,10 +86,10 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         mock_parse_resource_id.assert_called_once_with(registry.id)
         mock_acr_repository_delete.assert_not_called()
     
-    @mock.patch('azext_acrcssc.helper._orasclient._get_acr_token')
-    @mock.patch('azext_acrcssc.helper._orasclient.logger')
-    @mock.patch('azext_acrcssc.helper._orasclient.parse_resource_id')
-    @mock.patch('azext_acrcssc.helper._orasclient.acr_repository_delete')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.logger')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.parse_resource_id')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.acr_repository_delete')
     def test_delete_oci_artifact_continuous_patch_exception(self, mock_acr_repository_delete, mock_parse_resource_id, mock_logger, mock_get_acr_token):
          # Mock the necessary dependencies
         cmd = self._setup_cmd()

@@ -10,69 +10,44 @@ import re
 import time
 import colorama
 from knack.log import get_logger
-from azure.cli.core.azclierror import AzCLIError
+from ._constants import CONTINUOSPATCH_DEPLOYMENT_NAME, CONTINUOSPATCH_DEPLOYMENT_TEMPLATE, CONTINUOSPATCH_ALL_TASK_NAMES, CONTINUOSPATCH_TASK_DEFINITION, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, RESOURCE_GROUP, TMP_DRY_RUN_FILE_NAME
+from azure.common import AzureHttpError
+from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.command_modules.acr._stream_utils import stream_logs
-from azure.common import AzureHttpError
-from azure.cli.command_modules.acr._run_polling import get_run_with_polling
 from azure.cli.command_modules.acr._stream_utils import _stream_logs, _blob_is_not_complete, _get_run_status
 from azure.cli.command_modules.acr._constants import ACR_RUN_DEFAULT_TIMEOUT_IN_SEC
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.command_modules.acr.run import acr_run
-from msrestazure.azure_exceptions import CloudError
-from  azure.cli.command_modules.acr._azure_utils import get_blob_info
+from azure.cli.command_modules.acr._azure_utils import get_blob_info
+from azure.cli.command_modules.acr._utils import get_custom_registry_credentials, prepare_source_location, get_validate_platform
 from azure.mgmt.core.tools import parse_resource_id
-from azext_acrcssc._client_factory import (
-    cf_acr_tasks,
-    cf_authorization,
-    cf_acr_registries_tasks,
-    cf_acr_runs
-)
+from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
-from azext_acrcssc.helper._orasclient import (
-    create_oci_artifact_continuous_patch,
-    delete_oci_artifact_continuous_patch
-)
-from azext_acrcssc._validators import (
-    validate_continuouspatch_config_v1,
-    check_continuoustask_exists,
-    validate_and_convert_timespan_to_cron
-)
-
-from  azure.cli.command_modules.acr._utils import (
-    get_custom_registry_credentials,
-    prepare_source_location,
-    get_validate_platform
-)
-
-from ._constants import (
-    CONTINUOSPATCH_DEPLOYMENT_NAME,
-    CONTINUOSPATCH_DEPLOYMENT_TEMPLATE,
-    CONTINUOSPATCH_ALL_TASK_NAMES,
-    CONTINUOSPATCH_TASK_DEFINITION,
-    CONTINUOSPATCH_TASK_SCANREGISTRY_NAME
-)
+from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
+from azext_acrcssc._validators import validate_continuouspatch_config_v1, check_continuous_task_exists
+from msrestazure.azure_exceptions import CloudError
+from ._utility import convert_timespan_to_cron, transform_cron_to_cadence, create_temporary_dry_run_file, delete_temporary_dry_run_file
 
 logger = get_logger(__name__)
 DEFAULT_CHUNK_SIZE = 1024 * 4
 def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run):
     logger.debug("Entering continuousPatchV1_creation %s %s %s", cssc_config_file, dryrun, defer_immediate_run)
+    resource_group = parse_resource_id(registry.id)["resource_group"]
 
-    if check_continuoustask_exists(cmd, registry):
+    if check_continuous_task_exists(cmd, registry):
         raise AzCLIError("ContinuousPatchV1 workflow already exists")
 
-    task_schedule = validate_and_convert_timespan_to_cron(cadence)
-    logger.debug("task_schedule %s", task_schedule)
+    schedule_cron_expression = convert_timespan_to_cron(cadence)
+    logger.debug("task_schedule %s", schedule_cron_expression)
     validate_continuouspatch_config_v1(cssc_config_file)
     create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
     logger.debug("Uploading of %s completed successfully.", cssc_config_file)
-
-    logger.debug("Creating a new ContinuousPatchV1 task")
-    resource_group = parse_resource_id(registry.id)["resource_group"]
+    
     parameters = {
         "AcrName": {"value": registry.name},
         "AcrLocation": {"value": registry.location},
-        "taskSchedule": {"value": task_schedule}
+        "taskSchedule": {"value": schedule_cron_expression}
     }
 
     for task in CONTINUOSPATCH_TASK_DEFINITION.keys():
@@ -80,7 +55,6 @@ def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun,
         param_name = CONTINUOSPATCH_TASK_DEFINITION[task]["parameter_name"]
         parameters[param_name] = encoded_task
  
-    print('Deployment of continuous scanning and patching tasks started...')
     validate_and_deploy_template(
         cmd.cli_ctx,
         registry,
@@ -91,14 +65,103 @@ def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun,
         dryrun
     )
 
-    logger.debug('Deployment of continuous scanning and patching tasks completed successfully.')
+    logger.debug('Deployment of continuousPatchV1_creation completed successfully.')
+    logger.warning('Deployment of continuousPatchV1 creation completed successfully.')
 
     # force run the task after it is created
     if not dryrun and not defer_immediate_run:
-        logger.debug('Triggering the continuous scanning task to run immediately')
-        _trigger_task_run(cmd, registry, resource_group, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, defer_immediate_run)
+        logger.warning('Triggering the continuous scanning task to run immediately')
+        # Seen Managed Identity taking time, see if there can be an alternative (one alternative is to schedule the cron expression with delay)
+        time.sleep(5)
+        _trigger_task_run(cmd, registry, resource_group, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
 
-def _trigger_task_run(cmd, registry, resource_group, task_name, defer_immediate_run):
+def delete_continuous_patch_v1(cmd, registry, dryrun):
+    logger.debug("Entering continuousPatchV1_delete")
+
+    if not dryrun and not check_continuous_task_exists(cmd, registry):
+        cssc_tasks = ', '.join(CONTINUOSPATCH_ALL_TASK_NAMES)
+        logger.warning("All of these tasks will be deleted: %s", cssc_tasks)
+    
+    delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
+    for taskname in CONTINUOSPATCH_ALL_TASK_NAMES:
+        # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
+        _delete_task(cmd, registry, taskname, dryrun)
+
+    logger.debug("ContinuousPatchV1 task deleted successfully")
+
+def list_continuous_patch_v1(cmd, registry):
+    logger.debug("Entering list_continuous_patch_v1")
+
+    if not check_continuous_task_exists(cmd, registry):
+        logger.warning("continuous patch OCI config does not exist")
+
+    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
+    resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
+    tasks_list = acr_task_client.list(resource_group_name, registry.name)
+    filtered_cssc_tasks = _transform_task_list(tasks_list)
+    return filtered_cssc_tasks
+
+def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run):
+    logger.debug("Entering continuousPatchV1_update %s %s",cssc_config_file, dryrun)
+    resource_group_name = parse_resource_id(registry.id)["resource_group"]
+    if not check_continuous_task_exists(cmd, registry):
+        cssc_tasks = ', '.join(CONTINUOSPATCH_ALL_TASK_NAMES)
+        raise ResourceNotFoundError("All of these acr tasks should exists: %s", cssc_tasks)
+
+    validate_continuouspatch_config_v1(cssc_config_file)
+    create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
+    _update_task_schedule(cmd, registry, cadence, resource_group_name)
+    if not dryrun and not defer_immediate_run:
+        logger.debug('Triggering the continuous scanning task to run immediately')
+        _trigger_task_run(cmd, registry, resource_group_name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+
+def acr_cssc_dry_run(cmd, registry, config_file):
+    logger.debug("Entering acr_cssc_dry_run")
+    create_temporary_dry_run_file(config_file)
+    current_file_path = os.path.abspath(config_file)
+    file_name = os.path.basename(config_file)
+    directory_path = os.path.dirname(current_file_path)
+    resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
+    acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
+    acr_run_client = cf_acr_runs(cmd.cli_ctx)
+    #acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
+    source_location = prepare_source_location(
+         cmd, directory_path, acr_registries_task_client, registry.name, resource_group_name)
+    #acr_run(cmd, acr_run_client, registry.name, directory_path)
+    #platform_os, platform_arch, platform_variant = get_validate_platform(cmd, None)
+
+    # TO DO: Need to find alternative to below
+    platform_os, platform_arch, platform_variant = "linux", None, None
+    value_pair=[{"name": "CONFIGPATH", "value": f"{file_name}"}]
+    logger.debug(value_pair)
+    #value_pair = "[{CONFIGPATHartifact.json}]"
+    logger.warning(value_pair)
+    request = acr_registries_task_client.models.FileTaskRunRequest(
+        task_file_path=TMP_DRY_RUN_FILE_NAME,
+        values_file_path=None,
+        values=value_pair,
+        source_location=source_location,
+        timeout=None,
+        platform=acr_registries_task_client.models.PlatformProperties(
+            os= platform_os,
+            architecture=platform_arch,
+            variant= platform_variant
+        ),
+        credentials=_get_custom_registry_credentials(cmd, auth_mode=None),
+        agent_pool_name=None,
+        log_template=None
+    )
+    
+    queued = LongRunningOperation(cmd.cli_ctx)(acr_registries_task_client.begin_schedule_run(
+        resource_group_name=resource_group_name,
+        registry_name=registry.name,
+        run_request=request))
+    run_id = queued.run_id
+    logger.warning("Queued an acr task with run ID for quick evaluation: %s", run_id)
+    delete_temporary_dry_run_file(directory_path)
+    return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
+
+def _trigger_task_run(cmd, registry, resource_group, task_name):
     acr_task_registries_client = cf_acr_registries_tasks(cmd.cli_ctx)
     # check on the task.py file on acr's az cli on how to handle the model for other requests
     request = acr_task_registries_client.models.TaskRunRequest(
@@ -122,61 +185,26 @@ def _create_encoded_task(task_file):
                 "../templates/"))
 
     with open(os.path.join(templates_path, task_file), "rb") as f:
-        # Encode the content to base64
         base64_content = base64.b64encode(f.read())
-        # Convert bytes to string
         return base64_content.decode('utf-8')
-
-def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run):
-    #should it get the current file and merge both jsons?
-        # if this is the case, how do we remove the old config?
-    #should it just overwrite the file?
-        # if this is the case, how can they append to the configuration
-        # this is winning because it is simpler to explain and implement, but it is not as flexible as the other option
-        # add an append flag to the command later?
-    logger.debug("Entering continuousPatchV1_update %s %s",cssc_config_file, dryrun)
-
-    if not check_continuoustask_exists(cmd, registry):
-        raise AzCLIError("ContinuousPatch Task does not exist")
-
-    validate_continuouspatch_config_v1(cssc_config_file)
-
-    ## create the OCI artifact
-    create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
-    ## update the task schedule
-    task_schedule = validate_and_convert_timespan_to_cron(cadence)
-    logger.debug(f"task_schedule {task_schedule}")
-    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
-    resource_group_name = parse_resource_id(registry.id)["resource_group"]
-    taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
-        trigger=acr_task_client.models.TriggerUpdateParameters(
-            timer_triggers=[
-                acr_task_client.models.TimerTriggerUpdateParameters(
-                    name='azcli_defined_schedule',
-                    schedule=task_schedule
-                )
-            ]
+    
+def _update_task_schedule(cmd, registry, cadence, resource_group_name):
+        task_schedule = convert_timespan_to_cron(cadence)
+        logger.debug(f"task_schedule {task_schedule}")
+        acr_task_client = cf_acr_tasks(cmd.cli_ctx)
+        taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
+            trigger=acr_task_client.models.TriggerUpdateParameters(
+                timer_triggers=[
+                    acr_task_client.models.TimerTriggerUpdateParameters(
+                        name='azcli_defined_schedule',
+                        schedule=task_schedule
+                    )
+                ]
+            )
         )
-    )
 
-    acr_task_client.begin_update(resource_group_name, registry.name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, taskUpdateParameters)
-    if not dryrun and not defer_immediate_run:
-        logger.debug('Triggering the continuous scanning task to run immediately')
-        _trigger_task_run(cmd, registry, resource_group_name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, defer_immediate_run)
-   
-def delete_continuous_patch_v1(cmd, registry, dryrun):
-    logger.debug("Entering continuousPatchV1_delete")
-
-    if not dryrun and not check_continuoustask_exists(cmd, registry):
-        logger.warning("ContinuousPatch OCI config does not exist")
-
-    delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
-    for taskname in CONTINUOSPATCH_ALL_TASK_NAMES:
-        # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
-        _delete_task(cmd, registry, taskname, dryrun)
-
-    logger.debug("ContinuousPatchV1 task deleted successfully")
-
+        acr_task_client.begin_update(resource_group_name, registry.name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, taskUpdateParameters)
+        
 def _delete_task(cmd, registry, task_name, dryrun):
     logger.debug("Entering delete_task")
     resource_group = parse_resource_id(registry.id)["resource_group"]
@@ -224,18 +252,6 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
                     role_assignment_name=role.name
                 )
 
-def list_continuous_patch_v1(cmd, registry):
-    logger.debug("Entering list_continuous_patch_v1")
-
-    if not check_continuoustask_exists(cmd, registry):
-        logger.warning("continuous patch OCI config does not exist")
-
-    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
-    resource_group_name = parse_resource_id(registry.id)["resource_group"]
-    tasks_list = acr_task_client.list(resource_group_name, registry.name)
-    filtered_cssc_tasks = _transform_task_list(tasks_list)
-    return filtered_cssc_tasks
-
 def _transform_task_list(tasks):
     transformed = []
     for obj in tasks:
@@ -252,61 +268,11 @@ def _transform_task_list(tasks):
         # Extract cadence from trigger.timerTriggers if available
         trigger = obj.trigger
         if trigger and trigger.timer_triggers:
-            transformed_obj["cadence"] = _transform_cron_to_cadence(trigger.timer_triggers[0].schedule)
+            transformed_obj["cadence"] = transform_cron_to_cadence(trigger.timer_triggers[0].schedule)
 
         transformed.append(transformed_obj)
 
     return transformed
-
-def _transform_cron_to_cadence(cron_expression):
-    parts = cron_expression.split()
-    # The third part of the cron expression
-    third_part = parts[2]
-    
-    match = re.search(r'\*/(\d+)', third_part)
-    
-    if match:
-        return match.group(1) + 'd'
-    else:
-        return None
-
-def acr_cssc_dry_run(cmd, registry, config_file_path):
-    logger.debug("Entering acr_cssc_dry_run")
-    resource_group_name = parse_resource_id(registry.id)["resource_group"]
-    acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
-    acr_run_client = cf_acr_runs(cmd.cli_ctx)
-    #acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
-    source_location = prepare_source_location(
-         cmd, config_file_path, acr_registries_task_client, registry.name, resource_group_name)
-    #acr_run(cmd, acr_run_client, registry.name, config_file_path)
-    #platform_os, platform_arch, platform_variant = get_validate_platform(cmd, None)
-    platform_os, platform_arch, platform_variant = "linux", None, None
-    request = acr_registries_task_client.models.FileTaskRunRequest(
-        task_file_path="acrcli.yaml",
-        values_file_path=None,
-        values=None,
-        source_location=source_location,
-        timeout=None,
-        platform=acr_registries_task_client.models.PlatformProperties(
-                os= platform_os,
-                architecture=platform_arch,
-                variant= platform_variant
-        ),
-        credentials=_get_custom_registry_credentials(cmd, auth_mode=None),
-        agent_pool_name=None,
-        log_template=None
-    )
-    
-    queued = LongRunningOperation(cmd.cli_ctx)(acr_registries_task_client.begin_schedule_run(
-        resource_group_name=resource_group_name,
-        registry_name=registry.name,
-        run_request=request))
-    run_id = queued.run_id
-    logger.warning("Queued a run with ID: %s", run_id)
-    #return queued
-    return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
-    # #return get_run_with_polling(cmd, acr_run_client, run_id, registry.name, resource_group_name)
-    # return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name, raise_error_on_failure= True)
 
 def _get_custom_registry_credentials(cmd,
                                     auth_mode=None,
@@ -623,4 +589,3 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
             raise AzCLIError("Run timed out")
         if build_status == 'canceled':
             raise AzCLIError("Run was canceled")
-

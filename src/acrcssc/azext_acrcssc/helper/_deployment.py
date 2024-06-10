@@ -5,7 +5,6 @@
 """A module to handle deployment functions related to tasks."""
 import os
 from typing import Optional
-
 from .._client_factory import cf_resources
 from azure.cli.core.util import get_file_json
 from azure.cli.core.azclierror import AzCLIError
@@ -16,22 +15,12 @@ from azure.mgmt.resource.resources.models import (
     DeploymentMode,
     Deployment
 )
-
 from knack.log import get_logger
 
 logger = get_logger(__name__)
-#need a parameter to enable/disable immediate run of the task
-
-def deploy_task_via_sdk(cmd_ctx, registry, resource_group: str,
-                        task_name: str, task_yaml: str, dryrun: Optional[bool] = False):
-    # not sure how much I should invest in this, or just try to do it via a CLI, or force the arm deployment
-    # task_client = cf_acr_tasks(cmd_ctx)
-    # task_client.
-    raise AzCLIError("Not implemented yet")
 
 def validate_and_deploy_template(cmd_ctx, registry, resource_group: str, deployment_name: str,
                                  template_file_name: str, parameters: dict, dryrun: Optional[bool] = False):
-    logger.debug("Validating and deploying template")
     logger.debug('Working with resource group %s, template %s', resource_group, template_file_name)
 
     deployment_path = os.path.dirname(

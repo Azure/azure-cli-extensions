@@ -5,8 +5,8 @@ from azure.cli.core.mock import DummyCli
 from azext_acrcssc.helper._taskoperations import create_continuous_patch_v1, delete_continuous_patch_v1
 
 class TestCreateContinuousPatchV1(unittest.TestCase):
-    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuoustask_exists")
-    @mock.patch("azext_acrcssc.helper._taskoperations.validate_and_convert_timespan_to_cron")
+    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
+    @mock.patch("azext_acrcssc.helper._taskoperations.convert_timespan_to_cron")
     @mock.patch("azext_acrcssc.helper._taskoperations.validate_continuouspatch_config_v1")
     @mock.patch("azext_acrcssc.helper._taskoperations.create_oci_artifact_continuous_patch")
     @mock.patch("azext_acrcssc.helper._taskoperations.parse_resource_id")
@@ -24,7 +24,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         registry.id = "/subscriptions/11111111-0000-0000-0000-0000000000006/resourceGroups/test-rg/providers/Microsoft.ContainerRegistry/registries/testregistry"
 
         # Call the function
-        create_continuous_patch_v1(cmd, registry, temp_file_path, "1d", False)
+        create_continuous_patch_v1(cmd, registry, temp_file_path, "1d", False, False)
         
         # Assert that the dependencies were called with the correct arguments
         mock_check_continuoustask_exists.assert_called_once()
@@ -35,7 +35,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_trigger_task_run.assert_called_once()
 
     @mock.patch("azext_acrcssc.helper._taskoperations.parse_resource_id")
-    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuoustask_exists")
+    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
     @mock.patch("azext_acrcssc.helper._taskoperations.delete_oci_artifact_continuous_patch")
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_acr_tasks')
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_authorization')

@@ -18,6 +18,8 @@ CSSC_TAGS = "acr-cssc"
 ACR_API_VERSION_2023_01_01_PREVIEW = "2023-01-01-preview"
 ACR_API_VERSION_2019_06_01_PREVIEW = "2019-06-01-preview"
 BEARER_TOKEN_USERNAME = "00000000-0000-0000-0000-000000000000"
+RESOURCE_GROUP = "resource_group"
+TMP_DRY_RUN_FILE_NAME = "tmp_dry_run_template.yaml"
 
 ##Continuous Patch Constants
 CONTINUOSPATCH_OCI_ARTIFACT_TYPE = "oci-artifact"
@@ -33,14 +35,16 @@ CONTINUOSPATCH_TASK_PATCHIMAGE_NAME = "cssc-patch-image"
 CONTINUOSPATCH_TASK_SCANIMAGE_NAME = "cssc-scan-image-schedule-patch"
 CONTINUOSPATCH_TASK_SCANREPO_NAME = "cssc-scan-repository-schedule-patch"
 CONTINUOSPATCH_TASK_SCANREGISTRY_NAME = "cssc-trigger-scan"
+
 CONTINUOSPATCH_ALL_TASK_NAMES = [
     CONTINUOSPATCH_TASK_PATCHIMAGE_NAME,
     CONTINUOSPATCH_TASK_SCANIMAGE_NAME,
     CONTINUOSPATCH_TASK_SCANREGISTRY_NAME
 ]
 
-ERROR_MESSAGE_INVALID_TASK = "Invalid task type"
-ERROR_MESSAGE_INVALID_TIMESPAN = "Invalid timespan value"
+ERROR_MESSAGE_INVALID_TASK = "Workflow type is invalid"
+ERROR_MESSAGE_INVALID_TIMESPAN = "Cadence value is invalid. "
+RECOMMENDATION_CADENCE = "Cadence must be in the format of <number><unit> where unit is d for days. Example: 1d"
 # this dictionary can be expanded to handle more configuration of the tasks regarding continuous patching
 # if this gets out of hand, or more types of tasks are supported, this should be a class on its own
 CONTINUOSPATCH_TASK_DEFINITION = {

@@ -1,0 +1,5 @@
+version: v1.1.0
+steps:
+  - id: acr-cli-filter
+    cmd: |
+        mcr.microsoft.com/acr/acr-cli:0.10 cssc patch --dry-run --filter-file-path {{.Values.CONFIGPATH}}

@@ -14,8 +14,6 @@ from azure.cli.core.azclierror import AzCLIError
 from azure.cli.command_modules.acr.repository import acr_repository_delete
 from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
-from oras.client import OrasClient
-
 from ._constants import (
     BEARER_TOKEN_USERNAME,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,
@@ -24,32 +22,28 @@ from ._constants import (
     CSSC_WORKFLOW_POLICY_REPOSITORY
 )
 
-# dont like to do this, but this is a dataplane operation, and the client is
-#only mgmt plane, either we do it this way or setup the call by hand
-
 logger = get_logger(__name__)
 
 def create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun):
-    logger.debug("Entering create_oci_artifact_continuouspatching")
+    logger.debug("Entering create_oci_artifact_continuouspatching with parameters: %s %s %s", registry, cssc_config_file, dryrun)
 
     try:
         oras_client = _oras_client(cmd, registry)
         # we might have to handle the tag lock/unlock for the cssc config file, 
         #to make it harder for the user to change it by mistake
 
-        # the ORAS client can only work with files under the current directory, 
-        #we need to make a temporary copy of the file to be able to push it
+        # the ORAS client can only work with files under the current directory
         temp_artifact = tempfile.NamedTemporaryFile(
             prefix="cssc_config_tmp_",
             mode="w+b",
             dir=os.getcwd(),
             delete=False
             )
-        temp_artifact_name = temp_artifact.name #to make sure we can clear it later
         
+        temp_artifact_name = temp_artifact.name
         user_artifact = open(cssc_config_file, "rb")
         shutil.copyfileobj(user_artifact, temp_artifact)
-        temp_artifact.close() # we need to close the file to allow it to be opened by the oras_client
+        temp_artifact.close()
 
         if dryrun:
             oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN}"
@@ -63,7 +57,6 @@ def create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun
         raise AzCLIError("Failed to push OCI artifact to ACR: %s", exception)
     finally:
         oras_client.logout(hostname=str.lower(registry.login_server))
-        #get rid of the temp file if it's still around
         os.path.exists(temp_artifact_name) and os.remove(temp_artifact_name) 
 
 def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
@@ -77,6 +70,7 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
     try:
         token = _get_acr_token(registry.name, resource_group, subscription)
 
+        # Delete repository, removing only image isn't deleting the repository always (Bug)
         result = acr_repository_delete(
             cmd=cmd,
             registry_name=registry.name,
@@ -87,7 +81,7 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
             yes=not dryrun)
     except Exception as exception:
         logger.debug("%s", exception)
-        logger.error(f"Failed to delete OCI artifact from ACR, artifact might not exist: %s:%s",CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
+        logger.error("Artifact: %s/%s:%s might not exist or attempt to delete failed.", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
         raise
 
 def _oras_client(cmd, registry):
@@ -104,8 +98,8 @@ def _oras_client(cmd, registry):
 
     return client
 
-def get_continuouspatch_oci_config():
-    raise AzCLIError('TODO: Implement `get_continuouspatch_oci_config`')
+# def get_continuouspatch_oci_config():
+#     raise AzCLIError('TODO: Implement `get_continuouspatch_oci_config`')
 
 ## Need to check on this method once, if there's alternative to this
 def _get_acr_token(registry_name, resource_group, subscription):

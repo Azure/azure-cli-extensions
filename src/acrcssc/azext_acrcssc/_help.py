@@ -12,7 +12,7 @@ helps['acr supply-chain'] = """
 """
 
 helps['acr supply-chain workflow'] = """
-    type: sub-group
+    type: group
     short-summary: Commands to manage acr supply chain workflows.
 """
 
@@ -26,10 +26,10 @@ helps['acr supply-chain workflow create'] = """
 """
 helps['acr supply-chain workflow update'] = """
     type: command
-    short-summary: Update acr supply chain workflow properties.
+    short-summary: Update acr supply chain workflow.
     examples:
         - name: Updates acr supply chain workflow
-          text: az acr supply-chain workflow update -r $MyRegistry -g $MyResourceGroup --task-type \
+          text: az acr supply-chain workflow update -r $MyRegistry -g $MyResourceGroup --type \
                 ContinuousPatchV1 --cadence 1d --config path-to-config-file --dry-run false
 """
 
