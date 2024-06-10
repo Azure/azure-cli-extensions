@@ -43,10 +43,6 @@ def transform_cron_to_cadence(cron_expression):
         return None
     
 def create_temporary_dry_run_file(file_location):
-    #logger.debug("file_location:"+ os.path(file_location))
-    logger.debug("file path:  %s", os.path.abspath(__file__))
-    logger.debug("templates_path:  %s", os.path.dirname(os.path.abspath(__file__)))
-    logger.debug("templates_path 2:  %s", os.path.join(os.path.dirname(os.path.abspath(__file__))))
     templates_path = os.path.dirname(
         os.path.join(
             os.path.dirname(
@@ -54,9 +50,10 @@ def create_temporary_dry_run_file(file_location):
                 "../templates/"))
     logger.debug("templates_path:  %s", templates_path)
     file_folder = os.path.dirname(file_location)
-    logger.debug("Copying dry run file to %s", file_folder)
     file_2_copy=templates_path+"/"+TMP_DRY_RUN_FILE_NAME
     shutil.copy2(file_2_copy, file_folder)
+    folder_contents = os.listdir(file_folder)
+    logger.debug("Copied dry run file %s", folder_contents)
 
 def delete_temporary_dry_run_file(file_location):
     logger.debug("Deleting dry run file %s", file_location)

@@ -133,9 +133,6 @@ def acr_cssc_dry_run(cmd, registry, config_file):
     # TO DO: Need to find alternative to below
     platform_os, platform_arch, platform_variant = "linux", None, None
     value_pair=[{"name": "CONFIGPATH", "value": f"{file_name}"}]
-    #logger.debug(value_pair)
-    #value_pair = "[{CONFIGPATHartifact.json}]"
-    logger.warning(value_pair)
     request = acr_registries_task_client.models.FileTaskRunRequest(
         task_file_path=TMP_DRY_RUN_FILE_NAME,
         values_file_path=None,
@@ -427,17 +424,17 @@ def _remove_internal_acr_statements(blob_content):
     starting_identifier = "DRY RUN mode enabled"
     terminating_identifier = "Total matches found"
     print_line = False
-    for i in range(1, len(lines)-1):
-        #logger.warning(lines[i])
-        if lines[i].startswith(starting_identifier):
-           print_line = True
-        elif lines[i].startswith(terminating_identifier):
-           logger.warning(lines[i])
-           print_line = False
+    
+    for line in lines:
+        if line.startswith(starting_identifier):
+            print_line = True
+        elif line.startswith(terminating_identifier):
+            logger.warning(line)
+            print_line = False
         
-        if(print_line):
-            logger.warning(lines[i])
-
+        if print_line:
+            logger.warning(line)
+    
 def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-statements, too-many-branches
                  byte_size,
                  timeout_in_seconds,
