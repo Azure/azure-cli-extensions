@@ -42,19 +42,22 @@ def transform_cron_to_cadence(cron_expression):
     else:
         return None
     
-def create_temporary_dry_run_file(file_location):
+def create_temporary_dry_run_file(file_location, tmp_folder):
     templates_path = os.path.dirname(
         os.path.join(
             os.path.dirname(
                 os.path.abspath(__file__)),
                 "../templates/"))
     logger.debug("templates_path:  %s", templates_path)
-    file_folder = os.path.dirname(file_location)
-    file_2_copy=templates_path+"/"+TMP_DRY_RUN_FILE_NAME
-    shutil.copy2(file_2_copy, file_folder)
-    folder_contents = os.listdir(file_folder)
+    
+    os.makedirs(tmp_folder, exist_ok=True)
+    file_template_copy=templates_path+"/"+TMP_DRY_RUN_FILE_NAME
+    
+    shutil.copy2(file_template_copy, tmp_folder)
+    shutil.copy2(file_location, tmp_folder)
+    folder_contents = os.listdir(tmp_folder)
     logger.debug("Copied dry run file %s", folder_contents)
 
-def delete_temporary_dry_run_file(file_location):
-    logger.debug("Deleting dry run file %s", file_location)
-    os.remove(file_location+"/"+TMP_DRY_RUN_FILE_NAME)
+def delete_temporary_dry_run_file(tmp_folder):
+    logger.debug("Deleting contents and directory %s", tmp_folder)
+    shutil.rmtree(tmp_folder)

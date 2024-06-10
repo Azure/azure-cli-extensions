@@ -72,7 +72,8 @@ def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun,
     if not dryrun and not defer_immediate_run:
         logger.warning('Triggering the continuous scanning task to run immediately')
         # Seen Managed Identity taking time, see if there can be an alternative (one alternative is to schedule the cron expression with delay)
-        time.sleep(5)
+        # NEED TO SKIP THE TIME.SLEEP IN UNIT TEST CASE OR FIND AN ALTERNATIVE SOLUITION TO MI COMPLETE
+        time.sleep(30)
         _trigger_task_run(cmd, registry, resource_group, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
 
 def delete_continuous_patch_v1(cmd, registry, dryrun):
@@ -103,31 +104,41 @@ def list_continuous_patch_v1(cmd, registry):
 
 def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run):
     logger.debug("Entering continuousPatchV1_update %s %s",cssc_config_file, dryrun)
-    resource_group_name = parse_resource_id(registry.id)["resource_group"]
+    resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
+
     if not check_continuous_task_exists(cmd, registry):
-        cssc_tasks = ', '.join(CONTINUOSPATCH_ALL_TASK_NAMES)
-        raise ResourceNotFoundError("All of these acr tasks should exists: %s", cssc_tasks)
+            cssc_tasks = ', '.join(CONTINUOSPATCH_ALL_TASK_NAMES)
+            raise ResourceNotFoundError(f"For update operation all of these acr tasks should exists: %s {cssc_tasks}", 
+                                        recommendation="Run 'az acr supply-chain workflow create' to create workflow tasks")
+    
+    if(cadence is not None):
+        _update_task_schedule(cmd, registry, cadence, resource_group_name)
+        logger.warning("Cadence has been successfully updated!")
 
-    validate_continuouspatch_config_v1(cssc_config_file)
-    create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
-    _update_task_schedule(cmd, registry, cadence, resource_group_name)
-    if not dryrun and not defer_immediate_run:
-        logger.debug('Triggering the continuous scanning task to run immediately')
-        _trigger_task_run(cmd, registry, resource_group_name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+    if(cssc_config_file is not None):
+        validate_continuouspatch_config_v1(cssc_config_file)
+        create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
 
-def acr_cssc_dry_run(cmd, registry, config_file):
+        if not dryrun and not defer_immediate_run:
+            logger.debug('Triggering the continuous scanning task to run immediately')
+            _trigger_task_run(cmd, registry, resource_group_name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+
+def acr_cssc_dry_run(cmd, registry, config_file_path):
     logger.debug("Entering acr_cssc_dry_run")
-    create_temporary_dry_run_file(config_file)
-    current_file_path = os.path.abspath(config_file)
-    file_name = os.path.basename(config_file)
-    directory_path = os.path.dirname(current_file_path)
+    file_name = os.path.basename(config_file_path)
+    
+    config_folder_path = os.path.dirname(os.path.abspath(config_file_path))
+    tmp_folder=  config_folder_path + "\\tmp"
+    logger.warning(tmp_folder)
+    create_temporary_dry_run_file(config_file_path, tmp_folder)
+    
     resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
     acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
     acr_run_client = cf_acr_runs(cmd.cli_ctx)
-    #acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
     source_location = prepare_source_location(
-         cmd, directory_path, acr_registries_task_client, registry.name, resource_group_name)
-    #acr_run(cmd, acr_run_client, registry.name, directory_path)
+         cmd, tmp_folder, acr_registries_task_client, registry.name, resource_group_name)
+    
+    # TO DO: Need to find alternate command to below (doesn't run due to dependency on az context)
     #platform_os, platform_arch, platform_variant = get_validate_platform(cmd, None)
 
     # TO DO: Need to find alternative to below
@@ -155,7 +166,7 @@ def acr_cssc_dry_run(cmd, registry, config_file):
         run_request=request))
     run_id = queued.run_id
     logger.warning("Queued an acr task with run ID for quick evaluation: %s", run_id)
-    delete_temporary_dry_run_file(directory_path)
+    delete_temporary_dry_run_file(tmp_folder)
     return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
 
 def _trigger_task_run(cmd, registry, resource_group, task_name):

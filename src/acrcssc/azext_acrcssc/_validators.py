@@ -101,11 +101,16 @@ def _validate_cadence(cadence):
     
 #     return cron_expression
 
-def validate_inputs(task_type, cadence):
-    validate_task_type(task_type)
+def validate_inputs(cadence):
     _validate_cadence(cadence)
 
 def validate_task_type(task_type):
     if task_type in CSSCTaskTypes._value2member_map_:
         if (task_type != CSSCTaskTypes.ContinuousPatchV1.value):
             raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TASK)
+
+def validate_cssc_update_input(cssc_config_path, cadence):
+    if(cssc_config_path is None and cadence is None):
+        raise InvalidArgumentValueError(error_msg = "Provide atleast one parameter to update: Cadence or Configuration file path")
+    if(cadence is not None):
+        _validate_cadence(cadence)
