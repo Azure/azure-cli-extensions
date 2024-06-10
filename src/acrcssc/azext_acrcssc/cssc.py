@@ -36,6 +36,10 @@ def update_acrcssc(cmd, resource_group_name, registry_name, type, config, cadenc
     validate_cssc_update_input(config, cadence)
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
+    validate_inputs(type, cadence, allow_null_cadence = (cadence == None))
+    
+    if config is None and cadence is None:
+        raise ValueError("Please provide a configuration file path or cadence to update the workflow.")
     
     if(dryrun is True and config is not None):
         current_file_path = os.path.abspath(config)
@@ -51,6 +55,10 @@ def delete_acrcssc(cmd, resource_group_name, registry_name, type):
     validate_task_type(type)
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
+    
+    from azure.cli.core.util import user_confirmation
+    user_confirmation(f"Are you sure you want to delete the workflow {type} from registry {registry_name}?")
+    
     delete_continuous_patch_v1(cmd, registry, False)
     logger.warning("Deleted workflow %s from registry %s", CSSCTaskTypes.ContinuousPatchV1.name, registry_name)
 

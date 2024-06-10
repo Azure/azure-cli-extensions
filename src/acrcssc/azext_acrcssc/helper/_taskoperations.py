@@ -111,14 +111,14 @@ def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, 
             raise ResourceNotFoundError(f"For update operation all of these acr tasks should exists: %s {cssc_tasks}", 
                                         recommendation="Run 'az acr supply-chain workflow create' to create workflow tasks")
     
-    if(cadence is not None):
+    if cssc_config_file is not None:
         _update_task_schedule(cmd, registry, cadence, resource_group_name)
         logger.warning("Cadence has been successfully updated!")
 
     if(cssc_config_file is not None):
         validate_continuouspatch_config_v1(cssc_config_file)
-        create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
-
+        create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)    
+    
         if not dryrun and not defer_immediate_run:
             logger.debug('Triggering the continuous scanning task to run immediately')
             _trigger_task_run(cmd, registry, resource_group_name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
@@ -196,7 +196,7 @@ def _create_encoded_task(task_file):
         base64_content = base64.b64encode(f.read())
         return base64_content.decode('utf-8')
     
-def _update_task_schedule(cmd, registry, cadence, resource_group_name):
+def _update_task_schedule(cmd, registry, cadence, resource_group_name, dryrun):
         task_schedule = convert_timespan_to_cron(cadence)
         logger.debug(f"task_schedule {task_schedule}")
         acr_task_client = cf_acr_tasks(cmd.cli_ctx)
@@ -211,6 +211,10 @@ def _update_task_schedule(cmd, registry, cadence, resource_group_name):
             )
         )
 
+        if dryrun:
+            logger.debug("Dry run, skipping the update of the task schedule")
+            return None
+            
         acr_task_client.begin_update(resource_group_name, registry.name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, taskUpdateParameters)
         
 def _delete_task(cmd, registry, task_name, dryrun):
