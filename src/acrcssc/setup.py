@@ -53,5 +53,12 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_acrcssc': ['azext_metadata.json']},
+    package_data={
+        'azext_acrcssc': [
+            "azext_metadata.json",
+            "templates/tmp_dry_run_template.yaml",
+            "templates/arm/*",
+            "templates/task/*"
+        ]
+    }
 )
