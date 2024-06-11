@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, too-many-locals, broad-except
+
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
@@ -15,6 +17,7 @@ from ._utils import validate_custom_location, validate_environment_location
 
 
 class ConnectedEnvironmentDecorator(BaseResource):
+    # pylint: disable=useless-super-delegation
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):

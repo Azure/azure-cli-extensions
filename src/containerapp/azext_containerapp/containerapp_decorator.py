@@ -2,7 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-branches, too-many-boolean-expressions, no-else-return, logging-fstring-interpolation, too-many-locals, expression-not-assigned, too-many-public-methods
+
+from copy import deepcopy
 from typing import Dict, Any
 from urllib.parse import urlparse
 
@@ -64,7 +66,7 @@ from ._constants import (HELLO_WORLD_IMAGE,
                          CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
                          MANAGED_ENVIRONMENT_TYPE,
                          MANAGED_ENVIRONMENT_RESOURCE_TYPE, ACR_IMAGE_SUFFIX,
-                         RUNTIME_GENERIC, RUNTIME_JAVA)
+                         RUNTIME_JAVA)
 
 
 logger = get_logger(__name__)
@@ -310,7 +312,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             if not scale_rule_type:
                 scale_rule_type = "http"
             scale_rule_type = scale_rule_type.lower()
-            scale_rule_def = ScaleRuleModel
+            scale_rule_def = deepcopy(ScaleRuleModel)
             curr_metadata = {}
             if self.get_argument_scale_rule_http_concurrency():
                 if scale_rule_type == 'http':
@@ -430,7 +432,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             logger.warning(
                 'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
-        if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
+        if not isinstance(yaml_containerapp, dict):  # pylint: disable=unidiomatic-typecheck
             raise ValidationError(
                 'Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
@@ -522,7 +524,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
     def set_up_existing_container_update(self):
         updating_existing_container = False
-        for c in self.new_containerapp["properties"]["template"]["containers"]:
+        for c in self.new_containerapp["properties"]["template"]["containers"]:  # pylint: disable=too-many-nested-blocks
             # Update existing container if container name matches the argument container name
             if self.should_update_existing_container(c):
                 updating_existing_container = True
@@ -589,7 +591,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                             self.new_containerapp["properties"]["template"]["volumes"].append(volume_def)
                         c["volumeMounts"] = [volume_mount_def]
                     else:
-                        if len(c["volumeMounts"]) > 1:
+                        if len(c["volumeMounts"]) > 1:  # pylint: disable=no-else-raise
                             raise ValidationError(
                                 "Usage error: --secret-volume-mount can only be used with a container that has a single volume mount, to define multiple volumes and mounts please use --yaml")
                         else:
@@ -610,6 +612,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
 # decorator for preview create
 class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
@@ -665,7 +668,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             self.set_argument_source(source)
 
         if source:
-            app, env = self._construct_app_and_env_for_source_or_repo()
+            app, _ = self._construct_app_and_env_for_source_or_repo()
             build_env_vars = self.get_argument_build_env_vars()
             dockerfile = "Dockerfile"
             # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
@@ -980,7 +983,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                         "java": runtime_java_def
                     }
             safe_set(self.containerapp_def, "properties", "configuration", "runtime", value=runtime_def)
-    
+
     # pylint: disable=unsupported-assignment-operation
     def set_up_scale_rule(self):
         scale_def = super().set_up_scale_rule()
@@ -1051,7 +1054,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def get_argument_enable_java_agent(self):
         return self.get_param("enable_java_agent")
-    
+
     def get_argument_scale_rule_identity(self):
         return self.get_param("scale_rule_identity")
 
@@ -1097,7 +1100,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is
     def get_argument_force_single_container_updates(self):
         return self.get_param("force_single_container_updates")
-    
+
     def get_argument_scale_rule_identity(self):
         return self.get_param("scale_rule_identity")
 
@@ -1359,6 +1362,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
 # decorator for preview list
 class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):

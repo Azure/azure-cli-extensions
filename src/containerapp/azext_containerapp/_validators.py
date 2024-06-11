@@ -2,21 +2,21 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long, unused-argument
 
-import re
-from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError,
-                                       MutuallyExclusiveArgumentError, RequiredArgumentMissingError)
 from msrestazure.tools import is_valid_resource_id
 from knack.log import get_logger
+from urllib.parse import urlparse
 
+from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError, RequiredArgumentMissingError)
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
+
 from ._constants import ACR_IMAGE_SUFFIX, \
     CONNECTED_ENVIRONMENT_TYPE, \
     EXTENDED_LOCATION_RP, CUSTOM_LOCATION_RESOURCE_TYPE, MAXIMUM_SECRET_LENGTH, CONTAINER_APPS_RP, \
     CONNECTED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE, \
-    SUPPORTED_RUNTIME_LIST, RUNTIME_GENERIC
-from urllib.parse import urlparse
+    RUNTIME_GENERIC
 
 logger = get_logger(__name__)
 
@@ -62,7 +62,7 @@ def validate_runtime(runtime, enable_java_metrics, enable_java_agent):
 
 def validate_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
+    from msrestazure.tools import resource_id, parse_resource_id
 
     if not namespace.managed_env:
         return
@@ -105,7 +105,7 @@ def validate_env_name_or_id(cmd, namespace):
 
 def validate_env_name_or_id_for_up(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
+    from msrestazure.tools import resource_id, parse_resource_id
 
     if not namespace.environment:
         return
@@ -148,7 +148,7 @@ def validate_env_name_or_id_for_up(cmd, namespace):
 
 def validate_custom_location_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from msrestazure.tools import resource_id
 
     if not namespace.custom_location or not namespace.resource_group_name:
         return

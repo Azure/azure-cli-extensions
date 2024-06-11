@@ -2,19 +2,21 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation
+
+from copy import deepcopy
 from typing import Any, Dict
 from knack.log import get_logger
+from knack.prompting import prompt_y_n
+from knack.util import CLIError
+from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 from azure.cli.command_modules.containerapp._utils import certificate_matches, certificate_location_matches, \
     load_cert_file, generate_randomized_cert_name, _ensure_identity_resource_id
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, ValidationError
 from azure.cli.core.commands import AzCliCommand
-from knack.prompting import prompt_y_n
-from knack.util import CLIError
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
-from copy import deepcopy
 
 from ._constants import PRIVATE_CERTIFICATE_RT, MANAGED_CERTIFICATE_RT, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, \
     NAME_ALREADY_EXISTS, NAME_INVALID

@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, too-many-locals, missing-timeout, too-many-statements, consider-using-with, too-many-branches
+# pylint: disable=line-too-long, too-many-locals
 
 from threading import Thread
 import os
@@ -31,6 +31,7 @@ class CloudBuildError(Exception):
     pass
 
 
+# pylint: disable=too-many-branches
 def run_cloud_build(cmd, source, build_env_vars, location, resource_group_name, environment_name, container_app_name, run_full_id, logs_file, logs_file_path):
     generated_build_name = f"build{run_full_id}"[:12]
     log_in_file(f"Starting the Cloud Build for build of id '{generated_build_name}'\n", logs_file, no_print=True)

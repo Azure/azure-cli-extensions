@@ -206,12 +206,12 @@ def load_command_table(self, args):
         g.custom_show_command('show', 'show_eureka_server_for_spring')
         g.custom_command('delete', 'delete_eureka_server_for_spring', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp job logs',  is_preview=True) as g:
+    with self.command_group('containerapp job logs', is_preview=True) as g:
         g.custom_show_command('show', 'stream_job_logs')
 
     with self.command_group('containerapp job replica', is_preview=True) as g:
         g.custom_show_command('list', 'list_replica_containerappsjob')
-    
+
     with self.command_group('containerapp env java-component nacos') as g:
         g.custom_command('create', 'create_nacos', supports_no_wait=True)
         g.custom_command('update', 'update_nacos', supports_no_wait=True)
@@ -255,4 +255,3 @@ def load_command_table(self, args):
         g.custom_command('set', 'create_or_update_java_logger', supports_no_wait=True)
         g.custom_command('delete', 'delete_java_logger', supports_no_wait=True)
         g.custom_show_command('show', 'show_java_logger')
-

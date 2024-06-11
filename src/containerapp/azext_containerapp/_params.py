@@ -120,7 +120,7 @@ def load_arguments(self, _):
     # App Resiliency
     with self.argument_context('containerapp resiliency') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('container_app_name', options_list=['--container-app-name'], help=f"The name of the existing Container App.")
+        c.argument('container_app_name', options_list=['--container-app-name'], help="The name of the existing Container App.")
         c.argument('name', name_type, help=f"The name of the Container App Resiliency Policy. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_APP_RESILIENCY_NAME_LENGTH} characters.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a container app resiliency policy. All other parameters will be ignored.')
         c.argument('default', options_list=['--recommended'], help='Set recommended values of resiliency policies for a container app.')
@@ -297,7 +297,7 @@ def load_arguments(self, _):
 
     # scale
     with self.argument_context('containerapp', arg_group='Scale') as c:
-        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'], 
+        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'],
                    help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
 
     with self.argument_context('containerapp job', arg_group='Scale') as c:
