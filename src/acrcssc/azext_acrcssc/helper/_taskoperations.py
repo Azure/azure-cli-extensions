@@ -189,7 +189,7 @@ def _trigger_task_run(cmd, registry, resource_group, task_name):
             registry.name,
             request))
     run_id = queued_run.run_id
-    logger.warning("Queued a run with ID: %s", run_id)
+    print("Queued acr task run with ID: {run_id}.")
 
 def _create_encoded_task(task_file):
     # this is a bit of a hack, but we need to fix the path to the task's yaml,
