@@ -6,7 +6,7 @@ Release History
 ++++++
 * Update Email service create - Global as the default value for Location 
 * Update Email service domain create - Global as the default value for Location 
-* Update Email service domain sender username - example and text update
+* Update Email service domain sender username create - example and text update
 
 1.9.2
 ++++++
