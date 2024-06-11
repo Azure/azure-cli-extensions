@@ -66,12 +66,12 @@ def _validate_cadence(cadence, allow_null=False):
     # Extract the numeric value and unit from the timespan expression
     match = re.match(r'(\d+)([d])', cadence)
     if not match:
-        raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TIMESPAN)
+        raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TIMESPAN, recommendation=RECOMMENDATION_CADENCE)
     if(match is not None):
         value = int(match.group(1))
         unit = match.group(2)
     if unit == 'd' and value > 30: #day of the month
-        raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TIMESPAN)
+        raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TIMESPAN, recommendation=RECOMMENDATION_CADENCE)
 
 # def validate_and_convert_timespan_to_cron(timespan, date_time=None, do_not_run_immediately=True):
 
@@ -104,15 +104,19 @@ def _validate_cadence(cadence, allow_null=False):
     
 #     return cron_expression
 
-def validate_inputs(cadence, allow_null_cadence=False):
+def validate_inputs(cadence, allow_null_cadence=False, config_file_path=None):
     _validate_cadence(cadence, allow_null_cadence)
+    if config_file_path is not None:
+        validate_continuouspatch_config_v1(config_file_path)
+    
+
 
 def validate_task_type(task_type):
     if task_type in CSSCTaskTypes._value2member_map_:
         if (task_type != CSSCTaskTypes.ContinuousPatchV1.value):
             raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TASK)
 
-def validate_cssc_update_input(cssc_config_path, cadence):
+def validate_cssc_optional_inputs(cssc_config_path, cadence):
     if(cssc_config_path is None and cadence is None):
         raise InvalidArgumentValueError(error_msg = "Provide atleast one parameter to update: Cadence or Configuration file path")
     if(cadence is not None):

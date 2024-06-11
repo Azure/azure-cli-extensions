@@ -65,7 +65,6 @@ def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun,
         dryrun
     )
 
-    logger.debug('Deployment of continuousPatchV1_creation completed successfully.')
     logger.warning('Deployment of continuousPatchV1 creation completed successfully.')
 
     # force run the task after it is created
@@ -75,32 +74,6 @@ def create_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun,
         # NEED TO SKIP THE TIME.SLEEP IN UNIT TEST CASE OR FIND AN ALTERNATIVE SOLUITION TO MI COMPLETE
         time.sleep(30)
         _trigger_task_run(cmd, registry, resource_group, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
-
-def delete_continuous_patch_v1(cmd, registry, dryrun):
-    logger.debug("Entering continuousPatchV1_delete")
-
-    if not dryrun and not check_continuous_task_exists(cmd, registry):
-        cssc_tasks = ', '.join(CONTINUOSPATCH_ALL_TASK_NAMES)
-        logger.warning("All of these tasks will be deleted: %s", cssc_tasks)
-    
-    delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
-    for taskname in CONTINUOSPATCH_ALL_TASK_NAMES:
-        # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
-        _delete_task(cmd, registry, taskname, dryrun)
-
-    logger.debug("ContinuousPatchV1 task deleted successfully")
-
-def list_continuous_patch_v1(cmd, registry):
-    logger.debug("Entering list_continuous_patch_v1")
-
-    if not check_continuous_task_exists(cmd, registry):
-        logger.warning("continuous patch OCI config does not exist")
-
-    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
-    resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
-    tasks_list = acr_task_client.list(resource_group_name, registry.name)
-    filtered_cssc_tasks = _transform_task_list(tasks_list)
-    return filtered_cssc_tasks
 
 def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run):
     logger.debug("Entering continuousPatchV1_update %s %s",cssc_config_file, dryrun)
@@ -112,7 +85,7 @@ def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, 
                                         recommendation="Run 'az acr supply-chain workflow create' to create workflow tasks")
     
     if cssc_config_file is not None:
-        _update_task_schedule(cmd, registry, cadence, resource_group_name)
+        _update_task_schedule(cmd, registry, cadence, resource_group_name, dryrun)
         logger.warning("Cadence has been successfully updated!")
 
     if(cssc_config_file is not None):
@@ -122,6 +95,36 @@ def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, 
         if not dryrun and not defer_immediate_run:
             logger.debug('Triggering the continuous scanning task to run immediately')
             _trigger_task_run(cmd, registry, resource_group_name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+            
+def delete_continuous_patch_v1(cmd, registry, dryrun):
+    logger.debug("Entering continuousPatchV1_delete")
+
+    cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
+    if not dryrun and cssc_tasks_exists:
+        cssc_tasks = ', '.join(CONTINUOSPATCH_ALL_TASK_NAMES)
+        logger.warning("All of these tasks will be deleted: %s", cssc_tasks)
+        for taskname in CONTINUOSPATCH_ALL_TASK_NAMES:
+        # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
+            _delete_task(cmd, registry, taskname, dryrun)
+    
+    if not cssc_tasks_exists:
+        logger.warning("ContinuousPatchV1 task does not exist")
+
+    delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
+    logger.debug("ContinuousPatchV1 task deleted successfully")
+
+def list_continuous_patch_v1(cmd, registry):
+    logger.debug("Entering list_continuous_patch_v1")
+
+    if not check_continuous_task_exists(cmd, registry):
+        logger.warning("ContinuousPatchV1 tasks does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks")
+        return
+    
+    acr_task_client = cf_acr_tasks(cmd.cli_ctx)
+    resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
+    tasks_list = acr_task_client.list(resource_group_name, registry.name)
+    filtered_cssc_tasks = _transform_task_list(tasks_list)
+    return filtered_cssc_tasks
 
 def acr_cssc_dry_run(cmd, registry, config_file_path):
     logger.debug("Entering acr_cssc_dry_run")
