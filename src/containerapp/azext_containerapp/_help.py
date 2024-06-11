@@ -1649,7 +1649,7 @@ helps['containerapp env telemetry data-dog show'] = """
     examples:
     - name: Show container apps environment telemetry data dog settings.
       text: |
-          az containerapp env telemetry data-dog show -n MyContainerappEnvironment -g MyResourceGroup 
+          az containerapp env telemetry data-dog show -n MyContainerappEnvironment -g MyResourceGroup
 """
 
 helps['containerapp env telemetry app-insights set'] = """
@@ -1668,7 +1668,7 @@ helps['containerapp env telemetry app-insights show'] = """
     examples:
     - name: Show container apps environment telemetry app insights settings.
       text: |
-          az containerapp env telemetry app-insights show -n MyContainerappEnvironment -g MyResourceGroup 
+          az containerapp env telemetry app-insights show -n MyContainerappEnvironment -g MyResourceGroup
 """
 
 helps['containerapp env telemetry data-dog delete'] = """
@@ -1787,7 +1787,7 @@ helps['containerapp sessionpool'] = """
 
 helps['containerapp sessionpool create'] = """
     type: command
-    short-summary: Create or update a Session pool. 
+    short-summary: Create or update a Session pool.
     examples:
     - name: Create or update a Session Pool with container type PythonLTS default settings.
       text: |
@@ -1875,7 +1875,7 @@ helps['containerapp session code-interpreter'] = """
 
 helps['containerapp session code-interpreter execute'] = """
     type: command
-    short-summary: Execute code in a code interpreter session. 
+    short-summary: Execute code in a code interpreter session.
     examples:
     - name: Execute a simple hello world.
       text: |
@@ -1890,7 +1890,7 @@ helps['containerapp session code-interpreter upload-file'] = """
     - name: Upload a file to a session.
       text: |
           az containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filepath example.txt  
+              --filepath example.txt
 """
 
 helps['containerapp session code-interpreter show-file-content'] = """
