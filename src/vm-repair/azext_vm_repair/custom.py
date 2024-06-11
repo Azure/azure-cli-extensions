@@ -644,7 +644,17 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip}' \
                                 .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
         _call_az_command(update_ip_command)
-
+            # Check if IP is updated
+    while True:
+        current_ip_address = get_current_ip_address(resource_group_name, primary_nic_name, ipconfig_name)
+        if current_ip_address == swap_ip_address:
+            logger.info('IP address updated successfully to {ip}\n'.format(ip=swap_ip_address))
+            break
+        else:
+            logger.info('IP address not updated yet. Waiting for 5 minutes before retrying...\n')
+            time.sleep(300)
+            # Sleep for 5 minutes 
+            
         # 4) Change things back. This will also invoke and wait for a VM restart.
         logger.info('NIC reset is complete. Now reverting back to your original configuration...\n')
         # If user had dynamic config, change back to dynamic
