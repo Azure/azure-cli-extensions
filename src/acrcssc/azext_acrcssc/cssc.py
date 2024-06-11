@@ -33,15 +33,13 @@ def update_acrcssc(cmd, resource_group_name, registry_name, type, config, cadenc
     '''Update a continuous patch task in the registry.'''
     logger.debug('Entering update_acrcssc with parameters: %s %s %s %s', registry_name, type, config, dryrun)
 
-    if config is None and cadence is None:
-        raise ValueError("Please provide a configuration file path or cadence to update the workflow.")
     validate_cssc_optional_inputs(config, cadence)
     validate_inputs(cadence, allow_null_cadence = (cadence == None), config_file_path= config)
 
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
     
-    if(dryrun is True and config is not None):
+    if(dryrun is True):
         acr_cssc_dry_run(cmd, registry=registry, config_file_path=config)
     else:
         update_continuous_patch_update_v1(cmd, registry, config, cadence, dryrun, defer_immediate_run)
@@ -58,7 +56,7 @@ def delete_acrcssc(cmd, resource_group_name, registry_name, type):
     user_confirmation(f"Are you sure you want to delete the workflow {type} from registry {registry_name}?")
     
     delete_continuous_patch_v1(cmd, registry, False)
-    logger.warning("Deleted workflow %s from registry %s", CSSCTaskTypes.ContinuousPatchV1.name, registry_name)
+    print(f"Deleted workflow {CSSCTaskTypes.ContinuousPatchV1.name} from registry {registry_name}")
 
 def show_acrcssc(cmd, resource_group_name, registry_name, type):
     '''Show a continuous patch task in the registry.'''

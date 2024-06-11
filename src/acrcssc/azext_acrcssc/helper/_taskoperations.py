@@ -20,6 +20,7 @@ from azure.cli.command_modules.acr._constants import ACR_RUN_DEFAULT_TIMEOUT_IN_
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.command_modules.acr.run import acr_run
 from azure.cli.command_modules.acr._azure_utils import get_blob_info
+#from azure.cli.command_modules.acr._errors import DuplicateTimerTriggersNotSupported
 from azure.cli.command_modules.acr._utils import get_custom_registry_credentials, prepare_source_location, get_validate_platform
 from azure.mgmt.core.tools import parse_resource_id
 from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
@@ -84,9 +85,9 @@ def update_continuous_patch_update_v1(cmd, registry, cssc_config_file, cadence, 
             raise ResourceNotFoundError(f"For update operation all of these acr tasks should exists: %s {cssc_tasks}", 
                                         recommendation="Run 'az acr supply-chain workflow create' to create workflow tasks")
     
-    if cssc_config_file is not None:
+    if cadence is not None:
         _update_task_schedule(cmd, registry, cadence, resource_group_name, dryrun)
-        logger.warning("Cadence has been successfully updated!")
+        print("Cadence has been successfully updated.")
 
     if(cssc_config_file is not None):
         validate_continuouspatch_config_v1(cssc_config_file)
@@ -128,8 +129,12 @@ def list_continuous_patch_v1(cmd, registry):
 
 def acr_cssc_dry_run(cmd, registry, config_file_path):
     logger.debug("Entering acr_cssc_dry_run")
-    file_name = os.path.basename(config_file_path)
+
+    if(config_file_path is None):
+        logger.warning("--config parameter is needed to perform dry-run check.")
+        return
     
+    file_name = os.path.basename(config_file_path)
     config_folder_path = os.path.dirname(os.path.abspath(config_file_path))
     tmp_folder=  config_folder_path + "\\tmp"
     logger.warning(tmp_folder)
@@ -168,7 +173,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
         registry_name=registry.name,
         run_request=request))
     run_id = queued.run_id
-    logger.warning("Queued an acr task with run ID for quick evaluation: %s", run_id)
+    logger.warning("Performing dry-run check for filter policy using acr task run id: %s", run_id)
     delete_temporary_dry_run_file(tmp_folder)
     return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
 
@@ -217,8 +222,9 @@ def _update_task_schedule(cmd, registry, cadence, resource_group_name, dryrun):
         if dryrun:
             logger.debug("Dry run, skipping the update of the task schedule")
             return None
-            
-        acr_task_client.begin_update(resource_group_name, registry.name, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, taskUpdateParameters)
+
+        acr_task_client.begin_update(resource_group_name, registry.name, 
+                                          CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, taskUpdateParameters)
         
 def _delete_task(cmd, registry, task_name, dryrun):
     logger.debug("Entering delete_task")
@@ -447,11 +453,11 @@ def _remove_internal_acr_statements(blob_content):
         if line.startswith(starting_identifier):
             print_line = True
         elif line.startswith(terminating_identifier):
-            logger.warning(line)
+            print(line)
             print_line = False
         
         if print_line:
-            logger.warning(line)
+            print(line)
     
 def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-statements, too-many-branches
                  byte_size,

@@ -28,9 +28,6 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument("cadence", options_list=["--cadence"], help="Cadence to run the scan and patching task. E.g. `<n>d` where n is the number of days between each run.", required=False)
         c.argument("defer_immediate_run", options_list=["--defer-immediate-run"], help="Use this flag to defer immediately running of selected workflow task. Default value: false.", arg_type=get_three_state_flag(), required=False)
         c.argument("dryrun", options_list=["--dry-run"], help="Use this flag to see the qualifying repositories and tags that would be affected by the workflow. Default value: false.", arg_type=get_three_state_flag(), required=False)
-    # with self.argument_context("acr supply-chain workflow delete") as c:
-    #     c.argument("type", arg_type=get_enum_type(CSSCTaskTypes), options_list=['--type', '-t'])   
-    # with self.argument_context("acr supply-chain workflow show") as c:
-    #     c.argument("type", arg_type=get_enum_type(CSSCTaskTypes), options_list=['--type', '-t'])
+    
     
          
