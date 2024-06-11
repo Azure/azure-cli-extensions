@@ -597,7 +597,6 @@ def check_serial_console_enabled(cli_ctx, storage_account_region=None):
 def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
     result, storage_account_region = get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name,
                                                                      vmss_instanceid)
-    print("BEFORE enabled check")
     check_serial_console_enabled(cli_ctx, storage_account_region)
 
     if vmss_instanceid:
