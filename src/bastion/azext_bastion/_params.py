@@ -30,7 +30,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument("target_ip_address", help="IP address of target Virtual Machine.", required=False,
                    options_list=["--target-ip-address"], validator=validate_ip_address)
 
-    with self.argument_context("network bastion ssh") as c:
+    with self.argument_context("network bastion ssh ") as c:
         c.argument("auth_type", help="Auth type to use for SSH connections.", options_list=["--auth-type"])
         c.argument("ssh_key", help="SSH key file location for SSH connections.", options_list=["--ssh-key"])
         c.argument("username", help="User name for SSH connections.", options_list=["--username"])
