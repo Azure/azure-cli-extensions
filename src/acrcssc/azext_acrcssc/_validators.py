@@ -118,4 +118,4 @@ def validate_task_type(task_type):
 
 def validate_cssc_optional_inputs(cssc_config_path, cadence):
     if(cssc_config_path is None and cadence is None):
-        raise InvalidArgumentValueError(error_msg = "Provide atleast one parameter to update: --cadence or --config")
+        raise InvalidArgumentValueError(error_msg = "Provide at least one parameter to update: --cadence or --config")
