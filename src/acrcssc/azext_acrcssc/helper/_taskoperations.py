@@ -12,7 +12,7 @@ import colorama
 from knack.log import get_logger
 from ._constants import (CONTINUOSPATCH_DEPLOYMENT_NAME, CONTINUOSPATCH_DEPLOYMENT_TEMPLATE, 
 CONTINUOSPATCH_ALL_TASK_NAMES, CONTINUOSPATCH_TASK_DEFINITION, 
-CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, RESOURCE_GROUP, 
+CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, RESOURCE_GROUP, CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
 TMP_DRY_RUN_FILE_NAME, CONTINUOUS_PATCHING_WORKFLOW_NAME, CSSC_WORKFLOW_POLICY_REPOSITORY)
 from azure.common import AzureHttpError
 from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
@@ -104,7 +104,8 @@ def delete_continuous_patch_v1(cmd, registry, dryrun):
     if not cssc_tasks_exists:
         logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist")
 
-    logger.debug(f"deleting repository {CSSC_WORKFLOW_POLICY_REPOSITORY} containing filter policy")
+    logger.warning("Deleting %s/%s:%s", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
+    logger.debug(f"Deleting repository {CSSC_WORKFLOW_POLICY_REPOSITORY} containing filter policy")
     delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 
 def list_continuous_patch_v1(cmd, registry):

@@ -6,8 +6,6 @@
 from knack.log import get_logger
 from .helper._constants import CSSCTaskTypes, CONTINUOUS_PATCHING_WORKFLOW_NAME
 from .helper._taskoperations import (
-    create_continuous_patch_v1,
-    update_continuous_patch_update_v1,
     delete_continuous_patch_v1,
     list_continuous_patch_v1,
     acr_cssc_dry_run,
