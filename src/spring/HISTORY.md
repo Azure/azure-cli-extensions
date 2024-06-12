@@ -1,6 +1,6 @@
 Release History
 ===============
-1.24.5
+1.25.0
 ---
 * Add arguments `--disable-test-endpoint-auth` in `spring app create` and `spring app update`.
 
