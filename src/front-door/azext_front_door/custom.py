@@ -184,9 +184,9 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
         case _:
             cloud_url = 'azurefd.net'
 
-    if endpoint.lower().contains('eaglex.ic.gov'):
+    if 'eaglex.ic.gov' in endpoint.lower():
         cloud_url = 'azurefd.eaglex.ic.gov'
-    if endpoint.lower().contains('microsoft.scloud'):
+    if 'microsoft.scloud' in endpoint.lower():
         cloud_url = 'azurefd.microsoft.scloud'
 
     # get the IDs to fill the references
