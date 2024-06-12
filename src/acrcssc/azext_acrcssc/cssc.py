@@ -38,7 +38,7 @@ def create_acrcssc(cmd, resource_group_name, registry_name, type, config, cadenc
 
 def update_acrcssc(cmd, resource_group_name, registry_name, type, config, cadence, dryrun=False, defer_immediate_run=False):
     '''Update a continuous patch task in the registry.'''
-    logger.debug('Entering update_acrcssc with parameters: %s %s %s %s %s %s %s', registry_name, type, config, cadence, dryrun, defer_immediate_run)
+    logger.debug('Entering update_acrcssc with parameters: %s %s %s %s %s %s', registry_name, type, config, cadence, dryrun, defer_immediate_run)
     _perform_continuous_patch_operation(cmd, resource_group_name, registry_name, type, config, cadence, dryrun, defer_immediate_run, is_create=False)
 
 def delete_acrcssc(cmd, resource_group_name, registry_name, type):

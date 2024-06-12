@@ -5,13 +5,13 @@
 import json
 import os
 import re
-from datetime import ( datetime, timezone )
+from knack.log import get_logger
 from .helper._constants import CONTINUOUSPATCH_CONFIG_SCHEMA_V1, CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT, CONTINUOSPATCH_ALL_TASK_NAMES, ERROR_MESSAGE_INVALID_TIMESPAN
 from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_CADENCE
 from azure.mgmt.core.tools import ( parse_resource_id )
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzCLIError
 from ._client_factory import cf_acr_tasks
-
+logger = get_logger(__name__)
 def validate_continuouspatch_config_v1(config_path):
     _validate_continuouspatch_file(config_path)
     _validate_continuouspatch_json(config_path)
@@ -35,7 +35,8 @@ def _validate_continuouspatch_json(config_path):
             config = json.load(f)
             validate(config, CONTINUOUSPATCH_CONFIG_SCHEMA_V1)
     except Exception as e:
-        raise AzCLIError(f"Error validating the continuous patch config file: {e}")
+        logger.debug(f"Error validating the continuous patch config file: {e}")
+        raise InvalidArgumentValueError(f"File used for --config is not a valid config JSON file. Use --help to see the schema of the config file.")
     finally:
         f.close()
 
@@ -52,9 +53,10 @@ def _check_task_exists(cmd, registry, task_name = ""):
 
     try:
         task = acrtask_client.get(resource_group, registry.name, task_name)
-    except:
+    except Exception as exception:
+        logger.debug("Failed to find task %s from registry %s : %s", task_name, registry.name, exception)
         return False
-
+    
     if task is not None:
         return True
     return False

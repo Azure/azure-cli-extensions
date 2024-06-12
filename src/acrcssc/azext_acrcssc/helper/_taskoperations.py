@@ -15,20 +15,19 @@ CONTINUOSPATCH_ALL_TASK_NAMES, CONTINUOSPATCH_TASK_DEFINITION,
 CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, RESOURCE_GROUP, CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
 TMP_DRY_RUN_FILE_NAME, CONTINUOUS_PATCHING_WORKFLOW_NAME, CSSC_WORKFLOW_POLICY_REPOSITORY)
 from azure.common import AzureHttpError
-from azure.cli.core.azclierror import AzCLIError, ResourceNotFoundError
+from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.command_modules.acr._stream_utils import stream_logs
 from azure.cli.command_modules.acr._stream_utils import _stream_logs, _blob_is_not_complete, _get_run_status
 from azure.cli.command_modules.acr._constants import ACR_RUN_DEFAULT_TIMEOUT_IN_SEC
 from azure.cli.core.profiles import ResourceType, get_sdk
-from azure.cli.command_modules.acr.run import acr_run
 from azure.cli.command_modules.acr._azure_utils import get_blob_info
-from azure.cli.command_modules.acr._utils import get_custom_registry_credentials, prepare_source_location, get_validate_platform
+from azure.cli.command_modules.acr._utils import  prepare_source_location
 from azure.mgmt.core.tools import parse_resource_id
 from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
 from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
-from azext_acrcssc._validators import validate_continuouspatch_config_v1, check_continuous_task_exists
+from azext_acrcssc._validators import check_continuous_task_exists
 from msrestazure.azure_exceptions import CloudError
 from ._utility import convert_timespan_to_cron, transform_cron_to_cadence, create_temporary_dry_run_file, delete_temporary_dry_run_file
 
@@ -42,9 +41,16 @@ def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, 
     if(cadence is not None):
         schedule_cron_expression = convert_timespan_to_cron(cadence)
     logger.debug("converted cadence to cron expression: %s", schedule_cron_expression)
+    cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
     if(is_create_workflow):
+        if cssc_tasks_exists:
+            logger.error(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates ")
+            return
         _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
     else:
+        if not cssc_tasks_exists:
+            logger.error(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist")
+            return
         _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
     
     if(cssc_config_file is not None):
@@ -75,7 +81,7 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
         dry_run
     )
 
-    logger.warning('Deployment of {CONTINUOUS_PATCHING_WORKFLOW_NAME} tasks completed successfully.')
+    logger.warning("Deployment of %s tasks completed successfully.", CONTINUOUS_PATCHING_WORKFLOW_NAME)
 
 def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run):
     if schedule_cron_expression is not None:
@@ -111,7 +117,7 @@ def list_continuous_patch_v1(cmd, registry):
     logger.debug("Entering list_continuous_patch_v1")
 
     if not check_continuous_task_exists(cmd, registry):
-        logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow tasks does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks")
+        logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks")
         return
     
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
