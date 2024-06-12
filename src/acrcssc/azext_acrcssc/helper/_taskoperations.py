@@ -105,7 +105,6 @@ def delete_continuous_patch_v1(cmd, registry, dryrun):
         logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist")
 
     logger.warning("Deleting %s/%s:%s", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
-    logger.debug(f"Deleting repository {CSSC_WORKFLOW_POLICY_REPOSITORY} containing filter policy")
     delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 
 def list_continuous_patch_v1(cmd, registry):
