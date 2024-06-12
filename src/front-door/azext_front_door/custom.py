@@ -167,6 +167,28 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
     load_balancing_settings_name = 'DefaultLoadBalancingSettings'
     routing_rule_name = 'DefaultRoutingRule'
 
+    cloud = cmd.cli_ctx.cloud.name
+    endpoint = cmd.cli_ctx.cloud.endpoints.management
+
+    cloud_url = 'azurefd.net'
+
+    match cloud:
+        case 'AzureCloud':
+            cloud_url = 'azurefd.net'
+        case 'AzureChinaCloud':
+            cloud_url = 'azurefd.net'
+        case 'AzureUSGovernment':
+            cloud_url = 'azurefd.us'
+        case 'AzureGermanCloud':
+            cloud_url = 'azurefd.net'
+        case _:
+            cloud_url = 'azurefd.net'
+
+    if endpoint.lower().contains('eaglex.ic.gov'):
+        cloud_url = 'azurefd.eaglex.ic.gov'
+    if endpoint.lower().contains('microsoft.scloud'):
+        cloud_url = 'azurefd.microsoft.scloud'
+
     # get the IDs to fill the references
     backend_pool_id = _front_door_subresource_id(
         cmd, resource_group_name, front_door_name, 'backendPools', backend_pool_name)
@@ -213,7 +235,7 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
         frontend_endpoints=[
             FrontendEndpoint(
                 name=frontend_endpoint_name,
-                host_name=frontend_host_name if frontend_host_name else '{}.azurefd.net'.format(front_door_name),
+                host_name=frontend_host_name if frontend_host_name else '{}.{}'.format(front_door_name, cloud_url),
                 session_affinity_enabled_state='Disabled',
                 resource_state='Enabled'
             )
