@@ -4,12 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.log import get_logger
-from .helper._constants import CSSCTaskTypes, CONTINUOUS_PATCHING_WORKFLOW_NAME
+from .helper._constants import CONTINUOUS_PATCHING_WORKFLOW_NAME
 from .helper._taskoperations import (
+    create_update_continuous_patch_v1,
     delete_continuous_patch_v1,
     list_continuous_patch_v1,
-    acr_cssc_dry_run,
-    create_update_continuous_patch_v1
+    acr_cssc_dry_run
 )
 from ._validators import validate_inputs, validate_task_type, validate_cssc_optional_inputs
 from azext_acrcssc._client_factory import ( cf_acr_registries )

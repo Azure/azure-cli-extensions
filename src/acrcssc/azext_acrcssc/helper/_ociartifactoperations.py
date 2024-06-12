@@ -54,7 +54,7 @@ def create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun
             target = oci_target_name,
             files = [temp_artifact.name])
     except Exception as exception:
-        raise AzCLIError("Failed to push OCI artifact to ACR: %s", exception)
+        raise AzCLIError(f"Failed to push OCI artifact to ACR: {exception}")
     finally:
         oras_client.logout(hostname=str.lower(registry.login_server))
         os.path.exists(temp_artifact_name) and os.remove(temp_artifact_name) 
@@ -117,12 +117,13 @@ def _get_acr_token(registry_name, resource_group, subscription):
     ]
 
     try:
-        token = subprocess.check_output(
+        proc = subprocess.Popen(
             acr_login_with_token_cmd,
-            #stderr=subprocess.STDOUT, #similar to 'capture_output=True' in subprocess.run, causes the output of the token to be mixed with the error message (regular login warning)
-            encoding="utf-8",
-            text=True
-        ).strip()
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        token = proc.stdout.read().strip().decode("utf-8")
+        # this suppresses the 'login' warning from the ACR request, if we need the error and does not come from the exception we can take it from here
+        error_stderr = proc.stderr.read()
     except subprocess.CalledProcessError as error:
         unauthorized = (
             error.stderr
