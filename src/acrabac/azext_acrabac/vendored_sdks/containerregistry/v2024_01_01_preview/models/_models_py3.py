@@ -3829,10 +3829,10 @@ class Registry(Resource):  # pylint: disable=too-many-instance-attributes
      Known values are: "Enabled" and "Disabled".
     :vartype metadata_search: str or
      ~azure.mgmt.containerregistry.v2024_01_01_preview.models.MetadataSearch
-    :ivar abac_repo_permission: Determines whether registry enables repository level permission
-     based on ABAC. Known values are: "Enabled" and "Disabled".
-    :vartype abac_repo_permission: str or
-     ~azure.mgmt.containerregistry.v2024_01_01_preview.models.AbacRepoPermission
+    :ivar role_assignment_mode: Determines registry role assignment mode. Known values are:
+     "AbacRepositoryPermissions" and "LegacyRegistryPermissions".
+    :vartype role_assignment_mode: str or
+     ~azure.mgmt.containerregistry.v2024_01_01_preview.models.RoleAssignmentMode
     """
 
     _validation = {
@@ -3878,7 +3878,7 @@ class Registry(Resource):  # pylint: disable=too-many-instance-attributes
         "zone_redundancy": {"key": "properties.zoneRedundancy", "type": "str"},
         "anonymous_pull_enabled": {"key": "properties.anonymousPullEnabled", "type": "bool"},
         "metadata_search": {"key": "properties.metadataSearch", "type": "str"},
-        "abac_repo_permission": {"key": "properties.abacRepoPermission", "type": "str"},
+        "role_assignment_mode": {"key": "properties.roleAssignmentMode", "type": "str"},
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -3898,7 +3898,7 @@ class Registry(Resource):  # pylint: disable=too-many-instance-attributes
         zone_redundancy: Optional[Union[str, "_models.ZoneRedundancy"]] = None,
         anonymous_pull_enabled: bool = False,
         metadata_search: Optional[Union[str, "_models.MetadataSearch"]] = None,
-        abac_repo_permission: Optional[Union[str, "_models.AbacRepoPermission"]] = None,
+        role_assignment_mode: Optional[Union[str, "_models.RoleAssignmentMode"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3942,10 +3942,10 @@ class Registry(Resource):  # pylint: disable=too-many-instance-attributes
          search. Known values are: "Enabled" and "Disabled".
         :paramtype metadata_search: str or
          ~azure.mgmt.containerregistry.v2024_01_01_preview.models.MetadataSearch
-        :keyword abac_repo_permission: Determines whether registry enables repository level permission
-         based on ABAC. Known values are: "Enabled" and "Disabled".
-        :paramtype abac_repo_permission: str or
-         ~azure.mgmt.containerregistry.v2024_01_01_preview.models.AbacRepoPermission
+        :keyword role_assignment_mode: Determines registry role assignment mode. Known values are:
+         "AbacRepositoryPermissions" and "LegacyRegistryPermissions".
+        :paramtype role_assignment_mode: str or
+         ~azure.mgmt.containerregistry.v2024_01_01_preview.models.RoleAssignmentMode
         """
         super().__init__(location=location, tags=tags, **kwargs)
         self.sku = sku
@@ -3966,7 +3966,7 @@ class Registry(Resource):  # pylint: disable=too-many-instance-attributes
         self.zone_redundancy = zone_redundancy
         self.anonymous_pull_enabled = anonymous_pull_enabled
         self.metadata_search = metadata_search
-        self.abac_repo_permission = abac_repo_permission
+        self.role_assignment_mode = role_assignment_mode
 
 
 class RegistryListCredentialsResult(_serialization.Model):
@@ -4173,10 +4173,10 @@ class RegistryUpdateParameters(_serialization.Model):  # pylint: disable=too-man
      Known values are: "Enabled" and "Disabled".
     :vartype metadata_search: str or
      ~azure.mgmt.containerregistry.v2024_01_01_preview.models.MetadataSearch
-    :ivar abac_repo_permission: Determines whether registry enables repository level permission
-     based on ABAC. Known values are: "Enabled" and "Disabled".
-    :vartype abac_repo_permission: str or
-     ~azure.mgmt.containerregistry.v2024_01_01_preview.models.AbacRepoPermission
+    :ivar role_assignment_mode: Determines registry role assignment mode. Known values are:
+     "AbacRepositoryPermissions" and "LegacyRegistryPermissions".
+    :vartype role_assignment_mode: str or
+     ~azure.mgmt.containerregistry.v2024_01_01_preview.models.RoleAssignmentMode
     """
 
     _attribute_map = {
@@ -4192,7 +4192,7 @@ class RegistryUpdateParameters(_serialization.Model):  # pylint: disable=too-man
         "network_rule_bypass_options": {"key": "properties.networkRuleBypassOptions", "type": "str"},
         "anonymous_pull_enabled": {"key": "properties.anonymousPullEnabled", "type": "bool"},
         "metadata_search": {"key": "properties.metadataSearch", "type": "str"},
-        "abac_repo_permission": {"key": "properties.abacRepoPermission", "type": "str"},
+        "role_assignment_mode": {"key": "properties.roleAssignmentMode", "type": "str"},
     }
 
     def __init__(
@@ -4210,7 +4210,7 @@ class RegistryUpdateParameters(_serialization.Model):  # pylint: disable=too-man
         network_rule_bypass_options: Optional[Union[str, "_models.NetworkRuleBypassOptions"]] = None,
         anonymous_pull_enabled: Optional[bool] = None,
         metadata_search: Optional[Union[str, "_models.MetadataSearch"]] = None,
-        abac_repo_permission: Optional[Union[str, "_models.AbacRepoPermission"]] = None,
+        role_assignment_mode: Optional[Union[str, "_models.RoleAssignmentMode"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4247,10 +4247,10 @@ class RegistryUpdateParameters(_serialization.Model):  # pylint: disable=too-man
          search. Known values are: "Enabled" and "Disabled".
         :paramtype metadata_search: str or
          ~azure.mgmt.containerregistry.v2024_01_01_preview.models.MetadataSearch
-        :keyword abac_repo_permission: Determines whether registry enables repository level permission
-         based on ABAC. Known values are: "Enabled" and "Disabled".
-        :paramtype abac_repo_permission: str or
-         ~azure.mgmt.containerregistry.v2024_01_01_preview.models.AbacRepoPermission
+        :keyword role_assignment_mode: Determines registry role assignment mode. Known values are:
+         "AbacRepositoryPermissions" and "LegacyRegistryPermissions".
+        :paramtype role_assignment_mode: str or
+         ~azure.mgmt.containerregistry.v2024_01_01_preview.models.RoleAssignmentMode
         """
         super().__init__(**kwargs)
         self.identity = identity
@@ -4265,7 +4265,7 @@ class RegistryUpdateParameters(_serialization.Model):  # pylint: disable=too-man
         self.network_rule_bypass_options = network_rule_bypass_options
         self.anonymous_pull_enabled = anonymous_pull_enabled
         self.metadata_search = metadata_search
-        self.abac_repo_permission = abac_repo_permission
+        self.role_assignment_mode = role_assignment_mode
 
 
 class RegistryUsage(_serialization.Model):

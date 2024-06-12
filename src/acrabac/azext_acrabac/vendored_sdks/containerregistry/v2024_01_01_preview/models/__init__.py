@@ -133,7 +133,6 @@ from ._models_py3 import WebhookCreateParameters
 from ._models_py3 import WebhookListResult
 from ._models_py3 import WebhookUpdateParameters
 
-from ._container_registry_management_client_enums import AbacRepoPermission
 from ._container_registry_management_client_enums import Action
 from ._container_registry_management_client_enums import ActionsRequired
 from ._container_registry_management_client_enums import ActivationStatus
@@ -167,6 +166,7 @@ from ._container_registry_management_client_enums import ProvisioningState
 from ._container_registry_management_client_enums import PublicNetworkAccess
 from ._container_registry_management_client_enums import RegistryUsageUnit
 from ._container_registry_management_client_enums import ResourceIdentityType
+from ._container_registry_management_client_enums import RoleAssignmentMode
 from ._container_registry_management_client_enums import SkuName
 from ._container_registry_management_client_enums import SkuTier
 from ._container_registry_management_client_enums import TlsStatus
@@ -309,7 +309,6 @@ __all__ = [
     "WebhookCreateParameters",
     "WebhookListResult",
     "WebhookUpdateParameters",
-    "AbacRepoPermission",
     "Action",
     "ActionsRequired",
     "ActivationStatus",
@@ -343,6 +342,7 @@ __all__ = [
     "PublicNetworkAccess",
     "RegistryUsageUnit",
     "ResourceIdentityType",
+    "RoleAssignmentMode",
     "SkuName",
     "SkuTier",
     "TlsStatus",

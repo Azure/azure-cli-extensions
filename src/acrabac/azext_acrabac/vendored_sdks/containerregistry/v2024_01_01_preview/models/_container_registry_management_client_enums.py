@@ -10,13 +10,6 @@ from enum import Enum
 from azure.core import CaseInsensitiveEnumMeta
 
 
-class AbacRepoPermission(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Determines whether registry enables repository level permission based on ABAC."""
-
-    ENABLED = "Enabled"
-    DISABLED = "Disabled"
-
-
 class Action(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The action of IP ACL rule."""
 
@@ -261,6 +254,13 @@ class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     USER_ASSIGNED = "UserAssigned"
     SYSTEM_ASSIGNED_USER_ASSIGNED = "SystemAssigned, UserAssigned"
     NONE = "None"
+
+
+class RoleAssignmentMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Determines registry role assignment mode."""
+
+    ABAC_REPOSITORY_PERMISSIONS = "AbacRepositoryPermissions"
+    LEGACY_REGISTRY_PERMISSIONS = "LegacyRegistryPermissions"
 
 
 class SkuName(str, Enum, metaclass=CaseInsensitiveEnumMeta):
