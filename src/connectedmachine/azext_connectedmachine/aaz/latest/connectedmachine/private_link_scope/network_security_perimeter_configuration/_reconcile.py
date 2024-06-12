@@ -12,27 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "connectedmachine private-link-scope network-security-perimeter-configuration reconcile",
 )
-class Delete(AAZCommand):
-    """Delete an Azure Arc-Enabled Server.
+class Reconcile(AAZCommand):
+    """Forces the network security perimeter configuration to refresh for a private link scope.
 
-    :example: Sample command for delete
-        az connectedmachine delete --name myMachine --resource-group myResourceGroup
+    :example: Sample command for NSP reconcile
+        az connectedmachine private-link-scope network-security-perimeter-configuration reconcile --resource-group myResourceGroup --scope-name myPrivateLinkScope --perimeter-name aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.myAssociation
     """
 
     _aaz_info = {
         "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2024-05-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations/{}/reconcile", "2024-05-20-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -45,25 +45,32 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.machine_name = AAZStrArg(
-            options=["-n", "--name", "--machine-name"],
-            help="The name of the hybrid machine.",
+        _args_schema.perimeter_name = AAZStrArg(
+            options=["--perimeter-name"],
+            help="The name, in the format {perimeterGuid}.{associationName}, of the Network Security Perimeter resource.",
             required=True,
-            id_part="name",
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
-                max_length=54,
-                min_length=1,
+                pattern="^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[.]{1}.+$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.scope_name = AAZStrArg(
+            options=["--scope-name"],
+            help="The name of the Azure Arc PrivateLinkScope resource.",
+            required=True,
+            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="[a-zA-Z0-9-_\.]+",
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MachinesDelete(ctx=self.ctx)()
+        yield self.NetworkSecurityPerimeterConfigurationsReconcileForPrivateLinkScope(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,29 +81,34 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class MachinesDelete(AAZHttpOperation):
+    class NetworkSecurityPerimeterConfigurationsReconcileForPrivateLinkScope(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-            if session.http_response.status_code in [204]:
-                return self.on_204(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    None,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/privateLinkScopes/{scopeName}/networkSecurityPerimeterConfigurations/{perimeterName}/reconcile",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -106,11 +118,15 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "machineName", self.ctx.args.machine_name,
+                    "perimeterName", self.ctx.args.perimeter_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "scopeName", self.ctx.args.scope_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -130,15 +146,9 @@ class Delete(AAZCommand):
             }
             return parameters
 
-        def on_200(self, session):
-            pass
 
-        def on_204(self, session):
-            pass
+class _ReconcileHelper:
+    """Helper class for Reconcile"""
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
-
-
-__all__ = ["Delete"]
+__all__ = ["Reconcile"]

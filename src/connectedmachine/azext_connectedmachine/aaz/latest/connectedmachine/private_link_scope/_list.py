@@ -15,17 +15,18 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-scope list",
 )
 class List(AAZCommand):
-    """Get a list of Azure Arc PrivateLinkScopes within a resource group and get a list of all Azure Arc PrivateLinkScopes within a subscription.
+    """Get a list of Azure Arc PrivateLinkScopes for a resource group or a subscription.
 
     :example: Sample command for private-link-scope list
-        az connectedmachine private-link-scope list --subscription mySubscription --resource-group myResourceGroup
+        az connectedmachine private-link-scope list --resource-group my-resource-group
+        az connectedmachine private-link-scope list
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2024-03-31-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2024-05-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2024-05-20-preview"],
         ]
     }
 
@@ -51,12 +52,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.PrivateLinkScopesListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.PrivateLinkScopesList(ctx=self.ctx)()
+        if condition_1:
+            self.PrivateLinkScopesListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +73,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class PrivateLinkScopesListByResourceGroup(AAZHttpOperation):
+    class PrivateLinkScopesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +87,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/privateLinkScopes",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.HybridCompute/privateLinkScopes",
                 **self.url_parameters
             )
 
@@ -102,10 +103,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -116,7 +113,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
@@ -270,7 +267,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class PrivateLinkScopesList(AAZHttpOperation):
+    class PrivateLinkScopesListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -284,7 +281,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.HybridCompute/privateLinkScopes",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/privateLinkScopes",
                 **self.url_parameters
             )
 
@@ -300,6 +297,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -310,7 +311,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }

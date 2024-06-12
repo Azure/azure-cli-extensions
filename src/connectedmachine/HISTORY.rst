@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.0b1
++++++	
+* Add reconcile command from Network Security Perimeter API's and more payGo features. 2024/05/20-preview is used for aaz generation. Migrated to aaz.
+
 1.0.0b1
 +++++	
 * Add ESU license and Network Security Perimeter API's. 2024/03/31-preview is used for aaz generation. Migrated to aaz.
