@@ -60,6 +60,7 @@ def create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun
         os.path.exists(temp_artifact_name) and os.remove(temp_artifact_name) 
 
 def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
+    logger.debug("Entering delete_oci_artifact_continuous_patch with parameters %s %s", registry, dryrun)
     resourceid = parse_resource_id(registry.id)
     resource_group = resourceid["resource_group"]
     subscription = resourceid["subscription"]
@@ -79,6 +80,7 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
             username=BEARER_TOKEN_USERNAME,
             password=token,
             yes=not dryrun)
+        logger.debug("Call to acr_repository_delete completed successfully")
     except Exception as exception:
         logger.debug("%s", exception)
         logger.error("Artifact: %s/%s:%s might not exist or attempt to delete failed.", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)

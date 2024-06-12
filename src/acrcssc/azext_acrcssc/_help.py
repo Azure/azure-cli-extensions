@@ -22,7 +22,7 @@ helps['acr supply-chain workflow create'] = """
     examples:
         - name: Create acr supply chain workflow
           text: az acr supply-chain workflow create -r $MyRegistry -g $MyResourceGroup \
-                --type ContinuousPatchV1 --cadence 1d --config path-to-config-file --dry-run false
+                --type continuouspatchv1 --cadence 1d --config path-to-config-file --dry-run false
 """
 helps['acr supply-chain workflow update'] = """
     type: command
@@ -30,7 +30,7 @@ helps['acr supply-chain workflow update'] = """
     examples:
         - name: Updates acr supply chain workflow
           text: az acr supply-chain workflow update -r $MyRegistry -g $MyResourceGroup --type \
-                ContinuousPatchV1 --cadence 1d --config path-to-config-file --dry-run false
+                continuouspatchv1 --cadence 1d --config path-to-config-file --dry-run false
 """
 
 helps['acr supply-chain workflow show'] = """
@@ -38,7 +38,7 @@ helps['acr supply-chain workflow show'] = """
      short-summary: Show acr supply chain workflow tasks.
      examples:
         - name: Show all acr supply chain workflow
-          text: az acr supply-chain workflow show -r $MyRegistry -g $MyResourceGroup --type ContinuousPatchV1
+          text: az acr supply-chain workflow show -r $MyRegistry -g $MyResourceGroup --type continuouspatchv1
 """
 
 helps['acr supply-chain workflow delete'] = """
@@ -46,5 +46,5 @@ helps['acr supply-chain workflow delete'] = """
     short-summary: Delete acr supply chain workflow.
     examples:
         - name: Delete acr supply chain workflow and associated configuration files
-          text: az acr supply-chain workflow delete -r $MyRegistry -g $MyResourceGroup --type ContinuousPatchV1
+          text: az acr supply-chain workflow delete -r $MyRegistry -g $MyResourceGroup --type continuouspatchv1
 """

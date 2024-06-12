@@ -9,7 +9,7 @@ from enum import Enum
 # This enum is used to define the task types for the CLI, in case new types are added this is the place to start
 class CSSCTaskTypes(Enum):
     """Enum for the task type."""
-    ContinuousPatchV1 = 'ContinuousPatchV1'
+    ContinuousPatchV1 = 'continuouspatchv1'
     # CopaV1 = "CopaV1"
     # TrivyV1 = "TrivyV1"
 
@@ -35,6 +35,7 @@ CONTINUOSPATCH_TASK_PATCHIMAGE_NAME = "cssc-patch-image"
 CONTINUOSPATCH_TASK_SCANIMAGE_NAME = "cssc-scan-image-schedule-patch"
 CONTINUOSPATCH_TASK_SCANREPO_NAME = "cssc-scan-repository-schedule-patch"
 CONTINUOSPATCH_TASK_SCANREGISTRY_NAME = "cssc-trigger-scan"
+CONTINUOUS_PATCHING_WORKFLOW_NAME = "continuouspatchv1"
 
 CONTINUOSPATCH_ALL_TASK_NAMES = [
     CONTINUOSPATCH_TASK_PATCHIMAGE_NAME,

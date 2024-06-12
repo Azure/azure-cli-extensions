@@ -59,12 +59,12 @@ def _check_task_exists(cmd, registry, task_name = ""):
         return True
     return False
 
-def _validate_cadence(cadence, allow_null=False):
+def _validate_cadence(cadence):
     # during update, cadence can be null if we are only updating the config
-    if allow_null and cadence is None:
+    if cadence is None:
         return
     # Extract the numeric value and unit from the timespan expression
-    match = re.match(r'(\d+)([d])', cadence)
+    match = re.match(r'(\d+)(d)$', cadence)
     if not match:
         raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TIMESPAN, recommendation=RECOMMENDATION_CADENCE)
     if(match is not None):
@@ -104,8 +104,8 @@ def _validate_cadence(cadence, allow_null=False):
     
 #     return cron_expression
 
-def validate_inputs(cadence, allow_null_cadence=False, config_file_path=None):
-    _validate_cadence(cadence, allow_null_cadence)
+def validate_inputs(cadence, config_file_path=None):
+    _validate_cadence(cadence)
     if config_file_path is not None:
         validate_continuouspatch_config_v1(config_file_path)
     
@@ -118,4 +118,4 @@ def validate_task_type(task_type):
 
 def validate_cssc_optional_inputs(cssc_config_path, cadence):
     if(cssc_config_path is None and cadence is None):
-        raise InvalidArgumentValueError(error_msg = "Provide atleast one parameter to update: Cadence or Configuration file path")
+        raise InvalidArgumentValueError(error_msg = "Provide atleast one parameter to update: --cadence or --config")

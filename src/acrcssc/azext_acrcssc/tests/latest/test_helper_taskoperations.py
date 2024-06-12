@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from unittest import mock
 from azure.cli.core.mock import DummyCli
-from azext_acrcssc.helper._taskoperations import create_continuous_patch_v1, delete_continuous_patch_v1
+from azext_acrcssc.helper._taskoperations import create_update_continuous_patch_v1, delete_continuous_patch_v1
 
 class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
@@ -12,24 +12,22 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.parse_resource_id")
     @mock.patch("azext_acrcssc.helper._taskoperations.validate_and_deploy_template")
     @mock.patch("azext_acrcssc.helper._taskoperations._trigger_task_run")
-    def test_create_continuous_patch_v1(self, mock_trigger_task_run, mock_validate_and_deploy_template, mock_parse_resource_id, mock_create_oci_artifact_continuous_patch, mock_validate_continuouspatch_config_v1, mock_validate_and_convert_timespan_to_cron, mock_check_continuoustask_exists):
+    def test_create_continuous_patch_v1(self, mock_trigger_task_run, mock_validate_and_deploy_template, mock_parse_resource_id, mock_create_oci_artifact_continuous_patch, mock_validate_continuouspatch_config_v1, mock_convert_timespan_to_cron, mock_check_continuoustask_exists):
         # Mock the necessary dependencies
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
         mock_check_continuoustask_exists.return_value = False
-        mock_validate_and_convert_timespan_to_cron.return_value = "0 0 * * *"
+        mock_convert_timespan_to_cron.return_value = "0 0 * * *"
         mock_parse_resource_id.return_value = {"resource_group": "test_rg"}
         cmd = self._setup_cmd()
         registry = mock.MagicMock()
         registry.id = "/subscriptions/11111111-0000-0000-0000-0000000000006/resourceGroups/test-rg/providers/Microsoft.ContainerRegistry/registries/testregistry"
 
         # Call the function
-        create_continuous_patch_v1(cmd, registry, temp_file_path, "1d", False, False)
+        create_update_continuous_patch_v1(cmd, registry, temp_file_path, "1d", False, False)
         
         # Assert that the dependencies were called with the correct arguments
-        mock_check_continuoustask_exists.assert_called_once()
-        mock_validate_and_convert_timespan_to_cron.assert_called_once_with("1d")
-        mock_validate_continuouspatch_config_v1.assert_called_once_with(temp_file_path)
+        mock_convert_timespan_to_cron.assert_called_once_with("1d")
         mock_create_oci_artifact_continuous_patch.assert_called_once()
         mock_validate_and_deploy_template.assert_called_once()
         mock_trigger_task_run.assert_called_once()
