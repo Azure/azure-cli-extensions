@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "network",
-    is_preview=True,
+    is_preview=False,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Azure Network resources.
