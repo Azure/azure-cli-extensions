@@ -102,54 +102,30 @@ def _build_args(cert_file, private_key_file):
         certificate = ["-o", "CertificateFile=" + cert_file]
     return private_key + certificate
 
-
-def ssh_bastion_host(cmd, op_info, 
-                     username=None, ssh_key=None):
+def ssh_bastion_host(cmd, op_info):
     import os
     from .aaz.latest.network.bastion import Show
 
     bastion = show_bastion(cmd, op_info)
 
-    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value:
-        raise InvalidArgumentValueError("SSH to Bastion host is only supported for Developer Sku. Higher level skus are not supported.")
+    if bastion['sku']['name'] not in [BastionSku.Developer.value, BastionSku.QuickConnect.value]:
+        raise InvalidArgumentValueError("SSH to Bastion host is only supported for Developer and QuickConnect Skus.")
 
     if not op_info.port:
         op_info.port = 22
 
-    # ip_connect = _is_ipconnect_request(bastion, op_info.resource_id)
-    ip_connect = False
-    if ip_connect:
-        if int(op_info.port) not in [22, 3389]:
-            raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is \
-                                             22, 3389.")
-        target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{op_info.resource_group_name}" \
-                             f"/providers/Microsoft.Network/bh-hostConnect/20.238.21.78"
-    else:
-        target_resource_id = op_info.resource_id
-
+    target_resource_id = op_info.resource_id
     _validate_resourceid(target_resource_id)
-    print("valid")
+    
     bastion_endpoint = _get_data_pod(cmd, op_info.port, target_resource_id, bastion)
-
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, op_info.port)
-    if ip_connect:
-        tunnel_server.set_host_name(target_ip_address)
-    print("tunnel created")
+    
     t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
     t.daemon = True
     t.start()
-    print("tunnel started")
 
-    cert_folder = tempfile.mkdtemp(prefix="aadsshcert")
-    if not os.path.isdir(cert_folder):
-        os.makedirs(cert_folder)
-    custom.ssh_cert(cmd, cert_path=os.path.join(cert_folder, "id_rsa.pub-aadcert.pub"))
-    private_key_file = os.path.join(cert_folder, "id_rsa")
-    cert_file = os.path.join(cert_folder, "id_rsa.pub-aadcert.pub")
-    username = ssh_utils.get_ssh_cert_principals(cert_file)[0]
-    command = [_get_ssh_path(), _get_host(username, "localhost")]
-    command = command + _build_args(cert_file, private_key_file)
-
+    command = [_get_ssh_path(), _get_host(op_info.local_user, "localhost")]
+    command = command + _build_args(op_info.cert_file, op_info.private_key_file)
     command = command + ["-p", str(tunnel_server.local_port)]
     command = command + ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
     command = command + ["-o", "LogLevel=Error"]
@@ -161,6 +137,7 @@ def ssh_bastion_host(cmd, op_info,
         raise CLIInternalError(ex) from ex
     finally:
         tunnel_server.cleanup()
+
 
 def _is_ipconnect_request(bastion, target_ip_address):
     if 'enableIpConnect' in bastion and bastion['enableIpConnect'] is True and target_ip_address:

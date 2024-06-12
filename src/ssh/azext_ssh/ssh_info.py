@@ -21,8 +21,8 @@ class SSHSession():
     def __init__(self, resource_group_name, vm_name, ssh_ip, public_key_file,
                  private_key_file, use_private_ip, local_user, cert_file, port,
                  ssh_client_folder, ssh_args, delete_credentials, resource_type,
-                 ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt):
-        self.resource_group_name = resource_group_name
+                 ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt, bastion):
+        self.resource_group_name = resource_group_name 
         self.vm_name = vm_name
         self.resource_id = None
         self.ip = ssh_ip
@@ -32,7 +32,7 @@ class SSHSession():
         self.ssh_args = ssh_args
         self.delete_credentials = delete_credentials
         self.resource_type = resource_type
-        self.bastion = True
+        self.bastion = bastion
         self.winrdp = winrdp
         self.proxy_path = None
         self.relay_info = None
