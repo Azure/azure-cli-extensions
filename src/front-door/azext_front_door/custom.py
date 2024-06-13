@@ -172,17 +172,16 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
 
     cloud_url = 'azurefd.net'
 
-    match cloud:
-        case 'AzureCloud':
-            cloud_url = 'azurefd.net'
-        case 'AzureChinaCloud':
-            cloud_url = 'azurefd.net'
-        case 'AzureUSGovernment':
-            cloud_url = 'azurefd.us'
-        case 'AzureGermanCloud':
-            cloud_url = 'azurefd.net'
-        case _:
-            cloud_url = 'azurefd.net'
+    if cloud == 'AzureCloud':
+        cloud_url = 'azurefd.net'
+    elif cloud == 'AzureChinaCloud':
+        cloud_url = 'azurefd.net'
+    elif cloud == 'AzureUSGovernment':
+        cloud_url = 'azurefd.us'
+    elif cloud == 'AzureGermanCloud':
+        cloud_url = 'azurefd.net'
+    else:
+        cloud_url = 'azurefd.net'
 
     if 'eaglex.ic.gov' in endpoint.lower():
         cloud_url = 'azurefd.eaglex.ic.gov'
