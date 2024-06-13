@@ -23,7 +23,7 @@ def handle_target_machine_properties(cmd, op_info):
         agent_version = parse_agent_version(properties, op_info.resource_type.lower())
         op_info.resource_id = parse_resource_id(properties, op_info.resource_type.lower())
         location = parse_location(properties, op_info.resource_type.lower())
-        if location not in ["centralus", "eastus2", "westus", "northeurope", "northcentralus"]:
+        if location not in ["centralus", "eastus2", "westus", "northeurope", "northcentralus", "westcentralus"]:
             raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported in the region of the target VM.")
 
     else:
