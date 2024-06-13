@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.0.0
+++++++
+* Removing preview flag and update MFA documentation.
+* Adding support for premium SKU.
+* Giving proper error message when using --target-ip-address flag with IpConnect feature.
+* Fix error messages to display appropriate messages.
+* Fix formatting issues.
+
 0.3.0
 ++++++
 * Removing preview flag.

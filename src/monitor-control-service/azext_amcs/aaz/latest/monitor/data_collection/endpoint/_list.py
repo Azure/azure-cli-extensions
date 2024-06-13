@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-06-01",
+        "version": "2023-03-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.insights/datacollectionendpoints", "2022-06-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionendpoints", "2022-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.insights/datacollectionendpoints", "2023-03-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionendpoints", "2023-03-11"],
         ]
     }
 
@@ -119,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }
@@ -281,6 +281,10 @@ class List(AAZCommand):
             metadata = cls._schema_on_200.value.Element.properties.metadata
             metadata.provisioned_by = AAZStrType(
                 serialized_name="provisionedBy",
+                flags={"read_only": True},
+            )
+            metadata.provisioned_by_immutable_id = AAZStrType(
+                serialized_name="provisionedByImmutableId",
                 flags={"read_only": True},
             )
             metadata.provisioned_by_resource_id = AAZStrType(
@@ -374,7 +378,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }
@@ -536,6 +540,10 @@ class List(AAZCommand):
             metadata = cls._schema_on_200.value.Element.properties.metadata
             metadata.provisioned_by = AAZStrType(
                 serialized_name="provisionedBy",
+                flags={"read_only": True},
+            )
+            metadata.provisioned_by_immutable_id = AAZStrType(
+                serialized_name="provisionedByImmutableId",
                 flags={"read_only": True},
             )
             metadata.provisioned_by_resource_id = AAZStrType(
