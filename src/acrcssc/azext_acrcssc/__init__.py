@@ -17,7 +17,7 @@ class AcrcsscCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_acrcssc.custom#{}',
             client_factory=cf_acr)
         super(AcrcsscCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=acrcssc_custom)
+                                                    custom_command_type=acrcssc_custom)
 
     def load_command_table(self, args):
         from azext_acrcssc.commands import load_command_table

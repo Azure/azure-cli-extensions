@@ -24,22 +24,22 @@ from ._constants import (
 
 logger = get_logger(__name__)
 
+
 def create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun):
     logger.debug("Entering create_oci_artifact_continuouspatching with parameters: %s %s %s", registry, cssc_config_file, dryrun)
 
     try:
         oras_client = _oras_client(cmd, registry)
-        # we might have to handle the tag lock/unlock for the cssc config file, 
-        #to make it harder for the user to change it by mistake
+        # we might have to handle the tag lock/unlock for the cssc config file,
+        # to make it harder for the user to change it by mistake
 
         # the ORAS client can only work with files under the current directory
         temp_artifact = tempfile.NamedTemporaryFile(
             prefix="cssc_config_tmp_",
             mode="w+b",
             dir=os.getcwd(),
-            delete=False
-            )
-        
+            delete=False)
+
         temp_artifact_name = temp_artifact.name
         user_artifact = open(cssc_config_file, "rb")
         shutil.copyfileobj(user_artifact, temp_artifact)
@@ -51,20 +51,21 @@ def create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun
             oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
 
         oras_client.push(
-            target = oci_target_name,
-            files = [temp_artifact.name])
+            target=oci_target_name,
+            files=[temp_artifact.name])
     except Exception as exception:
         raise AzCLIError(f"Failed to push OCI artifact to ACR: {exception}")
     finally:
         oras_client.logout(hostname=str.lower(registry.login_server))
-        os.path.exists(temp_artifact_name) and os.remove(temp_artifact_name) 
+        os.path.exists(temp_artifact_name) and os.remove(temp_artifact_name)
+
 
 def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
     logger.debug("Entering delete_oci_artifact_continuous_patch with parameters %s %s", registry, dryrun)
     resourceid = parse_resource_id(registry.id)
     resource_group = resourceid["resource_group"]
     subscription = resourceid["subscription"]
- 
+
     if dryrun:
         logger.warning("Dry run flag is set, no changes will be made")
         return
@@ -72,19 +73,20 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
         token = _get_acr_token(registry.name, resource_group, subscription)
 
         # Delete repository, removing only image isn't deleting the repository always (Bug)
-        result = acr_repository_delete(
+        acr_repository_delete(
             cmd=cmd,
             registry_name=registry.name,
             repository=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}",
-            #image=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}",
+            # image=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}",
             username=BEARER_TOKEN_USERNAME,
             password=token,
             yes=not dryrun)
         logger.debug("Call to acr_repository_delete completed successfully")
     except Exception as exception:
         logger.debug("%s", exception)
-        logger.error("Artifact: %s/%s:%s might not exist or attempt to delete failed.", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
+        logger.error("Artifact: %s/%s:%s might not exist or attempt to delete failed.", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
         raise
+
 
 def _oras_client(cmd, registry):
     resourceid = parse_resource_id(registry.id)
@@ -103,10 +105,11 @@ def _oras_client(cmd, registry):
 # def get_continuouspatch_oci_config():
 #     raise AzCLIError('TODO: Implement `get_continuouspatch_oci_config`')
 
-## Need to check on this method once, if there's alternative to this
+
+# Need to check on this method once, if there's alternative to this
 def _get_acr_token(registry_name, resource_group, subscription):
     logger.debug("Using CLI user credentials to log into %s", registry_name)
-    acr_login_with_token_cmd = [ ##need to silence this output
+    acr_login_with_token_cmd = [
         str(shutil.which("az")),
         "acr", "login",
         "--name", registry_name,
@@ -123,7 +126,7 @@ def _get_acr_token(registry_name, resource_group, subscription):
             stderr=subprocess.PIPE)
         token = proc.stdout.read().strip().decode("utf-8")
         # this suppresses the 'login' warning from the ACR request, if we need the error and does not come from the exception we can take it from here
-        error_stderr = proc.stderr.read()
+        # error_stderr=proc.stderr.read()
     except subprocess.CalledProcessError as error:
         unauthorized = (
             error.stderr
