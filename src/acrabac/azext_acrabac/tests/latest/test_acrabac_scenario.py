@@ -20,28 +20,28 @@ class AcrabacScenarioTest(ScenarioTest):
             'name': self.create_random_name('clitestabac', length=16),
         })
 
-        self.cmd('acr create -g {rg} -n {name} --sku Basic --location australiaeast --abac-permissions-enabled true --yes', checks=[
-            self.check('abacRepoPermission', 'Enabled')
+        self.cmd('acr create -g {rg} -n {name} --sku Basic --location australiaeast --role-assignment-mode AbacRepositoryPermissions --yes', checks=[
+            self.check('roleAssignmentMode', 'AbacRepositoryPermissions')
         ])
 
         self.cmd('acr show -g {rg} -n {name}', checks=[
-            self.check('abacRepoPermission', 'Enabled')
+            self.check('roleAssignmentMode', 'AbacRepositoryPermissions')
         ])
 
-        self.cmd('acr update -g {rg} -n {name} --abac-permissions-enabled false', checks=[
-            self.check('abacRepoPermission', 'Disabled')
-        ])
-
-        self.cmd('acr show -g {rg} -n {name}', checks=[
-            self.check('abacRepoPermission', 'Disabled')
-        ])
-
-        self.cmd('acr update -g {rg} -n {name} --abac-permissions-enabled true --yes', checks=[
-            self.check('abacRepoPermission', 'Enabled')
+        self.cmd('acr update -g {rg} -n {name} --role-assignment-mode LegacyRegistryPermissions', checks=[
+            self.check('roleAssignmentMode', 'LegacyRegistryPermissions')
         ])
 
         self.cmd('acr show -g {rg} -n {name}', checks=[
-            self.check('abacRepoPermission', 'Enabled')
+            self.check('roleAssignmentMode', 'LegacyRegistryPermissions')
+        ])
+
+        self.cmd('acr update -g {rg} -n {name} --role-assignment-mode AbacRepositoryPermissions --yes', checks=[
+            self.check('roleAssignmentMode', 'AbacRepositoryPermissions')
+        ])
+
+        self.cmd('acr show -g {rg} -n {name}', checks=[
+            self.check('roleAssignmentMode', 'AbacRepositoryPermissions')
         ])
 
         self.cmd('acr delete -g {rg} -n {name} --yes')
@@ -54,19 +54,19 @@ class AcrabacScenarioTest(ScenarioTest):
         })
 
         self.cmd('acr create -g {rg} -n {name} --sku Basic --location australiaeast', checks=[
-            self.check('abacRepoPermission', 'Disabled')
+            self.check('roleAssignmentMode', 'LegacyRegistryPermissions')
         ])
 
         self.cmd('acr show -g {rg} -n {name}', checks=[
-            self.check('abacRepoPermission', 'Disabled')
+            self.check('roleAssignmentMode', 'LegacyRegistryPermissions')
         ])
 
-        self.cmd('acr update -g {rg} -n {name} --abac-permissions-enabled true --yes', checks=[
-            self.check('abacRepoPermission', 'Enabled')
+        self.cmd('acr update -g {rg} -n {name} --role-assignment-mode AbacRepositoryPermissions --yes', checks=[
+            self.check('roleAssignmentMode', 'AbacRepositoryPermissions')
         ])
 
         self.cmd('acr show -g {rg} -n {name}', checks=[
-            self.check('abacRepoPermission', 'Enabled')
+            self.check('roleAssignmentMode', 'AbacRepositoryPermissions')
         ])
 
         self.cmd('acr delete -g {rg} -n {name} --yes')

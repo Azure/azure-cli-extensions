@@ -16,27 +16,27 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n --sku --location --yes
+      - -g -n --sku --location
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:08:43.2659738+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:08:43.2659738+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:08:43.2659738Z","provisioningState":"Creating","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:08:55.3038678+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:08:55.3039072+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Disabled"}}'
+      string: '{"sku":{"name":"Basic","tier":"Managed"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-06-13T02:35:54.1473368+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-06-13T02:35:54.1473368+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-06-13T02:35:54.1473368Z","provisioningState":"Creating","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-06-13T02:36:13.5703706+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-06-13T02:36:13.5704168+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","roleAssignmentMode":"LegacyRegistryPermissions"}}'
     headers:
       api-supported-versions:
       - 2024-01-01-preview
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-3ce9161e-06d1-11ef-a861-00155d943759?api-version=2024-01-01-preview&t=638500649359691202&c=MIIHHzCCBgegAwIBAgITHgRY6-o1G8oneievMgAABFjr6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNDE0MTcyMjMwWhcNMjUwNDA5MTcyMjMwWjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDHXRcT1wfS3-OzMCS-cOJdOIlGA74lpS7FKkN1EKOFKIVgnPy2Yh_Yz3cnC-iw7igYXm1vkryZxocbl5TpyeEw4YSDzNLtSD_rzMXjonrnzwCm7DKp9-FLTtYouZvePUNlordxM4V3eqy6GaDKS-JLyeAVWCxhHztzl0qAq574C47RA-A96GT0C_Nu_a_uC5AtY4dWoFeXtOkqtjfZGJ22e0iao0vB9dxmWHlQ7y69FbxWB_8oADboZWXYZ1xS4xjTVTkyzZIBlGRn1afttuJ0IQGtcf3tVEkfJQtR17tenoOOJRRFPn13It-YLWxMeoHFlVUxaB1BMy92tPrQs-IRAgMBAAGjggQXMIIEEzAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUdOvzY0A5u36Xs59ceM8mz4y5kM8wDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDBBBgNVHSAEOjA4MAwGCisGAQQBgjd7AQEwDAYKKwYBBAGCN3sCATAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBoExP5J0M5FxBDqeHo6sNVl7x4zrUtHN4F9sHk57urWwaheOFqB5ZMfLO1jhRxXmsunzTm98zE-JvCD1tjLacbOh9jvhe8Vui3GfxDFT5j8Kdz40OtwwyCP-tV6JJ3cLWmpK1PLDAH4Htr9LyRHA3eiTsObxO8AZC8Vj3VjrI7tCtgZ0arJmNFv2GKIyX8BOblTwv04SSS9xtg1yv4tB3hV415asQAjSLFuBkdldQErOSFCiqVFXXzRwbUh-a5Ali4qDc8jexmqxmDZjHVF97VQhztNR-yEdYRlMiHyiHxUBrWl4JMtn_XuOJ_rCYofNrjYibJPoh9aWa8iSUCec_v&s=xKSSMhFFdQK-W76qBnU-KeOshy--Xbetg6iUN1oSE9Dl_jTmfQYvtTfZe9wnEN_WOjQujBMpSLOwn6CjosKZOEkgNpB2n29oWP0at6UHI5-mB42hoxDBLfD5HrRZ2n1NI7NYobj6chvkTTwA_oLBOER0mEZM4dIhpdrzyl_UsW3gVFY9xsh9yQhkq9G1Q5YJrBcKo7lhglhbFaxOS2iH_m21Pt0Z8pXxnZPqwCZzK0mcWiWvOwlNWBbV-ERPWmScNyfBDiuORUHEal3Z9ouK8vgfnotLorlnJXPSEQ0et9XPWhU7SWWiI2N6nJkBKKd-Hos3rmXyKvxdPwZsXcvtYQ&h=Aidq5MuCb25-tM6TCzzgfEu_enQU3YTkZe1XsQXRf5U
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-a3910808-292d-11ef-95fc-00155db5f56b?api-version=2024-01-01-preview&t=638538429739345067&c=MIIHfDCCBmSgAwIBAgITHgSDIWSu9VIchWRp_AAABIMhZDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNTEwMDExODE3WhcNMjUwNTA1MDExODE3WjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDV8gC8lmw0R5BICVHWi-lrUCmj3M9FzSUhiQHm2rQAwtfhBTD20zJ4PapL7eswQPJcAnh4tmrxcuq-x9Pl0mmH94nTg28OYb9vx_uboUq6Si1kvNT-ILJwPxYrD92v1tHT4dXNkiD3fP8xn5CIyQdFqjixNm68fSgDIdnZOrZku0Lb9rXpOjXzuMj3WfkgjGCsUjKlX5ADJ5Vc3SqhmhFRa8iIsHu3f-brDOYy8L795sDTejx5xlDwkrcul08efym1YTjQzhZuuClyPEiST27qN0Pqccp8MtkzdLITkT7DZYXei0lJCmlS8p2hl5DAGBg8Da8Rte7-dMfNXhitURv1AgMBAAGjggR0MIIEcDAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUs2PScZ5NUJEuzmV-GbWf62hQVSwwDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBun3Rs5E1ZWCP3AIOvA60jgnAHPu6sT33bX-1GQAYdz-Of8a3P9rasSvNuflYAcupGUcv2KMi2G8HGo42VtowGzWw6etCIHcRPLOKid6wWZzkm-BW-xmIwEsWo4VHUeJIbrj80Zas-JTJaoCrvE8tvJGUS9lkqXHxbZsiw_g7V88hKhLcklbXZ5K1qykJf0ls0nPPM2KP0Df5JGx-xo8arZU7MiQnjszizG0wsklGLfeEWBA2Pj-U13208KSvEw-DQEkM-RBcxIHvrcJaJptO0fOQFgdDv_CchoxcpcOqXvNY4Rl3OUUAFb9Tdf0yb6fRNPcDsUZon85fYeF1BFaEK&s=BOOKhxk4o6OZvdVYl0EjZocX_iQxf1d-fnbi3RK8vnPUN-eW4-xu8Ne2NQLaEvcn22ZgX2e1jiBlKHIzznGFRudjAvaNanavWDIUMDkWYt48QidRuSCeIMuhHroRAvmAiqxd2w8VAfzlsyBLjpUu8vsyxf7-CI4dGCQvmhvrBuaH_GCdqonERDVdc_X-np3U4Bj23gZqGkaSnqDMwHo6h2QRHpwTQbfFwiZXhunwiezO3f37vPnIKdLBk4vzYPlFVZNkxb17z8IQE-af76roLnnwRXKw0ZAjIsNs7X69h-1sVQ_6vImp2UkIz2EDhrsvdZ0PFUN1TFPzSBmGJObi6Q&h=hpmM1Nr9wtSP6vAMvTD2wv1CxjzZSuCZux6Pu9Hxw8M
       cache-control:
       - no-cache
       content-length:
-      - '1455'
+      - '1474'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 30 Apr 2024 09:08:55 GMT
+      - Thu, 13 Jun 2024 02:36:13 GMT
       expires:
       - '-1'
       pragma:
@@ -48,13 +48,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/9a8d6b1b-5bb7-4c09-ad09-dbb72b0e405e
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/westeurope/b145898e-7b9c-4394-9234-d85dfee0d3df
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '2999'
+      - '3000'
       x-ms-ratelimit-remaining-subscription-writes:
       - '200'
       x-msedge-ref:
-      - 'Ref A: 333A43AA55AC476CBBD5F66B956C3DDB Ref B: TYO201100117027 Ref C: 2024-04-30T09:08:41Z'
+      - 'Ref A: 059E5EDB595A4577813AF80B6ACE5634 Ref B: MAA201060513051 Ref C: 2024-06-13T02:35:46Z'
     status:
       code: 201
       message: Created
@@ -70,11 +70,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --sku --location --yes
+      - -g -n --sku --location
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-3ce9161e-06d1-11ef-a861-00155d943759?api-version=2024-01-01-preview&t=638500649359691202&c=MIIHHzCCBgegAwIBAgITHgRY6-o1G8oneievMgAABFjr6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNDE0MTcyMjMwWhcNMjUwNDA5MTcyMjMwWjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDHXRcT1wfS3-OzMCS-cOJdOIlGA74lpS7FKkN1EKOFKIVgnPy2Yh_Yz3cnC-iw7igYXm1vkryZxocbl5TpyeEw4YSDzNLtSD_rzMXjonrnzwCm7DKp9-FLTtYouZvePUNlordxM4V3eqy6GaDKS-JLyeAVWCxhHztzl0qAq574C47RA-A96GT0C_Nu_a_uC5AtY4dWoFeXtOkqtjfZGJ22e0iao0vB9dxmWHlQ7y69FbxWB_8oADboZWXYZ1xS4xjTVTkyzZIBlGRn1afttuJ0IQGtcf3tVEkfJQtR17tenoOOJRRFPn13It-YLWxMeoHFlVUxaB1BMy92tPrQs-IRAgMBAAGjggQXMIIEEzAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUdOvzY0A5u36Xs59ceM8mz4y5kM8wDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDBBBgNVHSAEOjA4MAwGCisGAQQBgjd7AQEwDAYKKwYBBAGCN3sCATAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBoExP5J0M5FxBDqeHo6sNVl7x4zrUtHN4F9sHk57urWwaheOFqB5ZMfLO1jhRxXmsunzTm98zE-JvCD1tjLacbOh9jvhe8Vui3GfxDFT5j8Kdz40OtwwyCP-tV6JJ3cLWmpK1PLDAH4Htr9LyRHA3eiTsObxO8AZC8Vj3VjrI7tCtgZ0arJmNFv2GKIyX8BOblTwv04SSS9xtg1yv4tB3hV415asQAjSLFuBkdldQErOSFCiqVFXXzRwbUh-a5Ali4qDc8jexmqxmDZjHVF97VQhztNR-yEdYRlMiHyiHxUBrWl4JMtn_XuOJ_rCYofNrjYibJPoh9aWa8iSUCec_v&s=xKSSMhFFdQK-W76qBnU-KeOshy--Xbetg6iUN1oSE9Dl_jTmfQYvtTfZe9wnEN_WOjQujBMpSLOwn6CjosKZOEkgNpB2n29oWP0at6UHI5-mB42hoxDBLfD5HrRZ2n1NI7NYobj6chvkTTwA_oLBOER0mEZM4dIhpdrzyl_UsW3gVFY9xsh9yQhkq9G1Q5YJrBcKo7lhglhbFaxOS2iH_m21Pt0Z8pXxnZPqwCZzK0mcWiWvOwlNWBbV-ERPWmScNyfBDiuORUHEal3Z9ouK8vgfnotLorlnJXPSEQ0et9XPWhU7SWWiI2N6nJkBKKd-Hos3rmXyKvxdPwZsXcvtYQ&h=Aidq5MuCb25-tM6TCzzgfEu_enQU3YTkZe1XsQXRf5U
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-a3910808-292d-11ef-95fc-00155db5f56b?api-version=2024-01-01-preview&t=638538429739345067&c=MIIHfDCCBmSgAwIBAgITHgSDIWSu9VIchWRp_AAABIMhZDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNTEwMDExODE3WhcNMjUwNTA1MDExODE3WjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDV8gC8lmw0R5BICVHWi-lrUCmj3M9FzSUhiQHm2rQAwtfhBTD20zJ4PapL7eswQPJcAnh4tmrxcuq-x9Pl0mmH94nTg28OYb9vx_uboUq6Si1kvNT-ILJwPxYrD92v1tHT4dXNkiD3fP8xn5CIyQdFqjixNm68fSgDIdnZOrZku0Lb9rXpOjXzuMj3WfkgjGCsUjKlX5ADJ5Vc3SqhmhFRa8iIsHu3f-brDOYy8L795sDTejx5xlDwkrcul08efym1YTjQzhZuuClyPEiST27qN0Pqccp8MtkzdLITkT7DZYXei0lJCmlS8p2hl5DAGBg8Da8Rte7-dMfNXhitURv1AgMBAAGjggR0MIIEcDAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUs2PScZ5NUJEuzmV-GbWf62hQVSwwDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBun3Rs5E1ZWCP3AIOvA60jgnAHPu6sT33bX-1GQAYdz-Of8a3P9rasSvNuflYAcupGUcv2KMi2G8HGo42VtowGzWw6etCIHcRPLOKid6wWZzkm-BW-xmIwEsWo4VHUeJIbrj80Zas-JTJaoCrvE8tvJGUS9lkqXHxbZsiw_g7V88hKhLcklbXZ5K1qykJf0ls0nPPM2KP0Df5JGx-xo8arZU7MiQnjszizG0wsklGLfeEWBA2Pj-U13208KSvEw-DQEkM-RBcxIHvrcJaJptO0fOQFgdDv_CchoxcpcOqXvNY4Rl3OUUAFb9Tdf0yb6fRNPcDsUZon85fYeF1BFaEK&s=BOOKhxk4o6OZvdVYl0EjZocX_iQxf1d-fnbi3RK8vnPUN-eW4-xu8Ne2NQLaEvcn22ZgX2e1jiBlKHIzznGFRudjAvaNanavWDIUMDkWYt48QidRuSCeIMuhHroRAvmAiqxd2w8VAfzlsyBLjpUu8vsyxf7-CI4dGCQvmhvrBuaH_GCdqonERDVdc_X-np3U4Bj23gZqGkaSnqDMwHo6h2QRHpwTQbfFwiZXhunwiezO3f37vPnIKdLBk4vzYPlFVZNkxb17z8IQE-af76roLnnwRXKw0ZAjIsNs7X69h-1sVQ_6vImp2UkIz2EDhrsvdZ0PFUN1TFPzSBmGJObi6Q&h=hpmM1Nr9wtSP6vAMvTD2wv1CxjzZSuCZux6Pu9Hxw8M
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -82,7 +82,7 @@ interactions:
       api-supported-versions:
       - 2024-01-01-preview
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-3ce9161e-06d1-11ef-a861-00155d943759?api-version=2024-01-01-preview&t=638500649365784987&c=MIIHHzCCBgegAwIBAgITHgRY6-o1G8oneievMgAABFjr6jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNDE0MTcyMjMwWhcNMjUwNDA5MTcyMjMwWjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDHXRcT1wfS3-OzMCS-cOJdOIlGA74lpS7FKkN1EKOFKIVgnPy2Yh_Yz3cnC-iw7igYXm1vkryZxocbl5TpyeEw4YSDzNLtSD_rzMXjonrnzwCm7DKp9-FLTtYouZvePUNlordxM4V3eqy6GaDKS-JLyeAVWCxhHztzl0qAq574C47RA-A96GT0C_Nu_a_uC5AtY4dWoFeXtOkqtjfZGJ22e0iao0vB9dxmWHlQ7y69FbxWB_8oADboZWXYZ1xS4xjTVTkyzZIBlGRn1afttuJ0IQGtcf3tVEkfJQtR17tenoOOJRRFPn13It-YLWxMeoHFlVUxaB1BMy92tPrQs-IRAgMBAAGjggQXMIIEEzAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUdOvzY0A5u36Xs59ceM8mz4y5kM8wDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDBBBgNVHSAEOjA4MAwGCisGAQQBgjd7AQEwDAYKKwYBBAGCN3sCATAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBoExP5J0M5FxBDqeHo6sNVl7x4zrUtHN4F9sHk57urWwaheOFqB5ZMfLO1jhRxXmsunzTm98zE-JvCD1tjLacbOh9jvhe8Vui3GfxDFT5j8Kdz40OtwwyCP-tV6JJ3cLWmpK1PLDAH4Htr9LyRHA3eiTsObxO8AZC8Vj3VjrI7tCtgZ0arJmNFv2GKIyX8BOblTwv04SSS9xtg1yv4tB3hV415asQAjSLFuBkdldQErOSFCiqVFXXzRwbUh-a5Ali4qDc8jexmqxmDZjHVF97VQhztNR-yEdYRlMiHyiHxUBrWl4JMtn_XuOJ_rCYofNrjYibJPoh9aWa8iSUCec_v&s=MgtbI67WG7w_751clSAxQcGghOSXPgJfwog1jsddaNLImIwrKqJaPnJSQO-J--lXWGNKA_FUnfm122p4gM_NjXsutRfh2G1Guir39pTodtcs5o3BD6JhcCLdPvYJN2r7wKyTk_Utin5GJEgXWAb762RqkrcMYUB7VpFmqLROFpWD1cruLLIFIGu5HJglKOBRu_pw4xBOoJnBmvHWoxxNUk-1RUS1XNoS94m8X3nsJgpIFGnGP0FSvKDTfyx_cGSjRCd149RqF7WtnlCAMdurPoC7dmVQtCX6r4Hctcs8Vn7wc8wu34mlZQ6SFTsQf_U9pIarvnOgcEVaz5sCA22Nxg&h=SA4aIMbnoI71tLEP7w7SoS8A0J4EFirNiFXk5KTOw1w
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002/operationStatuses/registries-a3910808-292d-11ef-95fc-00155db5f56b?api-version=2024-01-01-preview&t=638538429827552655&c=MIIHfDCCBmSgAwIBAgITHgSDIWSu9VIchWRp_AAABIMhZDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNTEwMDExODE3WhcNMjUwNTA1MDExODE3WjA1MTMwMQYDVQQDEyphc3luY29wZXJhdGlvbnNpZ25pbmcubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDV8gC8lmw0R5BICVHWi-lrUCmj3M9FzSUhiQHm2rQAwtfhBTD20zJ4PapL7eswQPJcAnh4tmrxcuq-x9Pl0mmH94nTg28OYb9vx_uboUq6Si1kvNT-ILJwPxYrD92v1tHT4dXNkiD3fP8xn5CIyQdFqjixNm68fSgDIdnZOrZku0Lb9rXpOjXzuMj3WfkgjGCsUjKlX5ADJ5Vc3SqhmhFRa8iIsHu3f-brDOYy8L795sDTejx5xlDwkrcul08efym1YTjQzhZuuClyPEiST27qN0Pqccp8MtkzdLITkT7DZYXei0lJCmlS8p2hl5DAGBg8Da8Rte7-dMfNXhitURv1AgMBAAGjggR0MIIEcDAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMBMAoGCCsGAQUFBwMCMD0GCSsGAQQBgjcVBwQwMC4GJisGAQQBgjcVCIaQ4w2E1bR4hPGLPoWb3RbOnRKBYIL19iuD8tEgAgFkAgEKMIIBywYIKwYBBQUHAQEEggG9MIIBuTBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NlcnRzL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMS5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDIuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwzLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsNC5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDAdBgNVHQ4EFgQUs2PScZ5NUJEuzmV-GbWf62hQVSwwDgYDVR0PAQH_BAQDAgWgMIIBJgYDVR0fBIIBHTCCARkwggEVoIIBEaCCAQ2GP2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DUkwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDEuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDIuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDMuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybIYxaHR0cDovL2NybDQuYW1lLmdibC9jcmwvQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNybDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMBMAwGCisGAQQBgjd7BAEwHwYDVR0jBBgwFoAU8UZoxvHD8CstfYtq4bL5vjX80UEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA0GCSqGSIb3DQEBCwUAA4IBAQBun3Rs5E1ZWCP3AIOvA60jgnAHPu6sT33bX-1GQAYdz-Of8a3P9rasSvNuflYAcupGUcv2KMi2G8HGo42VtowGzWw6etCIHcRPLOKid6wWZzkm-BW-xmIwEsWo4VHUeJIbrj80Zas-JTJaoCrvE8tvJGUS9lkqXHxbZsiw_g7V88hKhLcklbXZ5K1qykJf0ls0nPPM2KP0Df5JGx-xo8arZU7MiQnjszizG0wsklGLfeEWBA2Pj-U13208KSvEw-DQEkM-RBcxIHvrcJaJptO0fOQFgdDv_CchoxcpcOqXvNY4Rl3OUUAFb9Tdf0yb6fRNPcDsUZon85fYeF1BFaEK&s=VvvVRYIS80RLrvrkFEreLDXi-0Ny72NkeP86MUS2ry35OBmTw4UsH0pq9q_uzERNQQ1LrdZjQ8PHTa8YeILhHx9KF_0-qR3qgPnT3i-B9X0kyQTIqRqRmVfDJQYllT4-y0I5XR13Ua9uYvN-0yJuvYLFeF0YJiRgFEWc7a6yrBiqo9x0PlMvUt83tlvx4uPsy33pNXGj_bjbdB5zNck6xJmUCITmkFUjdoDI5Je2bKpdOg5Lku0iyzFtsdrq05G3UiSHPPBcen2WAy_E7Ipo4MY1FIwnNRfK5z4CRheTJmhFs2XvJFkX8_s6aBuGvTgtYpSxJ066w-SUUDeVjU9New&h=39VetENo1SCUGUVZV_Ekqq-f8p96lKcbjRbmj2Kitvg
       cache-control:
       - no-cache
       content-length:
@@ -90,7 +90,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 30 Apr 2024 09:08:56 GMT
+      - Thu, 13 Jun 2024 02:36:21 GMT
       expires:
       - '-1'
       pragma:
@@ -102,11 +102,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/87931f1f-dc23-4673-bfb4-3c728574d1fe
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/westeurope/3e44090e-778a-4b5e-9e64-67c3834b0d02
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3747'
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: C2AE04D3CFE44A4585A3F83157733783 Ref B: TYO201100117027 Ref C: 2024-04-30T09:08:56Z'
+      - 'Ref A: 16B7FD1E5E9E4E7682E16F5B7499B09E Ref B: MAA201060513051 Ref C: 2024-06-13T02:36:14Z'
     status:
       code: 200
       message: OK
@@ -122,25 +122,25 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --sku --location --yes
+      - -g -n --sku --location
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:08:43.2659738+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:08:43.2659738+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:08:43.2659738Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:08:55.3038678+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:08:55.3039072+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Disabled"}}'
+      string: '{"sku":{"name":"Basic","tier":"Managed"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-06-13T02:35:54.1473368+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-06-13T02:35:54.1473368+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-06-13T02:35:54.1473368Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-06-13T02:36:13.5703706+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-06-13T02:36:13.5704168+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","roleAssignmentMode":"LegacyRegistryPermissions"}}'
     headers:
       api-supported-versions:
       - 2024-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1456'
+      - '1475'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 30 Apr 2024 09:08:57 GMT
+      - Thu, 13 Jun 2024 02:36:22 GMT
       expires:
       - '-1'
       pragma:
@@ -152,9 +152,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3746'
+      - '3748'
       x-msedge-ref:
-      - 'Ref A: 9972AB3682C548588C05C8A11D63DAC5 Ref B: TYO201100117027 Ref C: 2024-04-30T09:08:56Z'
+      - 'Ref A: 3C5F7DB15A5C44C8A55FBFCE40EA94B2 Ref B: MAA201060513051 Ref C: 2024-06-13T02:36:22Z'
     status:
       code: 200
       message: OK
@@ -177,18 +177,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:08:43.2659738+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:08:43.2659738+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:08:43.2659738Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:08:55.3038678+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:08:55.3039072+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Disabled"}}'
+      string: '{"sku":{"name":"Basic","tier":"Managed"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-06-13T02:35:54.1473368+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-06-13T02:35:54.1473368+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-06-13T02:35:54.1473368Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-06-13T02:36:13.5703706+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-06-13T02:36:13.5704168+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","roleAssignmentMode":"LegacyRegistryPermissions"}}'
     headers:
       api-supported-versions:
       - 2024-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1456'
+      - '1475'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 30 Apr 2024 09:08:58 GMT
+      - Thu, 13 Jun 2024 02:36:24 GMT
       expires:
       - '-1'
       pragma:
@@ -200,9 +200,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3748'
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: FDD03F638E544F959867805F114E5D24 Ref B: TYO201151001009 Ref C: 2024-04-30T09:08:58Z'
+      - 'Ref A: F112F693826C4D78AB4237FC0EF91345 Ref B: MAA201060515019 Ref C: 2024-06-13T02:36:24Z'
     status:
       code: 200
       message: OK
@@ -218,7 +218,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --abac-permissions-enabled --yes
+      - -g -n --role-assignment-mode --yes
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
     method: GET
@@ -234,7 +234,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 30 Apr 2024 09:09:00 GMT
+      - Thu, 13 Jun 2024 02:36:25 GMT
       expires:
       - '-1'
       pragma:
@@ -246,11 +246,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/e6eeb264-fa29-4c0d-a509-951848dd92f8
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/northeurope/8ca0d1a3-a48f-458e-aa43-9e2e7ace7f25
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3745'
+      - '3748'
       x-msedge-ref:
-      - 'Ref A: 3F22B8D09FB04F1A87244F2C2A47BF76 Ref B: TYO201100116051 Ref C: 2024-04-30T09:09:00Z'
+      - 'Ref A: AF802B638EA64A3498D12DA3A448A7FC Ref B: MAA201060516049 Ref C: 2024-06-13T02:36:25Z'
     status:
       code: 200
       message: OK
@@ -266,25 +266,25 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --abac-permissions-enabled --yes
+      - -g -n --role-assignment-mode --yes
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2023-11-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:08:43.2659738+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:08:43.2659738+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:08:43.2659738Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:08:55.3038678+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:08:55.3039072+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled"}}'
+      string: '{"sku":{"name":"Basic","tier":"Managed"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-06-13T02:35:54.1473368+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-06-13T02:35:54.1473368+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-06-13T02:35:54.1473368Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-06-13T02:36:13.5703706+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-06-13T02:36:13.5704168+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled"}}'
     headers:
       api-supported-versions:
       - 2023-11-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1424'
+      - '1426'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 30 Apr 2024 09:09:01 GMT
+      - Thu, 13 Jun 2024 02:36:27 GMT
       expires:
       - '-1'
       pragma:
@@ -298,12 +298,12 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: D05BB50C0E3C4A14995D706057625B49 Ref B: TYO201100113019 Ref C: 2024-04-30T09:09:01Z'
+      - 'Ref A: 3E36167FA58A4BC3849FC5CD7E12678B Ref B: MAA201060516009 Ref C: 2024-06-13T02:36:26Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"abacRepoPermission": "Enabled"}}'
+    body: '{"properties": {"roleAssignmentMode": "AbacRepositoryPermissions"}}'
     headers:
       Accept:
       - application/json
@@ -314,29 +314,29 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '49'
+      - '67'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n --abac-permissions-enabled --yes
+      - -g -n --role-assignment-mode --yes
       User-Agent:
       - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.2 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.36)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:08:43.2659738+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:09:03.9844723+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:08:43.2659738Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:08:55.3038678+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:08:55.3039072+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Enabled"}}'
+      string: '{"sku":{"name":"Basic","tier":"Managed"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-06-13T02:35:54.1473368+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-06-13T02:36:38.5403169+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-06-13T02:35:54.1473368Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-06-13T02:36:13.5703706+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-06-13T02:36:13.5704168+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","roleAssignmentMode":"AbacRepositoryPermissions"}}'
     headers:
       api-supported-versions:
       - 2024-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1455'
+      - '1475'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 30 Apr 2024 09:09:04 GMT
+      - Thu, 13 Jun 2024 02:36:40 GMT
       expires:
       - '-1'
       pragma:
@@ -348,13 +348,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/1f251428-b60e-4318-9646-ea0674743a09
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/westeurope/eab5afad-3e76-46ad-a5fd-dfbab5d5cd97
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: 336AED2F7B1D4CEFBFDBC68D26A392EE Ref B: TYO201151004036 Ref C: 2024-04-30T09:09:03Z'
+      - 'Ref A: 8D75E7448B9E4E0FAFCBC0E8BC5FC65D Ref B: MAA201060513025 Ref C: 2024-06-13T02:36:28Z'
     status:
       code: 200
       message: OK
@@ -377,18 +377,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002?api-version=2024-01-01-preview
   response:
     body:
-      string: '{"sku":{"name":"Basic","tier":"Basic"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-04-30T09:08:43.2659738+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-04-30T09:09:03.9844723+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-04-30T09:08:43.2659738Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-04-30T09:08:55.3038678+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-04-30T09:08:55.3039072+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","abacRepoPermission":"Enabled"}}'
+      string: '{"sku":{"name":"Basic","tier":"Managed"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_acrabac_000001/providers/Microsoft.ContainerRegistry/registries/clitestabac000002","name":"clitestabac000002","location":"australiaeast","tags":{},"systemData":{"createdBy":"wemeng@acr.ccsctp.net","createdByType":"User","createdAt":"2024-06-13T02:35:54.1473368+00:00","lastModifiedBy":"wemeng@acr.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2024-06-13T02:36:38.5403169+00:00"},"properties":{"loginServer":"clitestabac000002.azurecr-test.io","creationDate":"2024-06-13T02:35:54.1473368Z","provisioningState":"Succeeded","adminUserEnabled":false,"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2024-06-13T02:36:13.5703706+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2024-06-13T02:36:13.5704168+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false,"metadataSearch":"Disabled","roleAssignmentMode":"AbacRepositoryPermissions"}}'
     headers:
       api-supported-versions:
       - 2024-01-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1455'
+      - '1475'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 30 Apr 2024 09:09:05 GMT
+      - Thu, 13 Jun 2024 02:36:42 GMT
       expires:
       - '-1'
       pragma:
@@ -400,9 +400,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '3747'
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 761F0FDEF64F46679739CA036C7990E3 Ref B: TYO201151001040 Ref C: 2024-04-30T09:09:05Z'
+      - 'Ref A: 86B015D397CD4D10ACCA52C7C629E3A2 Ref B: MAA201060516037 Ref C: 2024-06-13T02:36:42Z'
     status:
       code: 200
       message: OK
@@ -436,7 +436,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 30 Apr 2024 09:09:10 GMT
+      - Thu, 13 Jun 2024 02:36:59 GMT
       expires:
       - '-1'
       pragma:
@@ -448,13 +448,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/centralus/24e15c4b-12f8-4838-bf4d-6125f190dd56
+      - tenantId=4d92a8d2-0704-4164-b302-21b2db317dc5,objectId=5cd9a3f1-2f4e-42f3-9090-ba7260d0b22b/westeurope/7007733b-c5a3-4468-9eef-f3ec4b7299e9
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '199'
+      - '200'
       x-ms-ratelimit-remaining-subscription-global-deletes:
-      - '2999'
+      - '3000'
       x-msedge-ref:
-      - 'Ref A: 8B416710F15D4003916C0D59127DCC3A Ref B: TYO201151001040 Ref C: 2024-04-30T09:09:06Z'
+      - 'Ref A: 7AF7EAE7B2BD4E899F321B7512642CD6 Ref B: MAA201060514045 Ref C: 2024-06-13T02:36:45Z'
     status:
       code: 200
       message: OK
