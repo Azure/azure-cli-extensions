@@ -8,7 +8,7 @@ from knack.util import CLIError
 
 class BackendPoolScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_backend_pool_basic(self, resource_group):
         self.kwargs.update({
             'front_door': self.create_random_name('clifrontdoor', 20),
@@ -39,7 +39,7 @@ class BackendPoolScenarioTest(ScenarioTest):
                      self.check('length(@)', 1),
                  ])
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_backend_pool_backend(self, resource_group):
         self.kwargs.update({
             'front_door': self.create_random_name('clifrontdoor', 20),

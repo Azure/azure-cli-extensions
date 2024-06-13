@@ -7,7 +7,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 class RulesEngineScenarioTests(ScenarioTest):
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_rules_engine_basic(self, resource_group):
         self.kwargs.update({
             'front_door': self.create_random_name('clifrontdoor', 20),
