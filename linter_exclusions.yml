@@ -240,6 +240,23 @@ arcdata ad-connector update:
     secondary_domain_controllers:
       rule_exclusions:
       - option_length_too_long
+sql server-arc availability-group create:
+  parameters:
+    automated_backup_preference:
+      rule_exclusions:
+      - option_length_too_long
+    failure_condition_level:
+      rule_exclusions:
+      - option_length_too_long
+    listener_ipv4_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    listener_ipv6_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    required_synchronized_secondaries:
+      rule_exclusions:
+      - option_length_too_long
 sql mi-arc update:
   parameters:
     preferred_primary_replica:
