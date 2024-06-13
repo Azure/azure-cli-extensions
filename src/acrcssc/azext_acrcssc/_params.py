@@ -17,7 +17,7 @@ def load_arguments(self: AzCommandsLoader, _):
     with self.argument_context("acr supply-chain workflow") as c:
         c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of resource group.You can configure the default group using `az configure --defaults group=<name>`', completer=get_resource_name_completion_list(REGISTRY_RESOURCE_TYPE), configured_default='acr', validator=validate_registry_name)
         c.argument('registry_name', options_list=['--registry', '-r'], help='The name of the container registry. It should be specified in lower case. You can configure the default registry name using `az configure --defaults acr=<registry name>`', completer=get_resource_name_completion_list(REGISTRY_RESOURCE_TYPE), configured_default='acr', validator=validate_registry_name)
-        c.argument("type", arg_type=get_enum_type(CSSCTaskTypes), options_list=['--type', '-t'])
+        c.argument("workflow_type", arg_type=get_enum_type(CSSCTaskTypes), options_list=['--type', '-t'], help="Type of workflow task. E.g. ContinuousPatchV1", required=True)
 
     with self.argument_context("acr supply-chain workflow create") as c:
         c.argument("config", options_list=["--config"], help="Configuration file path containing the json schema for the list of repositories and tags to filter within the registry. Schema example:{\"repositories\":[{\"repository\":\"alpine\",\"tags\":[\"tag1\",\"tag2\"],\"enabled\":true},{\"repository\":\"python\",\"tags\":[\"*\"],\"enabled\":false}]}", required=True)
