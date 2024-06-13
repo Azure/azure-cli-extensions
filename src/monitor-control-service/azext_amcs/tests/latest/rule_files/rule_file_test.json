@@ -1,0 +1,96 @@
+{
+  "properties": {
+    "dataSources": {
+      "performanceCounters": [
+        {
+          "streams": [
+            "Microsoft-InsightsMetrics"
+          ],
+          "scheduledTransferPeriod": "PT1M",
+          "samplingFrequencyInSeconds": 60,
+          "counterSpecifiers": [
+            "\\Processor Information(_Total)\\% Processor Time"
+          ],
+          "name": "perfCounter01"
+        }
+      ]
+    },
+    "destinations": {
+      "azureMonitorMetrics": {
+        "name": "azureMonitorMetrics-default"
+      }
+    },
+    "dataFlows": [
+      {
+        "streams": [
+          "Microsoft-InsightsMetrics"
+        ],
+        "destinations": [
+          "azureMonitorMetrics-default"
+        ]
+      }
+    ],
+    "streamDeclarations": {
+      "Custom-stream-1": {
+        "columns": [
+          {
+            "name": "TimeGenerated",
+            "type": "datetime"
+          },
+          {
+            "name": "coord",
+            "type": "dynamic"
+          },
+          {
+            "name": "weather",
+            "type": "dynamic"
+          },
+          {
+            "name": "base",
+            "type": "string"
+          },
+          {
+            "name": "main",
+            "type": "dynamic"
+          },
+          {
+            "name": "visibility",
+            "type": "int"
+          },
+          {
+            "name": "wind",
+            "type": "dynamic"
+          },
+          {
+            "name": "clouds",
+            "type": "dynamic"
+          },
+          {
+            "name": "dt",
+            "type": "int"
+          },
+          {
+            "name": "sys",
+            "type": "dynamic"
+          },
+          {
+            "name": "timezone",
+            "type": "int"
+          },
+          {
+            "name": "id",
+            "type": "int"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "cod",
+            "type": "int"
+          }
+        ]
+      }
+    }
+  }
+}

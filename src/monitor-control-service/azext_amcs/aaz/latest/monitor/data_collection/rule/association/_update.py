@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-06-01",
+        "version": "2023-03-11",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.insights/datacollectionruleassociations/{}", "2022-06-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.insights/datacollectionruleassociations/{}", "2023-03-11"],
         ]
     }
 
@@ -151,7 +151,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }
@@ -231,7 +231,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }
@@ -366,6 +366,10 @@ class _UpdateHelper:
         metadata = _schema_data_collection_rule_association_proxy_only_resource_read.properties.metadata
         metadata.provisioned_by = AAZStrType(
             serialized_name="provisionedBy",
+            flags={"read_only": True},
+        )
+        metadata.provisioned_by_immutable_id = AAZStrType(
+            serialized_name="provisionedByImmutableId",
             flags={"read_only": True},
         )
         metadata.provisioned_by_resource_id = AAZStrType(

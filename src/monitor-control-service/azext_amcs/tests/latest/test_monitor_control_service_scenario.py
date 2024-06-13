@@ -622,3 +622,35 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
         self.cmd('monitor data-collection rule list -g {rg}', checks=[
             self.check('length(@)', 0)
         ])
+
+    @ResourceGroupPreparer(name_prefix='clitest_amcs_rule_json_arg', location='westus2')
+    def test_amcs_data_collection_rule_json_arg(self, resource_group):
+        import os
+
+        TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+        templateFile = os.path.join(
+            TEST_DIR,
+            "rule_files",
+            "rule_file_test.json",
+        )
+
+        self.kwargs.update({
+            'rg': resource_group,
+            'name': 'testrule',
+            'location': 'westus2',
+            'rule_file': templateFile
+        })
+
+        self.cmd('monitor data-collection rule create  --resource-group {rg} --location {location} '
+                 '--name {name} --rule-file "{rule_file}"',
+                 checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('length(streamDeclarations."Custom-stream-1".columns)', 14),
+                     self.check('destinations.azureMonitorMetrics.name', "azureMonitorMetrics-default"),
+                     self.check('length(dataFlows)', 1)
+                 ])
+
+        self.cmd('monitor data-collection rule delete -g {rg} -n {name} -y')
+        self.cmd('monitor data-collection rule list -g {rg}', checks=[
+            self.check('length(@)', 0)
+        ])
