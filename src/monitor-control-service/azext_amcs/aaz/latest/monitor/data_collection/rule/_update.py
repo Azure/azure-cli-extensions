@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-06-01",
+        "version": "2023-03-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2022-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2023-03-11"],
         ]
     }
 
@@ -62,8 +62,10 @@ class Update(AAZCommand):
         )
         _args_schema.kind = AAZStrArg(
             options=["--kind"],
-            help="The kind of the resource. Such as `Linux`, `Windows`.",
+            help="The kind of the resource.",
             nullable=True,
+            enum={"Linux": "Linux", "Windows": "Windows"},
+            enum_support_extension=True,
         )
         _args_schema.data_collection_endpoint_id = AAZStrArg(
             options=["--endpoint-id", "--data-collection-endpoint-id"],
@@ -86,6 +88,7 @@ class Update(AAZCommand):
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+            enum_support_extension=True,
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
@@ -107,6 +110,12 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.agent_settings = AAZObjectArg(
+            options=["--agent-settings"],
+            arg_group="Properties",
+            help="Agent settings used to modify agent behavior on a given host",
+            nullable=True,
+        )
         _args_schema.data_flows_raw = AAZListArg(
             options=["--data-flows-raw"],
             arg_group="Properties",
@@ -125,10 +134,42 @@ class Update(AAZCommand):
             help="The specification of destinations.",
             nullable=True,
         )
+        _args_schema.references = AAZObjectArg(
+            options=["--references"],
+            arg_group="Properties",
+            help="Defines all the references that may be used in other sections of the DCR",
+            nullable=True,
+        )
         _args_schema.stream_declarations = AAZDictArg(
             options=["--stream-declarations"],
             arg_group="Properties",
             help="Declaration of custom streams used in this rule.",
+            nullable=True,
+        )
+
+        agent_settings = cls._args_schema.agent_settings
+        agent_settings.logs = AAZListArg(
+            options=["logs"],
+            help="All the settings that are applicable to the logs agent (AMA)",
+            nullable=True,
+        )
+
+        logs = cls._args_schema.agent_settings.logs
+        logs.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.agent_settings.logs.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The name of the setting. Must be part of the list of supported settings",
+            nullable=True,
+            enum={"MaxDiskQuotaInMB": "MaxDiskQuotaInMB", "UseTimeReceivedForForwardedEvents": "UseTimeReceivedForForwardedEvents"},
+            enum_support_extension=True,
+        )
+        _element.value = AAZStrArg(
+            options=["value"],
+            help="The value of the setting",
             nullable=True,
         )
 
@@ -141,6 +182,11 @@ class Update(AAZCommand):
         _element.built_in_transform = AAZStrArg(
             options=["built-in-transform"],
             help="The builtIn transform to transform stream data",
+            nullable=True,
+        )
+        _element.capture_overflow = AAZBoolArg(
+            options=["capture-overflow"],
+            help="Flag to enable overflow column in LA destinations",
             nullable=True,
         )
         _element.destinations = AAZListArg(
@@ -173,6 +219,7 @@ class Update(AAZCommand):
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-Event": "Microsoft-Event", "Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf", "Microsoft-Syslog": "Microsoft-Syslog", "Microsoft-WindowsEvent": "Microsoft-WindowsEvent"},
+            enum_support_extension=True,
         )
 
         data_sources = cls._args_schema.data_sources
@@ -265,6 +312,7 @@ class Update(AAZCommand):
             options=["extension-settings"],
             help="The extension settings. The format is specific for particular extension.",
             nullable=True,
+            blank={},
         )
         _element.input_data_sources = AAZListArg(
             options=["input-data-sources"],
@@ -291,6 +339,7 @@ class Update(AAZCommand):
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-Event": "Microsoft-Event", "Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf", "Microsoft-Syslog": "Microsoft-Syslog", "Microsoft-WindowsEvent": "Microsoft-WindowsEvent"},
+            enum_support_extension=True,
         )
 
         iis_logs = cls._args_schema.data_sources.iis_logs
@@ -312,6 +361,11 @@ class Update(AAZCommand):
         _element.streams = AAZListArg(
             options=["streams"],
             help="IIS streams",
+        )
+        _element.transform_kql = AAZStrArg(
+            options=["transform-kql"],
+            help="The KQL query to transform the data source.",
+            nullable=True,
         )
 
         log_directories = cls._args_schema.data_sources.iis_logs.Element.log_directories
@@ -337,7 +391,8 @@ class Update(AAZCommand):
         _element.format = AAZStrArg(
             options=["format"],
             help="The data format of the log files",
-            enum={"text": "text"},
+            enum={"json": "json", "text": "text"},
+            enum_support_extension=True,
         )
         _element.name = AAZStrArg(
             options=["name"],
@@ -352,6 +407,11 @@ class Update(AAZCommand):
         _element.streams = AAZListArg(
             options=["streams"],
             help="List of streams that this data source will be sent to. A stream indicates what schema will be used for this data source",
+        )
+        _element.transform_kql = AAZStrArg(
+            options=["transform-kql"],
+            help="The KQL query to transform the data source.",
+            nullable=True,
         )
 
         file_patterns = cls._args_schema.data_sources.log_files.Element.file_patterns
@@ -371,6 +431,7 @@ class Update(AAZCommand):
             options=["record-start-timestamp-format"],
             help="One of the supported timestamp formats",
             enum={"ISO 8601": "ISO 8601", "M/D/YYYY HH:MM:SS AM/PM": "M/D/YYYY HH:MM:SS AM/PM", "MMM d hh:mm:ss": "MMM d hh:mm:ss", "Mon DD, YYYY HH:MM:SS": "Mon DD, YYYY HH:MM:SS", "YYYY-MM-DD HH:MM:SS": "YYYY-MM-DD HH:MM:SS", "dd/MMM/yyyy:HH:mm:ss zzz": "dd/MMM/yyyy:HH:mm:ss zzz", "ddMMyy HH:mm:ss": "ddMMyy HH:mm:ss", "yyMMdd HH:mm:ss": "yyMMdd HH:mm:ss", "yyyy-MM-ddTHH:mm:ssK": "yyyy-MM-ddTHH:mm:ssK"},
+            enum_support_extension=True,
         )
 
         streams = cls._args_schema.data_sources.log_files.Element.streams
@@ -404,6 +465,11 @@ class Update(AAZCommand):
             help="List of streams that this data source will be sent to. A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.",
             nullable=True,
         )
+        _element.transform_kql = AAZStrArg(
+            options=["transform-kql"],
+            help="The KQL query to transform the data source.",
+            nullable=True,
+        )
 
         counter_specifiers = cls._args_schema.data_sources.performance_counters.Element.counter_specifiers
         counter_specifiers.Element = AAZStrArg(
@@ -414,6 +480,7 @@ class Update(AAZCommand):
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf"},
+            enum_support_extension=True,
         )
 
         platform_telemetry = cls._args_schema.data_sources.platform_telemetry
@@ -468,6 +535,7 @@ class Update(AAZCommand):
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-PrometheusMetrics": "Microsoft-PrometheusMetrics"},
+            enum_support_extension=True,
         )
 
         syslog = cls._args_schema.data_sources.syslog
@@ -496,23 +564,31 @@ class Update(AAZCommand):
             help="List of streams that this data source will be sent to. A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.",
             nullable=True,
         )
+        _element.transform_kql = AAZStrArg(
+            options=["transform-kql"],
+            help="The KQL query to transform the data source.",
+            nullable=True,
+        )
 
         facility_names = cls._args_schema.data_sources.syslog.Element.facility_names
         facility_names.Element = AAZStrArg(
             nullable=True,
             enum={"*": "*", "alert": "alert", "audit": "audit", "auth": "auth", "authpriv": "authpriv", "clock": "clock", "cron": "cron", "daemon": "daemon", "ftp": "ftp", "kern": "kern", "local0": "local0", "local1": "local1", "local2": "local2", "local3": "local3", "local4": "local4", "local5": "local5", "local6": "local6", "local7": "local7", "lpr": "lpr", "mail": "mail", "mark": "mark", "news": "news", "nopri": "nopri", "ntp": "ntp", "syslog": "syslog", "user": "user", "uucp": "uucp"},
+            enum_support_extension=True,
         )
 
         log_levels = cls._args_schema.data_sources.syslog.Element.log_levels
         log_levels.Element = AAZStrArg(
             nullable=True,
             enum={"*": "*", "Alert": "Alert", "Critical": "Critical", "Debug": "Debug", "Emergency": "Emergency", "Error": "Error", "Info": "Info", "Notice": "Notice", "Warning": "Warning"},
+            enum_support_extension=True,
         )
 
         streams = cls._args_schema.data_sources.syslog.Element.streams
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-Syslog": "Microsoft-Syslog"},
+            enum_support_extension=True,
         )
 
         windows_event_logs = cls._args_schema.data_sources.windows_event_logs
@@ -531,6 +607,11 @@ class Update(AAZCommand):
             help="List of streams that this data source will be sent to. A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.",
             nullable=True,
         )
+        _element.transform_kql = AAZStrArg(
+            options=["transform-kql"],
+            help="The KQL query to transform the data source.",
+            nullable=True,
+        )
         _element.x_path_queries = AAZListArg(
             options=["x-path-queries"],
             help="A list of Windows Event Log queries in XPATH format.",
@@ -541,6 +622,7 @@ class Update(AAZCommand):
         streams.Element = AAZStrArg(
             nullable=True,
             enum={"Microsoft-Event": "Microsoft-Event", "Microsoft-WindowsEvent": "Microsoft-WindowsEvent"},
+            enum_support_extension=True,
         )
 
         x_path_queries = cls._args_schema.data_sources.windows_event_logs.Element.x_path_queries
@@ -559,9 +641,21 @@ class Update(AAZCommand):
             help="A friendly name for the data source. This name should be unique across all data sources (regardless of type) within the data collection rule.",
             nullable=True,
         )
+        _element.profile_filter = AAZListArg(
+            options=["profile-filter"],
+            help="Firewall logs profile filter",
+            nullable=True,
+        )
         _element.streams = AAZListArg(
             options=["streams"],
             help="Firewall logs streams",
+        )
+
+        profile_filter = cls._args_schema.data_sources.windows_firewall_logs.Element.profile_filter
+        profile_filter.Element = AAZStrArg(
+            nullable=True,
+            enum={"Domain": "Domain", "Private": "Private", "Public": "Public"},
+            enum_support_extension=True,
         )
 
         streams = cls._args_schema.data_sources.windows_firewall_logs.Element.streams
@@ -570,6 +664,11 @@ class Update(AAZCommand):
         )
 
         destinations = cls._args_schema.destinations
+        destinations.azure_data_explorer = AAZListArg(
+            options=["azure-data-explorer"],
+            help="List of Azure Data Explorer destinations.",
+            nullable=True,
+        )
         destinations.azure_monitor_metrics = AAZObjectArg(
             options=["azure-monitor-metrics"],
             help="Azure Monitor Metrics destination.",
@@ -590,6 +689,11 @@ class Update(AAZCommand):
             help="List of Log Analytics destinations.",
             nullable=True,
         )
+        destinations.microsoft_fabric = AAZListArg(
+            options=["microsoft-fabric"],
+            help="List of Microsoft Fabric destinations.",
+            nullable=True,
+        )
         destinations.monitoring_accounts = AAZListArg(
             options=["monitoring-accounts"],
             help="List of monitoring account destinations.",
@@ -608,6 +712,28 @@ class Update(AAZCommand):
         destinations.storage_tables_direct = AAZListArg(
             options=["storage-tables-direct"],
             help="List of Storage Table Direct destinations.",
+            nullable=True,
+        )
+
+        azure_data_explorer = cls._args_schema.destinations.azure_data_explorer
+        azure_data_explorer.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.destinations.azure_data_explorer.Element
+        _element.database_name = AAZStrArg(
+            options=["database-name"],
+            help="The name of the database to which data will be ingested.",
+            nullable=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
+            nullable=True,
+        )
+        _element.resource_id = AAZStrArg(
+            options=["resource-id"],
+            help="The ARM resource id of the Adx resource.",
             nullable=True,
         )
 
@@ -669,6 +795,38 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        microsoft_fabric = cls._args_schema.destinations.microsoft_fabric
+        microsoft_fabric.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.destinations.microsoft_fabric.Element
+        _element.artifact_id = AAZStrArg(
+            options=["artifact-id"],
+            help="The artifact id of the Microsoft Fabric resource.",
+            nullable=True,
+        )
+        _element.database_name = AAZStrArg(
+            options=["database-name"],
+            help="The name of the database to which data will be ingested.",
+            nullable=True,
+        )
+        _element.ingestion_uri = AAZStrArg(
+            options=["ingestion-uri"],
+            help="The ingestion uri of the Microsoft Fabric resource.",
+            nullable=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="A friendly name for the destination. This name should be unique across all destinations (regardless of type) within the data collection rule.",
+            nullable=True,
+        )
+        _element.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="The tenant id of the Microsoft Fabric resource.",
+            nullable=True,
+        )
+
         monitoring_accounts = cls._args_schema.destinations.monitoring_accounts
         monitoring_accounts.Element = AAZObjectArg(
             nullable=True,
@@ -720,6 +878,49 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        references = cls._args_schema.references
+        references.enrichment_data = AAZObjectArg(
+            options=["enrichment-data"],
+            help="All the enrichment data sources referenced in data flows",
+            nullable=True,
+        )
+
+        enrichment_data = cls._args_schema.references.enrichment_data
+        enrichment_data.storage_blobs = AAZListArg(
+            options=["storage-blobs"],
+            help="All the storage blobs used as enrichment data sources",
+            nullable=True,
+        )
+
+        storage_blobs = cls._args_schema.references.enrichment_data.storage_blobs
+        storage_blobs.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.references.enrichment_data.storage_blobs.Element
+        _element.blob_url = AAZStrArg(
+            options=["blob-url"],
+            help="Url of the storage blob",
+            nullable=True,
+        )
+        _element.lookup_type = AAZStrArg(
+            options=["lookup-type"],
+            help="The type of lookup to perform on the blob",
+            nullable=True,
+            enum={"Cidr": "Cidr", "String": "String"},
+            enum_support_extension=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The name of the enrichment data source used as an alias when referencing this data source in data flows",
+            nullable=True,
+        )
+        _element.resource_id = AAZStrArg(
+            options=["resource-id"],
+            help="Resource Id of the storage account that hosts the blob",
+            nullable=True,
+        )
+
         stream_declarations = cls._args_schema.stream_declarations
         stream_declarations.Element = AAZObjectArg(
             nullable=True,
@@ -748,6 +949,7 @@ class Update(AAZCommand):
             help="The type of the column data.",
             nullable=True,
             enum={"boolean": "boolean", "datetime": "datetime", "dynamic": "dynamic", "int": "int", "long": "long", "real": "real", "string": "string"},
+            enum_support_extension=True,
         )
         return cls._args_schema
 
@@ -864,7 +1066,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }
@@ -947,7 +1149,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }
@@ -1021,12 +1223,27 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("agentSettings", AAZObjectType, ".agent_settings")
                 properties.set_prop("dataCollectionEndpointId", AAZStrType, ".data_collection_endpoint_id")
                 properties.set_prop("dataFlows", AAZListType, ".data_flows_raw")
                 properties.set_prop("dataSources", AAZObjectType, ".data_sources")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("destinations", AAZObjectType, ".destinations")
+                properties.set_prop("references", AAZObjectType, ".references")
                 properties.set_prop("streamDeclarations", AAZDictType, ".stream_declarations")
+
+            agent_settings = _builder.get(".properties.agentSettings")
+            if agent_settings is not None:
+                agent_settings.set_prop("logs", AAZListType, ".logs")
+
+            logs = _builder.get(".properties.agentSettings.logs")
+            if logs is not None:
+                logs.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.agentSettings.logs[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("value", AAZStrType, ".value")
 
             data_flows = _builder.get(".properties.dataFlows")
             if data_flows is not None:
@@ -1035,6 +1252,7 @@ class Update(AAZCommand):
             _elements = _builder.get(".properties.dataFlows[]")
             if _elements is not None:
                 _elements.set_prop("builtInTransform", AAZStrType, ".built_in_transform")
+                _elements.set_prop("captureOverflow", AAZBoolType, ".capture_overflow")
                 _elements.set_prop("destinations", AAZListType, ".destinations")
                 _elements.set_prop("outputStream", AAZStrType, ".output_stream")
                 _elements.set_prop("streams", AAZListType, ".streams")
@@ -1104,6 +1322,7 @@ class Update(AAZCommand):
                 _elements.set_prop("logDirectories", AAZListType, ".log_directories")
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("streams", AAZListType, ".streams", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("transformKql", AAZStrType, ".transform_kql")
 
             log_directories = _builder.get(".properties.dataSources.iisLogs[].logDirectories")
             if log_directories is not None:
@@ -1124,6 +1343,7 @@ class Update(AAZCommand):
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("settings", AAZObjectType, ".settings")
                 _elements.set_prop("streams", AAZListType, ".streams", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("transformKql", AAZStrType, ".transform_kql")
 
             file_patterns = _builder.get(".properties.dataSources.logFiles[].filePatterns")
             if file_patterns is not None:
@@ -1151,6 +1371,7 @@ class Update(AAZCommand):
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("samplingFrequencyInSeconds", AAZIntType, ".sampling_frequency_in_seconds")
                 _elements.set_prop("streams", AAZListType, ".streams")
+                _elements.set_prop("transformKql", AAZStrType, ".transform_kql")
 
             counter_specifiers = _builder.get(".properties.dataSources.performanceCounters[].counterSpecifiers")
             if counter_specifiers is not None:
@@ -1201,6 +1422,7 @@ class Update(AAZCommand):
                 _elements.set_prop("logLevels", AAZListType, ".log_levels")
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("streams", AAZListType, ".streams")
+                _elements.set_prop("transformKql", AAZStrType, ".transform_kql")
 
             facility_names = _builder.get(".properties.dataSources.syslog[].facilityNames")
             if facility_names is not None:
@@ -1222,6 +1444,7 @@ class Update(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("streams", AAZListType, ".streams")
+                _elements.set_prop("transformKql", AAZStrType, ".transform_kql")
                 _elements.set_prop("xPathQueries", AAZListType, ".x_path_queries")
 
             streams = _builder.get(".properties.dataSources.windowsEventLogs[].streams")
@@ -1239,7 +1462,12 @@ class Update(AAZCommand):
             _elements = _builder.get(".properties.dataSources.windowsFirewallLogs[]")
             if _elements is not None:
                 _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("profileFilter", AAZListType, ".profile_filter")
                 _elements.set_prop("streams", AAZListType, ".streams", typ_kwargs={"flags": {"required": True}})
+
+            profile_filter = _builder.get(".properties.dataSources.windowsFirewallLogs[].profileFilter")
+            if profile_filter is not None:
+                profile_filter.set_elements(AAZStrType, ".")
 
             streams = _builder.get(".properties.dataSources.windowsFirewallLogs[].streams")
             if streams is not None:
@@ -1247,14 +1475,26 @@ class Update(AAZCommand):
 
             destinations = _builder.get(".properties.destinations")
             if destinations is not None:
+                destinations.set_prop("azureDataExplorer", AAZListType, ".azure_data_explorer")
                 destinations.set_prop("azureMonitorMetrics", AAZObjectType, ".azure_monitor_metrics")
                 destinations.set_prop("eventHubs", AAZListType, ".event_hubs")
                 destinations.set_prop("eventHubsDirect", AAZListType, ".event_hubs_direct")
                 destinations.set_prop("logAnalytics", AAZListType, ".log_analytics")
+                destinations.set_prop("microsoftFabric", AAZListType, ".microsoft_fabric")
                 destinations.set_prop("monitoringAccounts", AAZListType, ".monitoring_accounts")
                 destinations.set_prop("storageAccounts", AAZListType, ".storage_accounts")
                 destinations.set_prop("storageBlobsDirect", AAZListType, ".storage_blobs_direct")
                 destinations.set_prop("storageTablesDirect", AAZListType, ".storage_tables_direct")
+
+            azure_data_explorer = _builder.get(".properties.destinations.azureDataExplorer")
+            if azure_data_explorer is not None:
+                azure_data_explorer.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.destinations.azureDataExplorer[]")
+            if _elements is not None:
+                _elements.set_prop("databaseName", AAZStrType, ".database_name")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("resourceId", AAZStrType, ".resource_id")
 
             azure_monitor_metrics = _builder.get(".properties.destinations.azureMonitorMetrics")
             if azure_monitor_metrics is not None:
@@ -1287,6 +1527,18 @@ class Update(AAZCommand):
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("workspaceResourceId", AAZStrType, ".workspace_resource_id")
 
+            microsoft_fabric = _builder.get(".properties.destinations.microsoftFabric")
+            if microsoft_fabric is not None:
+                microsoft_fabric.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.destinations.microsoftFabric[]")
+            if _elements is not None:
+                _elements.set_prop("artifactId", AAZStrType, ".artifact_id")
+                _elements.set_prop("databaseName", AAZStrType, ".database_name")
+                _elements.set_prop("ingestionUri", AAZStrType, ".ingestion_uri")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("tenantId", AAZStrType, ".tenant_id")
+
             monitoring_accounts = _builder.get(".properties.destinations.monitoringAccounts")
             if monitoring_accounts is not None:
                 monitoring_accounts.set_elements(AAZObjectType, ".")
@@ -1313,6 +1565,25 @@ class Update(AAZCommand):
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("storageAccountResourceId", AAZStrType, ".storage_account_resource_id")
                 _elements.set_prop("tableName", AAZStrType, ".table_name")
+
+            references = _builder.get(".properties.references")
+            if references is not None:
+                references.set_prop("enrichmentData", AAZObjectType, ".enrichment_data")
+
+            enrichment_data = _builder.get(".properties.references.enrichmentData")
+            if enrichment_data is not None:
+                enrichment_data.set_prop("storageBlobs", AAZListType, ".storage_blobs")
+
+            storage_blobs = _builder.get(".properties.references.enrichmentData.storageBlobs")
+            if storage_blobs is not None:
+                storage_blobs.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.references.enrichmentData.storageBlobs[]")
+            if _elements is not None:
+                _elements.set_prop("blobUrl", AAZStrType, ".blob_url")
+                _elements.set_prop("lookupType", AAZStrType, ".lookup_type")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("resourceId", AAZStrType, ".resource_id")
 
             stream_declarations = _builder.get(".properties.streamDeclarations")
             if stream_declarations is not None:
@@ -1435,6 +1706,9 @@ class _UpdateHelper:
         )
 
         properties = _schema_data_collection_rule_resource_read.properties
+        properties.agent_settings = AAZObjectType(
+            serialized_name="agentSettings",
+        )
         properties.data_collection_endpoint_id = AAZStrType(
             serialized_name="dataCollectionEndpointId",
         )
@@ -1446,6 +1720,9 @@ class _UpdateHelper:
         )
         properties.description = AAZStrType()
         properties.destinations = AAZObjectType()
+        properties.endpoints = AAZObjectType(
+            flags={"read_only": True},
+        )
         properties.immutable_id = AAZStrType(
             serialized_name="immutableId",
             flags={"read_only": True},
@@ -1457,9 +1734,20 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.references = AAZObjectType()
         properties.stream_declarations = AAZDictType(
             serialized_name="streamDeclarations",
         )
+
+        agent_settings = _schema_data_collection_rule_resource_read.properties.agent_settings
+        agent_settings.logs = AAZListType()
+
+        logs = _schema_data_collection_rule_resource_read.properties.agent_settings.logs
+        logs.Element = AAZObjectType()
+
+        _element = _schema_data_collection_rule_resource_read.properties.agent_settings.logs.Element
+        _element.name = AAZStrType()
+        _element.value = AAZStrType()
 
         data_flows = _schema_data_collection_rule_resource_read.properties.data_flows
         data_flows.Element = AAZObjectType()
@@ -1467,6 +1755,9 @@ class _UpdateHelper:
         _element = _schema_data_collection_rule_resource_read.properties.data_flows.Element
         _element.built_in_transform = AAZStrType(
             serialized_name="builtInTransform",
+        )
+        _element.capture_overflow = AAZBoolType(
+            serialized_name="captureOverflow",
         )
         _element.destinations = AAZListType()
         _element.output_stream = AAZStrType(
@@ -1557,6 +1848,9 @@ class _UpdateHelper:
         _element.streams = AAZListType(
             flags={"required": True},
         )
+        _element.transform_kql = AAZStrType(
+            serialized_name="transformKql",
+        )
 
         log_directories = _schema_data_collection_rule_resource_read.properties.data_sources.iis_logs.Element.log_directories
         log_directories.Element = AAZStrType()
@@ -1579,6 +1873,9 @@ class _UpdateHelper:
         _element.settings = AAZObjectType()
         _element.streams = AAZListType(
             flags={"required": True},
+        )
+        _element.transform_kql = AAZStrType(
+            serialized_name="transformKql",
         )
 
         file_patterns = _schema_data_collection_rule_resource_read.properties.data_sources.log_files.Element.file_patterns
@@ -1608,6 +1905,9 @@ class _UpdateHelper:
             serialized_name="samplingFrequencyInSeconds",
         )
         _element.streams = AAZListType()
+        _element.transform_kql = AAZStrType(
+            serialized_name="transformKql",
+        )
 
         counter_specifiers = _schema_data_collection_rule_resource_read.properties.data_sources.performance_counters.Element.counter_specifiers
         counter_specifiers.Element = AAZStrType()
@@ -1655,6 +1955,9 @@ class _UpdateHelper:
         )
         _element.name = AAZStrType()
         _element.streams = AAZListType()
+        _element.transform_kql = AAZStrType(
+            serialized_name="transformKql",
+        )
 
         facility_names = _schema_data_collection_rule_resource_read.properties.data_sources.syslog.Element.facility_names
         facility_names.Element = AAZStrType()
@@ -1671,6 +1974,9 @@ class _UpdateHelper:
         _element = _schema_data_collection_rule_resource_read.properties.data_sources.windows_event_logs.Element
         _element.name = AAZStrType()
         _element.streams = AAZListType()
+        _element.transform_kql = AAZStrType(
+            serialized_name="transformKql",
+        )
         _element.x_path_queries = AAZListType(
             serialized_name="xPathQueries",
         )
@@ -1686,14 +1992,23 @@ class _UpdateHelper:
 
         _element = _schema_data_collection_rule_resource_read.properties.data_sources.windows_firewall_logs.Element
         _element.name = AAZStrType()
+        _element.profile_filter = AAZListType(
+            serialized_name="profileFilter",
+        )
         _element.streams = AAZListType(
             flags={"required": True},
         )
+
+        profile_filter = _schema_data_collection_rule_resource_read.properties.data_sources.windows_firewall_logs.Element.profile_filter
+        profile_filter.Element = AAZStrType()
 
         streams = _schema_data_collection_rule_resource_read.properties.data_sources.windows_firewall_logs.Element.streams
         streams.Element = AAZStrType()
 
         destinations = _schema_data_collection_rule_resource_read.properties.destinations
+        destinations.azure_data_explorer = AAZListType(
+            serialized_name="azureDataExplorer",
+        )
         destinations.azure_monitor_metrics = AAZObjectType(
             serialized_name="azureMonitorMetrics",
         )
@@ -1706,6 +2021,9 @@ class _UpdateHelper:
         destinations.log_analytics = AAZListType(
             serialized_name="logAnalytics",
         )
+        destinations.microsoft_fabric = AAZListType(
+            serialized_name="microsoftFabric",
+        )
         destinations.monitoring_accounts = AAZListType(
             serialized_name="monitoringAccounts",
         )
@@ -1717,6 +2035,22 @@ class _UpdateHelper:
         )
         destinations.storage_tables_direct = AAZListType(
             serialized_name="storageTablesDirect",
+        )
+
+        azure_data_explorer = _schema_data_collection_rule_resource_read.properties.destinations.azure_data_explorer
+        azure_data_explorer.Element = AAZObjectType()
+
+        _element = _schema_data_collection_rule_resource_read.properties.destinations.azure_data_explorer.Element
+        _element.database_name = AAZStrType(
+            serialized_name="databaseName",
+        )
+        _element.ingestion_uri = AAZStrType(
+            serialized_name="ingestionUri",
+            flags={"read_only": True},
+        )
+        _element.name = AAZStrType()
+        _element.resource_id = AAZStrType(
+            serialized_name="resourceId",
         )
 
         azure_monitor_metrics = _schema_data_collection_rule_resource_read.properties.destinations.azure_monitor_metrics
@@ -1753,6 +2087,24 @@ class _UpdateHelper:
             serialized_name="workspaceResourceId",
         )
 
+        microsoft_fabric = _schema_data_collection_rule_resource_read.properties.destinations.microsoft_fabric
+        microsoft_fabric.Element = AAZObjectType()
+
+        _element = _schema_data_collection_rule_resource_read.properties.destinations.microsoft_fabric.Element
+        _element.artifact_id = AAZStrType(
+            serialized_name="artifactId",
+        )
+        _element.database_name = AAZStrType(
+            serialized_name="databaseName",
+        )
+        _element.ingestion_uri = AAZStrType(
+            serialized_name="ingestionUri",
+        )
+        _element.name = AAZStrType()
+        _element.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
+
         monitoring_accounts = _schema_data_collection_rule_resource_read.properties.destinations.monitoring_accounts
         monitoring_accounts.Element = AAZObjectType()
 
@@ -1786,14 +2138,53 @@ class _UpdateHelper:
             serialized_name="tableName",
         )
 
+        endpoints = _schema_data_collection_rule_resource_read.properties.endpoints
+        endpoints.logs_ingestion = AAZStrType(
+            serialized_name="logsIngestion",
+            flags={"read_only": True},
+        )
+        endpoints.metrics_ingestion = AAZStrType(
+            serialized_name="metricsIngestion",
+            flags={"read_only": True},
+        )
+
         metadata = _schema_data_collection_rule_resource_read.properties.metadata
         metadata.provisioned_by = AAZStrType(
             serialized_name="provisionedBy",
             flags={"read_only": True},
         )
+        metadata.provisioned_by_immutable_id = AAZStrType(
+            serialized_name="provisionedByImmutableId",
+            flags={"read_only": True},
+        )
         metadata.provisioned_by_resource_id = AAZStrType(
             serialized_name="provisionedByResourceId",
             flags={"read_only": True},
+        )
+
+        references = _schema_data_collection_rule_resource_read.properties.references
+        references.enrichment_data = AAZObjectType(
+            serialized_name="enrichmentData",
+        )
+
+        enrichment_data = _schema_data_collection_rule_resource_read.properties.references.enrichment_data
+        enrichment_data.storage_blobs = AAZListType(
+            serialized_name="storageBlobs",
+        )
+
+        storage_blobs = _schema_data_collection_rule_resource_read.properties.references.enrichment_data.storage_blobs
+        storage_blobs.Element = AAZObjectType()
+
+        _element = _schema_data_collection_rule_resource_read.properties.references.enrichment_data.storage_blobs.Element
+        _element.blob_url = AAZStrType(
+            serialized_name="blobUrl",
+        )
+        _element.lookup_type = AAZStrType(
+            serialized_name="lookupType",
+        )
+        _element.name = AAZStrType()
+        _element.resource_id = AAZStrType(
+            serialized_name="resourceId",
         )
 
         stream_declarations = _schema_data_collection_rule_resource_read.properties.stream_declarations

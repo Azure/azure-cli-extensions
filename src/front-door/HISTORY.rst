@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.1.1
+++++++
+* fix url bugs for US gov, edit new examples for log scurbbing
+
 1.1.0
 ++++++
 * az network front-door waf-policy create/update add: log scurbbing support
