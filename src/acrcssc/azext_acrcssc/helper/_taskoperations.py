@@ -24,7 +24,7 @@ from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.command_modules.acr._azure_utils import get_blob_info
 from azure.cli.command_modules.acr._utils import  prepare_source_location
 from azure.mgmt.core.tools import parse_resource_id
-from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
+from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs, cf_acr_taskruns
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
 from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
 from azext_acrcssc._validators import check_continuous_task_exists
@@ -173,7 +173,12 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
     run_id = queued.run_id
     logger.warning("Performing dry-run check for filter policy using acr task run id: %s", run_id)
     delete_temporary_dry_run_file(tmp_folder)
-    return stream_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
+    
+
+    # task_status = "Started"
+    # while(task_status != "Succeeded" or task_status != "Failed"):
+    
+    return generate_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
 
 def _trigger_task_run(cmd, registry, resource_group, task_name):
     acr_task_registries_client = cf_acr_registries_tasks(cmd.cli_ctx)
@@ -363,7 +368,7 @@ def _is_vault_secret(cmd, credential):
         return keyvault_dns.upper() in credential.upper()
     return False
 
-def stream_logs(cmd, client,
+def generate_logs(cmd, client,
                 run_id,
                 registry_name,
                 resource_group_name,
@@ -373,6 +378,7 @@ def stream_logs(cmd, client,
     log_file_sas = None
     error_msg = "Could not get logs for ID: {}".format(run_id)
     try:
+        #acr_taskrun_client = cf_acr_taskruns(cmd.cli_ctx)
         response = client.get_log_sas_url(
             resource_group_name=resource_group_name,
             registry_name=registry_name,
@@ -387,56 +393,35 @@ def stream_logs(cmd, client,
     AppendBlobService = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE, 'blob#AppendBlobService')
     if not timeout:
         timeout = ACR_RUN_DEFAULT_TIMEOUT_IN_SEC
-    # _download_logs(AppendBlobService(
-    #                     account_name=account_name,
-    #                     sas_token=sas_token,
-    #                     endpoint_suffix=endpoint_suffix),
-    #                 container_name,
-    #                 blob_name)
-    _stream_logs(True, DEFAULT_CHUNK_SIZE,
-                    timeout,
-                    AppendBlobService(
+    
+    run_status = "Running"
+    while run_status != "Succeeded" and run_status != "Failed":
+        run_status=_get_run_status(client, resource_group_name, registry_name, run_id)
+        logger.debug(f"Waiting for the task run to complete. Current status: {run_status}")
+        time.sleep(2)
+    
+    _download_logs(AppendBlobService(
                         account_name=account_name,
                         sas_token=sas_token,
                         endpoint_suffix=endpoint_suffix),
                     container_name,
-                    blob_name,
-                    raise_error_on_failure)
+                    blob_name)
+  
+def _get_run_status(client, resource_group_name, registry_name, run_id):
+    try:
+        response = client.get(resource_group_name, registry_name, run_id)
+        return response.status
+    except (AttributeError, CloudError):
+        return None
     
 def _download_logs(# pylint: disable=too-many-locals, too-many-statements, too-many-branches
                  blob_service,
                  container_name,
-                 blob_name,
+                 blob_name
                  ):
-
-    log_exist = False
-    
-    try:
-        # Need to call "exists" API to prevent storage SDK logging BlobNotFound error
-        log_exist = blob_service.exists(
-            container_name=container_name, blob_name=blob_name)
-        if log_exist:
-            props = blob_service.get_blob_properties(
-                container_name=container_name, blob_name=blob_name)
-            metadata = props.metadata
-            lease_state = props.properties.lease.state
-        else:
-            # Wait a little bit before checking the existence again
-            time.sleep(1)
-    except (AttributeError, AzureHttpError):
-        pass
-    
-    while(lease_state != "available"):
-        time.sleep(1)
-        blob_service.get_blob_properties(
-                    container_name=container_name, blob_name=blob_name)
-        lease_state = props.properties.lease.state
-    ## If we don't add sleep timer, it's stripping some of the text
-    time.sleep(5)
     blob_text=blob_service.get_blob_to_text(
         container_name=container_name,
         blob_name=blob_name)
-    #logger.warning(f"{blob_text.content}")
     _remove_internal_acr_statements(blob_text.content)
 
 def _remove_internal_acr_statements(blob_content):
@@ -455,154 +440,3 @@ def _remove_internal_acr_statements(blob_content):
         if print_line:
             print(line)
     
-def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-statements, too-many-branches
-                 byte_size,
-                 timeout_in_seconds,
-                 blob_service,
-                 container_name,
-                 blob_name,
-                 raise_error_on_failure):
-
-    if not no_format:
-        colorama.init()
-
-    log_exist = False
-    stream = BytesIO()
-    metadata = {}
-    start = 0
-    end = byte_size - 1
-    available = 0
-    sleep_time = 1
-    max_sleep_time = 15
-    num_fails = 0
-    num_fails_for_backoff = 3
-    consecutive_sleep_in_sec = 0
-
-    # Try to get the initial properties so there's no waiting.
-    # If the storage call fails, we'll just sleep and try again after.
-    try:
-        # Need to call "exists" API to prevent storage SDK logging BlobNotFound error
-        log_exist = blob_service.exists(
-            container_name=container_name, blob_name=blob_name)
-
-        if log_exist:
-            props = blob_service.get_blob_properties(
-                container_name=container_name, blob_name=blob_name)
-            metadata = props.metadata
-            available = props.properties.content_length
-        else:
-            # Wait a little bit before checking the existence again
-            time.sleep(1)
-    except (AttributeError, AzureHttpError):
-        pass
-
-    while (_blob_is_not_complete(metadata) or start < available):
-        while start < available:
-            # Success! Reset our polling backoff.
-            sleep_time = 1
-            num_fails = 0
-            consecutive_sleep_in_sec = 0
-
-            try:
-                old_byte_size = len(stream.getvalue())
-                blob_service.get_blob_to_stream(
-                    container_name=container_name,
-                    blob_name=blob_name,
-                    start_range=start,
-                    end_range=end,
-                    stream=stream)
-
-                curr_bytes = stream.getvalue()
-                new_byte_size = len(curr_bytes)
-                amount_read = new_byte_size - old_byte_size
-                start += amount_read
-                end = start + byte_size - 1
-
-                # Only scan what's newly read. If nothing is read, default to 0.
-                min_scan_range = max(new_byte_size - amount_read - 1, 0)
-                for i in range(new_byte_size - 1, min_scan_range, -1):
-                    if curr_bytes[i - 1:i + 1] == b'\r\n':
-                        flush = curr_bytes[:i]  # won't print \n
-                        stream = BytesIO()
-                        stream.write(curr_bytes[i + 1:])
-                        _remove_internal_acr_statements(flush.decode('utf-8', errors='ignore'))
-                        #print(flush.decode('utf-8', errors='ignore'))
-                        break
-            except AzureHttpError as ae:
-                if ae.status_code != 404:
-                    raise AzCLIError(ae)
-            except KeyboardInterrupt:
-                curr_bytes = stream.getvalue()
-                if curr_bytes:
-                    _remove_internal_acr_statements(curr_bytes.decode('utf-8', errors='ignore'))
-                    #print(curr_bytes.decode('utf-8', errors='ignore'))
-                return
-
-        try:
-            if log_exist:
-                props = blob_service.get_blob_properties(
-                    container_name=container_name, blob_name=blob_name)
-                metadata = props.metadata
-                available = props.properties.content_length
-            else:
-                log_exist = blob_service.exists(
-                    container_name=container_name, blob_name=blob_name)
-        except AzureHttpError as ae:
-            if ae.status_code != 404:
-                raise AzCLIError(ae)
-        except KeyboardInterrupt:
-            if curr_bytes:
-                _remove_internal_acr_statements(curr_bytes.decode('utf-8', errors='ignore'))
-                #print(curr_bytes.decode('utf-8', errors='ignore'))
-            return
-        except Exception as err:
-            raise AzCLIError(err)
-
-        if consecutive_sleep_in_sec > timeout_in_seconds:
-            # Flush anything remaining in the buffer - this would be the case
-            # if the file has expired and we weren't able to detect any \r\n
-            curr_bytes = stream.getvalue()
-            if curr_bytes:
-                _remove_internal_acr_statements(curr_bytes.decode('utf-8', errors='ignore'))
-                #print(curr_bytes.decode('utf-8', errors='ignore'))
-
-            logger.warning("Failed to find any new logs in %d seconds. Client will stop polling for additional logs.",
-                           consecutive_sleep_in_sec)
-            return
-
-        # If no new data available but not complete, sleep before trying to process additional data.
-        if (_blob_is_not_complete(metadata) and start >= available):
-            num_fails += 1
-
-            logger.debug(
-                "Failed to find new content %d times in a row", num_fails)
-            if num_fails >= num_fails_for_backoff:
-                num_fails = 0
-                sleep_time = min(sleep_time * 2, max_sleep_time)
-                logger.debug("Resetting failure count to %d", num_fails)
-
-            rnd = uniform(1, 2)  # 1.0 <= x < 2.0
-            total_sleep_time = sleep_time + rnd
-            consecutive_sleep_in_sec += total_sleep_time
-            logger.debug("Base sleep time: %d, random delay: %d, total: %d, consecutive: %d",
-                         sleep_time, rnd, total_sleep_time, consecutive_sleep_in_sec)
-            time.sleep(total_sleep_time)
-
-    # One final check to see if there's anything in the buffer to flush
-    # E.g., metadata has been set and start == available, but the log file
-    # didn't end in \r\n, so we were unable to flush out the final contents.
-    curr_bytes = stream.getvalue()
-    if curr_bytes:
-        _remove_internal_acr_statements(curr_bytes.decode('utf-8', errors='ignore'))
-        #print(curr_bytes.decode('utf-8', errors='ignore'))
-
-    build_status = _get_run_status(metadata).lower()
-    logger.debug("status was: '%s'", build_status)
-
-    if raise_error_on_failure:
-        if build_status in ('internalerror', 'failed'):
-            raise AzCLIError("Run failed")
-        if build_status == 'timedout':
-            raise AzCLIError("Run timed out")
-        if build_status == 'canceled':
-            raise AzCLIError("Run was canceled")
