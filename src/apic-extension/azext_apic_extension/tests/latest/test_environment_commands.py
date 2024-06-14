@@ -5,10 +5,11 @@
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import ApicServicePreparer, ApicEnvironmentPreparer, ApicMetadataPreparer
+from .constants import TEST_REGION
 
 class EnvironmentCommandsTests(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_environment_create(self):
         self.kwargs.update({
@@ -21,7 +22,7 @@ class EnvironmentCommandsTests(ScenarioTest):
             self.check('customProperties', '{{}}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_environment_create_with_all_optional_params(self, metadata_name):
@@ -44,7 +45,7 @@ class EnvironmentCommandsTests(ScenarioTest):
             self.check('type', 'Microsoft.ApiCenter/services/workspaces/environments')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_environment_show(self):
@@ -55,7 +56,7 @@ class EnvironmentCommandsTests(ScenarioTest):
             self.check('customProperties', '{{}}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer(parameter_name='environment_name1')
     @ApicEnvironmentPreparer(parameter_name='environment_name2')
@@ -66,7 +67,7 @@ class EnvironmentCommandsTests(ScenarioTest):
             self.check('@[1].name', environment_name2)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer(parameter_name='environment_name1')
     @ApicEnvironmentPreparer(parameter_name='environment_name2')
@@ -79,7 +80,7 @@ class EnvironmentCommandsTests(ScenarioTest):
             self.check('@[0].name', environment_name1)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_environment_update(self):
@@ -87,7 +88,7 @@ class EnvironmentCommandsTests(ScenarioTest):
             self.check('title', 'test environment 2')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     @ApicEnvironmentPreparer()
@@ -108,14 +109,14 @@ class EnvironmentCommandsTests(ScenarioTest):
             self.check('title', 'test environment 2'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_environment_delete(self):
         self.cmd('az apic environment delete -g {rg} -n {s} --environment-id {e} --yes')
         self.cmd('az apic environment show -g {rg} -n {s} --environment-id {e}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_examples_create_environment(self):
         self.kwargs.update({
@@ -127,14 +128,14 @@ class EnvironmentCommandsTests(ScenarioTest):
             self.check('kind', 'development')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_examples_delete_environment(self):
         self.cmd('az apic environment delete -g {rg} -n {s} --environment-id {e} --yes')
         self.cmd('az apic environment show -g {rg} -n {s} --environment-id {e}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer(parameter_name='environment_name1')
     @ApicEnvironmentPreparer(parameter_name='environment_name2')
@@ -145,7 +146,7 @@ class EnvironmentCommandsTests(ScenarioTest):
             self.check('@[1].name', environment_name2)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_examples_show_environment_details(self):
@@ -153,7 +154,7 @@ class EnvironmentCommandsTests(ScenarioTest):
             self.check('name', '{e}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     def test_examples_update_environment(self):

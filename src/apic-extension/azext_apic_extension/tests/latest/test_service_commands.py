@@ -7,10 +7,11 @@ import unittest
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import ApicServicePreparer
+from .constants import TEST_REGION
 
 class ServiceCommandsTests(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     def test_create_service(self, resource_group):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24),
@@ -18,11 +19,10 @@ class ServiceCommandsTests(ScenarioTest):
         })
         self.cmd('az apic create -g {rg} --name {name}', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('dataApiHostname', '{name}.data.eastus.azure-apicenter.ms')
+            self.check('resourceGroup', '{rg}')
         ])
     
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     def test_create_service_with_all_optional_params(self, resource_group):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24),
@@ -36,7 +36,7 @@ class ServiceCommandsTests(ScenarioTest):
             self.check('tags.test', 'value')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_show_service(self):
         self.cmd('az apic show -g {rg} -n {s}', checks=[
@@ -46,7 +46,7 @@ class ServiceCommandsTests(ScenarioTest):
         ])
 
     @unittest.skip('The Control Plane API has bug')
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer(parameter_name='service_name1')
     @ApicServicePreparer(parameter_name='service_name2')
     def test_list_service(self, service_name1, service_name2):
@@ -56,7 +56,7 @@ class ServiceCommandsTests(ScenarioTest):
             self.check('@[1].name', service_name2)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_list_service_in_rg(self, service_name):
         self.cmd('az apic list -g {rg}', checks=[
@@ -64,14 +64,14 @@ class ServiceCommandsTests(ScenarioTest):
             self.check('@[0].name', service_name)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_update_service(self):
         self.cmd('az apic update -g {rg} -n {s} --tags "{{test:value}}"', checks=[
             self.check('tags.test', 'value')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_update_service_with_all_optional_params(self):
         self.cmd('az apic update -g {rg} -n {s} --tags "{{test:value}}" --identity "{{type:SystemAssigned}}"', checks=[
@@ -79,14 +79,13 @@ class ServiceCommandsTests(ScenarioTest):
             self.check('identity.type', 'SystemAssigned')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_delete_service(self):
         self.cmd('az apic delete -g {rg} -n {s} --yes')
         self.cmd('az apic show -g {rg} -n {s}', expect_failure=True)
 
-    @unittest.skip('The Control Plane API has bug')
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer(enable_system_assigned_identity=True)
     def test_import_from_apim(self):
         self.kwargs.update({
@@ -96,10 +95,13 @@ class ServiceCommandsTests(ScenarioTest):
         # Import from APIM
         self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis *')
 
-        # TODO: check result
+        # Check result
+        self.cmd('az apic api list -g {rg} -n {s}', checks=[
+            self.check('length(@)', 2)
+        ])
 
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer(enable_system_assigned_identity=True)
     def test_import_from_apim_for_one_api(self):
         self.kwargs.update({
@@ -115,8 +117,7 @@ class ServiceCommandsTests(ScenarioTest):
             self.check('@[0].title', 'Echo API')
         ])
 
-    @unittest.skip('The Control Plane API has bug')
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer(enable_system_assigned_identity=True)
     def test_import_from_apim_for_multiple_apis(self):
         self.kwargs.update({
@@ -129,12 +130,12 @@ class ServiceCommandsTests(ScenarioTest):
         # Check result
         self.cmd('az apic api list -g {rg} -n {s}', checks=[
             self.check('length(@)', 2),
-            self.check('any(@[*].title == `Echo API`)', True),
-            self.check('any(@[*].title == `Foo API`)', True)
+            self.check('contains(@[*].title, `Echo API`)', True),
+            self.check('contains(@[*].title, `Foo API`)', True)
         ])
 
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     def test_examples_create_service_1(self, resource_group):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24),
@@ -145,7 +146,7 @@ class ServiceCommandsTests(ScenarioTest):
             self.check('resourceGroup', '{rg}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     def test_examples_create_service_2(self, resource_group):
         self.kwargs.update({
           'name': self.create_random_name(prefix='cli', length=24),
@@ -156,14 +157,13 @@ class ServiceCommandsTests(ScenarioTest):
             self.check('resourceGroup', '{rg}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_examples_delete_service(self):
         self.cmd('az apic delete -n {s} -g {rg} --yes')
         self.cmd('az apic show -g {rg} -n {s}', expect_failure=True)
 
-    @unittest.skip('The Control Plane API has bug')
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer(enable_system_assigned_identity=True)
     def test_examples_import_all_apis_from_apim(self):
         self.kwargs.update({
@@ -172,8 +172,7 @@ class ServiceCommandsTests(ScenarioTest):
         self._prepare_apim()
         self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis *')
 
-    @unittest.skip('The Control Plane API has bug')
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer(enable_system_assigned_identity=True)
     def test_examples_import_selected_apis_from_apim(self):
         self.kwargs.update({
@@ -182,7 +181,7 @@ class ServiceCommandsTests(ScenarioTest):
         self._prepare_apim()
         self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis [echo,foo]')
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_examples_list_services_in_resource_group(self):
         self.cmd('az apic list -g {rg}', checks=[
@@ -190,7 +189,7 @@ class ServiceCommandsTests(ScenarioTest):
             self.check('@[0].name', '{s}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_examples_show_service_details(self):
         self.cmd('az apic show -g {rg} -n {s}', checks=[
@@ -198,7 +197,7 @@ class ServiceCommandsTests(ScenarioTest):
             self.check('resourceGroup', '{rg}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_examples_update_service_details(self):
         self.cmd('az apic update -g {rg} -n {s}')

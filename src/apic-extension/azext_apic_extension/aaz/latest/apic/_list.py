@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """Lists Azure API Center services within an Azure subscription.
 
+    There is a known issue that listing all resources under a subscription does not work. Please list resources by resource group.
+
     :example: List services in resource group
         az apic list -g contoso-resources
     """

@@ -7,6 +7,7 @@ import json
 import os
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import ApicServicePreparer, ApicMetadataPreparer
+from .constants import TEST_REGION
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 test_assets_dir = os.path.join(current_dir, 'test_assets')
@@ -14,7 +15,7 @@ test_assets_dir = os.path.join(current_dir, 'test_assets')
 class MetadataCommandsTests(ScenarioTest):
 
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_metadata_create(self):
         self.kwargs.update({
@@ -30,7 +31,7 @@ class MetadataCommandsTests(ScenarioTest):
             self.check('schema', '{schema}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_metadata_create_with_file(self):
         schema_file = os.path.join(test_assets_dir, 'metadata_schema.json')
@@ -53,7 +54,7 @@ class MetadataCommandsTests(ScenarioTest):
             self.check('schema', '{expected_result}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_metadata_show(self):
@@ -65,7 +66,7 @@ class MetadataCommandsTests(ScenarioTest):
             self.check('schema', '{{"type":"boolean", "title":"Public Facing"}}')
         ])
        
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer(parameter_name='metadata_name1')
     @ApicMetadataPreparer(parameter_name='metadata_name2')
@@ -76,7 +77,7 @@ class MetadataCommandsTests(ScenarioTest):
            self.check('@[1].name', metadata_name2)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer(parameter_name='metadata_name1')
     @ApicMetadataPreparer(parameter_name='metadata_name2')
@@ -89,7 +90,7 @@ class MetadataCommandsTests(ScenarioTest):
            self.check('@[0].name', metadata_name1),
         ])
        
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_metadata_update(self):
@@ -101,14 +102,14 @@ class MetadataCommandsTests(ScenarioTest):
             self.check('schema', '{schema}')
         ])
        
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_metadata_delete(self):
        self.cmd('az apic metadata delete -g {rg} -n {s} --metadata-name {m} --yes')
        self.cmd('az apic metadata show -g {rg} -n {s} --metadata-name {m}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_metadata_export(self):
@@ -128,7 +129,7 @@ class MetadataCommandsTests(ScenarioTest):
         finally:
           os.remove(self.kwargs['filename'])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_examples_create_metadata_1(self):
         self.kwargs.update({
@@ -141,7 +142,7 @@ class MetadataCommandsTests(ScenarioTest):
             self.check('schema', '{schema}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_examples_create_metadata_2(self):
         self.kwargs.update({
@@ -154,21 +155,21 @@ class MetadataCommandsTests(ScenarioTest):
             self.check('schema', '{schema}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_delete_metadata_1(self):
         self.cmd('az apic metadata delete --resource-group {rg} --service-name {s} --metadata-name {m} --yes')
         self.cmd('az apic metadata show --resource-group {rg} --service-name {s} --metadata-name {m}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_delete_metadata_2(self):
         self.cmd('az apic metadata delete -g {rg} -n {s} --metadata-name {m} --yes')
         self.cmd('az apic metadata show -g {rg} -n {s} --metadata-name {m}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_export_metadata_assigned_to_api(self):
@@ -179,7 +180,7 @@ class MetadataCommandsTests(ScenarioTest):
 
         os.remove(self.kwargs['filename'])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_export_metadata_assigned_to_deployment(self):
@@ -190,7 +191,7 @@ class MetadataCommandsTests(ScenarioTest):
 
         os.remove(self.kwargs['filename'])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_export_metadata_assigned_to_environment(self):
@@ -201,7 +202,7 @@ class MetadataCommandsTests(ScenarioTest):
 
         os.remove(self.kwargs['filename'])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer(parameter_name='metadata_name1')
     @ApicMetadataPreparer(parameter_name='metadata_name2')
@@ -212,7 +213,7 @@ class MetadataCommandsTests(ScenarioTest):
             self.check('@[1].name', metadata_name2)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_show_metadata_1(self):
@@ -220,7 +221,7 @@ class MetadataCommandsTests(ScenarioTest):
             self.check('name', '{m}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_show_metadata_2(self):
@@ -228,7 +229,7 @@ class MetadataCommandsTests(ScenarioTest):
             self.check('name', '{m}')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_update_metadata(self):

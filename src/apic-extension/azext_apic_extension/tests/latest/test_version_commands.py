@@ -5,10 +5,11 @@
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import ApicServicePreparer, ApicApiPreparer, ApicVersionPreparer
+from .constants import TEST_REGION
 
 class VersionCommandsTests(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     def test_version_create(self):
@@ -21,7 +22,7 @@ class VersionCommandsTests(ScenarioTest):
             self.check('title', 'v1.0.0'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -32,7 +33,7 @@ class VersionCommandsTests(ScenarioTest):
             self.check('name', '{v}'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer(parameter_name='version_id1')
@@ -44,7 +45,7 @@ class VersionCommandsTests(ScenarioTest):
             self.check('@[1].name', version_id2)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer(parameter_name='version_id1')
@@ -58,7 +59,7 @@ class VersionCommandsTests(ScenarioTest):
             self.check('@[0].name', version_id1)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -68,7 +69,7 @@ class VersionCommandsTests(ScenarioTest):
             self.check('lifecycleStage', 'development'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -76,7 +77,7 @@ class VersionCommandsTests(ScenarioTest):
         self.cmd('az apic api version delete -g {rg} -n {s} --api-id {api} --version-id {v} --yes')
         self.cmd('az apic api version show -g {rg} -n {s} --api-id {api} --version-id {v}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     def test_examples_create_api_version(self):
@@ -88,7 +89,7 @@ class VersionCommandsTests(ScenarioTest):
             self.check('title', '2023-01-01'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -96,7 +97,7 @@ class VersionCommandsTests(ScenarioTest):
         self.cmd('az apic api version delete -g {rg} -n {s} --api-id {api} --version-id {v} --yes')
         self.cmd('az apic api version show -g {rg} -n {s} --api-id {api} --version-id {v}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer(parameter_name='version_id1')
@@ -108,7 +109,7 @@ class VersionCommandsTests(ScenarioTest):
             self.check('@[1].name', version_id2)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -117,7 +118,7 @@ class VersionCommandsTests(ScenarioTest):
             self.check('name', '{v}'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()

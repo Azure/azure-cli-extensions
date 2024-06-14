@@ -5,10 +5,11 @@
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import ApicServicePreparer, ApicApiPreparer, ApicVersionPreparer, ApicDefinitionPreparer, ApicEnvironmentPreparer, ApicDeploymentPreparer, ApicMetadataPreparer
+from .constants import TEST_REGION
 
 class DeploymentCommandsTests(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -28,7 +29,7 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('environmentId', '/workspaces/default/environments/{e}'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -51,7 +52,7 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('description', 'deployment description'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -68,7 +69,7 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('environmentId', '/workspaces/default/environments/{e}'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -83,7 +84,7 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('[1].name', deployment_id2),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -100,7 +101,7 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('[0].name', deployment_id1)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -112,7 +113,7 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('title', 'updated deployment'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -134,7 +135,7 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('description', 'deployment description'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -145,7 +146,7 @@ class DeploymentCommandsTests(ScenarioTest):
         self.cmd('az apic api deployment delete -g {rg} -n {s} --api-id {api} --deployment-id {dep} --yes')
         self.cmd('az apic api deployment show -g {rg} -n {s} --api-id {api} --deployment-id {dep}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -163,7 +164,7 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('server.runtimeUri[0]', 'https://example.com'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -174,7 +175,7 @@ class DeploymentCommandsTests(ScenarioTest):
         self.cmd('az apic api deployment delete -g {rg} -n {s} --deployment-id {dep} --api-id {api} --yes')
         self.cmd('az apic api deployment show -g {rg} -n {s} --api-id {api} --deployment-id {dep}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -189,7 +190,7 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('[1].name', deployment_id2),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()
@@ -203,7 +204,7 @@ class DeploymentCommandsTests(ScenarioTest):
             self.check('server.runtimeUri[0]', 'https://example.com'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicEnvironmentPreparer()
     @ApicApiPreparer()

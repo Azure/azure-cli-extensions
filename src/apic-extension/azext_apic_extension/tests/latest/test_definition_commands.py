@@ -10,13 +10,14 @@ import os
 from knack.util import CLIError
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import ApicServicePreparer, ApicApiPreparer, ApicVersionPreparer, ApicDefinitionPreparer
+from .constants import TEST_REGION
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 test_assets_dir = os.path.join(current_dir, 'test_assets')
 
 class DefinitionCommandsTests(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -29,7 +30,7 @@ class DefinitionCommandsTests(ScenarioTest):
             self.check('title', 'OpenAPI'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -43,7 +44,7 @@ class DefinitionCommandsTests(ScenarioTest):
             self.check('description', 'test description'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -54,7 +55,7 @@ class DefinitionCommandsTests(ScenarioTest):
             self.check('title', 'OpenAPI'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -67,7 +68,7 @@ class DefinitionCommandsTests(ScenarioTest):
             self.check('[1].name', definition_id2),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -82,7 +83,7 @@ class DefinitionCommandsTests(ScenarioTest):
             self.check('[0].name', definition_id1)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -94,7 +95,7 @@ class DefinitionCommandsTests(ScenarioTest):
             self.check('description', 'test description 2'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -103,7 +104,7 @@ class DefinitionCommandsTests(ScenarioTest):
         self.cmd('az apic api definition delete -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --yes')
         self.cmd('az apic api definition show -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -133,7 +134,7 @@ class DefinitionCommandsTests(ScenarioTest):
         finally:
             os.remove(exported_file_path)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -160,7 +161,7 @@ class DefinitionCommandsTests(ScenarioTest):
         finally:
             os.remove(exported_file_path)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -208,7 +209,7 @@ class DefinitionCommandsTests(ScenarioTest):
         finally:
             os.remove(self.kwargs['file_name'])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -221,7 +222,7 @@ class DefinitionCommandsTests(ScenarioTest):
             self.check('title', 'OpenAPI'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -230,7 +231,7 @@ class DefinitionCommandsTests(ScenarioTest):
         self.cmd('az apic api definition delete -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --yes')
         self.cmd('az apic api definition show -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -243,7 +244,7 @@ class DefinitionCommandsTests(ScenarioTest):
             self.check('[1].name', definition_id2),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -254,7 +255,7 @@ class DefinitionCommandsTests(ScenarioTest):
             self.check('title', 'OpenAPI'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -265,7 +266,7 @@ class DefinitionCommandsTests(ScenarioTest):
             self.check('title', 'OpenAPI'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -277,7 +278,7 @@ class DefinitionCommandsTests(ScenarioTest):
         })
         self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "inline" --value \'{value}\' --specification \'{specification}\'')
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()
@@ -289,7 +290,7 @@ class DefinitionCommandsTests(ScenarioTest):
         })
         self.cmd('az apic api definition import-specification -g {rg} -n {s} --api-id {api} --version-id {v} --definition-id {d} --format "link" --value \'{value}\' --specification \'{specification}\'')
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicVersionPreparer()

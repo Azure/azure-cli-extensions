@@ -5,10 +5,11 @@
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import ApicServicePreparer, ApicApiPreparer, ApicMetadataPreparer
+from .constants import TEST_REGION
 
 class ApiCommandsTests(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_api_create(self):
         self.kwargs.update({
@@ -23,7 +24,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('externalDocumentation', [])
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_api_create_with_all_optional_params(self, metadata_name):
@@ -46,7 +47,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('summary', 'summary')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     def test_api_show(self):
@@ -59,7 +60,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('externalDocumentation', [])
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer(parameter_name='api_id1')
     @ApicApiPreparer(parameter_name='api_id2')
@@ -70,7 +71,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('@[1].name', api_id2)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer(parameter_name='api_id1')
     @ApicApiPreparer(parameter_name='api_id2')
@@ -83,7 +84,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('@[0].name', api_id1),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     def test_api_update(self):
@@ -91,7 +92,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('title', 'Echo API 2'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicMetadataPreparer()
@@ -113,14 +114,14 @@ class ApiCommandsTests(ScenarioTest):
             self.check('summary', 'summary')
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     def test_api_delete(self):
         self.cmd('az apic api delete -g {rg} -n {s} --api-id {api} --yes')
         self.cmd('az apic api show -g {rg} -n {s} --api-id {api}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_examples_create_api(self):
         self.kwargs.update({
@@ -132,7 +133,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('title', 'Echo API'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicMetadataPreparer()
     def test_examples_create_api_with_custom_properties(self, metadata_name):
@@ -147,14 +148,14 @@ class ApiCommandsTests(ScenarioTest):
             self.check('customProperties.{}'.format(metadata_name), True),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     def test_examples_delete_api(self):
         self.cmd('az apic api delete -g {rg} -n {s} --api-id {api} --yes')
         self.cmd('az apic api show -g {rg} -n {s} --api-id {api}', expect_failure=True)
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer(parameter_name='api_id1')
     @ApicApiPreparer(parameter_name='api_id2')
@@ -165,7 +166,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('@[1].name', api_id2)
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     def test_examples_show_api_details(self):
@@ -175,7 +176,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('title', 'Echo API'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     def test_examples_update_api(self):
@@ -183,7 +184,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('summary', 'Basic REST API service'),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicMetadataPreparer()
@@ -195,7 +196,7 @@ class ApiCommandsTests(ScenarioTest):
             self.check('customProperties.{}'.format(metadata_name), True),
         ])
 
-    @ResourceGroupPreparer(name_prefix="clirg", location='eastus', random_name_length=32)
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer(parameter_name='api_id1')
     @ApicApiPreparer(parameter_name='api_id2')
