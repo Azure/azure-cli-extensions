@@ -7,6 +7,7 @@ from io import BytesIO
 import os
 from random import uniform
 import re
+import tempfile
 import time
 import colorama
 from knack.log import get_logger
@@ -42,7 +43,6 @@ from ._utility import convert_timespan_to_cron, transform_cron_to_cadence, creat
 
 logger = get_logger(__name__)
 DEFAULT_CHUNK_SIZE = 1024 * 4
-
 
 def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run, is_create_workflow=True):
     logger.debug("Entering continuousPatchV1_creation %s %s %s", cssc_config_file, dryrun, defer_immediate_run)
@@ -148,57 +148,54 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
     if config_file_path is None:
         logger.warning("--config parameter is needed to perform dry-run check.")
         return
+    try:
+        file_name = os.path.basename(config_file_path)
+        #config_folder_path = os.path.dirname(os.path.abspath(config_file_path))
+        tmp_folder = os.path.join(os.getcwd(), tempfile.mkdtemp(prefix="cli_temp_cssc"))
+        print(f"Temporary directory created at: {tmp_folder}")
+        create_temporary_dry_run_file(config_file_path, tmp_folder)
 
-    file_name = os.path.basename(config_file_path)
-    config_folder_path = os.path.dirname(os.path.abspath(config_file_path))
-    tmp_folder = config_folder_path + "\\tmp"
-    create_temporary_dry_run_file(config_file_path, tmp_folder)
+        resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
+        acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
+        acr_run_client = cf_acr_runs(cmd.cli_ctx)
+        source_location = prepare_source_location(
+            cmd,
+            tmp_folder,
+            acr_registries_task_client,
+            registry.name,
+            resource_group_name)
 
-    resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
-    acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
-    acr_run_client = cf_acr_runs(cmd.cli_ctx)
-    source_location = prepare_source_location(
-        cmd,
-        tmp_folder,
-        acr_registries_task_client,
-        registry.name,
-        resource_group_name)
+        # TO DO: Need to find alternate command to below (doesn't run due to dependency on az context)
+        # platform_os, platform_arch, platform_variant = get_validate_platform(cmd, None)
 
-    # TO DO: Need to find alternate command to below (doesn't run due to dependency on az context)
-    # platform_os, platform_arch, platform_variant = get_validate_platform(cmd, None)
+        # TO DO: Need to find alternative to below
+        platform_os, platform_arch, platform_variant = "linux", None, None
+        value_pair = [{"name": "CONFIGPATH", "value": f"{file_name}"}]
+        request = acr_registries_task_client.models.FileTaskRunRequest(
+            task_file_path=TMP_DRY_RUN_FILE_NAME,
+            values_file_path=None,
+            values=value_pair,
+            source_location=source_location,
+            timeout=None,
+            platform=acr_registries_task_client.models.PlatformProperties(
+                os=platform_os,
+                architecture=platform_arch,
+                variant=platform_variant
+            ),
+            credentials=_get_custom_registry_credentials(cmd, auth_mode=None),
+            agent_pool_name=None,
+            log_template=None
+        )
 
-    # TO DO: Need to find alternative to below
-    platform_os, platform_arch, platform_variant = "linux", None, None
-    value_pair = [{"name": "CONFIGPATH", "value": f"{file_name}"}]
-    request = acr_registries_task_client.models.FileTaskRunRequest(
-        task_file_path=TMP_DRY_RUN_FILE_NAME,
-        values_file_path=None,
-        values=value_pair,
-        source_location=source_location,
-        timeout=None,
-        platform=acr_registries_task_client.models.PlatformProperties(
-            os=platform_os,
-            architecture=platform_arch,
-            variant=platform_variant
-        ),
-        credentials=_get_custom_registry_credentials(cmd, auth_mode=None),
-        agent_pool_name=None,
-        log_template=None
-    )
-
-    queued = LongRunningOperation(cmd.cli_ctx)(acr_registries_task_client.begin_schedule_run(
-        resource_group_name=resource_group_name,
-        registry_name=registry.name,
-        run_request=request))
-    run_id = queued.run_id
-    logger.warning("Performing dry-run check for filter policy using acr task run id: %s", run_id)
-    delete_temporary_dry_run_file(tmp_folder)
-    
-
-    # task_status = "Started"
-    # while(task_status != "Succeeded" or task_status != "Failed"):
-    
-    return generate_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
+        queued = LongRunningOperation(cmd.cli_ctx)(acr_registries_task_client.begin_schedule_run(
+            resource_group_name=resource_group_name,
+            registry_name=registry.name,
+            run_request=request))
+        run_id = queued.run_id
+        logger.warning("Performing dry-run check for filter policy using acr task run id: %s", run_id)
+        return generate_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
+    finally:
+        delete_temporary_dry_run_file(tmp_folder)
 
 
 def _trigger_task_run(cmd, registry, resource_group, task_name):
