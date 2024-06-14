@@ -6,6 +6,7 @@
 import re
 import json
 import requests
+import uuid
 from knack.log import get_logger
 from azure.cli.core.style import print_styled_text, Style
 
@@ -42,10 +43,14 @@ def remap_datasource_uids(dashboard, uid_mapping, data_source_missed):
         for key, value in dashboard.items():
             if isinstance(value, dict):
                 if key == "datasource" and isinstance(value, dict) and ("uid" in value):
-                    if value["uid"] in uid_mapping:
-                        value["uid"] = uid_mapping[value["uid"]]
-                    elif value["uid"] not in ["-- Grafana --", "grafana"]:
-                        data_source_missed.add(value["type"])
+                    try:
+                        uuid.UUID(value["uid"]) # validate datasource via uid field
+                        if value["uid"] in uid_mapping:
+                            value["uid"] = uid_mapping[value["uid"]] # sets to destination datasource uid in dashboard
+                        else:
+                            data_source_missed.add(value["uid"])
+                    except:
+                        continue
                 else:
                     remap_datasource_uids(value, uid_mapping, data_source_missed)
             elif isinstance(value, (list, tuple)):
