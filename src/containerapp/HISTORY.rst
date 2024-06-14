@@ -9,6 +9,7 @@ upcoming
 * 'az containerapp job replica list': Support list replicas of a job execution
 * 'az containerapp env update': Fix logs configuration about removing destination with `--logs-destination none`
 * 'az containerapp auth update': Fix AuthConfigSecretRefNotFound when setting secret
+* 'az containerapp job create/update': Support --scale-rule-identity for scale rule to authenticate to azure resource scaler
 
 0.3.52
 ++++++

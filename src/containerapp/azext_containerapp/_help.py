@@ -1220,8 +1220,27 @@ helps['containerapp job create'] = """
               --scale-rule-type azure-queue \\
               --scale-rule-metadata "accountName=mystorageaccountname" \\
                                     "cloud=AzurePublicCloud" \\
-                                    "queueLength": "5" "queueName": "foo" \\
+                                    "queueLength=5" "queueName=foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name" \\
+              --image imageName
+    - name: Create container app job with Trigger Type as Event using identity to authenticate
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
+              --trigger-type Event \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --polling-interval 30 \\
+              --min-executions 0 \\
+              --max-executions 1 \\
+              --scale-rule-name azure-queue \\
+              --scale-rule-type azure-queue \\
+              --scale-rule-metadata "accountName=mystorageaccountname" \\
+                                    "cloud=AzurePublicCloud" \\
+                                    "queueLength=5" "queueName=foo" \\
+              --scale-rule-identity myUserIdentityResourceId \\
               --image imageName
     - name: Create a container apps job hosted on a Connected Environment.
       text: |
