@@ -395,6 +395,7 @@ class Create(AAZCommand):
             options=["--sku"],
             arg_group="Sku",
             help="Name of the pricing tier.",
+            default="Premium_AzureFrontDoor",
             enum={"Classic_AzureFrontDoor": "Classic_AzureFrontDoor", "Premium_AzureFrontDoor": "Premium_AzureFrontDoor", "Standard_AzureFrontDoor": "Standard_AzureFrontDoor"},
         )
         return cls._args_schema
