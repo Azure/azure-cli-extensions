@@ -19,6 +19,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
+
 def validate_and_deploy_template(cmd_ctx, registry, resource_group: str, deployment_name: str,
                                  template_file_name: str, parameters: dict, dryrun: Optional[bool] = False):
     logger.debug('Working with resource group %s, template %s', resource_group, template_file_name)
@@ -27,13 +28,13 @@ def validate_and_deploy_template(cmd_ctx, registry, resource_group: str, deploym
         os.path.join(
             os.path.dirname(
                 os.path.abspath(__file__)),
-            "../templates/")) # needs to be a constant
+            "../templates/"))  # needs to be a constant
 
     arm_path = os.path.join(deployment_path, "arm")
     template_path = os.path.join(arm_path, template_file_name)
     template = DeploymentProperties(
-        template = get_file_json(template_path),
-        parameters = parameters,
+        template=get_file_json(template_path),
+        parameters=parameters,
         mode=DeploymentMode.incremental)
     try:
         validate_template(cmd_ctx, resource_group, deployment_name, template)
@@ -46,6 +47,7 @@ def validate_and_deploy_template(cmd_ctx, registry, resource_group: str, deploym
         logger.error('Failed to validate and deploy template: %s', exception)
         raise AzCLIError('Failed to validate and deploy template: %s' % exception)
 
+
 def validate_template(cmd_ctx, resource_group, deployment_name, template):
     # Validation is automatically re-attempted in live runs, but not in test
     # playback, causing them to fail. This explicitly re-attempts validation to
@@ -53,9 +55,9 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
     api_clients = cf_resources(cmd_ctx)
     validation_res = None
     deployment = Deployment(
-        properties = template,
+        properties=template,
         # tags = { "test": CSSC_TAGS }, #we need to know if tagging
-        # is something that will help ust, tasks are proxy resources, 
+        # is something that will help ust, tasks are proxy resources,
         # so not sure how that would work
     )
 
@@ -63,9 +65,9 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
         try:
             validation = (
                 api_clients.deployments.begin_validate(
-                    resource_group_name = resource_group,
-                    deployment_name = deployment_name,
-                    parameters = deployment
+                    resource_group_name=resource_group,
+                    deployment_name=deployment_name,
+                    parameters=deployment
                 )
             )
             validation_res = LongRunningOperation(
@@ -104,21 +106,21 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
     # Validation succeeded so proceed with deployment
     logger.debug("Successfully validated resources for %s", resource_group)
 
+
 def deploy_template(cmd_ctx, resource_group, deployment_name, template):
     api_client = cf_resources(cmd_ctx)
-    
+
     deployment = Deployment(
-        properties = template,
+        properties=template,
         # tags = { "test": CSSC_TAGS },
-        #we need to know if tagging is something that will help ust,
+        # we need to know if tagging is something that will help ust,
         # tasks are proxy resources, so not sure how that would work
     )
 
     poller = api_client.deployments.begin_create_or_update(
-            resource_group_name=resource_group,
-            deployment_name=deployment_name,
-            parameters = deployment
-        )
+        resource_group_name=resource_group,
+        deployment_name=deployment_name,
+        parameters=deployment)
     logger.debug(poller)
 
     # Wait for the deployment to complete and get the outputs

@@ -6,6 +6,7 @@
 
 from enum import Enum
 
+
 # This enum is used to define the task types for the CLI, in case new types are added this is the place to start
 class CSSCTaskTypes(Enum):
     """Enum for the task type."""
@@ -13,7 +14,8 @@ class CSSCTaskTypes(Enum):
     # CopaV1 = "CopaV1"
     # TrivyV1 = "TrivyV1"
 
-##General Constants
+
+# General Constants
 CSSC_TAGS = "acr-cssc"
 ACR_API_VERSION_2023_01_01_PREVIEW = "2023-01-01-preview"
 ACR_API_VERSION_2019_06_01_PREVIEW = "2019-06-01-preview"
@@ -21,14 +23,14 @@ BEARER_TOKEN_USERNAME = "00000000-0000-0000-0000-000000000000"
 RESOURCE_GROUP = "resource_group"
 TMP_DRY_RUN_FILE_NAME = "tmp_dry_run_template.yaml"
 
-##Continuous Patch Constants
+
+# Continuous Patch Constants
 CONTINUOSPATCH_OCI_ARTIFACT_TYPE = "oci-artifact"
 CSSC_WORKFLOW_POLICY_REPOSITORY = "csscpolicies"
 CONTINUOSPATCH_OCI_ARTIFACT_CONFIG = "patchpolicy"
 CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1 = "v1"
 CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN = "dryrun"
 CONTINUOSPATCH_DEPLOYMENT_NAME = "continuouspatchingdeployment"
-#CONTINUOSPATCH_DEPLOYMENT_TEMPLATE = "CSSC-AutoImagePatching.json"
 CONTINUOSPATCH_DEPLOYMENT_TEMPLATE = "CSSC-AutoImagePatching-encodedtasks.json"
 # listing all individual tasks that are requires for Continuous Patching to work
 CONTINUOSPATCH_TASK_PATCHIMAGE_NAME = "cssc-patch-image"
@@ -65,7 +67,7 @@ CONTINUOSPATCH_TASK_DEFINITION = {
             "template_file": "task/cssc-trigger-scan.yaml"
         },
 }
-CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT = 1024 * 1024 * 10 # 10MB, we don't want to allow huge files
+CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT = 1024 * 1024 * 10  # 10MB, we don't want to allow huge files
 CONTINUOUSPATCH_CONFIG_SCHEMA_V1 = {
     "type": "object",
     "properties": {

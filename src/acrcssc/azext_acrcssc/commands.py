@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 from azext_acrcssc._client_factory import cf_acr
 
+
 def load_command_table(self, _):
     with self.command_group("acr supply-chain workflow", client_factory=cf_acr, is_preview=True) as g:
         g.custom_command("create", "create_acrcssc")

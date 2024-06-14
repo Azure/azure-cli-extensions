@@ -8,13 +8,16 @@ import re
 from knack.log import get_logger
 from .helper._constants import CONTINUOUSPATCH_CONFIG_SCHEMA_V1, CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT, CONTINUOSPATCH_ALL_TASK_NAMES, ERROR_MESSAGE_INVALID_TIMESPAN
 from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_CADENCE
-from azure.mgmt.core.tools import ( parse_resource_id )
+from azure.mgmt.core.tools import (parse_resource_id)
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzCLIError
 from ._client_factory import cf_acr_tasks
 logger = get_logger(__name__)
+
+
 def validate_continuouspatch_config_v1(config_path):
     _validate_continuouspatch_file(config_path)
     _validate_continuouspatch_json(config_path)
+
 
 def _validate_continuouspatch_file(config_path):
     if not os.path.exists(config_path):
@@ -28,6 +31,7 @@ def _validate_continuouspatch_file(config_path):
     if not os.access(config_path, os.R_OK):
         raise InvalidArgumentValueError(f"Config path file: '{config_path}' is not readable")
 
+
 def _validate_continuouspatch_json(config_path):
     from jsonschema import validate
     try:
@@ -36,9 +40,10 @@ def _validate_continuouspatch_json(config_path):
             validate(config, CONTINUOUSPATCH_CONFIG_SCHEMA_V1)
     except Exception as e:
         logger.debug(f"Error validating the continuous patch config file: {e}")
-        raise InvalidArgumentValueError(f"File used for --config is not a valid config JSON file. Use --help to see the schema of the config file.")
+        raise InvalidArgumentValueError("File used for --config is not a valid config JSON file. Use --help to see the schema of the config file.")
     finally:
         f.close()
+
 
 def check_continuous_task_exists(cmd, registry):
     exists = False
@@ -46,7 +51,8 @@ def check_continuous_task_exists(cmd, registry):
         exists = exists or _check_task_exists(cmd, registry, task_name)
     return exists
 
-def _check_task_exists(cmd, registry, task_name = ""):
+
+def _check_task_exists(cmd, registry, task_name=""):
     acrtask_client = cf_acr_tasks(cmd.cli_ctx)
     resourceid = parse_resource_id(registry.id)
     resource_group = resourceid["resource_group"]
@@ -56,10 +62,11 @@ def _check_task_exists(cmd, registry, task_name = ""):
     except Exception as exception:
         logger.debug("Failed to find task %s from registry %s : %s", task_name, registry.name, exception)
         return False
-    
+
     if task is not None:
         return True
     return False
+
 
 def _validate_cadence(cadence):
     # during update, cadence can be null if we are only updating the config
@@ -68,12 +75,12 @@ def _validate_cadence(cadence):
     # Extract the numeric value and unit from the timespan expression
     match = re.match(r'(\d+)(d)$', cadence)
     if not match:
-        raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TIMESPAN, recommendation=RECOMMENDATION_CADENCE)
-    if(match is not None):
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN, recommendation=RECOMMENDATION_CADENCE)
+    if match is not None:
         value = int(match.group(1))
         unit = match.group(2)
-    if unit == 'd' and value > 30: #day of the month
-        raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TIMESPAN, recommendation=RECOMMENDATION_CADENCE)
+    if unit == 'd' and value > 30:  # day of the month
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN, recommendation=RECOMMENDATION_CADENCE)
 
 # def validate_and_convert_timespan_to_cron(timespan, date_time=None, do_not_run_immediately=True):
 
@@ -103,21 +110,22 @@ def _validate_cadence(cadence):
 #         if value > 30:
 #             raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TIMESPAN)
 #         cron_expression = f'{cron_minute} {cron_hour} */{value} * *'
-    
+
 #     return cron_expression
+
 
 def validate_inputs(cadence, config_file_path=None):
     _validate_cadence(cadence)
     if config_file_path is not None:
         validate_continuouspatch_config_v1(config_file_path)
-    
 
 
 def validate_task_type(task_type):
     if task_type in CSSCTaskTypes._value2member_map_:
         if (task_type != CSSCTaskTypes.ContinuousPatchV1.value):
-            raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TASK)
+            raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TASK)
+
 
 def validate_cssc_optional_inputs(cssc_config_path, cadence):
-    if(cssc_config_path is None and cadence is None):
-        raise InvalidArgumentValueError(error_msg = "Provide at least one parameter to update: --cadence or --config")
+    if cssc_config_path is None and cadence is None:
+        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --cadence or --config")
